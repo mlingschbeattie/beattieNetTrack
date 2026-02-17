@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { setLastResult, setRequirementChecklist } from '../../lib/checksStore';
+import MotherboardDiagram from './MotherboardDiagram';
 
 type Props = {
   labSlug?: string;
@@ -650,6 +651,12 @@ export default function PcAssemblyLab({ labSlug = 'pc-assembly' }: Props) {
           <li>Storage minimum: {activeScenario.requirements.storageMin}GB ({activeScenario.requirements.storageType})</li>
           <li>GPU: {activeScenario.requirements.gpuTier === 'optional' ? 'Optional' : 'Required for target workload'}</li>
         </ul>
+      </article>
+
+      <article className="card pc-lab__panel">
+        <h3>Motherboard Diagram with Hotspots</h3>
+        <p className="pc-lab__muted">Review key motherboard locations before finalizing your build selections.</p>
+        <MotherboardDiagram />
       </article>
 
       <div className="pc-lab__grid">

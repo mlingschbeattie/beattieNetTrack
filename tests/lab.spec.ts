@@ -81,6 +81,7 @@ test('pc assembly lab renders as native workspace panels', async ({ page }) => {
 
   await expect(page.locator('[data-workspace]')).toBeVisible();
   await expect(page.getByTestId('pc-lab-root')).toBeVisible();
+  await expect(page.getByTestId('mb-diagram')).toBeVisible();
   await expect(page.locator('[data-testid="lab-iframe"]')).toHaveCount(0);
 
   await page.getByTestId('pc-select-cpu').selectOption('intel-i5-13600k');
