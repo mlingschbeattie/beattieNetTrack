@@ -8,26 +8,17 @@ const ensureDrawerOpen = async (page: import('@playwright/test').Page) => {
   }
 };
 
-test('lab workspace mounts iframe and interactive terminal works', async ({ page }) => {
+test('lab mounts LabRunner and exposes runner contract', async ({ page }) => {
   await page.goto('/labs/network-terminal-basics');
 
-  await expect(page.locator('[data-workspace]')).toBeVisible();
-  await expect(page.getByTestId('activity-card').first()).toBeVisible();
-  await expect(page.getByTestId('lab-frame-root')).toBeVisible();
-  await expect(page.getByTestId('lab-iframe')).toBeVisible();
+  // Page renders as a step-driven LabRunner (not an iframe workspace)
+  await expect(page.getByRole('heading', { name: 'Network Terminal Basics Lab' })).toBeVisible();
+  await expect(page.getByTestId('lab-runner')).toBeVisible();
+  await expect(page.getByTestId('lab-step-count')).toBeVisible();
+  await expect(page.getByTestId('lab-input')).toBeVisible();
 
-  const frame = page.frameLocator('[data-testid="lab-iframe"]');
-  await expect(frame.getByTestId('lab-root')).toBeVisible();
-
-  await frame.getByTestId('command-input').fill('help');
-  await frame.getByTestId('run-command').click();
-  await expect(frame.getByTestId('lab-terminal')).toContainText('Available: help');
-
-  const hasSharedCss = await frame.locator('body').evaluate(() =>
-    Array.from(document.styleSheets).some((sheet) => (sheet.href ?? '').includes('/styles/lab-shared.css'))
-  );
-  expect(hasSharedCss).toBe(true);
-
+  // Confirm no legacy iframe is present for this lab
+  await expect(page.locator('[data-testid="lab-iframe"]')).toHaveCount(0);
 });
 
 test('terminal basics lab completes, awards XP, updates streak, and persists completion', async ({ page }) => {

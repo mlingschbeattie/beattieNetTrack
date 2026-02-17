@@ -19,6 +19,31 @@ checklist:
   - Completed required terminal commands
   - Captured expected command output
   - Ran Check before Submit
+steps:
+  - id: help
+    title: Show help
+    prompt: Run the built-in help command to list available simulator commands.
+    hint: The simulator supports a `help` command.
+    validator:
+      type: exact
+      value: help
+    successMessage: 'Help displayed'
+  - id: ipconfig
+    title: Show network configuration
+    prompt: Run the command that prints full IP configuration for the host.
+    hint: On Windows try `ipconfig /all`, on POSIX use `ifconfig` or `ip a`.
+    validator:
+      type: oneOf
+      values: ['ipconfig /all', 'ifconfig', 'ip a']
+    successMessage: 'IP configuration captured'
+  - id: nslookup
+    title: Resolve DNS
+    prompt: Run the command to resolve `beattietech.edu` using DNS lookup.
+    hint: Try `nslookup beattietech.edu` or `dig +short beattietech.edu`.
+    validator:
+      type: oneOf
+      values: ['nslookup beattietech.edu', 'dig +short beattietech.edu']
+    successMessage: 'DNS lookup succeeded'
 ---
 
 Use the terminal simulator to practice real network troubleshooting commands.
