@@ -4,6 +4,7 @@ import Sidebar from '../components/Sidebar.astro';
 import Navbar from '../components/Navbar.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import RightPanel from '../components/islands/RightPanel.tsx';
+import { getModuleProgressData } from '../lib/content';
 
 const {
   title,
@@ -16,8 +17,17 @@ const {
   showRightPanel = false,
   rightPanelHints = [],
   rightPanelChecklist = [],
+  activityNavigation,
 } = Astro.props;
 const activePath = Astro.url.pathname;
+let moduleProgress = null;
+if (activityNavigation && (activityNavigation as any).trackSlug && (activityNavigation as any).moduleSlug) {
+  try {
+    moduleProgress = await getModuleProgressData((activityNavigation as any).trackSlug, (activityNavigation as any).moduleSlug);
+  } catch {
+    moduleProgress = null;
+  }
+}
 ---
 
 <BaseLayout title={title}>
@@ -39,7 +49,43 @@ const activePath = Astro.url.pathname;
         </button>
         <div class={`content-stage ${showRightPanel ? 'content-stage--with-panel' : ''}`}>
           <div class="content-main">
+            {moduleProgress ? (
+              <div style="margin-bottom:8px">
+                <span
+                  class="pill pill--muted"
+
+ 
+                  data-module-progress
+                  data-total={String(moduleProgress.total)}
+                  data-completed={String(moduleProgress.completed)}
+                  data-activities={JSON.stringify(moduleProgress.activities)}
+                >
+                  Module Progress: <span class="mp-completed">0</span> / <span class="mp-total">{String(moduleProgress.total)}</span> (<span class="mp-percent">0%</span>)
+                </span>
+              </div>
+            ) : null}
             <slot />
+            {activityNavigation && (activityNavigation.prev || activityNavigation.next) && (
+              <nav class="card" aria-label="Module activity navigation" data-testid="activity-prev-next-nav">
+                <h3>Continue Module</h3>
+                <div class="card__footer">
+                  {activityNavigation.prev && (
+                    <p>
+                      <a class="btn-link" href={activityNavigation.prev.href} data-testid="activity-prev-link">
+                        ← Previous: {activityNavigation.prev.title}
+                      </a>
+                    </p>
+                  )}
+                  {activityNavigation.next && (
+                    <p>
+                      <a class="btn-link" href={activityNavigation.next.href} data-testid="activity-next-link">
+                        Next: {activityNavigation.next.title} →
+                      </a>
+                    </p>
+                  )}
+                </div>
+              </nav>
+            )}
           </div>
           {showRightPanel && (
             <RightPanel
@@ -54,3 +100,43 @@ const activePath = Astro.url.pathname;
     </main>
   </div>
 </BaseLayout>
+
+<script>
+  // Client updater for module progress badges rendered in AppShell
+  try {
+    const updateModuleProgressAppShell = () => {
+      const mpEls = Array.from(document.querySelectorAll('[data-module-progress]')) as HTMLElement[];
+      if (!mpEls.length) return;
+      let raw = null;
+      try {
+        raw = JSON.parse(window.localStorage.getItem('beattie_progress_v1') ?? 'null');
+      } catch {
+        raw = null;
+      }
+      for (const el of mpEls) {
+        const activitiesAttr = el.getAttribute('data-activities') ?? '[]';
+        let activities = [] as Array<{ type: string; slug: string }>;
+        try {
+          activities = JSON.parse(activitiesAttr);
+        } catch {
+          activities = [];
+        }
+        let completed = 0;
+        if (raw && typeof raw === 'object') {
+          for (const act of activities) {
+            const key = act.type === 'lab' ? 'labs' : act.type === 'quiz' ? 'quizzes' : 'lessons';
+            if (raw[key] && raw[key][act.slug] && raw[key][act.slug].completed) completed += 1;
+          }
+        }
+        const total = Number(el.getAttribute('data-total') ?? 0) || activities.length;
+        const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+        const completedEl = el.querySelector('.mp-completed');
+        const percentEl = el.querySelector('.mp-percent');
+        if (completedEl) completedEl.textContent = String(completed);
+        if (percentEl) percentEl.textContent = `${percent}%`;
+      }
+    };
+    updateModuleProgressAppShell();
+    window.addEventListener('progress-updated', updateModuleProgressAppShell);
+  } catch {}
+</script>

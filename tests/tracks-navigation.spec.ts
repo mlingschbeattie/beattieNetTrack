@@ -42,3 +42,17 @@ test('assessment quiz workspace shell loads', async ({ page }) => {
   await expect(runner).toBeVisible();
   await expect(runner.getByRole('heading', { name: /Assessment 1\.1\.1 Basics of Computing/i })).toBeVisible();
 });
+
+test('dashboard Continue link goes to canonical activity route (no /workspace/)', async ({ page }) => {
+  await page.goto('/');
+  // click the Cybersecurity Foundations Continue link
+  const selector = '[data-track-continue-link][data-track-slug="cybersecurity-foundations"]';
+  await page.locator(selector).click();
+  await page.waitForLoadState('networkidle');
+
+  const url = page.url();
+  expect(url.includes('/workspace/')).toBeFalsy();
+
+  // destination should show a visible H1 heading
+  await expect(page.locator('h1').first()).toBeVisible();
+});

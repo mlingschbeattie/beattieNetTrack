@@ -4,6 +4,8 @@ import Tabs from '../components/workspace/Tabs.astro';
 import BottomBar from '../components/workspace/BottomBar.astro';
 import Pane from '../components/ui/Pane.astro';
 import ActivityCard from '../components/ActivityCard.astro';
+import type { PrevNextLink } from '../lib/content';
+import { getActivityModuleNavigation, getModuleProgressData } from '../lib/content';
 
 interface TabItem {
   id: string;
@@ -29,6 +31,10 @@ interface Props {
   panelHints?: string[];
   panelChecklist?: string[];
   layoutMode?: 'stacked' | 'split';
+  activityNavigation?: {
+    prev: PrevNextLink | null;
+    next: PrevNextLink | null;
+  } | null;
 }
 
 const {
@@ -50,7 +56,26 @@ const {
   panelHints = [],
   panelChecklist = [],
   layoutMode = itemType === 'lab' || itemType === 'quiz' || itemType === 'activity' ? 'stacked' : 'split',
+  activityNavigation = null,
 } = Astro.props as Props;
+
+let moduleProgress = null;
+if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson') {
+  try {
+    const nav = await getActivityModuleNavigation({ slug: itemSlug, type: itemType });
+    if (nav) {
+      const mp = await getModuleProgressData(nav.trackSlug, nav.moduleSlug);
+      if (mp) {
+        // attach module identifiers for potential debugging
+        (mp as any).trackSlug = nav.trackSlug;
+        (mp as any).moduleSlug = nav.moduleSlug;
+        moduleProgress = mp;
+      }
+    }
+  } catch {
+    moduleProgress = null;
+  }
+}
 ---
 
 <AppShell
@@ -64,6 +89,7 @@ const {
   showRightPanel={layoutMode === 'split'}
   rightPanelHints={panelHints}
   rightPanelChecklist={panelChecklist}
+  activityNavigation={activityNavigation}
 >
   <section
     class={`workspace-layout workspace-layout--${layoutMode}`}
@@ -134,6 +160,19 @@ const {
 
         <div class="workspace-main" data-workspace-activity>
           <ActivityCard class="workspace-activity-card" title="Activity" fullHeight={true}>
+            {moduleProgress ? (
+              <div style="margin-bottom:8px">
+                <span
+                  class="pill pill--muted"
+                  data-module-progress
+                  data-total={String(moduleProgress.total)}
+                  data-completed={String(moduleProgress.completed)}
+                  data-activities={JSON.stringify(moduleProgress.activities)}
+                >
+                  Module Progress: <span class="mp-completed">0</span> / <span class="mp-total">{String(moduleProgress.total)}</span> (<span class="mp-percent">0%</span>)
+                </span>
+              </div>
+            ) : null}
             <slot name="activity-main" />
           </ActivityCard>
         </div>
@@ -153,6 +192,19 @@ const {
           <div class="workspace-pane-scroll">
             <div class="workspace-tab-panel workspace-tab-panel--active" data-workspace-tab-panel="activity">
               <ActivityCard class="workspace-activity-card" fullHeight={true}>
+                {moduleProgress ? (
+                  <div style="margin-bottom:8px">
+                    <span
+                      class="pill pill--muted"
+                      data-module-progress
+                      data-total={String(moduleProgress.total)}
+                      data-completed={String(moduleProgress.completed)}
+                      data-activities={JSON.stringify(moduleProgress.activities)}
+                    >
+                      Module Progress: <span class="mp-completed">0</span> / <span class="mp-total">{String(moduleProgress.total)}</span> (<span class="mp-percent">0%</span>)
+                    </span>
+                  </div>
+                ) : null}
                 <slot name="activity-main" />
               </ActivityCard>
             </div>
@@ -235,7 +287,10 @@ const {
     }
 
     const failed = result.checks.filter((item) => !item.pass);
-    const score = typeof result.score === 'number' ? ` · Score ${result.score}%` : '';
+    // Only render percent-style score in the stacked drawer checks panel.
+    // When the layout is `split` the right panel already surfaces `Score: X%`,
+    // so omitting the duplicate prevents showing the same string twice.
+    const score = layoutMode === 'stacked' && typeof result.score === 'number' ? ` · Score ${result.score}%` : '';
     const failedMarkup = failed.length
       ? `<ul>${failed.map((item) => `<li>✖ ${item.label}${item.message ? ` — ${item.message}` : ''}</li>`).join('')}</ul>`
       : '<p class="pc-lab__muted">No failed checks in latest result.</p>';
@@ -471,6 +526,45 @@ const {
       });
     });
   });
+
+  // Module progress updater: reads `beattie_progress_v1` and updates any
+  // server-rendered module progress badge with the completed count and %.
+  const updateModuleProgress = () => {
+    const mpEls = Array.from(workspace.querySelectorAll('[data-module-progress]')) as HTMLElement[];
+    if (!mpEls.length) return;
+    let raw = null;
+    try {
+      raw = JSON.parse(window.localStorage.getItem('beattie_progress_v1') ?? 'null');
+    } catch {
+      raw = null;
+    }
+    for (const el of mpEls) {
+      const activitiesAttr = el.getAttribute('data-activities') ?? '[]';
+      let activities = [] as Array<{ type: string; slug: string }>;
+      try {
+        activities = JSON.parse(activitiesAttr);
+      } catch {
+        activities = [];
+      }
+      let completed = 0;
+      if (raw && typeof raw === 'object') {
+        for (const act of activities) {
+          const key = act.type === 'lab' ? 'labs' : act.type === 'quiz' ? 'quizzes' : 'lessons';
+          if (raw[key] && raw[key][act.slug] && raw[key][act.slug].completed) completed += 1;
+        }
+      }
+      const total = Number(el.getAttribute('data-total') ?? 0) || activities.length;
+      const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+      const completedEl = el.querySelector('.mp-completed');
+      const percentEl = el.querySelector('.mp-percent');
+      if (completedEl) completedEl.textContent = String(completed);
+      if (percentEl) percentEl.textContent = `${percent}%`;
+    }
+  };
+
+  // Update initially and when progress changes
+  updateModuleProgress();
+  window.addEventListener('progress-updated', updateModuleProgress);
 
   if (layoutMode === 'stacked') {
     const drawerButtons = Array.from(workspace.querySelectorAll('[data-workspace-drawer-tab-button]'));

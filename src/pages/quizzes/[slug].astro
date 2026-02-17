@@ -6,6 +6,7 @@ import WorkspaceLayout from '../../layouts/WorkspaceLayout.astro';
 import QuizRunner from '../../components/QuizRunner.tsx';
 import ActivityCard from '../../components/ActivityCard.astro';
 import type { QuizDefinition } from '../../lib/quizEngine';
+import { getActivityModuleNavigation } from '../../lib/content';
 
 export async function getStaticPaths() {
   const quizzes = await getCollection('quizzes');
@@ -17,6 +18,7 @@ const tracks = await getCollection('tracks');
 const currentTrack = quiz.data.track
   ? tracks.find((track) => track.slug === quiz.data.track)
   : undefined;
+const activityNavigation = await getActivityModuleNavigation({ type: 'quiz', slug: quiz.slug });
 
 let questions = quiz.data.questions;
 if ((!questions || questions.length === 0) && quiz.data.quizJsonPath) {
@@ -78,6 +80,7 @@ if (currentTrack) {
   submitLabel="Submit Quiz"
   panelHints={quiz.data.hints}
   panelChecklist={quiz.data.checklist}
+  activityNavigation={activityNavigation}
 >
   <Fragment slot="instructions">
     <ActivityCard>

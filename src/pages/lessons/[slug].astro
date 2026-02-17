@@ -2,11 +2,11 @@
 import { getCollection } from 'astro:content';
 import AppShell from '../../layouts/AppShell.astro';
 import LessonHeader from '../../components/LessonHeader.astro';
-import LessonNav from '../../components/LessonNav.astro';
 import Callout from '../../components/Callout.astro';
 import CodeBlock from '../../components/CodeBlock.astro';
 import { normalizeLessonMeta } from '../../lib/lessonMeta';
-import { getTrackSectionLessonSlugs, normalizeSectionItem } from '../../lib/trackSections';
+import { normalizeSectionItem } from '../../lib/trackSections';
+import { getActivityModuleNavigation } from '../../lib/content';
 
 export async function getStaticPaths() {
   const lessons = await getCollection('lessons');
@@ -18,6 +18,7 @@ const allTracks = await getCollection('tracks');
 const allLessons = await getCollection('lessons');
 const { Content } = await lesson.render();
 const meta = normalizeLessonMeta(lesson.data);
+const activityNavigation = await getActivityModuleNavigation({ type: 'lesson', slug: lesson.slug });
 
 const url = new URL(Astro.request.url);
 const trackParam = url.searchParams.get('track');
@@ -37,20 +38,6 @@ const trackFromSections = allTracks.find((entry) =>
 );
 
 const currentTrack = trackFromParam ?? trackFromFrontmatter ?? trackFromSections ?? null;
-
-const orderedLessonSlugs = currentTrack
-  ? getTrackSectionLessonSlugs(currentTrack)
-  : [];
-
-const orderedLessons = orderedLessonSlugs.length
-  ? orderedLessonSlugs.map((slug) => lessonMap[slug]).filter(Boolean)
-  : allLessons
-      .filter((entry) => (lesson.data.track ? entry.data.track === lesson.data.track : true))
-      .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
-
-const currentIndex = orderedLessons.findIndex((entry) => entry.slug === lesson.slug);
-const prev = currentIndex > 0 ? orderedLessons[currentIndex - 1] : null;
-const next = currentIndex >= 0 && currentIndex < orderedLessons.length - 1 ? orderedLessons[currentIndex + 1] : null;
 ---
 
 <AppShell
@@ -60,6 +47,7 @@ const next = currentIndex >= 0 && currentIndex < orderedLessons.length - 1 ? ord
   activeLesson={lesson.slug}
   currentTrack={currentTrack}
   lessonMap={lessonMap}
+  activityNavigation={activityNavigation}
   breadcrumbs={[
     { label: 'Home', href: '/' },
     { label: 'Learning Tracks', href: '/tracks' },
@@ -79,6 +67,4 @@ const next = currentIndex >= 0 && currentIndex < orderedLessons.length - 1 ? ord
   <section class="lesson-body">
     <Content components={{ Callout, CodeBlock }} />
   </section>
-
-  <LessonNav prev={prev} next={next} />
 </AppShell>

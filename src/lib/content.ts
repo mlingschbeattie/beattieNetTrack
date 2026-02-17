@@ -27,6 +27,13 @@ export interface PrevNextLink {
   href: string;
 }
 
+export interface ActivityModuleNavigation {
+  trackSlug: string;
+  moduleSlug: string;
+  prev: PrevNextLink | null;
+  next: PrevNextLink | null;
+}
+
 export interface TrackModuleSummary {
   slug: string;
   title: string;
@@ -196,4 +203,70 @@ export const getPrevNextInModule = (
   activity: { slug: string; type: TrackActivityType }
 ): { prev: PrevNextLink | null; next: PrevNextLink | null } => {
   return module.prevNextByKey[toActivityKey(activity)] ?? { prev: null, next: null };
+};
+
+export const getActivityModuleNavigation = async (
+  activity: { slug: string; type: TrackActivityType }
+): Promise<ActivityModuleNavigation | null> => {
+  const tracks = await getTracksIndexData();
+  const trackDetails = await Promise.all(tracks.map((track) => getTrackDetailData(track.slug)));
+
+  for (const detail of trackDetails) {
+    if (!detail) continue;
+    for (const module of detail.modules) {
+      const key = toActivityKey(activity);
+      const links = module.prevNextByKey[key];
+      if (!links) continue;
+      return {
+        trackSlug: detail.track.slug,
+        moduleSlug: module.slug,
+        prev: links.prev,
+        next: links.next,
+      };
+    }
+  }
+
+  return null;
+};
+
+export const getModuleProgressData = async (
+  trackSlug: string,
+  moduleSlug: string
+): Promise<{ total: number; completed: number; activities: { type: TrackActivityType; slug: string }[] } | null> => {
+  const detail = await getTrackDetailData(trackSlug);
+  if (!detail) return null;
+  const module = detail.modules.find((m) => m.slug === moduleSlug);
+  if (!module) return null;
+  const activities = module.activities.map((a) => ({ type: a.type, slug: a.slug }));
+  return {
+    total: activities.length,
+    // Server-side cannot read client progress; default to 0.
+    completed: 0,
+    activities,
+  };
+};
+
+export interface ProgressData {
+  labs?: Record<string, { completed?: boolean }>;
+  lessons?: Record<string, { completed?: boolean }>;
+  quizzes?: Record<string, { completed?: boolean }>;
+}
+
+export const getTrackContinueHref = async (trackSlug: string, progress: ProgressData | null = null): Promise<string> => {
+  const detail = await getTrackDetailData(trackSlug);
+  if (!detail) return `/tracks/${trackSlug}`;
+
+  for (const module of detail.modules) {
+    for (const activity of module.activities) {
+      if (progress) {
+        const collectionKey = activity.type === 'lab' ? 'labs' : activity.type === 'quiz' ? 'quizzes' : 'lessons';
+        const completed = Boolean((progress as any)[collectionKey]?.[activity.slug]?.completed);
+        if (!completed) return activity.href;
+      } else {
+        return activity.href;
+      }
+    }
+  }
+
+  return `/tracks/${trackSlug}`;
 };

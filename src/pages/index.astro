@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import AppShell from '../layouts/AppShell.astro';
 import { getTrackSectionItemCount, getTrackSectionItems } from '../lib/trackSections';
+import { getTrackContinueHref } from '../lib/content';
 
 const tracks = await getCollection('tracks');
 const labs = await getCollection('labs');
@@ -16,15 +17,10 @@ const hrefForTrackItem = (item: { type: 'lesson' | 'lab' | 'quiz'; slug: string 
 	return `/quizzes/${item.slug}`;
 };
 
-const getContinueHref = (track: CollectionEntry<'tracks'>) => {
-	const firstSectionItem = getTrackSectionItems(track)[0];
-	if (firstSectionItem) return hrefForTrackItem(firstSectionItem);
-	const firstLab = labs
-		.filter((lab) => lab.data.track === track.slug)
-		.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))[0];
-	if (firstLab) return `/labs/${firstLab.slug}`;
-	return `/tracks/${track.slug}`;
-};
+// build continue href map server-side using content helper to avoid legacy workspace routes
+const continueMap = Object.fromEntries(
+  await Promise.all(sortedTracks.map(async (t) => [t.slug, await getTrackContinueHref(t.slug)]))
+);
 ---
 
 <AppShell
@@ -55,7 +51,7 @@ const getContinueHref = (track: CollectionEntry<'tracks'>) => {
 					<a class="sidebar__link" href={`/tracks/${track.slug}`}>Open track →</a>
 					<a
 						class="sidebar__link"
-						href={getContinueHref(track)}
+						href={continueMap[track.slug] ?? `/tracks/${track.slug}`}
 						data-track-continue-link
 						data-track-slug={track.slug}
 					>
@@ -67,22 +63,4 @@ const getContinueHref = (track: CollectionEntry<'tracks'>) => {
 	</section>
 </AppShell>
 
-<script>
-  const links = document.querySelectorAll('[data-track-continue-link][data-track-slug="network-engineer"]');
-  if (links.length > 0) {
-    try {
-      const raw = window.localStorage.getItem('beattie_progress_v1');
-      const parsed = raw ? JSON.parse(raw) : null;
-      const isLabCompleted = Boolean(parsed?.labs?.['terminal-basics']?.completed);
-      if (!isLabCompleted) {
-        links.forEach((link) => {
-          if (link instanceof HTMLAnchorElement) {
-            link.href = '/labs/terminal-basics';
-          }
-        });
-      }
-    } catch {
-      // keep default href
-    }
-  }
-</script>
+<!-- server-side continue links provided by getTrackContinueHref; no client override needed -->

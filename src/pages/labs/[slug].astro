@@ -9,6 +9,7 @@ import Callout from '../../components/Callout.astro';
 import PcAssemblyLab from '../../components/labs/PcAssemblyLab.tsx';
 import ActivityCard from '../../components/ActivityCard.astro';
 import LabRunner from '../../components/LabRunner.tsx';
+import { getActivityModuleNavigation } from '../../lib/content';
 
 export async function getStaticPaths() {
   const labs = await getCollection('labs');
@@ -19,6 +20,7 @@ const { lab } = Astro.props;
 const tracks = await getCollection('tracks');
 const { Content } = await lab.render();
 const currentTrack = lab.data.track ? tracks.find((track) => track.slug === lab.data.track) : undefined;
+const activityNavigation = await getActivityModuleNavigation({ type: 'lab', slug: lab.slug });
 
 type LabStep = {
   id: string;
@@ -88,6 +90,7 @@ if (currentTrack) {
     activeLesson={lab.slug}
     currentTrack={currentTrack}
     breadcrumbs={breadcrumbs}
+    activityNavigation={activityNavigation}
   >
     <section class="hero">
       <h1 class="hero__title">{lab.data.title}</h1>
@@ -134,6 +137,7 @@ if (currentTrack) {
     submitLabel={lab.data.submitLabel}
     panelHints={lab.data.hints}
     panelChecklist={lab.data.checklist}
+    activityNavigation={activityNavigation}
     activityTabs={[
       { id: 'activity', label: 'Lab' },
       { id: 'secondary', label: 'Notes' },

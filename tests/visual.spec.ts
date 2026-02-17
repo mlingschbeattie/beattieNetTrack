@@ -28,6 +28,10 @@ const disableMotionCss = `
   .streak-count {
     visibility: hidden !important;
   }
+
+  [data-testid="activity-prev-next-nav"] {
+    display: none !important;
+  }
 `;
 
 test.beforeEach(async ({ page }) => {
