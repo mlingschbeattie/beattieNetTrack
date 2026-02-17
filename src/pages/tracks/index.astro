@@ -1,17 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
 import AppShell from '../../layouts/AppShell.astro';
+import { getTracksIndexData } from '../../lib/content';
 
-const tracks = (await getCollection('tracks')).sort((a, b) => a.data.order - b.data.order);
-const primaryTrackSlugs = new Set([
-  'pc-technician',
-  'network-engineer',
-  'cybersecurity-engineer',
-  'web-developer',
-  'python-developer',
-  'ai-ml',
-]);
-const visibleTracks = tracks.filter((track) => primaryTrackSlugs.has(track.slug) || track.slug === 'legacy');
+const [trackCards, tracks] = await Promise.all([getTracksIndexData(), getCollection('tracks')]);
 ---
 
 <AppShell
@@ -24,17 +16,16 @@ const visibleTracks = tracks.filter((track) => primaryTrackSlugs.has(track.slug)
 >
   <section class="hero">
     <h1 class="hero__title">Learning Tracks</h1>
-    <p class="hero__subtitle">Choose a primary track to continue in workspace mode.</p>
+    <p class="hero__subtitle">Choose a track to view modules and activities.</p>
   </section>
 
   <section class="card-grid">
-    {visibleTracks.map((track) => (
+    {trackCards.map((track) => (
       <article class="card">
-        <h3>{track.data.title}</h3>
-        <p>{track.data.description}</p>
+        <h3>{track.title}</h3>
+        <p>{track.description}</p>
         <div class="card__meta">
-          <span class="badge">{primaryTrackSlugs.has(track.slug) ? 'Primary' : 'Archived'}</span>
-          {track.data.estimatedHours && <span class="badge badge--muted">~{track.data.estimatedHours} hrs</span>}
+          <span class="badge">Track</span>
         </div>
         <div class="card__footer">
           <a class="btn-link" href={`/tracks/${track.slug}`}>Open track →</a>

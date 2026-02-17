@@ -194,6 +194,7 @@ const lessons = defineCollection({
     description: z.string().optional().default('Legacy page - being upgraded.'),
     slug: z.string().optional(),
     track: z.string().optional(),
+    module: z.string().optional(),
     order: z.number().int().optional(),
     difficulty: difficultySchema.optional().default('Intermediate'),
     estMinutes: z.number().int().optional().default(15),
