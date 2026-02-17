@@ -1,0 +1,338 @@
+---
+title: Study Guides - Learning Resources
+slug: study-guides
+legacyUrl: /study-guides.html
+difficulty: medium
+estimatedMinutes: 15
+---
+
+import LegacyHtml from '../../components/LegacyHtml.astro';
+
+<LegacyHtml html={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Study Guides - Learning Resources</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css" />
+    
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="study-guides.html" class="active">📖 Study Guides</a></li>
+            <li><a href="learning-tracks.html">🎯 Learning Tracks</a></li>
+            <li><a href="resources.html">🔬 Study Hub</a></li>
+            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <main id="main-content" class="container">
+      <nav class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <span class="current">Study Guides</span>
+      </nav>
+      
+      <div class="hero">
+        <h1>Study Guides</h1>
+        <p>Comprehensive learning modules for every career track</p>
+      </div>
+      
+      {/* A+ Certification Guides */}
+      <div class="category-section">
+        <div class="category-header">
+          <div class="category-icon">💻</div>
+          <div class="category-title">
+            <h2>CompTIA A+ Certification</h2>
+            <p>PC Professional Track • Hardware & Support</p>
+          </div>
+        </div>
+        
+        <div class="card-grid">
+          <a href="/lessons/a-plus-hardware" class="card card--study-guide card--clickable">
+            <div class="card--study-guide__content">
+              <h3 class="card--study-guide__title">Hardware Fundamentals</h3>
+              <p class="card--study-guide__description">Core components, specifications, and how computers work at the physical level.</p>
+              <div class="card--study-guide__metadata">
+                <span class="card--study-guide__badge badge--meta">🎯 12 quizzes</span>
+                <span class="card--study-guide__badge badge--meta">⏱️ 2 hours</span>
+              </div>
+            </div>
+          </a>
+          
+          <a href="a-plus-motherboards.html" class="card card--study-guide card--clickable">
+            <div class="card--study-guide__content">
+              <h3 class="card--study-guide__title">Motherboards & CPUs</h3>
+              <p class="card--study-guide__description">System architecture, processors, chipsets, and component compatibility.</p>
+              <div class="card--study-guide__metadata">
+                <span class="card--study-guide__badge badge--meta">🎯 12 quizzes</span>
+                <span class="card--study-guide__badge badge--meta">⏱️ 2 hours</span>
+              </div>
+            </div>
+          </a>
+          
+          <a href="a-plus-power-cooling.html" class="card card--study-guide card--clickable">
+            <div class="card--study-guide__content">
+              <h3 class="card--study-guide__title">Power & Cooling</h3>
+              <p class="card--study-guide__description">Power supplies, thermal management, and electrical fundamentals.</p>
+              <div class="card--study-guide__metadata">
+                <span class="card--study-guide__badge badge--meta">🎯 12 quizzes</span>
+                <span class="card--study-guide__badge badge--meta">⏱️ 1.5 hours</span>
+              </div>
+            </div>
+          </a>
+          
+          <a href="a-plus-storage.html" class="card card--study-guide card--clickable">
+            <div class="card--study-guide__content">
+              <h3 class="card--study-guide__title">Storage Systems</h3>
+              <p class="card--study-guide__description">HDDs, SSDs, RAID, and data storage technologies.</p>
+              <div class="card--study-guide__metadata">
+                <span class="card--study-guide__badge badge--meta">🎯 12 quizzes</span>
+                <span class="card--study-guide__badge badge--meta">⏱️ 2 hours</span>
+              </div>
+            </div>
+          </a>
+          
+          <a href="a-plus-networking.html" class="card card--study-guide card--clickable">
+            <div class="card--study-guide__content">
+              <h3 class="card--study-guide__title">Networking Basics</h3>
+              <p class="card--study-guide__description">Network fundamentals, protocols, and connectivity essentials.</p>
+              <div class="card--study-guide__metadata">
+                <span class="card--study-guide__badge badge--meta">🎯 12 quizzes</span>
+                <span class="card--study-guide__badge badge--meta">⏱️ 2.5 hours</span>
+              </div>
+            </div>
+          </a>
+          
+          <a href="a-plus-operating-systems.html" class="card card--study-guide card--clickable">
+            <div class="card--study-guide__content">
+              <h3 class="card--study-guide__title">Operating Systems</h3>
+              <p class="card--study-guide__description">Windows, Linux, macOS administration and configuration.</p>
+              <div class="card--study-guide__metadata">
+                <span class="card--study-guide__badge badge--meta">🎯 12 quizzes</span>
+                <span class="card--study-guide__badge badge--meta">⏱️ 3 hours</span>
+              </div>
+            </div>
+          </a>
+          
+          <a href="a-plus-security.html" class="card card--study-guide card--clickable">
+            <div class="card--study-guide__content">
+              <h3 class="card--study-guide__title">Security Fundamentals</h3>
+              <p class="card--study-guide__description">Basic security concepts, best practices, and threat protection.</p>
+              <div class="card--study-guide__metadata">
+                <span class="card--study-guide__badge badge--meta">🎯 12 quizzes</span>
+                <span class="card--study-guide__badge badge--meta">⏱️ 2 hours</span>
+              </div>
+            </div>
+          </a>
+          
+          <a href="a-plus-troubleshooting.html" class="card card--study-guide card--clickable">
+            <div class="card--study-guide__content">
+              <h3 class="card--study-guide__title">Troubleshooting</h3>
+              <p class="card--study-guide__description">Systematic problem-solving and diagnostic methodologies.</p>
+              <div class="card--study-guide__metadata">
+                <span class="card--study-guide__badge badge--meta">🎯 12 quizzes</span>
+                <span class="card--study-guide__badge badge--meta">⏱️ 2 hours</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+      
+      {/* Cybersecurity Guides */}
+      <div class="category-section">
+        <div class="category-header">
+          <div class="category-icon">🛡️</div>
+          <div class="category-title">
+            <h2>Cybersecurity</h2>
+            <p>Cybersecurity Professional Track • Offense & Defense</p>
+          </div>
+        </div>
+        
+        <div class="card-grid">
+          <a href="web-exploitation.html" class="card card--study-guide card--clickable">
+            <div class="card--study-guide__content">
+              <h3 class="card--study-guide__title">Web Exploitation</h3>
+              <p class="card--study-guide__description">SQL injection, XSS, CSRF, and web application vulnerabilities.</p>
+              <div class="card--study-guide__metadata">
+                <span class="card--study-guide__badge badge--meta">🎯 12 quizzes</span>
+                <span class="card--study-guide__badge badge--high">🔴 High Impact</span>
+              </div>
+            </div>
+          </a>
+          
+          <a href="cryptography.html" class="card card--study-guide card--clickable">
+            <div class="card--study-guide__content">
+              <h3 class="card--study-guide__title">Cryptography</h3>
+              <p class="card--study-guide__description">Encryption, hashing, digital signatures, and crypto systems.</p>
+              <div class="card--study-guide__metadata">
+                <span class="card--study-guide__badge badge--meta">🎯 12 quizzes</span>
+                <span class="card--study-guide__badge badge--medium">🟡 Medium</span>
+              </div>
+            </div>
+          </a>
+          
+          <a href="reverse-engineering.html" class="card card--study-guide card--clickable">
+            <div class="card--study-guide__content">
+              <h3 class="card--study-guide__title">Reverse Engineering</h3>
+              <p class="card--study-guide__description">Binary analysis, disassembly, and understanding compiled code.</p>
+              <div class="card--study-guide__metadata">
+                <span class="card--study-guide__badge badge--meta">🎯 12 quizzes</span>
+                <span class="card--study-guide__badge badge--advanced">🔴 Advanced</span>
+              </div>
+            </div>
+          </a>
+          
+          <a href="forensics.html" class="card card--study-guide card--clickable">
+            <div class="card--study-guide__content">
+              <h3 class="card--study-guide__title">Digital Forensics</h3>
+              <p class="card--study-guide__description">Evidence collection, analysis, and incident investigation.</p>
+              <div class="card--study-guide__metadata">
+                <span class="card--study-guide__badge badge--meta">🎯 12 quizzes</span>
+                <span class="card--study-guide__badge badge--medium">🟡 Medium</span>
+              </div>
+            </div>
+          </a>
+          
+          <a href="general-skills.html" class="card card--study-guide card--clickable">
+            <div class="card--study-guide__content">
+              <h3 class="card--study-guide__title">General Skills</h3>
+              <p class="card--study-guide__description">Linux, networking, scripting, and essential security tools.</p>
+              <div class="card--study-guide__metadata">
+                <span class="card--study-guide__badge badge--meta">🎯 12 quizzes</span>
+                <span class="card--study-guide__badge badge--easy">🟢 Essential</span>
+              </div>
+            </div>
+          </a>
+          
+          <a href="binary-exploitation.html" class="card card--study-guide card--clickable">
+            <div class="card--study-guide__content">
+              <h3 class="card--study-guide__title">Binary Exploitation</h3>
+              <p class="card--study-guide__description">Buffer overflows, memory corruption, and exploitation techniques.</p>
+              <div class="card--study-guide__metadata">
+                <span class="card--study-guide__badge badge--meta">🎯 12 quizzes</span>
+                <span class="card--study-guide__badge badge--advanced">🔴 Advanced</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+      
+      {/* Network Engineering Guides */}
+      <div class="category-section">
+        <div class="category-header">
+          <div class="category-icon">🌐</div>
+          <div class="category-title">
+            <h2>Network Engineering</h2>
+            <p>Network Engineer Track • Infrastructure & Design</p>
+          </div>
+        </div>
+        
+        <div class="card-grid">
+          <div class="card card--comingsoon">
+            <h3 class="card--comingsoon__title">Network Fundamentals</h3>
+            <p class="card--comingsoon__description">OSI model, TCP/IP, and core networking concepts.</p>
+            <span class="card--comingsoon__badge">Network+</span>
+          </div>
+          
+          <div class="card card--comingsoon">
+            <h3 class="card--comingsoon__title">Routing & Switching</h3>
+            <p class="card--comingsoon__description">Cisco IOS, VLANs, routing protocols, and layer 2/3 technologies.</p>
+            <span class="card--comingsoon__badge">CCNA</span>
+          </div>
+          
+          <div class="card card--comingsoon">
+            <h3 class="card--comingsoon__title">Network Security</h3>
+            <p class="card--comingsoon__description">Firewalls, VPNs, IDS/IPS, and secure network design.</p>
+            <span class="card--comingsoon__badge">Security+</span>
+          </div>
+          
+          <div class="card card--comingsoon">
+            <h3 class="card--comingsoon__title">Wireless Networks</h3>
+            <p class="card--comingsoon__description">Wi-Fi standards, security, and wireless infrastructure.</p>
+            <span class="card--comingsoon__badge">Advanced</span>
+          </div>
+        </div>
+      </div>
+      
+      {/* AI Engineering Guides */}
+      <div class="category-section">
+        <div class="category-header">
+          <div class="category-icon">🤖</div>
+          <div class="category-title">
+            <h2>AI Engineering</h2>
+            <p>AI Engineer Track • Machine Learning & Data Science</p>
+          </div>
+        </div>
+        
+        <div class="card-grid">
+          <div class="card card--comingsoon">
+            <h3 class="card--comingsoon__title">Python for AI</h3>
+            <p class="card--comingsoon__description">Python fundamentals, NumPy, Pandas, and data manipulation.</p>
+            <span class="card--comingsoon__badge">Foundation</span>
+          </div>
+          
+          <div class="card card--comingsoon">
+            <h3 class="card--comingsoon__title">Machine Learning Basics</h3>
+            <p class="card--comingsoon__description">Supervised learning, regression, classification, and model evaluation.</p>
+            <span class="card--comingsoon__badge">Core ML</span>
+          </div>
+          
+          <div class="card card--comingsoon">
+            <h3 class="card--comingsoon__title">Neural Networks</h3>
+            <p class="card--comingsoon__description">Deep learning, CNNs, RNNs, and modern architectures.</p>
+            <span class="card--comingsoon__badge">Advanced</span>
+          </div>
+          
+          <div class="card card--comingsoon">
+            <h3 class="card--comingsoon__title">Natural Language Processing</h3>
+            <p class="card--comingsoon__description">Text processing, sentiment analysis, and language models.</p>
+            <span class="card--comingsoon__badge">Specialized</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+      const mobileToggle = document.querySelector('.mobile-menu-toggle');
+      const navLinks = document.querySelector('.nav-links');
+      
+      mobileToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+      
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.site-header')) {
+          navLinks.classList.remove('active');
+        }
+      });
+    </script>
+    <script type="module" src="site.js"></script>
+  </body>
+</html>`} />

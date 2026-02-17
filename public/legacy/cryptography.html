@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cryptography - Practical Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css" />
+    
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="study-guides.html">📖 Study Guides</a></li>
+            <li><a href="learning-tracks.html">🎯 Learning Tracks</a></li>
+            <li><a href="resources.html" class="active">🔬 Study Hub</a></li>
+            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <main id="main-content" class="container">
+      <nav class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <a href="resources.html">Study Hub</a>
+        <span class="separator">/</span>
+        <span class="current">Cryptography</span>
+      </nav>
+      
+      <h1>Cryptography</h1>
+      <div class="subtitle">Practical exercises, guides, ELI5 explanations, and cheat sheets</div>
+
+      <div class="section">
+        <h2>ELI5: Crypto vs Encoding vs Hashing</h2>
+        <div class="info-box">
+          Encoding is like writing in a different font. Encryption is locking a message with a key. Hashing is a one-way fingerprint that can’t be reversed.
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Practical Exercises</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">Identify encodings</div><div class="description">Spot Base64, hex, or URL encoding</div></div>
+          <div class="command-item"><div class="command">Crack weak hashes</div><div class="description">Use wordlists to crack MD5/SHA1</div></div>
+          <div class="command-item"><div class="command">Cipher practice</div><div class="description">Decode Caesar and Vigenère ciphers</div></div>
+          <div class="command-item"><div class="command">TLS inspection</div><div class="description">Inspect certificates and cipher suites</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Guide: Crypto Workflow (CTF Style)</h2>
+        <div class="example-block">
+          <div class="example-title">Step-by-step</div>
+          <div class="example-code">1) Identify encoding (Base64/hex/URL)
+2) Decode if reversible
+3) Identify hash type if one-way
+4) Try a wordlist or known patterns
+5) Verify output matches expected format</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Cheat Sheet</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">echo SGVsbG8= | base64 -d</div><div class="description">Decode Base64</div></div>
+          <div class="command-item"><div class="command">xxd -r -p file.hex</div><div class="description">Decode hex to binary</div></div>
+          <div class="command-item"><div class="command">hashid hash.txt</div><div class="description">Identify hash types</div></div>
+          <div class="command-item"><div class="command">openssl s_client -connect host:443</div><div class="description">Inspect TLS certificate</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <h2>Key Crypto Terms</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">Cipher</div><div class="description">Algorithm for encryption/decryption</div></div>
+          <div class="command-item"><div class="command">Salt</div><div class="description">Random data added before hashing</div></div>
+          <div class="command-item"><div class="command">Key Stretching</div><div class="description">Slows brute‑force (bcrypt/argon2)</div></div>
+          <div class="command-item"><div class="command">IV / Nonce</div><div class="description">Randomness to ensure unique ciphertext</div></div>
+          <div class="command-item"><div class="command">Symmetric vs Asymmetric</div><div class="description">One key vs public/private keys</div></div>
+          <div class="command-item"><div class="command">Entropy</div><div class="description">Randomness strength</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Common Pitfalls</h2>
+        <div class="example-block">
+          <div class="example-title">What to Avoid</div>
+          <div class="example-code">• Confusing encoding with encryption
+• Using MD5/SHA1 for passwords
+• Reusing IVs or nonces
+• Storing secrets in plain text
+• Rolling your own crypto</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Interactive Quiz</h2>
+        <div id="progress-badge" style="display: none; text-align: center; margin-bottom: 15px;">
+          <span style="background: linear-gradient(135deg, #00ff88, #00d4ff); color: #0a0e27; padding: 8px 20px; border-radius: 20px; font-weight: 700; font-size: 0.95em;">
+            ✓ COMPLETED
+          </span>
+        </div>
+        <div id="previous-score" style="display: none; text-align: center; margin-bottom: 15px; color: #00d4ff;">
+          Previous Best: <strong id="best-score-display">0</strong> | Attempts: <strong id="attempts-display">0</strong>
+        </div>
+        <div class="info-box" style="margin-bottom: 20px;">
+          <strong>Dynamic Quiz:</strong> Questions randomized from an expanded pool. Refresh the page for different questions!
+        </div>
+        <div class="quiz-mode-controls">
+          <label>Review length:</label>
+          <button data-review="5min">5 min</button>
+          <button data-review="15min">15 min</button>
+          <button data-review="30min">30 min</button>
+        </div>
+        <div id="review-mode-note" class="review-mode-note"></div>
+        <div id="quiz-container">
+          <!-- Quiz questions will be dynamically generated here -->
+        </div>
+      </div>
+
+      <script type="module">
+        import { cryptographyQuestions } from "./data/cryptography-questions.js";
+        import { getProgress, updateProgress } from "./js/progressStore.js";
+        import { QuizEngine } from "./js/quizEngine.js";
+        import { convertToQuizFormat, buildReviewSet } from "./js/quizAdapter.js";
+
+        const TRACK_ID = "cybersecurity";
+        const MODULE_ID = "cryptography";
+
+        const REVIEW_PRESETS = {
+          "5min": 6,
+          "15min": 15,
+          "30min": 30
+        };
+
+        const DEFAULT_PRESET = "5min";
+        let activePreset = DEFAULT_PRESET;
+        let currentQuiz = null;
+
+        function loadProgress() {
+          const progress = getProgress(TRACK_ID, MODULE_ID);
+
+          if (progress.completed) {
+            document.getElementById('progress-badge').style.display = 'block';
+          }
+
+          if (progress.attempts > 0) {
+            document.getElementById('previous-score').style.display = 'block';
+            document.getElementById('best-score-display').textContent = progress.bestScore;
+            document.getElementById('attempts-display').textContent = progress.attempts;
+          }
+
+          return progress.lastPreset || DEFAULT_PRESET;
+        }
+
+        function saveProgress(score, total) {
+          const progress = getProgress(TRACK_ID, MODULE_ID);
+          const newBestScore = Math.max(progress.bestScore, score);
+          const isCompleted = total > 0 && score === total;
+
+          updateProgress(TRACK_ID, MODULE_ID, {
+            attempts: progress.attempts + 1,
+            bestScore: newBestScore,
+            completed: isCompleted || progress.completed,
+            lastVisited: Date.now(),
+            lastPreset: activePreset
+          });
+
+          if (isCompleted) {
+            document.getElementById('progress-badge').style.display = 'block';
+            if (window.showBadge) {
+              window.showBadge('Module Completed!', 'Cryptography Mastered');
+            }
+          }
+          document.getElementById('previous-score').style.display = 'block';
+          document.getElementById('best-score-display').textContent = newBestScore;
+          document.getElementById('attempts-display').textContent = progress.attempts + 1;
+        }
+
+        function setActiveButton(presetKey) {
+          document.querySelectorAll('.quiz-mode-controls button').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.review === presetKey);
+          });
+        }
+
+        function updateReviewModeNote(presetKey, totalQuestions) {
+          const note = document.getElementById('review-mode-note');
+          const labelMap = {
+            "5min": "5-minute",
+            "15min": "15-minute",
+            "30min": "30-minute"
+          };
+          const label = labelMap[presetKey] || labelMap[DEFAULT_PRESET];
+          note.textContent = `You are in ${label} review mode (${totalQuestions} questions).`;
+        }
+
+        function generateQuiz(presetKey = DEFAULT_PRESET) {
+          activePreset = presetKey;
+          
+          const selectedQuestions = buildReviewSet(cryptographyQuestions, presetKey, REVIEW_PRESETS);
+          const quizQuestions = convertToQuizFormat(selectedQuestions);
+
+          const container = document.getElementById('quiz-container');
+          container.innerHTML = '';
+          
+          currentQuiz = new QuizEngine('quiz-container', quizQuestions, {
+            showFeedback: true,
+            allowRetry: true,
+            shuffleAnswers: false,
+            xpPerQuestion: 5,
+            xpBonusCompletion: 30
+          });
+
+          const originalFinish = currentQuiz.finishQuiz.bind(currentQuiz);
+          currentQuiz.finishQuiz = function() {
+            const state = currentQuiz.getState();
+            saveProgress(state.score, quizQuestions.length);
+            originalFinish();
+          };
+
+          currentQuiz.render();
+          setActiveButton(presetKey);
+          updateReviewModeNote(presetKey, quizQuestions.length);
+
+          updateProgress(TRACK_ID, MODULE_ID, {
+            lastPreset: activePreset,
+            lastVisited: Date.now()
+          });
+        }
+
+        function bindReviewButtons() {
+          document.querySelectorAll('.quiz-mode-controls button').forEach(btn => {
+            btn.addEventListener('click', () => {
+              generateQuiz(btn.dataset.review);
+            });
+          });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+          const initialPreset = loadProgress();
+          bindReviewButtons();
+          generateQuiz(initialPreset);
+        });
+      </script>
+
+      <div class="section">
+        <h2>Mini-Lab: Cipher Decoder</h2>
+        <div class="lab-container">
+          <div class="info-box">
+            <strong>Objective:</strong> Decode common encodings and ciphers
+          </div>
+          <div class="lab-challenge">
+            <div class="psu-input-row">
+              <label>Encoded Text:</label>
+              <input type="text" id="cipher-input" placeholder="Enter encoded text" style="width: 450px;">
+            </div>
+            <div class="lab-input-group">
+              <button class="btn btn-secondary" id="decode-base64">Decode Base64</button>
+              <button class="btn btn-secondary" id="decode-hex">Decode Hex</button>
+              <button class="btn btn-secondary" id="decode-url">Decode URL</button>
+              <button class="btn btn-secondary" id="rot13">ROT13</button>
+            </div>
+            <div id="cipher-result" class="psu-result"></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-content">
+        <p>&copy; 2024 Beattie Tech. Built for future network engineers and cybersecurity professionals.</p>
+      </div>
+    </footer>
+
+    <script>
+
+      document.getElementById('decode-base64').addEventListener('click', () => {
+        try {
+          const decoded = atob(input.value);
+          result.innerHTML = `<strong>Base64 Decoded:</strong><br>${decoded}`;
+          result.style.color = '#00ff88';
+        } catch (e) {
+          result.innerHTML = '<span style="color: #ff4444;">⚠ Invalid Base64 string</span>';
+        }
+      });
+
+      document.getElementById('decode-hex').addEventListener('click', () => {
+        try {
+          const hex = input.value.replace(/\s/g, '');
+          const decoded = hex.match(/.{1,2}/g).map(byte => String.fromCharCode(parseInt(byte, 16))).join('');
+          result.innerHTML = `<strong>Hex Decoded:</strong><br>${decoded}`;
+          result.style.color = '#00ff88';
+        } catch (e) {
+          result.innerHTML = '<span style="color: #ff4444;">⚠ Invalid hexadecimal string</span>';
+        }
+      });
+
+      document.getElementById('decode-url').addEventListener('click', () => {
+        try {
+          const decoded = decodeURIComponent(input.value);
+          result.innerHTML = `<strong>URL Decoded:</strong><br>${decoded}`;
+          result.style.color = '#00ff88';
+        } catch (e) {
+          result.innerHTML = '<span style="color: #ff4444;">⚠ Invalid URL-encoded string</span>';
+        }
+      });
+
+      document.getElementById('rot13').addEventListener('click', () => {
+        const decoded = input.value.replace(/[a-zA-Z]/g, c => 
+          String.fromCharCode((c <= 'Z' ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26)
+        );
+        result.innerHTML = `<strong>ROT13:</strong><br>${decoded}`;
+        result.style.color = '#00ff88';
+      });
+    </script>
+    <script type="module" src="site.js"></script>
+  </body>
+</html>

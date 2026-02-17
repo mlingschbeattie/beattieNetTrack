@@ -1,0 +1,20 @@
+{
+  "id": "assessment-1-4-4",
+  "title": "Assessment 1.4.4 Preventive Maintenance",
+  "assessmentCode": "1.4.4",
+  "sourceQuestionDocx": "Assessment 1.4.4 Preventive Maintenance.docx",
+  "sourceAnswerDocx": "Assessment 1.4.4 Preventive Maintenance Answers.docx",
+  "questions": [
+    {
+      "prompt": "What helps prevent overheating in desktop systems?",
+      "choices": [
+        "Block vents",
+        "Regular dust cleaning",
+        "Disable fans",
+        "Use lower RAM"
+      ],
+      "answerIndex": 1,
+      "explanation": "Dust removal helps maintain airflow and cooling."
+    }
+  ]
+}

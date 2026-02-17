@@ -1,17 +1,88 @@
 ---
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import AppShell from '../layouts/AppShell.astro';
+import { getTrackSectionItemCount, getTrackSectionItems } from '../lib/trackSections';
 
+const tracks = await getCollection('tracks');
+const labs = await getCollection('labs');
+const sortedTracks = tracks.sort((a, b) => a.data.order - b.data.order);
+
+const getItemCount = (track: CollectionEntry<'tracks'>) => getTrackSectionItemCount(track);
+
+const hrefForTrackItem = (item: { type: 'lesson' | 'lab' | 'quiz'; slug: string }) => {
+	if (item.type === 'lesson') return `/workspace/lesson/${item.slug}`;
+	if (item.type === 'lab') return `/labs/${item.slug}`;
+	return `/quizzes/${item.slug}`;
+};
+
+const getContinueHref = (track: CollectionEntry<'tracks'>) => {
+	const firstSectionItem = getTrackSectionItems(track)[0];
+	if (firstSectionItem) return hrefForTrackItem(firstSectionItem);
+	const firstLab = labs
+		.filter((lab) => lab.data.track === track.slug)
+		.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))[0];
+	if (firstLab) return `/labs/${firstLab.slug}`;
+	return `/tracks/${track.slug}`;
+};
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<AppShell
+  title="Beattie Tech • Tracks"
+  tracks={sortedTracks}
+  breadcrumbs={[{ label: 'Home' }]}
+>
+	<section class="hero">
+		<h1 class="hero__title">Learning Dashboard</h1>
+		<p class="hero__subtitle">Continue your path from dashboard to track to workspace.</p>
+	</section>
+	<p>
+		<a class="sidebar__link" href="/legacy/index.html">Browse legacy content →</a>
+	</p>
+
+	<section class="card-grid">
+		{sortedTracks.map((track) => (
+			<article class="card">
+				<h3>{track.data.title}</h3>
+				<p>{track.data.description}</p>
+				<div class="card__meta">
+					<span class="badge">{getItemCount(track)} items</span>
+					{track.data.estimatedHours && (
+						<span class="badge badge--muted">~{track.data.estimatedHours} hrs</span>
+					)}
+				</div>
+				<div class="card__footer">
+					<a class="sidebar__link" href={`/tracks/${track.slug}`}>Open track →</a>
+					<a
+						class="sidebar__link"
+						href={getContinueHref(track)}
+						data-track-continue-link
+						data-track-slug={track.slug}
+					>
+						Continue →
+					</a>
+				</div>
+			</article>
+		))}
+	</section>
+</AppShell>
+
+<script>
+  const links = document.querySelectorAll('[data-track-continue-link][data-track-slug="network-engineer"]');
+  if (links.length > 0) {
+    try {
+      const raw = window.localStorage.getItem('beattie_progress_v1');
+      const parsed = raw ? JSON.parse(raw) : null;
+      const isLabCompleted = Boolean(parsed?.labs?.['terminal-basics']?.completed);
+      if (!isLabCompleted) {
+        links.forEach((link) => {
+          if (link instanceof HTMLAnchorElement) {
+            link.href = '/labs/terminal-basics';
+          }
+        });
+      }
+    } catch {
+      // keep default href
+    }
+  }
+</script>

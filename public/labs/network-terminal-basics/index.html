@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Network Terminal Basics</title>
+    <link rel="stylesheet" href="/styles/lab-shared.css" />
+  </head>
+  <body>
+    <main class="lab-root" data-testid="lab-root">
+      <section class="lab-card">
+        <header class="lab-card__header">Network Terminal Simulator</header>
+        <div class="lab-card__body">
+          <div class="lab-chip" data-testid="lab-status-chip">Waiting for commands</div>
+          <div class="lab-terminal" id="terminal" data-testid="lab-terminal"></div>
+          <div class="lab-input-row">
+            <input class="lab-input" id="command-input" placeholder="Type command" data-testid="command-input" />
+            <button class="lab-btn" id="run-command" type="button" data-testid="run-command">Run</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="/labs/runtime/lab-api.js"></script>
+    <script>
+      const terminal = document.getElementById('terminal');
+      const input = document.getElementById('command-input');
+      const runBtn = document.getElementById('run-command');
+      const statusChip = document.querySelector('[data-testid="lab-status-chip"]');
+      const required = ['help', 'ipconfig /all', 'nslookup beattietech.edu'];
+      const completed = new Set();
+
+      const writeLine = (text) => {
+        const p = document.createElement('p');
+        p.className = 'lab-line';
+        p.textContent = text;
+        terminal.appendChild(p);
+        terminal.scrollTop = terminal.scrollHeight;
+      };
+
+      const refreshStatus = () => {
+        const pct = Math.round((completed.size / required.length) * 100);
+        const isDone = completed.size === required.length;
+        statusChip.textContent = isDone ? 'Ready to submit' : `${completed.size}/${required.length} commands complete`;
+        statusChip.className = `lab-chip ${isDone ? 'lab-chip--success' : ''}`;
+        window.ClassroomProgress.set({ progress: pct, completed: isDone, metadata: { completedCommands: [...completed] } });
+      };
+
+      const runCommand = () => {
+        const cmd = input.value.trim();
+        if (!cmd) return;
+        writeLine(`> ${cmd}`);
+
+        const normalized = cmd.toLowerCase();
+        if (normalized === 'help') {
+          writeLine('Available: help, ipconfig /all, nslookup beattietech.edu');
+          completed.add('help');
+        } else if (normalized === 'ipconfig /all') {
+          writeLine('IPv4 Address . . . . . . . . . . : 192.168.1.24');
+          writeLine('DNS Servers . . . . . . . . . . : 1.1.1.1');
+          completed.add('ipconfig /all');
+        } else if (normalized === 'nslookup beattietech.edu') {
+          writeLine('Name: beattietech.edu');
+          writeLine('Address: 104.21.13.52');
+          completed.add('nslookup beattietech.edu');
+        } else {
+          writeLine('Command not recognized. Try help.');
+        }
+
+        input.value = '';
+        refreshStatus();
+      };
+
+      runBtn.addEventListener('click', runCommand);
+      input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') runCommand();
+      });
+
+      window.ClassroomProgress.on('run', () => {
+        writeLine('Run triggered from workspace controls.');
+        return { passed: true, progress: Math.round((completed.size / required.length) * 100), message: 'Lab running' };
+      });
+
+      window.ClassroomProgress.on('check', () => {
+        const passed = completed.size === required.length;
+        return {
+          passed,
+          progress: Math.round((completed.size / required.length) * 100),
+          message: passed ? 'All required commands completed' : 'Complete all required commands first',
+          difficulty: 'Beginner',
+          estMinutes: 20,
+        };
+      });
+
+      window.ClassroomProgress.on('submit', () => {
+        const passed = completed.size === required.length;
+        return {
+          passed,
+          progress: passed ? 100 : Math.round((completed.size / required.length) * 100),
+          message: passed ? 'Lab submitted successfully' : 'Submission blocked: unfinished tasks',
+          difficulty: 'Beginner',
+          estMinutes: 20,
+        };
+      });
+
+      window.ClassroomProgress.on('reset', () => {
+        terminal.innerHTML = '';
+        completed.clear();
+        refreshStatus();
+        writeLine('Lab reset.');
+        return { passed: true, progress: 0, message: 'Lab reset complete' };
+      });
+
+      writeLine('Type help to get started.');
+      refreshStatus();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+---
+interface Props {
+  title?: string;
+  class?: string;
+  bodyClass?: string;
+  [key: string]: unknown;
+}
+
+const { title, class: className = '', bodyClass = '', ...rest } = Astro.props as Props;
+const hasHeaderSlot = Astro.slots.has('header');
+---
+
+<article class={`workspace-pane pane ${className}`.trim()} {...rest}>
+  {(title || hasHeaderSlot) && (
+    <header class="workspace-pane__header pane__header">
+      {title && <h2>{title}</h2>}
+      <slot name="header" />
+    </header>
+  )}
+  <div class={`workspace-pane__body pane__body ${bodyClass}`.trim()}>
+    <slot />
+  </div>
+</article>

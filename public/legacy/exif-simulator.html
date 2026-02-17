@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EXIF Challenge - Terminal Simulator</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css" />
+    
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="study-guides.html">📖 Study Guides</a></li>
+            <li><a href="learning-tracks.html">🎯 Learning Tracks</a></li>
+            <li><a href="resources.html" class="active">🔬 Study Hub</a></li>
+            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <main id="main-content" class="container">
+      <nav class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <a href="resources.html">Study Hub</a>
+        <span class="separator">/</span>
+        <span class="current">EXIF Challenge</span>
+      </nav>
+      
+      <h1>EXIF Challenge</h1>
+      <div class="subtitle">Extract metadata from images using the terminal</div>
+      
+      <!-- Terminal Simulator -->
+      <div class="terminal-wrapper">
+        <div class="terminal-header">
+          <div class="terminal-title">beattie@cybersec:~/images$</div>
+          <div class="terminal-controls">
+            <div class="control-btn control-red"></div>
+            <div class="control-btn control-yellow"></div>
+            <div class="control-btn control-green"></div>
+          </div>
+        </div>
+        
+        <div class="terminal-output" id="terminalOutput">
+          <div class="output-line">Welcome to the EXIF Challenge!</div>
+          <div class="output-line">Type <span class="command">help</span> to see available commands.</div>
+          <div class="output-line"></div>
+        </div>
+        
+        <div class="terminal-input-area">
+          <span class="terminal-prompt">$ </span>
+          <input 
+            type="text" 
+            id="commandInput" 
+            placeholder="Enter command..." 
+            autocomplete="off"
+          />
+        </div>
+      </div>
+      
+      <!-- Success Box -->
+      <div class="success-box" id="successBox">
+        <h3>🎉 Challenge Complete!</h3>
+        <p>You've successfully extracted the EXIF metadata! You're ready for the real exiftool.</p>
+      </div>
+      
+      <!-- Base64 Decoder Tool -->
+      <div class="instructions" style="background: rgba(0, 20, 40, 0.6); border: 2px solid #00ff88;">
+        <h3>🔓 Base64 Decoder Tool</h3>
+        <p style="margin-bottom: 15px;">Found encoded data in the EXIF? Use this tool to decode Base64 strings:</p>
+        
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; margin-bottom: 5px; color: #00d4ff;">Enter Base64 Encoded String:</label>
+          <input 
+            type="text" 
+            id="base64Input" 
+            placeholder="Paste Base64 string here..."
+            style="width: 100%; padding: 10px; background: rgba(0, 0, 0, 0.5); border: 1px solid #00ff88; color: #00ff88; font-family: 'JetBrains Mono', monospace; font-size: 0.95em; border-radius: 3px;"
+          />
+        </div>
+        
+        <button 
+          onclick="decodeBase64()" 
+          style="padding: 10px 25px; background: linear-gradient(135deg, #00ff88, #00d4ff); color: #0a0e27; border: none; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-weight: bold; cursor: pointer; font-size: 1em; text-transform: uppercase; margin-bottom: 15px;"
+        >
+          Decode
+        </button>
+        
+        <div id="decodedOutput" style="display: none; margin-top: 15px; padding: 15px; background: rgba(0, 255, 136, 0.2); border: 1px solid #00ff88; border-radius: 3px;">
+          <div style="color: #00d4ff; margin-bottom: 8px; font-weight: bold;">Decoded Message:</div>
+          <div id="decodedText" style="color: #00ff88; font-size: 1.1em; line-height: 1.6;"></div>
+        </div>
+        
+        <div id="decodeError" style="display: none; margin-top: 15px; padding: 15px; background: rgba(255, 85, 85, 0.2); border: 1px solid #ff5555; border-radius: 3px; color: #ff5555;">
+          Invalid Base64 string. Please check your input.
+        </div>
+      </div>
+      
+      <!-- Instructions -->
+      <div class="instructions">
+        <h3>Challenge Objective</h3>
+        <p>
+          Your task is to use the terminal to explore the file system and extract metadata from the 
+          <span class="command">lit_up.jpg</span> image file using the <span class="command">exiftool</span> command.
+        </p>
+        
+        <h3 style="margin-top: 20px;">Available Commands</h3>
+        <ul>
+          <li><span class="command">help</span> - Display this help message</li>
+          <li><span class="command">ls</span> or <span class="command">dir</span> - List files in current directory</li>
+          <li><span class="command">exiftool lit_up.jpg</span> - Extract EXIF metadata from the image</li>
+          <li><span class="command">clear</span> - Clear the terminal</li>
+          <li><span class="command">hint</span> - Get a hint</li>
+        </ul>
+        
+        <p style="margin-top: 15px;">
+          <strong>Pro Tip:</strong> The EXIF data contains metadata about when and where the image was taken, 
+          what camera was used, and more. Extract it and examine what information the image reveals!
+        </p>
+      </div>
+      
+      <!-- Learn More Section -->
+      <div class="instructions" style="background: rgba(0, 100, 150, 0.3); border: 2px solid #00d4ff;">
+        <h3>📚 Learn More: What's Happening Here?</h3>
+        
+        <h4 style="color: #00ff88; margin-top: 20px; margin-bottom: 10px;">What is EXIF Data? (Explain Like I'm 5)</h4>
+        <p style="line-height: 1.8;">
+          Imagine you draw a picture and your parent writes on the back: "Drawn by you, on Tuesday, in the kitchen, with crayons." 
+          That's what cameras do with photos! Every time you take a picture, your camera secretly writes down:
+        </p>
+        <ul style="margin-left: 30px; line-height: 1.8; margin-top: 10px;">
+          <li>📅 When you took it (date and time)</li>
+          <li>📍 Where you were (GPS location)</li>
+          <li>📷 What camera you used</li>
+          <li>⚙️ Camera settings (like brightness and zoom)</li>
+        </ul>
+        <p style="margin-top: 10px; line-height: 1.8;">
+          This "secret note" is called <strong>EXIF data</strong> (it stands for Exchangeable Image File Format). 
+          The problem? If you share a photo online, the secret note goes with it! Someone could find out where you 
+          live just from a photo you posted.
+        </p>
+        
+        <h4 style="color: #00ff88; margin-top: 20px; margin-bottom: 10px;">What is Base64 Encoding?</h4>
+        <p style="line-height: 1.8;">
+          Base64 is like a secret code that turns normal text into jumbled letters and numbers. It's NOT encryption 
+          (real security), it's more like speaking Pig Latin—anyone can decode it if they know the trick. We use it to:
+        </p>
+        <ul style="margin-left: 30px; line-height: 1.8; margin-top: 10px;">
+          <li>🔤 Send data that might have weird characters</li>
+          <li>📨 Hide messages in plain sight (but not securely!)</li>
+          <li>💾 Store binary data as text</li>
+        </ul>
+        <p style="margin-top: 10px; line-height: 1.8;">
+          Think of it like this: If you wrote "HELLO" in a different alphabet, it looks scrambled, but anyone 
+          with an alphabet chart can read it. That's Base64!
+        </p>
+        
+        <h4 style="color: #00ff88; margin-top: 20px; margin-bottom: 10px;">Why Does This Matter for Security?</h4>
+        <p style="line-height: 1.8;">
+          <strong>Privacy Risk:</strong> Photos you share online can reveal your home address, when you're on vacation 
+          (empty house!), and where you hang out. Bad guys can use this info.
+        </p>
+        <p style="margin-top: 10px; line-height: 1.8;">
+          <strong>The Fix:</strong> Before sharing photos, use tools to remove EXIF data. Most social media sites 
+          (like Instagram and Facebook) automatically strip it out, but direct uploads to forums or websites might not!
+        </p>
+      </div>
+      
+      <!-- Original Instructions continue below -->
+      <div class="instructions" style="display: none;">
+        <h3>Challenge Objective</h3>
+        <p>
+          Your task is to use the terminal to explore the file system and extract metadata from the 
+          <span class="command">lit_up.jpg</span> image file using the <span class="command">exiftool</span> command.
+        </p>
+        
+        <h3 style="margin-top: 20px;">Available Commands</h3>
+        <ul>
+          <li><span class="command">help</span> - Display this help message</li>
+          <li><span class="command">ls</span> or <span class="command">dir</span> - List files in current directory</li>
+          <li><span class="command">exiftool lit_up.jpg</span> - Extract EXIF metadata from the image</li>
+          <li><span class="command">clear</span> - Clear the terminal</li>
+          <li><span class="command">hint</span> - Get a hint</li>
+        </ul>
+        
+        <p style="margin-top: 15px;">
+          <strong>Pro Tip:</strong> The EXIF data contains metadata about when and where the image was taken, 
+          what camera was used, and more. Extract it and examine what information the image reveals!
+        </p>
+      </div>
+    </div>
+    
+    <script>
+      // EXIF Data for lit_up.jpg
+      const exifData = {
+        'File Name': 'lit_up.jpg',
+        'File Size': '245 KB',
+        'File Modification Date/Time': '2025:02:04 14:32:15-05:00',
+        'File Type': 'JPEG',
+        'MIME Type': 'image/jpeg',
+        'Camera Make': 'Canon',
+        'Camera Model': 'Canon EOS 5D Mark IV',
+        'Orientation': 'Horizontal (normal)',
+        'XResolution': '72 dpi',
+        'YResolution': '72 dpi',
+        'DateTime': '2025:02:04 14:32:15',
+        'DateTimeOriginal': '2025:02:04 14:32:15',
+        'DateTimeDigitized': '2025:02:04 14:32:15',
+        'Focal Length': '85.0 mm',
+        'Aperture': 'f/2.8',
+        'Exposure Time': '1/500',
+        'ISO': '100',
+        'GPS Latitude': '40.7128° N',
+        'GPS Longitude': '-74.0060° W',
+        'Location': 'New York City, NY',
+        'Comment': 'WW91IGZvdW5kIHRoZSBoaWRkZW4gbWVzc2FnZSBpbiB0aGUgaW1hZ2UhIENvbmdyYXRzISE='
+      };
+      
+      const terminalOutput = document.getElementById('terminalOutput');
+      const commandInput = document.getElementById('commandInput');
+      const successBox = document.getElementById('successBox');
+      let metadataExtracted = false;
+      
+      function scrollToBottom() {
+        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+      }
+      
+      function addOutput(text, className = '') {
+        const line = document.createElement('div');
+        line.className = 'output-line ' + className;
+        line.innerHTML = text;
+        terminalOutput.appendChild(line);
+        scrollToBottom();
+      }
+      
+      function executeCommand(cmd) {
+        // Display the command
+        const cmdLine = document.createElement('div');
+        cmdLine.className = 'output-line';
+        cmdLine.innerHTML = `<span class="prompt">$ </span><span class="command">${cmd}</span>`;
+        terminalOutput.appendChild(cmdLine);
+        
+        const trimmedCmd = cmd.trim().toLowerCase();
+        
+        if (trimmedCmd === 'help') {
+          addOutput('');
+          addOutput('Available Commands:');
+          addOutput('  <span class="command">ls</span> or <span class="command">dir</span>          - List files in current directory');
+          addOutput('  <span class="command">exiftool lit_up.jpg</span> - Extract EXIF metadata');
+          addOutput('  <span class="command">clear</span>              - Clear the terminal');
+          addOutput('  <span class="command">hint</span>               - Get a helpful hint');
+          addOutput('  <span class="command">help</span>               - Show this message');
+          addOutput('');
+        } 
+        else if (trimmedCmd === 'ls' || trimmedCmd === 'dir') {
+          addOutput('');
+          addOutput('total 245');
+          addOutput('-rw-r--r--  1 student  staff  245K Feb  4 14:32 <span class="info">lit_up.jpg</span>');
+          addOutput('');
+        } 
+        else if (trimmedCmd === 'exiftool lit_up.jpg') {
+          addOutput('');
+          addOutput('ExifTool Version Number         : 12.40');
+          addOutput('');
+          Object.entries(exifData).forEach(([key, value]) => {
+            if (key === 'Comment') {
+              addOutput(`<span class="info">${key}</span>                 : <span id="base64Comment" style="background: rgba(255, 170, 0, 0.3); padding: 2px 5px; border-radius: 2px; color: #ffaa00; font-weight: bold; cursor: text;">${value}</span> <button onclick="copyToDecoder('${value}')" style="padding: 3px 10px; background: #00ff88; color: #0a0e27; border: none; border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 0.8em; font-weight: bold; cursor: pointer; margin-left: 10px;">📋 Copy to Decoder</button>`);
+            } else {
+              addOutput(`<span class="info">${key}</span>                 : ${value}`);
+            }
+          });
+          addOutput('');
+          
+          metadataExtracted = true;
+          showSuccess();
+        } 
+        else if (trimmedCmd === 'exiftool') {
+          addOutput('<span class="error">Error: exiftool requires a filename argument</span>');
+          addOutput('<span class="hint">Try: exiftool lit_up.jpg</span>');
+          addOutput('');
+        } 
+        else if (trimmedCmd === 'clear') {
+          terminalOutput.innerHTML = '';
+          scrollToBottom();
+        } 
+        else if (trimmedCmd === 'hint') {
+          addOutput('<span class="hint">Hint: Use the command "exiftool lit_up.jpg" to extract the metadata from the image.</span>');
+          addOutput('');
+        } 
+        else if (trimmedCmd === '') {
+          // Empty command, just show prompt
+        } 
+        else {
+          addOutput(`<span class="error">Command not found: ${trimmedCmd}</span>`);
+          addOutput('');
+        }
+        
+        scrollToBottom();
+      }
+      
+      function showSuccess() {
+        successBox.classList.add('show');
+      }
+      
+      // Copy Base64 to decoder function
+      function copyToDecoder(base64String) {
+        const input = document.getElementById('base64Input');
+        input.value = base64String;
+        input.focus();
+        
+        // Scroll to decoder
+        document.getElementById('base64Input').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Show feedback
+        const button = event.target;
+        const originalText = button.textContent;
+        button.textContent = '✓ Copied!';
+        button.style.background = '#00d4ff';
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.background = '#00ff88';
+        }, 2000);
+      }
+      
+      // Base64 Decoder Function
+      function decodeBase64() {
+        const input = document.getElementById('base64Input').value.trim();
+        const outputDiv = document.getElementById('decodedOutput');
+        const textDiv = document.getElementById('decodedText');
+        const errorDiv = document.getElementById('decodeError');
+        
+        // Hide both initially
+        outputDiv.style.display = 'none';
+        errorDiv.style.display = 'none';
+        
+        if (!input) {
+          errorDiv.textContent = 'Please enter a Base64 string to decode.';
+          errorDiv.style.display = 'block';
+          return;
+        }
+        
+        try {
+          const decoded = atob(input);
+          textDiv.textContent = decoded;
+          outputDiv.style.display = 'block';
+        } catch (error) {
+          errorDiv.textContent = 'Invalid Base64 string. Please check your input.';
+          errorDiv.style.display = 'block';
+        }
+      }
+      
+      // Tab completion
+      const commands = ['help', 'ls', 'dir', 'clear', 'hint', 'exiftool'];
+      const files = ['lit_up.jpg'];
+      let tabIndex = 0;
+      let lastTabInput = '';
+      
+      function handleTabComplete(currentInput) {
+        const parts = currentInput.trim().split(' ');
+        
+        // If typing a command (first word)
+        if (parts.length === 1) {
+          const matches = commands.filter(cmd => cmd.startsWith(parts[0].toLowerCase()));
+          if (matches.length > 0) {
+            tabIndex = tabIndex % matches.length;
+            return matches[tabIndex];
+          }
+        }
+        
+        // If typing after 'exiftool' (filename completion)
+        if (parts.length === 2 && parts[0].toLowerCase() === 'exiftool') {
+          const matches = files.filter(file => file.startsWith(parts[1].toLowerCase()));
+          if (matches.length > 0) {
+            tabIndex = tabIndex % matches.length;
+            return parts[0] + ' ' + matches[tabIndex];
+          }
+        }
+        
+        return currentInput;
+      }
+      
+      commandInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          const currentValue = commandInput.value;
+          
+          // If same input as last tab, cycle through options
+          if (currentValue === lastTabInput) {
+            tabIndex++;
+          } else {
+            tabIndex = 0;
+            lastTabInput = currentValue;
+          }
+          
+          const completed = handleTabComplete(currentValue);
+          commandInput.value = completed;
+        } else {
+          // Reset tab completion on any other key
+          lastTabInput = '';
+          tabIndex = 0;
+        }
+      });
+      
+      commandInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          const cmd = commandInput.value;
+          commandInput.value = '';
+          executeCommand(cmd);
+        }
+      });
+      
+      // Focus input on page load
+      commandInput.focus();
+      
+      // Auto-focus when clicking terminal
+      terminalOutput.addEventListener('click', () => {
+        commandInput.focus();
+      });
+    </script>
+    <script type="module" src="site.js"></script>
+  </body>
+</html>

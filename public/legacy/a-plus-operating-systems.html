@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Operating Systems - A+ Study Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css" />
+    
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="study-guides.html" class="active">📖 Study Guides</a></li>
+            <li><a href="learning-tracks.html">🎯 Learning Tracks</a></li>
+            <li><a href="resources.html">🔬 Study Hub</a></li>
+            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <main id="main-content" class="container">
+      <nav class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <a href="study-guides.html">Study Guides</a>
+        <span class="separator">/</span>
+        <a href="a-plus-guides.html">A+ Guides</a>
+        <span class="separator">/</span>
+        <span class="current">Operating Systems</span>
+      </nav>
+      
+      <h1>Operating Systems</h1>
+      <div class="subtitle">CompTIA A+ - Windows, Linux, macOS: installation, configuration, users, permissions</div>
+
+      <div class="section">
+        <h2>ELI5: What is an OS?</h2>
+        <div class="info-box">
+          The OS is the manager of a computer. It hands out jobs to hardware, manages files, lets you run programs, and keeps everything organized.
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Practical Exercises</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">Create Users</div><div class="description">Create a standard user and admin user and compare permissions</div></div>
+          <div class="command-item"><div class="command">Permission Test</div><div class="description">Set a folder to read-only and verify access</div></div>
+          <div class="command-item"><div class="command">Find Logs</div><div class="description">Locate Windows Event Viewer or Linux logs</div></div>
+          <div class="command-item"><div class="command">CLI Basics</div><div class="description">Use basic commands: ls/dir, cd, mkdir, rm</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Windows OS Overview</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">Windows 10/11</div><div class="description">Modern versions (Home, Pro, Enterprise)</div></div>
+          <div class="command-item"><div class="command">Windows Server</div><div class="description">Server OS (domain control, file sharing)</div></div>
+          <div class="command-item"><div class="command">User Accounts</div><div class="description">Standard (limited) vs Administrator (full access)</div></div>
+          <div class="command-item"><div class="command">NTFS Permissions</div><div class="description">Full Control, Modify, Read, Write, Execute</div></div>
+          <div class="command-item"><div class="command">Task Scheduler</div><div class="description">Automate tasks on schedule</div></div>
+          <div class="command-item"><div class="command">Registry</div><div class="description">Database of Windows settings</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Linux OS Overview</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">Distributions</div><div class="description">Ubuntu, Debian, CentOS, Red Hat, Fedora</div></div>
+          <div class="command-item"><div class="command">Root User</div><div class="description">Superuser (unlimited access)</div></div>
+          <div class="command-item"><div class="command">sudo Command</div><div class="description">Run command as root (elevated privilege)</div></div>
+          <div class="command-item"><div class="command">File Permissions</div><div class="description">rwx (read, write, execute) for owner/group/others</div></div>
+          <div class="command-item"><div class="command">Package Managers</div><div class="description">apt (Debian), yum (RedHat), snap</div></div>
+          <div class="command-item"><div class="command">Cron Jobs</div><div class="description">Schedule tasks in Linux</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>macOS Overview</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">Big Sur, Monterey, Ventura</div><div class="description">Recent macOS versions</div></div>
+          <div class="command-item"><div class="command">Admin Account</div><div class="description">Full system access</div></div>
+          <div class="command-item"><div class="command">Standard Account</div><div class="description">Limited user account</div></div>
+          <div class="command-item"><div class="command">File Permissions</div><div class="description">Similar to Linux (rwx)</div></div>
+          <div class="command-item"><div class="command">Finder</div><div class="description">File manager GUI</div></div>
+          <div class="command-item"><div class="command">Terminal/bash</div><div class="description">Command line (UNIX-like)</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Install & Recovery Options</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">In‑Place Upgrade</div><div class="description">Install over existing OS, keep data</div></div>
+          <div class="command-item"><div class="command">Clean Install</div><div class="description">Wipes drive, fresh OS</div></div>
+          <div class="command-item"><div class="command">Recovery Environment</div><div class="description">Repair boot issues and restore images</div></div>
+          <div class="command-item"><div class="command">Boot Media</div><div class="description">USB installer for Windows/Linux</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Windows Admin Tools</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">Task Manager</div><div class="description">Processes, performance, startup apps</div></div>
+          <div class="command-item"><div class="command">Device Manager</div><div class="description">Drivers and hardware status</div></div>
+          <div class="command-item"><div class="command">Disk Management</div><div class="description">Partitions, volumes, file systems</div></div>
+          <div class="command-item"><div class="command">Services.msc</div><div class="description">Background services and dependencies</div></div>
+          <div class="command-item"><div class="command">Msconfig</div><div class="description">Boot options and startup control</div></div>
+          <div class="command-item"><div class="command">Event Viewer</div><div class="description">System/application/security logs</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Linux Command Essentials</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">ls / cd / pwd</div><div class="description">Navigate directories</div></div>
+          <div class="command-item"><div class="command">cp / mv / rm</div><div class="description">Copy, move, delete files</div></div>
+          <div class="command-item"><div class="command">chmod / chown</div><div class="description">Permissions and ownership</div></div>
+          <div class="command-item"><div class="command">ps / top</div><div class="description">Process list and resource usage</div></div>
+          <div class="command-item"><div class="command">ip a / ping</div><div class="description">Network inspection and testing</div></div>
+          <div class="command-item"><div class="command">apt / yum</div><div class="description">Package installation</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Virtualization & Cloud Basics</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">Hypervisor</div><div class="description">Software that runs virtual machines</div></div>
+          <div class="command-item"><div class="command">Type 1 vs Type 2</div><div class="description">Bare‑metal vs hosted hypervisor</div></div>
+          <div class="command-item"><div class="command">VM Resources</div><div class="description">vCPU, vRAM, vDisk allocated per VM</div></div>
+          <div class="command-item"><div class="command">IaaS / SaaS / PaaS</div><div class="description">Cloud service models</div></div>
+          <div class="command-item"><div class="command">Snapshots</div><div class="description">Point‑in‑time VM state restore</div></div>
+          <div class="command-item"><div class="command">Containers</div><div class="description">Lightweight app isolation (not full VMs)</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Exam Focus Areas</h2>
+        <div class="example-block">
+          <div class="example-title">Critical Concepts</div>
+          <div class="example-code">Windows:
+• FAT32 vs NTFS (permissions only on NTFS)
+• Task Manager: processes, services, startup
+• Event Viewer: logs for troubleshooting
+• Device Manager: hardware drivers
+
+Linux:
+• chmod 755 = rwx r-x r-x
+• sudo vs su (sudo safer, grants single command)
+• /home = user folders
+• /root = root home folder
+
+macOS:
+• System Preferences = Windows Control Panel
+• Disk Utility = disk management
+• Terminal for admin tasks</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Key Facts</h2>
+        <div class="example-block">
+          <div class="example-title">Remember for Exam</div>
+          <div class="example-code">• Always back up before OS upgrade
+• Boot order: set in BIOS/UEFI
+• Safe Mode: Windows troubleshooting mode
+• System Restore: revert to previous state
+• User profiles: contain personal settings
+• Inheritance: child folder inherits parent permissions
+• Ownership: needed to change permissions
+• Linux case-sensitive; Windows not</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Interactive Quiz</h2>
+        <div id="progress-badge" style="display: none; text-align: center; margin-bottom: 15px;">
+          <span style="background: linear-gradient(135deg, #00ff88, #00d4ff); color: #0a0e27; padding: 8px 20px; border-radius: 20px; font-weight: 700; font-size: 0.95em;">
+            ✓ COMPLETED
+          </span>
+        </div>
+        <div id="previous-score" style="display: none; text-align: center; margin-bottom: 15px; color: #00d4ff;">
+          Previous Best: <strong id="best-score-display">0</strong> | Attempts: <strong id="attempts-display">0</strong>
+        </div>
+        <div class="info-box" style="margin-bottom: 20px;">
+          <strong>Dynamic Quiz:</strong> Questions randomized from an expanded pool. Refresh for new questions!
+        </div>
+        <div class="quiz-mode-controls">
+          <label>Review length:</label>
+          <button data-review="5min">5 min</button>
+          <button data-review="15min">15 min</button>
+          <button data-review="30min">30 min</button>
+        </div>
+        <div id="review-mode-note" class="review-mode-note"></div>
+        <div id="quiz-container">
+          <!-- Questions generated dynamically -->
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Mini-Lab: Command Line Simulator</h2>
+        <div class="lab-container">
+          <div class="info-box">
+            <strong>Objective:</strong> Practice common Windows and Linux commands
+          </div>
+          <div class="lab-challenge">
+            <div class="terminal-output" id="terminal-output">C:\Users\Student&gt; _</div>
+            <div class="terminal-input-group">
+              <span class="prompt">C:\Users\Student&gt;</span>
+              <input type="text" id="cmd-input" placeholder="Type a command (try 'help')">
+              <button id="cmd-run">Run</button>
+              <button id="cmd-clear">Clear</button>
+            </div>
+            <div class="command-hints">
+              <strong>Try these commands:</strong> ipconfig, dir, cd, mkdir, tasklist, systeminfo, help
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    
+
+    <script type="module">
+      import { aPlusOperatingSystemsQuestions } from "./data/a-plus-operating-systems-questions.js";
+      import { getProgress, updateProgress } from "./js/progressStore.js";
+
+      const TRACK_ID = "pc-professional";
+      const MODULE_ID = "a-plus-operating-systems";
+
+      const REVIEW_PRESETS = {
+        "5min": 6,
+        "15min": 15,
+        "30min": 30
+      };
+
+      const DEFAULT_PRESET = "5min";
+
+      let currentScore = 0;
+      let questionsAnswered = 0;
+      let totalQuestions = 0;
+      let activePreset = DEFAULT_PRESET;
+
+      function shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+      }
+
+      function buildReviewSet(presetKey) {
+        const numQuestions = REVIEW_PRESETS[presetKey] || REVIEW_PRESETS[DEFAULT_PRESET];
+
+        const easy = aPlusOperatingSystemsQuestions.filter(q => q.difficulty === "easy");
+        const med = aPlusOperatingSystemsQuestions.filter(q => q.difficulty === "medium");
+        const hard = aPlusOperatingSystemsQuestions.filter(q => q.difficulty === "hard");
+
+        let pool;
+        if (presetKey === "5min") {
+          pool = [...easy, ...med];
+        } else if (presetKey === "15min") {
+          pool = [...easy, ...med, ...hard];
+        } else {
+          pool = [...med, ...hard];
+        }
+
+        if (pool.length === 0) {
+          pool = [...aPlusOperatingSystemsQuestions];
+        }
+
+        const shuffled = shuffleArray(pool);
+        return shuffled.slice(0, Math.min(numQuestions, shuffled.length));
+      }
+
+      function setActiveButton(presetKey) {
+        document.querySelectorAll('.quiz-mode-controls button').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.review === presetKey);
+        });
+      }
+
+      function updateReviewModeNote(presetKey) {
+        const note = document.getElementById('review-mode-note');
+        const labelMap = {
+          "5min": "5-minute",
+          "15min": "15-minute",
+          "30min": "30-minute"
+        };
+        const label = labelMap[presetKey] || labelMap[DEFAULT_PRESET];
+        note.textContent = `You are in ${label} review mode (${totalQuestions} questions).`;
+      }
+
+      function clearQuizContainer() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = '';
+        currentScore = 0;
+        questionsAnswered = 0;
+        totalQuestions = 0;
+      }
+
+      function loadProgress() {
+        const progress = getProgress(TRACK_ID, MODULE_ID);
+
+        if (progress.completed) {
+          document.getElementById('progress-badge').style.display = 'block';
+        }
+
+        if (progress.attempts > 0) {
+          document.getElementById('previous-score').style.display = 'block';
+          document.getElementById('best-score-display').textContent = progress.bestScore;
+          document.getElementById('attempts-display').textContent = progress.attempts;
+        }
+
+        return progress.lastPreset || DEFAULT_PRESET;
+      }
+
+      function saveProgress() {
+        const progress = getProgress(TRACK_ID, MODULE_ID);
+        const newBestScore = Math.max(progress.bestScore, currentScore);
+        const isCompleted = totalQuestions > 0 && currentScore === totalQuestions;
+
+        updateProgress(TRACK_ID, MODULE_ID, {
+          attempts: progress.attempts + 1,
+          bestScore: newBestScore,
+          completed: isCompleted || progress.completed,
+          lastVisited: Date.now(),
+          lastPreset: activePreset
+        });
+
+        if (isCompleted) {
+          document.getElementById('progress-badge').style.display = 'block';
+        }
+        document.getElementById('previous-score').style.display = 'block';
+        document.getElementById('best-score-display').textContent = newBestScore;
+        document.getElementById('attempts-display').textContent = progress.attempts + 1;
+      }
+
+      function generateOSQuiz(presetKey = DEFAULT_PRESET) {
+        const selectedQuestions = buildReviewSet(presetKey);
+        const container = document.getElementById('quiz-container');
+        totalQuestions = selectedQuestions.length;
+
+        if (totalQuestions === 0) {
+          container.innerHTML = '<div class="info-box">No questions available for this review mode.</div>';
+          return;
+        }
+
+        selectedQuestions.forEach((q, index) => {
+          const shuffledOptions = q.options.map((opt, idx) => ({ text: opt, isCorrect: idx === q.correctIndex }));
+          const randomized = shuffleArray(shuffledOptions);
+
+          const questionDiv = document.createElement('div');
+          questionDiv.className = 'quiz-question';
+          questionDiv.setAttribute('data-question', index + 1);
+
+          const questionText = document.createElement('p');
+          questionText.className = 'question-text';
+          questionText.textContent = q.stem;
+          questionDiv.appendChild(questionText);
+
+          const optionsDiv = document.createElement('div');
+          optionsDiv.className = 'quiz-options';
+
+          randomized.forEach(option => {
+            const btn = document.createElement('button');
+            btn.className = 'quiz-option';
+            btn.textContent = option.text;
+            btn.dataset.correct = option.isCorrect;
+            optionsDiv.appendChild(btn);
+          });
+
+          questionDiv.appendChild(optionsDiv);
+
+          const feedback = document.createElement('div');
+          feedback.className = 'quiz-feedback';
+          questionDiv.appendChild(feedback);
+
+          container.appendChild(questionDiv);
+        });
+
+        const scoreDiv = document.createElement('div');
+        scoreDiv.className = 'quiz-score';
+        scoreDiv.innerHTML = 'Score: <span id="score">0</span>/' + totalQuestions;
+        container.appendChild(scoreDiv);
+
+        document.querySelectorAll('.quiz-option').forEach(btn => {
+          btn.addEventListener('click', handleOSQuizAnswer);
+        });
+      }
+
+      function handleOSQuizAnswer() {
+        const question = this.closest('.quiz-question');
+        const options = question.querySelectorAll('.quiz-option');
+        const feedback = question.querySelector('.quiz-feedback');
+        const isCorrect = this.dataset.correct === 'true';
+
+        options.forEach(opt => {
+          opt.disabled = true;
+          if (opt.dataset.correct === 'true') opt.classList.add('correct');
+        });
+
+        if (isCorrect) {
+          this.classList.add('correct');
+          feedback.textContent = '✓ Correct!';
+          feedback.style.color = '#00ff88';
+          currentScore++;
+        } else {
+          this.classList.add('incorrect');
+          feedback.textContent = '✗ Incorrect.';
+          feedback.style.color = '#ff4444';
+        }
+
+        questionsAnswered++;
+        updateOSScore();
+
+        if (questionsAnswered === totalQuestions) {
+          saveProgress();
+        }
+      }
+
+      function updateOSScore() {
+        document.getElementById('score').textContent = currentScore;
+      }
+
+      function setReviewMode(presetKey, persist = true) {
+        activePreset = REVIEW_PRESETS[presetKey] ? presetKey : DEFAULT_PRESET;
+        clearQuizContainer();
+        generateOSQuiz(activePreset);
+        setActiveButton(activePreset);
+        updateReviewModeNote(activePreset);
+
+        if (persist) {
+          updateProgress(TRACK_ID, MODULE_ID, {
+            lastPreset: activePreset,
+            lastVisited: Date.now()
+          });
+        }
+      }
+
+      function bindReviewButtons() {
+        document.querySelectorAll('.quiz-mode-controls button').forEach(btn => {
+          btn.addEventListener('click', () => {
+            setReviewMode(btn.dataset.review);
+          });
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const initialPreset = loadProgress();
+        bindReviewButtons();
+        setReviewMode(initialPreset, false);
+      });
+
+      const commands = {
+        'help': 'Available commands: ipconfig, dir, cd, mkdir, tasklist, systeminfo, cls, help',
+        'ipconfig': 'Windows IP Configuration\n\nEthernet adapter Local Area Connection:\n   IPv4 Address: 192.168.1.100\n   Subnet Mask: 255.255.255.0\n   Default Gateway: 192.168.1.1',
+        'dir': 'Directory of C:\\Users\\Student\n\n10/15/2025  01:23 PM    <DIR>          Documents\n10/15/2025  02:45 PM    <DIR>          Downloads\n10/15/2025  03:12 PM    <DIR>          Desktop\n               0 File(s)              0 bytes\n               3 Dir(s)  256,123,456,789 bytes free',
+        'tasklist': 'Image Name                     PID Session Name        Mem Usage\n========================= ======== ================ ============\nSystem Idle Process              0 Services                   8 K\nsystem.exe                       4 Services              12,345 K\ncsrss.exe                      456 Services               3,456 K\nexplorer.exe                  1234 Console               45,678 K',
+        'systeminfo': 'Host Name:                 STUDENT-PC\nOS Name:                   Microsoft Windows 11 Pro\nOS Version:                10.0.22000 N/A Build 22000\nSystem Type:               x64-based PC\nProcessor:                 Intel(R) Core(TM) i7-12700K\nTotal Physical Memory:     32,768 MB\nAvailable Physical Memory: 16,384 MB',
+        'cd': 'Current directory: C:\\Users\\Student',
+        'mkdir': 'Directory created successfully',
+        'cls': 'CLEAR'
+      };
+
+      const terminalOutput = document.getElementById('terminal-output');
+      const cmdInput = document.getElementById('cmd-input');
+
+      function runCommand() {
+        const cmd = cmdInput.value.trim().toLowerCase();
+        if (!cmd) return;
+        
+        const output = commands[cmd] || `'${cmd}' is not recognized as an internal or external command.`;
+        
+        if (output === 'CLEAR') {
+          terminalOutput.textContent = 'C:\\Users\\Student> _';
+        } else {
+          terminalOutput.textContent += `\n\nC:\\Users\\Student> ${cmd}\n${output}\n\nC:\\Users\\Student> _`;
+          terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        }
+        cmdInput.value = '';
+      }
+
+      document.getElementById('cmd-run').addEventListener('click', runCommand);
+      cmdInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') runCommand(); });
+      document.getElementById('cmd-clear').addEventListener('click', () => { terminalOutput.textContent = 'C:\\Users\\Student> _'; });
+    </script>
+    <script type="module" src="site.js"></script>
+  </body>
+</html>

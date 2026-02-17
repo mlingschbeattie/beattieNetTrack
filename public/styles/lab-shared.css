@@ -1,0 +1,109 @@
+:root {
+  --lab-bg: rgba(11, 16, 32, 0.92);
+  --lab-surface: rgba(17, 26, 47, 0.88);
+  --lab-border: rgba(148, 163, 184, 0.22);
+  --lab-text: #e2e8f0;
+  --lab-text-soft: #94a3b8;
+  --lab-accent: #38bdf8;
+  --lab-success: #22c55e;
+  --lab-danger: #f43f5e;
+  --lab-font: Inter, Segoe UI, Roboto, sans-serif;
+  --lab-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: var(--lab-bg);
+  color: var(--lab-text);
+  font-family: var(--lab-font);
+}
+
+.lab-root {
+  min-height: 100vh;
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+  background: linear-gradient(180deg, rgba(7, 11, 26, 0.92), rgba(11, 16, 32, 0.94));
+}
+
+.lab-card {
+  border: 1px solid var(--lab-border);
+  border-radius: 12px;
+  background: var(--lab-surface);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.35);
+}
+
+.lab-card__header {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--lab-border);
+  font-size: 14px;
+  color: var(--lab-text-soft);
+}
+
+.lab-card__body {
+  padding: 14px;
+}
+
+.lab-terminal {
+  min-height: 260px;
+  border-radius: 10px;
+  border: 1px solid var(--lab-border);
+  background: rgba(2, 6, 23, 0.85);
+  padding: 12px;
+  font-family: var(--lab-mono);
+  font-size: 13px;
+  overflow: auto;
+}
+
+.lab-line {
+  margin: 0 0 6px;
+  white-space: pre-wrap;
+}
+
+.lab-input-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.lab-input {
+  flex: 1;
+  border-radius: 8px;
+  border: 1px solid var(--lab-border);
+  background: rgba(15, 23, 42, 0.8);
+  color: var(--lab-text);
+  padding: 8px 10px;
+  font: inherit;
+}
+
+.lab-btn {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  background: rgba(56, 189, 248, 0.18);
+  color: var(--lab-text);
+}
+
+.lab-btn:hover {
+  border-color: rgba(56, 189, 248, 0.35);
+}
+
+.lab-chip {
+  display: inline-flex;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--lab-border);
+  color: var(--lab-text-soft);
+  font-size: 11px;
+}
+
+.lab-chip--success {
+  color: var(--lab-success);
+  border-color: rgba(34, 197, 94, 0.35);
+}

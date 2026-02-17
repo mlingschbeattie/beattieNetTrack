@@ -1,0 +1,54 @@
+---
+interface TrackModuleItem {
+  slug: string;
+  type: 'lab' | 'quiz' | 'activity';
+  title: string;
+  description: string;
+  difficulty?: string;
+  estMinutes?: number;
+  href: string;
+}
+
+interface TrackModuleGroup {
+  moduleId: string;
+  title: string;
+  description?: string;
+  order: number;
+  items: TrackModuleItem[];
+}
+
+interface Props {
+  modules: TrackModuleGroup[];
+}
+
+const { modules } = Astro.props as Props;
+
+const badgeForType = (type: TrackModuleItem['type']) => {
+  if (type === 'lab') return 'Lab';
+  if (type === 'quiz') return 'Quiz';
+  return 'Activity';
+};
+---
+
+{modules.map((module) => (
+  <section class="track-section">
+    <h2 class="track-section__title">{module.title}</h2>
+    {module.description && <p class="track-section__subtitle">{module.description}</p>}
+    <div class="card-grid">
+      {module.items.map((item) => (
+        <article class="card card--lesson">
+          <h3>{item.title}</h3>
+          <p>{item.description}</p>
+          <div class="card__meta">
+            {item.difficulty && <span class="badge">{item.difficulty}</span>}
+            {typeof item.estMinutes === 'number' && <span class="badge badge--muted">⏱️ {item.estMinutes} min</span>}
+            <span class="pill">{badgeForType(item.type)}</span>
+          </div>
+          <div class="card__footer">
+            <a class="btn-link" href={item.href}>Open workspace →</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+))}

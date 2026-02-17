@@ -1,0 +1,40 @@
+---
+interface Props {
+  title?: string;
+  subtitle?: string;
+  icon?: string;
+  class?: string;
+  fullHeight?: boolean;
+}
+
+const {
+  title,
+  subtitle,
+  icon,
+  class: className = '',
+  fullHeight = false,
+} = Astro.props as Props;
+
+const hasActionsSlot = Astro.slots.has('actions');
+const hasBodySlot = Astro.slots.has('body');
+const hasHeaderContent = Boolean(title || subtitle || icon || hasActionsSlot);
+---
+
+<article class={`card activity-card card-shell min0 ${fullHeight ? 'fill' : ''} ${className}`.trim()} data-testid="activity-card">
+  {hasHeaderContent && (
+    <header class="activity-card__header card-header min0">
+      <div class="activity-card__title-wrap min0">
+        {icon && <span class="activity-card__icon" aria-hidden="true">{icon}</span>}
+        <div class="activity-card__title-stack min0">
+          {title && <h3 class="activity-card__title">{title}</h3>}
+          {subtitle && <p class="activity-card__subtitle">{subtitle}</p>}
+        </div>
+      </div>
+      {hasActionsSlot && <div class="activity-card__actions"><slot name="actions" /></div>}
+    </header>
+  )}
+
+  <div class="activity-card__body card-body min0">
+    {hasBodySlot ? <slot name="body" /> : <slot />}
+  </div>
+</article>

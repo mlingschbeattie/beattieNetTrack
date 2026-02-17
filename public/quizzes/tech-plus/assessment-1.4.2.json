@@ -1,0 +1,20 @@
+{
+  "id": "assessment-1-4-2",
+  "title": "Assessment 1.4.2 Wireless and Mobile Networking",
+  "assessmentCode": "1.4.2",
+  "sourceQuestionDocx": "Assessment 1.4.2 Wireless and Mobile Networking.docx",
+  "sourceAnswerDocx": "Assessment 1.4.2 Wireless and Mobile Networking Answers.docx",
+  "questions": [
+    {
+      "prompt": "Which security mode is preferred for modern Wi-Fi networks?",
+      "choices": [
+        "WEP",
+        "WPA2/WPA3",
+        "Open",
+        "TKIP-only"
+      ],
+      "answerIndex": 1,
+      "explanation": "WPA2/WPA3 are preferred over legacy modes."
+    }
+  ]
+}

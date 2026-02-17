@@ -1,0 +1,326 @@
+---
+title: General Skills - Practical Guide
+slug: general-skills
+legacyUrl: /general-skills.html
+difficulty: medium
+estimatedMinutes: 15
+---
+
+import LegacyHtml from '../../components/LegacyHtml.astro';
+
+<LegacyHtml html={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>General Skills - Practical Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css" />
+    
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="study-guides.html">📖 Study Guides</a></li>
+            <li><a href="learning-tracks.html">🎯 Learning Tracks</a></li>
+            <li><a href="resources.html" class="active">🔬 Study Hub</a></li>
+            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <main id="main-content" class="container">
+      <nav class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <a href="resources.html">Study Hub</a>
+        <span class="separator">/</span>
+        <span class="current">General Skills</span>
+      </nav>
+      
+      <h1>General Skills</h1>
+      <div class="subtitle">Practical exercises, guides, ELI5 explanations, and cheat sheets</div>
+
+      <div class="section">
+        <h2>ELI5: Why General Skills?</h2>
+        <div class="info-box">
+          These are the tools in your backpack. They help you navigate systems, read files, and automate repetitive tasks.
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Practical Exercises</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">Regex practice</div><div class="description">Find patterns in logs and data</div></div>
+          <div class="command-item"><div class="command">Scripting basics</div><div class="description">Automate tasks in Bash/Python</div></div>
+          <div class="command-item"><div class="command">Networking basics</div><div class="description">Trace routes and inspect ports</div></div>
+          <div class="command-item"><div class="command">Version control</div><div class="description">Track changes and collaborate</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Guide: Daily Workflow</h2>
+        <div class="example-block">
+          <div class="example-title">Step-by-step</div>
+          <div class="example-code">1) Read logs and extract key lines
+2) Filter noise with grep/awk/sed
+3) Automate repeated actions with scripts
+4) Keep work organized with Git
+5) Document what you learned</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Cheat Sheet</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">grep -R "error" logs/</div><div class="description">Search recursively in files</div></div>
+          <div class="command-item"><div class="command">awk '{print $1}' file</div><div class="description">Extract column 1</div></div>
+          <div class="command-item"><div class="command">sed -n '1,20p' file</div><div class="description">Print lines 1–20</div></div>
+          <div class="command-item"><div class="command">ip a</div><div class="description">Show network interfaces</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <h2>Documentation & Ticketing</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">Problem Statement</div><div class="description">Clear, concise description of issue</div></div>
+          <div class="command-item"><div class="command">Steps Taken</div><div class="description">Actions performed and outcomes</div></div>
+          <div class="command-item"><div class="command">Resolution</div><div class="description">Final fix and verification steps</div></div>
+          <div class="command-item"><div class="command">Lessons Learned</div><div class="description">Preventive notes for future</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Automation Patterns</h2>
+        <div class="example-block">
+          <div class="example-title">Useful Patterns</div>
+          <div class="example-code">• Loop through files and apply checks
+• Parse logs with grep/awk
+• Export results to CSV
+• Schedule recurring tasks
+• Use functions for reuse</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Interactive Quiz</h2>
+        <div id="progress-badge" style="display: none; text-align: center; margin-bottom: 15px;">
+          <span style="background: linear-gradient(135deg, #00ff88, #00d4ff); color: #0a0e27; padding: 8px 20px; border-radius: 20px; font-weight: 700; font-size: 0.95em;">
+            ✓ COMPLETED
+          </span>
+        </div>
+        <div id="previous-score" style="display: none; text-align: center; margin-bottom: 15px; color: #00d4ff;">
+          Previous Best: <strong id="best-score-display">0</strong> | Attempts: <strong id="attempts-display">0</strong>
+        </div>
+        <div class="info-box" style="margin-bottom: 20px;">
+          <strong>Dynamic Quiz:</strong> Questions randomized from an expanded pool. Refresh for new questions!
+        </div>
+        <div class="quiz-mode-controls">
+          <label>Review length:</label>
+          <button data-review="5min">5 min</button>
+          <button data-review="15min">15 min</button>
+          <button data-review="30min">30 min</button>
+        </div>
+        <div id="review-mode-note" class="review-mode-note"></div>
+        <div id="quiz-container">
+          {/* Questions generated dynamically */}
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Mini-Lab: Linux Command Builder</h2>
+        <div class="lab-container">
+          <div class="info-box">
+            <strong>Objective:</strong> Build common Linux commands with the correct syntax
+          </div>
+          <div class="lab-challenge">
+            <p class="lab-question" id="cmd-scenario">Find all .txt files in the current directory</p>
+            <div class="cmd-builder">
+              <input type="text" id="cmd-builder-input" placeholder="Type your command">
+            </div>
+            <div class="lab-input-group">
+              <button id="check-cmd">Check Command</button>
+              <button id="show-hint">Hint</button>
+              <button id="next-cmd">Next Challenge</button>
+            </div>
+            <div id="cmd-result" class="psu-result"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    
+
+    <script type="module">
+      import { generalSkillsQuestions } from "./data/general-skills-questions.js";
+      import { getProgress, updateProgress } from "./js/progressStore.js";
+      import { QuizEngine } from "./js/quizEngine.js";
+      import { convertToQuizFormat, buildReviewSet } from "./js/quizAdapter.js";
+
+      const TRACK_ID = "cybersecurity";
+      const MODULE_ID = "general-skills";
+
+      const REVIEW_PRESETS = {
+        "5min": 6,
+        "15min": 15,
+        "30min": 30
+      };
+
+      const DEFAULT_PRESET = "5min";
+
+      let currentQuiz = null;
+      let activePreset = DEFAULT_PRESET;
+
+      const cmdChallenges = [
+        { task: 'Find all .txt files in the current directory', answer: 'find . -name "*.txt"', hint: 'Use find with -name flag' },
+        { task: 'Search for "error" in log.txt', answer: 'grep "error" log.txt', hint: 'Use grep command' },
+        { task: 'Make script.sh executable', answer: 'chmod +x script.sh', hint: 'Use chmod to change permissions' },
+        { task: 'Show the last 20 lines of syslog', answer: 'tail -n 20 syslog', hint: 'Use tail with -n flag' },
+        { task: 'Count lines in data.csv', answer: 'wc -l data.csv', hint: 'Use wc with -l flag' },
+        { task: 'List files sorted by size', answer: 'ls -lS', hint: 'Use ls with -l and -S flags' }
+      ];
+      let currentCmd = 0;
+
+      function loadProgress() {
+        const progress = getProgress(TRACK_ID, MODULE_ID);
+
+        if (progress.completed) {
+          document.getElementById('progress-badge').style.display = 'block';
+        }
+
+        if (progress.attempts > 0) {
+          document.getElementById('previous-score').style.display = 'block';
+          document.getElementById('best-score-display').textContent = progress.bestScore;
+          document.getElementById('attempts-display').textContent = progress.attempts;
+        }
+
+        return progress.lastPreset || DEFAULT_PRESET;
+      }
+
+      function saveProgress(score, total) {
+        const progress = getProgress(TRACK_ID, MODULE_ID);
+        const newBestScore = Math.max(progress.bestScore, score);
+        const isCompleted = total > 0 && score === total;
+
+        updateProgress(TRACK_ID, MODULE_ID, {
+          attempts: progress.attempts + 1,
+          bestScore: newBestScore,
+          completed: isCompleted || progress.completed,
+          lastVisited: Date.now(),
+          lastPreset: activePreset
+        });
+
+        if (isCompleted) {
+          document.getElementById('progress-badge').style.display = 'block';
+          if (window.showBadge) window.showBadge('Module Mastered!', '🏆');
+        }
+        document.getElementById('previous-score').style.display = 'block';
+        document.getElementById('best-score-display').textContent = newBestScore;
+        document.getElementById('attempts-display').textContent = progress.attempts + 1;
+      }
+
+      function generateQuiz(presetKey = DEFAULT_PRESET) {
+        const selectedQuestions = buildReviewSet(generalSkillsQuestions, presetKey, REVIEW_PRESETS);
+        const quizQuestions = convertToQuizFormat(selectedQuestions);
+
+        currentQuiz = new QuizEngine('quiz-container', quizQuestions, {
+          onCorrect: () => { if (window.addXp) window.addXp(5); },
+          onIncorrect: () => {},
+          showLetters: true
+        });
+
+        const originalFinish = currentQuiz.finishQuiz.bind(currentQuiz);
+        currentQuiz.finishQuiz = function() {
+          originalFinish();
+          const state = this.getState();
+          saveProgress(state.score, state.totalQuestions);
+          if (window.burstConfetti) window.burstConfetti();
+        };
+
+        currentQuiz.render();
+
+        const labelMap = { "5min": "5-minute", "15min": "15-minute", "30min": "30-minute" };
+        const label = labelMap[presetKey] || labelMap[DEFAULT_PRESET];
+        document.getElementById('review-mode-note').textContent = \`You are in \${label} review mode (\${quizQuestions.length} questions).\`;
+
+        document.querySelectorAll('.quiz-mode-controls button').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.review === presetKey);
+        });
+      }
+
+      function bindReviewButtons() {
+        document.querySelectorAll('.quiz-mode-controls button').forEach(btn => {
+          btn.addEventListener('click', () => {
+            activePreset = btn.dataset.review;
+            generateQuiz(activePreset);
+            updateProgress(TRACK_ID, MODULE_ID, {
+              lastPreset: activePreset,
+              lastVisited: Date.now()
+            });
+          });
+        });
+      }
+
+      function loadChallenge() {
+        document.getElementById('cmd-scenario').textContent = cmdChallenges[currentCmd].task;
+        document.getElementById('cmd-builder-input').value = '';
+        document.getElementById('cmd-result').textContent = '';
+      }
+
+      function bindLabControls() {
+        document.getElementById('check-cmd').addEventListener('click', () => {
+          const userCmd = document.getElementById('cmd-builder-input').value.trim();
+          const correct = cmdChallenges[currentCmd].answer;
+          const result = document.getElementById('cmd-result');
+
+          if (userCmd === correct) {
+            result.innerHTML = \`<strong style="color: #00ff88;">✓ Correct!</strong><br><br>Command: <code>\${correct}</code>\`;
+          } else {
+            result.innerHTML = \`<strong style="color: #ff4444;">✗ Not quite.</strong><br><br>Expected: <code>\${correct}</code><br>You entered: <code>\${userCmd}</code>\`;
+          }
+        });
+
+        document.getElementById('show-hint').addEventListener('click', () => {
+          document.getElementById('cmd-result').innerHTML = \`<strong>Hint:</strong> \${cmdChallenges[currentCmd].hint}\`;
+        });
+
+        document.getElementById('next-cmd').addEventListener('click', () => {
+          currentCmd = (currentCmd + 1) % cmdChallenges.length;
+          loadChallenge();
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const initialPreset = loadProgress();
+        bindReviewButtons();
+        generateQuiz(initialPreset);
+        loadChallenge();
+        bindLabControls();
+      });
+    </script>
+    <script type="module" src="site.js"></script>
+  </body>
+</html>`} />

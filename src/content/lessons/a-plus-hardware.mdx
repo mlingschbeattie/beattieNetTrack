@@ -1,0 +1,88 @@
+---
+title: Hardware Fundamentals - A+ Study Guide
+slug: a-plus-hardware
+legacyUrl: /a-plus-hardware.html
+difficulty: Intermediate
+estMinutes: 15
+---
+
+import Callout from '@/components/Callout.astro';
+import Card from '@/components/Card.astro';
+import CodeBlock from '@/components/CodeBlock.astro';
+import ProgressBar from '@/components/ProgressBar.astro';
+import Section from '@/components/Section.astro';
+
+<Section title="Hardware fundamentals" subtitle="CompTIA A+ Core 1 focus areas">
+  <p>
+    This lesson maps the physical building blocks of a PC to the most common troubleshooting paths.
+    Use these sections as your reference when diagnosing boot failures, performance issues, and
+    peripheral problems.
+  </p>
+  <Callout type="info">
+    Hardware is the physical side of computing: chips, boards, cables, and devices. Think of it as the
+    body that runs the software brain.
+  </Callout>
+</Section>
+
+<Section title="Core components map">
+  <div class="card-grid">
+    <Card title="CPU + chipset">
+      <p>Coordinates instructions and ties memory, storage, and peripherals together.</p>
+      <ul>
+        <li>Know socket types and thermal limits.</li>
+        <li>Spot bottlenecks caused by throttling.</li>
+      </ul>
+    </Card>
+    <Card title="Memory">
+      <p>RAM holds active data. Faster timings help multitasking but require stability checks.</p>
+      <ul>
+        <li>Match DIMM speeds for dual-channel.</li>
+        <li>Use the motherboard manual for slot order.</li>
+      </ul>
+    </Card>
+    <Card title="Storage">
+      <p>HDD, SATA SSD, and NVMe each have unique connectors and performance tradeoffs.</p>
+      <ul>
+        <li>NVMe uses PCIe lanes, not SATA.</li>
+        <li>Partition and format before OS installs.</li>
+      </ul>
+    </Card>
+    <Card title="Power + cooling">
+      <p>Stable voltage and airflow keep systems reliable under load.</p>
+      <ul>
+        <li>Match PSU wattage to GPU needs.</li>
+        <li>Check fan curves after upgrades.</li>
+      </ul>
+    </Card>
+  </div>
+</Section>
+
+<Section title="Hands-on exercises">
+  <div class="card-grid">
+    <Card title="Identify components">
+      <p>Open a PC (or image) and label CPU, RAM, PSU, GPU, and storage.</p>
+    </Card>
+    <Card title="RAM seating check">
+      <p>Verify dual-channel placement using motherboard markings.</p>
+    </Card>
+    <Card title="Cable trace">
+      <p>Follow SATA, PCIe, and front-panel connections end-to-end.</p>
+    </Card>
+  </div>
+  <Callout type="tip">
+    When a system fails to POST, start with power and RAM seating before swapping components.
+  </Callout>
+</Section>
+
+<Section title="Quick troubleshooting script">
+  <p>Use this diagnostic cadence every time you power up a machine.</p>
+  <CodeBlock language="text">Power → POST → Storage → OS → Peripherals</CodeBlock>
+</Section>
+
+<Section title="Readiness check">
+  <p>Target at least 80% confidence on the checklist before moving on.</p>
+  <ProgressBar value={65} />
+  <p>
+    <a class="btn-link" href="/quizzes/a-plus-hardware">Take the hardware quiz →</a>
+  </p>
+</Section>

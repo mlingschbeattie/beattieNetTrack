@@ -1,0 +1,236 @@
+---
+title: Forensics - Practical Guide
+slug: forensics
+legacyUrl: /forensics.html
+difficulty: medium
+estimatedMinutes: 15
+---
+
+import LegacyHtml from '../../components/LegacyHtml.astro';
+
+<LegacyHtml html={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Forensics - Practical Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css" />
+    
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="study-guides.html">📖 Study Guides</a></li>
+            <li><a href="learning-tracks.html">🎯 Learning Tracks</a></li>
+            <li><a href="resources.html" class="active">🔬 Study Hub</a></li>
+            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <main id="main-content" class="container">
+      <nav class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <a href="resources.html">Study Hub</a>
+        <span class="separator">/</span>
+        <span class="current">Forensics</span>
+      </nav>
+      
+      <h1>Forensics</h1>
+      <div class="subtitle">Practical exercises, guides, ELI5 explanations, and cheat sheets</div>
+
+      <div class="section">
+        <h2>ELI5: What is Forensics?</h2>
+        <div class="info-box">
+          Forensics is like being a detective for computers. We look at files, timestamps, and logs to figure out what happened.
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Practical Exercises</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">Metadata hunt</div><div class="description">Use EXIF to find hidden info in images</div></div>
+          <div class="command-item"><div class="command">Timeline analysis</div><div class="description">Sort files by created/modified time</div></div>
+          <div class="command-item"><div class="command">File carving</div><div class="description">Recover deleted or hidden files</div></div>
+          <div class="command-item"><div class="command">Memory artifact scan</div><div class="description">Find processes and connections in a dump</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Guide: Forensics Workflow</h2>
+        <div class="example-block">
+          <div class="example-title">Step-by-step</div>
+          <div class="example-code">1) Identify file types and metadata
+2) Build a timeline of events
+3) Extract embedded files and artifacts
+4) Search for indicators or keywords
+    <script type="module">
+      import { forensicsQuestions } from "./data/forensics-questions.js";
+      import { getProgress, updateProgress } from "./js/progressStore.js";
+      import { QuizEngine } from "./js/quizEngine.js";
+      import { convertToQuizFormat, buildReviewSet } from "./js/quizAdapter.js";
+
+      const TRACK_ID = "cybersecurity";
+      const MODULE_ID = "forensics";
+
+      const REVIEW_PRESETS = {
+        "5min": 6,
+        "15min": 15,
+        "30min": 30
+      };
+
+      const DEFAULT_PRESET = "5min";
+
+      let currentQuiz = null;
+      let activePreset = DEFAULT_PRESET;
+
+      function loadProgress() {
+        const progress = getProgress(TRACK_ID, MODULE_ID);
+
+        if (progress.completed) {
+          document.getElementById('progress-badge').style.display = 'block';
+        }
+
+        if (progress.attempts > 0) {
+          document.getElementById('previous-score').style.display = 'block';
+          document.getElementById('best-score-display').textContent = progress.bestScore;
+          document.getElementById('attempts-display').textContent = progress.attempts;
+        }
+
+        return progress.lastPreset || DEFAULT_PRESET;
+      }
+
+      function saveProgress(score, total) {
+        const progress = getProgress(TRACK_ID, MODULE_ID);
+        const newBestScore = Math.max(progress.bestScore, score);
+        const isCompleted = total > 0 && score === total;
+
+        updateProgress(TRACK_ID, MODULE_ID, {
+          attempts: progress.attempts + 1,
+          bestScore: newBestScore,
+          completed: isCompleted || progress.completed,
+          lastVisited: Date.now(),
+          lastPreset: activePreset
+        });
+
+        if (isCompleted) {
+          document.getElementById('progress-badge').style.display = 'block';
+          if (window.showBadge) window.showBadge('Module Mastered!', '🏆');
+        }
+        document.getElementById('previous-score').style.display = 'block';
+        document.getElementById('best-score-display').textContent = newBestScore;
+        document.getElementById('attempts-display').textContent = progress.attempts + 1;
+      }
+
+      function generateQuiz(presetKey = DEFAULT_PRESET) {
+        const selectedQuestions = buildReviewSet(forensicsQuestions, presetKey, REVIEW_PRESETS);
+        const quizQuestions = convertToQuizFormat(selectedQuestions);
+
+        currentQuiz = new QuizEngine('quiz-container', quizQuestions, {
+          onCorrect: () => { if (window.addXp) window.addXp(5); },
+          onIncorrect: () => {},
+          showLetters: true
+        });
+
+        const originalFinish = currentQuiz.finishQuiz.bind(currentQuiz);
+        currentQuiz.finishQuiz = function() {
+          originalFinish();
+          const state = this.getState();
+          saveProgress(state.score, state.totalQuestions);
+          if (window.burstConfetti) window.burstConfetti();
+        };
+
+        currentQuiz.render();
+
+        const labelMap = { "5min": "5-minute", "15min": "15-minute", "30min": "30-minute" };
+        const label = labelMap[presetKey] || labelMap[DEFAULT_PRESET];
+        document.getElementById('review-mode-note').textContent = \`You are in \${label} review mode (\${quizQuestions.length} questions).\`;
+
+        document.querySelectorAll('.quiz-mode-controls button').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.review === presetKey);
+        });
+      }
+
+      function bindReviewButtons() {
+        document.querySelectorAll('.quiz-mode-controls button').forEach(btn => {
+          btn.addEventListener('click', () => {
+            activePreset = btn.dataset.review;
+            generateQuiz(activePreset);
+            updateProgress(TRACK_ID, MODULE_ID, {
+              lastPreset: activePreset,
+              lastVisited: Date.now()
+            });
+          });
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const initialPreset = loadProgress();
+        bindReviewButtons();
+        generateQuiz(initialPreset);
+      });
+    </script>
+
+    
+
+    <script>
+      async function generateHash(algorithm, data) {
+        const encoder = new TextEncoder();
+        const dataBuffer = encoder.encode(data);
+        const hashBuffer = await crypto.subtle.digest(algorithm, dataBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const hashButton = document.getElementById('gen-hash');
+
+        if (hashButton) {
+          hashButton.addEventListener('click', async () => {
+            const text = document.getElementById('hash-input').value;
+            if (!text) {
+              document.getElementById('hash-result').innerHTML = '<span style="color: #ff4444;">⚠ Please enter text</span>';
+              return;
+            }
+
+            const sha256 = await generateHash('SHA-256', text);
+            const sha1 = await generateHash('SHA-1', text);
+
+            document.getElementById('hash-result').innerHTML = \`
+              <strong>SHA-256 (Recommended):</strong><br>\${sha256}<br><br>
+              <strong>SHA-1 (Legacy):</strong><br>\${sha1}<br><br>
+              <strong>Input Length:</strong> \${text.length} bytes<br><br>
+              <span style="color: #00d4ff;">Use these hashes to verify evidence integrity</span>
+            \`;
+          });
+        }
+      });
+    </script>
+    <script type="module" src="site.js"></script>
+  </body>
+</html>`} />

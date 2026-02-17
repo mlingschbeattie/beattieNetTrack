@@ -1,0 +1,534 @@
+---
+import AppShell from './AppShell.astro';
+import Tabs from '../components/workspace/Tabs.astro';
+import BottomBar from '../components/workspace/BottomBar.astro';
+import Pane from '../components/ui/Pane.astro';
+import ActivityCard from '../components/ActivityCard.astro';
+
+interface TabItem {
+  id: string;
+  label: string;
+}
+
+interface Props {
+  title: string;
+  tracks?: unknown[];
+  activeTrack?: string;
+  activeLesson?: string;
+  currentTrack?: unknown;
+  lessonMap?: Record<string, unknown>;
+  breadcrumbs?: Array<{ label: string; href?: string }>;
+  itemSlug: string;
+  itemType?: 'lesson' | 'lab' | 'quiz' | 'tour' | 'activity';
+  quizPassThreshold?: number;
+  itemDifficulty?: string;
+  itemMinutes?: number;
+  checkLabel?: string;
+  submitLabel?: string;
+  activityTabs?: TabItem[];
+  panelHints?: string[];
+  panelChecklist?: string[];
+  layoutMode?: 'stacked' | 'split';
+}
+
+const {
+  title,
+  tracks = [],
+  activeTrack,
+  activeLesson,
+  currentTrack,
+  lessonMap = {},
+  breadcrumbs = [],
+  itemSlug,
+  itemType = 'lesson',
+  quizPassThreshold = 70,
+  itemDifficulty,
+  itemMinutes,
+  checkLabel = 'Check',
+  submitLabel = 'Submit',
+  activityTabs = [{ id: 'activity', label: 'Activity' }],
+  panelHints = [],
+  panelChecklist = [],
+  layoutMode = itemType === 'lab' || itemType === 'quiz' || itemType === 'activity' ? 'stacked' : 'split',
+} = Astro.props as Props;
+---
+
+<AppShell
+  title={title}
+  tracks={tracks}
+  activeTrack={activeTrack}
+  activeLesson={activeLesson}
+  currentTrack={currentTrack}
+  lessonMap={lessonMap}
+  breadcrumbs={breadcrumbs}
+  showRightPanel={layoutMode === 'split'}
+  rightPanelHints={panelHints}
+  rightPanelChecklist={panelChecklist}
+>
+  <section
+    class={`workspace-layout workspace-layout--${layoutMode}`}
+    data-workspace
+    data-layout-mode={layoutMode}
+    data-item-slug={itemSlug}
+    data-item-type={itemType}
+    data-quiz-pass-threshold={String(quizPassThreshold)}
+    data-item-difficulty={itemDifficulty ?? 'Intermediate'}
+    data-item-minutes={String(itemMinutes ?? 20)}
+    data-panel-checklist={JSON.stringify(panelChecklist)}
+  >
+    {layoutMode === 'stacked' ? (
+      <div class="workspace-shell">
+        <ActivityCard class="workspace-top-card" title="Workspace" subtitle="Instructions, checks, and notes" fullHeight={false}>
+          <Fragment slot="actions">
+            <div class="workspace-tabs workspace-tabs--drawer" role="tablist" aria-label="Workspace drawer tabs">
+              <button
+                type="button"
+                class="workspace-tab workspace-tab--active"
+                role="tab"
+                aria-selected="true"
+                data-workspace-drawer-tab-button="instructions"
+              >
+                Instructions
+              </button>
+              <button
+                type="button"
+                class="workspace-tab"
+                role="tab"
+                aria-selected="false"
+                data-workspace-drawer-tab-button="checks"
+              >
+                Checks
+              </button>
+              <button
+                type="button"
+                class="workspace-tab"
+                role="tab"
+                aria-selected="false"
+                data-workspace-drawer-tab-button="notes"
+              >
+                Notes
+              </button>
+            </div>
+            <button type="button" class="btn-ghost" data-workspace-drawer-toggle aria-expanded="true">Collapse</button>
+          </Fragment>
+
+          <div class="workspace-drawer workspace-drawer--open" data-workspace-drawer>
+            <div class="workspace-drawer-panel workspace-drawer-panel--active" data-workspace-drawer-panel="instructions">
+              <slot name="instructions" />
+            </div>
+            <div class="workspace-drawer-panel" data-workspace-drawer-panel="checks" data-workspace-checks-panel>
+              <article class="card workspace-checks-card">
+                <h3>Requirement checklist</h3>
+                <ul data-workspace-checklist>
+                  <li class="pc-lab__muted">No checklist available yet.</li>
+                </ul>
+                <h3>Latest result</h3>
+                <div data-workspace-last-result class="pc-lab__muted">Run Check or Submit to populate this panel.</div>
+              </article>
+            </div>
+            <div class="workspace-drawer-panel" data-workspace-drawer-panel="notes">
+              <slot name="activity-secondary" />
+            </div>
+          </div>
+        </ActivityCard>
+
+        <div class="workspace-main" data-workspace-activity>
+          <ActivityCard class="workspace-activity-card" title="Activity" fullHeight={true}>
+            <slot name="activity-main" />
+          </ActivityCard>
+        </div>
+      </div>
+    ) : (
+      <div class="workspace-grid">
+        <Pane class="workspace-pane--instructions" title="Instructions" bodyClass="lesson-body">
+          <div class="workspace-pane-scroll">
+            <slot name="instructions" />
+          </div>
+        </Pane>
+
+        <Pane class="workspace-pane--activity" title="Workspace" data-workspace-activity>
+          <Fragment slot="header">
+            <Tabs tabs={activityTabs} defaultTab={activityTabs[0]?.id ?? 'activity'} />
+          </Fragment>
+          <div class="workspace-pane-scroll">
+            <div class="workspace-tab-panel workspace-tab-panel--active" data-workspace-tab-panel="activity">
+              <ActivityCard class="workspace-activity-card" fullHeight={true}>
+                <slot name="activity-main" />
+              </ActivityCard>
+            </div>
+            <div class="workspace-tab-panel" data-workspace-tab-panel="secondary">
+              <ActivityCard class="workspace-activity-card" fullHeight={true}>
+                <slot name="activity-secondary" />
+              </ActivityCard>
+            </div>
+          </div>
+        </Pane>
+      </div>
+    )}
+
+    <BottomBar checkLabel={checkLabel} submitLabel={submitLabel} />
+  </section>
+</AppShell>
+
+<script>
+  import { getLastResult, getRequirementChecklist, setLastResult, setRequirementChecklist, subscribeChecks } from '../lib/checksStore.ts';
+  import {
+    getLessonStatus,
+    getLabStatus,
+    markLabComplete,
+    markLabIncomplete,
+    markLessonComplete,
+    markLessonIncomplete,
+    recordQuizAttempt,
+    markTourStepComplete,
+    getTourPercent,
+    recordActivity,
+  } from '../lib/progressStore.ts';
+
+  const workspace = document.querySelector('[data-workspace]');
+  if (!workspace) {
+    throw new Error('Workspace container missing.');
+  }
+
+  const itemSlug = workspace.getAttribute('data-item-slug') ?? '';
+  const itemType = workspace.getAttribute('data-item-type') ?? 'lesson';
+  const layoutMode = workspace.getAttribute('data-layout-mode') ?? 'split';
+  const quizPassThreshold = Number.parseInt(workspace.getAttribute('data-quiz-pass-threshold') ?? '70', 10) || 70;
+  const itemDifficulty = workspace.getAttribute('data-item-difficulty') ?? 'Intermediate';
+  const itemMinutes = Number.parseInt(workspace.getAttribute('data-item-minutes') ?? '20', 10) || 20;
+  let panelChecklist = [];
+  try {
+    const parsed = JSON.parse(workspace.getAttribute('data-panel-checklist') ?? '[]');
+    panelChecklist = Array.isArray(parsed) ? parsed : [];
+  } catch {
+    panelChecklist = [];
+  }
+
+  if (Array.isArray(panelChecklist) && panelChecklist.length > 0) {
+    setRequirementChecklist(
+      itemSlug,
+      panelChecklist.map((label, index) => ({ id: `layout-check-${index + 1}`, label: String(label) }))
+    );
+  }
+
+  const checksListEl = workspace.querySelector('[data-workspace-checklist]');
+  const lastResultEl = workspace.querySelector('[data-workspace-last-result]');
+
+  const renderChecksPanel = () => {
+    if (!checksListEl || !lastResultEl) return;
+    const checklist = getRequirementChecklist(itemSlug);
+    checksListEl.innerHTML = checklist.length
+      ? checklist
+          .map((item) => {
+            const marker = typeof item.pass === 'boolean' ? (item.pass ? '✔' : '✖') : '•';
+            const message = item.message ? ` — ${item.message}` : '';
+            return `<li>${marker} ${item.label}${message}</li>`;
+          })
+          .join('')
+      : '<li class="pc-lab__muted">No checklist available yet.</li>';
+
+    const result = getLastResult(itemSlug);
+    if (!result) {
+      lastResultEl.innerHTML = 'Run Check or Submit to populate this panel.';
+      lastResultEl.classList.add('pc-lab__muted');
+      return;
+    }
+
+    const failed = result.checks.filter((item) => !item.pass);
+    const score = typeof result.score === 'number' ? ` · Score ${result.score}%` : '';
+    const failedMarkup = failed.length
+      ? `<ul>${failed.map((item) => `<li>✖ ${item.label}${item.message ? ` — ${item.message}` : ''}</li>`).join('')}</ul>`
+      : '<p class="pc-lab__muted">No failed checks in latest result.</p>';
+
+    lastResultEl.classList.remove('pc-lab__muted');
+    lastResultEl.innerHTML = `<p><strong>${result.passed ? 'PASS' : 'NEEDS WORK'}</strong>${score}</p>${failedMarkup}`;
+  };
+
+  renderChecksPanel();
+  subscribeChecks(() => renderChecksPanel());
+
+  const statusEl = workspace.querySelector('[data-workspace-status]');
+  const progressEl = workspace.querySelector('[data-workspace-progress]');
+
+  const setStatus = (text: string, progress?: number) => {
+    if (statusEl) statusEl.textContent = text;
+    if (progressEl && typeof progress === 'number') progressEl.textContent = `${Math.max(0, Math.min(100, Math.round(progress)))}%`;
+  };
+
+  const syncFromStore = () => {
+    if (itemType === 'lab') {
+      const status = getLabStatus(itemSlug);
+      setStatus(status.completed ? 'Completed' : 'In progress', status.completed ? 100 : 0);
+      return;
+    }
+    if (itemType === 'tour') {
+      const percent = getTourPercent('hands-on-tour');
+      setStatus(percent >= 100 ? 'Tour complete' : 'In progress', percent);
+      return;
+    }
+    const status = getLessonStatus(itemSlug);
+    setStatus(status.completed ? 'Completed' : 'In progress', status.completed ? 100 : 0);
+  };
+
+  type CompletionPayload = {
+    action: string;
+    passed: boolean;
+    progress?: number;
+    difficulty?: string;
+    estMinutes?: number;
+    score?: number;
+  };
+
+  const applyCompletion = ({ action, passed, difficulty, estMinutes, score }: CompletionPayload) => {
+    if (itemType === 'quiz') {
+      const normalizedScore = typeof score === 'number' ? score : passed ? 100 : 0;
+      recordQuizAttempt(itemSlug, normalizedScore);
+      if (action === 'reset') {
+        setStatus('Quiz reset', 0);
+      } else {
+        setStatus(
+          passed ? `Score ${normalizedScore}%` : `Score ${normalizedScore}%`,
+          normalizedScore
+        );
+      }
+      window.dispatchEvent(new CustomEvent('progress-updated'));
+      return;
+    }
+
+    if (itemType === 'tour') {
+      if ((action === 'check' || action === 'submit') && passed) {
+        markTourStepComplete('hands-on-tour', itemSlug, 5);
+      }
+      const percent = getTourPercent('hands-on-tour');
+      setStatus(percent >= 100 ? 'Tour complete' : 'Tour progress', percent);
+      window.dispatchEvent(new CustomEvent('progress-updated'));
+      return;
+    }
+
+    const meta = {
+      difficulty: typeof difficulty === 'string' ? difficulty : itemDifficulty,
+      estMinutes: typeof estMinutes === 'number' ? estMinutes : itemMinutes,
+    };
+
+    if (itemType === 'lab') {
+      if ((action === 'check' || action === 'submit') && passed) {
+        markLabComplete(itemSlug, meta);
+      } else if (action === 'reset' || ((action === 'check' || action === 'submit') && !passed)) {
+        markLabIncomplete(itemSlug);
+      }
+      window.dispatchEvent(new CustomEvent('progress-updated'));
+      syncFromStore();
+      return;
+    }
+
+    if ((action === 'check' || action === 'submit') && passed) {
+      markLessonComplete(itemSlug, meta);
+    } else if (action === 'reset' || ((action === 'check' || action === 'submit') && !passed)) {
+      markLessonIncomplete(itemSlug);
+    }
+    window.dispatchEvent(new CustomEvent('progress-updated'));
+    syncFromStore();
+  };
+
+  const iframe = workspace.querySelector('iframe[data-lab-iframe]');
+
+  const sendAction = (action: string) => {
+    recordActivity();
+    window.dispatchEvent(
+      new CustomEvent('workspace:action', {
+        detail: { action, slug: itemSlug, type: itemType, quizPassThreshold },
+      })
+    );
+
+    if (!iframe || !(iframe instanceof HTMLIFrameElement) || !iframe.contentWindow) {
+      if (itemType === 'lesson' || itemType === 'tour' || itemType === 'activity') {
+        if (action === 'check' || action === 'submit') {
+          applyCompletion({ action, passed: true, score: 100 });
+        }
+        if (action === 'reset') applyCompletion({ action, passed: false, score: 0 });
+      }
+      return;
+    }
+
+    iframe.contentWindow.postMessage({ type: 'CLASSROOM_ACTION', action }, window.location.origin);
+  };
+
+  workspace.querySelectorAll('[data-workspace-action]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const action = button.getAttribute('data-workspace-action');
+      if (!action) return;
+      sendAction(action);
+    });
+  });
+
+  window.addEventListener('message', (event) => {
+    if (event.origin !== window.location.origin) return;
+    const data = event.data;
+    if (!data || data.type !== 'CLASSROOM_RESULT') return;
+
+    const action = data.action;
+    const passed = Boolean(data.passed);
+    const progress = typeof data.progress === 'number' ? data.progress : 0;
+    const message = typeof data.message === 'string' ? data.message : passed ? 'Passed checks' : 'Try again';
+
+    setLastResult(itemSlug, {
+      passed,
+      score: typeof data.score === 'number' ? data.score : null,
+      checks: Array.isArray(data.checks)
+        ? data.checks
+        : [
+            {
+              id: 'workspace-message',
+              label: message,
+              pass: passed,
+            },
+          ],
+      timestamp: Date.now(),
+      action: action === 'submit' ? 'submit' : action === 'run' ? 'run' : action === 'reset' ? 'reset' : 'check',
+      message,
+    });
+
+    setStatus(message, progress);
+
+    applyCompletion({
+      action,
+      passed,
+      progress,
+      difficulty: data.difficulty,
+      estMinutes: data.estMinutes,
+      score: data.score,
+    });
+  });
+
+  window.addEventListener('workspace:result', (event) => {
+    const customEvent = event as CustomEvent;
+    const payload = customEvent.detail as {
+      slug?: string;
+      action?: string;
+      passed?: boolean;
+      progress?: number;
+      message?: string;
+      difficulty?: string;
+      estMinutes?: number;
+      score?: number;
+      checks?: Array<{ id: string; label: string; pass: boolean; message?: string }>;
+    };
+    if (!payload || payload.slug !== itemSlug) return;
+    const action = payload.action ?? 'check';
+    const passed = Boolean(payload.passed);
+    const progress = typeof payload.progress === 'number' ? payload.progress : 0;
+    const message = typeof payload.message === 'string' ? payload.message : passed ? 'Passed checks' : 'Try again';
+
+    setLastResult(itemSlug, {
+      passed,
+      score: typeof payload.score === 'number' ? payload.score : null,
+      checks: Array.isArray(payload.checks)
+        ? payload.checks
+        : [
+            {
+              id: 'workspace-result',
+              label: message,
+              pass: passed,
+            },
+          ],
+      timestamp: Date.now(),
+      action: action === 'submit' ? 'submit' : action === 'run' ? 'run' : action === 'reset' ? 'reset' : 'check',
+      message,
+    });
+
+    setStatus(message, progress);
+    applyCompletion({
+      action,
+      passed,
+      progress,
+      difficulty: payload.difficulty,
+      estMinutes: payload.estMinutes,
+      score: payload.score,
+    });
+  });
+
+  window.addEventListener('keydown', (event) => {
+    if (event.ctrlKey && event.key === 'Enter') {
+      event.preventDefault();
+      sendAction('submit');
+    }
+  });
+
+  const tabButtons = Array.from(workspace.querySelectorAll('[data-workspace-tab-button]'));
+  const panels = Array.from(workspace.querySelectorAll('[data-workspace-tab-panel]'));
+  tabButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const target = button.getAttribute('data-workspace-tab-button');
+      tabButtons.forEach((candidate) => {
+        const active = candidate === button;
+        candidate.classList.toggle('workspace-tab--active', active);
+        candidate.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+      panels.forEach((panel) => {
+        const panelId = panel.getAttribute('data-workspace-tab-panel');
+        const active = target === panelId;
+        panel.classList.toggle('workspace-tab-panel--active', active);
+      });
+    });
+  });
+
+  if (layoutMode === 'stacked') {
+    const drawerButtons = Array.from(workspace.querySelectorAll('[data-workspace-drawer-tab-button]'));
+    const drawerPanels = Array.from(workspace.querySelectorAll('[data-workspace-drawer-panel]'));
+    const drawer = workspace.querySelector('[data-workspace-drawer]');
+    const drawerToggle = workspace.querySelector('[data-workspace-drawer-toggle]');
+    const drawerStateKey = `workspace_drawer:${itemSlug}`;
+
+    let drawerState = { activeTab: 'instructions', expanded: true };
+    try {
+      const parsed = JSON.parse(window.localStorage.getItem(drawerStateKey) ?? '{}');
+      drawerState = {
+        activeTab:
+          parsed.activeTab === 'checks' || parsed.activeTab === 'notes' || parsed.activeTab === 'instructions'
+            ? parsed.activeTab
+            : 'instructions',
+        expanded: typeof parsed.expanded === 'boolean' ? parsed.expanded : true,
+      };
+    } catch {
+      drawerState = { activeTab: 'instructions', expanded: true };
+    }
+
+    const applyDrawerState = () => {
+      drawerButtons.forEach((button) => {
+        const id = button.getAttribute('data-workspace-drawer-tab-button');
+        const active = id === drawerState.activeTab;
+        button.classList.toggle('workspace-tab--active', active);
+        button.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+      drawerPanels.forEach((panel) => {
+        const id = panel.getAttribute('data-workspace-drawer-panel');
+        panel.classList.toggle('workspace-drawer-panel--active', id === drawerState.activeTab && drawerState.expanded);
+      });
+      drawer?.classList.toggle('workspace-drawer--open', drawerState.expanded);
+      if (drawerToggle instanceof HTMLButtonElement) {
+        drawerToggle.textContent = drawerState.expanded ? 'Collapse' : 'Expand';
+        drawerToggle.setAttribute('aria-expanded', drawerState.expanded ? 'true' : 'false');
+      }
+      window.localStorage.setItem(drawerStateKey, JSON.stringify(drawerState));
+    };
+
+    drawerButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const id = button.getAttribute('data-workspace-drawer-tab-button');
+        if (!id) return;
+        drawerState.activeTab = id;
+        drawerState.expanded = true;
+        applyDrawerState();
+      });
+    });
+
+    drawerToggle?.addEventListener('click', () => {
+      drawerState.expanded = !drawerState.expanded;
+      applyDrawerState();
+    });
+
+    applyDrawerState();
+  }
+
+  syncFromStore();
+</script>

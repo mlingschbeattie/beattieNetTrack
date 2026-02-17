@@ -1,0 +1,20 @@
+{
+  "id": "assessment-1-3-1",
+  "title": "Assessment 1.3.1 Operating System Fundamentals",
+  "assessmentCode": "1.3.1",
+  "sourceQuestionDocx": "Assessment 1.3.1 Operating System Fundamentals.docx",
+  "sourceAnswerDocx": "Assessment 1.3.1 Operating System Fundamentals Answers.docx",
+  "questions": [
+    {
+      "prompt": "Which OS function manages hardware resources?",
+      "choices": [
+        "Kernel",
+        "Browser",
+        "Text editor",
+        "Spreadsheet"
+      ],
+      "answerIndex": 0,
+      "explanation": "The kernel manages hardware resources."
+    }
+  ]
+}

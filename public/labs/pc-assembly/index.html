@@ -1,0 +1,269 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PC Assembly Simulator - A+ Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./site.css" />
+    
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html">ðŸ  Home</a></li>
+            <li><a href="study-guides.html" class="active">ðŸ“– Study Guides</a></li>
+            <li><a href="learning-tracks.html">ðŸŽ¯ Learning Tracks</a></li>
+            <li><a href="resources.html">ðŸ”¬ Study Hub</a></li>
+            <li><a href="cheat-sheets.html">âš¡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <main id="main-content" class="container">
+      <nav class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <a href="study-guides.html">Study Guides</a>
+        <span class="separator">/</span>
+        <a href="a-plus-guides.html">A+ Guides</a>
+        <span class="separator">/</span>
+        <span class="current">PC Assembly Lab</span>
+      </nav>
+      
+      <h1>PC Assembly Simulator</h1>
+      <div class="subtitle">Hands-On Lab: Build a Compatible PC System</div>
+
+      <div class="section">
+        <h2>Lab Scenario</h2>
+        <div class="info-box" id="scenario-display">
+          <div style="text-align: center; color: #00d4ff; padding: 20px;">
+            <div style="font-size: 1.5em; margin-bottom: 10px;">ðŸ”„ Generating scenario...</div>
+            <div style="font-size: 0.9em;">Loading procedurally generated build challenge</div>
+          </div>
+        </div>
+        <div class="warning-box">
+          <strong>âš  Important:</strong> All components must be compatible with each other. Pay attention to CPU socket types, RAM compatibility, and form factors. The system will validate your selections and provide detailed feedback.
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="lab-container">
+          <div class="lab-grid">
+            <!-- Component Selection Panel -->
+            <div class="lab-panel">
+              <h3>Component Selection</h3>
+              
+              <div class="component-category">
+                <div class="component-category-title">CPU (Processor)</div>
+                <select id="cpu-select" class="component-select">
+                  <option value="">-- Select CPU --</option>
+                  <option value="intel-i5-13600k">Intel Core i5-13600K (LGA1700, DDR5) - $319</option>
+                  <option value="intel-i7-13700k">Intel Core i7-13700K (LGA1700, DDR5) - $409</option>
+                  <option value="intel-i9-13900k">Intel Core i9-13900K (LGA1700, DDR5) - $589</option>
+                  <option value="amd-r5-7600x">AMD Ryzen 5 7600X (AM5, DDR5) - $299</option>
+                  <option value="amd-r7-7700x">AMD Ryzen 7 7700X (AM5, DDR5) - $399</option>
+                  <option value="amd-r9-7900x">AMD Ryzen 9 7900X (AM5, DDR5) - $549</option>
+                  <option value="intel-i5-12600k">Intel Core i5-12600K (LGA1700, DDR4) - $289</option>
+                  <option value="amd-r5-5600x">AMD Ryzen 5 5600X (AM4, DDR4) - $199</option>
+                  <option value="intel-i3-12100">Intel Core i3-12100 (LGA1700, DDR4) - $149</option>
+                  <option value="amd-r3-4100">AMD Ryzen 3 4100 (AM4, DDR4) - $99</option>
+                </select>
+              </div>
+
+              <div class="component-category">
+                <div class="component-category-title">Motherboard</div>
+                <select id="mobo-select" class="component-select">
+                  <option value="">-- Select Motherboard --</option>
+                  <option value="asus-z790-ddr5">ASUS ROG Z790 (LGA1700, DDR5, ATX) - $329</option>
+                  <option value="msi-z790-ddr5">MSI MPG Z790 (LGA1700, DDR5, ATX) - $299</option>
+                  <option value="gigabyte-z790-ddr4">Gigabyte Z790 (LGA1700, DDR4, ATX) - $249</option>
+                  <option value="asus-b650-ddr5">ASUS TUF B650 (AM5, DDR5, ATX) - $189</option>
+                  <option value="msi-x670-ddr5">MSI X670 (AM5, DDR5, ATX) - $279</option>
+                  <option value="asus-b550-ddr4">ASUS B550 (AM4, DDR4, ATX) - $149</option>
+                  <option value="asrock-b660-ddr4">ASRock B660M (LGA1700, DDR4, mATX) - $119</option>
+                  <option value="gigabyte-a520">Gigabyte A520M (AM4, DDR4, mATX) - $79</option>
+                </select>
+              </div>
+
+              <div class="component-category">
+                <div class="component-category-title">RAM (Memory)</div>
+                <select id="ram-select" class="component-select">
+                  <option value="">-- Select RAM --</option>
+                  <option value="corsair-16gb-ddr5">Corsair Vengeance 16GB (2x8GB) DDR5-5600 - $109</option>
+                  <option value="gskill-32gb-ddr5">G.Skill Trident 32GB (2x16GB) DDR5-6000 - $179</option>
+                  <option value="kingston-16gb-ddr5">Kingston Fury 16GB (2x8GB) DDR5-5200 - $99</option>
+                  <option value="corsair-32gb-ddr4">Corsair Vengeance 32GB (2x16GB) DDR4-3200 - $89</option>
+                  <option value="gskill-16gb-ddr4">G.Skill Ripjaws 16GB (2x8GB) DDR4-3600 - $69</option>
+                  <option value="teamgroup-8gb-ddr4">Team T-Force 8GB (2x4GB) DDR4-3200 - $39</option>
+                </select>
+              </div>
+
+              <div class="component-category">
+                <div class="component-category-title">GPU (Graphics Card)</div>
+                <select id="gpu-select" class="component-select">
+                  <option value="">-- Select GPU (optional for some builds) --</option>
+                  <option value="rtx-4060">NVIDIA RTX 4060 8GB - $299</option>
+                  <option value="rtx-4060ti">NVIDIA RTX 4060 Ti 16GB - $499</option>
+                  <option value="rtx-4070">NVIDIA RTX 4070 12GB - $599</option>
+                  <option value="rtx-4070ti">NVIDIA RTX 4070 Ti 12GB - $799</option>
+                  <option value="rx-7600">AMD Radeon RX 7600 8GB - $269</option>
+                  <option value="rx-7700xt">AMD Radeon RX 7700 XT 12GB - $449</option>
+                  <option value="rx-7800xt">AMD Radeon RX 7800 XT 16GB - $499</option>
+                </select>
+              </div>
+
+              <div class="component-category">
+                <div class="component-category-title">Storage</div>
+                <select id="storage-select" class="component-select">
+                  <option value="">-- Select Storage --</option>
+                  <option value="samsung-500gb">Samsung 980 Pro 500GB NVMe - $79</option>
+                  <option value="wd-1tb">WD Black SN850X 1TB NVMe - $129</option>
+                  <option value="samsung-1tb">Samsung 990 Pro 1TB NVMe - $149</option>
+                  <option value="crucial-2tb">Crucial P5 Plus 2TB NVMe - $179</option>
+                  <option value="wd-2tb-sata">WD Blue 2TB SATA SSD - $159</option>
+                  <option value="kingston-500gb-sata">Kingston A400 500GB SATA SSD - $49</option>
+                  <option value="crucial-250gb-sata">Crucial BX500 250GB SATA SSD - $29</option>
+                </select>
+              </div>
+
+              <div class="component-category">
+                <div class="component-category-title">CPU Cooler</div>
+                <select id="cooler-select" class="component-select">
+                  <option value="">-- Select Cooler --</option>
+                  <option value="noctua-nh-d15">Noctua NH-D15 (Air, 165W TDP) - $109</option>
+                  <option value="arctic-34">Arctic Freezer 34 (Air, 150W TDP) - $39</option>
+                  <option value="deepcool-gammaxx">DeepCool GAMMAXX 400 (Air, 130W TDP) - $25</option>
+                  <option value="stock-cooler">Stock Cooler (included with CPU, 95W TDP) - $0</option>
+                  <option value="corsair-h100i">Corsair H100i (240mm AIO, 250W TDP) - $119</option>
+                  <option value="nzxt-x63">NZXT Kraken X63 (280mm AIO, 300W TDP) - $149</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Build Visualization Panel -->
+            <div class="lab-panel">
+              <h3>Your Build</h3>
+              <div class="build-visual">
+                <div id="build-cpu" class="build-slot">
+                  <div class="build-slot-label">ðŸ”² CPU</div>
+                  <div class="build-slot-content">
+                    <span class="build-slot-empty">No CPU selected</span>
+                  </div>
+                </div>
+                
+                <div id="build-mobo" class="build-slot">
+                  <div class="build-slot-label">ðŸ”² Motherboard</div>
+                  <div class="build-slot-content">
+                    <span class="build-slot-empty">No motherboard selected</span>
+                  </div>
+                </div>
+                
+                <div id="build-ram" class="build-slot">
+                  <div class="build-slot-label">ðŸ”² RAM</div>
+                  <div class="build-slot-content">
+                    <span class="build-slot-empty">No RAM selected</span>
+                  </div>
+                </div>
+                
+                <div id="build-gpu" class="build-slot">
+                  <div class="build-slot-label">ðŸ”² GPU</div>
+                  <div class="build-slot-content">
+                    <span class="build-slot-empty">No GPU selected</span>
+                  </div>
+                </div>
+                
+                <div id="build-storage" class="build-slot">
+                  <div class="build-slot-label">ðŸ”² Storage</div>
+                  <div class="build-slot-content">
+                    <span class="build-slot-empty">No storage selected</span>
+                  </div>
+                </div>
+                
+                <div id="build-cooler" class="build-slot">
+                  <div class="build-slot-label">ðŸ”² CPU Cooler</div>
+                  <div class="build-slot-content">
+                    <span class="build-slot-empty">No cooler selected</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="budget-meter">
+                <div class="budget-label">
+                  <span>Budget</span>
+                  <span id="budget-display">$0 / $0</span>
+                </div>
+                <div class="budget-bar">
+                  <div id="budget-fill" class="budget-fill" style="width: 0%"></div>
+                  <div class="budget-text" id="budget-percent">0%</div>
+                </div>
+              </div>
+
+              <div class="compatibility-status" id="compatibility-status">
+                <div style="color: #00d4ff; margin-bottom: 10px; font-weight: 700;">Compatibility Check:</div>
+                <div id="compat-list">
+                  <div class="compat-item">
+                    <span class="compat-icon">âšª</span>
+                    <span>Waiting for component selection...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lab-controls">
+            <button id="btn-validate" class="lab-btn primary">Validate Build</button>
+            <button id="btn-submit" class="lab-btn primary" disabled>Submit for Grading</button>
+            <button id="btn-reset" class="lab-btn danger">New Scenario</button>
+          </div>
+
+          <div id="results-panel" class="results-panel" style="display: none;">
+            <h3 style="color: #00d4ff; text-align: center; margin-bottom: 15px;">Build Evaluation Results</h3>
+            <div id="score-display" class="score-display"></div>
+            <div id="feedback-list" class="feedback-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Learning Objectives</h2>
+        <div class="info-box">
+          This lab tests your understanding of:
+          <ul style="margin: 10px 0 0 20px; line-height: 1.8;">
+            <li><strong>CPU Socket Compatibility:</strong> Matching CPU to motherboard socket (LGA1700, AM5, AM4)</li>
+            <li><strong>RAM Type Matching:</strong> DDR5 vs DDR4 compatibility with CPU and motherboard</li>
+            <li><strong>Performance Requirements:</strong> Selecting appropriate components for specific use cases</li>
+            <li><strong>Storage Standards:</strong> Understanding NVMe vs SATA SSD performance</li>
+            <li><strong>Cooling Requirements:</strong> Matching cooler TDP rating to CPU heat output</li>
+            <li><strong>Budget Management:</strong> Balancing performance with cost constraints</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./site.js"></script>
+  </body>
+</html>
+

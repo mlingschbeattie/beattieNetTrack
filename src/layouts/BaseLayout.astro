@@ -1,0 +1,92 @@
+---
+import '../styles/global.css';
+
+const { title = 'Beattie Tech' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <script is:inline>
+      (() => {
+        try {
+          const stored = window.localStorage.getItem('theme');
+          const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const theme = stored === 'light' || stored === 'dark' ? stored : prefersDark ? 'dark' : 'light';
+          document.documentElement.dataset.theme = theme;
+        } catch {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <slot />
+    <script>
+      document.documentElement.classList.add('js');
+      const themeToggle = document.querySelector('[data-theme-toggle]');
+      const themeIcon = document.querySelector('[data-theme-icon]');
+      const themeLabel = document.querySelector('[data-theme-label]');
+
+      const applyThemeUi = (theme: 'light' | 'dark') => {
+        const isLight = theme === 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+        if (themeIcon) themeIcon.textContent = isLight ? '☀️' : '🌙';
+        if (themeLabel) themeLabel.textContent = isLight ? 'Light' : 'Dark';
+        if (themeToggle instanceof HTMLButtonElement) {
+          themeToggle.setAttribute('aria-label', 'Toggle color theme');
+          themeToggle.setAttribute('aria-pressed', isLight ? 'false' : 'true');
+        }
+      };
+
+      const currentTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+      applyThemeUi(currentTheme);
+
+      themeToggle?.addEventListener('click', () => {
+        const nextTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        window.localStorage.setItem('theme', nextTheme);
+        applyThemeUi(nextTheme);
+      });
+
+      const toggleButton = document.querySelector('[data-sidebar-toggle]');
+      const overlay = document.querySelector('[data-sidebar-close]');
+
+      const closeSidebar = () => document.body.classList.remove('sidebar-open');
+
+      toggleButton?.addEventListener('click', () => {
+        document.body.classList.toggle('sidebar-open');
+      });
+
+      overlay?.addEventListener('click', closeSidebar);
+
+      window.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          closeSidebar();
+        }
+      });
+
+      const markReady = (selector: string, className: string) => {
+        if (document.querySelector(selector)) {
+          document.documentElement.classList.add(className);
+          return;
+        }
+        const observer = new MutationObserver(() => {
+          if (!document.querySelector(selector)) return;
+          document.documentElement.classList.add(className);
+          observer.disconnect();
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+        window.setTimeout(() => observer.disconnect(), 4000);
+      };
+
+      markReady('[data-testid="status-level"]', 'progress-ready');
+      markReady('.sidebar-progress', 'sidebar-ready');
+    </script>
+  </body>
+</html>

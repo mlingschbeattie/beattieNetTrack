@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Authentication & Sessions Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css" />
+    
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="study-guides.html">📖 Study Guides</a></li>
+            <li><a href="learning-tracks.html">🎯 Learning Tracks</a></li>
+            <li><a href="resources.html" class="active">🔬 Study Hub</a></li>
+            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <main id="main-content" class="container">
+      <nav class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <a href="resources.html">Study Hub</a>
+        <span class="separator">/</span>
+        <span class="current">Authentication Demo</span>
+      </nav>
+      
+      <h1>Authentication & Sessions</h1>
+      
+      <p style="font-size: 1.1em; margin-bottom: 30px;">Learn the difference between authentication and authorization, and how sessions keep users logged in</p>
+      
+      <!-- Key Concepts -->
+      <div class="demo-section">
+        <h2>Core Concepts</h2>
+        
+        <div style="margin: 20px 0;">
+          <h3 style="color: #00d4ff; margin-bottom: 10px;">🔑 Authentication</h3>
+          <p>WHO are you? Verifying user identity (login with username/password, biometric, etc.)</p>
+        </div>
+        
+        <div style="margin: 20px 0;">
+          <h3 style="color: #00d4ff; margin-bottom: 10px;">👤 Authorization</h3>
+          <p>WHAT can you do? Determining what resources/actions an authenticated user can access</p>
+        </div>
+        
+        <div style="margin: 20px 0;">
+          <h3 style="color: #00d4ff; margin-bottom: 10px;">📍 Session</h3>
+          <p>How does the server remember you after login? Maintains authenticated state across multiple requests</p>
+        </div>
+      </div>
+      
+      <!-- Authentication Flow -->
+      <div class="demo-section">
+        <h2>Authentication Flow (Session-Based)</h2>
+        
+        <div class="flow-diagram">
+          <div><strong>1. User Submits Login</strong></div>
+          <div style="margin-left: 20px;">POST /login → username: alice, password: secret123</div>
+          <br>
+          <div><strong>2. Server Verifies</strong></div>
+          <div style="margin-left: 20px;">Hash password → Compare with DB → MATCH ✓</div>
+          <br>
+          <div><strong>3. Server Creates Session</strong></div>
+          <div style="margin-left: 20px;">Generate unique session ID: abc123def456</div>
+          <div style="margin-left: 20px;">Store in-memory or database: {sid: abc123..., user: alice, expires: ...}</div>
+          <br>
+          <div><strong>4. Set Cookie</strong></div>
+          <div style="margin-left: 20px;">HTTP Response header: Set-Cookie: sessionid=abc123def456; HttpOnly; Secure</div>
+          <br>
+          <div><strong>5. Browser Stores Cookie</strong></div>
+          <div style="margin-left: 20px;">Browser remembers: sessionid=abc123def456</div>
+          <br>
+          <div><strong>6. Future Requests</strong></div>
+          <div style="margin-left: 20px;">Browser auto-sends: Cookie: sessionid=abc123def456</div>
+          <div style="margin-left: 20px;">Server validates session → Request authorized ✓</div>
+        </div>
+      </div>
+      
+      <!-- Session vs Token -->
+      <div class="demo-section">
+        <h2>Session-Based vs Token-Based Auth</h2>
+        
+        <table class="comparison-table">
+          <tr>
+            <th>Aspect</th>
+            <th>Sessions (Traditional)</th>
+            <th>JWT Tokens (Modern)</th>
+          </tr>
+          <tr>
+            <td><strong>Storage</strong></td>
+            <td>Server-side (database/memory)</td>
+            <td>Client-side (token itself)</td>
+          </tr>
+          <tr>
+            <td><strong>Stateless</strong></td>
+            <td>❌ Server maintains state</td>
+            <td>✓ Server doesn't store sessions</td>
+          </tr>
+          <tr>
+            <td><strong>Scalability</strong></td>
+            <td>⚠️ Harder (need shared session store)</td>
+            <td>✓ Easier (each server can verify)</td>
+          </tr>
+          <tr>
+            <td><strong>Security</strong></td>
+            <td>✓ Very secure (server controls)</td>
+            <td>⚠️ Depends on secret key + HTTPS</td>
+          </tr>
+          <tr>
+            <td><strong>Revocation</strong></td>
+            <td>✓ Instant (delete from server)</td>
+            <td>❌ Hard (token still valid until expiry)</td>
+          </tr>
+          <tr>
+            <td><strong>Use Case</strong></td>
+            <td>✓ Web apps (traditional)</td>
+            <td>✓ APIs, mobile apps, microservices</td>
+          </tr>
+        </table>
+      </div>
+      
+      <!-- Common Vulnerabilities -->
+      <div class="demo-section">
+        <h2>Authentication Vulnerabilities</h2>
+        
+        <h3 style="color: #ff4444; margin-top: 15px;">❌ Session Fixation</h3>
+        <div class="code-block">
+<pre>Attacker: Captures valid session ID (or guesses one)
+Attacker: Tricks user into using that session
+Attacker: Logs in with same session ID
+Result: Attacker and user share same authenticated session</pre>
+        </div>
+        <div class="safe">Prevention: Regenerate session ID after successful login</div>
+        
+        <h3 style="color: #ff4444; margin-top: 20px;">❌ Weak Session ID</h3>
+        <div class="code-block">
+<pre>Bad session ID: sessionid=1, 2, 3, 4... (sequential)
+Bad session ID: sessionid=username_timestamp (predictable)
+Attacker: Guesses next session ID → impersonates user</pre>
+        </div>
+        <div class="safe">Prevention: Use cryptographically random session IDs (256+ bits)</div>
+        
+        <h3 style="color: #ff4444; margin-top: 20px;">❌ Session Hijacking</h3>
+        <div class="code-block">
+<pre>Attacker: Intercepts HTTP traffic (unencrypted)
+Attacker: Steals session cookie from network
+Attacker: Uses cookie to impersonate user</pre>
+        </div>
+        <div class="safe">Prevention: Use HTTPS, set HttpOnly flag, set Secure flag</div>
+        
+        <h3 style="color: #ff4444; margin-top: 20px;">❌ No Logout</h3>
+        <div class="code-block">
+<pre>App closes browser but never invalidates session
+Server still accepts old session ID for days/weeks
+Attacker finds old session cookie → Still logged in!</pre>
+        </div>
+        <div class="safe">Prevention: Invalidate session on logout, set appropriate expiry</div>
+      </div>
+      
+      <!-- Best Practices -->
+      <div class="demo-section">
+        <h2>Authentication Best Practices</h2>
+        <ul style="font-size: 1.1em; line-height: 2;">
+          <li>✓ Always use HTTPS (never HTTP for auth)</li>
+          <li>✓ Use cryptographically random session/token IDs</li>
+          <li>✓ Set HttpOnly and Secure flags on auth cookies</li>
+          <li>✓ Regenerate session ID after successful login</li>
+          <li>✓ Implement proper logout (invalidate session)</li>
+          <li>✓ Set reasonable session timeout (30 min to 24 hours)</li>
+          <li>✓ Hash and salt passwords (bcrypt, Argon2)</li>
+          <li>✓ Implement rate limiting on login attempts</li>
+          <li>✓ Use multi-factor authentication (MFA) for high-value accounts</li>
+          <li>✓ Log authentication events for security monitoring</li>
+          <li>✓ Use established libraries (don't roll your own)</li>
+        </ul>
+      </div>
+    </div>
+    <script type="module" src="site.js"></script>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+---
+import LabFrame from '../LabFrame.astro';
+import ActivityCard from '../ActivityCard.astro';
+
+interface Props {
+  slug: string;
+  title: string;
+  labPath?: string;
+  labUrl?: string;
+}
+
+const { slug, title, labPath, labUrl } = Astro.props as Props;
+const src = labPath ?? labUrl;
+---
+
+{src ? (
+  <LabFrame slug={slug} src={src} title={title} />
+) : (
+  <ActivityCard>
+    <h3>Lab unavailable</h3>
+    <p>This lab does not have a configured source yet.</p>
+  </ActivityCard>
+)}

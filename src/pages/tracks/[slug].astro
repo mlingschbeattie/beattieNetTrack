@@ -1,0 +1,175 @@
+---
+import { getCollection } from 'astro:content';
+import AppShell from '../../layouts/AppShell.astro';
+import TrackModulesView from '../../components/tracks/TrackModulesView.astro';
+import TrackProgressSummary from '../../components/islands/TrackProgressSummary.tsx';
+import { getDefaultModuleTitle, mapLessonToLegacyActivity } from '../../lib/trackCatalog';
+import { getTrackSectionLessonSlugs } from '../../lib/trackSections';
+
+export async function getStaticPaths() {
+  const tracks = await getCollection('tracks');
+  return tracks
+    .filter((track) => track.slug !== 'legacy')
+    .map((track) => ({ params: { slug: track.slug }, props: { track } }));
+}
+
+const { track } = Astro.props;
+const [allTracks, allModules, allLabs, allQuizzes, allActivities, allLessons] = await Promise.all([
+  getCollection('tracks'),
+  getCollection('modules'),
+  getCollection('labs'),
+  getCollection('quizzes'),
+  getCollection('activities'),
+  getCollection('lessons'),
+]);
+
+const lessonMap = Object.fromEntries(allLessons.map((entry) => [entry.slug, entry]));
+
+const toModuleId = (entry: { moduleId?: string; module?: string }, fallback = 'general') => {
+  if (entry.moduleId) return entry.moduleId;
+  if (entry.module) return entry.module.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || fallback;
+  return fallback;
+};
+
+const moduleGroups = new Map<string, { moduleId: string; title: string; description?: string; order: number; items: Array<{ slug: string; type: 'lab' | 'quiz' | 'activity'; title: string; description: string; difficulty?: string; estMinutes?: number; order: number; href: string }> }>();
+
+for (const moduleEntry of allModules.filter((entry) => entry.data.track === track.slug)) {
+  moduleGroups.set(moduleEntry.data.moduleId, {
+    moduleId: moduleEntry.data.moduleId,
+    title: moduleEntry.data.title,
+    description: moduleEntry.data.description,
+    order: moduleEntry.data.order,
+    items: [],
+  });
+}
+
+const addItem = (item: { slug: string; type: 'lab' | 'quiz' | 'activity'; title: string; description: string; track: string; moduleId: string; order: number; difficulty?: string; estMinutes?: number }) => {
+  if (item.track !== track.slug) return;
+  const group = moduleGroups.get(item.moduleId) ?? {
+    moduleId: item.moduleId,
+    title: getDefaultModuleTitle(item.moduleId),
+    description: '',
+    order: 999,
+    items: [],
+  };
+  group.items.push({
+    slug: item.slug,
+    type: item.type,
+    title: item.title,
+    description: item.description,
+    difficulty: item.difficulty,
+    estMinutes: item.estMinutes,
+    order: item.order,
+    href:
+      item.type === 'lab'
+        ? `/labs/${item.slug}`
+        : item.type === 'quiz'
+          ? `/quizzes/${item.slug}`
+          : `/workspace/activity/${item.slug}`,
+  });
+  moduleGroups.set(item.moduleId, group);
+};
+
+for (const lab of allLabs) {
+  addItem({
+    slug: lab.slug,
+    type: 'lab',
+    title: lab.data.title,
+    description: lab.data.description ?? 'Hands-on lab workspace',
+    track: lab.data.track,
+    moduleId: toModuleId({ moduleId: lab.data.moduleId, module: lab.data.module }),
+    order: lab.data.order ?? 0,
+    difficulty: lab.data.difficulty,
+    estMinutes: lab.data.estimatedMinutes ?? lab.data.estMinutes,
+  });
+}
+
+for (const quiz of allQuizzes) {
+  addItem({
+    slug: quiz.slug,
+    type: 'quiz',
+    title: quiz.data.title,
+    description: quiz.data.description ?? 'Quiz workspace',
+    track: quiz.data.track,
+    moduleId: toModuleId({ moduleId: quiz.data.moduleId, module: quiz.data.module }),
+    order: quiz.data.order ?? 0,
+    difficulty: quiz.data.difficulty,
+    estMinutes: quiz.data.estMinutes,
+  });
+}
+
+for (const activity of allActivities) {
+  addItem({
+    slug: activity.slug,
+    type: 'activity',
+    title: activity.data.title,
+    description: activity.data.description ?? 'Workspace activity',
+    track: activity.data.track,
+    moduleId: activity.data.moduleId,
+    order: activity.data.order ?? 0,
+    difficulty: activity.data.difficulty,
+    estMinutes: activity.data.estMinutes,
+  });
+}
+
+for (const lesson of allLessons) {
+  const legacyActivity = mapLessonToLegacyActivity(lesson);
+  if (!legacyActivity) continue;
+  addItem(legacyActivity);
+}
+
+const modules = Array.from(moduleGroups.values())
+  .map((module) => ({
+    ...module,
+    items: module.items
+      .sort((a, b) => a.order - b.order || a.title.localeCompare(b.title))
+      .map(({ order: _order, ...item }) => item),
+  }))
+  .filter((module) => module.items.length > 0)
+  .sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
+
+const primaryTrackSlugs = ['pc-technician', 'network-engineer', 'cybersecurity-engineer'];
+const trackSwitcher = allTracks.filter((entry) => primaryTrackSlugs.includes(entry.slug) && entry.slug !== track.slug);
+---
+
+<AppShell
+  title={`Track • ${track.data.title}`}
+  tracks={allTracks}
+  activeTrack={track.slug}
+  currentTrack={track}
+  lessonMap={lessonMap}
+  breadcrumbs={[
+    { label: 'Home', href: '/' },
+    { label: 'Learning Tracks', href: '/tracks' },
+    { label: track.data.title },
+  ]}
+>
+  <section class="hero">
+    <h1 class="hero__title">{track.data.title}</h1>
+    <p class="hero__subtitle">{track.data.description}</p>
+    {primaryTrackSlugs.includes(track.slug) && trackSwitcher.length > 0 && (
+      <p>
+        <strong>Switch track:</strong>{' '}
+        {trackSwitcher.map((entry, index) => (
+          <Fragment>
+            {index > 0 && ' · '}
+            <a class="btn-link" href={`/tracks/${entry.slug}`}>{entry.data.title}</a>
+          </Fragment>
+        ))}
+      </p>
+    )}
+  </section>
+
+  <div class="track-progress__wrap">
+    <TrackProgressSummary client:only="react" lessonSlugs={getTrackSectionLessonSlugs(track)} />
+  </div>
+
+  {modules.length > 0 ? (
+    <TrackModulesView modules={modules} />
+  ) : (
+    <article class="card">
+      <h3>No modules published yet</h3>
+      <p>This track is configured, but no module activities are available right now.</p>
+    </article>
+  )}
+</AppShell>

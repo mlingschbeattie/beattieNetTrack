@@ -1,0 +1,20 @@
+{
+  "id": "assessment-1-1-2",
+  "title": "Assessment 1.1.2 Device Categories and Use Cases",
+  "assessmentCode": "1.1.2",
+  "sourceQuestionDocx": "Assessment 1.1.2 Device Categories and Use Cases.docx",
+  "sourceAnswerDocx": "Assessment 1.1.2 Device Categories and Use Cases Answers.docx",
+  "questions": [
+    {
+      "prompt": "Which device is most suitable for portable field data entry?",
+      "choices": [
+        "Rack server",
+        "Tablet",
+        "Desktop tower",
+        "Switch"
+      ],
+      "answerIndex": 1,
+      "explanation": "Tablets are portable and suitable for field use."
+    }
+  ]
+}

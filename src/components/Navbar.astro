@@ -1,0 +1,89 @@
+---
+import ProgressStatus from './islands/ProgressStatus.tsx';
+
+interface Props {
+  activePath?: string;
+}
+
+type NavItem = {
+  label: string;
+  href: string;
+};
+
+const { activePath = '/' } = Astro.props as Props;
+
+const navItems: NavItem[] = [
+  { label: 'Home', href: '/' },
+  { label: 'Tour', href: '/tour' },
+  { label: 'Study Guides', href: '/study-guides' },
+  { label: 'Learning Tracks', href: '/tracks' },
+  { label: 'PC Technician', href: '/tracks/pc-technician' },
+  { label: 'Network Engineer', href: '/tracks/network-engineer' },
+  { label: 'Cybersecurity Engineer', href: '/tracks/cybersecurity-engineer' },
+  { label: 'Legacy (Archived)', href: '/tracks/legacy' },
+  { label: 'Study Hub', href: '/quizzes' },
+  { label: 'Cheat Sheets', href: '/legacy/cheat-sheets.html' },
+];
+
+const isActive = (href: string) => {
+  if (href === '/') return activePath === '/';
+  return activePath.startsWith(href);
+};
+---
+
+<nav class="top-nav">
+  <div class="top-nav__inner container">
+    <div class="top-nav__brand">[ BEATTIE ] <span>TECH</span></div>
+    <div class="top-nav__links">
+      {navItems.map((item) => (
+        <a
+          class={`top-nav__link ${isActive(item.href) ? 'top-nav__link--active' : ''}`}
+          href={item.href}
+        >
+          {item.label}
+        </a>
+      ))}
+    </div>
+    <div class="top-nav__status">
+      <button
+        class="theme-toggle"
+        type="button"
+        data-theme-toggle
+        aria-label="Toggle color theme"
+        aria-pressed="true"
+        title="Toggle theme"
+      >
+        <span aria-hidden="true" data-theme-icon>🌙</span>
+        <span data-theme-label>Dark</span>
+      </button>
+      <div class="top-nav__status-slot" data-progress-slot>
+        <div class="top-nav__status-skeleton">
+          <div class="status-pill">
+            <span class="status-pill__icon">⚡</span>
+            <div>
+              <div class="status-pill__label">Level</div>
+              <div class="status-pill__value">--</div>
+            </div>
+          </div>
+          <div class="status-pill">
+            <span class="status-pill__icon">⭐</span>
+            <div>
+              <div class="status-pill__label">XP</div>
+              <div class="status-pill__value">--</div>
+            </div>
+          </div>
+          <div class="status-pill">
+            <span class="status-pill__icon">🔥</span>
+            <div>
+              <div class="status-pill__label">Streak</div>
+              <div class="status-pill__value">--</div>
+            </div>
+          </div>
+        </div>
+        <div class="top-nav__status-react">
+          <ProgressStatus client:only="react" />
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

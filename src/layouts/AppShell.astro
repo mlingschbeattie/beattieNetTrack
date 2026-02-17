@@ -1,0 +1,56 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Navbar from '../components/Navbar.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import RightPanel from '../components/islands/RightPanel.tsx';
+
+const {
+  title,
+  tracks = [],
+  activeTrack,
+  activeLesson,
+  currentTrack,
+  breadcrumbs = [],
+  lessonMap = {},
+  showRightPanel = false,
+  rightPanelHints = [],
+  rightPanelChecklist = [],
+} = Astro.props;
+const activePath = Astro.url.pathname;
+---
+
+<BaseLayout title={title}>
+  <Navbar activePath={activePath} />
+  <Breadcrumbs items={breadcrumbs} />
+  <div class="app-shell">
+    <Sidebar
+      tracks={tracks}
+      activeTrack={activeTrack}
+      activeLesson={activeLesson}
+      currentTrack={currentTrack}
+      lessonMap={lessonMap}
+    />
+    <div class="sidebar-overlay" data-sidebar-close></div>
+    <main class="content-pane">
+      <div class={`content-wrap container ${showRightPanel ? 'container--workspace' : ''}`}>
+        <button class="sidebar-toggle" type="button" data-sidebar-toggle>
+          ☰ Menu
+        </button>
+        <div class={`content-stage ${showRightPanel ? 'content-stage--with-panel' : ''}`}>
+          <div class="content-main">
+            <slot />
+          </div>
+          {showRightPanel && (
+            <RightPanel
+              routePath={activePath}
+              hints={rightPanelHints}
+              checklist={rightPanelChecklist}
+              client:only="react"
+            />
+          )}
+        </div>
+      </div>
+    </main>
+  </div>
+</BaseLayout>

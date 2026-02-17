@@ -1,0 +1,84 @@
+---
+import { getCollection } from 'astro:content';
+import AppShell from '../../layouts/AppShell.astro';
+import LessonHeader from '../../components/LessonHeader.astro';
+import LessonNav from '../../components/LessonNav.astro';
+import Callout from '../../components/Callout.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+import { normalizeLessonMeta } from '../../lib/lessonMeta';
+import { getTrackSectionLessonSlugs, normalizeSectionItem } from '../../lib/trackSections';
+
+export async function getStaticPaths() {
+  const lessons = await getCollection('lessons');
+  return lessons.map((lesson) => ({ params: { slug: lesson.slug }, props: { lesson } }));
+}
+
+const { lesson } = Astro.props;
+const allTracks = await getCollection('tracks');
+const allLessons = await getCollection('lessons');
+const { Content } = await lesson.render();
+const meta = normalizeLessonMeta(lesson.data);
+
+const url = new URL(Astro.request.url);
+const trackParam = url.searchParams.get('track');
+
+const lessonMap = Object.fromEntries(allLessons.map((entry) => [entry.slug, entry]));
+const trackFromParam = allTracks.find((entry) => entry.slug === trackParam);
+const trackFromFrontmatter = lesson.data.track
+  ? allTracks.find((entry) => entry.slug === lesson.data.track)
+  : null;
+const trackFromSections = allTracks.find((entry) =>
+  entry.data.sections?.some((section) =>
+    section.lessons.some((item) => {
+      const normalized = normalizeSectionItem(item as string | { type: 'lesson' | 'lab' | 'quiz'; slug: string });
+      return normalized.type === 'lesson' && normalized.slug === lesson.slug;
+    })
+  )
+);
+
+const currentTrack = trackFromParam ?? trackFromFrontmatter ?? trackFromSections ?? null;
+
+const orderedLessonSlugs = currentTrack
+  ? getTrackSectionLessonSlugs(currentTrack)
+  : [];
+
+const orderedLessons = orderedLessonSlugs.length
+  ? orderedLessonSlugs.map((slug) => lessonMap[slug]).filter(Boolean)
+  : allLessons
+      .filter((entry) => (lesson.data.track ? entry.data.track === lesson.data.track : true))
+      .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+
+const currentIndex = orderedLessons.findIndex((entry) => entry.slug === lesson.slug);
+const prev = currentIndex > 0 ? orderedLessons[currentIndex - 1] : null;
+const next = currentIndex >= 0 && currentIndex < orderedLessons.length - 1 ? orderedLessons[currentIndex + 1] : null;
+---
+
+<AppShell
+  title={`Lesson • ${lesson.data.title}`}
+  tracks={allTracks}
+  activeTrack={currentTrack?.slug ?? lesson.data.track}
+  activeLesson={lesson.slug}
+  currentTrack={currentTrack}
+  lessonMap={lessonMap}
+  breadcrumbs={[
+    { label: 'Home', href: '/' },
+    { label: 'Learning Tracks', href: '/tracks' },
+    currentTrack ? { label: currentTrack.data.title, href: `/tracks/${currentTrack.slug}` } : null,
+    { label: lesson.data.title },
+  ].filter(Boolean)}
+>
+  <LessonHeader
+    title={lesson.data.title}
+    description={meta.description}
+    difficulty={meta.difficulty}
+    estMinutes={meta.estMinutes}
+    tags={lesson.data.tags}
+    lessonSlug={lesson.slug}
+  />
+
+  <section class="lesson-body">
+    <Content components={{ Callout, CodeBlock }} />
+  </section>
+
+  <LessonNav prev={prev} next={next} />
+</AppShell>

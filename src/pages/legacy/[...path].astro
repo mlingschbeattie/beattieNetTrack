@@ -1,0 +1,67 @@
+---
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import AppShell from '../../layouts/AppShell.astro';
+import LegacyBanner from '../../components/LegacyBanner.astro';
+import LegacyHtml from '../../components/LegacyHtml.astro';
+
+const currentDir = path.dirname(fileURLToPath(import.meta.url));
+const legacyRoot = path.resolve(currentDir, '../../../public/legacy');
+
+const normalizeRelativePath = (value: string) => value.replace(/\\/g, '/').replace(/^\/+/, '');
+
+type LegacyPagePath = { path: string };
+type LegacyPageProps = {
+  safePath: string;
+  html: string;
+};
+
+export async function getStaticPaths() {
+  const walkHtmlFiles = async (dir: string, baseDir: string): Promise<string[]> => {
+    const entries = await fs.readdir(dir, { withFileTypes: true });
+    const files: string[] = [];
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        files.push(...(await walkHtmlFiles(fullPath, baseDir)));
+        continue;
+      }
+      if (!entry.isFile() || !entry.name.toLowerCase().endsWith('.html')) {
+        continue;
+      }
+      files.push(normalizeRelativePath(path.relative(baseDir, fullPath)));
+    }
+    return files;
+  };
+
+  try {
+    const files = await walkHtmlFiles(legacyRoot, legacyRoot);
+    const paths = await Promise.all(
+      files.map(async (safePath) => {
+        const fullPath = path.resolve(legacyRoot, safePath);
+        const raw = await fs.readFile(fullPath, 'utf-8');
+        return {
+          params: { path: safePath } satisfies LegacyPagePath,
+          props: {
+            safePath,
+            html: raw,
+          } satisfies LegacyPageProps,
+        };
+      })
+    );
+    return paths;
+  } catch {
+    return [];
+  }
+}
+
+const { safePath, html } = Astro.props as LegacyPageProps;
+---
+
+<AppShell title={`Legacy • ${safePath}`}>
+  <LegacyBanner />
+  <article class="legacy-content">
+    <LegacyHtml html={html} />
+  </article>
+</AppShell>

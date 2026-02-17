@@ -1,0 +1,47 @@
+---
+title: Network Fundamentals Checkpoint
+description: Validate core networking concepts before advancing.
+slug: network-fundamentals-checkpoint
+track: network-engineer
+moduleId: net.fundamentals.addressing
+order: 1
+passThreshold: 70
+tags: ["networking", "quiz", "fundamentals"]
+hints:
+  - Read each option fully before selecting an answer.
+  - For multi-select questions, verify all correct choices are included.
+  - For short answers, use exact command syntax expected by the prompt.
+checklist:
+  - Answered every question
+  - Reached pass threshold
+  - Reviewed failed items before retry
+questions:
+  - id: q1
+    type: single
+    prompt: Which OSI layer handles logical addressing with IP?
+    options:
+      - Data Link
+      - Network
+      - Session
+      - Transport
+    correctIndex: 1
+    explanation: IP addressing is handled at Layer 3 (Network).
+  - id: q2
+    type: multi
+    prompt: Which are private IPv4 ranges?
+    options:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 8.8.8.8
+      - 192.168.0.0/16
+    correctIndices: [0, 1, 3]
+    explanation: RFC1918 private ranges are 10/8, 172.16/12, and 192.168/16.
+  - id: q3
+    type: short
+    prompt: Enter the command to display Windows routing table.
+    acceptedAnswers:
+      - route print
+    explanation: Use route print in Windows terminals.
+---
+
+Checkpoint quiz for networking fundamentals.

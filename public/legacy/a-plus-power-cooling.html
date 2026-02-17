@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Power & Cooling - A+ Study Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css" />
+    
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="study-guides.html" class="active">📖 Study Guides</a></li>
+            <li><a href="learning-tracks.html">🎯 Learning Tracks</a></li>
+            <li><a href="resources.html">🔬 Study Hub</a></li>
+            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <main id="main-content" class="container">
+      <nav class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <a href="study-guides.html">Study Guides</a>
+        <span class="separator">/</span>
+        <a href="a-plus-guides.html">A+ Guides</a>
+        <span class="separator">/</span>
+        <span class="current">Power & Cooling</span>
+      </nav>
+      
+      <h1>Power & Cooling Systems</h1>
+      <div class="subtitle">CompTIA A+ - PSUs, thermal management, and efficiency ratings</div>
+
+      <div class="section">
+        <h2>ELI5: Power & Cooling</h2>
+        <div class="info-box">
+          Computers are like ovens. They need stable power to run and active cooling so they don't overheat and break. The power supply is like the wall outlet, and cooling is like the air vent.
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Practical Exercises</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">PSU Sizing</div><div class="description">Calculate wattage for a sample build with 25% headroom</div></div>
+          <div class="command-item"><div class="command">Airflow Diagram</div><div class="description">Draw intake vs exhaust fan orientation for a case</div></div>
+          <div class="command-item"><div class="command">Temp Monitoring</div><div class="description">Identify normal vs critical CPU/GPU temps</div></div>
+          <div class="command-item"><div class="command">80+ Ratings</div><div class="description">Match Bronze/Gold/Platinum to efficiency</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Power Supplies (PSU)</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">AC to DC Conversion</div><div class="description">Wall provides AC; computer needs DC</div></div>
+          <div class="command-item"><div class="command">Wattage Rating</div><div class="description">Max power output (250W to 1000W+)</div></div>
+          <div class="command-item"><div class="command">80+ Certification</div><div class="description">Efficiency rating (Bronze, Gold, Platinum)</div></div>
+          <div class="command-item"><div class="command">Connector Types</div><div class="description">20/24-pin ATX, 8-pin CPU, 6/8-pin PCIe</div></div>
+          <div class="command-item"><div class="command">Modularity</div><div class="description">Full/semi/non-modular cable management</div></div>
+          <div class="command-item"><div class="command">Ripple</div><div class="description">Voltage fluctuation (lower is better)</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Selecting the Right Wattage</h2>
+        <div class="example-block">
+          <div class="example-title">Power Calculation Example</div>
+          <div class="example-code">CPU: 65W
+GPU: 300W
+Motherboard/RAM/Storage: 50W
+Total: 415W
+
+Recommended PSU: 415W × 1.25 = ~520W (80+ Bronze minimum)
+Better choice: 650W (leaves headroom, longer lifespan)</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Cooling Solutions</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">Air Cooling</div><div class="description">Fans + heatsinks (most common, affordable)</div></div>
+          <div class="command-item"><div class="command">Liquid Cooling</div><div class="description">Water or coolant (better performance, pricey)</div></div>
+          <div class="command-item"><div class="command">Thermal Paste</div><div class="description">Fills gaps between CPU and heatsink</div></div>
+          <div class="command-item"><div class="command">Case Airflow</div><div class="description">Intake vs exhaust fan direction</div></div>
+          <div class="command-item"><div class="command">Fan Speed Control</div><div class="description">PWM (pulse width modulation) for RPM</div></div>
+          <div class="command-item"><div class="command">Thermal Throttling</div><div class="description">CPU slows down if too hot</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Power Connectors & Cables</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">24‑pin ATX</div><div class="description">Main motherboard power</div></div>
+          <div class="command-item"><div class="command">4/8‑pin EPS</div><div class="description">CPU power connector</div></div>
+          <div class="command-item"><div class="command">6/8‑pin PCIe</div><div class="description">GPU power connector</div></div>
+          <div class="command-item"><div class="command">SATA Power</div><div class="description">Power for drives and accessories</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Power Protection</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">Surge Protector</div><div class="description">Guards against voltage spikes</div></div>
+          <div class="command-item"><div class="command">UPS</div><div class="description">Battery backup during power loss</div></div>
+          <div class="command-item"><div class="command">Line Conditioner</div><div class="description">Smooths noisy power</div></div>
+          <div class="command-item"><div class="command">Brownout</div><div class="description">Low voltage event (can cause instability)</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Temperature Targets</h2>
+        <div class="example-block">
+          <div class="example-title">CPU/GPU Safe Ranges</div>
+          <div class="example-code">Idle: 30–45°C (86–113°F)
+Gaming/Load: 60–80°C (140–176°F)
+Danger Zone: Above 90°C (194°F)
+
+• Modern CPUs can handle 100°C+
+• Sustained high temps reduce lifespan
+• Thermal paste degrades over 3–5 years</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Exam Facts</h2>
+        <div class="example-block">
+          <div class="example-title">Key Points</div>
+          <div class="example-code">• Always use 20–24 pin connector on motherboard
+• 8-pin EPS powers CPU (separate from ATX)
+• 6-pin or 8-pin PCIe powers GPU
+      <div class="section">
+        <h2>Interactive Quiz</h2>
+        <div id="progress-badge" style="display: none; text-align: center; margin-bottom: 15px;">
+          <span style="background: linear-gradient(135deg, #00ff88, #00d4ff); color: #0a0e27; padding: 8px 20px; border-radius: 20px; font-weight: 700; font-size: 0.95em;">
+            ✓ COMPLETED
+          </span>
+        </div>
+        <div id="previous-score" style="display: none; text-align: center; margin-bottom: 15px; color: #00d4ff;">
+          Previous Best: <strong id="best-score-display">0</strong> | Attempts: <strong id="attempts-display">0</strong>
+        </div>
+        <div class="info-box" style="margin-bottom: 20px;">
+          <strong>Dynamic Quiz:</strong> Questions randomized from an expanded pool. Refresh for new questions!
+        </div>
+        <div class="quiz-mode-controls">
+          <label>Review length:</label>
+          <button data-review="5min">5 min</button>
+          <button data-review="15min">15 min</button>
+          <button data-review="30min">30 min</button>
+        </div>
+        <div id="review-mode-note" class="review-mode-note"></div>
+        <div id="quiz-container">
+          <!-- Questions generated dynamically -->
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Mini-Lab: PSU Wattage Calculator</h2>
+        <div class="lab-container">
+          <div class="info-box">
+            <strong>Objective:</strong> Calculate the required PSU wattage for a system build
+          </div>
+          <div class="lab-challenge">
+            <div class="psu-inputs">
+              <div class="psu-input-row">
+                <label>CPU TDP (Watts):</label>
+                <input type="number" id="cpu-watts" value="65" min="0">
+              </div>
+              <div class="psu-input-row">
+                <label>GPU TDP (Watts):</label>
+                <input type="number" id="gpu-watts" value="250" min="0">
+              </div>
+              <div class="psu-input-row">
+                <label>Number of RAM sticks:</label>
+                <input type="number" id="ram-count" value="2" min="0">
+              </div>
+              <div class="psu-input-row">
+                <label>Number of storage drives:</label>
+                <input type="number" id="storage-count" value="2" min="0">
+              </div>
+              <div class="psu-input-row">
+                <label>Number of case fans:</label>
+                <input type="number" id="fan-count" value="3" min="0">
+              </div>
+            </div>
+            <div class="lab-input-group">
+              <button id="psu-calculate">Calculate Required PSU</button>
+            </div>
+            <div id="psu-result" class="psu-result"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Know for the Exam</h2>
+        <div class="example-block">
+          <div class="example-title">Core Facts</div>
+          <div class="example-code">• Gold/Platinum PSUs cost more but save electricity
+• Passive heatsinks = no fans (rare, older CPUs)
+• Liquid cooling requires maintenance
+• Poor airflow = throttling and premature failure</div>
+        </div>
+      </div>
+    </div>
+
+    
+
+    <script type="module">
+      import { aPlusPowerCoolingQuestions } from "./data/a-plus-power-cooling-questions.js";
+      import { getProgress, updateProgress } from "./js/progressStore.js";
+
+      const TRACK_ID = "pc-professional";
+      const MODULE_ID = "a-plus-power-cooling";
+
+      const REVIEW_PRESETS = {
+        "5min": 6,
+        "15min": 15,
+        "30min": 30
+      };
+
+      const DEFAULT_PRESET = "5min";
+
+      let currentScore = 0;
+      let questionsAnswered = 0;
+      let totalQuestions = 0;
+      let activePreset = DEFAULT_PRESET;
+
+      function shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+      }
+
+      function buildReviewSet(presetKey) {
+        const numQuestions = REVIEW_PRESETS[presetKey] || REVIEW_PRESETS[DEFAULT_PRESET];
+
+        const easy = aPlusPowerCoolingQuestions.filter(q => q.difficulty === "easy");
+        const med = aPlusPowerCoolingQuestions.filter(q => q.difficulty === "medium");
+        const hard = aPlusPowerCoolingQuestions.filter(q => q.difficulty === "hard");
+
+        let pool;
+        if (presetKey === "5min") {
+          pool = [...easy, ...med];
+        } else if (presetKey === "15min") {
+          pool = [...easy, ...med, ...hard];
+        } else {
+          pool = [...med, ...hard];
+        }
+
+        if (pool.length === 0) {
+          pool = [...aPlusPowerCoolingQuestions];
+        }
+
+        const shuffled = shuffleArray(pool);
+        return shuffled.slice(0, Math.min(numQuestions, shuffled.length));
+      }
+
+      function setActiveButton(presetKey) {
+        document.querySelectorAll('.quiz-mode-controls button').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.review === presetKey);
+        });
+      }
+
+      function updateReviewModeNote(presetKey) {
+        const note = document.getElementById('review-mode-note');
+        const labelMap = {
+          "5min": "5-minute",
+          "15min": "15-minute",
+          "30min": "30-minute"
+        };
+        const label = labelMap[presetKey] || labelMap[DEFAULT_PRESET];
+        note.textContent = `You are in ${label} review mode (${totalQuestions} questions).`;
+      }
+
+      function clearQuizContainer() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = '';
+        currentScore = 0;
+        questionsAnswered = 0;
+        totalQuestions = 0;
+      }
+
+      function loadProgress() {
+        const progress = getProgress(TRACK_ID, MODULE_ID);
+
+        if (progress.completed) {
+          document.getElementById('progress-badge').style.display = 'block';
+        }
+
+        if (progress.attempts > 0) {
+          document.getElementById('previous-score').style.display = 'block';
+          document.getElementById('best-score-display').textContent = progress.bestScore;
+          document.getElementById('attempts-display').textContent = progress.attempts;
+        }
+
+        return progress.lastPreset || DEFAULT_PRESET;
+      }
+
+      function saveProgress() {
+        const progress = getProgress(TRACK_ID, MODULE_ID);
+        const newBestScore = Math.max(progress.bestScore, currentScore);
+        const isCompleted = totalQuestions > 0 && currentScore === totalQuestions;
+
+        updateProgress(TRACK_ID, MODULE_ID, {
+          attempts: progress.attempts + 1,
+          bestScore: newBestScore,
+          completed: isCompleted || progress.completed,
+          lastVisited: Date.now(),
+          lastPreset: activePreset
+        });
+
+        if (isCompleted) {
+          document.getElementById('progress-badge').style.display = 'block';
+        }
+        document.getElementById('previous-score').style.display = 'block';
+        document.getElementById('best-score-display').textContent = newBestScore;
+        document.getElementById('attempts-display').textContent = progress.attempts + 1;
+      }
+
+      function generatePowerQuiz(presetKey = DEFAULT_PRESET) {
+        const selectedQuestions = buildReviewSet(presetKey);
+        const container = document.getElementById('quiz-container');
+        totalQuestions = selectedQuestions.length;
+
+        if (totalQuestions === 0) {
+          container.innerHTML = '<div class="info-box">No questions available for this review mode.</div>';
+          return;
+        }
+
+        selectedQuestions.forEach((q, index) => {
+          const shuffledOptions = q.options.map((opt, idx) => ({ text: opt, isCorrect: idx === q.correctIndex }));
+          const randomized = shuffleArray(shuffledOptions);
+
+          const questionDiv = document.createElement('div');
+          questionDiv.className = 'quiz-question';
+          questionDiv.setAttribute('data-question', index + 1);
+
+          const questionText = document.createElement('p');
+          questionText.className = 'question-text';
+          questionText.textContent = q.stem;
+          questionDiv.appendChild(questionText);
+
+          const optionsDiv = document.createElement('div');
+          optionsDiv.className = 'quiz-options';
+
+          randomized.forEach(option => {
+            const btn = document.createElement('button');
+            btn.className = 'quiz-option';
+            btn.textContent = option.text;
+            btn.dataset.correct = option.isCorrect;
+            optionsDiv.appendChild(btn);
+          });
+
+          questionDiv.appendChild(optionsDiv);
+
+          const feedback = document.createElement('div');
+          feedback.className = 'quiz-feedback';
+          questionDiv.appendChild(feedback);
+
+          container.appendChild(questionDiv);
+        });
+
+        const scoreDiv = document.createElement('div');
+        scoreDiv.className = 'quiz-score';
+        scoreDiv.innerHTML = 'Score: <span id="score">0</span>/' + totalQuestions;
+        container.appendChild(scoreDiv);
+
+        document.querySelectorAll('.quiz-option').forEach(btn => {
+          btn.addEventListener('click', handlePowerQuizAnswer);
+        });
+      }
+
+      function handlePowerQuizAnswer() {
+        const question = this.closest('.quiz-question');
+        const options = question.querySelectorAll('.quiz-option');
+        const feedback = question.querySelector('.quiz-feedback');
+        const isCorrect = this.dataset.correct === 'true';
+
+        options.forEach(opt => {
+          opt.disabled = true;
+          if (opt.dataset.correct === 'true') opt.classList.add('correct');
+        });
+
+        if (isCorrect) {
+          this.classList.add('correct');
+          feedback.textContent = '✓ Correct!';
+          feedback.style.color = '#00ff88';
+          currentScore++;
+        } else {
+          this.classList.add('incorrect');
+          feedback.textContent = '✗ Incorrect.';
+          feedback.style.color = '#ff4444';
+        }
+
+        questionsAnswered++;
+        updatePowerScore();
+
+        if (questionsAnswered === totalQuestions) {
+          saveProgress();
+        }
+      }
+
+      function updatePowerScore() {
+        document.getElementById('score').textContent = currentScore;
+      }
+
+      function setReviewMode(presetKey, persist = true) {
+        activePreset = REVIEW_PRESETS[presetKey] ? presetKey : DEFAULT_PRESET;
+        clearQuizContainer();
+        generatePowerQuiz(activePreset);
+        setActiveButton(activePreset);
+        updateReviewModeNote(activePreset);
+
+        if (persist) {
+          updateProgress(TRACK_ID, MODULE_ID, {
+            lastPreset: activePreset,
+            lastVisited: Date.now()
+          });
+        }
+      }
+
+      function bindReviewButtons() {
+        document.querySelectorAll('.quiz-mode-controls button').forEach(btn => {
+          btn.addEventListener('click', () => {
+            setReviewMode(btn.dataset.review);
+          });
+        });
+      }
+
+      function bindPsuCalculator() {
+        const button = document.getElementById('psu-calculate');
+        if (!button) return;
+
+        button.addEventListener('click', () => {
+          const cpu = parseInt(document.getElementById('cpu-watts').value) || 0;
+          const gpu = parseInt(document.getElementById('gpu-watts').value) || 0;
+          const ram = parseInt(document.getElementById('ram-count').value) * 3;
+          const storage = parseInt(document.getElementById('storage-count').value) * 10;
+          const fans = parseInt(document.getElementById('fan-count').value) * 5;
+          const mobo = 50;
+
+          const totalWatts = cpu + gpu + ram + storage + fans + mobo;
+          const recommended = Math.ceil((totalWatts * 1.25) / 50) * 50;
+
+          const resultDiv = document.getElementById('psu-result');
+          resultDiv.innerHTML = `
+            <strong>Power Breakdown:</strong><br>
+            CPU: ${cpu}W<br>
+            GPU: ${gpu}W<br>
+            RAM: ${ram}W (${ram/3} sticks × 3W)<br>
+            Storage: ${storage}W (${storage/10} drives × 10W)<br>
+            Fans: ${fans}W (${fans/5} fans × 5W)<br>
+            Motherboard: ${mobo}W<br>
+            <strong>Total System Draw: ${totalWatts}W</strong><br>
+            <br>
+            <strong style="color: #00d4ff; font-size: 1.2em;">Recommended PSU: ${recommended}W or higher</strong><br>
+            <span style="color: #ffaa00;">(Includes 25% safety overhead)</span>
+          `;
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const initialPreset = loadProgress();
+        bindReviewButtons();
+        setReviewMode(initialPreset, false);
+        bindPsuCalculator();
+      });
+    </script>
+    <script type="module" src="site.js"></script>
+  </body>
+</html>

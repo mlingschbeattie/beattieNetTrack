@@ -1,0 +1,20 @@
+{
+  "id": "assessment-1-2-3",
+  "title": "Assessment 1.2.3 Form Factors and Compatibility",
+  "assessmentCode": "1.2.3",
+  "sourceQuestionDocx": "Assessment 1.2.3 Form Factors and Compatibility.docx",
+  "sourceAnswerDocx": "Assessment 1.2.3 Form Factors and Compatibility Answers.docx",
+  "questions": [
+    {
+      "prompt": "What must match between CPU and motherboard?",
+      "choices": [
+        "Socket type",
+        "Case color",
+        "Storage brand",
+        "Monitor size"
+      ],
+      "answerIndex": 0,
+      "explanation": "CPU and motherboard socket types must match."
+    }
+  ]
+}

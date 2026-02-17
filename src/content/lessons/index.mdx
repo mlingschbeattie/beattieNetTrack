@@ -1,0 +1,250 @@
+---
+title: Welcome to Beattie
+slug: index
+legacyUrl: /index.html
+difficulty: medium
+estimatedMinutes: 15
+---
+
+import LegacyHtml from '../../components/LegacyHtml.astro';
+
+<LegacyHtml html={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Welcome to Beattie</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css" />
+  </head>
+  <body>
+    {/* Student-Friendly Header */}
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html" class="active">🏠 Home</a></li>
+            <li><a href="study-guides.html">📖 Study Guides</a></li>
+            <li><a href="learning-tracks.html" class="cta-btn">🎯 Learning Tracks</a></li>
+            <li><a href="resources.html">🔬 Study Hub</a></li>
+            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <div class="container">
+      {/* Hero Section */}
+      <div class="hero-section">
+        <h1>Level Up Your Tech Skills</h1>
+        <p class="hero-subtitle">Master cybersecurity & hardware - one challenge at a time</p>
+        
+        <div class="terminal-box">
+          <div class="terminal-line">$ <span class="typing-text">whoami</span></div>
+          <div class="terminal-output">Future network engineer & security expert 🚀</div>
+          <div class="terminal-line">$ <span class="typing-text">ls achievements/</span></div>
+          <div class="terminal-output">Quizzes completed, skills unlocked, challenges conquered...</div>
+        </div>
+        
+        <div class="cta-buttons">
+          <a href="learning-tracks.html" class="btn-secondary">🎯 Choose Your Track</a>
+          <a href="tour.html" class="btn-secondary">👀 Take a Tour</a>
+        </div>
+      </div>
+      
+      {/* Learning Paths */}
+      <div class="paths-section">
+        <h2>Choose Your Career Track</h2>
+        
+        <div class="path-cards">
+          <div class="card card--challenge">
+            <div class="card--challenge__icon-wrapper">
+              <div class="card--challenge__icon">💻</div>
+            </div>
+            <h3 class="card--challenge__title">PC Professional</h3>
+            <p class="card--challenge__description">Build, repair, and support computer systems with A+ Certification mastery.</p>
+            <span class="card--challenge__difficulty">8 Study Modules</span>
+            <div class="card--challenge__actions">
+              <a href="learning-tracks.html#pc-professional" class="btn btn-primary">Explore Track</a>
+            </div>
+          </div>
+          
+          <div class="card card--challenge">
+            <div class="card--challenge__icon-wrapper">
+              <div class="card--challenge__icon">🌐</div>
+            </div>
+            <h3 class="card--challenge__title">Network Engineer</h3>
+            <p class="card--challenge__description">Design and manage IT infrastructure with Network+ and CCNA certification.</p>
+            <span class="card--challenge__difficulty">Network Infrastructure</span>
+            <div class="card--challenge__actions">
+              <a href="learning-tracks.html#network-engineer" class="btn btn-primary">Explore Track</a>
+            </div>
+          </div>
+          
+          <div class="card card--challenge featured">
+            <div class="card--challenge__icon-wrapper">
+              <div class="card--challenge__icon">🛡️</div>
+            </div>
+            <h3 class="card--challenge__title">Cybersecurity Pro</h3>
+            <p class="card--challenge__description">Master offensive and defensive cybersecurity with 60+ challenges across 6 categories.</p>
+            <span class="card--challenge__difficulty">Most Popular</span>
+            <div class="card--challenge__actions">
+              <a href="learning-tracks.html#cybersecurity" class="btn btn-primary">Explore Track</a>
+            </div>
+          </div>
+          
+          <div class="card card--challenge">
+            <div class="card--challenge__icon-wrapper">
+              <div class="card--challenge__icon">🤖</div>
+            </div>
+            <h3 class="card--challenge__title">AI Engineer</h3>
+            <p class="card--challenge__description">Build intelligent systems with machine learning, Python, and advanced data science.</p>
+            <span class="card--challenge__difficulty">Future Tech</span>
+            <div class="card--challenge__actions">
+              <a href="learning-tracks.html#ai-engineer" class="btn btn-primary">Explore Track</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Why This Rocks */}
+      <div class="features-section">
+        <h2>Why You'll Love This</h2>
+        <div class="card-grid">
+          <div class="card card--feature">
+            <div class="card--feature__icon-wrapper">
+              <div class="card--feature__icon">🎲</div>
+            </div>
+            <h3 class="card--feature__title">Randomized Quizzes</h3>
+            <p class="card--feature__description">Every page load = new questions. No memorizing, just learning.</p>
+          </div>
+          <div class="card card--feature">
+            <div class="card--feature__icon-wrapper">
+              <div class="card--feature__icon">🏆</div>
+            </div>
+            <h3 class="card--feature__title">Real-World Skills</h3>
+            <p class="card--feature__description">Learn what pros actually use - not just textbook theory.</p>
+          </div>
+          <div class="card card--feature">
+            <div class="card--feature__icon-wrapper">
+              <div class="card--feature__icon">⚡</div>
+            </div>
+            <h3 class="card--feature__title">ELI5 Explanations</h3>
+            <p class="card--feature__description">Complex stuff made simple. If a 5-year-old gets it, so will you.</p>
+          </div>
+          <div class="card card--feature">
+            <div class="card--feature__icon-wrapper">
+              <div class="card--feature__icon">🎮</div>
+            </div>
+            <h3 class="card--feature__title">Interactive Labs</h3>
+            <p class="card--feature__description">Type commands, see results. Learn by doing, not just reading.</p>
+          </div>
+        </div>
+      </div>
+      
+      {/* Quick Links Footer Section */}
+      <div class="quick-access">
+        <h3>Jump Right In</h3>
+        <div class="quick-links">
+          <a href="web-exploitation.html">🌐 Web Hacking</a>
+          <a href="cryptography.html">🔐 Cryptography</a>
+          <a href="/lessons/a-plus-hardware">🖥️ Hardware Basics</a>
+          <a href="forensics.html">🔍 Digital Forensics</a>
+        </div>
+      </div>
+    </div>
+    
+    {/* Professional Footer */}
+    <footer class="site-footer">
+      <div class="footer-container">
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="tour.html">Tour Day Info</a></li>
+            <li><a href="about-class.html">About This Class</a></li>
+            <li><a href="resources.html">Study Hub</a></li>
+            <li><a href="cheat-sheets.html">Cheat Sheets</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>🚀 Ready to Start?</h3>
+          <ul>
+            <li><a href="resources.html">Browse All Topics</a></li>
+            <li><a href="a-plus-guides.html">A+ Study Path</a></li>
+            <li><a href="cheat-sheets.html">Quick Reference</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>✨ Popular Topics</h3>
+          <ul>
+            <li><a href="web-exploitation.html">Web Hacking</a></li>
+            <li><a href="/lessons/a-plus-hardware">Computer Hardware</a></li>
+            <li><a href="cryptography.html">Encryption & Codes</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>📖 About</h3>
+          <p>Built for Beattie Tech students learning network engineering and cybersecurity.</p>
+          <p style="margin-top: 15px;">👨‍🏫 Mr. Lingsch & Mr. Powers</p>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>💚 Keep learning, keep hacking, keep building 💚</p>
+        <p style="margin-top: 10px; font-size: 0.85em; opacity: 0.7;">&copy; 2024 Beattie Tech</p>
+      </div>
+    </footer>
+    
+    {/* Mobile Menu Toggle Script */}
+    <script>
+      const mobileToggle = document.querySelector('.mobile-menu-toggle');
+      const navLinks = document.querySelector('.nav-links');
+      const dropdowns = document.querySelectorAll('.dropdown');
+      
+      mobileToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+      
+      // Mobile dropdown toggle
+      dropdowns.forEach(dropdown => {
+        const toggle = dropdown.querySelector('.dropdown-toggle');
+        toggle.addEventListener('click', (e) => {
+          if (window.innerWidth <= 768) {
+            e.preventDefault();
+            dropdown.classList.toggle('active');
+          }
+        });
+      });
+      
+      // Close mobile menu when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.site-header')) {
+          navLinks.classList.remove('active');
+          dropdowns.forEach(d => d.classList.remove('active'));
+        }
+      });
+    </script>
+    <script type="module" src="site.js"></script>
+  </body>
+</html>`} />

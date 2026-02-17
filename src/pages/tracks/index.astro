@@ -1,0 +1,45 @@
+---
+import { getCollection } from 'astro:content';
+import AppShell from '../../layouts/AppShell.astro';
+
+const tracks = (await getCollection('tracks')).sort((a, b) => a.data.order - b.data.order);
+const primaryTrackSlugs = new Set([
+  'pc-technician',
+  'network-engineer',
+  'cybersecurity-engineer',
+  'web-developer',
+  'python-developer',
+  'ai-ml',
+]);
+const visibleTracks = tracks.filter((track) => primaryTrackSlugs.has(track.slug) || track.slug === 'legacy');
+---
+
+<AppShell
+  title="Learning Tracks"
+  tracks={tracks}
+  breadcrumbs={[
+    { label: 'Home', href: '/' },
+    { label: 'Learning Tracks' },
+  ]}
+>
+  <section class="hero">
+    <h1 class="hero__title">Learning Tracks</h1>
+    <p class="hero__subtitle">Choose a primary track to continue in workspace mode.</p>
+  </section>
+
+  <section class="card-grid">
+    {visibleTracks.map((track) => (
+      <article class="card">
+        <h3>{track.data.title}</h3>
+        <p>{track.data.description}</p>
+        <div class="card__meta">
+          <span class="badge">{primaryTrackSlugs.has(track.slug) ? 'Primary' : 'Archived'}</span>
+          {track.data.estimatedHours && <span class="badge badge--muted">~{track.data.estimatedHours} hrs</span>}
+        </div>
+        <div class="card__footer">
+          <a class="btn-link" href={`/tracks/${track.slug}`}>Open track →</a>
+        </div>
+      </article>
+    ))}
+  </section>
+</AppShell>

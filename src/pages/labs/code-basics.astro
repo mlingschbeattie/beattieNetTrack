@@ -1,0 +1,69 @@
+---
+import { getCollection } from 'astro:content';
+import WorkspaceLayout from '../../layouts/WorkspaceLayout.astro';
+import InstructionSteps from '../../components/workspace/InstructionSteps.astro';
+import CodeRunner from '../../components/islands/CodeRunner.tsx';
+import ActivityCard from '../../components/ActivityCard.astro';
+import { codeExercises } from '../../lib/codeExercises';
+
+const tracks = await getCollection('tracks');
+const currentTrack = tracks.find((track) => track.slug === 'cybersecurity-foundations');
+const exercise = codeExercises['code-basics'];
+---
+
+<WorkspaceLayout
+  title="Lab • Code Basics"
+  tracks={tracks}
+  activeTrack={currentTrack?.slug}
+  activeLesson="code-basics"
+  currentTrack={currentTrack}
+  breadcrumbs={[
+    { label: 'Home', href: '/' },
+    { label: 'Labs', href: '/labs/code-basics' },
+    { label: 'Code Basics' },
+  ]}
+  itemSlug="code-basics"
+  itemType="lab"
+  itemDifficulty="Beginner"
+  itemMinutes={20}
+  checkLabel="Check Output"
+  submitLabel="Submit Exercise"
+  panelHints={exercise.hints}
+  panelChecklist={[
+    'Run the code without syntax errors',
+    'Output includes required expected string',
+    'Submit after check passes',
+  ]}
+>
+  <Fragment slot="instructions">
+    <h1 class="page-title">{exercise.title}</h1>
+    <p class="lesson-header__description">{exercise.description}</p>
+    <InstructionSteps
+      storageKey="steps:code-basics"
+      steps={[
+        'Calculate the total packet count',
+        'Print output exactly in required format',
+        'Run Check and then Submit',
+      ]}
+    />
+    <ActivityCard class="u-mt-4">
+      <h3>Expected output</h3>
+      <pre>{exercise.expectedOutput}</pre>
+    </ActivityCard>
+  </Fragment>
+
+  <Fragment slot="activity-main">
+    <CodeRunner client:only="react" labSlug="code-basics" exerciseSlug="code-basics" />
+  </Fragment>
+
+  <Fragment slot="activity-secondary">
+    <ActivityCard>
+      <h3>Hints</h3>
+      <ul>
+        {exercise.hints.map((hint) => (
+          <li>{hint}</li>
+        ))}
+      </ul>
+    </ActivityCard>
+  </Fragment>
+</WorkspaceLayout>

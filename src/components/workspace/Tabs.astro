@@ -1,0 +1,32 @@
+---
+interface TabItem {
+  id: string;
+  label: string;
+}
+
+interface Props {
+  tabs: TabItem[];
+  defaultTab?: string;
+}
+
+const { tabs, defaultTab = tabs[0]?.id ?? 'activity' } = Astro.props as Props;
+---
+
+{tabs.length > 1 && (
+  <div class="workspace-tabs" role="tablist" aria-label="Workspace tabs">
+    {tabs.map((tab) => {
+      const isActive = tab.id === defaultTab;
+      return (
+        <button
+          type="button"
+          class={`workspace-tab ${isActive ? 'workspace-tab--active' : ''}`}
+          role="tab"
+          aria-selected={isActive ? 'true' : 'false'}
+          data-workspace-tab-button={tab.id}
+        >
+          {tab.label}
+        </button>
+      );
+    })}
+  </div>
+)}

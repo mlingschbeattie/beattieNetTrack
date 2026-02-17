@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hardware Fundamentals - A+ Study Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css" />
+    
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="study-guides.html" class="active">📖 Study Guides</a></li>
+            <li><a href="learning-tracks.html">🎯 Learning Tracks</a></li>
+            <li><a href="resources.html">🔬 Study Hub</a></li>
+            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <main id="main-content" class="container">
+      <nav class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <a href="study-guides.html">Study Guides</a>
+        <span class="separator">/</span>
+        <a href="a-plus-guides.html">A+ Guides</a>
+        <span class="separator">/</span>
+        <span class="current">Hardware Fundamentals</span>
+      </nav>
+      
+      <h1>Hardware Fundamentals</h1>
+      <div class="subtitle">CompTIA A+ Core 1 - Essential hardware components and architecture</div>
+
+      <div class="section">
+        <h2>ELI5: What is Computer Hardware?</h2>
+        <div class="info-box">
+          Hardware is the physical stuff you can touch in a computer. It's like the organs in a body—each has a specific job, and they all work together to make the computer run.
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Practical Exercises</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">Identify Components</div><div class="description">Open a PC (or image) and label CPU, RAM, PSU, GPU, storage</div></div>
+          <div class="command-item"><div class="command">RAM Seating Check</div><div class="description">Verify dual-channel placement using motherboard markings</div></div>
+          <div class="command-item"><div class="command">CPU Spec Compare</div><div class="description">Compare core count, clock speed, and cache across 2 CPUs</div></div>
+          <div class="command-item"><div class="command">PSU Wattage Estimate</div><div class="description">Sum component wattage and add 20–30% headroom</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Key Components</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">CPU (Processor)</div><div class="description">The brain—does all the calculations</div></div>
+          <div class="command-item"><div class="command">RAM (Memory)</div><div class="description">Fast, temporary storage for running programs</div></div>
+          <div class="command-item"><div class="command">Motherboard</div><div class="description">The main circuit board connecting everything</div></div>
+          <div class="command-item"><div class="command">Power Supply Unit</div><div class="description">Converts AC to DC power for components</div></div>
+          <div class="command-item"><div class="command">Storage (HDD/SSD)</div><div class="description">Permanent storage for files and OS</div></div>
+          <div class="command-item"><div class="command">GPU (Graphics Card)</div><div class="description">Handles display rendering (optional)</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>CPU Characteristics to Know</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">Clock Speed (GHz)</div><div class="description">How many operations per second (higher = faster)</div></div>
+          <div class="command-item"><div class="command">Cores</div><div class="description">Number of independent processors</div></div>
+          <div class="command-item"><div class="command">Cache</div><div class="description">Ultra-fast memory on the chip</div></div>
+          <div class="command-item"><div class="command">TDP (Thermal Design Power)</div><div class="description">Heat output, measured in watts</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>RAM Deep Dive</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">DRAM vs SRAM</div><div class="description">Dynamic (common) vs Static (fast, expensive)</div></div>
+          <div class="command-item"><div class="command">DDR, DDR2, DDR3, DDR4, DDR5</div><div class="description">Generations of RAM (newer = faster)</div></div>
+          <div class="command-item"><div class="command">Capacity (GB)</div><div class="description">How much data can be stored temporarily</div></div>
+          <div class="command-item"><div class="command">Speed (MHz)</div><div class="description">Access speed; higher is better</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Common Ports & Peripherals</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">USB 2.0/3.x/4</div><div class="description">Data + power; 3.x/4 are faster</div></div>
+          <div class="command-item"><div class="command">HDMI / DisplayPort</div><div class="description">Digital video (DP often supports higher refresh)</div></div>
+          <div class="command-item"><div class="command">Ethernet (RJ‑45)</div><div class="description">Wired networking port</div></div>
+          <div class="command-item"><div class="command">Audio (3.5mm)</div><div class="description">Mic/line‑in/headphones</div></div>
+          <div class="command-item"><div class="command">Thunderbolt</div><div class="description">High‑speed data/video over USB‑C</div></div>
+          <div class="command-item"><div class="command">Bluetooth / Wi‑Fi</div><div class="description">Wireless peripherals and networking</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Laptop & Mobile Hardware</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">SO‑DIMM RAM</div><div class="description">Smaller memory modules for laptops</div></div>
+          <div class="command-item"><div class="command">M.2 SSD</div><div class="description">Common laptop storage upgrade</div></div>
+          <div class="command-item"><div class="command">Battery Types</div><div class="description">Lithium‑ion, Lithium‑polymer</div></div>
+          <div class="command-item"><div class="command">Laptop Screens</div><div class="description">TN vs IPS, resolution basics</div></div>
+          <div class="command-item"><div class="command">Docking Stations</div><div class="description">Expand ports and displays</div></div>
+          <div class="command-item"><div class="command">Touch & Stylus</div><div class="description">Digitizers and touchscreen support</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Display Standards & Types</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">LCD (Liquid Crystal Display)</div><div class="description">Uses backlight and liquid crystals; common and affordable</div></div>
+          <div class="command-item"><div class="command">LED (Light Emitting Diode)</div><div class="description">LCD with LED backlight; thinner, energy efficient</div></div>
+          <div class="command-item"><div class="command">IPS (In-Plane Switching)</div><div class="description">Best color accuracy and viewing angles</div></div>
+          <div class="command-item"><div class="command">TN (Twisted Nematic)</div><div class="description">Fastest response time; poor viewing angles</div></div>
+          <div class="command-item"><div class="command">VA (Vertical Alignment)</div><div class="description">Best contrast ratio; middle ground</div></div>
+          <div class="command-item"><div class="command">OLED (Organic LED)</div><div class="description">Per-pixel lighting; perfect blacks, vibrant colors</div></div>
+          <div class="command-item"><div class="command">AMOLED</div><div class="description">Active-matrix OLED for mobile devices</div></div>
+          <div class="command-item"><div class="command">Quantum Dot / QLED</div><div class="description">Enhanced color and brightness via nanocrystals</div></div>
+        </div>
+
+        <h3>Resolutions & Features</h3>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">1080p (Full HD)</div><div class="description">1920×1080 pixels; standard desktop resolution</div></div>
+          <div class="command-item"><div class="command">1440p (2K/QHD)</div><div class="description">2560×1440 pixels; popular for gaming</div></div>
+          <div class="command-item"><div class="command">4K (Ultra HD)</div><div class="description">3840×2160 pixels; 4× Full HD detail</div></div>
+          <div class="command-item"><div class="command">8K</div><div class="description">7680×4320 pixels; emerging standard</div></div>
+          <div class="command-item"><div class="command">Refresh Rate (Hz)</div><div class="description">60Hz standard, 120Hz/144Hz/240Hz gaming</div></div>
+          <div class="command-item"><div class="command">Response Time</div><div class="description">1ms-5ms; lower = less motion blur</div></div>
+          <div class="command-item"><div class="command">HDR (High Dynamic Range)</div><div class="description">Better contrast and color depth (HDR10, Dolby Vision)</div></div>
+          <div class="command-item"><div class="command">Aspect Ratio</div><div class="description">16:9 standard, 21:9 ultrawide, 32:9 super ultrawide</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Expansion Cards & Buses</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">PCIe x1/x4/x8/x16</div><div class="description">Expansion bandwidth and slot sizes</div></div>
+          <div class="command-item"><div class="command">NIC</div><div class="description">Network Interface Card</div></div>
+          <div class="command-item"><div class="command">Sound Card</div><div class="description">Enhanced audio processing</div></div>
+          <div class="command-item"><div class="command">Capture Card</div><div class="description">Video input for streaming/recording</div></div>
+          <div class="command-item"><div class="command">Legacy PCI</div><div class="description">Older expansion standard (obsolete)</div></div>
+          <div class="command-item"><div class="command">USB Expansion</div><div class="description">Add ports via PCIe card</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Interactive Quiz</h2>
+        <div id="progress-badge" style="display: none; text-align: center; margin-bottom: 15px;">
+          <span style="background: linear-gradient(135deg, #00ff88, #00d4ff); color: #0a0e27; padding: 8px 20px; border-radius: 20px; font-weight: 700; font-size: 0.95em;">
+            ✓ COMPLETED
+          </span>
+        </div>
+        <div id="previous-score" style="display: none; text-align: center; margin-bottom: 15px; color: #00d4ff;">
+          Previous Best: <strong id="best-score-display">0</strong> | Attempts: <strong id="attempts-display">0</strong>
+        </div>
+        <div class="info-box" style="margin-bottom: 20px;">
+          <strong>Dynamic Quiz:</strong> Questions are randomly selected from a larger pool each time you visit this page. Refresh for new questions!
+        </div>
+        <div class="quiz-mode-controls">
+          <label>Review length:</label>
+          <button data-review="5min">5 min</button>
+          <button data-review="15min">15 min</button>
+          <button data-review="30min">30 min</button>
+        </div>
+        <div id="review-mode-note" class="review-mode-note"></div>
+        <div id="quiz-container">
+          <!-- Quiz questions will be dynamically generated here -->
+        </div>
+      </div>
+
+      <script type="module">
+        import { aPlusHardwareQuestions } from "./data/a-plus-hardware-questions.js";
+        import { getProgress, updateProgress } from "./js/progressStore.js";
+
+        const TRACK_ID = "pc-professional";
+        const MODULE_ID = "a-plus-hardware";
+
+        const REVIEW_PRESETS = {
+          "5min": 6,
+          "15min": 15,
+          "30min": 30
+        };
+
+        const DEFAULT_PRESET = "5min";
+
+        let currentScore = 0;
+        let questionsAnswered = 0;
+        let totalQuestions = 0;
+        let activePreset = DEFAULT_PRESET;
+
+        function shuffleArray(array) {
+          const shuffled = [...array];
+          for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+          }
+          return shuffled;
+        }
+
+        function buildReviewSet(presetKey) {
+          const numQuestions = REVIEW_PRESETS[presetKey] || REVIEW_PRESETS[DEFAULT_PRESET];
+
+          const easy = aPlusHardwareQuestions.filter(q => q.difficulty === "easy");
+          const med = aPlusHardwareQuestions.filter(q => q.difficulty === "medium");
+          const hard = aPlusHardwareQuestions.filter(q => q.difficulty === "hard");
+
+          let pool;
+          if (presetKey === "5min") {
+            pool = [...easy, ...med];
+          } else if (presetKey === "15min") {
+            pool = [...easy, ...med, ...hard];
+          } else {
+            pool = [...med, ...hard];
+          }
+
+          if (pool.length === 0) {
+            pool = [...aPlusHardwareQuestions];
+          }
+
+          const shuffled = shuffleArray(pool);
+          return shuffled.slice(0, Math.min(numQuestions, shuffled.length));
+        }
+
+        function setActiveButton(presetKey) {
+          document.querySelectorAll('.quiz-mode-controls button').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.review === presetKey);
+          });
+        }
+
+        function updateReviewModeNote(presetKey) {
+          const note = document.getElementById('review-mode-note');
+          const labelMap = {
+            "5min": "5-minute",
+            "15min": "15-minute",
+            "30min": "30-minute"
+          };
+          const label = labelMap[presetKey] || labelMap[DEFAULT_PRESET];
+          note.textContent = `You are in ${label} review mode (${totalQuestions} questions).`;
+        }
+
+        function clearQuizContainer() {
+          const container = document.getElementById('quiz-container');
+          container.innerHTML = '';
+          currentScore = 0;
+          questionsAnswered = 0;
+          totalQuestions = 0;
+        }
+
+        function loadProgress() {
+          const progress = getProgress(TRACK_ID, MODULE_ID);
+
+          if (progress.completed) {
+            document.getElementById('progress-badge').style.display = 'block';
+          }
+
+          if (progress.attempts > 0) {
+            document.getElementById('previous-score').style.display = 'block';
+            document.getElementById('best-score-display').textContent = progress.bestScore;
+            document.getElementById('attempts-display').textContent = progress.attempts;
+          }
+
+          return progress.lastPreset || DEFAULT_PRESET;
+        }
+
+        function saveProgress() {
+          const progress = getProgress(TRACK_ID, MODULE_ID);
+          const newBestScore = Math.max(progress.bestScore, currentScore);
+          const isCompleted = totalQuestions > 0 && currentScore === totalQuestions;
+
+          updateProgress(TRACK_ID, MODULE_ID, {
+            attempts: progress.attempts + 1,
+            bestScore: newBestScore,
+            completed: isCompleted || progress.completed,
+            lastVisited: Date.now(),
+            lastPreset: activePreset
+          });
+
+          if (isCompleted) {
+            document.getElementById('progress-badge').style.display = 'block';
+          }
+          document.getElementById('previous-score').style.display = 'block';
+          document.getElementById('best-score-display').textContent = newBestScore;
+          document.getElementById('attempts-display').textContent = progress.attempts + 1;
+        }
+
+        function generateQuiz(presetKey = DEFAULT_PRESET) {
+          const selectedQuestions = buildReviewSet(presetKey);
+          const container = document.getElementById('quiz-container');
+          totalQuestions = selectedQuestions.length;
+
+          if (totalQuestions === 0) {
+            container.innerHTML = '<div class="info-box">No questions available for this review mode.</div>';
+            return;
+          }
+
+          selectedQuestions.forEach((q, index) => {
+            const shuffledOptions = q.options.map((opt, idx) => ({ text: opt, isCorrect: idx === q.correctIndex }));
+            const randomized = shuffleArray(shuffledOptions);
+
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'quiz-question';
+            questionDiv.setAttribute('data-question', index + 1);
+
+            const questionText = document.createElement('p');
+            questionText.className = 'question-text';
+            questionText.textContent = q.stem;
+            questionDiv.appendChild(questionText);
+
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'quiz-options';
+
+            randomized.forEach(option => {
+              const btn = document.createElement('button');
+              btn.className = 'quiz-option';
+              btn.textContent = option.text;
+              btn.dataset.correct = option.isCorrect;
+              optionsDiv.appendChild(btn);
+            });
+
+            questionDiv.appendChild(optionsDiv);
+
+            const feedback = document.createElement('div');
+            feedback.className = 'quiz-feedback';
+            questionDiv.appendChild(feedback);
+
+            container.appendChild(questionDiv);
+          });
+
+          const scoreDiv = document.createElement('div');
+          scoreDiv.className = 'quiz-score';
+          scoreDiv.innerHTML = 'Score: <span id="score">0</span>/' + totalQuestions;
+          container.appendChild(scoreDiv);
+
+          document.querySelectorAll('.quiz-option').forEach(btn => {
+            btn.addEventListener('click', handleQuizAnswer);
+          });
+        }
+
+        function handleQuizAnswer() {
+          const question = this.closest('.quiz-question');
+          const options = question.querySelectorAll('.quiz-option');
+          const feedback = question.querySelector('.quiz-feedback');
+          const isCorrect = this.dataset.correct === 'true';
+
+          options.forEach(opt => {
+            opt.disabled = true;
+            if (opt.dataset.correct === 'true') opt.classList.add('correct');
+          });
+
+          if (isCorrect) {
+            this.classList.add('correct');
+            feedback.textContent = '✓ Correct!';
+            feedback.style.color = '#00ff88';
+            currentScore++;
+          } else {
+            this.classList.add('incorrect');
+            feedback.textContent = '✗ Incorrect.';
+            feedback.style.color = '#ff4444';
+          }
+
+          questionsAnswered++;
+          updateScore();
+
+          if (questionsAnswered === totalQuestions) {
+            saveProgress();
+          }
+        }
+
+        function updateScore() {
+          document.getElementById('score').textContent = currentScore;
+        }
+
+        function setReviewMode(presetKey, persist = true) {
+          activePreset = REVIEW_PRESETS[presetKey] ? presetKey : DEFAULT_PRESET;
+          clearQuizContainer();
+          generateQuiz(activePreset);
+          setActiveButton(activePreset);
+          updateReviewModeNote(activePreset);
+
+          if (persist) {
+            updateProgress(TRACK_ID, MODULE_ID, {
+              lastPreset: activePreset,
+              lastVisited: Date.now()
+            });
+          }
+        }
+
+        function bindReviewButtons() {
+          document.querySelectorAll('.quiz-mode-controls button').forEach(btn => {
+            btn.addEventListener('click', () => {
+              setReviewMode(btn.dataset.review);
+            });
+          });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+          const initialPreset = loadProgress();
+          bindReviewButtons();
+          setReviewMode(initialPreset, false);
+        });
+      </script>
+
+      <div class="section" style="margin-top: 30px;">
+        <h2>Mini-Lab: Component Identifier</h2>
+        <div class="quiz-question" data-question="4">
+            <p class="question-text">What type of display connector supports daisy-chaining multiple monitors?</p>
+            <div class="quiz-options">
+              <button class="quiz-option" data-correct="false">HDMI</button>
+              <button class="quiz-option" data-correct="true">DisplayPort</button>
+              <button class="quiz-option" data-correct="false">DVI</button>
+              <button class="quiz-option" data-correct="false">VGA</button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+          <div class="quiz-question" data-question="5">
+            <p class="question-text">Which laptop RAM form factor is commonly used?</p>
+            <div class="quiz-options">
+              <button class="quiz-option" data-correct="false">DIMM</button>
+              <button class="quiz-option" data-correct="true">SO-DIMM</button>
+              <button class="quiz-option" data-correct="false">Micro-DIMM</button>
+              <button class="quiz-option" data-correct="false">RIMM</button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+          <div class="quiz-score">Score: <span id="score">0</span>/5</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Mini-Lab: Component Identifier</h2>
+        <div class="lab-container">
+          <div class="info-box">
+            <strong>Objective:</strong> Identify computer components from their specifications
+          </div>
+          <div class="lab-challenge" id="hw-lab">
+            <p class="lab-question">What component is this? <strong id="hw-spec">8 cores, 16 threads, base 3.6GHz, TDP 65W, AM4 socket</strong></p>
+            <div class="lab-input-group">
+              <input type="text" id="hw-answer" placeholder="Enter component type (e.g., CPU, RAM, GPU)">
+              <button id="hw-check">Check Answer</button>
+              <button id="hw-next">Next Challenge</button>
+            </div>
+            <div id="hw-result" class="quiz-feedback"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Know for the Exam</h2>
+        <div class="example-block">
+          <div class="example-title">Core Facts</div>
+          <div class="example-code">• A CPU with 4 cores and 8 threads can handle 8 operations at once
+• RAM is volatile (loses data when powered off)
+• DDR4 is standard in 2020s (DDR5 emerging)
+• Thermal paste helps CPU-to-heatsink contact
+• Case fans pull cool air in, push warm air out
+• Wattage rating on PSU should be 120-150% of total system draw</div>
+        </div>
+      </div>
+    </div>
+
+    
+
+    <script>
+      // Quiz functionality
+      document.querySelectorAll('.quiz-option').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const question = this.closest('.quiz-question');
+          const options = question.querySelectorAll('.quiz-option');
+          const feedback = question.querySelector('.quiz-feedback');
+          const isCorrect = this.dataset.correct === 'true';
+          
+          options.forEach(opt => {
+            opt.disabled = true;
+            if (opt.dataset.correct === 'true') {
+              opt.classList.add('correct');
+            }
+          });
+          
+          if (isCorrect) {
+            this.classList.add('correct');
+            feedback.textContent = '✓ Correct!';
+            feedback.style.color = '#00ff88';
+          } else {
+            this.classList.add('incorrect');
+            feedback.textContent = '✗ Incorrect. Check the highlighted correct answer.';
+            feedback.style.color = '#ff4444';
+          }
+          
+          updateScore();
+        });
+      });
+
+      function updateScore() {
+        const total = document.querySelectorAll('.quiz-question').length;
+        const answered = document.querySelectorAll('.quiz-option:disabled').length / 4;
+        const correct = document.querySelectorAll('.quiz-option.correct:disabled').length;
+        document.getElementById('score').textContent = correct;
+      }
+
+      // Mini-lab functionality
+      const challenges = [
+        { spec: '8 cores, 16 threads, base 3.6GHz, TDP 65W, AM4 socket', answer: 'cpu', hint: 'Processor' },
+        { spec: '16GB, DDR4-3200, CL16, 1.35V, dual-channel kit', answer: 'ram', hint: 'Memory module' },
+        { spec: '8GB GDDR6, 1440 CUDA cores, PCIe 4.0 x16, 3x DisplayPort', answer: 'gpu', hint: 'Graphics card' },
+        { spec: '1TB, NVMe, M.2 2280, 3500MB/s read, PCIe 3.0 x4', answer: 'ssd', hint: 'Solid state storage' },
+        { spec: '750W, 80+ Gold, modular, ATX12V 2.4, active PFC', answer: 'psu', hint: 'Power supply' },
+        { spec: 'ATX, LGA 1700, DDR5, PCIe 5.0, 2.5Gb LAN, WiFi 6E', answer: 'motherboard', hint: 'Main board' }
+      ];
+      
+      let currentChallenge = 0;
+
+      document.getElementById('hw-check').addEventListener('click', () => {
+        const userAnswer = document.getElementById('hw-answer').value.trim().toLowerCase();
+        const result = document.getElementById('hw-result');
+        const correctAnswer = challenges[currentChallenge].answer;
+        
+        if (userAnswer === correctAnswer) {
+          result.textContent = `✓ Correct! This is a ${correctAnswer.toUpperCase()}.`;
+          result.style.color = '#00ff88';
+        } else {
+          result.textContent = `✗ Try again. Hint: ${challenges[currentChallenge].hint}`;
+          result.style.color = '#ff4444';
+        }
+      });
+
+      document.getElementById('hw-next').addEventListener('click', () => {
+        currentChallenge = (currentChallenge + 1) % challenges.length;
+        document.getElementById('hw-spec').textContent = challenges[currentChallenge].spec;
+        document.getElementById('hw-answer').value = '';
+        document.getElementById('hw-result').textContent = '';
+      });
+    </script>
+    <script type="module" src="site.js"></script>
+  </body>
+</html>

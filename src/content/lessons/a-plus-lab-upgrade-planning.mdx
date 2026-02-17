@@ -1,0 +1,537 @@
+---
+title: Upgrade Planning Lab - A+ Lab
+slug: a-plus-lab-upgrade-planning
+legacyUrl: /a-plus-lab-upgrade-planning.html
+difficulty: medium
+estimatedMinutes: 15
+---
+
+import LegacyHtml from '../../components/LegacyHtml.astro';
+
+<LegacyHtml html={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Upgrade Planning Lab - A+ Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css" />
+    
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="study-guides.html" class="active">📖 Study Guides</a></li>
+            <li><a href="learning-tracks.html">🎯 Learning Tracks</a></li>
+            <li><a href="resources.html">🔬 Study Hub</a></li>
+            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <main id="main-content" class="container">
+      <nav class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <a href="study-guides.html">Study Guides</a>
+        <span class="separator">/</span>
+        <a href="a-plus-guides.html">A+ Guides</a>
+        <span class="separator">/</span>
+        <span class="current">Upgrade Planning Lab</span>
+      </nav>
+      
+      <h1>Upgrade Planning Lab</h1>
+      <div class="subtitle">Hands-On Lab: Plan Cost-Effective System Upgrades</div>
+
+      <div class="section">
+        <h2>Lab Scenario</h2>
+        <div class="info-box" id="scenario-display">
+          <div style="text-align: center; color: #00d4ff; padding: 20px;">
+            <div style="font-size: 1.5em; margin-bottom: 10px;">🔄 Generating scenario...</div>
+            <div style="font-size: 0.9em;">Loading upgrade planning challenge</div>
+          </div>
+        </div>
+        <div class="warning-box">
+          <strong>⚠ Important:</strong> Analyze the current system and identify bottlenecks. Select the most impactful upgrades within the budget to meet the customer's needs.
+        </div>
+      </div>
+
+      <div class="section">
+        <h3 style="color: #00d4ff; text-align: center; margin-bottom: 20px;">Current System Configuration</h3>
+        <div class="system-grid" id="current-system"></div>
+      </div>
+
+      <div class="section">
+        <div class="budget-display">
+          <div class="budget-label">Available Budget</div>
+          <div class="budget-amount" id="budget-amount">$0</div>
+          <div class="budget-spent" id="budget-spent">Spent: $0 | Remaining: $0</div>
+        </div>
+
+        <div class="upgrade-section">
+          <div class="upgrade-title">📦 Available Upgrades</div>
+          <div class="upgrade-options" id="upgrade-options"></div>
+        </div>
+
+        <div class="lab-controls">
+          <button id="btn-submit" class="lab-btn primary">Submit Upgrade Plan</button>
+          <button id="btn-clear" class="lab-btn">Clear Selection</button>
+          <button id="btn-reset" class="lab-btn danger">New Scenario</button>
+        </div>
+
+        <div id="results-panel" class="results-panel" style="display: none;">
+          <h3 style="color: #00d4ff; text-align: center; margin-bottom: 15px;">Upgrade Plan Evaluation</h3>
+          <div id="score-display" class="score-display"></div>
+          <div id="feedback-list" class="feedback-list"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Learning Objectives</h2>
+        <div class="info-box">
+          This lab tests your understanding of:
+          <ul style="margin: 10px 0 0 20px; line-height: 1.8;">
+            <li><strong>Bottleneck Identification:</strong> Recognizing which component is limiting performance</li>
+            <li><strong>Cost-Benefit Analysis:</strong> Maximizing performance improvement per dollar spent</li>
+            <li><strong>Compatibility:</strong> Understanding upgrade compatibility with existing hardware</li>
+            <li><strong>Upgrade Priority:</strong> Knowing which upgrades have the most impact for specific use cases</li>
+            <li><strong>Budget Management:</strong> Making smart upgrade choices within financial constraints</li>
+            <li><strong>Use Case Alignment:</strong> Matching upgrades to customer needs (gaming, productivity, etc.)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      const scenarioTemplates = [
+        {
+          name: '1080p Gaming Upgrade',
+          description: 'Customer wants to play modern games at 1080p 60fps but current system is struggling.',
+          useCase: 'gaming',
+          budget: 400,
+          currentSystem: {
+            cpu: { name: 'Intel Core i5-9400F', performance: 60, bottleneck: false },
+            gpu: { name: 'NVIDIA GTX 1650', performance: 45, bottleneck: true },
+            ram: { name: '8GB DDR4-2666', capacity: 8, bottleneck: true },
+            storage: { name: '500GB HDD', type: 'HDD', bottleneck: true },
+            mobo: { name: 'B365 Motherboard', socket: 'LGA1151' },
+            psu: { name: '450W PSU', wattage: 450 }
+          },
+          optimalUpgrades: ['gpu-rx7600', 'ram-16gb'],
+          upgradeOptions: [
+            { id: 'gpu-rx7600', name: 'AMD Radeon RX 7600', price: 269, impact: 60, category: 'gpu', desc: 'Excellent 1080p gaming GPU' },
+            { id: 'gpu-rtx4060', name: 'NVIDIA RTX 4060', price: 299, impact: 65, category: 'gpu', desc: 'Great 1080p gaming with ray tracing' },
+            { id: 'ram-16gb', name: '16GB DDR4-3200 Kit', price: 69, impact: 20, category: 'ram', desc: 'Doubles RAM capacity' },
+            { id: 'ssd-500gb', name: '500GB NVMe SSD', price: 79, impact: 25, category: 'storage', desc: 'Much faster load times' },
+            { id: 'cpu-i5-12400f', name: 'Intel i5-12400F', price: 199, impact: 15, category: 'cpu', desc: 'Better CPU but requires new mobo' },
+            { id: 'mobo-b660', name: 'B660 Motherboard', price: 119, impact: 0, category: 'mobo', desc: 'Required for 12th gen CPUs', requires: 'cpu-i5-12400f' }
+          ]
+        },
+        {
+          name: 'Video Editing Workstation',
+          description: 'Customer edits 4K video and needs faster rendering and better multitasking.',
+          useCase: 'content-creation',
+          budget: 600,
+          currentSystem: {
+            cpu: { name: 'AMD Ryzen 5 3600', performance: 65, bottleneck: true },
+            gpu: { name: 'NVIDIA GTX 1660 Super', performance: 55, bottleneck: false },
+            ram: { name: '16GB DDR4-3200', capacity: 16, bottleneck: true },
+            storage: { name: '256GB SATA SSD', type: 'SATA', bottleneck: true },
+            mobo: { name: 'B450 Motherboard', socket: 'AM4' },
+            psu: { name: '550W PSU', wattage: 550 }
+          },
+          optimalUpgrades: ['cpu-r7-5700x', 'ram-32gb', 'ssd-1tb'],
+          upgradeOptions: [
+            { id: 'cpu-r7-5700x', name: 'AMD Ryzen 7 5700X', price: 229, impact: 50, category: 'cpu', desc: '8 cores perfect for video editing' },
+            { id: 'ram-32gb', name: '32GB DDR4-3200 Kit', price: 89, impact: 40, category: 'ram', desc: 'Essential for 4K video editing' },
+            { id: 'ssd-1tb', name: '1TB NVMe SSD', price: 129, impact: 30, category: 'storage', desc: 'Fast storage for project files' },
+            { id: 'gpu-rtx4060', name: 'NVIDIA RTX 4060', price: 299, impact: 25, category: 'gpu', desc: 'Better GPU encoding' },
+            { id: 'ssd-2tb', name: '2TB NVMe SSD', price: 179, impact: 35, category: 'storage', desc: 'More storage for large projects' }
+          ]
+        },
+        {
+          name: 'Budget Gaming PC Boost',
+          description: 'Teenager wants better gaming performance but only has limited birthday money.',
+          useCase: 'gaming',
+          budget: 250,
+          currentSystem: {
+            cpu: { name: 'AMD Ryzen 3 3100', performance: 50, bottleneck: false },
+            gpu: { name: 'NVIDIA GTX 1050 Ti', performance: 35, bottleneck: true },
+            ram: { name: '8GB DDR4-2400', capacity: 8, bottleneck: true },
+            storage: { name: '1TB HDD', type: 'HDD', bottleneck: false },
+            mobo: { name: 'A320 Motherboard', socket: 'AM4' },
+            psu: { name: '400W PSU', wattage: 400 }
+          },
+          optimalUpgrades: ['gpu-rx6600'],
+          upgradeOptions: [
+            { id: 'gpu-rx6600', name: 'AMD Radeon RX 6600', price: 199, impact: 55, category: 'gpu', desc: 'Best budget gaming GPU upgrade' },
+            { id: 'gpu-gtx1660s', name: 'NVIDIA GTX 1660 Super', price: 229, impact: 45, category: 'gpu', desc: 'Solid 1080p gaming' },
+            { id: 'ram-16gb', name: '16GB DDR4-3200 Kit', price: 69, impact: 25, category: 'ram', desc: 'Better multitasking' },
+            { id: 'ssd-500gb', name: '500GB NVMe SSD', price: 79, impact: 20, category: 'storage', desc: 'Faster game loading' },
+            { id: 'cpu-r5-5500', name: 'AMD Ryzen 5 5500', price: 139, impact: 20, category: 'cpu', desc: 'Better CPU performance' }
+          ]
+        },
+        {
+          name: 'Office PC Slowdown',
+          description: 'Company PC is slow to boot and applications take forever to load.',
+          useCase: 'office',
+          budget: 200,
+          currentSystem: {
+            cpu: { name: 'Intel Core i3-8100', performance: 55, bottleneck: false },
+            gpu: { name: 'Integrated Intel UHD 630', performance: 20, bottleneck: false },
+            ram: { name: '8GB DDR4-2400', capacity: 8, bottleneck: true },
+            storage: { name: '500GB HDD', type: 'HDD', bottleneck: true },
+            mobo: { name: 'H310 Motherboard', socket: 'LGA1151' },
+            psu: { name: '300W PSU', wattage: 300 }
+          },
+          optimalUpgrades: ['ssd-500gb', 'ram-16gb'],
+          upgradeOptions: [
+            { id: 'ssd-500gb', name: '500GB SATA SSD', price: 49, impact: 60, category: 'storage', desc: 'Dramatically improves boot and app load times' },
+            { id: 'ram-16gb', name: '16GB DDR4-2400 Kit', price: 59, impact: 35, category: 'ram', desc: 'Better multitasking with Office apps' },
+            { id: 'ssd-1tb', name: '1TB SATA SSD', price: 79, impact: 65, category: 'storage', desc: 'More storage + speed' },
+            { id: 'cpu-i5-9400', name: 'Intel Core i5-9400', price: 149, impact: 20, category: 'cpu', desc: 'Faster CPU for office work' }
+          ]
+        },
+        {
+          name: 'Streaming Setup Upgrade',
+          description: 'Gamer wants to start streaming but current PC struggles with game + stream encoding.',
+          useCase: 'streaming',
+          budget: 550,
+          currentSystem: {
+            cpu: { name: 'Intel Core i5-10400F', performance: 65, bottleneck: true },
+            gpu: { name: 'NVIDIA RTX 3060', performance: 75, bottleneck: false },
+            ram: { name: '16GB DDR4-2666', capacity: 16, bottleneck: true },
+            storage: { name: '512GB NVMe SSD', type: 'NVMe', bottleneck: false },
+            mobo: { name: 'B460 Motherboard', socket: 'LGA1200' },
+            psu: { name: '650W PSU', wattage: 650 }
+          },
+          optimalUpgrades: ['cpu-i7-10700', 'ram-32gb'],
+          upgradeOptions: [
+            { id: 'cpu-i7-10700', name: 'Intel Core i7-10700', price: 279, impact: 55, category: 'cpu', desc: '8 cores for gaming + streaming' },
+            { id: 'ram-32gb', name: '32GB DDR4-3200 Kit', price: 89, impact: 30, category: 'ram', desc: 'Handle streaming software better' },
+            { id: 'capture-card', name: 'Capture Card', price: 149, impact: 40, category: 'other', desc: 'Offload stream encoding' },
+            { id: 'gpu-rtx4070', name: 'NVIDIA RTX 4070', price: 599, impact: 35, category: 'gpu', desc: 'Better GPU encoding (over budget)' },
+            { id: 'ssd-1tb', name: '1TB NVMe SSD', price: 129, impact: 15, category: 'storage', desc: 'More storage for recordings' }
+          ]
+        }
+      ];
+
+      let activeScenario = null;
+      let selectedUpgrades = [];
+
+      function randomChoice(array) {
+        return array[Math.floor(Math.random() * array.length)];
+      }
+
+      function generateScenario() {
+        return randomChoice(scenarioTemplates);
+      }
+
+      function displayScenario() {
+        const display = document.getElementById('scenario-display');
+        const s = activeScenario;
+        
+        display.innerHTML = \`
+          <div style="border-left: 4px solid #00ff88; padding-left: 15px;">
+            <h3 style="color: #00ff88; margin-bottom: 10px;">💡 \${s.name}</h3>
+            <p style="margin-bottom: 15px; line-height: 1.6;">
+              <strong>Scenario:</strong> \${s.description}
+            </p>
+            <p style="color: #ffaa00; margin-top: 10px;">
+              <strong>Task:</strong> Review the current system, identify bottlenecks, and select the best upgrades within the $\${s.budget} budget to maximize performance for this use case.
+            </p>
+          </div>
+        \`;
+      }
+
+      function displayCurrentSystem() {
+        const container = document.getElementById('current-system');
+        const sys = activeScenario.currentSystem;
+        
+        container.innerHTML = \`
+          <div class="system-card \${sys.cpu.bottleneck ? 'bottleneck' : ''}">
+            <div class="card-title">💻 CPU</div>
+            <div class="spec-item">
+              <span class="spec-label">Model:</span>
+              <span class="spec-value">\${sys.cpu.name}</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Performance:</span>
+              <span class="spec-value">\${sys.cpu.performance}/100</span>
+            </div>
+            \${sys.cpu.bottleneck ? '<div class="bottleneck-indicator">🔴 BOTTLENECK - High Priority Upgrade</div>' : ''}
+          </div>
+          
+          <div class="system-card \${sys.gpu.bottleneck ? 'bottleneck' : ''}">
+            <div class="card-title">🎮 GPU</div>
+            <div class="spec-item">
+              <span class="spec-label">Model:</span>
+              <span class="spec-value">\${sys.gpu.name}</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Performance:</span>
+              <span class="spec-value">\${sys.gpu.performance}/100</span>
+            </div>
+            \${sys.gpu.bottleneck ? '<div class="bottleneck-indicator">🔴 BOTTLENECK - High Priority Upgrade</div>' : ''}
+          </div>
+          
+          <div class="system-card \${sys.ram.bottleneck ? 'bottleneck' : ''}">
+            <div class="card-title">🧠 RAM</div>
+            <div class="spec-item">
+              <span class="spec-label">Configuration:</span>
+              <span class="spec-value">\${sys.ram.name}</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Capacity:</span>
+              <span class="spec-value">\${sys.ram.capacity}GB</span>
+            </div>
+            \${sys.ram.bottleneck ? '<div class="bottleneck-indicator">🔴 BOTTLENECK - Upgrade Recommended</div>' : ''}
+          </div>
+          
+          <div class="system-card \${sys.storage.bottleneck ? 'bottleneck' : ''}">
+            <div class="card-title">💾 Storage</div>
+            <div class="spec-item">
+              <span class="spec-label">Drive:</span>
+              <span class="spec-value">\${sys.storage.name}</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Type:</span>
+              <span class="spec-value">\${sys.storage.type}</span>
+            </div>
+            \${sys.storage.bottleneck ? '<div class="bottleneck-indicator">🔴 BOTTLENECK - Upgrade Recommended</div>' : ''}
+          </div>
+          
+          <div class="system-card">
+            <div class="card-title">🔌 Motherboard</div>
+            <div class="spec-item">
+              <span class="spec-label">Model:</span>
+              <span class="spec-value">\${sys.mobo.name}</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Socket:</span>
+              <span class="spec-value">\${sys.mobo.socket}</span>
+            </div>
+          </div>
+          
+          <div class="system-card">
+            <div class="card-title">⚡ Power Supply</div>
+            <div class="spec-item">
+              <span class="spec-label">Model:</span>
+              <span class="spec-value">\${sys.psu.name}</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Wattage:</span>
+              <span class="spec-value">\${sys.psu.wattage}W</span>
+            </div>
+          </div>
+        \`;
+      }
+
+      function displayUpgradeOptions() {
+        const container = document.getElementById('upgrade-options');
+        const options = activeScenario.upgradeOptions;
+        
+        let html = '';
+        options.forEach(option => {
+          const isSelected = selectedUpgrades.includes(option.id);
+          html += \`
+            <div class="upgrade-option \${isSelected ? 'selected' : ''}" data-upgrade="\${option.id}">
+              <div class="upgrade-option-name">\${option.name}</div>
+              <div class="upgrade-option-desc">\${option.desc}</div>
+              <div class="upgrade-option-price">💰 $\${option.price}</div>
+              <div class="upgrade-option-impact">📊 Performance Impact: +\${option.impact}%</div>
+              \${option.requires ? \`<div style="color: #ff4444; font-size: 0.75em; margin-top: 5px;">⚠️ Requires: \${options.find(o => o.id === option.requires)?.name}</div>\` : ''}
+            </div>
+          \`;
+        });
+        
+        container.innerHTML = html;
+        
+        // Add click handlers
+        document.querySelectorAll('.upgrade-option').forEach(option => {
+          option.addEventListener('click', function() {
+            const upgradeId = this.dataset.upgrade;
+            if (selectedUpgrades.includes(upgradeId)) {
+              selectedUpgrades = selectedUpgrades.filter(id => id !== upgradeId);
+            } else {
+              selectedUpgrades.push(upgradeId);
+            }
+            updateBudget();
+            displayUpgradeOptions();
+          });
+        });
+      }
+
+      function updateBudget() {
+        const budget = activeScenario.budget;
+        const spent = selectedUpgrades.reduce((total, upgradeId) => {
+          const upgrade = activeScenario.upgradeOptions.find(u => u.id === upgradeId);
+          return total + (upgrade?.price || 0);
+        }, 0);
+        const remaining = budget - spent;
+        
+        document.getElementById('budget-amount').textContent = \`$\${budget}\`;
+        document.getElementById('budget-spent').innerHTML = \`Spent: <span style="color: \${spent > budget ? '#ff4444' : '#ffaa00'}">$\${spent}</span> | Remaining: <span style="color: \${remaining < 0 ? '#ff4444' : '#00ff88'}">$\${remaining}</span>\`;
+      }
+
+      function evaluateUpgradePlan() {
+        const feedback = [];
+        let score = 0;
+        
+        const budget = activeScenario.budget;
+        const spent = selectedUpgrades.reduce((total, upgradeId) => {
+          const upgrade = activeScenario.upgradeOptions.find(u => u.id === upgradeId);
+          return total + (upgrade?.price || 0);
+        }, 0);
+        
+        // Check budget
+        if (spent > budget) {
+          feedback.push({
+            type: 'fail',
+            text: \`✗ You exceeded the budget by $\${spent - budget} (-50 points)\`
+          });
+          score -= 50;
+        } else {
+          feedback.push({
+            type: 'pass',
+            text: \`✓ Stayed within budget ($\${spent}/$\${budget}) (+20 points)\`
+          });
+          score += 20;
+        }
+        
+        // Check if optimal upgrades were selected
+        const optimalUpgrades = activeScenario.optimalUpgrades;
+        const selectedOptimal = optimalUpgrades.filter(id => selectedUpgrades.includes(id));
+        const missedOptimal = optimalUpgrades.filter(id => !selectedUpgrades.includes(id));
+        
+        selectedOptimal.forEach(upgradeId => {
+          const upgrade = activeScenario.upgradeOptions.find(u => u.id === upgradeId);
+          feedback.push({
+            type: 'pass',
+            text: \`✓ Correctly identified \${upgrade.name} as a priority upgrade (+\${40 / optimalUpgrades.length} points)\`
+          });
+          score += 40 / optimalUpgrades.length;
+        });
+        
+        missedOptimal.forEach(upgradeId => {
+          const upgrade = activeScenario.upgradeOptions.find(u => u.id === upgradeId);
+          feedback.push({
+            type: 'fail',
+            text: \`✗ Missed priority upgrade: \${upgrade.name} (0 points)\`
+          });
+        });
+        
+        // Check for unnecessary upgrades
+        const unnecessary = selectedUpgrades.filter(id => !optimalUpgrades.includes(id));
+        if (unnecessary.length > 0) {
+          unnecessary.forEach(upgradeId => {
+            const upgrade = activeScenario.upgradeOptions.find(u => u.id === upgradeId);
+            feedback.push({
+              type: 'warn',
+              text: \`⚠️ \${upgrade.name} was selected but lower priority for this use case\`
+            });
+          });
+        }
+        
+        // Bonus for efficiency
+        if (spent < budget && selectedOptimal.length === optimalUpgrades.length) {
+          const efficiency = ((budget - spent) / budget) * 100;
+          const bonusPoints = Math.round(efficiency / 5);
+          feedback.push({
+            type: 'pass',
+            text: \`✓ Efficient spending! Saved $\${budget - spent} (+\${bonusPoints} bonus points)\`
+          });
+          score += bonusPoints;
+        }
+        
+        // Total impact analysis
+        const totalImpact = selectedUpgrades.reduce((total, upgradeId) => {
+          const upgrade = activeScenario.upgradeOptions.find(u => u.id === upgradeId);
+          return total + (upgrade?.impact || 0);
+        }, 0);
+        
+        feedback.push({
+          type: 'pass',
+          text: \`📊 Total performance improvement: +\${totalImpact}%\`
+        });
+        
+        return { score: Math.max(0, Math.min(100, Math.round(score))), feedback };
+      }
+
+      document.getElementById('btn-submit').addEventListener('click', () => {
+        if (selectedUpgrades.length === 0) {
+          alert('Please select at least one upgrade before submitting.');
+          return;
+        }
+        
+        const results = evaluateUpgradePlan();
+        const resultsPanel = document.getElementById('results-panel');
+        const scoreDisplay = document.getElementById('score-display');
+        const feedbackList = document.getElementById('feedback-list');
+        
+        const passed = results.score >= 80;
+        const grade = passed ? 'PASS' : 'FAIL';
+        const gradeColor = passed ? '#00ff88' : '#ff4444';
+        
+        scoreDisplay.innerHTML = \`<div style="color: \${gradeColor};">\${grade}</div><div>Score: \${results.score}/100</div>\`;
+        
+        feedbackList.innerHTML = results.feedback.map(f => 
+          \`<div class="feedback-item \${f.type}">\${f.text}</div>\`
+        ).join('');
+        
+        resultsPanel.style.display = 'block';
+        resultsPanel.scrollIntoView({ behavior: 'smooth' });
+      });
+
+      document.getElementById('btn-clear').addEventListener('click', () => {
+        selectedUpgrades = [];
+        updateBudget();
+        displayUpgradeOptions();
+      });
+
+      document.getElementById('btn-reset').addEventListener('click', () => {
+        document.getElementById('results-panel').style.display = 'none';
+        selectedUpgrades = [];
+        activeScenario = generateScenario();
+        displayScenario();
+        displayCurrentSystem();
+        displayUpgradeOptions();
+        updateBudget();
+      });
+
+      function initLab() {
+        activeScenario = generateScenario();
+        displayScenario();
+        displayCurrentSystem();
+        displayUpgradeOptions();
+        updateBudget();
+      }
+
+      initLab();
+    </script>
+    <script type="module" src="site.js"></script>
+  </body>
+</html>`} />

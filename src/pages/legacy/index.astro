@@ -1,0 +1,116 @@
+---
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import AppShell from '../../layouts/AppShell.astro';
+
+const currentDir = path.dirname(fileURLToPath(import.meta.url));
+const legacyRoot = path.resolve(currentDir, '../../../public/legacy');
+
+type LegacyFile = {
+  fullPath: string;
+  relativePath: string;
+};
+
+type LegacyItem = {
+  title: string;
+  relativePath: string;
+  group: string;
+};
+
+type LegacyGroup = {
+  group: string;
+  entries: LegacyItem[];
+};
+
+const extractTitle = (html: string, fallback: string) => {
+  const titleMatch = html.match(/<title>([^<]+)<\/title>/i);
+  if (titleMatch?.[1]) return titleMatch[1].trim();
+  const h1Match = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+  if (h1Match?.[1]) {
+    const text = h1Match[1].replace(/<[^>]+>/g, '').trim();
+    if (text) return text;
+  }
+  return fallback;
+};
+
+const groupKeyFor = (relativePath: string) => {
+  const name = path.basename(relativePath);
+  const prefix = name.includes('-') ? name.split('-')[0] : 'other';
+  const folder = path.dirname(relativePath);
+  if (folder !== '.' && folder !== '') {
+    return `${folder}/${prefix}`;
+  }
+  return prefix;
+};
+
+const walkHtmlFiles = async (dir: string, baseDir: string): Promise<LegacyFile[]> => {
+  const entries = await fs.readdir(dir, { withFileTypes: true });
+  const results: LegacyFile[] = [];
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    const relativePath = path.relative(baseDir, fullPath).replace(/\\/g, '/');
+    if (entry.isDirectory()) {
+      results.push(...(await walkHtmlFiles(fullPath, baseDir)));
+    } else if (entry.isFile() && entry.name.toLowerCase().endsWith('.html')) {
+      results.push({ fullPath, relativePath });
+    }
+  }
+  return results;
+};
+
+let groups: LegacyGroup[] = [];
+
+try {
+  const files = await walkHtmlFiles(legacyRoot, legacyRoot);
+  const items: LegacyItem[] = await Promise.all(
+    files.map(async ({ fullPath, relativePath }) => {
+      const raw = await fs.readFile(fullPath, 'utf-8');
+      const fallback = path.basename(relativePath, path.extname(relativePath));
+      return {
+        title: extractTitle(raw, fallback),
+        relativePath,
+        group: groupKeyFor(relativePath),
+      };
+    })
+  );
+
+  const grouped = items.reduce<Record<string, LegacyItem[]>>((acc, item) => {
+    acc[item.group] ??= [];
+    acc[item.group].push(item);
+    return acc;
+  }, {});
+
+  groups = Object.entries(grouped)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([group, entries]) => ({
+      group,
+      entries: entries.sort((a, b) => a.title.localeCompare(b.title)),
+    }));
+} catch {
+  groups = [];
+}
+---
+
+<AppShell title="Legacy Index">
+  <h1 class="page-title">Legacy Index</h1>
+  <p>Browse legacy HTML pages while migration is in progress.</p>
+  <p><a class="btn-link" href="/tracks">Go to current tracks →</a></p>
+
+  {groups.map((group) => (
+    <section class="track-section">
+      <h2 class="track-section__title">{group.group}</h2>
+      <div class="card-grid">
+        {group.entries.map((entry) => (
+          <article class="card">
+            <h3>{entry.title}</h3>
+            <p>{entry.relativePath}</p>
+            <div class="card__footer">
+              <a class="sidebar__link" href={`/legacy/${entry.relativePath}`}>Open →</a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  ))}
+</AppShell>

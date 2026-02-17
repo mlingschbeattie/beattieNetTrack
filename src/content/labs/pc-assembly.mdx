@@ -1,0 +1,43 @@
+---
+title: PC Assembly Simulator Lab
+description: Build a compatible PC from scenario constraints and validate your selections.
+slug: pc-assembly
+track: pc-technician
+moduleId: pct.hardware.build-compatibility
+order: 1
+difficulty: Intermediate
+estMinutes: 20
+tags: ["a-plus", "hardware", "lab", "simulator"]
+activity: iframe
+labPath: /labs/pc-assembly/index.html
+checkLabel: Validate Build
+submitLabel: Submit for Grading
+hints:
+  - Start by selecting CPU and motherboard that share the same socket.
+  - Match RAM generation to both CPU and motherboard before tuning GPU.
+  - Watch budget and PSU headroom before submitting for grading.
+checklist:
+  - Required parts selected (CPU, motherboard, RAM, storage, cooler)
+  - CPU and motherboard sockets match
+  - RAM type and capacity satisfy scenario minimum
+  - Storage type/capacity satisfy scenario requirement
+  - Build stays within scenario budget
+---
+
+Use the simulator to choose compatible components and satisfy the generated scenario.
+
+## Goals
+
+- Match CPU socket, motherboard, and RAM generation correctly.
+- Keep total cost under scenario budget.
+- Resolve compatibility warnings before submitting.
+
+## Lab Scenario
+
+Each reset generates a new customer request with budget, workload targets, and minimum hardware requirements. Use the scenario summary in the workspace activity header while selecting parts.
+
+## Learning Objectives
+
+- Verify CPU, motherboard, and RAM compatibility constraints.
+- Evaluate build quality against workload targets and budget.
+- Use iterative validation before final submission.

@@ -1,0 +1,580 @@
+---
+title: Performance Tuning Lab - A+ Lab
+slug: a-plus-lab-performance-tuning
+legacyUrl: /a-plus-lab-performance-tuning.html
+difficulty: medium
+estimatedMinutes: 15
+---
+
+import LegacyHtml from '../../components/LegacyHtml.astro';
+
+<LegacyHtml html={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Performance Tuning Lab - A+ Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css" />
+    
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="study-guides.html" class="active">📖 Study Guides</a></li>
+            <li><a href="learning-tracks.html">🎯 Learning Tracks</a></li>
+            <li><a href="resources.html">🔬 Study Hub</a></li>
+            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <main id="main-content" class="container">
+      <nav class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <a href="study-guides.html">Study Guides</a>
+        <span class="separator">/</span>
+        <a href="a-plus-guides.html">A+ Guides</a>
+        <span class="separator">/</span>
+        <span class="current">Performance Tuning Lab</span>
+      </nav>
+      
+      <h1>Performance Tuning Lab</h1>
+      <div class="subtitle">Hands-On Lab: Optimize System Performance</div>
+
+      <div class="section">
+        <h2>Lab Scenario</h2>
+        <div class="info-box" id="scenario-display">
+          <div style="text-align: center; color: #00d4ff; padding: 20px;">
+            <div style="font-size: 1.5em; margin-bottom: 10px;">🔄 Generating scenario...</div>
+            <div style="font-size: 0.9em;">Loading performance optimization challenge</div>
+          </div>
+        </div>
+        <div class="warning-box">
+          <strong>⚠ Important:</strong> Review the current system performance metrics and disable unnecessary startup programs and services. Goal is to improve boot time, CPU usage, RAM usage, and disk usage.
+        </div>
+      </div>
+
+      <div class="section">
+        <h3 style="color: #00d4ff; text-align: center; margin-bottom: 20px;">Current System Performance</h3>
+        <div class="performance-grid" id="performance-metrics">
+          {/* Metrics will be inserted here */}
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="tuning-section">
+          <div class="tuning-title">🚀 Startup Programs</div>
+          <div id="startup-programs"></div>
+        </div>
+
+        <div class="tuning-section">
+          <div class="tuning-title">⚙️ Background Services</div>
+          <div id="background-services"></div>
+        </div>
+
+        <div class="tuning-section">
+          <div class="tuning-title">🎨 Visual Effects</div>
+          <div id="visual-effects"></div>
+        </div>
+
+        <div class="lab-controls">
+          <button id="btn-apply" class="lab-btn primary">Apply Changes & Test</button>
+          <button id="btn-reset" class="lab-btn danger">New Scenario</button>
+        </div>
+
+        <div id="results-panel" class="results-panel" style="display: none;">
+          <h3 style="color: #00d4ff; text-align: center; margin-bottom: 15px;">Performance Tuning Results</h3>
+          <div id="score-display" class="score-display"></div>
+          <div id="feedback-list" class="feedback-list"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Learning Objectives</h2>
+        <div class="info-box">
+          This lab tests your understanding of:
+          <ul style="margin: 10px 0 0 20px; line-height: 1.8;">
+            <li><strong>Startup Management:</strong> Identifying and disabling unnecessary startup programs</li>
+            <li><strong>Service Management:</strong> Understanding which Windows services can be safely disabled</li>
+            <li><strong>Visual Effects:</strong> Balancing appearance vs performance</li>
+            <li><strong>Resource Monitoring:</strong> Understanding CPU, RAM, and disk usage metrics</li>
+            <li><strong>Performance Impact:</strong> Recognizing which changes have the most impact</li>
+            <li><strong>System Stability:</strong> Avoiding changes that could break system functionality</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      const scenarioTemplates = [
+        {
+          name: 'Bloatware-Laden New PC',
+          description: 'Customer bought a pre-built PC with tons of manufacturer bloatware causing slow boot and high resource usage.',
+          initialMetrics: { bootTime: 95, cpuUsage: 45, ramUsage: 72, diskUsage: 68 },
+          startupPrograms: [
+            { name: 'Windows Security', essential: true, impact: 5, enabled: true },
+            { name: 'Manufacturer Update Manager', essential: false, impact: 15, enabled: true },
+            { name: 'Norton Antivirus Trial', essential: false, impact: 25, enabled: true },
+            { name: 'Cloud Backup Service', essential: false, impact: 20, enabled: true },
+            { name: 'Gaming Overlay Software', essential: false, impact: 18, enabled: true },
+            { name: 'Photo Management Suite', essential: false, impact: 22, enabled: true },
+            { name: 'Realtek Audio Console', essential: true, impact: 3, enabled: true }
+          ],
+          services: [
+            { name: 'Windows Update', essential: true, impact: 5, enabled: true },
+            { name: 'Telemetry Service', essential: false, impact: 12, enabled: true },
+            { name: 'Print Spooler', essential: false, impact: 8, enabled: true },
+            { name: 'Bluetooth Support', essential: false, impact: 7, enabled: true },
+            { name: 'Manufacturer Support Service', essential: false, impact: 15, enabled: true }
+          ],
+          visualEffects: [
+            { name: 'Animations', essential: false, impact: 8, enabled: true },
+            { name: 'Transparency Effects', essential: false, impact: 10, enabled: true },
+            { name: 'Shadows', essential: false, impact: 6, enabled: true }
+          ],
+          targetMetrics: { bootTime: 25, cpuUsage: 10, ramUsage: 35, diskUsage: 15 }
+        },
+        {
+          name: 'Old Gaming PC',
+          description: 'A gaming PC from 5 years ago is now slow. Years of installed games and utilities are hogging resources.',
+          initialMetrics: { bootTime: 78, cpuUsage: 38, ramUsage: 65, diskUsage: 55 },
+          startupPrograms: [
+            { name: 'Steam', essential: false, impact: 15, enabled: true },
+            { name: 'Epic Games Launcher', essential: false, impact: 14, enabled: true },
+            { name: 'Discord', essential: false, impact: 12, enabled: true },
+            { name: 'NVIDIA GeForce Experience', essential: true, impact: 8, enabled: true },
+            { name: 'RGB Control Software', essential: false, impact: 10, enabled: true },
+            { name: 'Game Capture Software', essential: false, impact: 18, enabled: true },
+            { name: 'Windows Security', essential: true, impact: 5, enabled: true }
+          ],
+          services: [
+            { name: 'Windows Update', essential: true, impact: 5, enabled: true },
+            { name: 'Windows Search', essential: false, impact: 12, enabled: true },
+            { name: 'Superfetch/SysMain', essential: false, impact: 15, enabled: true },
+            { name: 'Print Spooler', essential: false, impact: 8, enabled: true }
+          ],
+          visualEffects: [
+            { name: 'Animations', essential: false, impact: 8, enabled: true },
+            { name: 'Transparency Effects', essential: false, impact: 10, enabled: true },
+            { name: 'Shadows', essential: false, impact: 6, enabled: true }
+          ],
+          targetMetrics: { bootTime: 30, cpuUsage: 8, ramUsage: 30, diskUsage: 12 }
+        },
+        {
+          name: 'Office Workstation',
+          description: 'Company workstation runs slowly due to unnecessary background services and monitoring software.',
+          initialMetrics: { bootTime: 85, cpuUsage: 42, ramUsage: 68, diskUsage: 58 },
+          startupPrograms: [
+            { name: 'Corporate VPN Client', essential: true, impact: 10, enabled: true },
+            { name: 'Monitoring Agent', essential: true, impact: 12, enabled: true },
+            { name: 'OneDrive', essential: true, impact: 8, enabled: true },
+            { name: 'Adobe Creative Cloud', essential: false, impact: 20, enabled: true },
+            { name: 'Spotify', essential: false, impact: 15, enabled: true },
+            { name: 'Skype', essential: false, impact: 18, enabled: true },
+            { name: 'Windows Security', essential: true, impact: 5, enabled: true }
+          ],
+          services: [
+            { name: 'Windows Update', essential: true, impact: 5, enabled: true },
+            { name: 'Fax Service', essential: false, impact: 10, enabled: true },
+            { name: 'Bluetooth Support', essential: false, impact: 7, enabled: true },
+            { name: 'Tablet Input Service', essential: false, impact: 8, enabled: true },
+            { name: 'Remote Registry', essential: false, impact: 6, enabled: true }
+          ],
+          visualEffects: [
+            { name: 'Animations', essential: false, impact: 8, enabled: true },
+            { name: 'Transparency Effects', essential: false, impact: 10, enabled: true }
+          ],
+          targetMetrics: { bootTime: 28, cpuUsage: 12, ramUsage: 32, diskUsage: 18 }
+        }
+      ];
+
+      let activeScenario = null;
+      let currentMetrics = {};
+      let startupStates = {};
+      let serviceStates = {};
+      let effectStates = {};
+
+      function randomChoice(array) {
+        return array[Math.floor(Math.random() * array.length)];
+      }
+
+      function generateScenario() {
+        return randomChoice(scenarioTemplates);
+      }
+
+      function displayScenario() {
+        const display = document.getElementById('scenario-display');
+        const s = activeScenario;
+        
+        display.innerHTML = \`
+          <div style="border-left: 4px solid #00ff88; padding-left: 15px;">
+            <h3 style="color: #00ff88; margin-bottom: 10px;">⚡ \${s.name}</h3>
+            <p style="margin-bottom: 15px; line-height: 1.6;">
+              <strong>Scenario:</strong> \${s.description}
+            </p>
+            <p style="color: #ffaa00; margin-top: 10px;">
+              <strong>Task:</strong> Optimize the system by disabling unnecessary startup programs and services. Disable visual effects if needed. Aim to reduce boot time, CPU, RAM, and disk usage.
+            </p>
+          </div>
+        \`;
+      }
+
+      function initStates() {
+        currentMetrics = { ...activeScenario.initialMetrics };
+        
+        startupStates = {};
+        activeScenario.startupPrograms.forEach((prog, i) => {
+          startupStates[i] = { ...prog };
+        });
+        
+        serviceStates = {};
+        activeScenario.services.forEach((svc, i) => {
+          serviceStates[i] = { ...svc };
+        });
+        
+        effectStates = {};
+        activeScenario.visualEffects.forEach((eff, i) => {
+          effectStates[i] = { ...eff };
+        });
+        
+        renderAll();
+      }
+
+      function calculateMetrics() {
+        let bootTime = activeScenario.initialMetrics.bootTime;
+        let cpuUsage = activeScenario.initialMetrics.cpuUsage;
+        let ramUsage = activeScenario.initialMetrics.ramUsage;
+        let diskUsage = activeScenario.initialMetrics.diskUsage;
+        
+        // Calculate reductions from disabled items
+        Object.values(startupStates).forEach(prog => {
+          if (!prog.enabled) {
+            bootTime -= prog.impact * 0.6;
+            cpuUsage -= prog.impact * 0.3;
+            ramUsage -= prog.impact * 0.4;
+            diskUsage -= prog.impact * 0.5;
+          }
+        });
+        
+        Object.values(serviceStates).forEach(svc => {
+          if (!svc.enabled) {
+            cpuUsage -= svc.impact * 0.4;
+            ramUsage -= svc.impact * 0.5;
+            diskUsage -= svc.impact * 0.3;
+          }
+        });
+        
+        Object.values(effectStates).forEach(eff => {
+          if (!eff.enabled) {
+            cpuUsage -= eff.impact * 0.3;
+            ramUsage -= eff.impact * 0.2;
+          }
+        });
+        
+        return {
+          bootTime: Math.max(15, Math.round(bootTime)),
+          cpuUsage: Math.max(5, Math.round(cpuUsage)),
+          ramUsage: Math.max(20, Math.round(ramUsage)),
+          diskUsage: Math.max(5, Math.round(diskUsage))
+        };
+      }
+
+      function renderMetrics() {
+        const metricsDiv = document.getElementById('performance-metrics');
+        const metrics = currentMetrics;
+        
+        const getClass = (value, thresholds) => {
+          if (value <= thresholds.good) return 'good';
+          if (value <= thresholds.warning) return 'warning';
+          return 'error';
+        };
+        
+        const bootClass = getClass(metrics.bootTime, { good: 35, warning: 60 });
+        const cpuClass = getClass(metrics.cpuUsage, { good: 15, warning: 30 });
+        const ramClass = getClass(metrics.ramUsage, { good: 40, warning: 60 });
+        const diskClass = getClass(metrics.diskUsage, { good: 20, warning: 40 });
+        
+        metricsDiv.innerHTML = \`
+          <div class="metric-card">
+            <div class="metric-title">⏱️ Boot Time</div>
+            <div class="metric-value">\${metrics.bootTime}s</div>
+            <div class="metric-bar">
+              <div class="metric-bar-fill \${bootClass}" style="width: \${Math.min(100, metrics.bootTime)}%"></div>
+            </div>
+            <div style="color: #aaa; font-size: 0.85em;">Target: &lt; 35s</div>
+          </div>
+          
+          <div class="metric-card">
+            <div class="metric-title">💻 CPU Usage</div>
+            <div class="metric-value">\${metrics.cpuUsage}%</div>
+            <div class="metric-bar">
+              <div class="metric-bar-fill \${cpuClass}" style="width: \${metrics.cpuUsage}%"></div>
+            </div>
+            <div style="color: #aaa; font-size: 0.85em;">Target: &lt; 15%</div>
+          </div>
+          
+          <div class="metric-card">
+            <div class="metric-title">🧠 RAM Usage</div>
+            <div class="metric-value">\${metrics.ramUsage}%</div>
+            <div class="metric-bar">
+              <div class="metric-bar-fill \${ramClass}" style="width: \${metrics.ramUsage}%"></div>
+            </div>
+            <div style="color: #aaa; font-size: 0.85em;">Target: &lt; 40%</div>
+          </div>
+          
+          <div class="metric-card">
+            <div class="metric-title">💾 Disk Usage</div>
+            <div class="metric-value">\${metrics.diskUsage}%</div>
+            <div class="metric-bar">
+              <div class="metric-bar-fill \${diskClass}" style="width: \${metrics.diskUsage}%"></div>
+            </div>
+            <div style="color: #aaa; font-size: 0.85em;">Target: &lt; 20%</div>
+          </div>
+        \`;
+      }
+
+      function renderStartupPrograms() {
+        const container = document.getElementById('startup-programs');
+        let html = '';
+        
+        Object.entries(startupStates).forEach(([id, prog]) => {
+          html += \`
+            <div class="tuning-item">
+              <div class="tuning-item-info">
+                <div class="tuning-item-name">\${prog.name} \${prog.essential ? '⚠️ Essential' : ''}</div>
+                <div class="tuning-item-desc">Performance impact: \${prog.impact}% | \${prog.essential ? 'Required for system functionality' : 'Can be disabled'}</div>
+              </div>
+              <button class="tuning-toggle \${prog.enabled ? 'enabled' : ''}" data-type="startup" data-id="\${id}">
+                \${prog.enabled ? 'ENABLED' : 'DISABLED'}
+              </button>
+            </div>
+          \`;
+        });
+        
+        container.innerHTML = html;
+      }
+
+      function renderServices() {
+        const container = document.getElementById('background-services');
+        let html = '';
+        
+        Object.entries(serviceStates).forEach(([id, svc]) => {
+          html += \`
+            <div class="tuning-item">
+              <div class="tuning-item-info">
+                <div class="tuning-item-name">\${svc.name} \${svc.essential ? '⚠️ Essential' : ''}</div>
+                <div class="tuning-item-desc">Performance impact: \${svc.impact}% | \${svc.essential ? 'Required for system functionality' : 'Can be disabled'}</div>
+              </div>
+              <button class="tuning-toggle \${svc.enabled ? 'enabled' : ''}" data-type="service" data-id="\${id}">
+                \${svc.enabled ? 'ENABLED' : 'DISABLED'}
+              </button>
+            </div>
+          \`;
+        });
+        
+        container.innerHTML = html;
+      }
+
+      function renderVisualEffects() {
+        const container = document.getElementById('visual-effects');
+        let html = '';
+        
+        Object.entries(effectStates).forEach(([id, eff]) => {
+          html += \`
+            <div class="tuning-item">
+              <div class="tuning-item-info">
+                <div class="tuning-item-name">\${eff.name}</div>
+                <div class="tuning-item-desc">Performance impact: \${eff.impact}% | Visual enhancement (not essential)</div>
+              </div>
+              <button class="tuning-toggle \${eff.enabled ? 'enabled' : ''}" data-type="effect" data-id="\${id}">
+                \${eff.enabled ? 'ENABLED' : 'DISABLED'}
+              </button>
+            </div>
+          \`;
+        });
+        
+        container.innerHTML = html;
+      }
+
+      function renderAll() {
+        renderMetrics();
+        renderStartupPrograms();
+        renderServices();
+        renderVisualEffects();
+        
+        // Add event listeners
+        document.querySelectorAll('.tuning-toggle').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const type = this.dataset.type;
+            const id = this.dataset.id;
+            
+            if (type === 'startup') {
+              startupStates[id].enabled = !startupStates[id].enabled;
+            } else if (type === 'service') {
+              serviceStates[id].enabled = !serviceStates[id].enabled;
+            } else if (type === 'effect') {
+              effectStates[id].enabled = !effectStates[id].enabled;
+            }
+            
+            renderAll();
+          });
+        });
+      }
+
+      function evaluatePerformance() {
+        const newMetrics = calculateMetrics();
+        const target = activeScenario.targetMetrics;
+        const feedback = [];
+        let score = 0;
+        
+        // Check if essential items were disabled (penalties)
+        let essentialDisabled = 0;
+        Object.values(startupStates).forEach(prog => {
+          if (prog.essential && !prog.enabled) {
+            essentialDisabled++;
+            feedback.push({
+              type: 'fail',
+              text: \`✗ You disabled "\${prog.name}" which is essential for system functionality (-25 points)\`
+            });
+          }
+        });
+        
+        Object.values(serviceStates).forEach(svc => {
+          if (svc.essential && !svc.enabled) {
+            essentialDisabled++;
+            feedback.push({
+              type: 'fail',
+              text: \`✗ You disabled "\${svc.name}" which is essential for system functionality (-25 points)\`
+            });
+          }
+        });
+        
+        score -= essentialDisabled * 25;
+        
+        // Check performance improvements
+        const bootImprovement = ((activeScenario.initialMetrics.bootTime - newMetrics.bootTime) / activeScenario.initialMetrics.bootTime) * 100;
+        const cpuImprovement = ((activeScenario.initialMetrics.cpuUsage - newMetrics.cpuUsage) / activeScenario.initialMetrics.cpuUsage) * 100;
+        const ramImprovement = ((activeScenario.initialMetrics.ramUsage - newMetrics.ramUsage) / activeScenario.initialMetrics.ramUsage) * 100;
+        const diskImprovement = ((activeScenario.initialMetrics.diskUsage - newMetrics.diskUsage) / activeScenario.initialMetrics.diskUsage) * 100;
+        
+        if (newMetrics.bootTime <= target.bootTime + 10) {
+          score += 25;
+          feedback.push({
+            type: 'pass',
+            text: \`✓ Boot time improved from \${activeScenario.initialMetrics.bootTime}s to \${newMetrics.bootTime}s (\${Math.round(bootImprovement)}% improvement) (+25 points)\`
+          });
+        } else {
+          feedback.push({
+            type: 'fail',
+            text: \`✗ Boot time only improved to \${newMetrics.bootTime}s, target was \${target.bootTime}s (0 points)\`
+          });
+        }
+        
+        if (newMetrics.cpuUsage <= target.cpuUsage + 5) {
+          score += 25;
+          feedback.push({
+            type: 'pass',
+            text: \`✓ CPU usage reduced from \${activeScenario.initialMetrics.cpuUsage}% to \${newMetrics.cpuUsage}% (\${Math.round(cpuImprovement)}% improvement) (+25 points)\`
+          });
+        } else {
+          feedback.push({
+            type: 'fail',
+            text: \`✗ CPU usage only reduced to \${newMetrics.cpuUsage}%, target was \${target.cpuUsage}% (0 points)\`
+          });
+        }
+        
+        if (newMetrics.ramUsage <= target.ramUsage + 10) {
+          score += 25;
+          feedback.push({
+            type: 'pass',
+            text: \`✓ RAM usage reduced from \${activeScenario.initialMetrics.ramUsage}% to \${newMetrics.ramUsage}% (\${Math.round(ramImprovement)}% improvement) (+25 points)\`
+          });
+        } else {
+          feedback.push({
+            type: 'fail',
+            text: \`✗ RAM usage only reduced to \${newMetrics.ramUsage}%, target was \${target.ramUsage}% (0 points)\`
+          });
+        }
+        
+        if (newMetrics.diskUsage <= target.diskUsage + 10) {
+          score += 25;
+          feedback.push({
+            type: 'pass',
+            text: \`✓ Disk usage reduced from \${activeScenario.initialMetrics.diskUsage}% to \${newMetrics.diskUsage}% (\${Math.round(diskImprovement)}% improvement) (+25 points)\`
+          });
+        } else {
+          feedback.push({
+            type: 'fail',
+            text: \`✗ Disk usage only reduced to \${newMetrics.diskUsage}%, target was \${target.diskUsage}% (0 points)\`
+          });
+        }
+        
+        return { score: Math.max(0, score), feedback, newMetrics };
+      }
+
+      document.getElementById('btn-apply').addEventListener('click', () => {
+        const results = evaluatePerformance();
+        currentMetrics = results.newMetrics;
+        renderMetrics();
+        
+        const resultsPanel = document.getElementById('results-panel');
+        const scoreDisplay = document.getElementById('score-display');
+        const feedbackList = document.getElementById('feedback-list');
+        
+        const passed = results.score >= 80;
+        const grade = passed ? 'PASS' : 'FAIL';
+        const gradeColor = passed ? '#00ff88' : '#ff4444';
+        
+        scoreDisplay.innerHTML = \`<div style="color: \${gradeColor};">\${grade}</div><div>Score: \${results.score}/100</div>\`;
+        
+        feedbackList.innerHTML = results.feedback.map(f => 
+          \`<div class="feedback-item \${f.type}">\${f.text}</div>\`
+        ).join('');
+        
+        resultsPanel.style.display = 'block';
+        resultsPanel.scrollIntoView({ behavior: 'smooth' });
+      });
+
+      document.getElementById('btn-reset').addEventListener('click', () => {
+        document.getElementById('results-panel').style.display = 'none';
+        activeScenario = generateScenario();
+        displayScenario();
+        initStates();
+      });
+
+      function initLab() {
+        activeScenario = generateScenario();
+        displayScenario();
+        initStates();
+      }
+
+      initLab();
+    </script>
+    <script type="module" src="site.js"></script>
+  </body>
+</html>`} />

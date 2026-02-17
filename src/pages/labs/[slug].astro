@@ -1,0 +1,164 @@
+---
+import { getCollection } from 'astro:content';
+import AppShell from '../../layouts/AppShell.astro';
+import WorkspaceLayout from '../../layouts/WorkspaceLayout.astro';
+import Card from '../../components/Card.astro';
+import Section from '../../components/Section.astro';
+import LabFrame from '../../components/LabFrame.astro';
+import Callout from '../../components/Callout.astro';
+import PcAssemblyLab from '../../components/labs/PcAssemblyLab.tsx';
+import ActivityCard from '../../components/ActivityCard.astro';
+import LabRunner from '../../components/LabRunner.tsx';
+
+export async function getStaticPaths() {
+  const labs = await getCollection('labs');
+  return labs.map((lab) => ({ params: { slug: lab.slug }, props: { lab } }));
+}
+
+const { lab } = Astro.props;
+const tracks = await getCollection('tracks');
+const { Content } = await lab.render();
+const currentTrack = lab.data.track ? tracks.find((track) => track.slug === lab.data.track) : undefined;
+
+type LabStep = {
+  id: string;
+  title: string;
+  prompt: string;
+  inputLabel?: string;
+  placeholder?: string;
+  hint?: string;
+  validator:
+    | { type: 'exact'; value: string }
+    | { type: 'oneOf'; values: string[] }
+    | { type: 'regex'; pattern: string; flags?: string };
+  successMessage?: string;
+};
+
+const terminalBasicsFallbackSteps: LabStep[] = [
+  {
+    id: 'pwd',
+    title: 'Where am I?',
+    prompt: 'Run the command that prints the current working directory.',
+    hint: "It stands for 'print working directory'.",
+    validator: { type: 'exact', value: 'pwd' },
+  },
+  {
+    id: 'ls',
+    title: 'List files',
+    prompt: 'Run the command that lists files in the current directory.',
+    hint: 'Try the short version, then the long listing.',
+    validator: { type: 'oneOf', values: ['ls', 'ls -la', 'ls -l', 'dir'] },
+  },
+  {
+    id: 'cd-up',
+    title: 'Move up a directory',
+    prompt: 'Change directory to the parent folder.',
+    hint: 'Use cd with two dots.',
+    validator: { type: 'oneOf', values: ['cd ..', 'cd..'] },
+  },
+];
+
+const resolvedSteps: LabStep[] =
+  Array.isArray(lab.data.steps) && lab.data.steps.length > 0
+    ? (lab.data.steps as LabStep[])
+    : lab.slug === 'terminal-basics'
+      ? terminalBasicsFallbackSteps
+      : [];
+
+const isStepLab = resolvedSteps.length > 0;
+const estimatedMinutes = lab.data.estimatedMinutes ?? lab.data.estMinutes ?? 20;
+const xpReward = typeof lab.data.xp === 'number' ? lab.data.xp : 25;
+
+const breadcrumbs: Array<{ label: string; href?: string }> = [
+  { label: 'Home', href: '/' },
+  { label: 'Labs', href: '/labs' },
+  { label: `Lab: ${lab.data.title}` },
+];
+
+if (currentTrack) {
+  breadcrumbs.splice(2, 0, { label: currentTrack.data.title, href: `/tracks/${currentTrack.slug}` });
+}
+---
+
+{isStepLab ? (
+  <AppShell
+    title={`Lab • ${lab.data.title}`}
+    tracks={tracks}
+    activeTrack={currentTrack?.slug}
+    activeLesson={lab.slug}
+    currentTrack={currentTrack}
+    breadcrumbs={breadcrumbs}
+  >
+    <section class="hero">
+      <h1 class="hero__title">{lab.data.title}</h1>
+      <p class="hero__subtitle">{lab.data.description}</p>
+      <div class="card__meta">
+        <span class="badge">{lab.data.difficulty}</span>
+        <span class="badge badge--muted">⏱️ {estimatedMinutes} min</span>
+        <span class="badge badge--muted">⭐ {xpReward} XP</span>
+      </div>
+    </section>
+
+    <Section title="Interactive Lab">
+      <Card>
+        <LabRunner
+          client:only="react"
+          labSlug={lab.slug}
+          title={lab.data.title}
+          steps={resolvedSteps}
+          xpReward={xpReward}
+          backToTrackHref={currentTrack ? `/tracks/${currentTrack.slug}` : '/tracks/network-engineer'}
+        />
+      </Card>
+    </Section>
+
+    <Section title="Overview">
+      <article class="lesson-body card">
+        <Content components={{ Callout }} />
+      </article>
+    </Section>
+  </AppShell>
+) : (
+  <WorkspaceLayout
+    title={`Lab • ${lab.data.title}`}
+    tracks={tracks}
+    activeTrack={currentTrack?.slug}
+    activeLesson={lab.slug}
+    currentTrack={currentTrack}
+    breadcrumbs={breadcrumbs}
+    itemSlug={lab.slug}
+    itemType="lab"
+    itemDifficulty={lab.data.difficulty}
+    itemMinutes={estimatedMinutes}
+    checkLabel={lab.data.checkLabel}
+    submitLabel={lab.data.submitLabel}
+    panelHints={lab.data.hints}
+    panelChecklist={lab.data.checklist}
+    activityTabs={[
+      { id: 'activity', label: 'Lab' },
+      { id: 'secondary', label: 'Notes' },
+    ]}
+  >
+    <Fragment slot="instructions">
+      <h1 class="page-title">{lab.data.title}</h1>
+      <p class="lesson-header__description">{lab.data.description}</p>
+      <Content components={{ Callout }} />
+    </Fragment>
+
+    <Fragment slot="activity-main">
+      {lab.slug === 'pc-assembly' ? (
+        <PcAssemblyLab client:only="react" labSlug={lab.slug} />
+      ) : (
+        <LabFrame slug={lab.slug} src={lab.data.labPath} title={lab.data.title} />
+      )}
+    </Fragment>
+
+    <Fragment slot="activity-secondary">
+      <ActivityCard>
+        <h3>Lab checks</h3>
+        <p>Use Run to execute helper routines, then Check/Submit to validate results.</p>
+        <p><strong>Shortcut:</strong> Ctrl+Enter triggers submit/check.</p>
+      </ActivityCard>
+    </Fragment>
+  </WorkspaceLayout>
+)}

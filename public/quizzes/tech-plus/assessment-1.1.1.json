@@ -1,0 +1,20 @@
+{
+  "id": "assessment-1-1-1",
+  "title": "Assessment 1.1.1 Basics of Computing",
+  "assessmentCode": "1.1.1",
+  "sourceQuestionDocx": "Assessment 1.1.1 Basics of Computing.docx",
+  "sourceAnswerDocx": "Assessment 1.1.1 Basics of Computing Answers.docx",
+  "questions": [
+    {
+      "prompt": "Which component executes instructions in a computer?",
+      "choices": [
+        "CPU",
+        "RAM",
+        "SSD",
+        "NIC"
+      ],
+      "answerIndex": 0,
+      "explanation": "The CPU executes instructions."
+    }
+  ]
+}

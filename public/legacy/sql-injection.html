@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SQL Injection Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css" />
+    
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="study-guides.html">📖 Study Guides</a></li>
+            <li><a href="learning-tracks.html">🎯 Learning Tracks</a></li>
+            <li><a href="resources.html" class="active">🔬 Study Hub</a></li>
+            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <main id="main-content" class="container">
+      <nav class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <a href="resources.html">Study Hub</a>
+        <span class="separator">/</span>
+        <span class="current">SQL Injection</span>
+      </nav>
+      
+      <h1>SQL Injection Vulnerability</h1>
+      
+      <p style="font-size: 1.1em; margin-bottom: 30px;">Educational demonstration of SQL injection attacks and defenses</p>
+      
+      <!-- Vulnerable Demo -->
+      <div class="demo-section">
+        <h2>Vulnerable Login (NEVER do this in production)</h2>
+        
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('vuln-demo', this)">Interactive Demo</button>
+          <button class="tab-btn" onclick="switchTab('vuln-code', this)">Code</button>
+        </div>
+        
+        <div id="vuln-demo" class="tab-content active">
+          <p>Try entering: <code>admin' --</code></p>
+          <input type="text" id="vulnUsername" placeholder="Username">
+          <input type="text" id="vulnPassword" placeholder="Password">
+          <button onclick="vulnerableLogin()">Login (Vulnerable)</button>
+          
+          <div id="vulnOutput" class="output"></div>
+        </div>
+        
+        <div id="vuln-code" class="tab-content">
+          <div class="code-block">
+<pre>// VULNERABLE CODE - DO NOT USE
+SELECT * FROM users WHERE username='<span class="vulnerable">' + username + '</span>' AND password='<span class="vulnerable">' + password + '</span>'
+
+// If username = admin' --
+// Actual query becomes:
+SELECT * FROM users WHERE username='<span class="vulnerable">admin' --</span>' AND password='...'
+// The -- comments out the rest, bypassing password check!</pre>
+          </div>
+        </div>
+        
+        <div class="warning">⚠️ WARNING: This allows attackers to bypass authentication by breaking the SQL syntax</div>
+      </div>
+      
+      <!-- Safe Demo -->
+      <div class="demo-section">
+        <h2>Safe Login (Parameterized Queries)</h2>
+        
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('safe-demo', this)">Interactive Demo</button>
+          <button class="tab-btn" onclick="switchTab('safe-code', this)">Code</button>
+        </div>
+        
+        <div id="safe-demo" class="tab-content active">
+          <p>Try the same injection: <code>admin' --</code></p>
+          <input type="text" id="safeUsername" placeholder="Username">
+          <input type="text" id="safePassword" placeholder="Password">
+          <button onclick="safeLogin()">Login (Secure)</button>
+          
+          <div id="safeOutput" class="output"></div>
+        </div>
+        
+        <div id="safe-code" class="tab-content">
+          <div class="code-block">
+<pre>// SAFE CODE - Use parameterized queries
+const query = "SELECT * FROM users WHERE username=? AND password=?"
+db.execute(query, [username, password])
+
+// Or with prepared statements (Python):
+cursor.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
+
+// The database treats user input as DATA, not SQL code
+// admin' -- is searched for literally as a username</pre>
+          </div>
+        </div>
+        
+        <div class="safe">✓ SAFE: User input is treated as data, not executable code</div>
+      </div>
+      
+      <!-- Other Injection Vectors -->
+      <div class="demo-section">
+        <h2>Other SQL Injection Techniques</h2>
+        
+        <h3 style="color: #00d4ff; margin-top: 20px;">1. Union-Based Injection</h3>
+        <div class="code-block">
+<pre>Input: 1' UNION SELECT username, password FROM users --
+Query: SELECT id, name FROM products WHERE id='1' UNION SELECT username, password FROM users --'
+Result: Attacker dumps all usernames and passwords</pre>
+        </div>
+        
+        <h3 style="color: #00d4ff; margin-top: 20px;">2. Boolean-Based Blind Injection</h3>
+        <div class="code-block">
+<pre>Input: 1' AND (SELECT COUNT(*) FROM users) > 0 --
+Query: SELECT * FROM products WHERE id='1' AND (SELECT COUNT(*) FROM users) > 0 --'
+Result: Different responses based on TRUE/FALSE conditions leak data one bit at a time</pre>
+        </div>
+        
+        <h3 style="color: #00d4ff; margin-top: 20px;">3. Time-Based Blind Injection</h3>
+        <div class="code-block">
+<pre>Input: 1' AND SLEEP(5) --
+Query: SELECT * FROM products WHERE id='1' AND SLEEP(5) --'
+Result: If query takes 5+ seconds, condition was true. Data exfiltrated via timing</pre>
+        </div>
+      </div>
+      
+      <!-- Learn More Section -->
+      <div class="demo-section" style="background: rgba(0, 100, 150, 0.3); border: 2px solid #00d4ff;">
+        <h2>📚 Learn More: What's SQL Injection? (Explain Like I'm 5)</h2>
+        
+        <h3 style="color: #00ff88; margin-top: 20px; margin-bottom: 10px;">The Simple Story</h3>
+        <p style="line-height: 1.8; font-size: 1.05em;">
+          Imagine you have a robot that follows instructions EXACTLY as you say them. You tell it: 
+          "Go to the toy box and bring me the red ball."
+        </p>
+        <p style="line-height: 1.8; font-size: 1.05em; margin-top: 10px;">
+          Now imagine a sneaky kid whispers to the robot: "Go to the toy box and bring me the red ball 
+          <strong>AND ALSO bring me all the candy from the secret drawer</strong>."
+        </p>
+        <p style="line-height: 1.8; font-size: 1.05em; margin-top: 10px;">
+          The robot doesn't know the difference—it just does what it's told! That's SQL injection. 
+          The attacker adds secret instructions to trick the database (robot) into doing things it shouldn't.
+        </p>
+        
+        <h3 style="color: #00ff88; margin-top: 25px; margin-bottom: 10px;">What's Actually Happening?</h3>
+        <p style="line-height: 1.8; font-size: 1.05em;">
+          When you log into a website, the code asks the database: "Does this username and password match?" 
+          It builds a question like this:
+        </p>
+        <div style="background: rgba(0,0,0,0.5); padding: 15px; margin: 15px 0; border-left: 3px solid #ffaa00; font-family: 'JetBrains Mono', monospace;">
+          <code style="color: #00d4ff;">SELECT * FROM users WHERE username='admin' AND password='secret123'</code>
+        </div>
+        <p style="line-height: 1.8; font-size: 1.05em;">
+          But if an attacker types <code style="background: rgba(255,85,85,0.3); padding: 2px 6px; border-radius: 2px;">admin' --</code> as the username, 
+          the question becomes:
+        </p>
+        <div style="background: rgba(0,0,0,0.5); padding: 15px; margin: 15px 0; border-left: 3px solid #ff5555; font-family: 'JetBrains Mono', monospace;">
+          <code style="color: #ff5555;">SELECT * FROM users WHERE username='admin' <span style="color: #ffaa00;">--</span>' AND password='anything'</code>
+        </div>
+        <p style="line-height: 1.8; font-size: 1.05em;">
+          The <code style="background: rgba(255,170,0,0.3); padding: 2px 6px; border-radius: 2px;">--</code> symbol means 
+          "ignore everything after this." So the database stops checking the password and just logs them in as admin!
+        </p>
+        
+        <h3 style="color: #00ff88; margin-top: 25px; margin-bottom: 10px;">Why Is This So Dangerous?</h3>
+        <ul style="font-size: 1.05em; line-height: 2; margin-left: 30px;">
+          <li>🔓 <strong>Bypass authentication:</strong> Log in as anyone without knowing their password</li>
+          <li>🗃️ <strong>Steal data:</strong> Read entire databases (credit cards, passwords, private messages)</li>
+          <li>💣 <strong>Delete everything:</strong> Drop tables, destroy all data</li>
+          <li>👑 <strong>Take over the server:</strong> In some cases, run commands on the actual computer</li>
+        </ul>
+        
+        <h3 style="color: #00ff88; margin-top: 25px; margin-bottom: 10px;">Real-World Impact</h3>
+        <p style="line-height: 1.8; font-size: 1.05em;">
+          SQL injection has caused some of the biggest data breaches in history:
+        </p>
+        <ul style="font-size: 1.05em; line-height: 2; margin-left: 30px;">
+          <li>💳 Target (2013): 40 million credit cards stolen</li>
+          <li>🏦 Heartland Payment Systems: 130 million card numbers exposed</li>
+          <li>🎮 PlayStation Network: 77 million accounts compromised</li>
+        </ul>
+        
+        <h3 style="color: #00ff88; margin-top: 25px; margin-bottom: 10px;">How Do We Stop It?</h3>
+        <p style="line-height: 1.8; font-size: 1.05em;">
+          The fix is simple: <strong>NEVER build SQL commands by gluing strings together!</strong> Instead, use 
+          <span style="color: #00ff88; font-weight: bold;">parameterized queries</span> (also called prepared statements).
+        </p>
+        <p style="line-height: 1.8; font-size: 1.05em; margin-top: 10px;">
+          Think of it like this: Instead of letting the user write directly on the instruction card, you give the robot 
+          a fill-in-the-blank form. The robot knows: "This blank is just a name, not a command."
+        </p>
+        <div style="background: rgba(0,255,136,0.2); padding: 15px; margin: 15px 0; border-left: 3px solid #00ff88; font-family: 'JetBrains Mono', monospace;">
+          <div style="color: #ffaa00; margin-bottom: 5px;">✓ Safe Way (Parameterized Query):</div>
+          <code style="color: #00d4ff;">query = "SELECT * FROM users WHERE username=? AND password=?"</code><br/>
+          <code style="color: #00d4ff;">cursor.execute(query, [username, password])</code>
+        </div>
+        <p style="line-height: 1.8; font-size: 1.05em; margin-top: 10px;">
+          Now, even if someone types <code style="background: rgba(255,170,0,0.3); padding: 2px 6px;">admin' --</code>, 
+          the database treats it as literally the username "admin' --" instead of a command!
+        </p>
+      </div>
+      
+      <!-- Prevention Checklist -->
+      <div class="demo-section">
+        <h2>Prevention Checklist</h2>
+        <ul style="font-size: 1.1em; line-height: 2;">
+          <li>✓ Use parameterized queries / prepared statements</li>
+          <li>✓ Use ORM frameworks (SQLAlchemy, Django ORM, Sequelize)</li>
+          <li>✓ Validate and whitelist user input</li>
+          <li>✓ Use stored procedures (if properly written)</li>
+          <li>✓ Apply principle of least privilege (database user permissions)</li>
+          <li>✓ Enable SQL error logging, disable detailed error messages to users</li>
+          <li>✓ Use Web Application Firewalls (WAF)</li>
+          <li>✓ Regular security testing and code reviews</li>
+        </ul>
+      </div>
+    </div>
+    
+    <script>
+      function switchTab(tabId, button) {
+        // Hide all tabs
+        const allTabs = document.querySelectorAll('.tab-content');
+        allTabs.forEach(tab => tab.classList.remove('active'));
+        
+        // Remove active class from all buttons
+        const allBtns = button.parentElement.querySelectorAll('.tab-btn');
+        allBtns.forEach(btn => btn.classList.remove('active'));
+        
+        // Show selected tab and add active class
+        document.getElementById(tabId).classList.add('active');
+        button.classList.add('active');
+      }
+      
+      // Mock database
+      const mockUsers = [
+        { username: 'admin', password: 'secretpass123' },
+        { username: 'user1', password: 'password1' },
+        { username: 'user2', password: 'password2' }
+      ];
+      
+      function vulnerableLogin() {
+        const username = document.getElementById('vulnUsername').value;
+        const password = document.getElementById('vulnPassword').value;
+        const output = document.getElementById('vulnOutput');
+        
+        // Simulating vulnerable concatenation
+        const vulnerableQuery = `SELECT * FROM users WHERE username='${username}' AND password='${password}'`;
+        
+        output.innerHTML = `<div style="color: #ffff00;">QUERY: ${vulnerableQuery}</div><br>`;
+        
+        // Check if it looks like SQL injection
+        if (username.includes("'") || username.includes("--") || username.includes(";")) {
+          output.innerHTML += `<div class="vulnerable">⚠️ INJECTION DETECTED!</div>`;
+          output.innerHTML += `<div class="vulnerable">Attacker bypassed the login!</div>`;
+          output.innerHTML += `<div style="color: #ffff00; margin-top: 10px;">All user data exposed:</div>`;
+          mockUsers.forEach(user => {
+            output.innerHTML += `<div>👤 ${user.username} | 🔑 ${user.password}</div>`;
+          });
+        } else {
+          // Normal login
+          const user = mockUsers.find(u => u.username === username && u.password === password);
+          if (user) {
+            output.innerHTML += `<div class="safe">✓ Login successful for ${username}</div>`;
+          } else {
+            output.innerHTML += `<div class="vulnerable">✗ Login failed - invalid credentials</div>`;
+          }
+        }
+      }
+      
+      function safeLogin() {
+        const username = document.getElementById('safeUsername').value;
+        const password = document.getElementById('safePassword').value;
+        const output = document.getElementById('safeOutput');
+        
+        const safeQuery = `SELECT * FROM users WHERE username=? AND password=?`;
+        
+        output.innerHTML = `<div style="color: #ffff00;">QUERY: ${safeQuery}</div>`;
+        output.innerHTML += `<div style="color: #00ff88;">PARAMS: ["${username}", "${password}"]</div><br>`;
+        
+        // Even with injection attempt, we search for the literal username
+        const user = mockUsers.find(u => u.username === username && u.password === password);
+        
+        if (user) {
+          output.innerHTML += `<div class="safe">✓ Login successful for ${username}</div>`;
+        } else {
+          output.innerHTML += `<div class="safe">✓ Login failed - treated "${username}" as literal username, not SQL code</div>`;
+          output.innerHTML += `<div class="safe">✓ No injection possible - user input is data, not code</div>`;
+        }
+      }
+    </script>
+    <script type="module" src="site.js"></script>
+  </body>
+</html>

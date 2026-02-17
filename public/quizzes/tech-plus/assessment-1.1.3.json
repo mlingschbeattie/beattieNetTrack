@@ -1,0 +1,20 @@
+{
+  "id": "assessment-1-1-3",
+  "title": "Assessment 1.1.3 Number Systems and Notation",
+  "assessmentCode": "1.1.3",
+  "sourceQuestionDocx": "Assessment 1.1.3 Number Systems and Notation.docx",
+  "sourceAnswerDocx": "Assessment 1.1.3 Number Systems and Notation Answers.docx",
+  "questions": [
+    {
+      "prompt": "What is hexadecimal A in decimal?",
+      "choices": [
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
+      "answerIndex": 2,
+      "explanation": "Hexadecimal A equals decimal 10."
+    }
+  ]
+}

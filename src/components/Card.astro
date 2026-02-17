@@ -1,0 +1,12 @@
+---
+const { title, className = '' } = Astro.props;
+const hasMeta = Astro.slots.has('meta');
+const hasFooter = Astro.slots.has('footer');
+---
+
+<article class={`card ${className}`}>
+  {title ? <h3>{title}</h3> : null}
+  <slot />
+  {hasMeta ? <div class="card__meta"><slot name="meta" /></div> : null}
+  {hasFooter ? <div class="card__footer"><slot name="footer" /></div> : null}
+</article>

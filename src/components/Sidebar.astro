@@ -1,0 +1,111 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import SidebarTrackProgress from './islands/SidebarTrackProgress.tsx';
+import SidebarTourProgress from './islands/SidebarTourProgress.tsx';
+
+type LessonEntry = CollectionEntry<'lessons'>;
+type TrackEntry = CollectionEntry<'tracks'>;
+
+interface Props {
+  tracks?: TrackEntry[];
+  activeTrack?: string;
+  activeLesson?: string;
+  currentTrack?: TrackEntry;
+  lessonMap?: Record<string, LessonEntry>;
+}
+
+const {
+  tracks = [],
+  activeTrack,
+  activeLesson,
+  currentTrack,
+  lessonMap = {},
+} = Astro.props as Props;
+
+const normalizeItem = (item: string | { type: 'lesson' | 'lab' | 'quiz'; slug: string }) =>
+  typeof item === 'string' ? { type: 'lesson' as const, slug: item } : item;
+
+const hrefForItem = (item: { type: 'lesson' | 'lab' | 'quiz'; slug: string }) => {
+  if (item.type === 'lesson') return `/lessons/${item.slug}`;
+  if (item.type === 'lab') return `/labs/${item.slug}`;
+  return `/quizzes/${item.slug}`;
+};
+
+const displayTitle = (item: { type: 'lesson' | 'lab' | 'quiz'; slug: string }) => {
+  if (item.type === 'lesson') return lessonMap[item.slug]?.data?.title ?? item.slug;
+  return item.slug;
+};
+
+const trackSections = currentTrack?.data.sections?.map((section) => ({
+  title: section.title,
+  lessons: section.lessons
+    .map((entry) => normalizeItem(entry as string | { type: 'lesson' | 'lab' | 'quiz'; slug: string }))
+    .filter((entry) => entry.type === 'lesson')
+    .map((entry) => ({
+      slug: entry.slug,
+      title: lessonMap[entry.slug]?.data?.title ?? entry.slug,
+    })),
+}));
+
+const sidebarSections = currentTrack?.data.sections?.map((section) => ({
+  title: section.title,
+  items: section.lessons.map((entry) => normalizeItem(entry as string | { type: 'lesson' | 'lab' | 'quiz'; slug: string })),
+}));
+---
+
+<aside class="sidebar">
+  <div class="sidebar__brand">Beattie Tech</div>
+
+  <div class="sidebar__section">
+    <div class="sidebar__title">Tracks</div>
+    {tracks.map((track) => (
+      <a
+        class={`sidebar__link ${activeTrack === track.slug ? 'sidebar__link--active' : ''}`}
+        href={`/tracks/${track.slug}`}
+      >
+        {track.data.icon ? `${track.data.icon} ` : ''}{track.data.title}
+      </a>
+    ))}
+  </div>
+
+  {currentTrack && currentTrack.data.sections?.length > 0 && (
+    <div class="sidebar__section">
+      <div class="sidebar__title">Lessons</div>
+      <div class="sidebar__progress-slot" data-sidebar-progress-slot>
+        <div class="sidebar__skeleton">
+          {sidebarSections?.map((section) => (
+            <div class="sidebar__group">
+              <div class="sidebar__group-title">{section.title}</div>
+              {section.items.map((item) => (
+                <a
+                  class={`sidebar__lesson-link ${activeLesson === item.slug ? 'sidebar__lesson-link--active' : ''}`}
+                  href={hrefForItem(item)}
+                >
+                  <span class="sidebar__lesson-title">{displayTitle(item)}</span>
+                </a>
+              ))}
+            </div>
+          ))}
+        </div>
+        {trackSections && (
+          <div class="sidebar__react">
+            <SidebarTrackProgress
+              client:only="react"
+              sections={trackSections}
+              activeLesson={activeLesson}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  )}
+
+  <div class="sidebar__section">
+    <div class="sidebar__title">Quick Links</div>
+    <a class="sidebar__link" href="/">Home</a>
+    <a class="sidebar__link" href="/tour">Try It Tour</a>
+    <div class="sidebar__react">
+      <SidebarTourProgress client:load />
+    </div>
+  </div>
+</aside>

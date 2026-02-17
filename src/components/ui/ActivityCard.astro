@@ -1,0 +1,28 @@
+---
+import SharedActivityCard from '../ActivityCard.astro';
+
+interface Props {
+  title?: string;
+  badges?: string[];
+  class?: string;
+}
+
+const { title, badges = [], class: className = '' } = Astro.props as Props;
+const hasHeaderSlot = Astro.slots.has('header');
+const hasFooterSlot = Astro.slots.has('footer');
+---
+
+<SharedActivityCard title={title} class={className}>
+  <Fragment slot="actions">
+    {badges.length > 0 && (
+      <div class="activity-card__badges">
+        {badges.map((badge) => (
+          <span class="pill">{badge}</span>
+        ))}
+      </div>
+    )}
+    {hasHeaderSlot && <slot name="header" />}
+  </Fragment>
+  <slot />
+  {hasFooterSlot && <slot name="footer" />}
+</SharedActivityCard>

@@ -1,0 +1,20 @@
+{
+  "id": "assessment-1-1-5",
+  "title": "Assessment 1.1.5 Troubleshooting Methodology",
+  "assessmentCode": "1.1.5",
+  "sourceQuestionDocx": "Assessment 1.1.5 Troubleshooting Methodology.docx",
+  "sourceAnswerDocx": "Assessment 1.1.5 Troubleshooting Methodology Answers.docx",
+  "questions": [
+    {
+      "prompt": "What is the first troubleshooting step?",
+      "choices": [
+        "Document findings",
+        "Establish a theory",
+        "Identify the problem",
+        "Test the theory"
+      ],
+      "answerIndex": 2,
+      "explanation": "Start by identifying the problem."
+    }
+  ]
+}

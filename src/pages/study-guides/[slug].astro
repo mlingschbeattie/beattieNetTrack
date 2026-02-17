@@ -1,0 +1,37 @@
+---
+import { getCollection } from 'astro:content';
+import AppShell from '../../layouts/AppShell.astro';
+
+export async function getStaticPaths() {
+  const guides = await getCollection('studyGuides');
+  return guides
+    .filter((guide) => !guide.data.isDraft)
+    .map((guide) => ({ params: { slug: guide.slug }, props: { guide } }));
+}
+
+const { guide } = Astro.props;
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Study Guides', href: '/study-guides' },
+  { label: guide.data.title },
+];
+---
+
+<AppShell title={guide.data.title} breadcrumbs={breadcrumbs}>
+  <section class="hero">
+    <h1 class="hero__title">{guide.data.title}</h1>
+    <p class="hero__subtitle">{guide.data.description}</p>
+  </section>
+
+  <section class="track-section">
+    <h2 class="track-section__title">Coming soon</h2>
+    <article class="card card--glass">
+      <p>Quiz and lab modules for this study guide are coming soon.</p>
+      <div class="card__meta">
+        <span class="pill">{guide.data.quizzes} quizzes planned</span>
+        <span class="pill">{typeof guide.data.hours === 'string' ? `${guide.data.hours} hours` : `${guide.data.hours} hours`} estimated</span>
+      </div>
+    </article>
+  </section>
+</AppShell>

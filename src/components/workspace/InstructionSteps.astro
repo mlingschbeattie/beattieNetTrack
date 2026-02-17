@@ -1,0 +1,61 @@
+---
+interface Props {
+  steps: string[];
+  storageKey: string;
+}
+
+const { steps = [], storageKey } = Astro.props as Props;
+---
+
+{steps.length > 0 && (
+  <section class="workspace-steps" data-steps-root data-steps-key={storageKey}>
+    <h3 class="workspace-steps__title">Steps</h3>
+    <ol class="workspace-steps__list">
+      {steps.map((step, index) => (
+        <li class="workspace-step" data-step-index={String(index)}>
+          <label>
+            <input type="checkbox" data-step-checkbox={String(index)} />
+            <span>{step}</span>
+          </label>
+        </li>
+      ))}
+    </ol>
+  </section>
+)}
+
+<script>
+  const roots = Array.from(document.querySelectorAll('[data-steps-root]'));
+  roots.forEach((rootNode) => {
+    if (!(rootNode instanceof HTMLElement)) return;
+    const key = rootNode.getAttribute('data-steps-key');
+    if (!key) return;
+
+    const checkboxes = Array.from(rootNode.querySelectorAll('[data-step-checkbox]')) as HTMLInputElement[];
+    const read = (): number[] => {
+      if (typeof window === 'undefined') return [];
+      try {
+        const raw = window.localStorage.getItem(key);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    };
+
+    const write = (completed: number[]) => {
+      if (typeof window === 'undefined') return;
+      window.localStorage.setItem(key, JSON.stringify(completed));
+    };
+
+    const saved = new Set(read());
+    checkboxes.forEach((checkbox, index) => {
+      checkbox.checked = saved.has(index);
+      checkbox.addEventListener('change', () => {
+        const completed = checkboxes
+          .map((input, inputIndex) => (input.checked ? inputIndex : -1))
+          .filter((value) => value >= 0);
+        write(completed);
+      });
+    });
+  });
+</script>

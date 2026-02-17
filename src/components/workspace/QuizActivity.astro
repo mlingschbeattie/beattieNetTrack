@@ -1,0 +1,17 @@
+---
+import ActivityCard from '../ActivityCard.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  isReady?: boolean;
+}
+
+const { title, description = 'Quiz content is being prepared.', isReady = false } = Astro.props as Props;
+---
+
+<ActivityCard>
+  <h3>{title}</h3>
+  <p>{description}</p>
+  {!isReady && <p class="pc-lab__muted">Quiz engine coming soon for this activity.</p>}
+</ActivityCard>

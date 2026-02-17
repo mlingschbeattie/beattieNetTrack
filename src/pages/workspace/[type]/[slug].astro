@@ -1,0 +1,266 @@
+---
+import { getCollection } from 'astro:content';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import WorkspaceLayout from '../../../layouts/WorkspaceLayout.astro';
+import ActivityCard from '../../../components/ActivityCard.astro';
+import Callout from '../../../components/Callout.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import LabActivity from '../../../components/workspace/LabActivity.astro';
+import QuizActivity from '../../../components/workspace/QuizActivity.astro';
+import QuizRunner from '../../../components/QuizRunner.tsx';
+import type { QuizDefinition } from '../../../lib/quizEngine';
+import { inferLegacyTrackSlug, mapLessonToLegacyActivity, toLegacyLabPath } from '../../../lib/trackCatalog';
+
+export async function getStaticPaths() {
+  const [labs, quizzes, activities, lessons] = await Promise.all([
+    getCollection('labs'),
+    getCollection('quizzes'),
+    getCollection('activities'),
+    getCollection('lessons'),
+  ]);
+
+  const lessonPaths = lessons
+    .filter((lesson) => Boolean(lesson.data.legacyUrl))
+    .map((lesson) => ({ params: { type: 'activity', slug: lesson.slug } }));
+
+  const lessonRedirectPaths = lessons
+    .filter((lesson) => lesson.slug === 'a-plus-lab-pc-assembly')
+    .map((lesson) => ({ params: { type: 'lesson', slug: lesson.slug } }));
+
+  return [
+    ...labs.map((lab) => ({ params: { type: 'lab', slug: lab.slug } })),
+    ...quizzes.map((quiz) => ({ params: { type: 'quiz', slug: quiz.slug } })),
+    ...activities.map((activity) => ({ params: { type: 'activity', slug: activity.slug } })),
+    ...lessonPaths,
+    ...lessonRedirectPaths,
+  ];
+}
+
+const { type, slug } = Astro.params as { type: string; slug: string };
+if (type !== 'lab' && type !== 'quiz' && type !== 'activity' && type !== 'lesson') {
+  throw new Error('Workspace item type not supported');
+}
+
+const [tracks, allLessons, allLabs, allQuizzes, allActivities] = await Promise.all([
+  getCollection('tracks'),
+  getCollection('lessons'),
+  getCollection('labs'),
+  getCollection('quizzes'),
+  getCollection('activities'),
+]);
+
+const lessonMap = Object.fromEntries(allLessons.map((entry) => [entry.slug, entry]));
+const lab = type === 'lab' ? allLabs.find((entry) => entry.slug === slug) : undefined;
+const quiz = type === 'quiz' ? allQuizzes.find((entry) => entry.slug === slug) : undefined;
+const activity = type === 'activity' ? allActivities.find((entry) => entry.slug === slug) : undefined;
+const legacyLesson = type === 'activity' && !activity ? allLessons.find((entry) => entry.slug === slug) : undefined;
+const legacyActivity = legacyLesson ? mapLessonToLegacyActivity(legacyLesson) : undefined;
+
+// If this route is being used as a legacy `lesson` path, compute a redirect target
+let redirectTarget: string | undefined;
+if (type === 'lesson') {
+  const lessonEntry = allLessons.find((entry) => entry.slug === slug);
+  if (lessonEntry) {
+    if (slug.startsWith('a-plus-lab-')) {
+      redirectTarget = `/labs/${slug.replace(/^a-plus-lab-/, '')}`;
+    } else if (lessonEntry.data.legacyUrl && lessonEntry.data.legacyUrl.includes('/labs/')) {
+      // if legacyUrl explicitly points to a lab path
+      const maybe = lessonEntry.data.legacyUrl.replace(/^\//, '');
+      redirectTarget = maybe.startsWith('labs/') ? `/${maybe}` : `/labs/${maybe}`;
+    } else {
+      redirectTarget = `/workspace/activity/${slug}`;
+    }
+  }
+}
+
+if ((type === 'lab' && !lab) || (type === 'quiz' && !quiz) || (type === 'activity' && !activity && !legacyActivity)) {
+  throw new Error('Workspace item not found');
+}
+
+let itemTitle = slug;
+let itemDescription = 'Workspace activity';
+let itemDifficulty = 'Intermediate';
+let itemMinutes = 20;
+let checkLabel = 'Check';
+let submitLabel = 'Submit';
+let panelHints: string[] = [];
+let panelChecklist: string[] = [];
+let currentTrack = undefined;
+let instructionsContent;
+let activityLabPath: string | undefined;
+let activityLabUrl: string | undefined;
+let quizDefinition: QuizDefinition | undefined;
+
+if (lab) {
+  itemTitle = lab.data.title;
+  itemDescription = lab.data.description ?? 'Hands-on lab workspace';
+  itemDifficulty = lab.data.difficulty;
+  itemMinutes = lab.data.estMinutes ?? 20;
+  checkLabel = lab.data.checkLabel;
+  submitLabel = lab.data.submitLabel;
+  panelHints = lab.data.hints;
+  panelChecklist = lab.data.checklist;
+  currentTrack = tracks.find((entry) => entry.slug === lab.data.track);
+  activityLabPath = lab.data.labPath;
+  activityLabUrl = lab.data.labUrl;
+  instructionsContent = await lab.render();
+}
+
+if (quiz) {
+  itemTitle = quiz.data.title;
+  itemDescription = quiz.data.description ?? 'Quiz workspace';
+  itemDifficulty = quiz.data.difficulty ?? 'Intermediate';
+  itemMinutes = quiz.data.estMinutes ?? 15;
+  checkLabel = 'Check answer';
+  submitLabel = 'Submit quiz';
+  panelHints = quiz.data.hints;
+  panelChecklist = quiz.data.checklist;
+  currentTrack = tracks.find((entry) => entry.slug === quiz.data.track);
+  let questions = quiz.data.questions;
+  if ((!questions || questions.length === 0) && quiz.data.quizJsonPath) {
+    const diskPath = path.join(process.cwd(), 'public', quiz.data.quizJsonPath.replace(/^\//, ''));
+    try {
+      const raw = await fs.readFile(diskPath, 'utf8');
+      const parsed = JSON.parse(raw) as {
+        questions?: Array<{ prompt?: string; choices?: string[]; answerIndex?: number; explanation?: string }>;
+      };
+      questions = Array.isArray(parsed.questions)
+        ? parsed.questions
+            .filter((item) => typeof item.prompt === 'string' && Array.isArray(item.choices) && typeof item.answerIndex === 'number')
+            .map((item, index) => ({
+              id: `q${index + 1}`,
+              type: 'single' as const,
+              prompt: item.prompt as string,
+              options: item.choices as string[],
+              correctIndex: item.answerIndex as number,
+              explanation: item.explanation,
+            }))
+        : [];
+    } catch {
+      questions = [];
+    }
+  }
+
+  quizDefinition = questions.length
+    ? {
+        slug: quiz.slug,
+        title: quiz.data.title,
+        description: quiz.data.description,
+        passThreshold: quiz.data.passThreshold,
+        questions,
+      }
+    : undefined;
+  instructionsContent = await quiz.render();
+}
+
+if (activity) {
+  itemTitle = activity.data.title;
+  itemDescription = activity.data.description ?? 'Workspace activity';
+  itemDifficulty = activity.data.difficulty ?? 'Intermediate';
+  itemMinutes = activity.data.estMinutes ?? 15;
+  currentTrack = tracks.find((entry) => entry.slug === activity.data.track);
+  activityLabPath = activity.data.labPath;
+  activityLabUrl = activity.data.labUrl;
+  instructionsContent = await activity.render();
+}
+
+if (legacyActivity) {
+  itemTitle = legacyActivity.title;
+  itemDescription = legacyActivity.description;
+  itemDifficulty = legacyActivity.difficulty;
+  itemMinutes = legacyActivity.estMinutes;
+  currentTrack = tracks.find((entry) => entry.slug === legacyActivity.track);
+  activityLabPath = legacyActivity.labPath;
+  activityLabUrl = toLegacyLabPath(legacyLesson?.data.legacyUrl);
+  instructionsContent = legacyLesson ? await legacyLesson.render() : undefined;
+}
+
+if (!currentTrack && type === 'activity') {
+  currentTrack = tracks.find((entry) => entry.slug === inferLegacyTrackSlug(slug));
+}
+
+const Content = instructionsContent?.Content;
+
+const breadcrumbs: Array<{ label: string; href?: string }> = [
+  { label: 'Home', href: '/' },
+  { label: 'Learning Tracks', href: '/tracks' },
+  { label: 'Workspace' },
+];
+
+if (currentTrack) {
+  breadcrumbs.splice(2, 0, { label: currentTrack.data.title, href: `/tracks/${currentTrack.slug}` });
+}
+---
+
+{redirectTarget ? (
+  <html lang="en">
+    <head>
+      <meta charset="utf-8" />
+      <meta http-equiv="refresh" content={"0; url=" + redirectTarget} />
+      <meta name="robots" content="noindex" />
+      <title>Redirecting…</title>
+    </head>
+    <body>
+      <p>Redirecting to <a href={redirectTarget}>{redirectTarget}</a></p>
+    </body>
+  </html>
+) : (
+
+<WorkspaceLayout
+  title={`Workspace • ${itemTitle}`}
+  tracks={tracks}
+  activeTrack={currentTrack?.slug}
+  activeLesson={slug}
+  currentTrack={currentTrack}
+  lessonMap={lessonMap}
+  breadcrumbs={breadcrumbs}
+  itemSlug={slug}
+  itemType={type}
+  itemDifficulty={itemDifficulty}
+  itemMinutes={itemMinutes}
+  checkLabel={checkLabel}
+  submitLabel={submitLabel}
+  panelHints={panelHints}
+  panelChecklist={panelChecklist}
+  activityTabs={type === 'lab' ? [{ id: 'activity', label: 'Lab' }, { id: 'secondary', label: 'Notes' }] : [{ id: 'activity', label: 'Activity' }]}
+>
+  <Fragment slot="instructions">
+    <h1 class="page-title">{itemTitle}</h1>
+    <p class="lesson-header__description">{itemDescription}</p>
+    {Content && <Content components={{ Callout, CodeBlock }} />}
+    {type === 'quiz' && !quizDefinition && (
+      <Callout type="warn">Quiz questions are not configured yet for this item.</Callout>
+    )}
+  </Fragment>
+
+  <Fragment slot="activity-main">
+    {type === 'lab' && (
+      <LabActivity slug={slug} title={itemTitle} labPath={activityLabPath} labUrl={activityLabUrl} />
+    )}
+
+    {type === 'quiz' && (
+      quizDefinition
+        ? <QuizRunner client:only="react" quiz={quizDefinition} workspaceSlug={slug} />
+        : <QuizActivity title={itemTitle} description={itemDescription} isReady={false} />
+    )}
+
+    {type === 'activity' && (
+      activityLabPath || activityLabUrl
+        ? <LabActivity slug={slug} title={itemTitle} labPath={activityLabPath} labUrl={activityLabUrl} />
+        : <ActivityCard>
+            <h3>Activity workspace</h3>
+            <p>Activity type is configured with instructions only.</p>
+          </ActivityCard>
+    )}
+  </Fragment>
+
+  <Fragment slot="activity-secondary">
+    <ActivityCard>
+      <h3>Notes</h3>
+      <p>Use this panel for checklists, troubleshooting details, and reminders.</p>
+    </ActivityCard>
+  </Fragment>
+</WorkspaceLayout>
+
+)}

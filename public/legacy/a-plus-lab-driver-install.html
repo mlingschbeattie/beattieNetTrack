@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Driver Installation Lab - A+ Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css" />
+    
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="study-guides.html" class="active">📖 Study Guides</a></li>
+            <li><a href="learning-tracks.html">🎯 Learning Tracks</a></li>
+            <li><a href="resources.html">🔬 Study Hub</a></li>
+            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <main id="main-content" class="container">
+      <nav class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <a href="study-guides.html">Study Guides</a>
+        <span class="separator">/</span>
+        <a href="a-plus-guides.html">A+ Guides</a>
+        <span class="separator">/</span>
+        <span class="current">Driver Installation Lab</span>
+      </nav>
+      
+      <h1>Driver Installation Lab</h1>
+      <div class="subtitle">Hands-On Lab: Diagnose and Fix Driver Issues</div>
+
+      <div class="section">
+        <h2>Lab Scenario</h2>
+        <div class="info-box" id="scenario-display">
+          <div style="text-align: center; color: #00d4ff; padding: 20px;">
+            <div style="font-size: 1.5em; margin-bottom: 10px;">🔄 Generating scenario...</div>
+            <div style="font-size: 0.9em;">Loading driver troubleshooting challenge</div>
+          </div>
+        </div>
+        <div class="warning-box">
+          <strong>⚠ Important:</strong> Identify devices with driver issues and install the correct drivers. Click "Fix Driver" on problematic devices to see available driver options. Choose the appropriate driver based on the device requirements.
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="device-manager" id="device-manager">
+          <h3 style="color: #00d4ff; margin-bottom: 20px;">Device Manager</h3>
+          <div id="device-list"></div>
+        </div>
+
+        <div class="lab-controls">
+          <button id="btn-submit" class="lab-btn primary">Submit Solution</button>
+          <button id="btn-reset" class="lab-btn danger">New Scenario</button>
+        </div>
+
+        <div id="results-panel" class="results-panel" style="display: none;">
+          <h3 style="color: #00d4ff; text-align: center; margin-bottom: 15px;">Driver Installation Results</h3>
+          <div id="score-display" class="score-display"></div>
+          <div id="feedback-list" class="feedback-list"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Learning Objectives</h2>
+        <div class="info-box">
+          This lab tests your understanding of:
+          <ul style="margin: 10px 0 0 20px; line-height: 1.8;">
+            <li><strong>Driver Identification:</strong> Recognizing missing and outdated drivers</li>
+            <li><strong>Version Management:</strong> Understanding driver version numbers and compatibility</li>
+            <li><strong>Manufacturer Sources:</strong> Using correct manufacturer drivers vs generic drivers</li>
+            <li><strong>Installation Order:</strong> Installing chipset drivers before other hardware drivers</li>
+            <li><strong>Signed Drivers:</strong> Understanding WHQL certification and driver signing</li>
+            <li><strong>Troubleshooting:</strong> Resolving driver conflicts and compatibility issues</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Driver Selection Modal -->
+    <div id="driver-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="modal-close" id="modal-close">&times;</span>
+          <div id="modal-device-name"></div>
+        </div>
+        <div class="driver-selection" id="driver-options"></div>
+        <div style="text-align: center; margin-top: 20px;">
+          <button id="btn-install-driver" class="lab-btn primary" disabled>Install Selected Driver</button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      const scenarioTemplates = [
+        {
+          name: 'New GPU Installation',
+          description: 'A customer installed a new NVIDIA RTX 4070 graphics card, but Windows is using basic display driver.',
+          devices: [
+            { id: 'gpu', name: 'NVIDIA GeForce RTX 4070', status: 'error', issue: 'Using Microsoft Basic Display Adapter', 
+              correctDriver: 'nvidia-546.17', manufacturer: 'NVIDIA', hwCompat: 'RTX 40-series' },
+            { id: 'chipset', name: 'Intel Z790 Chipset', status: 'ok', issue: null, correctDriver: null },
+            { id: 'audio', name: 'Realtek High Definition Audio', status: 'ok', issue: null, correctDriver: null },
+            { id: 'ethernet', name: 'Intel I225-V Ethernet', status: 'ok', issue: null, correctDriver: null }
+          ]
+        },
+        {
+          name: 'Fresh Windows Installation',
+          description: 'Windows was just installed on a new build. Multiple drivers are missing.',
+          devices: [
+            { id: 'chipset', name: 'AMD X670 Chipset', status: 'error', issue: 'Chipset drivers missing',
+              correctDriver: 'amd-chipset-5.05', manufacturer: 'AMD', note: 'Install chipset drivers first!' },
+            { id: 'gpu', name: 'AMD Radeon RX 7800 XT', status: 'error', issue: 'Using Microsoft Basic Display Adapter',
+              correctDriver: 'amd-adrenalin-24.1.1', manufacturer: 'AMD', hwCompat: 'RDNA3' },
+            { id: 'audio', name: 'Realtek High Definition Audio', status: 'warning', issue: 'Using generic audio driver',
+              correctDriver: 'realtek-audio-6.0.9505', manufacturer: 'Realtek', hwCompat: 'ALC1220' },
+            { id: 'ethernet', name: 'Realtek PCIe GbE', status: 'error', issue: 'Network unreliable with generic driver',
+              correctDriver: 'realtek-ethernet-10.062', manufacturer: 'Realtek', hwCompat: 'RTL8125B' }
+          ]
+        },
+        {
+          name: 'Legacy Hardware Compatibility',
+          description: 'Older motherboard with newer Windows. Some newer drivers cause system instability.',
+          devices: [
+            { id: 'chipset', name: 'Intel B450 Chipset', status: 'warning', issue: 'Incompatible chipset drivers cause BSOD',
+              correctDriver: 'intel-chipset-10.1.18836', manufacturer: 'Intel', note: 'Newer version 10.1.19444 causes crashes - use stable 10.1.18836' },
+            { id: 'gpu', name: 'NVIDIA GeForce GTX 1080', status: 'error', issue: 'No driver installed',
+              correctDriver: 'nvidia-537.13', manufacturer: 'NVIDIA', note: 'RTX 40xx drivers don\'t support GTX 10xx series', hwCompat: 'GK110 (Maxwell)' },
+            { id: 'audio', name: 'Realtek High Definition Audio', status: 'warning', issue: 'Outdated driver (v6.0.9169)',
+              correctDriver: 'realtek-audio-6.0.9169', manufacturer: 'Realtek', note: 'Newer version incompatible with this motherboard chipset' },
+            { id: 'ethernet', name: 'Intel I217-V Ethernet', status: 'error', issue: 'Using generic driver - slow connection',
+              correctDriver: 'intel-ethernet-28.1', manufacturer: 'Intel', note: 'Version 28.3 drops support for older I217 chips' }
+          ]
+        },
+        {
+          name: 'Motherboard Upgrade Issues',
+          description: 'Customer upgraded from Intel B660 to B760 motherboard. Old drivers cause conflicts.',
+          devices: [
+            { id: 'chipset', name: 'Intel B760 Chipset', status: 'error', issue: 'Wrong chipset drivers (B660 installed)',
+              correctDriver: 'intel-chipset-10.1.19444', manufacturer: 'Intel', note: 'B660 drivers won\'t work on B760 platform' },
+            { id: 'audio', name: 'Realtek High Definition Audio', status: 'warning', issue: 'Old driver version unstable',
+              correctDriver: 'realtek-audio-6.0.9505', manufacturer: 'Realtek', note: 'v6.0.9169 has issues with B760 BIOS updates' },
+            { id: 'ethernet', name: 'Intel I226-V Ethernet', status: 'error', issue: 'Detecting as wrong adapter',
+              correctDriver: 'intel-ethernet-28.3', manufacturer: 'Intel', hwCompat: 'NEW - requires v28.3+', note: 'I226-V only supported in driver v28.3 and later' },
+            { id: 'usb', name: 'Intel USB 3.2 Gen2x2 Controller', status: 'warning', issue: 'Generic USB driver unstable',
+              correctDriver: 'intel-usb-10.1.19444', manufacturer: 'Intel', note: 'Proper chipset drivers include USB 3.2 Gen2x2 support' }
+          ]
+        },
+        {
+          name: 'Multi-GPU System Configuration',
+          description: 'System has both integrated Intel iGPU and discrete AMD GPU. Drivers interfering with each other.',
+          devices: [
+            { id: 'igpu', name: 'Intel UHD Graphics 770 (Integrated)', status: 'warning', issue: 'Using generic video driver - causes conflicts',
+              correctDriver: 'intel-gfx-12.1.7', manufacturer: 'Intel', note: 'iGPU should remain updated to avoid output issues' },
+            { id: 'gpu', name: 'AMD Radeon RX 6800 XT', status: 'error', issue: 'AMD driver installer fails - wrong iGPU driver',
+              correctDriver: 'amd-adrenalin-24.1.1', manufacturer: 'AMD', note: 'AMD driver won\'t install if Intel iGPU driver is missing or outdated' },
+            { id: 'chipset', name: 'AMD TRX40 Chipset', status: 'error', issue: 'Chipset drivers missing',
+              correctDriver: 'amd-chipset-5.05', manufacturer: 'AMD', note: 'Required for proper PCIe and USB support' },
+            { id: 'audio', name: 'Realtek High Definition Audio', status: 'ok', issue: null, correctDriver: null }
+          ]
+        },
+        {
+          name: 'WiFi 6 Driver Mismatch',
+          description: 'WiFi 6 adapter not appearing in device manager after Windows installation.',
+          devices: [
+            { id: 'chipset', name: 'Intel Z690 Chipset', status: 'ok', issue: null, correctDriver: null },
+            { id: 'wifi', name: 'Intel Wi-Fi 6E AX211', status: 'error', issue: 'Driver not installed - device not visible',
+              correctDriver: 'intel-wifi-22.240.0', manufacturer: 'Intel', hwCompat: 'Wi-Fi 6E 802.11ax', note: 'Generic WiFi driver doesn\'t support Wi-Fi 6E features' },
+            { id: 'bluetooth', name: 'Intel Bluetooth (Wi-Fi 6E AX211 Combo)', status: 'error', issue: 'Driver not installed',
+              correctDriver: 'intel-bluetooth-22.240.0', manufacturer: 'Intel', note: 'Bluetooth and WiFi share same module - both need v22.240.0+' },
+            { id: 'audio', name: 'Realtek High Definition Audio', status: 'ok', issue: null, correctDriver: null }
+          ]
+        }
+      ];
+
+      const driverDatabase = {
+        // NVIDIA Graphics Drivers
+        'nvidia-546.17': { name: 'NVIDIA Game Ready Driver 546.17', version: '546.17', manufacturer: 'NVIDIA', type: 'Graphics', certified: true, compatibility: 'RTX 40-series, RTX 30-series' },
+        'nvidia-546.01': { name: 'NVIDIA Game Ready Driver 546.01', version: '546.01', manufacturer: 'NVIDIA', type: 'Graphics', certified: true, compatibility: 'RTX 40-series, RTX 30-series' },
+        'nvidia-537.13': { name: 'NVIDIA Game Ready Driver 537.13', version: '537.13', manufacturer: 'NVIDIA', type: 'Graphics', certified: true, compatibility: 'RTX 20/30-series, GTX 10-series' },
+        'nvidia-516.94': { name: 'NVIDIA Game Ready Driver 516.94', version: '516.94', manufacturer: 'NVIDIA', type: 'Graphics', certified: true, compatibility: 'GTX 10-series, Older' },
+        'nvidia-generic': { name: 'Generic NVIDIA Driver', version: '1.0.0', manufacturer: 'Microsoft', type: 'Graphics', certified: false, compatibility: 'Limited' },
+        
+        // AMD Graphics Drivers
+        'amd-adrenalin-24.1.1': { name: 'AMD Adrenalin 24.1.1', version: '24.1.1', manufacturer: 'AMD', type: 'Graphics', certified: true, compatibility: 'RDNA 3, RDNA 2, RDNA' },
+        'amd-adrenalin-23.12.1': { name: 'AMD Adrenalin 23.12.1', version: '23.12.1', manufacturer: 'AMD', type: 'Graphics', certified: true, compatibility: 'RDNA 2, RDNA, GCN' },
+        
+        // Intel Integrated Graphics
+        'intel-gfx-12.1.7': { name: 'Intel UHD Graphics Driver 12.1.7', version: '12.1.7', manufacturer: 'Intel', type: 'Graphics', certified: true, compatibility: '12th-13th gen Core' },
+        'intel-gfx-12.0.4': { name: 'Intel UHD Graphics Driver 12.0.4', version: '12.0.4', manufacturer: 'Intel', type: 'Graphics', certified: false, compatibility: '12th-13th gen (Outdated)' },
+        
+        // AMD Chipset Drivers
+        'amd-chipset-5.05': { name: 'AMD Chipset Drivers 5.05.24.540', version: '5.05', manufacturer: 'AMD', type: 'Chipset', certified: true, compatibility: 'X670, B850, TRX40' },
+        'amd-chipset-4.12': { name: 'AMD Chipset Drivers 4.12.00.1040', version: '4.12', manufacturer: 'AMD', type: 'Chipset', certified: true, compatibility: 'B550, X570 (Older)' },
+        
+        // Intel Chipset Drivers
+        'intel-chipset-10.1.19444': { name: 'Intel Chipset Device Software 10.1.19444', version: '10.1.19444', manufacturer: 'Intel', type: 'Chipset', certified: true, compatibility: 'B760, Z790 (NEW)' },
+        'intel-chipset-10.1.18836': { name: 'Intel Chipset Device Software 10.1.18836', version: '10.1.18836', manufacturer: 'Intel', type: 'Chipset', certified: true, compatibility: 'B660, Z690, B450 Fallback' },
+        'intel-chipset-10.1.18331': { name: 'Intel Chipset Device Software 10.1.18331', version: '10.1.18331', manufacturer: 'Intel', type: 'Chipset', certified: true, compatibility: 'B460, Z490 (Older)' },
+        
+        // Audio Drivers
+        'realtek-audio-6.0.9505': { name: 'Realtek HD Audio Driver 6.0.9505', version: '6.0.9505', manufacturer: 'Realtek', type: 'Audio', certified: true, compatibility: 'ALC1220, ALC892 (Latest)' },
+        'realtek-audio-6.0.9169': { name: 'Realtek HD Audio Driver 6.0.9169', version: '6.0.9169', manufacturer: 'Realtek', type: 'Audio', certified: true, compatibility: 'ALC1220, ALC892 (Legacy Compatible)' },
+        'realtek-audio-6.0.9088': { name: 'Realtek HD Audio Driver 6.0.9088', version: '6.0.9088', manufacturer: 'Realtek', type: 'Audio', certified: true, compatibility: 'Older chipsets' },
+        
+        // Network Drivers - Realtek Ethernet
+        'realtek-ethernet-10.062': { name: 'Realtek Ethernet Driver 10.062', version: '10.062', manufacturer: 'Realtek', type: 'Network', certified: true, compatibility: 'RTL8125B, RTL8111H (Latest)' },
+        'realtek-ethernet-10.058': { name: 'Realtek Ethernet Driver 10.058', version: '10.058', manufacturer: 'Realtek', type: 'Network', certified: true, compatibility: 'RTL8125B, RTL8111H' },
+        'realtek-ethernet-10.042': { name: 'Realtek Ethernet Driver 10.042', version: '10.042', manufacturer: 'Realtek', type: 'Network', certified: true, compatibility: 'RTL8111G and older' },
+        'realtek-ethernet-generic': { name: 'Generic Ethernet Driver', version: '1.0', manufacturer: 'Microsoft', type: 'Network', certified: false, compatibility: 'Limited, Slow' },
+        
+        // Network Drivers - Intel Ethernet
+        'intel-ethernet-28.3': { name: 'Intel Ethernet Driver 28.3', version: '28.3', manufacturer: 'Intel', type: 'Network', certified: true, compatibility: 'I226-V, I219-V (NEW - Required for I226-V)' },
+        'intel-ethernet-28.1': { name: 'Intel Ethernet Driver 28.1', version: '28.1', manufacturer: 'Intel', type: 'Network', certified: true, compatibility: 'I217-V, I219-V (Legacy)' },
+        'intel-ethernet-27.2': { name: 'Intel Ethernet Driver 27.2', version: '27.2', manufacturer: 'Intel', type: 'Network', certified: true, compatibility: 'I211, I217 (Very Old)' },
+        
+        // WiFi Drivers
+        'intel-wifi-22.240.0': { name: 'Intel Wi-Fi 6E AX211 Driver 22.240.0', version: '22.240.0', manufacturer: 'Intel', type: 'Network', certified: true, compatibility: 'AX211, Wi-Fi 6E (Latest)' },
+        'intel-wifi-22.220.0': { name: 'Intel Wi-Fi 6E AX211 Driver 22.220.0', version: '22.220.0', manufacturer: 'Intel', type: 'Network', certified: true, compatibility: 'AX211 (Older)' },
+        'intel-wifi-22.100.0': { name: 'Intel Wi-Fi 6E AX211 Driver 22.100.0', version: '22.100.0', manufacturer: 'Intel', type: 'Network', certified: false, compatibility: 'AX211 (Unstable - avoid)' },
+        'intel-wifi-generic': { name: 'Generic WiFi Driver', version: '1.0', manufacturer: 'Microsoft', type: 'Network', certified: false, compatibility: 'No Wi-Fi 6E support' },
+        
+        // Bluetooth Drivers
+        'intel-bluetooth-22.240.0': { name: 'Intel Bluetooth Driver 22.240.0', version: '22.240.0', manufacturer: 'Intel', type: 'Bluetooth', certified: true, compatibility: 'All Intel Bluetooth (Latest)' },
+        'intel-bluetooth-22.220.0': { name: 'Intel Bluetooth Driver 22.220.0', version: '22.220.0', manufacturer: 'Intel', type: 'Bluetooth', certified: true, compatibility: 'All Intel Bluetooth' },
+        'intel-bluetooth-21.100.0': { name: 'Intel Bluetooth Driver 21.100.0', version: '21.100.0', manufacturer: 'Intel', type: 'Bluetooth', certified: false, compatibility: 'Limited (Very Old)' },
+        
+        // USB Drivers
+        'intel-usb-10.1.19444': { name: 'Intel USB 3.2 Driver 10.1.19444', version: '10.1.19444', manufacturer: 'Intel', type: 'USB', certified: true, compatibility: 'Gen2x2, Gen2 (Latest)' },
+        'intel-usb-10.1.18836': { name: 'Intel USB 3.2 Driver 10.1.18836', version: '10.1.18836', manufacturer: 'Intel', type: 'USB', certified: true, compatibility: 'USB 3.x' },
+        'intel-usb-generic': { name: 'Generic USB Driver', version: '1.0', manufacturer: 'Microsoft', type: 'USB', certified: false, compatibility: 'Limited, No 3.2 Gen2x2' }
+      };
+
+      let activeScenario = null;
+      let deviceStates = {};
+      let selectedDevice = null;
+      let selectedDriver = null;
+
+      function randomChoice(array) {
+        return array[Math.floor(Math.random() * array.length)];
+      }
+
+      function generateScenario() {
+        return randomChoice(scenarioTemplates);
+      }
+
+      function displayScenario() {
+        const display = document.getElementById('scenario-display');
+        const s = activeScenario;
+        
+        display.innerHTML = `
+          <div style="border-left: 4px solid #00ff88; padding-left: 15px;">
+            <h3 style="color: #00ff88; margin-bottom: 10px;">🔧 ${s.name}</h3>
+            <p style="margin-bottom: 15px; line-height: 1.6;">
+              <strong>Scenario:</strong> ${s.description}
+            </p>
+            <p style="color: #ffaa00; margin-top: 10px;">
+              <strong>Task:</strong> Review Device Manager, identify problematic devices, and install the correct drivers. Devices with ⚠️ or ❌ need attention.
+            </p>
+          </div>
+        `;
+      }
+
+      function initDeviceStates() {
+        deviceStates = {};
+        activeScenario.devices.forEach(device => {
+          deviceStates[device.id] = {
+            ...device,
+            installedDriver: null,
+            fixed: device.status === 'ok'
+          };
+        });
+        renderDeviceList();
+      }
+
+      function renderDeviceList() {
+        const deviceList = document.getElementById('device-list');
+        
+        const categories = {
+          'Display adapters': ['gpu'],
+          'Network adapters': ['ethernet', 'wifi'],
+          'Sound, video and game controllers': ['audio'],
+          'System devices': ['chipset', 'usb'],
+          'Bluetooth': ['bluetooth']
+        };
+        
+        let html = '';
+        
+        Object.keys(categories).forEach(categoryName => {
+          const deviceIds = categories[categoryName];
+          const categoryDevices = deviceIds.map(id => deviceStates[id]).filter(d => d);
+          
+          if (categoryDevices.length > 0) {
+            html += `<div class="device-category">
+              <div class="category-header">
+                <div class="category-title">▼ ${categoryName}</div>
+              </div>`;
+            
+            categoryDevices.forEach(device => {
+              const statusIcon = device.fixed ? '✅' : (device.status === 'warning' ? '⚠️' : '❌');
+              const statusClass = device.fixed ? 'ok' : device.status;
+              const statusText = device.fixed ? 'Driver OK' : device.issue;
+              
+              html += `
+                <div class="device-item ${statusClass}">
+                  <div>
+                    <div class="device-name">${device.name}</div>
+                    <div class="device-status">
+                      <span class="status-icon">${statusIcon}</span>
+                      <span style="color: ${device.fixed ? '#00ff88' : (device.status === 'warning' ? '#ffaa00' : '#ff4444')}">${statusText}</span>
+                    </div>
+                  </div>
+                  ${!device.fixed ? `<button class="driver-action" onclick="window.openDriverModal('${device.id}')">Fix Driver</button>` : ''}
+                </div>
+              `;
+            });
+            
+            html += '</div>';
+          }
+        });
+        
+        deviceList.innerHTML = html;
+      }
+
+      function getDriverOptions(device) {
+        const manufacturer = device.manufacturer;
+        const correctDriver = device.correctDriver;
+        const deviceId = device.id;
+        
+        // Build set of relevant driver options with some intentional red herrings
+        const options = new Set();
+        
+        // Always include correct driver
+        options.add(correctDriver);
+        
+        // Add other drivers from same manufacturer
+        Object.keys(driverDatabase).forEach(key => {
+          const driver = driverDatabase[key];
+          if (driver.manufacturer === manufacturer && key !== correctDriver) {
+            // Include manufacturer's other versions
+            if (key.includes(deviceId.substring(0, 3)) || 
+                key.includes(device.name.split(' ')[0].toLowerCase())) {
+              options.add(key);
+            }
+          }
+        });
+        
+        // Add tricky wrong options - drivers from other manufacturers or incompatible versions
+        if (deviceId.includes('gpu') && manufacturer === 'NVIDIA') {
+          options.add('nvidia-537.13'); // Older version for wrong GPU series
+          options.add('nvidia-generic');
+        } else if (deviceId.includes('chipset')) {
+          // Add other chipset drivers that look similar but are wrong
+          if (manufacturer === 'Intel') {
+            options.add('intel-chipset-10.1.18836'); // Different version
+            options.add('intel-chipset-10.1.18331');
+          } else if (manufacturer === 'AMD') {
+            options.add('amd-chipset-4.12');
+          }
+        } else if (deviceId.includes('ethernet')) {
+          if (manufacturer === 'Realtek') {
+            options.add('realtek-ethernet-10.058');
+            options.add('realtek-ethernet-10.042');
+            options.add('realtek-ethernet-generic');
+          } else if (manufacturer === 'Intel') {
+            options.add('intel-ethernet-28.1');
+            options.add('intel-ethernet-27.2');
+          }
+        } else if (deviceId.includes('audio')) {
+          options.add('realtek-audio-6.0.9169');
+          options.add('realtek-audio-6.0.9088');
+        } else if (deviceId.includes('wifi')) {
+          options.add('intel-wifi-22.220.0');
+          options.add('intel-wifi-22.100.0');
+          options.add('intel-wifi-generic');
+        } else if (deviceId.includes('bluetooth')) {
+          options.add('intel-bluetooth-22.220.0');
+          options.add('intel-bluetooth-21.100.0');
+        } else if (deviceId.includes('usb')) {
+          options.add('intel-usb-10.1.18836');
+          options.add('intel-usb-generic');
+        }
+        
+        // Shuffle and limit to 5-6 options
+        return Array.from(options).sort(() => Math.random() - 0.5).slice(0, 6);
+      }
+
+      window.openDriverModal = function(deviceId) {
+        selectedDevice = deviceStates[deviceId];
+        selectedDriver = null;
+        
+        const modal = document.getElementById('driver-modal');
+        const modalDeviceName = document.getElementById('modal-device-name');
+        const driverOptions = document.getElementById('driver-options');
+        
+        modalDeviceName.textContent = `Select Driver for ${selectedDevice.name}`;
+        
+        const options = getDriverOptions(selectedDevice);
+        let html = '<h4 style="color: #00d4ff; margin-bottom: 15px;">Available Drivers:</h4>';
+        
+        options.forEach(driverKey => {
+          const driver = driverDatabase[driverKey];
+          html += `
+            <div class="driver-option" data-driver="${driverKey}">
+              <div class="driver-option-name">${driver.name}</div>
+              <div class="driver-option-details">
+                Version: ${driver.version} | Manufacturer: ${driver.manufacturer} | 
+                ${driver.certified ? '✓ WHQL Certified' : '⚠️ Not Certified'}
+              </div>
+              <div class="driver-option-details" style="color: #ffaa00; margin-top: 5px; font-size: 0.8em;">
+                Compatibility: ${driver.compatibility}
+              </div>
+            </div>
+          `;
+        });
+        
+        driverOptions.innerHTML = html;
+        modal.classList.add('active');
+        
+        // Add click handlers for driver options
+        document.querySelectorAll('.driver-option').forEach(option => {
+          option.addEventListener('click', function() {
+            document.querySelectorAll('.driver-option').forEach(o => o.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedDriver = this.dataset.driver;
+            document.getElementById('btn-install-driver').disabled = false;
+          });
+        });
+      };
+
+      document.getElementById('modal-close').addEventListener('click', () => {
+        document.getElementById('driver-modal').classList.remove('active');
+      });
+
+      document.getElementById('btn-install-driver').addEventListener('click', () => {
+        if (selectedDriver && selectedDevice) {
+          deviceStates[selectedDevice.id].installedDriver = selectedDriver;
+          deviceStates[selectedDevice.id].fixed = (selectedDriver === selectedDevice.correctDriver);
+          renderDeviceList();
+          document.getElementById('driver-modal').classList.remove('active');
+        }
+      });
+
+      function evaluateSolution() {
+        const feedback = [];
+        let score = 0;
+        const devicesNeedingFix = activeScenario.devices.filter(d => d.correctDriver !== null);
+        const pointsPerDevice = 100 / devicesNeedingFix.length;
+        
+        devicesNeedingFix.forEach(device => {
+          const state = deviceStates[device.id];
+          const installedDriver = state.installedDriver;
+          
+          if (!installedDriver) {
+            feedback.push({
+              type: 'fail',
+              text: `✗ ${device.name}: No driver installed - this device still has issues`
+            });
+          } else if (installedDriver === device.correctDriver) {
+            score += pointsPerDevice;
+            const driverInfo = driverDatabase[installedDriver];
+            feedback.push({
+              type: 'pass',
+              text: `✓ ${device.name}: Correct! Installed ${driverInfo.name} v${driverInfo.version}`
+            });
+            if (device.note) {
+              feedback.push({
+                type: 'pass',
+                text: `  💡 Note: ${device.note}`
+              });
+            }
+          } else {
+            const installedInfo = driverDatabase[installedDriver];
+            const correctInfo = driverDatabase[device.correctDriver];
+            feedback.push({
+              type: 'fail',
+              text: `✗ ${device.name}: Wrong driver! You chose v${installedInfo.version} (${installedInfo.compatibility}), should be v${correctInfo.version} (${correctInfo.compatibility})`
+            });
+            if (device.note) {
+              feedback.push({
+                type: 'fail',
+                text: `  Reason: ${device.note}`
+              });
+            }
+          }
+        });
+        
+        return { score: Math.round(score), feedback };
+      }
+
+      document.getElementById('btn-submit').addEventListener('click', () => {
+        const results = evaluateSolution();
+        const resultsPanel = document.getElementById('results-panel');
+        const scoreDisplay = document.getElementById('score-display');
+        const feedbackList = document.getElementById('feedback-list');
+        
+        const passed = results.score >= 80;
+        const grade = passed ? 'PASS' : 'FAIL';
+        const gradeColor = passed ? '#00ff88' : '#ff4444';
+        
+        scoreDisplay.innerHTML = `<div style="color: ${gradeColor};">${grade}</div><div>Score: ${results.score}/100</div>`;
+        
+        feedbackList.innerHTML = results.feedback.map(f => 
+          `<div class="feedback-item ${f.type}">${f.text}</div>`
+        ).join('');
+        
+        resultsPanel.style.display = 'block';
+        resultsPanel.scrollIntoView({ behavior: 'smooth' });
+      });
+
+      document.getElementById('btn-reset').addEventListener('click', () => {
+        document.getElementById('results-panel').style.display = 'none';
+        activeScenario = generateScenario();
+        displayScenario();
+        initDeviceStates();
+      });
+
+      function initLab() {
+        activeScenario = generateScenario();
+        displayScenario();
+        initDeviceStates();
+      }
+
+      initLab();
+    </script>
+    <script type="module" src="site.js"></script>
+  </body>
+</html>

@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import AppShell from '../../../layouts/AppShell.astro';
+
+const tracks = await getCollection('tracks');
+const legacyTrack = tracks.find((track) => track.slug === 'legacy');
+---
+
+<AppShell
+  title="Learning Tracks • Legacy Archived"
+  tracks={tracks}
+  activeTrack="legacy"
+  currentTrack={legacyTrack}
+  breadcrumbs={[
+    { label: 'Home', href: '/' },
+    { label: 'Learning Tracks', href: '/tracks' },
+    { label: 'Legacy (Archived)' },
+  ]}
+>
+  <section class="hero" id="archived-list">
+    <h1 class="hero__title">Legacy Track (Archived)</h1>
+    <p class="hero__subtitle">This content remains available for reference while current tracks evolve.</p>
+  </section>
+
+  <article class="card">
+    <h3>Go to current tracks</h3>
+    <p>Use the current track hub for metadata-driven modules and workspace activities.</p>
+    <p><a class="btn-link" href="/tracks">Open current tracks →</a></p>
+    <p><a class="btn-link" href="/legacy/index.html">Open legacy HTML listing →</a></p>
+    <p><a class="btn-link" href="/tracks/legacy#archived-list">Stay on archived track list →</a></p>
+  </article>
+
+  {legacyTrack ? (
+    <p class="pc-lab__muted">Legacy track slug: {legacyTrack.slug}</p>
+  ) : (
+    <p class="pc-lab__muted">Legacy content is available from the listing links above.</p>
+  )}
+</AppShell>

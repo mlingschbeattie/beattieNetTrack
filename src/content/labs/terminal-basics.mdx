@@ -1,0 +1,36 @@
+---
+title: Terminal Basics
+description: Practice core terminal commands with step-by-step validation.
+slug: terminal-basics
+track: network-engineer
+moduleId: net.troubleshooting.tools
+order: 1
+difficulty: Beginner
+estimatedMinutes: 10
+xp: 25
+tags: ["terminal", "shell", "commands"]
+steps:
+  - id: pwd
+    title: Where am I?
+    prompt: Run the command that prints the current working directory.
+    hint: It stands for 'print working directory'.
+    validator:
+      type: exact
+      value: pwd
+  - id: ls
+    title: List files
+    prompt: Run the command that lists files in the current directory.
+    hint: Try the short version, then the long listing.
+    validator:
+      type: oneOf
+      values: ["ls", "ls -la", "ls -l", "dir"]
+  - id: cd-up
+    title: Move up a directory
+    prompt: Change directory to the parent folder.
+    hint: Use cd with two dots.
+    validator:
+      type: oneOf
+      values: ["cd ..", "cd.."]
+---
+
+Complete each command prompt in order to finish the lab and earn XP.

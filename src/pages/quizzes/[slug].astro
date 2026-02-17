@@ -1,0 +1,97 @@
+---
+import { getCollection } from 'astro:content';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import WorkspaceLayout from '../../layouts/WorkspaceLayout.astro';
+import QuizRunner from '../../components/QuizRunner.tsx';
+import ActivityCard from '../../components/ActivityCard.astro';
+import type { QuizDefinition } from '../../lib/quizEngine';
+
+export async function getStaticPaths() {
+  const quizzes = await getCollection('quizzes');
+  return quizzes.map((quiz) => ({ params: { slug: quiz.slug }, props: { quiz } }));
+}
+
+const { quiz } = Astro.props;
+const tracks = await getCollection('tracks');
+const currentTrack = quiz.data.track
+  ? tracks.find((track) => track.slug === quiz.data.track)
+  : undefined;
+
+let questions = quiz.data.questions;
+if ((!questions || questions.length === 0) && quiz.data.quizJsonPath) {
+  const diskPath = path.join(process.cwd(), 'public', quiz.data.quizJsonPath.replace(/^\//, ''));
+  try {
+    const raw = await fs.readFile(diskPath, 'utf8');
+    const parsed = JSON.parse(raw) as {
+      questions?: Array<{ prompt?: string; choices?: string[]; answerIndex?: number; explanation?: string }>;
+    };
+    questions = Array.isArray(parsed.questions)
+      ? parsed.questions
+          .filter((item) => typeof item.prompt === 'string' && Array.isArray(item.choices) && typeof item.answerIndex === 'number')
+          .map((item, index) => ({
+            id: `q${index + 1}`,
+            type: 'single' as const,
+            prompt: item.prompt as string,
+            options: item.choices as string[],
+            correctIndex: item.answerIndex as number,
+            explanation: item.explanation,
+          }))
+      : [];
+  } catch {
+    questions = [];
+  }
+}
+
+const quizDefinition: QuizDefinition = {
+  slug: quiz.slug,
+  title: quiz.data.title,
+  description: quiz.data.description,
+  passThreshold: quiz.data.passThreshold,
+  questions,
+};
+
+const breadcrumbs: Array<{ label: string; href?: string }> = [
+  { label: 'Home', href: '/' },
+  { label: 'Study Hub', href: '/quizzes' },
+  { label: quiz.data.title },
+];
+
+if (currentTrack) {
+  breadcrumbs.splice(2, 0, { label: currentTrack.data.title, href: `/tracks/${currentTrack.slug}` });
+}
+---
+
+<WorkspaceLayout
+  title={`Quiz • ${quiz.data.title}`}
+  tracks={tracks}
+  activeTrack={currentTrack?.slug}
+  activeLesson={quiz.slug}
+  currentTrack={currentTrack}
+  breadcrumbs={breadcrumbs}
+  itemSlug={quiz.slug}
+  itemType="quiz"
+  quizPassThreshold={quiz.data.passThreshold}
+  itemDifficulty="Intermediate"
+  itemMinutes={15}
+  checkLabel="Check Quiz"
+  submitLabel="Submit Quiz"
+  panelHints={quiz.data.hints}
+  panelChecklist={quiz.data.checklist}
+>
+  <Fragment slot="instructions">
+    <ActivityCard>
+      <h1 class="page-title">{quiz.data.title}</h1>
+      <p class="lesson-header__description">{quiz.data.description}</p>
+      <ul>
+        <li>Answer each question in order.</li>
+        <li>Use Check to see whether you are on pace to pass.</li>
+        <li>Use Submit to record score and completion.</li>
+      </ul>
+    </ActivityCard>
+  </Fragment>
+
+  <Fragment slot="activity-main">
+    <QuizRunner client:only="react" quiz={quizDefinition} workspaceSlug={quiz.slug} />
+  </Fragment>
+</WorkspaceLayout>

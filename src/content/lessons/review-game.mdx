@@ -1,0 +1,163 @@
+---
+title: Review Game - Flash Cards
+slug: review-game
+legacyUrl: /review-game.html
+difficulty: medium
+estimatedMinutes: 15
+---
+
+import LegacyHtml from '../../components/LegacyHtml.astro';
+
+<LegacyHtml html={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Review Game - Flash Cards</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css" />
+    
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="study-guides.html" class="active">📖 Study Guides</a></li>
+            <li><a href="learning-tracks.html">🎯 Learning Tracks</a></li>
+            <li><a href="resources.html">🔬 Study Hub</a></li>
+            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <main id="main-content" class="container">
+      <nav class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <a href="study-guides.html">Study Guides</a>
+        <span class="separator">/</span>
+        <a href="a-plus-guides.html">A+ Guides</a>
+        <span class="separator">/</span>
+        <span class="current">Review Game</span>
+      </nav>
+
+      <h1>Review Game</h1>
+      <div class="subtitle">Select topics and generate flash cards for CompTIA A+ review</div>
+
+      <div class="panel">
+        <h2>Choose Topics</h2>
+        <div id="topics-container"></div>
+        <div class="controls">
+          <button class="btn btn-secondary" id="selectAll">Select All</button>
+          <button class="btn btn-secondary" id="clearAll">Clear All</button>
+          <button class="btn btn-primary" id="generate">Generate Cards</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Flash Card</h2>
+        <div id="flashcard-container"></div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { FlashcardDeck, TopicSelector } from './js/flashcards.js';
+
+      const topicData = {
+        "Hardware Fundamentals": [
+          { q: "What does the CPU do?", a: "Executes instructions and processes data." },
+          { q: "What is RAM used for?", a: "Temporary, fast memory for active programs." },
+          { q: "What is a PSU?", a: "Power Supply Unit converts AC to DC for components." },
+          { q: "What does a GPU handle?", a: "Graphics rendering and parallel processing." }
+        ],
+        "Motherboards & Architecture": [
+          { q: "BIOS vs UEFI?", a: "UEFI is modern firmware; BIOS is legacy." },
+          { q: "What is POST?", a: "Power-On Self Test during boot." },
+          { q: "What is PCIe used for?", a: "Expansion cards like GPU and NIC." },
+          { q: "What is a CMOS battery for?", a: "Keeps BIOS settings and clock." }
+        ],
+        "Power & Cooling": [
+          { q: "What does 80+ rating mean?", a: "PSU efficiency certification." },
+          { q: "What is thermal paste?", a: "Improves heat transfer CPU→heatsink." },
+          { q: "Air vs liquid cooling?", a: "Air is cheaper; liquid cools better but needs maintenance." },
+          { q: "What is thermal throttling?", a: "CPU slows down to reduce heat." }
+        ],
+        "Storage Devices": [
+          { q: "HDD vs SSD?", a: "HDD is mechanical; SSD is flash and faster." },
+          { q: "What is NVMe?", a: "High-speed storage over PCIe." },
+          { q: "MBR vs GPT?", a: "GPT is modern and supports larger drives." },
+          { q: "RAID 1 does what?", a: "Mirrors data for redundancy." }
+        ],
+        "Networking Essentials": [
+          { q: "What does DNS do?", a: "Translates domain names to IPs." },
+          { q: "TCP vs UDP?", a: "TCP is reliable; UDP is faster, no guarantee." },
+          { q: "Private IPv4 ranges?", a: "10.x.x.x, 172.16–31.x.x, 192.168.x.x" },
+          { q: "What layer is IP?", a: "OSI Layer 3 (Network)." }
+        ],
+        "Operating Systems": [
+          { q: "What is NTFS?", a: "Windows file system with permissions." },
+          { q: "What is sudo?", a: "Run command as admin in Linux." },
+          { q: "What is Safe Mode?", a: "Windows troubleshooting boot mode." },
+          { q: "What is a user profile?", a: "Stores user settings and data." }
+        ],
+        "Security & Compliance": [
+          { q: "What is MFA?", a: "Multi-Factor Authentication uses 2+ factors." },
+          { q: "Ransomware does what?", a: "Encrypts files and demands payment." },
+          { q: "What is BitLocker?", a: "Windows full-disk encryption." },
+          { q: "What is GDPR?", a: "EU privacy regulation." }
+        ],
+        "Troubleshooting & Repair": [
+          { q: "Step 1 of troubleshooting?", a: "Identify the problem." },
+          { q: "Why document steps?", a: "Provides history and helps future fixes." },
+          { q: "What is POST beep code?", a: "Hardware error indicator during boot." },
+          { q: "What is the 3-2-1 backup rule?", a: "3 copies, 2 media, 1 offsite." }
+        ]
+      };
+
+      // Initialize flashcard deck (empty at start)
+      let deck = new FlashcardDeck('flashcard-container', []);
+      
+      // Initialize topic selector
+      const topicSelector = new TopicSelector('topics-container', topicData, (cards) => {
+        deck.loadCards(cards);
+      });
+
+      // Select/Clear all buttons
+      document.getElementById('selectAll').addEventListener('click', () => {
+        topicSelector.selectAll();
+      });
+
+      document.getElementById('clearAll').addEventListener('click', () => {
+        topicSelector.clearAll();
+      });
+
+      // Generate deck button
+      document.getElementById('generate').addEventListener('click', () => {
+        topicSelector.generateDeck();
+      });
+    </script>
+    <script type="module" src="site.js"></script>
+  </body>
+</html>`} />

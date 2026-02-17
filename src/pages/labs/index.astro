@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+import AppShell from '../../layouts/AppShell.astro';
+import Card from '../../components/Card.astro';
+import Section from '../../components/Section.astro';
+
+const [tracks, labs] = await Promise.all([getCollection('tracks'), getCollection('labs')]);
+const sortedLabs = labs.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+---
+
+<AppShell
+  title="Labs"
+  tracks={tracks}
+  breadcrumbs={[
+    { label: 'Home', href: '/' },
+    { label: 'Labs' },
+  ]}
+>
+  <section class="hero">
+    <h1 class="hero__title">Labs</h1>
+    <p class="hero__subtitle">Hands-on labs with step-by-step checks and progress tracking.</p>
+  </section>
+
+  <Section title="Available Labs">
+    <div class="card-grid">
+      {sortedLabs.map((lab) => {
+        const minutes = lab.data.estimatedMinutes ?? lab.data.estMinutes ?? 20;
+        return (
+          <Card title={lab.data.title}>
+            <p>{lab.data.description}</p>
+            <Fragment slot="meta">
+              <span class="badge">{lab.data.difficulty}</span>
+              <span class="badge badge--muted">⏱️ {minutes} min</span>
+              <span class="badge badge--muted">⭐ {lab.data.xp} XP</span>
+            </Fragment>
+            <Fragment slot="footer">
+              <a class="btn-link" href={`/labs/${lab.slug}`}>Open lab →</a>
+            </Fragment>
+          </Card>
+        );
+      })}
+    </div>
+  </Section>
+</AppShell>

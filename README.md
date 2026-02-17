@@ -1,43 +1,84 @@
-# Astro Starter Kit: Minimal
+# Beattie Tech Astro Site
 
-```sh
-npm create astro@latest -- --template minimal
-```
+This is the new frontend architecture built with Astro + MDX + Content Collections. It lives alongside the legacy static site.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
+## Project structure
 
 ```text
-/
-├── public/
+site/
 ├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+│   ├── components/
+│   ├── content/
+│   │   ├── lessons/
+│   │   └── tracks/
+│   ├── layouts/
+│   ├── pages/
+│   └── styles/
+├── scripts/
+├── tests/
+└── playwright.config.ts
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Dev commands
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+All commands run from the site folder:
 
-Any static assets, like images, can be placed in the `public/` directory.
+| Command | Action |
+| --- | --- |
+| `npm install` | Install dependencies |
+| `npm run dev` | Start the dev server at `localhost:4321` |
+| `npm run build` | Build production output to `dist/` |
+| `npm run preview` | Preview the production build |
+| `npm run test:visual` | Run Playwright visual tests |
+| `npm run lint` | Run Astro checks |
+| `npm run format` | Format files with Prettier |
+| `npm run format:check` | Check formatting without changes |
 
-## 🧞 Commands
+## Content authoring
 
-All commands are run from the root of the project, from a terminal:
+Lessons live in `src/content/lessons/*.mdx` and are validated by Content Collections. Required frontmatter:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+- `title`
+- `description`
+- `slug`
+- `track`
+- `order`
+- `difficulty`
+- `estMinutes`
+- `tags`
+- `legacyUrl` (optional for URL mapping)
 
-## 👀 Want to learn more?
+Tracks live in `src/content/tracks/*.mdx` and define the lesson order via `lessons: [slug, ...]`.
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+## Add a lesson
+
+1. Create a new MDX file under `src/content/lessons/`.
+2. Fill out the frontmatter.
+3. Add the lesson slug to the track file in `src/content/tracks/`.
+
+## Legacy migration helper
+
+Use the script to generate a stub MDX file with a TODO and embedded legacy HTML for reference:
+
+```
+node scripts/legacy-html-to-mdx.mjs --input ../a-plus-networking.html --output src/content/lessons/a-plus-networking.mdx
+```
+
+## URL strategy (legacy compatibility)
+
+- Use `legacyUrl` in lesson frontmatter to preserve the original route.
+- During migration, add redirects from legacy routes to `/lessons/[slug]` or `/tracks/[slug]`.
+- Keep the legacy static site at the repo root until all routes are migrated.
+
+## Visual regression tests
+
+See docs in `docs/README.md` for snapshot updates.
+
+## Workspace layout modes
+
+`WorkspaceLayout.astro` supports two modes:
+
+- `layoutMode="stacked"` → sticky top drawer with `Instructions | Checks | Notes`, large activity region (default for labs/quizzes).
+- `layoutMode="split"` → two-column instructions/activity layout for reading-heavy pages.
+
+You can override per page by passing the `layoutMode` prop.

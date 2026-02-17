@@ -1,0 +1,351 @@
+---
+title: Learning Tracks - Career Pathways
+slug: learning-tracks
+legacyUrl: /learning-tracks.html
+difficulty: medium
+estimatedMinutes: 15
+---
+
+import LegacyHtml from '../../components/LegacyHtml.astro';
+
+<LegacyHtml html={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Learning Tracks - Career Pathways</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css" />
+    
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="study-guides.html">📖 Study Guides</a></li>
+            <li><a href="learning-tracks.html" class="active">🎯 Learning Tracks</a></li>
+            <li><a href="resources.html">🔬 Study Hub</a></li>
+            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <div class="container">
+      <div class="hero">
+        <h1>Career Learning Tracks</h1>
+        <p>Choose your path. Master your craft. Launch your career.</p>
+      </div>
+      
+      <div class="track-nav">
+        <a href="#pc-professional">💻 PC Professional</a>
+        <a href="#network-engineer">🌐 Network Engineer</a>
+        <a href="#cybersecurity">🛡️ Cybersecurity Pro</a>
+        <a href="#ai-engineer">🤖 AI Engineer</a>
+      </div>
+
+      <section class="learning-path glass">
+        <h2 class="gradient-text">Interactive Learning Path</h2>
+        <p>Progress through the nodes as you earn XP. Locked nodes unlock with higher levels.</p>
+        <div class="skill-tree">
+          <div class="skill-node" data-level="1">Start Here</div>
+          <div class="skill-node" data-level="1">Hardware Basics</div>
+          <div class="skill-node" data-level="2">BIOS & Boot</div>
+          <div class="skill-node" data-level="2">Driver Mastery</div>
+          <div class="skill-node" data-level="3">Performance Tuning</div>
+          <div class="skill-node" data-level="3">Security Essentials</div>
+          <div class="skill-node" data-level="4">Advanced Troubleshooting</div>
+        </div>
+      </section>
+      
+      {/* PC Professional Track */}
+      <div class="category-section" id="pc-professional">
+        <div class="category-header">
+          <div class="category-icon">💻</div>
+          <div class="category-title">
+            <h2>PC Professional</h2>
+            <p>Build, repair, and support computer systems</p>
+          </div>
+        </div>
+        
+        <div class="track-stats">
+          <div class="stat-box">
+            <span class="stat-number">8</span>
+            <span class="stat-label">Study Modules</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number">80+</span>
+            <span class="stat-label">Quizzes</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number">CompTIA A+</span>
+            <span class="stat-label">Certification</span>
+          </div>
+        </div>
+        
+        <div class="content-grid">
+          <div class="content-card">
+            <h3><a href="a-plus-guides.html" style="color: var(--accent); text-decoration: none; display: flex; align-items: center; gap: 8px;">📚 Study Guides <span class="badge">Active</span></a></h3>
+            <ul>
+              <li><a href="/lessons/a-plus-hardware">→ Hardware Fundamentals</a></li>
+              <li><a href="a-plus-motherboards.html">→ Motherboards & CPUs</a></li>
+              <li><a href="a-plus-power-cooling.html">→ Power & Cooling</a></li>
+              <li><a href="a-plus-storage.html">→ Storage Systems</a></li>
+              <li><a href="a-plus-networking.html">→ Networking Basics</a></li>
+              <li><a href="a-plus-operating-systems.html">→ Operating Systems</a></li>
+              <li><a href="a-plus-security.html">→ Security Fundamentals</a></li>
+              <li><a href="a-plus-troubleshooting.html">→ Troubleshooting</a></li>
+            </ul>
+          </div>
+          
+          <div class="content-card">
+            <h3><a href="a-plus-labs.html" style="color: var(--accent); text-decoration: none; display: flex; align-items: center; gap: 8px;">🎯 Hands-On Labs</a></h3>
+            <ul>
+              <li><a href="a-plus-lab-pc-assembly.html">→ PC Assembly Simulator</a></li>
+              <li><a href="/lessons/a-plus-lab-bios-config">→ BIOS Configuration</a></li>
+              <li><a href="/lessons/a-plus-lab-driver-install">→ Driver Installation</a></li>
+              <li><a href="a-plus-lab-performance-tuning.html">→ Performance Tuning</a></li>
+              <li><a href="a-plus-lab-upgrade-planning.html">→ Upgrade Planning</a></li>
+            </ul>
+          </div>
+          
+          <div class="content-card">
+            <h3><a href="resources.html" style="color: var(--accent); text-decoration: none;">🔬 Demos</a> <span class="badge">Active</span></h3>
+            <ul>
+              <li><a href="resources.html#exif">→ EXIF Metadata Analysis</a></li>
+              <li><a href="resources.html#password-hashing">→ Password Hashing</a></li>
+              <li><a href="resources.html#https">→ HTTPS & Encryption</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      {/* Network Engineer Track */}
+      <div class="category-section" id="network-engineer">
+        <div class="category-header">
+          <div class="track-icon">🌐</div>
+          <div class="track-title">
+            <h2>Network Engineer</h2>
+            <p>Design, implement, and manage network infrastructure</p>
+          </div>
+        </div>
+        
+        <div class="track-stats">
+          <div class="stat-box">
+            <span class="stat-number">Network+</span>
+            <span class="stat-label">CompTIA</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number">CCNA</span>
+            <span class="stat-label">Cisco</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number">Enterprise</span>
+            <span class="stat-label">Level Skills</span>
+          </div>
+        </div>
+        
+        <div class="content-grid">
+          <div class="content-card coming-soon">
+            <h3>📚 Study Guides</h3>
+            <ul>
+              <li>→ Network Fundamentals</li>
+              <li>→ TCP/IP & OSI Model</li>
+              <li>→ Routing & Switching</li>
+              <li>→ Network Security</li>
+              <li>→ Wireless Networks</li>
+              <li>→ Cloud Networking</li>
+            </ul>
+          </div>
+          
+          <div class="content-card coming-soon">
+            <h3>🎯 Hands-On Labs</h3>
+            <ul>
+              <li>→ Router Configuration</li>
+              <li>→ Switch Setup</li>
+              <li>→ VLAN Configuration</li>
+              <li>→ Network Troubleshooting</li>
+              <li>→ Packet Analysis</li>
+            </ul>
+          </div>
+          
+          <div class="content-card">
+            <h3>🔬 Resources <span class="badge">Active</span></h3>
+            <ul>
+              <li><a href="cheat-sheets.html#networking">→ Network Commands</a></li>
+              <li><a href="cheat-sheets.html#subnetting">→ Subnetting Guide</a></li>
+              <li><a href="a-plus-networking.html">→ Networking Basics</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      {/* Cybersecurity Professional Track */}
+      <div class="category-section" id="cybersecurity">
+        <div class="category-header">
+          <div class="category-icon">🛡️</div>
+          <div class="category-title">
+            <h2>Cybersecurity Professional</h2>
+            <p>Hack, defend, and secure digital systems</p>
+          </div>
+        </div>
+        
+        <div class="track-stats">
+          <div class="stat-box">
+            <span class="stat-number">6</span>
+            <span class="stat-label">Categories</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number">60+</span>
+            <span class="stat-label">Challenges</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number">Security+</span>
+            <span class="stat-label">Certification</span>
+          </div>
+        </div>
+        
+        <div class="content-grid">
+          <div class="content-card">
+            <h3><a href="resources.html" style="color: var(--accent); text-decoration: none;">📚 Study Guides</a> <span class="badge">Active</span></h3>
+            <ul>
+              <li><a href="web-exploitation.html">→ Web Exploitation</a></li>
+              <li><a href="cryptography.html">→ Cryptography</a></li>
+              <li><a href="reverse-engineering.html">→ Reverse Engineering</a></li>
+              <li><a href="forensics.html">→ Digital Forensics</a></li>
+              <li><a href="general-skills.html">→ General Skills</a></li>
+              <li><a href="binary-exploitation.html">→ Binary Exploitation</a></li>
+            </ul>
+          </div>
+          
+          <div class="content-card">
+            <h3><a href="resources.html" style="color: var(--accent); text-decoration: none;">🎯 Demonstrations</a> <span class="badge">Active</span></h3>
+            <ul>
+              <li><a href="resources.html#sql-injection">→ SQL Injection</a></li>
+              <li><a href="resources.html#xss">→ Cross-Site Scripting</a></li>
+              <li><a href="resources.html#exif">→ EXIF Analysis</a></li>
+              <li><a href="resources.html#password-hashing">→ Password Hashing</a></li>
+              <li><a href="resources.html#authentication">→ Authentication</a></li>
+              <li><a href="resources.html#https">→ HTTPS Encryption</a></li>
+            </ul>
+          </div>
+          
+          <div class="content-card">
+            <h3>🔬 Tools & Resources <span class="badge">Active</span></h3>
+            <ul>
+              <li><a href="cheat-sheets.html#sql-injection">→ SQL Injection Cheat Sheet</a></li>
+              <li><a href="cheat-sheets.html#xss">→ XSS Payloads</a></li>
+              <li><a href="cheat-sheets.html#linux">→ Linux Commands</a></li>
+              <li><a href="cheat-sheets.html#python">→ Python Security</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      {/* AI Engineer Track */}
+      <div class="category-section" id="ai-engineer">
+        <div class="category-header">
+          <div class="track-icon">🤖</div>
+          <div class="track-title">
+            <h2>AI Engineer</h2>
+            <p>Build intelligent systems with machine learning</p>
+          </div>
+        </div>
+        
+        <div class="track-stats">
+          <div class="stat-box">
+            <span class="stat-number">ML</span>
+            <span class="stat-label">Machine Learning</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number">Python</span>
+            <span class="stat-label">Primary Language</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number">Data</span>
+            <span class="stat-label">Science Focus</span>
+          </div>
+        </div>
+        
+        <div class="content-grid">
+          <div class="content-card coming-soon">
+            <h3>📚 Study Guides</h3>
+            <ul>
+              <li>→ Python Fundamentals</li>
+              <li>→ Machine Learning Basics</li>
+              <li>→ Neural Networks</li>
+              <li>→ Data Processing</li>
+              <li>→ Model Training</li>
+              <li>→ AI Ethics</li>
+            </ul>
+          </div>
+          
+          <div class="content-card coming-soon">
+            <h3>🎯 Projects</h3>
+            <ul>
+              <li>→ Image Classification</li>
+              <li>→ Natural Language Processing</li>
+              <li>→ Predictive Models</li>
+              <li>→ Chatbot Development</li>
+              <li>→ Data Visualization</li>
+            </ul>
+          </div>
+          
+          <div class="content-card">
+            <h3>🔬 Resources <span class="badge">Active</span></h3>
+            <ul>
+              <li><a href="cheat-sheets.html#python">→ Python Cheat Sheet</a></li>
+              <li><a href="cheat-sheets.html#git">→ Git Commands</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+      const mobileToggle = document.querySelector('.mobile-menu-toggle');
+      const navLinks = document.querySelector('.nav-links');
+      
+      mobileToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+      
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.site-header')) {
+          navLinks.classList.remove('active');
+        }
+      });
+      
+      // Smooth scroll to sections
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+    </script>
+    <script type="module" src="site.js"></script>
+  </body>
+</html>`} />

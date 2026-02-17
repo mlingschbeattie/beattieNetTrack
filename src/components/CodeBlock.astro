@@ -1,0 +1,11 @@
+---
+const { language = 'text' } = Astro.props;
+---
+
+<div class="code-block" data-language={language}>
+	<div class="code-block__header">
+		<span>{language}</span>
+		<button class="code-block__copy" type="button" disabled>Copy</button>
+	</div>
+	<pre><code><slot /></code></pre>
+</div>

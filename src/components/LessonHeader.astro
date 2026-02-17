@@ -1,0 +1,36 @@
+---
+import LessonProgressControls from './islands/LessonProgressControls.tsx';
+
+interface Props {
+  title: string;
+  description?: string;
+  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+  estMinutes: number;
+  tags?: string[];
+  lessonSlug?: string;
+}
+
+const { title, description, difficulty, estMinutes, tags = [], lessonSlug } = Astro.props as Props;
+---
+
+<header class="lesson-header">
+  <div>
+    <h1 class="page-title">{title}</h1>
+    <p class="lesson-header__description">{description}</p>
+  </div>
+  <div class="lesson-header__meta">
+    <span class="badge">{difficulty}</span>
+    <span class="badge badge--muted">⏱️ {estMinutes} min</span>
+    {tags.map((tag) => (
+      <span class="badge badge--tag">{tag}</span>
+    ))}
+  </div>
+  {lessonSlug && (
+    <LessonProgressControls
+      client:only="react"
+      lessonSlug={lessonSlug}
+      difficulty={difficulty}
+      estMinutes={estMinutes}
+    />
+  )}
+</header>

@@ -1,0 +1,97 @@
+---
+const { html: htmlProp } = Astro.props;
+const rendered = await Astro.slots.render('default');
+const html =
+  typeof htmlProp === 'string'
+    ? htmlProp.trim()
+    : typeof rendered === 'string'
+      ? rendered.trim()
+      : '';
+
+const isFullDocument = /<!doctype|<html[\s>]|<head[\s>]|<body[\s>]/i.test(html);
+const safeFragmentHtml = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+---
+
+<article class="legacy-content" aria-label="Legacy content">
+  <div class="legacy-content__banner">⚠ Legacy page — being upgraded</div>
+  {isFullDocument ? (
+    <div class="legacy-content__iframe-wrap">
+      <iframe
+        class="legacy-content__iframe"
+        title="Legacy content"
+        sandbox="allow-forms allow-modals allow-pointer-lock allow-scripts"
+        srcdoc={html}
+      ></iframe>
+    </div>
+  ) : (
+    <section class="legacy-content__body" set:html={safeFragmentHtml} />
+  )}
+</article>
+
+<style>
+  .legacy-content {
+    background: var(--color-surface-2);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-md);
+    max-width: var(--content-max-wide);
+  }
+
+  .legacy-content__banner {
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(249, 115, 22, 0.4);
+    background: rgba(249, 115, 22, 0.12);
+    color: var(--color-text);
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-5);
+  }
+
+  .legacy-content__body {
+    color: inherit;
+    font: inherit;
+    line-height: var(--leading-relaxed);
+    max-width: 100%;
+  }
+
+  .legacy-content__iframe-wrap {
+    min-height: 60vh;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: rgba(2, 6, 23, 0.9);
+  }
+
+  .legacy-content__iframe {
+    width: 100%;
+    height: 100%;
+    min-height: 60vh;
+    border: 0;
+    display: block;
+  }
+
+  .legacy-content__body :global(img) {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .legacy-content__body :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .legacy-content__body :global(pre),
+  .legacy-content__body :global(code) {
+    font-family: var(--font-mono);
+  }
+
+  .legacy-content__body :global(a) {
+    color: var(--color-primary);
+  }
+
+  .legacy-content__body :global(h1),
+  .legacy-content__body :global(h2),
+  .legacy-content__body :global(h3) {
+    color: var(--color-text);
+  }
+</style>

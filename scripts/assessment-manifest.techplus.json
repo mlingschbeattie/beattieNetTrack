@@ -1,0 +1,242 @@
+[
+  {
+    "slug": "assessment-1-1-1",
+    "assessmentCode": "1.1.1",
+    "title": "Assessment 1.1.1 Basics of Computing",
+    "moduleId": "pct.foundations",
+    "order": 101,
+    "sourceQuestionDocx": "Assessment 1.1.1 Basics of Computing.docx",
+    "sourceAnswerDocx": "Assessment 1.1.1 Basics of Computing Answers.docx",
+    "questions": [
+      { "prompt": "Which component executes instructions in a computer?", "choices": ["CPU", "RAM", "SSD", "NIC"], "answerIndex": 0, "explanation": "The CPU executes instructions." }
+    ]
+  },
+  {
+    "slug": "assessment-1-1-2",
+    "assessmentCode": "1.1.2",
+    "title": "Assessment 1.1.2 Device Categories and Use Cases",
+    "moduleId": "pct.foundations",
+    "order": 102,
+    "sourceQuestionDocx": "Assessment 1.1.2 Device Categories and Use Cases.docx",
+    "sourceAnswerDocx": "Assessment 1.1.2 Device Categories and Use Cases Answers.docx",
+    "questions": [
+      { "prompt": "Which device is most suitable for portable field data entry?", "choices": ["Rack server", "Tablet", "Desktop tower", "Switch"], "answerIndex": 1, "explanation": "Tablets are portable and suitable for field use." }
+    ]
+  },
+  {
+    "slug": "assessment-1-1-3",
+    "assessmentCode": "1.1.3",
+    "title": "Assessment 1.1.3 Number Systems and Notation",
+    "moduleId": "pct.foundations",
+    "order": 103,
+    "sourceQuestionDocx": "Assessment 1.1.3 Number Systems and Notation.docx",
+    "sourceAnswerDocx": "Assessment 1.1.3 Number Systems and Notation Answers.docx",
+    "questions": [
+      { "prompt": "What is hexadecimal A in decimal?", "choices": ["8", "9", "10", "11"], "answerIndex": 2, "explanation": "Hexadecimal A equals decimal 10." }
+    ]
+  },
+  {
+    "slug": "assessment-1-1-4",
+    "assessmentCode": "1.1.4",
+    "title": "Assessment 1.1.4 Storage and Transfer Units",
+    "moduleId": "pct.foundations",
+    "order": 104,
+    "sourceQuestionDocx": "Assessment 1.1.4 Storage and Transfer Units.docx",
+    "sourceAnswerDocx": "Assessment 1.1.4 Storage and Transfer Units Answers.docx",
+    "questions": [
+      { "prompt": "Which unit is commonly used for network throughput?", "choices": ["Bytes", "Bits per second", "Hertz", "Pixels"], "answerIndex": 1, "explanation": "Network throughput is measured in bits per second." }
+    ]
+  },
+  {
+    "slug": "assessment-1-1-5",
+    "assessmentCode": "1.1.5",
+    "title": "Assessment 1.1.5 Troubleshooting Methodology",
+    "moduleId": "pct.troubleshooting",
+    "order": 105,
+    "sourceQuestionDocx": "Assessment 1.1.5 Troubleshooting Methodology.docx",
+    "sourceAnswerDocx": "Assessment 1.1.5 Troubleshooting Methodology Answers.docx",
+    "questions": [
+      { "prompt": "What is the first troubleshooting step?", "choices": ["Document findings", "Establish a theory", "Identify the problem", "Test the theory"], "answerIndex": 2, "explanation": "Start by identifying the problem." }
+    ]
+  },
+  {
+    "slug": "assessment-1-2-1",
+    "assessmentCode": "1.2.1",
+    "title": "Assessment 1.2.1 Internal Hardware Components",
+    "moduleId": "pct.hardware",
+    "order": 106,
+    "sourceQuestionDocx": "Assessment 1.2.1 Internal Hardware Components.docx",
+    "sourceAnswerDocx": "Assessment 1.2.1 Internal Hardware Components Answers.docx",
+    "questions": [
+      { "prompt": "Which component stores data persistently?", "choices": ["RAM", "CPU cache", "SSD", "Register"], "answerIndex": 2, "explanation": "SSDs provide persistent storage." }
+    ]
+  },
+  {
+    "slug": "assessment-1-2-2",
+    "assessmentCode": "1.2.2",
+    "title": "Assessment 1.2.2 Ports and Connectors",
+    "moduleId": "pct.hardware",
+    "order": 107,
+    "sourceQuestionDocx": "Assessment 1.2.2 Ports and Connectors.docx",
+    "sourceAnswerDocx": "Assessment 1.2.2 Ports and Connectors Answers.docx",
+    "questions": [
+      { "prompt": "Which connector commonly carries digital video and audio?", "choices": ["RJ-45", "HDMI", "PS/2", "VGA"], "answerIndex": 1, "explanation": "HDMI carries digital video and audio." }
+    ]
+  },
+  {
+    "slug": "assessment-1-2-3",
+    "assessmentCode": "1.2.3",
+    "title": "Assessment 1.2.3 Form Factors and Compatibility",
+    "moduleId": "pct.hardware",
+    "order": 108,
+    "sourceQuestionDocx": "Assessment 1.2.3 Form Factors and Compatibility.docx",
+    "sourceAnswerDocx": "Assessment 1.2.3 Form Factors and Compatibility Answers.docx",
+    "questions": [
+      { "prompt": "What must match between CPU and motherboard?", "choices": ["Socket type", "Case color", "Storage brand", "Monitor size"], "answerIndex": 0, "explanation": "CPU and motherboard socket types must match." }
+    ]
+  },
+  {
+    "slug": "assessment-1-2-4",
+    "assessmentCode": "1.2.4",
+    "title": "Assessment 1.2.4 Mobile Devices and Peripherals",
+    "moduleId": "pct.hardware",
+    "order": 109,
+    "sourceQuestionDocx": "Assessment 1.2.4 Mobile Devices and Peripherals.docx",
+    "sourceAnswerDocx": "Assessment 1.2.4 Mobile Devices and Peripherals Answers.docx",
+    "questions": [
+      { "prompt": "Which feature is common in mobile devices?", "choices": ["Hot-swappable CPU", "Touch interface", "ATX PSU", "ECC-only RAM"], "answerIndex": 1, "explanation": "Touch interfaces are common in mobile devices." }
+    ]
+  },
+  {
+    "slug": "assessment-1-2-5",
+    "assessmentCode": "1.2.5",
+    "title": "Assessment 1.2.5 IoT and Embedded Systems",
+    "moduleId": "pct.network-basics",
+    "order": 110,
+    "sourceQuestionDocx": "Assessment 1.2.5 IoT and Embedded Systems.docx",
+    "sourceAnswerDocx": "Assessment 1.2.5 IoT and Embedded Systems Answers.docx",
+    "questions": [
+      { "prompt": "What is a key IoT security concern?", "choices": ["Too much GPU memory", "Weak default credentials", "Large screen size", "Fan noise"], "answerIndex": 1, "explanation": "Weak default credentials are a major IoT risk." }
+    ]
+  },
+  {
+    "slug": "assessment-1-3-1",
+    "assessmentCode": "1.3.1",
+    "title": "Assessment 1.3.1 Operating System Fundamentals",
+    "moduleId": "pct.os",
+    "order": 111,
+    "sourceQuestionDocx": "Assessment 1.3.1 Operating System Fundamentals.docx",
+    "sourceAnswerDocx": "Assessment 1.3.1 Operating System Fundamentals Answers.docx",
+    "questions": [
+      { "prompt": "Which OS function manages hardware resources?", "choices": ["Kernel", "Browser", "Text editor", "Spreadsheet"], "answerIndex": 0, "explanation": "The kernel manages hardware resources." }
+    ]
+  },
+  {
+    "slug": "assessment-1-3-2",
+    "assessmentCode": "1.3.2",
+    "title": "Assessment 1.3.2 File Systems and Permissions",
+    "moduleId": "pct.os",
+    "order": 112,
+    "sourceQuestionDocx": "Assessment 1.3.2 File Systems and Permissions.docx",
+    "sourceAnswerDocx": "Assessment 1.3.2 File Systems and Permissions Answers.docx",
+    "questions": [
+      { "prompt": "Which permission model controls file access?", "choices": ["ACL", "DNS", "NAT", "RAID"], "answerIndex": 0, "explanation": "ACLs control file access permissions." }
+    ]
+  },
+  {
+    "slug": "assessment-1-3-3",
+    "assessmentCode": "1.3.3",
+    "title": "Assessment 1.3.3 Windows Tools and Utilities",
+    "moduleId": "pct.os",
+    "order": 113,
+    "sourceQuestionDocx": "Assessment 1.3.3 Windows Tools and Utilities.docx",
+    "sourceAnswerDocx": "Assessment 1.3.3 Windows Tools and Utilities Answers.docx",
+    "questions": [
+      { "prompt": "Which utility manages disk partitions in Windows?", "choices": ["Task Scheduler", "Disk Management", "Event Viewer", "Services"], "answerIndex": 1, "explanation": "Disk Management handles partition tasks." }
+    ]
+  },
+  {
+    "slug": "assessment-1-3-4",
+    "assessmentCode": "1.3.4",
+    "title": "Assessment 1.3.4 Security Basics for Endpoints",
+    "moduleId": "pct.troubleshooting",
+    "order": 114,
+    "sourceQuestionDocx": "Assessment 1.3.4 Security Basics for Endpoints.docx",
+    "sourceAnswerDocx": "Assessment 1.3.4 Security Basics for Endpoints Answers.docx",
+    "questions": [
+      { "prompt": "Which practice improves endpoint security?", "choices": ["Disable updates", "Use least privilege", "Share admin password", "Ignore logs"], "answerIndex": 1, "explanation": "Least privilege reduces attack surface." }
+    ]
+  },
+  {
+    "slug": "assessment-1-3-5",
+    "assessmentCode": "1.3.5",
+    "title": "Assessment 1.3.5 Backup and Recovery",
+    "moduleId": "pct.os",
+    "order": 115,
+    "sourceQuestionDocx": "Assessment 1.3.5 Backup and Recovery.docx",
+    "sourceAnswerDocx": "Assessment 1.3.5 Backup and Recovery Answers.docx",
+    "questions": [
+      { "prompt": "What backup type captures only changes since last backup?", "choices": ["Full", "Incremental", "Clone", "Archive"], "answerIndex": 1, "explanation": "Incremental backups capture changes since the last backup." }
+    ]
+  },
+  {
+    "slug": "assessment-1-4-1",
+    "assessmentCode": "1.4.1",
+    "title": "Assessment 1.4.1 Network Basics for Technicians",
+    "moduleId": "pct.network-basics",
+    "order": 116,
+    "sourceQuestionDocx": "Assessment 1.4.1 Network Basics for Technicians.docx",
+    "sourceAnswerDocx": "Assessment 1.4.1 Network Basics for Technicians Answers.docx",
+    "questions": [
+      { "prompt": "Which protocol maps domain names to IP addresses?", "choices": ["DHCP", "DNS", "NTP", "SMTP"], "answerIndex": 1, "explanation": "DNS resolves names to IP addresses." }
+    ]
+  },
+  {
+    "slug": "assessment-1-4-2",
+    "assessmentCode": "1.4.2",
+    "title": "Assessment 1.4.2 Wireless and Mobile Networking",
+    "moduleId": "pct.network-basics",
+    "order": 117,
+    "sourceQuestionDocx": "Assessment 1.4.2 Wireless and Mobile Networking.docx",
+    "sourceAnswerDocx": "Assessment 1.4.2 Wireless and Mobile Networking Answers.docx",
+    "questions": [
+      { "prompt": "Which security mode is preferred for modern Wi-Fi networks?", "choices": ["WEP", "WPA2/WPA3", "Open", "TKIP-only"], "answerIndex": 1, "explanation": "WPA2/WPA3 are preferred over legacy modes." }
+    ]
+  },
+  {
+    "slug": "assessment-1-4-3",
+    "assessmentCode": "1.4.3",
+    "title": "Assessment 1.4.3 Printers and Peripheral Support",
+    "moduleId": "pct.hardware",
+    "order": 118,
+    "sourceQuestionDocx": "Assessment 1.4.3 Printers and Peripheral Support.docx",
+    "sourceAnswerDocx": "Assessment 1.4.3 Printers and Peripheral Support Answers.docx",
+    "questions": [
+      { "prompt": "Which maintenance task is common for laser printers?", "choices": ["Defragment spool disk", "Replace toner", "Calibrate touch panel", "Rotate hard drive"], "answerIndex": 1, "explanation": "Laser printers require toner replacement." }
+    ]
+  },
+  {
+    "slug": "assessment-1-4-4",
+    "assessmentCode": "1.4.4",
+    "title": "Assessment 1.4.4 Preventive Maintenance",
+    "moduleId": "pct.troubleshooting",
+    "order": 119,
+    "sourceQuestionDocx": "Assessment 1.4.4 Preventive Maintenance.docx",
+    "sourceAnswerDocx": "Assessment 1.4.4 Preventive Maintenance Answers.docx",
+    "questions": [
+      { "prompt": "What helps prevent overheating in desktop systems?", "choices": ["Block vents", "Regular dust cleaning", "Disable fans", "Use lower RAM"], "answerIndex": 1, "explanation": "Dust removal helps maintain airflow and cooling." }
+    ]
+  },
+  {
+    "slug": "assessment-1-4-5",
+    "assessmentCode": "1.4.5",
+    "title": "Assessment 1.4.5 Customer Support Workflow",
+    "moduleId": "pct.troubleshooting",
+    "order": 120,
+    "sourceQuestionDocx": "Assessment 1.4.5 Customer Support Workflow.docx",
+    "sourceAnswerDocx": "Assessment 1.4.5 Customer Support Workflow Answers.docx",
+    "questions": [
+      { "prompt": "Which action should follow issue resolution?", "choices": ["Delete the ticket", "Document final fix and close ticket", "Ignore customer feedback", "Uninstall updates"], "answerIndex": 1, "explanation": "Resolved issues should be documented before closure." }
+    ]
+  }
+]

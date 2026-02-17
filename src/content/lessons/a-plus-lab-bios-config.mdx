@@ -1,0 +1,64 @@
+---
+title: BIOS Configuration Lab - A+ Lab
+slug: a-plus-lab-bios-config
+legacyUrl: /a-plus-lab-bios-config.html
+difficulty: Intermediate
+estMinutes: 15
+---
+
+import Callout from '@/components/Callout.astro';
+import Card from '@/components/Card.astro';
+import CodeBlock from '@/components/CodeBlock.astro';
+import ProgressBar from '@/components/ProgressBar.astro';
+import Section from '@/components/Section.astro';
+
+<Section title="BIOS configuration lab" subtitle="Hands-on: UEFI setup and validation">
+  <p>
+    In this lab you will interpret a scenario, adjust BIOS/UEFI settings, and document the final
+    configuration. The goal is to practice safe, repeatable changes.
+  </p>
+  <Callout type="warn">
+    Always document defaults before making changes. Incorrect boot order or security settings can
+    prevent the system from starting.
+  </Callout>
+</Section>
+
+<Section title="Objectives">
+  <ul>
+    <li>Enter BIOS/UEFI and verify hardware recognition.</li>
+    <li>Adjust boot order, virtualization, and security settings.</li>
+    <li>Save a known-good baseline before exiting.</li>
+  </ul>
+</Section>
+
+<Section title="Navigation quick keys">
+  <p>Use these shortcuts during the lab.</p>
+  <CodeBlock language="text">Del / F2 / F10 / Esc → Enter BIOS/UEFI
+F7 → Advanced settings
+F10 → Save & Exit</CodeBlock>
+</Section>
+
+<Section title="Configuration checklist">
+  <div class="card-grid">
+    <Card title="Boot priority">
+      <p>Confirm the primary boot device and disable unused options.</p>
+    </Card>
+    <Card title="Security">
+      <p>Enable Secure Boot and set an admin password if required.</p>
+    </Card>
+    <Card title="Virtualization">
+      <p>Toggle VT-x/AMD-V based on scenario requirements.</p>
+    </Card>
+    <Card title="Thermals">
+      <p>Check fan curves and CPU temperature thresholds.</p>
+    </Card>
+  </div>
+</Section>
+
+<Section title="Progress target">
+  <p>Complete the checklist and validate the new boot order before exiting.</p>
+  <ProgressBar value={60} />
+  <p>
+    <a class="btn-link" href="/quizzes/a-plus-motherboards">Review motherboard concepts →</a>
+  </p>
+</Section>

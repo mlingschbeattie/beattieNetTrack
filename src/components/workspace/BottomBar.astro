@@ -1,0 +1,21 @@
+---
+interface Props {
+  checkLabel?: string;
+  submitLabel?: string;
+}
+
+const { checkLabel = 'Check', submitLabel = 'Submit' } = Astro.props as Props;
+---
+
+<footer class="workspace-bar" data-workspace-bar>
+  <div class="workspace-bar__actions">
+    <button type="button" class="btn-secondary" data-workspace-action="run">Run</button>
+    <button type="button" class="btn-primary" data-workspace-action="check">{checkLabel}</button>
+    <button type="button" class="btn-primary" data-workspace-action="submit">{submitLabel}</button>
+    <button type="button" class="btn-ghost" data-workspace-action="reset">Reset</button>
+  </div>
+  <div class="workspace-bar__status">
+    <span class="pill" data-workspace-status>Ready</span>
+    <span class="pill" data-workspace-progress data-testid="workspace-progress">0%</span>
+  </div>
+</footer>

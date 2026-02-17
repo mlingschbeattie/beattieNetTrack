@@ -1,0 +1,77 @@
+---
+import { getCollection } from 'astro:content';
+import WorkspaceLayout from '../../../../layouts/WorkspaceLayout.astro';
+import LabFrame from '../../../../components/LabFrame.astro';
+import Callout from '../../../../components/Callout.astro';
+import PcAssemblyLab from '../../../../components/labs/PcAssemblyLab.tsx';
+import ActivityCard from '../../../../components/ActivityCard.astro';
+
+export async function getStaticPaths() {
+  const labs = await getCollection('labs');
+  return labs
+    .filter((lab) => Boolean(lab.data.track) && Boolean(lab.data.labPath))
+    .map((lab) => ({
+      params: { track: lab.data.track!, slug: lab.slug },
+      props: { labSlug: lab.slug, trackSlug: lab.data.track },
+    }));
+}
+
+const { labSlug, trackSlug } = Astro.props as { labSlug: string; trackSlug: string };
+const tracks = await getCollection('tracks');
+const labs = await getCollection('labs');
+
+const currentTrack = tracks.find((track) => track.slug === trackSlug);
+const lab = labs.find((entry) => entry.slug === labSlug && entry.data.track === trackSlug);
+
+if (!lab || !currentTrack) {
+  throw new Error('Lab route mismatch.');
+}
+
+const { Content } = await lab.render();
+---
+
+<WorkspaceLayout
+  title={`Lab • ${lab.data.title}`}
+  tracks={tracks}
+  activeTrack={currentTrack.slug}
+  activeLesson={lab.slug}
+  currentTrack={currentTrack}
+  breadcrumbs={[
+    { label: 'Home', href: '/' },
+    { label: 'Learning Tracks', href: '/tracks' },
+    { label: currentTrack.data.title, href: `/tracks/${currentTrack.slug}` },
+    { label: `Lab: ${lab.data.title}` },
+  ]}
+  itemSlug={lab.slug}
+  itemType="lab"
+  itemDifficulty={lab.data.difficulty}
+  itemMinutes={lab.data.estMinutes}
+  checkLabel={lab.data.checkLabel}
+  submitLabel={lab.data.submitLabel}
+  activityTabs={[
+    { id: 'activity', label: 'Lab' },
+    { id: 'secondary', label: 'Notes' },
+  ]}
+>
+  <Fragment slot="instructions">
+    <h1 class="page-title">{lab.data.title}</h1>
+    <p class="lesson-header__description">{lab.data.description}</p>
+    <Content components={{ Callout }} />
+  </Fragment>
+
+  <Fragment slot="activity-main">
+    {lab.slug === 'pc-assembly' ? (
+      <PcAssemblyLab client:only="react" labSlug={lab.slug} />
+    ) : (
+      <LabFrame slug={lab.slug} src={lab.data.labPath} title={lab.data.title} />
+    )}
+  </Fragment>
+
+  <Fragment slot="activity-secondary">
+    <ActivityCard>
+      <h3>Lab checks</h3>
+      <p>Use Run to execute helper routines, then Check/Submit to validate results.</p>
+      <p><strong>Shortcut:</strong> Ctrl+Enter triggers submit/check.</p>
+    </ActivityCard>
+  </Fragment>
+</WorkspaceLayout>

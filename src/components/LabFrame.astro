@@ -1,0 +1,28 @@
+---
+interface Props {
+  slug: string;
+  src?: string;
+  title?: string;
+  sandbox?: string;
+}
+
+const {
+  slug,
+  src = `/labs/${slug}/index.html`,
+  title = 'Lab activity',
+  sandbox = 'allow-forms allow-modals allow-pointer-lock allow-scripts',
+} = Astro.props as Props;
+---
+
+<div class="lab-frame" data-testid="lab-frame-root">
+  <iframe
+    class="lab-frame__iframe"
+    data-lab-iframe
+    data-testid="lab-iframe"
+    title={title}
+    src={src}
+    sandbox={sandbox}
+    loading="eager"
+    referrerpolicy="no-referrer"
+  ></iframe>
+</div>

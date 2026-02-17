@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BIOS Configuration Lab - A+ Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css" />
+    
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="study-guides.html" class="active">📖 Study Guides</a></li>
+            <li><a href="learning-tracks.html">🎯 Learning Tracks</a></li>
+            <li><a href="resources.html">🔬 Study Hub</a></li>
+            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <main id="main-content" class="container">
+      <nav class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <a href="study-guides.html">Study Guides</a>
+        <span class="separator">/</span>
+        <a href="a-plus-guides.html">A+ Guides</a>
+        <span class="separator">/</span>
+        <span class="current">BIOS Configuration Lab</span>
+      </nav>
+      
+      <h1>BIOS Configuration Lab</h1>
+      <div class="subtitle">Hands-On Lab: Configure BIOS/UEFI Settings</div>
+
+      <div class="section">
+        <h2>Lab Scenario</h2>
+        <div class="info-box" id="scenario-display">
+          <div style="text-align: center; color: #00d4ff; padding: 20px;">
+            <div style="font-size: 1.5em; margin-bottom: 10px;">🔄 Generating scenario...</div>
+            <div style="font-size: 0.9em;">Loading BIOS configuration challenge</div>
+          </div>
+        </div>
+        <div class="warning-box">
+          <strong>⚠ Important:</strong> Configure the BIOS settings according to the scenario requirements. Some settings may need to be enabled, disabled, or set to specific values. Pay attention to boot order, performance settings, and security features.
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="bios-container">
+          <div class="bios-header">
+            ASUS UEFI BIOS Utility - EZ Mode v2.26.1208
+          </div>
+          <div class="bios-body">
+            <div class="bios-menu" id="bios-menu">
+              <!-- Boot Configuration -->
+              <div class="bios-section">
+                <div class="bios-section-title">Boot Configuration</div>
+                <div class="bios-setting">
+                  <span class="bios-setting-label">Boot Mode:</span>
+                  <div class="bios-setting-value" id="boot-mode" data-setting="bootMode" data-value="uefi">UEFI</div>
+                </div>
+                <div class="bios-setting">
+                  <span class="bios-setting-label">Secure Boot:</span>
+                  <div class="bios-setting-value" id="secure-boot" data-setting="secureBoot" data-value="disabled">Disabled</div>
+                </div>
+                <div class="bios-setting">
+                  <span class="bios-setting-label">Fast Boot:</span>
+                  <div class="bios-setting-value" id="fast-boot" data-setting="fastBoot" data-value="disabled">Disabled</div>
+                </div>
+                <div class="bios-setting">
+                  <span class="bios-setting-label">Boot Priority #1:</span>
+                  <div class="bios-setting-value" id="boot-priority" data-setting="bootPriority" data-value="hdd">HDD</div>
+                </div>
+              </div>
+
+              <!-- CPU Configuration -->
+              <div class="bios-section">
+                <div class="bios-section-title">CPU Configuration</div>
+                <div class="bios-setting">
+                  <span class="bios-setting-label">Intel Virtualization:</span>
+                  <div class="bios-setting-value" id="vt-x" data-setting="vtx" data-value="disabled">Disabled</div>
+                </div>
+                <div class="bios-setting">
+                  <span class="bios-setting-label">Hyper-Threading:</span>
+                  <div class="bios-setting-value" id="hyper-threading" data-setting="hyperThreading" data-value="enabled">Enabled</div>
+                </div>
+                <div class="bios-setting">
+                  <span class="bios-setting-label">CPU C-States:</span>
+                  <div class="bios-setting-value" id="c-states" data-setting="cStates" data-value="enabled">Enabled</div>
+                </div>
+              </div>
+
+              <!-- Memory Configuration -->
+              <div class="bios-section">
+                <div class="bios-section-title">Memory Configuration</div>
+                <div class="bios-setting">
+                  <span class="bios-setting-label">XMP Profile:</span>
+                  <div class="bios-setting-value" id="xmp" data-setting="xmp" data-value="disabled">Disabled</div>
+                </div>
+                <div class="bios-setting">
+                  <span class="bios-setting-label">Memory Frequency:</span>
+                  <div class="bios-setting-value" id="mem-freq" data-setting="memFreq" data-value="2133">2133 MHz</div>
+                </div>
+              </div>
+
+              <!-- Power & Cooling -->
+              <div class="bios-section">
+                <div class="bios-section-title">Power & Cooling</div>
+                <div class="bios-setting">
+                  <span class="bios-setting-label">CPU Fan Profile:</span>
+                  <div class="bios-setting-value" id="fan-profile" data-setting="fanProfile" data-value="standard">Standard</div>
+                </div>
+                <div class="bios-setting">
+                  <span class="bios-setting-label">ErP Ready:</span>
+                  <div class="bios-setting-value" id="erp" data-setting="erp" data-value="disabled">Disabled</div>
+                </div>
+              </div>
+
+              <!-- Storage Configuration -->
+              <div class="bios-section">
+                <div class="bios-section-title">Storage Configuration</div>
+                <div class="bios-setting">
+                  <span class="bios-setting-label">SATA Mode:</span>
+                  <div class="bios-setting-value" id="sata-mode" data-setting="sataMode" data-value="ahci">AHCI</div>
+                </div>
+                <div class="bios-setting">
+                  <span class="bios-setting-label">M.2/NVMe Boot:</span>
+                  <div class="bios-setting-value" id="nvme-boot" data-setting="nvmeBoot" data-value="enabled">Enabled</div>
+                </div>
+              </div>
+
+              <!-- Advanced Settings -->
+              <div class="bios-section">
+                <div class="bios-section-title">Advanced Settings</div>
+                <div class="bios-setting">
+                  <span class="bios-setting-label">Above 4G Decoding:</span>
+                  <div class="bios-setting-value" id="above-4g" data-setting="above4g" data-value="disabled">Disabled</div>
+                </div>
+                <div class="bios-setting">
+                  <span class="bios-setting-label">Resizable BAR:</span>
+                  <div class="bios-setting-value" id="resizable-bar" data-setting="resizableBar" data-value="disabled">Disabled</div>
+                </div>
+                <div class="bios-setting">
+                  <span class="bios-setting-label">Legacy USB Support:</span>
+                  <div class="bios-setting-value" id="legacy-usb" data-setting="legacyUsb" data-value="enabled">Enabled</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-controls">
+          <button id="btn-submit" class="lab-btn primary">Submit Configuration</button>
+          <button id="btn-reset" class="lab-btn danger">New Scenario</button>
+        </div>
+
+        <div id="results-panel" class="results-panel" style="display: none;">
+          <h3 style="color: #00d4ff; text-align: center; margin-bottom: 15px;">BIOS Configuration Results</h3>
+          <div id="score-display" class="score-display"></div>
+          <div id="feedback-list" class="feedback-list"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Learning Objectives</h2>
+        <div class="info-box">
+          This lab tests your understanding of:
+          <ul style="margin: 10px 0 0 20px; line-height: 1.8;">
+            <li><strong>Boot Configuration:</strong> Setting boot mode, secure boot, and boot priority</li>
+            <li><strong>Virtualization:</strong> Enabling Intel VT-x/AMD-V for virtual machines</li>
+            <li><strong>Memory Performance:</strong> Configuring XMP/DOCP profiles for RAM</li>
+            <li><strong>Storage Controllers:</strong> Understanding AHCI vs RAID modes</li>
+            <li><strong>Power Management:</strong> Configuring fan profiles and power states</li>
+            <li><strong>Security Features:</strong> Managing Secure Boot and legacy support</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      const scenarioTemplates = [
+        {
+          name: 'Gaming PC Setup',
+          description: 'A gamer wants to maximize performance and enable features for modern gaming.',
+          requirements: {
+            bootMode: 'uefi',
+            secureBoot: 'disabled',
+            fastBoot: 'enabled',
+            bootPriority: 'nvme',
+            vtx: 'disabled',
+            hyperThreading: 'enabled',
+            cStates: 'disabled',
+            xmp: 'enabled',
+            memFreq: '3200',
+            fanProfile: 'performance',
+            erp: 'disabled',
+            sataMode: 'ahci',
+            nvmeBoot: 'enabled',
+            above4g: 'enabled',
+            resizableBar: 'enabled',
+            legacyUsb: 'enabled'
+          },
+          explanations: {
+            xmp: 'XMP should be enabled to run RAM at rated speed for better gaming performance',
+            fanProfile: 'Performance fan profile keeps temperatures low under gaming load',
+            cStates: 'C-States disabled for consistent performance (no CPU downclocking)',
+            resizableBar: 'Resizable BAR improves GPU performance in modern games',
+            above4g: 'Above 4G Decoding required for Resizable BAR to work'
+          }
+        },
+        {
+          name: 'Virtual Machine Host',
+          description: 'An IT professional needs to run multiple virtual machines using Hyper-V or VMware.',
+          requirements: {
+            bootMode: 'uefi',
+            secureBoot: 'enabled',
+            fastBoot: 'disabled',
+            bootPriority: 'hdd',
+            vtx: 'enabled',
+            hyperThreading: 'enabled',
+            cStates: 'enabled',
+            xmp: 'enabled',
+            memFreq: '3200',
+            fanProfile: 'standard',
+            erp: 'disabled',
+            sataMode: 'ahci',
+            nvmeBoot: 'enabled',
+            above4g: 'disabled',
+            resizableBar: 'disabled',
+            legacyUsb: 'enabled'
+          },
+          explanations: {
+            vtx: 'Intel VT-x must be enabled for hardware virtualization support',
+            hyperThreading: 'Hyper-Threading provides more logical cores for VMs',
+            xmp: 'XMP enabled for maximum RAM performance (VMs are memory-intensive)',
+            secureBoot: 'Secure Boot recommended for enterprise VM environments'
+          }
+        },
+        {
+          name: 'Workstation for 3D Rendering',
+          description: 'A content creator needs stable, high-performance configuration for long rendering tasks.',
+          requirements: {
+            bootMode: 'uefi',
+            secureBoot: 'disabled',
+            fastBoot: 'enabled',
+            bootPriority: 'nvme',
+            vtx: 'disabled',
+            hyperThreading: 'enabled',
+            cStates: 'disabled',
+            xmp: 'enabled',
+            memFreq: '3600',
+            fanProfile: 'performance',
+            erp: 'disabled',
+            sataMode: 'ahci',
+            nvmeBoot: 'enabled',
+            above4g: 'enabled',
+            resizableBar: 'enabled',
+            legacyUsb: 'enabled'
+          },
+          explanations: {
+            hyperThreading: 'Hyper-Threading maximizes CPU cores for rendering',
+            xmp: 'XMP at 3600MHz for fast memory access during rendering',
+            fanProfile: 'Performance cooling essential for sustained heavy workloads',
+            cStates: 'C-States disabled to prevent throttling during long renders',
+            resizableBar: 'Resizable BAR improves GPU-accelerated rendering performance'
+          }
+        },
+        {
+          name: 'Office/Business PC',
+          description: 'A small business needs a secure, power-efficient configuration for office work.',
+          requirements: {
+            bootMode: 'uefi',
+            secureBoot: 'enabled',
+            fastBoot: 'enabled',
+            bootPriority: 'hdd',
+            vtx: 'disabled',
+            hyperThreading: 'enabled',
+            cStates: 'enabled',
+            xmp: 'disabled',
+            memFreq: '2133',
+            fanProfile: 'silent',
+            erp: 'enabled',
+            sataMode: 'ahci',
+            nvmeBoot: 'enabled',
+            above4g: 'disabled',
+            resizableBar: 'disabled',
+            legacyUsb: 'enabled'
+          },
+          explanations: {
+            secureBoot: 'Secure Boot protects against bootkits and rootkits',
+            cStates: 'C-States save power during idle periods',
+            erp: 'ErP Ready reduces standby power consumption',
+            fanProfile: 'Silent profile appropriate for quiet office environment',
+            xmp: 'XMP not needed for basic office tasks (saves power)'
+          }
+        },
+        {
+          name: 'Linux Dual-Boot System',
+          description: 'A developer wants to dual-boot Windows and Linux with secure boot disabled.',
+          requirements: {
+            bootMode: 'uefi',
+            secureBoot: 'disabled',
+            fastBoot: 'disabled',
+            bootPriority: 'hdd',
+            vtx: 'enabled',
+            hyperThreading: 'enabled',
+            cStates: 'enabled',
+            xmp: 'enabled',
+            memFreq: '3200',
+            fanProfile: 'standard',
+            erp: 'disabled',
+            sataMode: 'ahci',
+            nvmeBoot: 'enabled',
+            above4g: 'disabled',
+            resizableBar: 'disabled',
+            legacyUsb: 'enabled'
+          },
+          explanations: {
+            secureBoot: 'Secure Boot must be disabled for most Linux distributions',
+            fastBoot: 'Fast Boot disabled to access boot menu during startup',
+            vtx: 'VT-x useful for Docker containers and development VMs',
+            sataMode: 'AHCI mode required for Linux compatibility'
+          }
+        },
+        {
+          name: 'Overclocked Gaming Rig',
+          description: 'An enthusiast wants maximum performance with overclocking and custom cooling.',
+          requirements: {
+            bootMode: 'uefi',
+            secureBoot: 'disabled',
+            fastBoot: 'disabled',
+            bootPriority: 'nvme',
+            vtx: 'disabled',
+            hyperThreading: 'enabled',
+            cStates: 'disabled',
+            xmp: 'enabled',
+            memFreq: '3600',
+            fanProfile: 'performance',
+            erp: 'disabled',
+            sataMode: 'ahci',
+            nvmeBoot: 'enabled',
+            above4g: 'enabled',
+            resizableBar: 'enabled',
+            legacyUsb: 'enabled'
+          },
+          explanations: {
+            xmp: 'XMP at 3600MHz for high-performance RAM',
+            cStates: 'C-States disabled for overclocking stability',
+            fanProfile: 'Performance profile maximizes cooling for OC',
+            fastBoot: 'Fast Boot disabled for easier BIOS access when tweaking',
+            resizableBar: 'Resizable BAR + Above 4G for maximum GPU performance'
+          }
+        }
+      ];
+
+      let activeScenario = null;
+      let currentSettings = {};
+
+      const settingOptions = {
+        bootMode: ['uefi', 'legacy'],
+        secureBoot: ['enabled', 'disabled'],
+        fastBoot: ['enabled', 'disabled'],
+        bootPriority: ['hdd', 'nvme', 'usb', 'network'],
+        vtx: ['enabled', 'disabled'],
+        hyperThreading: ['enabled', 'disabled'],
+        cStates: ['enabled', 'disabled'],
+        xmp: ['enabled', 'disabled'],
+        memFreq: ['2133', '2400', '2666', '3000', '3200', '3600', '4000'],
+        fanProfile: ['silent', 'standard', 'performance', 'custom'],
+        erp: ['enabled', 'disabled'],
+        sataMode: ['ahci', 'raid', 'ide'],
+        nvmeBoot: ['enabled', 'disabled'],
+        above4g: ['enabled', 'disabled'],
+        resizableBar: ['enabled', 'disabled'],
+        legacyUsb: ['enabled', 'disabled']
+      };
+
+      const settingLabels = {
+        bootMode: { uefi: 'UEFI', legacy: 'Legacy' },
+        secureBoot: { enabled: 'Enabled', disabled: 'Disabled' },
+        fastBoot: { enabled: 'Enabled', disabled: 'Disabled' },
+        bootPriority: { hdd: 'HDD', nvme: 'NVMe SSD', usb: 'USB Drive', network: 'Network PXE' },
+        vtx: { enabled: 'Enabled', disabled: 'Disabled' },
+        hyperThreading: { enabled: 'Enabled', disabled: 'Disabled' },
+        cStates: { enabled: 'Enabled', disabled: 'Disabled' },
+        xmp: { enabled: 'Enabled', disabled: 'Disabled' },
+        memFreq: { '2133': '2133 MHz', '2400': '2400 MHz', '2666': '2666 MHz', '3000': '3000 MHz', '3200': '3200 MHz', '3600': '3600 MHz', '4000': '4000 MHz' },
+        fanProfile: { silent: 'Silent', standard: 'Standard', performance: 'Performance', custom: 'Custom' },
+        erp: { enabled: 'Enabled', disabled: 'Disabled' },
+        sataMode: { ahci: 'AHCI', raid: 'RAID', ide: 'IDE' },
+        nvmeBoot: { enabled: 'Enabled', disabled: 'Disabled' },
+        above4g: { enabled: 'Enabled', disabled: 'Disabled' },
+        resizableBar: { enabled: 'Enabled', disabled: 'Disabled' },
+        legacyUsb: { enabled: 'Enabled', disabled: 'Disabled' }
+      };
+
+      function randomChoice(array) {
+        return array[Math.floor(Math.random() * array.length)];
+      }
+
+      function generateScenario() {
+        return randomChoice(scenarioTemplates);
+      }
+
+      function displayScenario() {
+        const display = document.getElementById('scenario-display');
+        const s = activeScenario;
+        
+        display.innerHTML = `
+          <div style="border-left: 4px solid #00ff88; padding-left: 15px;">
+            <h3 style="color: #00ff88; margin-bottom: 10px;">⚙️ ${s.name}</h3>
+            <p style="margin-bottom: 15px; line-height: 1.6;">
+              <strong>Scenario:</strong> ${s.description}
+            </p>
+            <p style="color: #ffaa00; margin-top: 10px;">
+              <strong>Task:</strong> Configure the BIOS settings appropriately for this use case. Click on any setting to cycle through available options.
+            </p>
+          </div>
+        `;
+      }
+
+      function initSettings() {
+        currentSettings = {
+          bootMode: 'uefi',
+          secureBoot: 'disabled',
+          fastBoot: 'disabled',
+          bootPriority: 'hdd',
+          vtx: 'disabled',
+          hyperThreading: 'enabled',
+          cStates: 'enabled',
+          xmp: 'disabled',
+          memFreq: '2133',
+          fanProfile: 'standard',
+          erp: 'disabled',
+          sataMode: 'ahci',
+          nvmeBoot: 'enabled',
+          above4g: 'disabled',
+          resizableBar: 'disabled',
+          legacyUsb: 'enabled'
+        };
+        updateDisplay();
+      }
+
+      function updateDisplay() {
+        Object.keys(currentSettings).forEach(key => {
+          const element = document.querySelector(`[data-setting="${key}"]`);
+          if (element) {
+            const value = currentSettings[key];
+            element.dataset.value = value;
+            element.textContent = settingLabels[key][value];
+          }
+        });
+      }
+
+      function cycleSetting(settingKey) {
+        const options = settingOptions[settingKey];
+        const currentValue = currentSettings[settingKey];
+        const currentIndex = options.indexOf(currentValue);
+        const nextIndex = (currentIndex + 1) % options.length;
+        currentSettings[settingKey] = options[nextIndex];
+        updateDisplay();
+      }
+
+      function evaluateConfiguration() {
+        const feedback = [];
+        let score = 0;
+        const maxScore = 100;
+        const pointsPerSetting = maxScore / Object.keys(activeScenario.requirements).length;
+        
+        Object.keys(activeScenario.requirements).forEach(key => {
+          const required = activeScenario.requirements[key];
+          const current = currentSettings[key];
+          const settingName = document.querySelector(`[data-setting="${key}"]`)?.previousElementSibling?.textContent || key;
+          
+          if (current === required) {
+            score += pointsPerSetting;
+            const explanation = activeScenario.explanations[key];
+            feedback.push({
+              type: 'pass',
+              text: `✓ ${settingName} ${explanation ? '- ' + explanation : 'configured correctly'}`
+            });
+          } else {
+            const explanation = activeScenario.explanations[key];
+            feedback.push({
+              type: 'fail',
+              text: `✗ ${settingName} should be "${settingLabels[key][required]}" but is "${settingLabels[key][current]}"${explanation ? ' - ' + explanation : ''}`
+            });
+          }
+        });
+        
+        return { score: Math.round(score), feedback };
+      }
+
+      // Event listeners
+      document.getElementById('bios-menu').addEventListener('click', (e) => {
+        const setting = e.target.closest('[data-setting]');
+        if (setting) {
+          const settingKey = setting.dataset.setting;
+          cycleSetting(settingKey);
+        }
+      });
+
+      document.getElementById('btn-submit').addEventListener('click', () => {
+        const results = evaluateConfiguration();
+        const resultsPanel = document.getElementById('results-panel');
+        const scoreDisplay = document.getElementById('score-display');
+        const feedbackList = document.getElementById('feedback-list');
+        
+        const passed = results.score >= 80;
+        const grade = passed ? 'PASS' : 'FAIL';
+        const gradeColor = passed ? '#00ff88' : '#ff4444';
+        
+        scoreDisplay.innerHTML = `<div style="color: ${gradeColor};">${grade}</div><div>Score: ${results.score}/100</div>`;
+        
+        feedbackList.innerHTML = results.feedback.map(f => 
+          `<div class="feedback-item ${f.type}">${f.text}</div>`
+        ).join('');
+        
+        resultsPanel.style.display = 'block';
+        resultsPanel.scrollIntoView({ behavior: 'smooth' });
+      });
+
+      document.getElementById('btn-reset').addEventListener('click', () => {
+        document.getElementById('results-panel').style.display = 'none';
+        activeScenario = generateScenario();
+        displayScenario();
+        initSettings();
+      });
+
+      // Initialize
+      function initLab() {
+        activeScenario = generateScenario();
+        displayScenario();
+        initSettings();
+      }
+
+      initLab();
+    </script>
+    <script type="module" src="site.js"></script>
+  </body>
+</html>

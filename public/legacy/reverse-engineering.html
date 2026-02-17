@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Reverse Engineering - Practical Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css" />
+    
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="study-guides.html">📖 Study Guides</a></li>
+            <li><a href="learning-tracks.html">🎯 Learning Tracks</a></li>
+            <li><a href="resources.html" class="active">🔬 Study Hub</a></li>
+            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <main id="main-content" class="container">
+      <nav class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <a href="resources.html">Study Hub</a>
+        <span class="separator">/</span>
+        <span class="current">Reverse Engineering</span>
+      </nav>
+      
+      <h1>Reverse Engineering</h1>
+      <div class="subtitle">Practical exercises, guides, ELI5 explanations, and cheat sheets</div>
+
+      <div class="section">
+        <h2>ELI5: What is Reverse Engineering?</h2>
+        <div class="info-box">
+          It’s like taking a toy apart to see how it works, then putting it back together. We do this to understand software and find bugs safely.
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Practical Exercises</h2>
+        <div class="command-grid">
+          <div class="command-item"><div class="command">Find strings</div><div class="description">Look for clues inside binaries</div></div>
+          <div class="command-item"><div class="command">Basic disassembly</div><div class="description">Identify functions and control flow</div></div>
+          <div class="command-item"><div class="command">Simple crackme</div><div class="description">Reverse a password check (lab only)</div></div>
+          <div class="command-item"><div class="command">Debug a function</div><div class="description">Step through logic to observe behavior</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Guide: RE Workflow</h2>
+        <div class="example-block">
+          <div class="example-title">Step-by-step</div>
+          <div class="example-code">1) Identify file type and architecture
+2) Extract readable strings
+3) Disassemble and map functions
+4) Trace the main logic path
+5) Validate assumptions with a debugger</div>
+        </div>
+      </div>
+
+      <script type="module">
+        import { reverseEngineeringQuestions } from "./data/reverse-engineering-questions.js";
+        import { getProgress, updateProgress } from "./js/progressStore.js";
+        import { QuizEngine } from "./js/quizEngine.js";
+        import { convertToQuizFormat, buildReviewSet } from "./js/quizAdapter.js";
+
+        const TRACK_ID = "cybersecurity";
+        const MODULE_ID = "reverse-engineering";
+
+        const REVIEW_PRESETS = {
+          "5min": 6,
+          "15min": 15,
+          "30min": 30
+        };
+
+        const DEFAULT_PRESET = "5min";
+
+        let currentQuiz = null;
+        let activePreset = DEFAULT_PRESET;
+
+        function loadProgress() {
+          const progress = getProgress(TRACK_ID, MODULE_ID);
+
+          if (progress.completed) {
+            document.getElementById('progress-badge').style.display = 'block';
+          }
+
+          if (progress.attempts > 0) {
+            document.getElementById('previous-score').style.display = 'block';
+            document.getElementById('best-score-display').textContent = progress.bestScore;
+            document.getElementById('attempts-display').textContent = progress.attempts;
+          }
+
+          return progress.lastPreset || DEFAULT_PRESET;
+        }
+
+        function saveProgress(score, total) {
+          const progress = getProgress(TRACK_ID, MODULE_ID);
+          const newBestScore = Math.max(progress.bestScore, score);
+          const isCompleted = total > 0 && score === total;
+
+          updateProgress(TRACK_ID, MODULE_ID, {
+            attempts: progress.attempts + 1,
+            bestScore: newBestScore,
+            completed: isCompleted || progress.completed,
+            lastVisited: Date.now(),
+            lastPreset: activePreset
+          });
+
+          if (isCompleted) {
+            document.getElementById('progress-badge').style.display = 'block';
+            if (window.showBadge) window.showBadge('Module Mastered!', '🏆');
+          }
+          document.getElementById('previous-score').style.display = 'block';
+          document.getElementById('best-score-display').textContent = newBestScore;
+          document.getElementById('attempts-display').textContent = progress.attempts + 1;
+        }
+
+        function generateQuiz(presetKey = DEFAULT_PRESET) {
+          const selectedQuestions = buildReviewSet(reverseEngineeringQuestions, presetKey, REVIEW_PRESETS);
+          const quizQuestions = convertToQuizFormat(selectedQuestions);
+
+          currentQuiz = new QuizEngine('quiz-container', quizQuestions, {
+            onCorrect: () => { if (window.addXp) window.addXp(5); },
+            onIncorrect: () => {},
+            showLetters: true
+          });
+
+          const originalFinish = currentQuiz.finishQuiz.bind(currentQuiz);
+          currentQuiz.finishQuiz = function() {
+            originalFinish();
+            const state = this.getState();
+            saveProgress(state.score, state.totalQuestions);
+            if (window.burstConfetti) window.burstConfetti();
+          };
+
+          currentQuiz.render();
+
+          const labelMap = { "5min": "5-minute", "15min": "15-minute", "30min": "30-minute" };
+          const label = labelMap[presetKey] || labelMap[DEFAULT_PRESET];
+          document.getElementById('review-mode-note').textContent = `You are in ${label} review mode (${quizQuestions.length} questions).`;
+
+          document.querySelectorAll('.quiz-mode-controls button').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.review === presetKey);
+          });
+        }
+
+        function bindReviewButtons() {
+          document.querySelectorAll('.quiz-mode-controls button').forEach(btn => {
+            btn.addEventListener('click', () => {
+              activePreset = btn.dataset.review;
+              generateQuiz(activePreset);
+              updateProgress(TRACK_ID, MODULE_ID, {
+                lastPreset: activePreset,
+                lastVisited: Date.now()
+              });
+            });
+          });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+          const initialPreset = loadProgress();
+          bindReviewButtons();
+          generateQuiz(initialPreset);
+        });
+      </script>
+
+    
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const toHexButton = document.getElementById('to-hex');
+        const fromHexButton = document.getElementById('from-hex');
+
+        if (toHexButton) {
+          toHexButton.addEventListener('click', () => {
+            const text = document.getElementById('hex-input').value;
+            const hex = Array.from(text).map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join(' ');
+            const ascii = Array.from(text).map(c => c.charCodeAt(0)).join(', ');
+            document.getElementById('hex-result').innerHTML = `
+              <strong>Hexadecimal:</strong><br>${hex}<br><br>
+              <strong>Decimal (ASCII):</strong><br>${ascii}<br><br>
+              <strong>Byte Count:</strong> ${text.length} bytes
+            `;
+          });
+        }
+
+        if (fromHexButton) {
+          fromHexButton.addEventListener('click', () => {
+            try {
+              const hex = document.getElementById('hex-input').value.replace(/\s/g, '');
+              const text = hex.match(/.{1,2}/g).map(byte => String.fromCharCode(parseInt(byte, 16))).join('');
+              document.getElementById('hex-result').innerHTML = `<strong>Decoded Text:</strong><br>${text}`;
+            } catch (e) {
+              document.getElementById('hex-result').innerHTML = '<span style="color: #ff4444;">⚠ Invalid hex format</span>';
+            }
+          });
+        }
+      });
+    </script>
+    <script type="module" src="site.js"></script>
+  </body>
+</html>

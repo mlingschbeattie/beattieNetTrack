@@ -1,0 +1,22 @@
+---
+const { prev, next } = Astro.props;
+---
+
+<nav class="lesson-nav">
+  {prev ? (
+    <a class="lesson-nav__link" href={`/lessons/${prev.slug}`}>
+      <span class="lesson-nav__label">Previous</span>
+      <span class="lesson-nav__title">← {prev.data.title}</span>
+    </a>
+  ) : (
+    <span></span>
+  )}
+  {next ? (
+    <a class="lesson-nav__link" href={`/lessons/${next.slug}`}>
+      <span class="lesson-nav__label">Next</span>
+      <span class="lesson-nav__title">{next.data.title} →</span>
+    </a>
+  ) : (
+    <span></span>
+  )}
+</nav>

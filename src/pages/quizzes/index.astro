@@ -1,0 +1,37 @@
+---
+import { getCollection } from 'astro:content';
+import AppShell from '../../layouts/AppShell.astro';
+import QuizCatalogBadge from '../../components/islands/QuizCatalogBadge.tsx';
+import ActivityCard from '../../components/ActivityCard.astro';
+
+const tracks = await getCollection('tracks');
+const quizzes = await getCollection('quizzes');
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Study Hub', href: '/quizzes' },
+];
+---
+
+<AppShell title="Quizzes" tracks={tracks} breadcrumbs={breadcrumbs}>
+  <section class="hero">
+    <h1 class="hero__title">Quiz Catalog</h1>
+    <p class="hero__subtitle">Pick a module and sharpen your skills with targeted practice.</p>
+  </section>
+
+  <section class="card-grid card-grid--three">
+    {quizzes.map((quiz) => (
+      <ActivityCard class="card--glass">
+        <h3>{quiz.data.title}</h3>
+        <p>{quiz.data.description}</p>
+        <div class="card__meta">
+          <span class="pill">{quiz.data.questions.length} questions</span>
+          <QuizCatalogBadge client:only="react" quizSlug={quiz.slug} />
+        </div>
+        <div class="card__footer">
+          <a class="btn-link" href={`/quizzes/${quiz.slug}`}>Open workspace →</a>
+        </div>
+      </ActivityCard>
+    ))}
+  </section>
+</AppShell>

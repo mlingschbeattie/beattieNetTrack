@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Progress Tracker Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css" />
+    
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="study-guides.html">📖 Study Guides</a></li>
+            <li><a href="learning-tracks.html">🎯 Learning Tracks</a></li>
+            <li><a href="resources.html">🔬 Study Hub</a></li>
+            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <main id="main-content" class="container">
+      <nav class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <span class="current">Progress Tracker Demo</span>
+      </nav>
+      
+      <h1>📊 Progress Tracker Demo</h1>
+      
+      <div class="section">
+        <h2>Instructions</h2>
+        <div class="info">
+          This page demonstrates the localStorage-based progress tracking system. Open the browser's Developer Tools (F12) to see localStorage updates in real-time.
+        </div>
+        <div class="info">
+          <strong>Try it out:</strong> Complete the quiz in <a href="web-exploitation.html" style="color: #00d4ff;">Web Exploitation</a> to see your progress saved automatically!
+        </div>
+      </div>
+      
+      <div class="section">
+        <h2>Current Progress</h2>
+        <div id="progress-display">
+          <div class="info">Loading progress data...</div>
+        </div>
+        <button onclick="refreshProgress()">🔄 Refresh Progress</button>
+        <button onclick="clearProgress()" style="background: rgba(255, 68, 68, 0.2); border-color: #ff4444; color: #ff9999;">🗑️ Clear All Progress</button>
+      </div>
+      
+      <div class="section">
+        <h2>Test Progress Updates</h2>
+        <div class="info">Simulate quiz completion to test the system:</div>
+        <button onclick="simulateQuiz('cybersecurity', 'web-exploitation', 5, 5)">✅ Complete Web Exploitation (5/5)</button>
+        <button onclick="simulateQuiz('cybersecurity', 'web-exploitation', 3, 5)">📝 Attempt Web Exploitation (3/5)</button>
+        <button onclick="simulateQuiz('cybersecurity', 'cryptography', 4, 5)">🔐 Attempt Cryptography (4/5)</button>
+        <button onclick="simulateQuiz('pc-professional', 'a-plus-hardware', 5, 5)">💻 Complete A+ Hardware (5/5)</button>
+      </div>
+      
+      <div class="section">
+        <h2>localStorage Data</h2>
+        <div class="info">Raw data stored in your browser:</div>
+        <pre id="raw-data">{ }</pre>
+      </div>
+    </div>
+    
+    <script type="module">
+      import { getProgress, updateProgress, getAllProgress, clearAllProgress, getTrackSummary } from './js/progressStore.js';
+      
+      // Make functions available globally for button onclick
+      window.refreshProgress = refreshProgress;
+      window.clearProgress = clearProgress;
+      window.simulateQuiz = simulateQuiz;
+      
+      function refreshProgress() {
+        const allProgress = getAllProgress();
+        const displayDiv = document.getElementById('progress-display');
+        const rawDataPre = document.getElementById('raw-data');
+        
+        // Update raw data display
+        rawDataPre.textContent = JSON.stringify(allProgress, null, 2);
+        
+        // Build progress display
+        if (Object.keys(allProgress).length === 0) {
+          displayDiv.innerHTML = '<div class="info">No progress recorded yet. Complete a quiz to start tracking!</div>';
+          return;
+        }
+        
+        let html = '';
+        
+        for (const trackId in allProgress) {
+          html += `<h3 style="color: #00ff88; margin-top: 20px;">📚 ${trackId}</h3>`;
+          
+          const summary = getTrackSummary(trackId);
+          html += `<div class="info" style="margin-bottom: 15px;">
+            Modules: ${summary.completedModules}/${summary.totalModules} completed | 
+            Total Attempts: ${summary.totalAttempts} | 
+            Avg Score: ${summary.averageScore.toFixed(1)}
+          </div>`;
+          
+          for (const moduleId in allProgress[trackId]) {
+            const progress = allProgress[trackId][moduleId];
+            const statusBadge = progress.completed 
+              ? '<span class="status completed">✓ COMPLETED</span>' 
+              : '<span class="status in-progress">⏳ In Progress</span>';
+            
+            const lastVisited = progress.lastVisited 
+              ? new Date(progress.lastVisited).toLocaleString() 
+              : 'Never';
+            
+            html += `
+              <div style="background: rgba(0, 20, 40, 0.8); padding: 15px; margin: 10px 0; border-left: 3px solid ${progress.completed ? '#00ff88' : '#ffaa00'};">
+                <strong style="color: #00d4ff;">${moduleId}</strong> ${statusBadge}<br>
+                <span class="info" style="font-size: 0.9em;">
+                  Best Score: ${progress.bestScore} | 
+                  Attempts: ${progress.attempts} | 
+                  Last: ${lastVisited}
+                </span>
+              </div>
+            `;
+          }
+        }
+        
+        displayDiv.innerHTML = html;
+      }
+      
+      function clearProgress() {
+        if (confirm('Are you sure you want to clear all progress? This cannot be undone.')) {
+          clearAllProgress();
+          refreshProgress();
+          alert('✓ All progress cleared!');
+        }
+      }
+      
+      function simulateQuiz(trackId, moduleId, score, totalQuestions) {
+        const progress = getProgress(trackId, moduleId);
+        const newBestScore = Math.max(progress.bestScore, score);
+        const isCompleted = score === totalQuestions;
+        
+        updateProgress(trackId, moduleId, {
+          attempts: progress.attempts + 1,
+          bestScore: newBestScore,
+          completed: isCompleted || progress.completed,
+          lastVisited: Date.now()
+        });
+        
+        refreshProgress();
+        alert(`✓ Simulated: ${moduleId}\nScore: ${score}/${totalQuestions}\nAttempt #${progress.attempts + 1}`);
+      }
+      
+      // Initial load
+      refreshProgress();
+      
+      // Auto-refresh every 2 seconds to catch changes from other pages
+      setInterval(refreshProgress, 2000);
+    </script>
+    <script type="module" src="site.js"></script>
+  </body>
+</html>

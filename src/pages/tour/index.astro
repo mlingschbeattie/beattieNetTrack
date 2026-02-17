@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import AppShell from '../../layouts/AppShell.astro';
+import TourProgressCard from '../../components/islands/TourProgressCard.tsx';
+
+const tracks = await getCollection('tracks');
+const steps = (await getCollection('tour')).sort((a, b) => a.data.order - b.data.order);
+const first = steps[0];
+---
+
+<AppShell title="Hands-On Tour" tracks={tracks} breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Tour' }]}> 
+  <section class="hero">
+    <h1 class="hero__title">Try It Tour</h1>
+    <p class="hero__subtitle">Experience a mini version of the program with terminal, quiz, and code challenges.</p>
+  </section>
+
+  <section class="card-grid">
+    <article class="card">
+      <h3>Tour Chapters</h3>
+      <ol>
+        {steps.map((step) => (
+          <li><a href={`/tour/${step.slug}`}>{step.data.title}</a></li>
+        ))}
+      </ol>
+      {first && <a class="btn-link" href={`/tour/${first.slug}`}>Start Tour →</a>}
+    </article>
+
+    {first && <TourProgressCard client:load tourSlug="hands-on-tour" firstStepSlug={first.slug} />}
+  </section>
+</AppShell>

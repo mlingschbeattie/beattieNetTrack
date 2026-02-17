@@ -1,0 +1,20 @@
+{
+  "id": "assessment-1-4-5",
+  "title": "Assessment 1.4.5 Customer Support Workflow",
+  "assessmentCode": "1.4.5",
+  "sourceQuestionDocx": "Assessment 1.4.5 Customer Support Workflow.docx",
+  "sourceAnswerDocx": "Assessment 1.4.5 Customer Support Workflow Answers.docx",
+  "questions": [
+    {
+      "prompt": "Which action should follow issue resolution?",
+      "choices": [
+        "Delete the ticket",
+        "Document final fix and close ticket",
+        "Ignore customer feedback",
+        "Uninstall updates"
+      ],
+      "answerIndex": 1,
+      "explanation": "Resolved issues should be documented before closure."
+    }
+  ]
+}

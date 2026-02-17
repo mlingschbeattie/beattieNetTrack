@@ -1,0 +1,825 @@
+---
+title: PC Assembly Simulator - A+ Lab
+slug: a-plus-lab-pc-assembly
+legacyUrl: /a-plus-lab-pc-assembly.html
+difficulty: medium
+estimatedMinutes: 15
+---
+
+import LegacyHtml from '../../components/LegacyHtml.astro';
+
+<LegacyHtml html={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PC Assembly Simulator - A+ Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css" />
+    
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    
+    <header class="site-header">
+      <div class="header-container">
+        <div class="logo">
+          <a href="index.html">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">BEATTIE</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-subtitle">TECH</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <nav class="main-nav nav-links">
+          <ul>
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="study-guides.html" class="active">📖 Study Guides</a></li>
+            <li><a href="learning-tracks.html">🎯 Learning Tracks</a></li>
+            <li><a href="resources.html">🔬 Study Hub</a></li>
+            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="scanlines"></div>
+    
+    <main id="main-content" class="container">
+      <nav class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span class="separator">/</span>
+        <a href="study-guides.html">Study Guides</a>
+        <span class="separator">/</span>
+        <a href="a-plus-guides.html">A+ Guides</a>
+        <span class="separator">/</span>
+        <span class="current">PC Assembly Lab</span>
+      </nav>
+      
+      <h1>PC Assembly Simulator</h1>
+      <div class="subtitle">Hands-On Lab: Build a Compatible PC System</div>
+
+      <div class="section">
+        <h2>Lab Scenario</h2>
+        <div class="info-box" id="scenario-display">
+          <div style="text-align: center; color: #00d4ff; padding: 20px;">
+            <div style="font-size: 1.5em; margin-bottom: 10px;">🔄 Generating scenario...</div>
+            <div style="font-size: 0.9em;">Loading procedurally generated build challenge</div>
+          </div>
+        </div>
+        <div class="warning-box">
+          <strong>⚠ Important:</strong> All components must be compatible with each other. Pay attention to CPU socket types, RAM compatibility, and form factors. The system will validate your selections and provide detailed feedback.
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="lab-container">
+          <div class="lab-grid">
+            {/* Component Selection Panel */}
+            <div class="lab-panel">
+              <h3>Component Selection</h3>
+              
+              <div class="component-category">
+                <div class="component-category-title">CPU (Processor)</div>
+                <select id="cpu-select" class="component-select">
+                  <option value="">-- Select CPU --</option>
+                  <option value="intel-i5-13600k">Intel Core i5-13600K (LGA1700, DDR5) - $319</option>
+                  <option value="intel-i7-13700k">Intel Core i7-13700K (LGA1700, DDR5) - $409</option>
+                  <option value="intel-i9-13900k">Intel Core i9-13900K (LGA1700, DDR5) - $589</option>
+                  <option value="amd-r5-7600x">AMD Ryzen 5 7600X (AM5, DDR5) - $299</option>
+                  <option value="amd-r7-7700x">AMD Ryzen 7 7700X (AM5, DDR5) - $399</option>
+                  <option value="amd-r9-7900x">AMD Ryzen 9 7900X (AM5, DDR5) - $549</option>
+                  <option value="intel-i5-12600k">Intel Core i5-12600K (LGA1700, DDR4) - $289</option>
+                  <option value="amd-r5-5600x">AMD Ryzen 5 5600X (AM4, DDR4) - $199</option>
+                  <option value="intel-i3-12100">Intel Core i3-12100 (LGA1700, DDR4) - $149</option>
+                  <option value="amd-r3-4100">AMD Ryzen 3 4100 (AM4, DDR4) - $99</option>
+                </select>
+              </div>
+
+              <div class="component-category">
+                <div class="component-category-title">Motherboard</div>
+                <select id="mobo-select" class="component-select">
+                  <option value="">-- Select Motherboard --</option>
+                  <option value="asus-z790-ddr5">ASUS ROG Z790 (LGA1700, DDR5, ATX) - $329</option>
+                  <option value="msi-z790-ddr5">MSI MPG Z790 (LGA1700, DDR5, ATX) - $299</option>
+                  <option value="gigabyte-z790-ddr4">Gigabyte Z790 (LGA1700, DDR4, ATX) - $249</option>
+                  <option value="asus-b650-ddr5">ASUS TUF B650 (AM5, DDR5, ATX) - $189</option>
+                  <option value="msi-x670-ddr5">MSI X670 (AM5, DDR5, ATX) - $279</option>
+                  <option value="asus-b550-ddr4">ASUS B550 (AM4, DDR4, ATX) - $149</option>
+                  <option value="asrock-b660-ddr4">ASRock B660M (LGA1700, DDR4, mATX) - $119</option>
+                  <option value="gigabyte-a520">Gigabyte A520M (AM4, DDR4, mATX) - $79</option>
+                </select>
+              </div>
+
+              <div class="component-category">
+                <div class="component-category-title">RAM (Memory)</div>
+                <select id="ram-select" class="component-select">
+                  <option value="">-- Select RAM --</option>
+                  <option value="corsair-16gb-ddr5">Corsair Vengeance 16GB (2x8GB) DDR5-5600 - $109</option>
+                  <option value="gskill-32gb-ddr5">G.Skill Trident 32GB (2x16GB) DDR5-6000 - $179</option>
+                  <option value="kingston-16gb-ddr5">Kingston Fury 16GB (2x8GB) DDR5-5200 - $99</option>
+                  <option value="corsair-32gb-ddr4">Corsair Vengeance 32GB (2x16GB) DDR4-3200 - $89</option>
+                  <option value="gskill-16gb-ddr4">G.Skill Ripjaws 16GB (2x8GB) DDR4-3600 - $69</option>
+                  <option value="teamgroup-8gb-ddr4">Team T-Force 8GB (2x4GB) DDR4-3200 - $39</option>
+                </select>
+              </div>
+
+              <div class="component-category">
+                <div class="component-category-title">GPU (Graphics Card)</div>
+                <select id="gpu-select" class="component-select">
+                  <option value="">-- Select GPU (optional for some builds) --</option>
+                  <option value="rtx-4060">NVIDIA RTX 4060 8GB - $299</option>
+                  <option value="rtx-4060ti">NVIDIA RTX 4060 Ti 16GB - $499</option>
+                  <option value="rtx-4070">NVIDIA RTX 4070 12GB - $599</option>
+                  <option value="rtx-4070ti">NVIDIA RTX 4070 Ti 12GB - $799</option>
+                  <option value="rx-7600">AMD Radeon RX 7600 8GB - $269</option>
+                  <option value="rx-7700xt">AMD Radeon RX 7700 XT 12GB - $449</option>
+                  <option value="rx-7800xt">AMD Radeon RX 7800 XT 16GB - $499</option>
+                </select>
+              </div>
+
+              <div class="component-category">
+                <div class="component-category-title">Storage</div>
+                <select id="storage-select" class="component-select">
+                  <option value="">-- Select Storage --</option>
+                  <option value="samsung-500gb">Samsung 980 Pro 500GB NVMe - $79</option>
+                  <option value="wd-1tb">WD Black SN850X 1TB NVMe - $129</option>
+                  <option value="samsung-1tb">Samsung 990 Pro 1TB NVMe - $149</option>
+                  <option value="crucial-2tb">Crucial P5 Plus 2TB NVMe - $179</option>
+                  <option value="wd-2tb-sata">WD Blue 2TB SATA SSD - $159</option>
+                  <option value="kingston-500gb-sata">Kingston A400 500GB SATA SSD - $49</option>
+                  <option value="crucial-250gb-sata">Crucial BX500 250GB SATA SSD - $29</option>
+                </select>
+              </div>
+
+              <div class="component-category">
+                <div class="component-category-title">CPU Cooler</div>
+                <select id="cooler-select" class="component-select">
+                  <option value="">-- Select Cooler --</option>
+                  <option value="noctua-nh-d15">Noctua NH-D15 (Air, 165W TDP) - $109</option>
+                  <option value="arctic-34">Arctic Freezer 34 (Air, 150W TDP) - $39</option>
+                  <option value="deepcool-gammaxx">DeepCool GAMMAXX 400 (Air, 130W TDP) - $25</option>
+                  <option value="stock-cooler">Stock Cooler (included with CPU, 95W TDP) - $0</option>
+                  <option value="corsair-h100i">Corsair H100i (240mm AIO, 250W TDP) - $119</option>
+                  <option value="nzxt-x63">NZXT Kraken X63 (280mm AIO, 300W TDP) - $149</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Build Visualization Panel */}
+            <div class="lab-panel">
+              <h3>Your Build</h3>
+              <div class="build-visual">
+                <div id="build-cpu" class="build-slot">
+                  <div class="build-slot-label">🔲 CPU</div>
+                  <div class="build-slot-content">
+                    <span class="build-slot-empty">No CPU selected</span>
+                  </div>
+                </div>
+                
+                <div id="build-mobo" class="build-slot">
+                  <div class="build-slot-label">🔲 Motherboard</div>
+                  <div class="build-slot-content">
+                    <span class="build-slot-empty">No motherboard selected</span>
+                  </div>
+                </div>
+                
+                <div id="build-ram" class="build-slot">
+                  <div class="build-slot-label">🔲 RAM</div>
+                  <div class="build-slot-content">
+                    <span class="build-slot-empty">No RAM selected</span>
+                  </div>
+                </div>
+                
+                <div id="build-gpu" class="build-slot">
+                  <div class="build-slot-label">🔲 GPU</div>
+                  <div class="build-slot-content">
+                    <span class="build-slot-empty">No GPU selected</span>
+                  </div>
+                </div>
+                
+                <div id="build-storage" class="build-slot">
+                  <div class="build-slot-label">🔲 Storage</div>
+                  <div class="build-slot-content">
+                    <span class="build-slot-empty">No storage selected</span>
+                  </div>
+                </div>
+                
+                <div id="build-cooler" class="build-slot">
+                  <div class="build-slot-label">🔲 CPU Cooler</div>
+                  <div class="build-slot-content">
+                    <span class="build-slot-empty">No cooler selected</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="budget-meter">
+                <div class="budget-label">
+                  <span>Budget</span>
+                  <span id="budget-display">$0 / $0</span>
+                </div>
+                <div class="budget-bar">
+                  <div id="budget-fill" class="budget-fill" style="width: 0%"></div>
+                  <div class="budget-text" id="budget-percent">0%</div>
+                </div>
+              </div>
+
+              <div class="compatibility-status" id="compatibility-status">
+                <div style="color: #00d4ff; margin-bottom: 10px; font-weight: 700;">Compatibility Check:</div>
+                <div id="compat-list">
+                  <div class="compat-item">
+                    <span class="compat-icon">⚪</span>
+                    <span>Waiting for component selection...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lab-controls">
+            <button id="btn-validate" class="lab-btn primary">Validate Build</button>
+            <button id="btn-submit" class="lab-btn primary" disabled>Submit for Grading</button>
+            <button id="btn-reset" class="lab-btn danger">New Scenario</button>
+          </div>
+
+          <div id="results-panel" class="results-panel" style="display: none;">
+            <h3 style="color: #00d4ff; text-align: center; margin-bottom: 15px;">Build Evaluation Results</h3>
+            <div id="score-display" class="score-display"></div>
+            <div id="feedback-list" class="feedback-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Learning Objectives</h2>
+        <div class="info-box">
+          This lab tests your understanding of:
+          <ul style="margin: 10px 0 0 20px; line-height: 1.8;">
+            <li><strong>CPU Socket Compatibility:</strong> Matching CPU to motherboard socket (LGA1700, AM5, AM4)</li>
+            <li><strong>RAM Type Matching:</strong> DDR5 vs DDR4 compatibility with CPU and motherboard</li>
+            <li><strong>Performance Requirements:</strong> Selecting appropriate components for specific use cases</li>
+            <li><strong>Storage Standards:</strong> Understanding NVMe vs SATA SSD performance</li>
+            <li><strong>Cooling Requirements:</strong> Matching cooler TDP rating to CPU heat output</li>
+            <li><strong>Budget Management:</strong> Balancing performance with cost constraints</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      // Scenario generation templates
+      const scenarioTemplates = {
+        useCases: {
+          'gaming-1080p': {
+            adjectives: ['casual', 'budget-friendly', 'entry-level', 'basic'],
+            resolution: '1080p',
+            cpuTier: 'low',
+            gpuTier: 'entry',
+            ramMin: 8,
+            storageType: 'any',
+            storageMin: 500,
+            budgetTier: 'low'
+          },
+          'gaming-1440p': {
+            adjectives: ['mid-range', 'balanced', 'solid', 'capable'],
+            resolution: '1440p',
+            cpuTier: 'mid',
+            gpuTier: 'mid',
+            ramMin: 16,
+            storageType: 'any',
+            storageMin: 500,
+            budgetTier: 'mid'
+          },
+          'gaming-premium': {
+            adjectives: ['high-end', 'powerful', 'enthusiast', 'premium'],
+            resolution: '1440p+',
+            cpuTier: 'high',
+            gpuTier: 'high',
+            ramMin: 16,
+            storageType: 'NVMe',
+            storageMin: 1000,
+            budgetTier: 'high'
+          },
+          'gaming-ultra': {
+            adjectives: ['ultra-high-end', 'flagship', 'extreme', 'top-tier'],
+            resolution: '4K',
+            cpuTier: 'ultra',
+            gpuTier: 'ultra',
+            ramMin: 32,
+            storageType: 'NVMe',
+            storageMin: 1000,
+            budgetTier: 'premium'
+          },
+          'office': {
+            adjectives: ['professional', 'business', 'office', 'productivity'],
+            resolution: null,
+            cpuTier: 'low',
+            gpuTier: 'optional',
+            ramMin: 8,
+            storageType: 'any',
+            storageMin: 250,
+            budgetTier: 'ultraLow'
+          },
+          'content-creation': {
+            adjectives: ['creative', 'content creation', 'multimedia', 'design'],
+            resolution: null,
+            cpuTier: 'high',
+            gpuTier: 'mid',
+            ramMin: 32,
+            storageType: 'NVMe',
+            storageMin: 1000,
+            budgetTier: 'high'
+          },
+          'workstation': {
+            adjectives: ['professional', 'workstation', 'power-user', 'advanced'],
+            resolution: null,
+            cpuTier: 'ultra',
+            gpuTier: 'high',
+            ramMin: 32,
+            storageType: 'NVMe',
+            storageMin: 2000,
+            budgetTier: 'premium'
+          },
+          'home-media': {
+            adjectives: ['home media', 'HTPC', 'entertainment', 'streaming'],
+            resolution: null,
+            cpuTier: 'low',
+            gpuTier: 'optional',
+            ramMin: 8,
+            storageType: 'any',
+            storageMin: 1000,
+            budgetTier: 'low'
+          }
+        },
+        customers: [
+          'A student', 'A professional', 'An enthusiast', 'A small business owner',
+          'A gamer', 'A content creator', 'A freelancer', 'A home user',
+          'An IT department', 'A startup company'
+        ],
+        psuWattages: [450, 550, 650, 750, 850, 1000, 1200, 1500]
+      };
+
+      // Component database with specifications and prices
+      const components = {
+        cpu: {
+          'intel-i5-13600k': { name: 'Intel Core i5-13600K', socket: 'LGA1700', ram: 'DDR5', tdp: 125, price: 319, performance: 88 },
+          'intel-i7-13700k': { name: 'Intel Core i7-13700K', socket: 'LGA1700', ram: 'DDR5', tdp: 190, price: 409, performance: 95 },
+          'intel-i9-13900k': { name: 'Intel Core i9-13900K', socket: 'LGA1700', ram: 'DDR5', tdp: 253, price: 589, performance: 100 },
+          'amd-r5-7600x': { name: 'AMD Ryzen 5 7600X', socket: 'AM5', ram: 'DDR5', tdp: 105, price: 299, performance: 86 },
+          'amd-r7-7700x': { name: 'AMD Ryzen 7 7700X', socket: 'AM5', ram: 'DDR5', tdp: 105, price: 399, performance: 92 },
+          'amd-r9-7900x': { name: 'AMD Ryzen 9 7900X', socket: 'AM5', ram: 'DDR5', tdp: 170, price: 549, performance: 98 },
+          'intel-i5-12600k': { name: 'Intel Core i5-12600K', socket: 'LGA1700', ram: 'DDR4', tdp: 125, price: 289, performance: 80 },
+          'amd-r5-5600x': { name: 'AMD Ryzen 5 5600X', socket: 'AM4', ram: 'DDR4', tdp: 65, price: 199, performance: 75 },
+          'intel-i3-12100': { name: 'Intel Core i3-12100', socket: 'LGA1700', ram: 'DDR4', tdp: 60, price: 149, performance: 65 },
+          'amd-r3-4100': { name: 'AMD Ryzen 3 4100', socket: 'AM4', ram: 'DDR4', tdp: 65, price: 99, performance: 55 }
+        },
+        mobo: {
+          'asus-z790-ddr5': { name: 'ASUS ROG Z790', socket: 'LGA1700', ram: 'DDR5', formFactor: 'ATX', price: 329 },
+          'msi-z790-ddr5': { name: 'MSI MPG Z790', socket: 'LGA1700', ram: 'DDR5', formFactor: 'ATX', price: 299 },
+          'gigabyte-z790-ddr4': { name: 'Gigabyte Z790', socket: 'LGA1700', ram: 'DDR4', formFactor: 'ATX', price: 249 },
+          'asus-b650-ddr5': { name: 'ASUS TUF B650', socket: 'AM5', ram: 'DDR5', formFactor: 'ATX', price: 189 },
+          'msi-x670-ddr5': { name: 'MSI X670', socket: 'AM5', ram: 'DDR5', formFactor: 'ATX', price: 279 },
+          'asus-b550-ddr4': { name: 'ASUS B550', socket: 'AM4', ram: 'DDR4', formFactor: 'ATX', price: 149 },
+          'asrock-b660-ddr4': { name: 'ASRock B660M', socket: 'LGA1700', ram: 'DDR4', formFactor: 'mATX', price: 119 },
+          'gigabyte-a520': { name: 'Gigabyte A520M', socket: 'AM4', ram: 'DDR4', formFactor: 'mATX', price: 79 }
+        },
+        ram: {
+          'corsair-16gb-ddr5': { name: 'Corsair Vengeance 16GB DDR5-5600', type: 'DDR5', capacity: 16, speed: 5600, price: 109 },
+          'gskill-32gb-ddr5': { name: 'G.Skill Trident 32GB DDR5-6000', type: 'DDR5', capacity: 32, speed: 6000, price: 179 },
+          'kingston-16gb-ddr5': { name: 'Kingston Fury 16GB DDR5-5200', type: 'DDR5', capacity: 16, speed: 5200, price: 99 },
+          'corsair-32gb-ddr4': { name: 'Corsair Vengeance 32GB DDR4-3200', type: 'DDR4', capacity: 32, speed: 3200, price: 89 },
+          'gskill-16gb-ddr4': { name: 'G.Skill Ripjaws 16GB DDR4-3600', type: 'DDR4', capacity: 16, speed: 3600, price: 69 },
+          'teamgroup-8gb-ddr4': { name: 'Team T-Force 8GB DDR4-3200', type: 'DDR4', capacity: 8, speed: 3200, price: 39 }
+        },
+        gpu: {
+          'rtx-4060': { name: 'NVIDIA RTX 4060 8GB', performance: 75, suitable1080p: true, suitable1440p: true, price: 299 },
+          'rtx-4060ti': { name: 'NVIDIA RTX 4060 Ti 16GB', performance: 82, suitable1080p: true, suitable1440p: true, price: 499 },
+          'rtx-4070': { name: 'NVIDIA RTX 4070 12GB', performance: 88, suitable1080p: true, suitable1440p: true, price: 599 },
+          'rtx-4070ti': { name: 'NVIDIA RTX 4070 Ti 12GB', performance: 94, suitable1080p: true, suitable1440p: true, price: 799 },
+          'rx-7600': { name: 'AMD Radeon RX 7600 8GB', performance: 72, suitable1080p: true, suitable1440p: false, price: 269 },
+          'rx-7700xt': { name: 'AMD Radeon RX 7700 XT 12GB', performance: 84, suitable1080p: true, suitable1440p: true, price: 449 },
+          'rx-7800xt': { name: 'AMD Radeon RX 7800 XT 16GB', performance: 90, suitable1080p: true, suitable1440p: true, price: 499 }
+        },
+        storage: {
+          'samsung-500gb': { name: 'Samsung 980 Pro 500GB NVMe', type: 'NVMe', capacity: 500, price: 79 },
+          'wd-1tb': { name: 'WD Black SN850X 1TB NVMe', type: 'NVMe', capacity: 1000, price: 129 },
+          'samsung-1tb': { name: 'Samsung 990 Pro 1TB NVMe', type: 'NVMe', capacity: 1000, price: 149 },
+          'crucial-2tb': { name: 'Crucial P5 Plus 2TB NVMe', type: 'NVMe', capacity: 2000, price: 179 },
+          'wd-2tb-sata': { name: 'WD Blue 2TB SATA SSD', type: 'SATA', capacity: 2000, price: 159 },
+          'kingston-500gb-sata': { name: 'Kingston A400 500GB SATA SSD', type: 'SATA', capacity: 500, price: 49 },
+          'crucial-250gb-sata': { name: 'Crucial BX500 250GB SATA SSD', type: 'SATA', capacity: 250, price: 29 }
+        },
+        cooler: {
+          'noctua-nh-d15': { name: 'Noctua NH-D15', type: 'Air', maxTDP: 165, price: 109 },
+          'arctic-34': { name: 'Arctic Freezer 34', type: 'Air', maxTDP: 150, price: 39 },
+          'deepcool-gammaxx': { name: 'DeepCool GAMMAXX 400', type: 'Air', maxTDP: 130, price: 25 },
+          'stock-cooler': { name: 'Stock Cooler', type: 'Air', maxTDP: 95, price: 0 },
+          'corsair-h100i': { name: 'Corsair H100i 240mm AIO', type: 'Liquid', maxTDP: 250, price: 119 },
+          'nzxt-x63': { name: 'NZXT Kraken X63 280mm AIO', type: 'Liquid', maxTDP: 300, price: 149 }
+        }
+      };
+
+      let currentBuild = {
+        cpu: null,
+        mobo: null,
+        ram: null,
+        gpu: null,
+        storage: null,
+        cooler: null
+      };
+
+      let activeScenario = null;
+
+      // Utility functions
+      function randomChoice(array) {
+        return array[Math.floor(Math.random() * array.length)];
+      }
+
+      function randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function randomBudget(tier) {
+        const budgetRanges = {
+          ultraLow: [600, 850],
+          low: [850, 1200],
+          mid: [1200, 1800],
+          high: [1800, 2500],
+          premium: [2500, 3500]
+        };
+        const range = budgetRanges[tier];
+        return Math.round(randomInt(range[0], range[1]) / 50) * 50;
+      }
+
+      // Scenario generation
+      function generateScenario() {
+        const useCaseKey = randomChoice(Object.keys(scenarioTemplates.useCases));
+        const useCase = scenarioTemplates.useCases[useCaseKey];
+        
+        const adjective = randomChoice(useCase.adjectives);
+        const customer = randomChoice(scenarioTemplates.customers);
+        const budget = randomBudget(useCase.budgetTier);
+        const psuWattage = randomChoice(scenarioTemplates.psuWattages);
+        
+        const scenario = {
+          customer: customer,
+          adjective: adjective,
+          useCase: useCaseKey,
+          budget: budget,
+          psuWattage: psuWattage,
+          requirements: {
+            cpuTier: useCase.cpuTier,
+            gpuTier: useCase.gpuTier,
+            ramMin: useCase.ramMin,
+            storageType: useCase.storageType,
+            storageMin: useCase.storageMin,
+            resolution: useCase.resolution
+          }
+        };
+        
+        return scenario;
+      }
+
+      function displayScenario() {
+        const display = document.getElementById('scenario-display');
+        const s = activeScenario;
+        
+        const useCaseName = s.useCase.replace(/-/g, ' ');
+        const isGaming = s.useCase.startsWith('gaming');
+        const resolutionText = s.requirements.resolution ? \` at \${s.requirements.resolution}\` : '';
+        
+        let requirementsList = \`
+          <li><strong>CPU:</strong> Must support either DDR4 or DDR5</li>
+          <li><strong>Motherboard:</strong> Must match CPU socket and support chosen RAM type</li>
+          <li><strong>GPU:</strong> \${s.requirements.gpuTier === 'optional' ? 'Dedicated GPU optional (integrated graphics acceptable)' : \`Suitable for \${s.requirements.resolution} gaming\`}</li>
+          <li><strong>RAM:</strong> Must be at least \${s.requirements.ramMin}GB</li>
+          <li><strong>Storage:</strong> Must be at least \${s.requirements.storageMin}GB\${s.requirements.storageType === 'NVMe' ? ' (NVMe required)' : ' (SATA or NVMe)'}</li>
+          <li><strong>CPU Cooler:</strong> TDP rating must meet or exceed CPU TDP</li>
+          <li><strong>Budget:</strong> Stay within the $\${s.budget} budget</li>
+        \`;
+        
+        display.innerHTML = \`
+          <div style="border-left: 4px solid #00ff88; padding-left: 15px;">
+            <h3 style="color: #00ff88; margin-bottom: 10px;">🎯 \${s.adjective.charAt(0).toUpperCase() + s.adjective.slice(1)} \${useCaseName.charAt(0).toUpperCase() + useCaseName.slice(1)} Setup</h3>
+            <p style="margin-bottom: 15px; line-height: 1.6;">
+              <strong>Objective:</strong> \${s.customer} needs a PC for \${useCaseName}\${isGaming ? resolutionText : ''}. 
+              Budget is <strong>$\${s.budget}</strong>. They already own a case and \${s.psuWattage}W power supply.
+            </p>
+            <p style="color: #00d4ff; margin-bottom: 10px;"><strong>Requirements:</strong></p>
+            <ul style="margin: 0 0 0 20px; line-height: 1.8;">
+              \${requirementsList}
+            </ul>
+          </div>
+        \`;
+      }
+
+      // Component selection handlers
+      function updateBuildDisplay() {
+        const cpuData = currentBuild.cpu ? components.cpu[currentBuild.cpu] : null;
+        const moboData = currentBuild.mobo ? components.mobo[currentBuild.mobo] : null;
+        const ramData = currentBuild.ram ? components.ram[currentBuild.ram] : null;
+        const gpuData = currentBuild.gpu ? components.gpu[currentBuild.gpu] : null;
+        const storageData = currentBuild.storage ? components.storage[currentBuild.storage] : null;
+        const coolerData = currentBuild.cooler ? components.cooler[currentBuild.cooler] : null;
+
+        document.getElementById('build-cpu').innerHTML = cpuData ?
+          \`<div class="build-slot-label">✅ CPU</div><div class="build-slot-content">\${cpuData.name}<br><small>$\${cpuData.price}</small></div>\` :
+          \`<div class="build-slot-label">🔲 CPU</div><div class="build-slot-content"><span class="build-slot-empty">No CPU selected</span></div>\`;
+
+        document.getElementById('build-mobo').innerHTML = moboData ?
+          \`<div class="build-slot-label">✅ Motherboard</div><div class="build-slot-content">\${moboData.name}<br><small>$\${moboData.price}</small></div>\` :
+          \`<div class="build-slot-label">🔲 Motherboard</div><div class="build-slot-content"><span class="build-slot-empty">No motherboard selected</span></div>\`;
+
+        document.getElementById('build-ram').innerHTML = ramData ?
+          \`<div class="build-slot-label">✅ RAM</div><div class="build-slot-content">\${ramData.name}<br><small>$\${ramData.price}</small></div>\` :
+          \`<div class="build-slot-label">🔲 RAM</div><div class="build-slot-content"><span class="build-slot-empty">No RAM selected</span></div>\`;
+
+        document.getElementById('build-gpu').innerHTML = gpuData ?
+          \`<div class="build-slot-label">✅ GPU</div><div class="build-slot-content">\${gpuData.name}<br><small>$\${gpuData.price}</small></div>\` :
+          \`<div class="build-slot-label">🔲 GPU</div><div class="build-slot-content"><span class="build-slot-empty">No GPU selected</span></div>\`;
+
+        document.getElementById('build-storage').innerHTML = storageData ?
+          \`<div class="build-slot-label">✅ Storage</div><div class="build-slot-content">\${storageData.name}<br><small>$\${storageData.price}</small></div>\` :
+          \`<div class="build-slot-label">🔲 Storage</div><div class="build-slot-content"><span class="build-slot-empty">No storage selected</span></div>\`;
+
+        document.getElementById('build-cooler').innerHTML = coolerData ?
+          \`<div class="build-slot-label">✅ CPU Cooler</div><div class="build-slot-content">\${coolerData.name}<br><small>$\${coolerData.price}</small></div>\` :
+          \`<div class="build-slot-label">🔲 CPU Cooler</div><div class="build-slot-content"><span class="build-slot-empty">No cooler selected</span></div>\`;
+
+        // Update budget
+        const totalCost = (cpuData?.price || 0) + (moboData?.price || 0) + (ramData?.price || 0) + 
+                          (gpuData?.price || 0) + (storageData?.price || 0) + (coolerData?.price || 0);
+        const budget = activeScenario.budget;
+        const percent = Math.min(100, (totalCost / budget) * 100);
+        
+        document.getElementById('budget-display').textContent = \`$\${totalCost} / $\${budget}\`;
+        document.getElementById('budget-fill').style.width = \`\${percent}%\`;
+        document.getElementById('budget-percent').textContent = \`\${Math.round(percent)}%\`;
+        
+        const budgetFill = document.getElementById('budget-fill');
+        if (totalCost > budget) {
+          budgetFill.classList.add('over');
+        } else {
+          budgetFill.classList.remove('over');
+        }
+
+        // Update slot styling
+        ['cpu', 'mobo', 'ram', 'gpu', 'storage', 'cooler'].forEach(part => {
+          const slot = document.getElementById(\`build-\${part}\`);
+          if (currentBuild[part]) {
+            slot.classList.add('filled');
+            slot.classList.remove('error');
+          } else {
+            slot.classList.remove('filled', 'error');
+          }
+        });
+
+        checkRealTimeCompatibility();
+      }
+
+      function checkRealTimeCompatibility() {
+        const compatList = document.getElementById('compat-list');
+        const issues = [];
+        const passes = [];
+        
+        const cpuData = currentBuild.cpu ? components.cpu[currentBuild.cpu] : null;
+        const moboData = currentBuild.mobo ? components.mobo[currentBuild.mobo] : null;
+        const ramData = currentBuild.ram ? components.ram[currentBuild.ram] : null;
+        const coolerData = currentBuild.cooler ? components.cooler[currentBuild.cooler] : null;
+        
+        // Socket compatibility
+        if (cpuData && moboData) {
+          if (cpuData.socket === moboData.socket) {
+            passes.push(\`✅ CPU socket matches motherboard (\${cpuData.socket})\`);
+          } else {
+            issues.push(\`❌ Socket mismatch: CPU is \${cpuData.socket}, motherboard is \${moboData.socket}\`);
+          }
+        }
+        
+        // RAM compatibility
+        if (cpuData && ramData) {
+          if (cpuData.ram === ramData.type) {
+            passes.push(\`✅ RAM type matches CPU (\${cpuData.ram})\`);
+          } else {
+            issues.push(\`❌ RAM type mismatch: CPU needs \${cpuData.ram}, selected \${ramData.type}\`);
+          }
+        }
+        
+        if (moboData && ramData) {
+          if (moboData.ram === ramData.type) {
+            passes.push(\`✅ RAM type matches motherboard (\${moboData.ram})\`);
+          } else {
+            issues.push(\`❌ RAM type mismatch: Motherboard needs \${moboData.ram}, selected \${ramData.type}\`);
+          }
+        }
+        
+        // TDP check
+        if (cpuData && coolerData) {
+          if (coolerData.maxTDP >= cpuData.tdp) {
+            passes.push(\`✅ Cooler TDP adequate (\${coolerData.maxTDP}W ≥ \${cpuData.tdp}W)\`);
+          } else {
+            issues.push(\`❌ Cooler TDP insufficient: CPU needs \${cpuData.tdp}W, cooler rated for \${coolerData.maxTDP}W\`);
+          }
+        }
+        
+        const html = [...issues.map(i => \`<div class="compat-item compat-fail">\${i}</div>\`),
+                       ...passes.map(p => \`<div class="compat-item compat-pass">\${p}</div>\`)];
+        
+        compatList.innerHTML = html.length ? html.join('') : 
+          '<div class="compat-item"><span class="compat-icon">⚪</span><span>Waiting for component selection...</span></div>';
+        
+        // Enable/disable submit
+        const allSelected = currentBuild.cpu && currentBuild.mobo && currentBuild.ram && 
+                            currentBuild.storage && currentBuild.cooler;
+        document.getElementById('btn-submit').disabled = !allSelected || issues.length > 0;
+      }
+
+      // Grading function
+      function evaluateLab() {
+        const feedback = [];
+        let score = 0;
+        
+        const cpuData = components.cpu[currentBuild.cpu];
+        const moboData = components.mobo[currentBuild.mobo];
+        const ramData = components.ram[currentBuild.ram];
+        const gpuData = currentBuild.gpu ? components.gpu[currentBuild.gpu] : null;
+        const storageData = components.storage[currentBuild.storage];
+        const coolerData = components.cooler[currentBuild.cooler];
+        
+        const req = activeScenario.requirements;
+        const totalCost = cpuData.price + moboData.price + ramData.price + 
+                          (gpuData?.price || 0) + storageData.price + coolerData.price;
+        
+        // CPU (20 points)
+        if (cpuData) {
+          score += 20;
+          feedback.push({ type: 'pass', text: \`✓ CPU selected: \${cpuData.name} (+20 points)\` });
+        }
+        
+        // Socket compatibility (20 points)
+        if (cpuData.socket === moboData.socket) {
+          score += 20;
+          feedback.push({ type: 'pass', text: \`✓ CPU and motherboard sockets match (\${cpuData.socket}) (+20 points)\` });
+        } else {
+          feedback.push({ type: 'fail', text: \`✗ Socket mismatch: CPU \${cpuData.socket} ≠ Motherboard \${moboData.socket} (0 points)\` });
+        }
+        
+        // RAM compatibility (20 points)
+        if (cpuData.ram === ramData.type && moboData.ram === ramData.type) {
+          score += 20;
+          feedback.push({ type: 'pass', text: \`✓ RAM type (\${ramData.type}) matches CPU and motherboard (+20 points)\` });
+        } else {
+          feedback.push({ type: 'fail', text: \`✗ RAM type incompatible (0 points)\` });
+        }
+        
+        // GPU (15 points)
+        if (req.gpuTier === 'optional') {
+          score += 15;
+          feedback.push({ type: 'pass', text: \`✓ GPU is optional for this build (+15 points)\` });
+        } else if (gpuData) {
+          if (req.resolution === '1440p' && gpuData.suitable1440p) {
+            score += 15;
+            feedback.push({ type: 'pass', text: \`✓ GPU suitable for \${req.resolution} gaming (+15 points)\` });
+          } else if (req.resolution === '1080p' && gpuData.suitable1080p) {
+            score += 15;
+            feedback.push({ type: 'pass', text: \`✓ GPU suitable for \${req.resolution} gaming (+15 points)\` });
+          } else if (req.resolution === '1440p+' || req.resolution === '4K') {
+            score += Math.round((gpuData.performance / 100) * 15);
+            feedback.push({ type: 'warn', text: \`⚠ GPU performance adequate but not optimal (+\${Math.round((gpuData.performance / 100) * 15)} points)\` });
+          } else {
+            feedback.push({ type: 'fail', text: \`✗ GPU not suitable for requirements (0 points)\` });
+          }
+        } else {
+          feedback.push({ type: 'fail', text: \`✗ GPU required but not selected (0 points)\` });
+        }
+        
+        // Storage (10 points)
+        if (storageData.capacity >= req.storageMin) {
+          if (req.storageType === 'NVMe' && storageData.type === 'NVMe') {
+            score += 10;
+            feedback.push({ type: 'pass', text: \`✓ NVMe storage meets capacity requirement (\${storageData.capacity}GB ≥ \${req.storageMin}GB) (+10 points)\` });
+          } else if (req.storageType === 'any') {
+            score += 10;
+            feedback.push({ type: 'pass', text: \`✓ Storage meets capacity requirement (\${storageData.capacity}GB ≥ \${req.storageMin}GB) (+10 points)\` });
+          } else {
+            score += 5;
+            feedback.push({ type: 'warn', text: \`⚠ Storage capacity OK but SATA instead of NVMe (+5 points)\` });
+          }
+        } else {
+          feedback.push({ type: 'fail', text: \`✗ Storage too small: \${storageData.capacity}GB < \${req.storageMin}GB (0 points)\` });
+        }
+        
+        // Cooler (10 points)
+        if (coolerData.maxTDP >= cpuData.tdp) {
+          score += 10;
+          feedback.push({ type: 'pass', text: \`✓ Cooler TDP adequate (\${coolerData.maxTDP}W ≥ \${cpuData.tdp}W) (+10 points)\` });
+        } else {
+          feedback.push({ type: 'fail', text: \`✗ Cooler TDP insufficient: \${coolerData.maxTDP}W < \${cpuData.tdp}W (0 points)\` });
+        }
+        
+        // Budget (5 points)
+        if (totalCost <= activeScenario.budget) {
+          score += 5;
+          const saved = activeScenario.budget - totalCost;
+          feedback.push({ type: 'pass', text: \`✓ Within budget: $\${totalCost} ≤ $\${activeScenario.budget} (saved $\${saved}) (+5 points)\` });
+        } else {
+          const over = totalCost - activeScenario.budget;
+          feedback.push({ type: 'fail', text: \`✗ Over budget by $\${over} (0 points)\` });
+        }
+        
+        // RAM capacity check (bonus feedback)
+        if (ramData.capacity >= req.ramMin) {
+          feedback.push({ type: 'pass', text: \`✓ RAM capacity meets requirement (\${ramData.capacity}GB ≥ \${req.ramMin}GB)\` });
+        } else {
+          feedback.push({ type: 'fail', text: \`✗ RAM capacity insufficient: \${ramData.capacity}GB < \${req.ramMin}GB\` });
+        }
+        
+        return { score, feedback };
+      }
+
+      // Event handlers
+      document.getElementById('cpu-select').addEventListener('change', (e) => {
+        currentBuild.cpu = e.target.value || null;
+        updateBuildDisplay();
+      });
+
+      document.getElementById('mobo-select').addEventListener('change', (e) => {
+        currentBuild.mobo = e.target.value || null;
+        updateBuildDisplay();
+      });
+
+      document.getElementById('ram-select').addEventListener('change', (e) => {
+        currentBuild.ram = e.target.value || null;
+        updateBuildDisplay();
+      });
+
+      document.getElementById('gpu-select').addEventListener('change', (e) => {
+        currentBuild.gpu = e.target.value || null;
+        updateBuildDisplay();
+      });
+
+      document.getElementById('storage-select').addEventListener('change', (e) => {
+        currentBuild.storage = e.target.value || null;
+        updateBuildDisplay();
+      });
+
+      document.getElementById('cooler-select').addEventListener('change', (e) => {
+        currentBuild.cooler = e.target.value || null;
+        updateBuildDisplay();
+      });
+
+      document.getElementById('btn-validate').addEventListener('click', () => {
+        checkRealTimeCompatibility();
+        alert('Compatibility check complete. See results above.');
+      });
+
+      document.getElementById('btn-submit').addEventListener('click', () => {
+        const results = evaluateLab();
+        const resultsPanel = document.getElementById('results-panel');
+        const scoreDisplay = document.getElementById('score-display');
+        const feedbackList = document.getElementById('feedback-list');
+        
+        const passed = results.score >= 80;
+        const grade = passed ? 'PASS' : 'FAIL';
+        const gradeColor = passed ? '#00ff88' : '#ff4444';
+        
+        scoreDisplay.innerHTML = \`<div style="color: \${gradeColor};">\${grade}</div><div>Score: \${results.score}/100</div>\`;
+        
+        feedbackList.innerHTML = results.feedback.map(f => 
+          \`<div class="feedback-item \${f.type}">\${f.text}</div>\`
+        ).join('');
+        
+        resultsPanel.style.display = 'block';
+        resultsPanel.scrollIntoView({ behavior: 'smooth' });
+      });
+
+      document.getElementById('btn-reset').addEventListener('click', () => {
+        currentBuild = { cpu: null, mobo: null, ram: null, gpu: null, storage: null, cooler: null };
+        document.querySelectorAll('.component-select').forEach(select => select.value = '');
+        document.getElementById('results-panel').style.display = 'none';
+        document.getElementById('btn-submit').disabled = true;
+        
+        activeScenario = generateScenario();
+        displayScenario();
+        updateBuildDisplay();
+      });
+
+      // Initialize
+      function initLab() {
+        activeScenario = generateScenario();
+        displayScenario();
+        updateBuildDisplay();
+      }
+
+      initLab();
+    </script>
+    <script type="module" src="site.js"></script>
+  </body>
+</html>`} />
