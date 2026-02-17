@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 type Hotspot = {
   id: string;
   label: string;
@@ -20,8 +18,6 @@ const hotspots: Hotspot[] = [
 ];
 
 export default function MotherboardDiagram() {
-  const [activeHotspotId, setActiveHotspotId] = useState<string | null>(null);
-
   return (
     <figure className="mb-diagram" data-testid="mb-diagram" aria-label="Motherboard map with interactive hotspots">
       <figcaption className="mb-diagram__caption">Motherboard Map</figcaption>
@@ -49,7 +45,6 @@ export default function MotherboardDiagram() {
 
         {hotspots.map((hotspot) => {
           const tooltipId = `mb-tip-${hotspot.id}`;
-          const isPinned = activeHotspotId === hotspot.id;
           return (
             <button
               key={hotspot.id}
@@ -58,8 +53,6 @@ export default function MotherboardDiagram() {
               style={{ left: `${hotspot.x}%`, top: `${hotspot.y}%` }}
               aria-label={hotspot.label}
               aria-describedby={tooltipId}
-              data-active={isPinned ? 'true' : 'false'}
-              onClick={() => setActiveHotspotId((prev) => (prev === hotspot.id ? null : hotspot.id))}
             >
               <span className="mb-diagram__dot" aria-hidden="true" />
               <span className="mb-diagram__tooltip" role="tooltip" id={tooltipId}>
@@ -140,7 +133,6 @@ export default function MotherboardDiagram() {
           line-height: 1.35;
           opacity: 0;
           pointer-events: none;
-          visibility: hidden;
           z-index: 2;
         }
         .mb-diagram__tooltip strong {
@@ -148,10 +140,8 @@ export default function MotherboardDiagram() {
           font-weight: 600;
         }
         .mb-diagram__hotspot:hover .mb-diagram__tooltip,
-        .mb-diagram__hotspot:focus-visible .mb-diagram__tooltip,
-        .mb-diagram__hotspot[data-active='true'] .mb-diagram__tooltip {
+        .mb-diagram__hotspot:focus-visible .mb-diagram__tooltip {
           opacity: 1;
-          visibility: visible;
         }
       `}</style>
     </figure>

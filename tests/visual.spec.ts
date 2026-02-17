@@ -37,6 +37,7 @@ const waitForStableUi = async (page: Page) => {
 
 test('home page', async ({ page }) => {
   await page.goto('/');
+  await waitForStableUi(page);
   await expect(page).toHaveScreenshot('home.png', { fullPage: true });
 });
 
@@ -64,6 +65,7 @@ test('lesson page (mobile)', async ({ page }) => {
 
 test('legacy page', async ({ page }) => {
   await page.goto('/legacy/a-plus-networking.html');
+  await waitForStableUi(page);
   await expect(page).toHaveScreenshot('legacy.png', { fullPage: true });
 });
 
@@ -75,5 +77,6 @@ test('quizzes page', async ({ page }) => {
 
 test('quiz runner page', async ({ page }) => {
   await page.goto('/quizzes/a-plus-hardware');
+  await waitForStableUi(page);
   await expect(page).toHaveScreenshot('quiz-runner.png', { fullPage: true });
 });
