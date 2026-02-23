@@ -2,6 +2,9 @@
   "name": "site",
   "type": "module",
   "version": "0.0.1",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "astro dev",
     "prebuild": "npm run validate:tracks",
@@ -18,26 +21,26 @@
     "format:check": "prettier . --check",
     "lint": "astro check",
     "test:unit": "node --test --import tsx src/lib/*.test.ts",
-    "test:ci": "npm run lint && npm run test:unit && npm run test:visual"
+    "test:ci": "npm run validate:tracks && npm run lint && npm run test:unit && npm run build && npm run test:visual"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.6",
     "@astrojs/mdx": "^4.3.13",
     "@astrojs/react": "^4.4.2",
     "@codemirror/lang-javascript": "^6.2.4",
-    "@types/react": "^18.3.18",
-    "@types/react-dom": "^18.3.5",
     "@uiw/react-codemirror": "^4.23.14",
     "astro": "^5.17.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "typescript": "^5.9.3"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.6",
     "@playwright/test": "^1.58.2",
     "@types/node": "^22.13.4",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
     "prettier": "^3.8.1",
     "prettier-plugin-astro": "^0.14.1",
-    "tsx": "^4.19.2"
+    "tsx": "^4.19.2",
+    "typescript": "^5.9.3"
   }
 }

@@ -105,8 +105,8 @@ const labs = defineCollection({
       .default([]),
 
     // Backward-compatible workspace metadata
-    track: z.string(),
-    moduleId: z.string(),
+    track: z.string().trim().min(1, 'track is required for mapped activities'),
+    moduleId: z.string().trim().min(1, 'moduleId is required for mapped activities'),
     module: z.string().optional(),
     estMinutes: z.number().int().optional(),
     tags: z.array(z.string()).default([]),
@@ -127,8 +127,8 @@ const quizzes = defineCollection({
     description: z.string().optional().default('Quiz workspace'),
     slug: z.string().optional(),
     type: z.literal('quiz').optional().default('quiz'),
-    track: z.string(),
-    moduleId: z.string(),
+    track: z.string().trim().min(1, 'track is required for mapped activities'),
+    moduleId: z.string().trim().min(1, 'moduleId is required for mapped activities'),
     module: z.string().optional(),
     order: z.number().int().default(0),
     difficulty: difficultySchema.optional().default('Intermediate'),
@@ -177,8 +177,8 @@ const activities = defineCollection({
     description: z.string().optional().default('Workspace activity'),
     slug: z.string().optional(),
     type: z.literal('activity').optional().default('activity'),
-    track: z.string(),
-    moduleId: z.string(),
+    track: z.string().trim().min(1, 'track is required for mapped activities'),
+    moduleId: z.string().trim().min(1, 'moduleId is required for mapped activities'),
     order: z.number().int().default(0),
     difficulty: difficultySchema.optional().default('Intermediate'),
     estMinutes: z.number().int().optional().default(15),
@@ -189,19 +189,34 @@ const activities = defineCollection({
 
 const lessons = defineCollection({
   type: 'content',
-  schema: z.object({
-    title: z.string(),
-    description: z.string().optional().default('Legacy page - being upgraded.'),
-    slug: z.string().optional(),
-    track: z.string().optional(),
-    module: z.string().optional(),
-    order: z.number().int().optional(),
-    difficulty: difficultySchema.optional().default('Intermediate'),
-    estMinutes: z.number().int().optional().default(15),
-    estimatedMinutes: z.number().int().optional(),
-    tags: z.array(z.string()).default([]),
-    legacyUrl: z.string().optional(),
-  }),
+  schema: z
+    .object({
+      title: z.string(),
+      description: z.string().optional().default('Legacy page - being upgraded.'),
+      slug: z.string().optional(),
+      track: z.string().optional(),
+      moduleId: z.string().optional(),
+      module: z.string().optional(),
+      order: z.number().int().optional(),
+      difficulty: difficultySchema.optional().default('Intermediate'),
+      estMinutes: z.number().int().optional().default(15),
+      estimatedMinutes: z.number().int().optional(),
+      tags: z.array(z.string()).default([]),
+      legacyUrl: z.string().optional(),
+    })
+    .superRefine((data, ctx) => {
+      const track = (data.track ?? '').trim();
+      if (!track) return;
+      const moduleId = (data.moduleId ?? '').trim();
+      const module = (data.module ?? '').trim();
+      if (!moduleId && !module) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['moduleId'],
+          message: 'When track is set, either moduleId or module is required.',
+        });
+      }
+    }),
 });
 
 const tour = defineCollection({

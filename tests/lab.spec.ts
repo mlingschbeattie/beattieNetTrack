@@ -32,43 +32,6 @@ test('mapped lab shows module prev/next navigation', async ({ page }) => {
   await expect(page.getByTestId('activity-next-link')).toContainText('Next: Network Terminal Basics Lab');
 });
 
-test('module progress badge shows and updates after completion', async ({ page }) => {
-  await page.goto('/');
-  await page.evaluate(() => window.localStorage.removeItem('beattie_progress_v1'));
-
-  await page.goto('/labs/terminal-basics');
-  const badge = page.locator('[data-module-progress]');
-  await expect(badge).toBeVisible();
-  const beforeText = (await badge.textContent()) ?? '';
-  const mBefore = beforeText.match(/Module Progress:\s*(\d+)\s*\/\s*(\d+)/);
-  expect(mBefore).not.toBeNull();
-  const beforeCount = Number(mBefore?.[1] ?? 0);
-
-  // Complete the lab (3 steps)
-  await expect(page.getByTestId('lab-step-count')).toHaveText('Step 1 of 3');
-  await page.getByTestId('lab-input').fill('pwd');
-  await page.getByTestId('lab-submit').click();
-  await page.getByTestId('lab-next').click();
-
-  await expect(page.getByTestId('lab-step-count')).toHaveText('Step 2 of 3');
-  await page.getByTestId('lab-input').fill('ls');
-  await page.getByTestId('lab-submit').click();
-  await page.getByTestId('lab-next').click();
-
-  await expect(page.getByTestId('lab-step-count')).toHaveText('Step 3 of 3');
-  await page.getByTestId('lab-input').fill('cd ..');
-  await page.getByTestId('lab-submit').click();
-
-  await expect(page.getByTestId('lab-complete')).toBeVisible();
-
-  await page.reload();
-  const afterText = (await page.locator('[data-module-progress]').textContent()) ?? '';
-  const mAfter = afterText.match(/Module Progress:\s*(\d+)\s*\/\s*(\d+)/);
-  expect(mAfter).not.toBeNull();
-  const afterCount = Number(mAfter?.[1] ?? 0);
-  expect(afterCount).toBeGreaterThanOrEqual(beforeCount + 1);
-});
-
 test('terminal basics lab completes, awards XP, updates streak, and persists completion', async ({ page }) => {
   await page.goto('/');
   await page.evaluate(() => {

@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { normalizeLessonMeta } from './lessonMeta';
 
 export type TrackActivityType = 'lab' | 'quiz' | 'lesson';
 
@@ -164,7 +165,8 @@ export const getTrackDetailData = async (trackSlug: string): Promise<TrackDetail
   for (const entry of lessons) {
     if (entry.data.track !== trackSlug) continue;
     if (typeof entry.data.order !== 'number') continue;
-    if (!entry.data.module) continue;
+    const moduleSlug = getActivityModuleSlug(entry.data);
+    if (!moduleSlug) continue;
     pushActivity({
       slug: entry.slug,
       type: 'lesson',
@@ -172,7 +174,7 @@ export const getTrackDetailData = async (trackSlug: string): Promise<TrackDetail
       description: entry.data.description ?? 'Lesson',
       order: entry.data.order,
       href: `/lessons/${entry.slug}`,
-      module: entry.data.module,
+      module: moduleSlug,
     });
   }
 
@@ -269,4 +271,66 @@ export const getTrackContinueHref = async (trackSlug: string, progress: Progress
   }
 
   return `/tracks/${trackSlug}`;
+};
+
+type LegacyTrackSlug = 'pc-technician' | 'network-engineer' | 'cybersecurity-engineer';
+
+const legacyNetworkKeywords = ['network', 'https-demo'];
+const legacyPcKeywords = [
+  'a-plus-guides',
+  'a-plus-hardware',
+  'a-plus-motherboards',
+  'a-plus-operating-systems',
+  'a-plus-power-cooling',
+  'a-plus-storage',
+  'a-plus-troubleshooting',
+  'a-plus-lab-',
+  'a-plus-labs',
+];
+
+export const inferLegacyTrackSlug = (legacySlug: string): LegacyTrackSlug => {
+  if (legacyNetworkKeywords.some((keyword) => legacySlug.includes(keyword))) {
+    return 'network-engineer';
+  }
+  if (legacyPcKeywords.some((keyword) => legacySlug.startsWith(keyword) || legacySlug.includes(keyword))) {
+    return 'pc-technician';
+  }
+  return 'cybersecurity-engineer';
+};
+
+export const toLegacyLabPath = (legacyUrl?: string) => {
+  if (!legacyUrl) return undefined;
+  if (legacyUrl.startsWith('/legacy/')) return legacyUrl;
+  if (legacyUrl.startsWith('/')) return `/legacy${legacyUrl}`;
+  return `/legacy/${legacyUrl}`;
+};
+
+const inferLegacyModuleId = (legacySlug: string, trackSlug: string) => {
+  if (trackSlug === 'pc-technician') {
+    return legacySlug.startsWith('a-plus-lab-') ? 'pc-tech-labs' : 'pc-tech-legacy';
+  }
+  if (trackSlug === 'network-engineer') {
+    return 'network-legacy';
+  }
+  return 'cybersecurity-legacy';
+};
+
+export const mapLessonToLegacyActivity = (lesson: CollectionEntry<'lessons'>) => {
+  const labPath = toLegacyLabPath(lesson.data.legacyUrl);
+  if (!labPath) return undefined;
+  const normalized = normalizeLessonMeta(lesson.data);
+  const track = lesson.data.track ?? inferLegacyTrackSlug(lesson.slug);
+  const moduleId = inferLegacyModuleId(lesson.slug, track);
+  return {
+    slug: lesson.slug,
+    type: 'activity' as const,
+    title: lesson.data.title,
+    description: lesson.data.description ?? 'Legacy page activity',
+    track,
+    moduleId,
+    order: lesson.data.order ?? 999,
+    difficulty: normalized.difficulty,
+    estMinutes: normalized.estMinutes,
+    labPath,
+  };
 };

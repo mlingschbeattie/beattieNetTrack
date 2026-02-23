@@ -5,7 +5,6 @@ import LessonHeader from '../../components/LessonHeader.astro';
 import Callout from '../../components/Callout.astro';
 import CodeBlock from '../../components/CodeBlock.astro';
 import { normalizeLessonMeta } from '../../lib/lessonMeta';
-import { normalizeSectionItem } from '../../lib/trackSections';
 import { getActivityModuleNavigation } from '../../lib/content';
 
 export async function getStaticPaths() {
@@ -28,19 +27,17 @@ const trackFromParam = allTracks.find((entry) => entry.slug === trackParam);
 const trackFromFrontmatter = lesson.data.track
   ? allTracks.find((entry) => entry.slug === lesson.data.track)
   : null;
-const trackFromSections = allTracks.find((entry) =>
-  entry.data.sections?.some((section) =>
-    section.lessons.some((item) => {
-      const normalized = normalizeSectionItem(item as string | { type: 'lesson' | 'lab' | 'quiz'; slug: string });
-      return normalized.type === 'lesson' && normalized.slug === lesson.slug;
-    })
-  )
-);
+const trackFromActivityNavigation = activityNavigation
+  ? allTracks.find((entry) => entry.slug === activityNavigation.trackSlug)
+  : null;
 
-const currentTrack = trackFromParam ?? trackFromFrontmatter ?? trackFromSections ?? null;
+const currentTrack = trackFromParam ?? trackFromFrontmatter ?? trackFromActivityNavigation ?? null;
+// Enable legacy skin only for the single page '/lessons/cryptography' for visual testing.
+const enableLegacy = lesson.slug === 'cryptography';
 ---
 
 <AppShell
+  legacySkin={enableLegacy}
   title={`Lesson • ${lesson.data.title}`}
   tracks={allTracks}
   activeTrack={currentTrack?.slug ?? lesson.data.track}

@@ -3,7 +3,6 @@ import { getCollection } from 'astro:content';
 import AppShell from '../../layouts/AppShell.astro';
 import TrackProgressSummary from '../../components/islands/TrackProgressSummary.tsx';
 import { getTrackDetailData, getTracksIndexData } from '../../lib/content';
-import { getTrackSectionLessonSlugs } from '../../lib/trackSections';
 
 export async function getStaticPaths() {
   const tracks = await getTracksIndexData();
@@ -27,7 +26,14 @@ const lessonMap = Object.fromEntries(allLessons.map((entry) => [entry.slug, entr
 const track = detail.track;
 const modules = detail.modules;
 const currentTrack = allTracks.find((entry) => entry.slug === slug);
-const lessonSlugs = currentTrack ? getTrackSectionLessonSlugs(currentTrack) : [];
+const sectionLessonSlugs =
+  currentTrack?.data.sections?.flatMap((section) =>
+    (section.lessons ?? [])
+      .map((item) => (typeof item === 'string' ? { type: 'lesson', slug: item } : item))
+      .filter((item) => item.type === 'lesson')
+      .map((item) => item.slug)
+  ) ?? [];
+const lessonSlugs = sectionLessonSlugs;
 ---
 
 <AppShell

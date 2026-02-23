@@ -1,11 +1,18 @@
 ---
 import '../styles/global.css';
+// Opt-in legacy compatibility styles. These are scoped under `html[data-skin="legacy"]`.
+// To enable legacy primitives on a page add `data-skin="legacy"` to the top-level HTML element.
+import '../styles/legacy-compat.css';
 
-const { title = 'Beattie Tech' } = Astro.props;
+// `legacySkin` is an opt-in flag (boolean). When true it sets `data-skin="legacy"`
+// on the top-level `<html>` element so legacy-compat styles (scoped) apply only
+// to that page. Keep this limited to single-page visual testing; do not enable
+// site-wide or persist across sessions.
+const { title = 'Beattie Tech', legacySkin = false } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-skin={legacySkin ? 'legacy' : undefined}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />

@@ -56,134 +56,156 @@ const listMdxFiles = (dirPath) => {
 const tracksDir = path.join(contentRoot, 'tracks');
 const modulesDir = path.join(contentRoot, 'modules');
 
-const trackFiles = listMdxFiles(tracksDir);
-const moduleFiles = listMdxFiles(modulesDir);
+export const validateTrackModuleMappings = () => {
+  const trackFiles = listMdxFiles(tracksDir).sort((a, b) => a.localeCompare(b));
+  const moduleFiles = listMdxFiles(modulesDir).sort((a, b) => a.localeCompare(b));
 
-const trackSlugs = new Set();
-for (const filePath of trackFiles) {
-  const fm = readFrontmatter(filePath);
-  if (!fm) continue;
-  const slug = fm.slug;
-  if (slug) trackSlugs.add(slug);
-}
-
-const modulesById = new Map();
-const moduleIdCollisions = [];
-for (const filePath of moduleFiles) {
-  const fm = readFrontmatter(filePath);
-  if (!fm) continue;
-  const moduleId = fm.moduleId;
-  const moduleTrack = fm.track;
-  if (!moduleId || !moduleTrack) continue;
-  if (modulesById.has(moduleId)) {
-    moduleIdCollisions.push({ moduleId, first: modulesById.get(moduleId).filePath, second: filePath });
-  }
-  modulesById.set(moduleId, { track: moduleTrack, filePath });
-}
-
-const collectionsToCheck = [
-  ...requiredCollectionDirs.map((name) => ({ name, path: path.join(contentRoot, name) })),
-  ...optionalCollectionDirs
-    .map((name) => ({ name, path: path.join(contentRoot, name) }))
-    .filter((entry) => fs.existsSync(entry.path)),
-];
-
-const errors = [];
-const warnings = [];
-const checkedEntries = [];
-
-for (const collection of collectionsToCheck) {
-  const files = listMdxFiles(collection.path);
-  for (const filePath of files) {
+  const trackSlugs = new Set();
+  for (const filePath of trackFiles) {
     const fm = readFrontmatter(filePath);
-    if (!fm) {
-      errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} missing frontmatter block.`);
-      continue;
-    }
+    if (!fm) continue;
+    const slug = fm.slug;
+    if (slug) trackSlugs.add(slug);
+  }
 
-    const track = fm.track;
+  const modulesById = new Map();
+  const moduleIdCollisions = [];
+  for (const filePath of moduleFiles) {
+    const fm = readFrontmatter(filePath);
+    if (!fm) continue;
     const moduleId = fm.moduleId;
-    const orderRaw = fm.order;
-
-    if (!track) {
-      errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} missing required track.`);
-    } else if (!trackSlugs.has(track)) {
-      errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} track '${track}' does not match any track slug.`);
+    const moduleTrack = fm.track;
+    if (!moduleId || !moduleTrack) continue;
+    if (modulesById.has(moduleId)) {
+      moduleIdCollisions.push({ moduleId, first: modulesById.get(moduleId).filePath, second: filePath });
     }
+    modulesById.set(moduleId, { track: moduleTrack, filePath });
+  }
 
-    if (!moduleId) {
-      errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} missing required moduleId.`);
-    } else if (!modulesById.has(moduleId)) {
-      errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} moduleId '${moduleId}' does not exist in modules collection.`);
-    } else if (track && modulesById.get(moduleId).track !== track) {
-      errors.push(
-        `[${collection.name}] ${path.relative(repoRoot, filePath)} moduleId '${moduleId}' belongs to track '${modulesById.get(moduleId).track}', but entry track is '${track}'.`
-      );
-    }
+  const collectionsToCheck = [
+    ...requiredCollectionDirs.map((name) => ({ name, path: path.join(contentRoot, name) })),
+    ...optionalCollectionDirs
+      .map((name) => ({ name, path: path.join(contentRoot, name) }))
+      .filter((entry) => fs.existsSync(entry.path)),
+  ];
 
-    if (typeof orderRaw === 'undefined' || orderRaw === '') {
-      errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} missing required order.`);
-    } else if (!/^-?\d+$/.test(String(orderRaw))) {
-      errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} order '${orderRaw}' is not an integer.`);
-    }
+  const errors = [];
+  const warnings = [];
+  const checkedEntries = [];
 
-    const labPath = fm.labPath;
-    if (labPath && /^\/legacy\//.test(labPath)) {
-      const relativeLegacyPath = labPath.replace(/^\/legacy\//, '');
-      const diskPath = path.join(legacyRoot, relativeLegacyPath);
-      if (!fs.existsSync(diskPath)) {
+  for (const collection of collectionsToCheck) {
+    const files = listMdxFiles(collection.path).sort((a, b) => a.localeCompare(b));
+    for (const filePath of files) {
+      const fm = readFrontmatter(filePath);
+      if (!fm) {
+        errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} missing frontmatter block.`);
+        continue;
+      }
+
+      const track = fm.track;
+      const moduleId = fm.moduleId;
+      const orderRaw = fm.order;
+
+      if (!track) {
+        errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} missing required track.`);
+      } else if (!trackSlugs.has(track)) {
+        errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} track '${track}' does not match any track slug.`);
+      }
+
+      if (!moduleId) {
+        errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} missing required moduleId.`);
+      } else if (!modulesById.has(moduleId)) {
+        errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} moduleId '${moduleId}' does not exist in modules collection.`);
+      } else if (track && modulesById.get(moduleId).track !== track) {
         errors.push(
-          `[${collection.name}] ${path.relative(repoRoot, filePath)} references missing legacy file '${labPath}' (expected ${path.relative(
-            repoRoot,
-            diskPath
-          )}).`
+          `[${collection.name}] ${path.relative(repoRoot, filePath)} moduleId '${moduleId}' belongs to track '${modulesById.get(moduleId).track}', but entry track is '${track}'.`
         );
+      }
+
+      if (typeof orderRaw === 'undefined' || orderRaw === '') {
+        errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} missing required order.`);
+      } else if (!/^-?\d+$/.test(String(orderRaw))) {
+        errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} order '${orderRaw}' is not an integer.`);
+      }
+
+      const labPath = fm.labPath;
+      if (labPath && /^\/legacy\//.test(labPath)) {
+        const relativeLegacyPath = labPath.replace(/^\/legacy\//, '');
+        const diskPath = path.join(legacyRoot, relativeLegacyPath);
+        if (!fs.existsSync(diskPath)) {
+          errors.push(
+            `[${collection.name}] ${path.relative(repoRoot, filePath)} references missing legacy file '${labPath}' (expected ${path.relative(
+              repoRoot,
+              diskPath
+            )}).`
+          );
+        }
+      }
+
+      const quizJsonPath = fm.quizJsonPath;
+      if (quizJsonPath) {
+        const quizDiskPath = path.join(repoRoot, 'public', quizJsonPath.replace(/^\//, ''));
+        if (!fs.existsSync(quizDiskPath)) {
+          errors.push(
+            `[${collection.name}] ${path.relative(repoRoot, filePath)} references missing quizJsonPath '${quizJsonPath}' (expected ${path.relative(
+              repoRoot,
+              quizDiskPath
+            )}).`
+          );
+        }
+      }
+
+      checkedEntries.push({ collection: collection.name, filePath });
+    }
+  }
+
+  for (const collision of moduleIdCollisions) {
+    errors.push(
+      `[modules] moduleId collision '${collision.moduleId}' found in ${path.relative(repoRoot, collision.first)} and ${path.relative(repoRoot, collision.second)}.`
+    );
+  }
+
+  const sortedWarnings = warnings.sort((a, b) => a.localeCompare(b));
+  const sortedErrors = errors.sort((a, b) => a.localeCompare(b));
+  if (sortedErrors.length > 0) {
+    throw new Error(sortedErrors.join('\n'));
+  }
+
+  return {
+    tracksDiscovered: trackSlugs.size,
+    modulesDiscovered: modulesById.size,
+    collectionsChecked: collectionsToCheck.map((item) => item.name),
+    checked: checkedEntries.length,
+    warnings: sortedWarnings,
+  };
+};
+
+const isDirectRun = process.argv[1] ? path.resolve(process.argv[1]) === __filename : false;
+
+if (isDirectRun) {
+  try {
+    const result = validateTrackModuleMappings();
+    console.log('Track validation report');
+    console.log('======================');
+    console.log(`Tracks discovered: ${result.tracksDiscovered}`);
+    console.log(`Modules discovered: ${result.modulesDiscovered}`);
+    console.log(`Collections checked: ${result.collectionsChecked.join(', ')}`);
+    console.log(`Entries checked: ${result.checked}`);
+
+    if (result.warnings.length > 0) {
+      console.log('\nWarnings:');
+      for (const warning of result.warnings) {
+        console.log(`- ${warning}`);
       }
     }
 
-    const quizJsonPath = fm.quizJsonPath;
-    if (quizJsonPath) {
-      const quizDiskPath = path.join(repoRoot, 'public', quizJsonPath.replace(/^\//, ''));
-      if (!fs.existsSync(quizDiskPath)) {
-        errors.push(
-          `[${collection.name}] ${path.relative(repoRoot, filePath)} references missing quizJsonPath '${quizJsonPath}' (expected ${path.relative(
-            repoRoot,
-            quizDiskPath
-          )}).`
-        );
-      }
+    console.log('\nValidation passed: all activity content is correctly mapped to track + moduleId.');
+  } catch (error) {
+    console.error('\nErrors:');
+    const message = error instanceof Error ? error.message : String(error);
+    for (const line of message.split('\n').filter(Boolean)) {
+      console.error(`- ${line}`);
     }
-
-    checkedEntries.push({ collection: collection.name, filePath });
+    process.exit(1);
   }
 }
-
-for (const collision of moduleIdCollisions) {
-  errors.push(
-    `[modules] moduleId collision '${collision.moduleId}' found in ${path.relative(repoRoot, collision.first)} and ${path.relative(repoRoot, collision.second)}.`
-  );
-}
-
-console.log('Track validation report');
-console.log('======================');
-console.log(`Tracks discovered: ${trackSlugs.size}`);
-console.log(`Modules discovered: ${modulesById.size}`);
-console.log(`Collections checked: ${collectionsToCheck.map((item) => item.name).join(', ')}`);
-console.log(`Entries checked: ${checkedEntries.length}`);
-
-if (warnings.length > 0) {
-  console.log('\nWarnings:');
-  for (const warning of warnings) {
-    console.log(`- ${warning}`);
-  }
-}
-
-if (errors.length > 0) {
-  console.error('\nErrors:');
-  for (const error of errors) {
-    console.error(`- ${error}`);
-  }
-  process.exit(1);
-}
-
-console.log('\nValidation passed: all activity content is correctly mapped to track + moduleId.');

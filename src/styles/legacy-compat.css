@@ -1,0 +1,87 @@
+/* Legacy Style Compatibility Layer
+   Opt-in styles for legacy primitives. Scope: html[data-skin="legacy"]
+   - DO NOT change global backgrounds, scroll behavior, layout model, or add JS.
+   - These helpers are intentionally small and respect existing CSS variables.
+*/
+
+html[data-skin="legacy"] {
+  --legacy-accent: var(--accent, #00ff88);
+  --legacy-card-bg: color-mix(in srgb, var(--card-bg, rgba(255,255,255,0.02)) 80%, transparent);
+}
+
+/* scanlines: decorative overlay, pointer-events none */
+html[data-skin="legacy"] .scanlines {
+  position: relative;
+}
+html[data-skin="legacy"] .scanlines::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px);
+  background-size: 100% 6px;
+  mix-blend-mode: overlay;
+  opacity: 0.28;
+  z-index: 6;
+}
+
+/* glass: subtle frosted panel that uses existing variables */
+html[data-skin="legacy"] .glass {
+  background-color: var(--legacy-card-bg);
+  backdrop-filter: blur(6px) saturate(110%);
+  -webkit-backdrop-filter: blur(6px) saturate(110%);
+  border: 1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+/* info-box: accent bar + content */
+html[data-skin="legacy"] .info-box {
+  display: block;
+  border-left: 4px solid var(--legacy-accent);
+  padding: 0.6rem 0.9rem;
+  background: linear-gradient(180deg, rgba(0,0,0,0.01), transparent);
+  border-radius: 6px;
+  margin: 0.75rem 0;
+}
+html[data-skin="legacy"] .info-box .info-title {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+/* example-block: title + code styling, non-invasive */
+html[data-skin="legacy"] .example-block { margin: 1rem 0; display:block; }
+html[data-skin="legacy"] .example-block .example-title { font-weight:600; margin-bottom:0.4rem; }
+html[data-skin="legacy"] .example-block pre,
+html[data-skin="legacy"] .example-block code {
+  background: var(--code-bg, rgba(0,0,0,0.04));
+  color: inherit;
+  padding: 0.65rem;
+  border-radius: 6px;
+  overflow: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
+  font-size: 0.95rem;
+}
+
+/* command-grid: simple responsive grid for command/description pairs */
+html[data-skin="legacy"] .command-grid {
+  display: grid;
+  gap: 0.5rem 1rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width:720px) {
+  html[data-skin="legacy"] .command-grid { grid-template-columns: 240px 1fr; align-items:start; }
+}
+html[data-skin="legacy"] .command-grid .command {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
+  background: var(--muted-bg, rgba(0,0,0,0.04));
+  padding: 0.45rem 0.65rem;
+  border-radius: 6px;
+}
+html[data-skin="legacy"] .command-grid .description { color: var(--muted-text, #9aa0a6); }
+
+/* minimal utility adjustments that don't alter layout model */
+html[data-skin="legacy"] .glass.card { padding: 1rem; }
+html[data-skin="legacy"] .example-block pre { margin: 0; }
+

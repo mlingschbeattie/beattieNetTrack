@@ -1,25 +1,39 @@
 ---
 import { getCollection } from 'astro:content';
-import type { CollectionEntry } from 'astro:content';
 import AppShell from '../layouts/AppShell.astro';
-import { getTrackSectionItemCount, getTrackSectionItems } from '../lib/trackSections';
-import { getTrackContinueHref } from '../lib/content';
+import { getTrackContinueHref, getTrackDetailData } from '../lib/content';
 
 const tracks = await getCollection('tracks');
-const labs = await getCollection('labs');
 const sortedTracks = tracks.sort((a, b) => a.data.order - b.data.order);
-
-const getItemCount = (track: CollectionEntry<'tracks'>) => getTrackSectionItemCount(track);
-
-const hrefForTrackItem = (item: { type: 'lesson' | 'lab' | 'quiz'; slug: string }) => {
-	if (item.type === 'lesson') return `/workspace/lesson/${item.slug}`;
-	if (item.type === 'lab') return `/labs/${item.slug}`;
-	return `/quizzes/${item.slug}`;
-};
 
 // build continue href map server-side using content helper to avoid legacy workspace routes
 const continueMap = Object.fromEntries(
   await Promise.all(sortedTracks.map(async (t) => [t.slug, await getTrackContinueHref(t.slug)]))
+);
+
+const continueActivityMap = Object.fromEntries(
+	await Promise.all(
+		sortedTracks.map(async (track) => {
+			const detail = await getTrackDetailData(track.slug);
+			const activities = detail
+				? detail.modules.flatMap((module) =>
+						module.activities.map((activity) => ({
+							type: activity.type,
+							slug: activity.slug,
+							href: activity.href,
+						}))
+					)
+				: [];
+			return [track.slug, activities];
+		})
+	)
+);
+
+const trackItemCountMap = Object.fromEntries(
+	sortedTracks.map((track) => [
+		track.slug,
+		(track.data.sections ?? []).reduce((total, section) => total + (section.lessons?.length ?? 0), 0),
+	])
 );
 ---
 
@@ -42,7 +56,7 @@ const continueMap = Object.fromEntries(
 				<h3>{track.data.title}</h3>
 				<p>{track.data.description}</p>
 				<div class="card__meta">
-					<span class="badge">{getItemCount(track)} items</span>
+					<span class="badge">{trackItemCountMap[track.slug] ?? 0} items</span>
 					{track.data.estimatedHours && (
 						<span class="badge badge--muted">~{track.data.estimatedHours} hrs</span>
 					)}
@@ -63,4 +77,32 @@ const continueMap = Object.fromEntries(
 	</section>
 </AppShell>
 
-<!-- server-side continue links provided by getTrackContinueHref; no client override needed -->
+<script id="__TRACK_CONTINUE_ACTIVITY_MAP__" type="application/json" is:inline set:html={JSON.stringify(continueActivityMap)}></script>
+<script>
+	(() => {
+		try {
+			const mapRaw = document.getElementById('__TRACK_CONTINUE_ACTIVITY_MAP__')?.textContent ?? '{}';
+			const activityMap = JSON.parse(mapRaw);
+			const progressRaw = window.localStorage.getItem('beattie_progress_v1');
+			const progress = progressRaw ? JSON.parse(progressRaw) : null;
+
+			const isCompleted = (item: { type: 'lab' | 'quiz' | 'lesson'; slug: string }) => {
+				if (!progress || typeof progress !== 'object') return false;
+				const collection = item.type === 'lab' ? 'labs' : item.type === 'quiz' ? 'quizzes' : 'lessons';
+				return Boolean(progress?.[collection]?.[item.slug]?.completed);
+			};
+
+			const links = document.querySelectorAll('[data-track-continue-link][data-track-slug]');
+			links.forEach((link) => {
+				if (!(link instanceof HTMLAnchorElement)) return;
+				const trackSlug = link.dataset.trackSlug;
+				if (!trackSlug) return;
+				const activityList = Array.isArray(activityMap[trackSlug]) ? activityMap[trackSlug] : [];
+				const nextActivity = activityList.find((item) => !isCompleted(item));
+				link.href = nextActivity ? nextActivity.href : `/tracks/${trackSlug}`;
+			});
+		} catch {
+			// fall back to server-rendered continue hrefs
+		}
+	})();
+</script>

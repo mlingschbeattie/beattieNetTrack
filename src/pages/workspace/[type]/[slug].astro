@@ -10,7 +10,7 @@ import LabActivity from '../../../components/workspace/LabActivity.astro';
 import QuizActivity from '../../../components/workspace/QuizActivity.astro';
 import QuizRunner from '../../../components/QuizRunner.tsx';
 import type { QuizDefinition } from '../../../lib/quizEngine';
-import { inferLegacyTrackSlug, mapLessonToLegacyActivity, toLegacyLabPath } from '../../../lib/trackCatalog';
+import { inferLegacyTrackSlug, mapLessonToLegacyActivity, toLegacyLabPath } from '../../../lib/content';
 
 export async function getStaticPaths() {
   const [labs, quizzes, activities, lessons] = await Promise.all([

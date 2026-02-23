@@ -4,7 +4,9 @@ import Sidebar from '../components/Sidebar.astro';
 import Navbar from '../components/Navbar.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import RightPanel from '../components/islands/RightPanel.tsx';
+import SearchOverlay from '../components/SearchOverlay.astro';
 import { getModuleProgressData } from '../lib/content';
+import { getSearchIndexData } from '../lib/searchIndex';
 
 const {
   title,
@@ -19,7 +21,12 @@ const {
   rightPanelChecklist = [],
   activityNavigation,
 } = Astro.props;
+// Allow a page to opt-in to legacy skin by passing `legacySkin` prop (boolean).
+// This is intentionally small-scope and should only be used for visual testing.
+const { legacySkin = false } = Astro.props;
 const activePath = Astro.url.pathname;
+const searchIndexData = await getSearchIndexData();
+const searchIndexJson = JSON.stringify(searchIndexData);
 let moduleProgress = null;
 if (activityNavigation && (activityNavigation as any).trackSlug && (activityNavigation as any).moduleSlug) {
   try {
@@ -30,7 +37,8 @@ if (activityNavigation && (activityNavigation as any).trackSlug && (activityNavi
 }
 ---
 
-<BaseLayout title={title}>
+<BaseLayout title={title} legacySkin={legacySkin}>
+  <script id="__SEARCH_INDEX__" type="application/json" is:inline set:html={searchIndexJson}></script>
   <Navbar activePath={activePath} />
   <Breadcrumbs items={breadcrumbs} />
   <div class="app-shell">
@@ -99,7 +107,164 @@ if (activityNavigation && (activityNavigation as any).trackSlug && (activityNavi
       </div>
     </main>
   </div>
+  <SearchOverlay />
 </BaseLayout>
+
+<script>
+  // Global search overlay controller
+  try {
+    const overlay = document.getElementById('global-search-overlay');
+    const input = document.getElementById('global-search-input') as HTMLInputElement | null;
+    const results = document.getElementById('global-search-results');
+    const raw = document.getElementById('__SEARCH_INDEX__')?.textContent ?? '[]';
+    type SearchResultItem = {
+      type: 'track' | 'lesson' | 'lab' | 'quiz';
+      title: string;
+      description: string;
+      slug: string;
+      href: string;
+    };
+
+    const parsed: unknown = JSON.parse(raw);
+    const index: SearchResultItem[] = Array.isArray(parsed)
+      ? (parsed as SearchResultItem[])
+      : [];
+
+    let flatLinks: HTMLAnchorElement[] = [];
+    let activeIndex = -1;
+
+    const groupLabel = (type: SearchResultItem['type']) => {
+      if (type === 'track') return 'Tracks & Modules';
+      if (type === 'lesson') return 'Lessons';
+      if (type === 'lab') return 'Labs';
+      return 'Quizzes';
+    };
+
+    const closeOverlay = () => {
+      if (!overlay) return;
+      overlay.setAttribute('hidden', '');
+      if (input) input.value = '';
+      if (results) results.innerHTML = '';
+      activeIndex = -1;
+    };
+
+    const updateActiveLink = () => {
+      flatLinks.forEach((link, idx) => {
+        link.classList.toggle('is-active', idx === activeIndex);
+      });
+    };
+
+    const renderResults = (query: string) => {
+      if (!results) return;
+      const q = query.trim().toLowerCase();
+      if (!q) {
+        results.innerHTML = '<p class="search-overlay__empty">Type to search all content.</p>';
+        flatLinks = [];
+        activeIndex = -1;
+        return;
+      }
+
+      const filtered = index
+        .filter((item: SearchResultItem) => {
+          const title = (item.title ?? '').toLowerCase();
+          const description = (item.description ?? '').toLowerCase();
+          return title.includes(q) || description.includes(q);
+        })
+        .slice(0, 8);
+
+      if (!filtered.length) {
+        results.innerHTML = '<p class="search-overlay__empty">No matches found.</p>';
+        flatLinks = [];
+        activeIndex = -1;
+        return;
+      }
+
+      const grouped = filtered.reduce<Record<SearchResultItem['type'], SearchResultItem[]>>((acc, item) => {
+        if (!acc[item.type]) acc[item.type] = [];
+        acc[item.type].push(item);
+        return acc;
+      }, { track: [], lesson: [], lab: [], quiz: [] });
+
+      const typeOrder: SearchResultItem['type'][] = ['track', 'lesson', 'lab', 'quiz'];
+      const parts = [];
+      for (const type of typeOrder) {
+        const entries = grouped[type];
+        if (!entries || !entries.length) continue;
+        parts.push(`<p class="search-overlay__group">${groupLabel(type)}</p>`);
+        parts.push('<ul class="search-overlay__list">');
+        for (const item of entries) {
+          parts.push(
+            `<li class="search-overlay__item"><a class="search-overlay__link" href="${item.href}" data-search-result-link><span class="search-overlay__title">${item.title}</span><span class="search-overlay__meta">${item.slug}</span></a></li>`
+          );
+        }
+        parts.push('</ul>');
+      }
+
+      results.innerHTML = parts.join('');
+      flatLinks = Array.from(results.querySelectorAll('[data-search-result-link]')) as HTMLAnchorElement[];
+      activeIndex = flatLinks.length ? 0 : -1;
+      updateActiveLink();
+    };
+
+    const openOverlay = () => {
+      if (!overlay) return;
+      overlay.removeAttribute('hidden');
+      renderResults('');
+      if (input instanceof HTMLInputElement) {
+        window.setTimeout(() => input.focus(), 0);
+      }
+    };
+
+    document.addEventListener('keydown', (event) => {
+      const key = event.key.toLowerCase();
+      if ((event.metaKey || event.ctrlKey) && key === 'k') {
+        event.preventDefault();
+        openOverlay();
+        return;
+      }
+      if (key === 'escape' && overlay && !overlay.hasAttribute('hidden')) {
+        event.preventDefault();
+        closeOverlay();
+      }
+    });
+
+    if (input instanceof HTMLInputElement) {
+      input.addEventListener('input', () => renderResults(input.value));
+      input.addEventListener('keydown', (event) => {
+        if (!flatLinks.length) return;
+        if (event.key === 'ArrowDown') {
+          event.preventDefault();
+          activeIndex = Math.min(flatLinks.length - 1, activeIndex + 1);
+          updateActiveLink();
+          return;
+        }
+        if (event.key === 'ArrowUp') {
+          event.preventDefault();
+          activeIndex = Math.max(0, activeIndex - 1);
+          updateActiveLink();
+          return;
+        }
+        if (event.key === 'Enter' && activeIndex >= 0) {
+          event.preventDefault();
+          const href = flatLinks[activeIndex]?.getAttribute('href');
+          if (href) window.location.assign(href);
+        }
+      });
+    }
+
+    if (overlay) {
+      overlay.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+        if (target.closest('[data-search-close]')) {
+          closeOverlay();
+        }
+      });
+    }
+
+    document.documentElement.setAttribute('data-search-ready', 'true');
+  } catch {}
+</script>
 
 <script>
   // Client updater for module progress badges rendered in AppShell
