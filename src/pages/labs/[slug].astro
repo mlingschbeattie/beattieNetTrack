@@ -9,7 +9,9 @@ import Callout from '../../components/Callout.astro';
 import PcAssemblyLab from '../../components/labs/PcAssemblyLab.tsx';
 import ActivityCard from '../../components/ActivityCard.astro';
 import LabRunner from '../../components/LabRunner.tsx';
+import TerminalSandboxRunner from '../../components/TerminalSandboxRunner.tsx';
 import { getActivityModuleNavigation } from '../../lib/content';
+import type { TerminalSpecV1 } from '../../lib/terminalSandbox';
 
 export async function getStaticPaths() {
   const labs = await getCollection('labs');
@@ -68,6 +70,8 @@ const resolvedSteps: LabStep[] =
       : [];
 
 const isStepLab = resolvedSteps.length > 0;
+const isTerminalSandboxLab = lab.data.engine === 'sim-sandbox-terminal' && Boolean(lab.data.terminalSpec);
+const terminalSpec = isTerminalSandboxLab ? (lab.data.terminalSpec as TerminalSpecV1) : null;
 const estimatedMinutes = lab.data.estimatedMinutes ?? lab.data.estMinutes ?? 20;
 const xpReward = typeof lab.data.xp === 'number' ? lab.data.xp : 25;
 
@@ -82,7 +86,7 @@ if (currentTrack) {
 }
 ---
 
-{isStepLab ? (
+{isStepLab || isTerminalSandboxLab ? (
   <AppShell
     title={`Lab • ${lab.data.title}`}
     tracks={tracks}
@@ -104,14 +108,23 @@ if (currentTrack) {
 
     <Section title="Interactive Lab">
       <Card>
-        <LabRunner
-          client:only="react"
-          labSlug={lab.slug}
-          title={lab.data.title}
-          steps={resolvedSteps}
-          xpReward={xpReward}
-          backToTrackHref={currentTrack ? `/tracks/${currentTrack.slug}` : '/tracks/network-engineer'}
-        />
+        {isTerminalSandboxLab ? (
+          <TerminalSandboxRunner
+            client:only="react"
+            labSlug={lab.slug}
+            xpReward={xpReward}
+            spec={terminalSpec!}
+          />
+        ) : (
+          <LabRunner
+            client:only="react"
+            labSlug={lab.slug}
+            title={lab.data.title}
+            steps={resolvedSteps}
+            xpReward={xpReward}
+            backToTrackHref={currentTrack ? `/tracks/${currentTrack.slug}` : '/tracks/network-engineer'}
+          />
+        )}
       </Card>
     </Section>
 

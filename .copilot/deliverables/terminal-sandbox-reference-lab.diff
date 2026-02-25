@@ -1,0 +1,816 @@
+﻿diff --git a/src/content/config.ts b/src/content/config.ts
+index 37e43f5..5f1e770 100644
+--- a/src/content/config.ts
++++ b/src/content/config.ts
+@@ -61,63 +61,145 @@ const modules = defineCollection({
+   }),
+ });
+ 
+-const labs = defineCollection({
+-  type: 'content',
+-  schema: z.object({
+-    title: z.string(),
+-    description: z.string(),
+-    slug: z.string().optional(),
+-    type: z.literal('lab').optional().default('lab'),
+-    order: z.number().int().default(0),
+-    estimatedMinutes: z.preprocess(
+-      (value) => (typeof value === 'number' ? value : 20),
+-      z.number().int().default(20)
+-    ),
+-    difficulty: difficultySchema,
+-    xp: z.number().int().default(25),
+-    steps: z
+-      .array(
++const fsNodeSchema: z.ZodType<any> = z.lazy(() =>
++  z.union([
++    z.object({
++      type: z.literal('dir'),
++      children: z.record(fsNodeSchema),
++    }),
++    z.object({
++      type: z.literal('file'),
++      content: z.string(),
++    }),
++  ])
++);
++
++const terminalSpecSchema = z.object({
++  version: z.literal(1),
++  prompt: z.string(),
++  initialCwd: z.string(),
++  fs: fsNodeSchema,
++  allowedCommands: z.array(z.string()).default([]),
++  objectives: z
++    .array(
++      z.discriminatedUnion('kind', [
+         z.object({
+           id: z.string(),
+-          title: z.string(),
+-          prompt: z.string(),
+-          inputLabel: z.string().optional(),
+-          placeholder: z.string().optional(),
+-          hint: z.string().optional(),
+-          validator: z.discriminatedUnion('type', [
++          label: z.string(),
++          kind: z.literal('fs'),
++          pass: z.discriminatedUnion('type', [
+             z.object({
+-              type: z.literal('exact'),
+-              value: z.string(),
++              type: z.literal('pathExists'),
++              path: z.string(),
++              nodeType: z.enum(['dir', 'file']),
+             }),
+             z.object({
+-              type: z.literal('oneOf'),
+-              values: z.array(z.string()).min(1),
++              type: z.literal('fileContains'),
++              path: z.string(),
++              substring: z.string(),
+             }),
++          ]),
++        }),
++        z.object({
++          id: z.string(),
++          label: z.string(),
++          kind: z.literal('cwd'),
++          pass: z.object({
++            type: z.literal('cwdIs'),
++            path: z.string(),
++          }),
++        }),
++        z.object({
++          id: z.string(),
++          label: z.string(),
++          kind: z.literal('history'),
++          pass: z.discriminatedUnion('type', [
+             z.object({
+-              type: z.literal('regex'),
++              type: z.literal('historyIncludes'),
++              value: z.string(),
++            }),
++            z.object({
++              type: z.literal('historyMatches'),
+               pattern: z.string(),
+               flags: z.string().optional(),
+             }),
+           ]),
+-          successMessage: z.string().optional(),
+-        })
+-      )
+-      .default([]),
++        }),
++      ])
++    )
++    .default([]),
++});
+ 
+-    // Backward-compatible workspace metadata
+-    track: z.string().trim().min(1, 'track is required for mapped activities'),
+-    moduleId: z.string().trim().min(1, 'moduleId is required for mapped activities'),
+-    module: z.string().optional(),
+-    estMinutes: z.number().int().optional(),
+-    tags: z.array(z.string()).default([]),
+-    activity: z.enum(['iframe', 'terminal', 'code']).optional().default('iframe'),
+-    labPath: z.string().optional(),
+-    labUrl: z.string().optional(),
+-    checkLabel: z.string().optional().default('Check'),
+-    submitLabel: z.string().optional().default('Submit'),
+-    hints: z.array(z.string()).default([]),
+-    checklist: z.array(z.string()).default([]),
+-  }),
++const labs = defineCollection({
++  type: 'content',
++  schema: z
++    .object({
++      title: z.string(),
++      description: z.string(),
++      slug: z.string().optional(),
++      type: z.literal('lab').optional().default('lab'),
++      order: z.number().int().default(0),
++      estimatedMinutes: z.preprocess(
++        (value) => (typeof value === 'number' ? value : 20),
++        z.number().int().default(20)
++      ),
++      difficulty: difficultySchema,
++      tier: z.enum(['guided', 'state-machine', 'sandbox']).default('guided'),
++      engine: z.enum(['steps', 'sim-sandbox-terminal']).default('steps'),
++      xp: z.number().int().default(25),
++      steps: z
++        .array(
++          z.object({
++            id: z.string(),
++            title: z.string(),
++            prompt: z.string(),
++            inputLabel: z.string().optional(),
++            placeholder: z.string().optional(),
++            hint: z.string().optional(),
++            validator: z.discriminatedUnion('type', [
++              z.object({
++                type: z.literal('exact'),
++                value: z.string(),
++              }),
++              z.object({
++                type: z.literal('oneOf'),
++                values: z.array(z.string()).min(1),
++              }),
++              z.object({
++                type: z.literal('regex'),
++                pattern: z.string(),
++                flags: z.string().optional(),
++              }),
++            ]),
++            successMessage: z.string().optional(),
++          })
++        )
++        .default([]),
++      terminalSpec: terminalSpecSchema.optional(),
++
++      // Backward-compatible workspace metadata
++      track: z.string().trim().min(1, 'track is required for mapped activities'),
++      moduleId: z.string().trim().min(1, 'moduleId is required for mapped activities'),
++      module: z.string().optional(),
++      estMinutes: z.number().int().optional(),
++      tags: z.array(z.string()).default([]),
++      activity: z.enum(['iframe', 'terminal', 'code']).optional().default('iframe'),
++      labPath: z.string().optional(),
++      labUrl: z.string().optional(),
++      checkLabel: z.string().optional().default('Check'),
++      submitLabel: z.string().optional().default('Submit'),
++      hints: z.array(z.string()).default([]),
++      checklist: z.array(z.string()).default([]),
++    })
++    .superRefine((value, ctx) => {
++      if (value.engine === 'sim-sandbox-terminal' && !value.terminalSpec) {
++        ctx.addIssue({
++          code: z.ZodIssueCode.custom,
++          path: ['terminalSpec'],
++          message: 'terminalSpec is required when engine is sim-sandbox-terminal.',
++        });
++      }
++    }),
+ });
+ 
+ const quizzes = defineCollection({
+diff --git a/src/lib/labEngines.ts b/src/lib/labEngines.ts
+new file mode 100644
+index 0000000..13ef31a
+--- /dev/null
++++ b/src/lib/labEngines.ts
+@@ -0,0 +1,27 @@
++export const LAB_TIER_VALUES = ['guided', 'state-machine', 'sandbox'] as const;
++export type LabTier = (typeof LAB_TIER_VALUES)[number];
++
++export const LAB_ENGINES = {
++  'sim-sandbox-terminal': {
++    tier: 'sandbox',
++    label: 'Terminal Sandbox Simulator',
++    shipped: true,
++  },
++  steps: {
++    tier: 'guided',
++    label: 'Guided Runner (step validator)',
++    shipped: true,
++  },
++} as const;
++
++export type LabEngine = keyof typeof LAB_ENGINES;
++
++export function shippedEngines(): LabEngine[] {
++  return (Object.keys(LAB_ENGINES) as LabEngine[])
++    .filter((engine) => LAB_ENGINES[engine].shipped)
++    .sort((a, b) => a.localeCompare(b));
++}
++
++export function engineTier(engine: LabEngine): LabTier {
++  return LAB_ENGINES[engine].tier;
++}
+\ No newline at end of file
+diff --git a/src/lib/labMetadataRules.test.ts b/src/lib/labMetadataRules.test.ts
+new file mode 100644
+index 0000000..9870273
+--- /dev/null
++++ b/src/lib/labMetadataRules.test.ts
+@@ -0,0 +1,119 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++
++import { compareValidationIssues, validateLabMetadata, type ValidationIssue } from './labMetadataRules.ts';
++
++test('missing tier -> LAB_MISSING_TIER', () => {
++  const issues = validateLabMetadata('terminal-basics', { engine: 'steps' });
++  assert.equal(issues.length, 1);
++  assert.equal(issues[0]?.code, 'LAB_MISSING_TIER');
++  assert.equal(
++    issues[0]?.message,
++    '[LAB_MISSING_TIER] Lab "terminal-basics" is missing required field "tier".\n' +
++      'Allowed values: guided | state-machine | sandbox.\n' +
++      'Action: Add `tier` to src/content/labs/terminal-basics.mdx frontmatter.'
++  );
++});
++
++test('invalid tier -> LAB_INVALID_TIER', () => {
++  const issues = validateLabMetadata('terminal-basics', { tier: 'sandboxed', engine: 'steps' });
++  assert.equal(issues.length, 1);
++  assert.equal(issues[0]?.code, 'LAB_INVALID_TIER');
++  assert.equal(
++    issues[0]?.message,
++    '[LAB_INVALID_TIER] Lab "terminal-basics" has invalid tier "sandboxed".\n' +
++      'Allowed values: guided | state-machine | sandbox.\n' +
++      'Action: Correct `tier` in frontmatter.'
++  );
++});
++
++test('missing engine -> LAB_MISSING_ENGINE', () => {
++  const issues = validateLabMetadata('terminal-basics', { tier: 'guided' });
++  assert.equal(issues.length, 1);
++  assert.equal(issues[0]?.code, 'LAB_MISSING_ENGINE');
++  assert.equal(
++    issues[0]?.message,
++    '[LAB_MISSING_ENGINE] Lab "terminal-basics" is missing required field "engine".\n' +
++      'Allowed values: sim-sandbox-terminal | steps.\n' +
++      'Action: Add `engine` to src/content/labs/terminal-basics.mdx frontmatter.'
++  );
++});
++
++test('invalid engine -> LAB_INVALID_ENGINE', () => {
++  const issues = validateLabMetadata('terminal-basics', { tier: 'guided', engine: 'sim-fsm' });
++  assert.equal(issues.length, 1);
++  assert.equal(issues[0]?.code, 'LAB_INVALID_ENGINE');
++  assert.equal(
++    issues[0]?.message,
++    '[LAB_INVALID_ENGINE] Lab "terminal-basics" declares engine "sim-fsm" which is not currently supported.\n' +
++      'Allowed values: sim-sandbox-terminal | steps.\n' +
++      'Action: Use a shipped engine or implement and register the new engine before declaring it.'
++  );
++});
++
++test('mismatch engine=steps tier=sandbox -> LAB_ENGINE_TIER_MISMATCH', () => {
++  const issues = validateLabMetadata('terminal-basics', { tier: 'sandbox', engine: 'steps' });
++  assert.equal(issues.length, 1);
++  assert.equal(issues[0]?.code, 'LAB_ENGINE_TIER_MISMATCH');
++  assert.equal(
++    issues[0]?.message,
++    '[LAB_ENGINE_TIER_MISMATCH] Lab "terminal-basics" declares engine "steps" but tier "sandbox".\n' +
++      'Rule: engine "steps" requires tier "guided".\n' +
++      'Action: Either change tier to "guided" or implement and register a matching engine.'
++  );
++});
++
++test('sim-sandbox-terminal engine is valid when shipped=true', () => {
++  const issues = validateLabMetadata('terminal-sandbox-basics', {
++    tier: 'sandbox',
++    engine: 'sim-sandbox-terminal',
++  });
++  assert.deepEqual(issues, []);
++});
++
++test('valid engine=steps tier=guided -> no issues', () => {
++  const issues = validateLabMetadata('terminal-basics', { tier: 'guided', engine: 'steps' });
++  assert.deepEqual(issues, []);
++});
++
++test('deterministic issue ordering comparator', () => {
++  const issues: ValidationIssue[] = [
++    {
++      slug: 'z-lab',
++      code: 'LAB_INVALID_ENGINE',
++      message: 'm1',
++    },
++    {
++      slug: 'a-lab',
++      code: 'LAB_ENGINE_TIER_MISMATCH',
++      message: 'm2',
++    },
++    {
++      slug: 'a-lab',
++      code: 'LAB_MISSING_ENGINE',
++      message: 'm3',
++    },
++    {
++      slug: 'a-lab',
++      code: 'LAB_INVALID_TIER',
++      message: 'm4',
++    },
++    {
++      slug: 'a-lab',
++      code: 'LAB_MISSING_TIER',
++      message: 'm5',
++    },
++  ];
++
++  const sorted = [...issues].sort(compareValidationIssues);
++  assert.deepEqual(
++    sorted.map((issue) => `${issue.slug}:${issue.code}`),
++    [
++      'a-lab:LAB_MISSING_TIER',
++      'a-lab:LAB_MISSING_ENGINE',
++      'a-lab:LAB_INVALID_TIER',
++      'a-lab:LAB_ENGINE_TIER_MISMATCH',
++      'z-lab:LAB_INVALID_ENGINE',
++    ]
++  );
++});
+diff --git a/src/pages/labs/[slug].astro b/src/pages/labs/[slug].astro
+index ccb0f1f..c11838b 100644
+--- a/src/pages/labs/[slug].astro
++++ b/src/pages/labs/[slug].astro
+@@ -9,7 +9,9 @@ import Callout from '../../components/Callout.astro';
+ import PcAssemblyLab from '../../components/labs/PcAssemblyLab.tsx';
+ import ActivityCard from '../../components/ActivityCard.astro';
+ import LabRunner from '../../components/LabRunner.tsx';
++import TerminalSandboxRunner from '../../components/TerminalSandboxRunner.tsx';
+ import { getActivityModuleNavigation } from '../../lib/content';
++import type { TerminalSpecV1 } from '../../lib/terminalSandbox';
+ 
+ export async function getStaticPaths() {
+   const labs = await getCollection('labs');
+@@ -68,6 +70,8 @@ const resolvedSteps: LabStep[] =
+       : [];
+ 
+ const isStepLab = resolvedSteps.length > 0;
++const isTerminalSandboxLab = lab.data.engine === 'sim-sandbox-terminal' && Boolean(lab.data.terminalSpec);
++const terminalSpec = isTerminalSandboxLab ? (lab.data.terminalSpec as TerminalSpecV1) : null;
+ const estimatedMinutes = lab.data.estimatedMinutes ?? lab.data.estMinutes ?? 20;
+ const xpReward = typeof lab.data.xp === 'number' ? lab.data.xp : 25;
+ 
+@@ -82,7 +86,7 @@ if (currentTrack) {
+ }
+ ---
+ 
+-{isStepLab ? (
++{isStepLab || isTerminalSandboxLab ? (
+   <AppShell
+     title={`Lab ΓÇó ${lab.data.title}`}
+     tracks={tracks}
+@@ -104,14 +108,23 @@ if (currentTrack) {
+ 
+     <Section title="Interactive Lab">
+       <Card>
+-        <LabRunner
+-          client:only="react"
+-          labSlug={lab.slug}
+-          title={lab.data.title}
+-          steps={resolvedSteps}
+-          xpReward={xpReward}
+-          backToTrackHref={currentTrack ? `/tracks/${currentTrack.slug}` : '/tracks/network-engineer'}
+-        />
++        {isTerminalSandboxLab ? (
++          <TerminalSandboxRunner
++            client:only="react"
++            labSlug={lab.slug}
++            xpReward={xpReward}
++            spec={terminalSpec!}
++          />
++        ) : (
++          <LabRunner
++            client:only="react"
++            labSlug={lab.slug}
++            title={lab.data.title}
++            steps={resolvedSteps}
++            xpReward={xpReward}
++            backToTrackHref={currentTrack ? `/tracks/${currentTrack.slug}` : '/tracks/network-engineer'}
++          />
++        )}
+       </Card>
+     </Section>
+ 
+diff --git a/tests/terminal.spec.ts b/tests/terminal.spec.ts
+index e30a755..30e693f 100644
+--- a/tests/terminal.spec.ts
++++ b/tests/terminal.spec.ts
+@@ -8,3 +8,58 @@ test('terminal basics lab runner renders and accepts input', async ({ page }) =>
+   await expect(page.getByTestId('lab-input')).toBeVisible();
+   await expect(page.getByTestId('lab-submit')).toBeVisible();
+ });
++
++test('terminal sandbox lab executes deterministic commands and emits submit/reset payloads', async ({ page }) => {
++  await page.goto('/labs/terminal-sandbox-basics');
++
++  await expect(page.getByTestId('terminal-sandbox-runner')).toBeVisible();
++
++  await page.evaluate(() => {
++    (window as unknown as { __sandboxResults?: unknown[] }).__sandboxResults = [];
++    window.addEventListener('workspace:result', (event) => {
++      const payload = (event as CustomEvent).detail;
++      if (payload?.slug === 'terminal-sandbox-basics') {
++        const bag = (window as unknown as { __sandboxResults?: unknown[] }).__sandboxResults;
++        if (Array.isArray(bag)) bag.push(payload);
++      }
++    });
++  });
++
++  const input = page.getByTestId('terminal-input');
++  const run = page.getByTestId('terminal-run');
++
++  await input.fill('pwd');
++  await run.click();
++
++  await input.fill('mkdir project');
++  await run.click();
++
++  await input.fill('cd project');
++  await run.click();
++
++  await input.fill('touch note.txt');
++  await run.click();
++
++  await input.fill('ls');
++  await run.click();
++
++  await expect(page.getByTestId('terminal-output')).toContainText('/home/student');
++  await expect(page.getByTestId('terminal-output')).toContainText('note.txt');
++  await expect(page.getByTestId('terminal-checks')).toContainText('Create project folder');
++
++  const reset = page.getByTestId('terminal-reset');
++  await reset.click();
++  await expect(input).toHaveValue('');
++
++  const results = await page.evaluate(() =>
++    (window as unknown as { __sandboxResults?: Array<Record<string, unknown>> }).__sandboxResults ?? []
++  );
++
++  const submitEvent = results.find((entry) => entry.action === 'submit');
++  const resetEvent = results.find((entry) => entry.action === 'reset');
++
++  expect(submitEvent).toBeTruthy();
++  expect(resetEvent).toBeTruthy();
++  expect(Object.keys(submitEvent ?? {}).sort()).toEqual(['action', 'checks', 'message', 'passed', 'progress', 'slug']);
++  expect(Object.keys(resetEvent ?? {}).sort()).toEqual(['action', 'checks', 'message', 'passed', 'progress', 'slug']);
++});
+diff --git a/tests/visual.spec.ts-snapshots/lesson-win32.png b/tests/visual.spec.ts-snapshots/lesson-win32.png
+index 13811b2..eee6bed 100644
+Binary files a/tests/visual.spec.ts-snapshots/lesson-win32.png and b/tests/visual.spec.ts-snapshots/lesson-win32.png differ
+diff --git a/tests/visual.spec.ts-snapshots/quizzes-win32.png b/tests/visual.spec.ts-snapshots/quizzes-win32.png
+index 0f9c7ca..e3a6941 100644
+Binary files a/tests/visual.spec.ts-snapshots/quizzes-win32.png and b/tests/visual.spec.ts-snapshots/quizzes-win32.png differ
+diff --git a/tests/visual.spec.ts-snapshots/track-win32.png b/tests/visual.spec.ts-snapshots/track-win32.png
+index 5a8519c..61fbfc9 100644
+Binary files a/tests/visual.spec.ts-snapshots/track-win32.png and b/tests/visual.spec.ts-snapshots/track-win32.png differ
+
+diff --git a/src/components/TerminalSandboxRunner.tsx b/src/components/TerminalSandboxRunner.tsx
+new file mode 100644
+index 0000000..b594f50
+--- /dev/null
++++ b/src/components/TerminalSandboxRunner.tsx
+@@ -0,0 +1,240 @@
++import { useMemo, useState } from 'react';
++import {
++  createInitialState,
++  evaluateObjectives,
++  execCommand,
++  type ObjectiveCheck,
++  type TerminalSpecV1,
++  type TerminalStateV1,
++} from '../lib/terminalSandbox';
++import { getLabState, markLabCompleted, saveLabState } from '../lib/progressStore';
++
++type TerminalSandboxRunnerProps = {
++  labSlug: string;
++  xpReward: number;
++  spec: TerminalSpecV1;
++};
++
++type PersistedLabState = {
++  startedAt: string | null;
++  completedAt: string | null;
++  completed: boolean;
++  completedStepIds: string[];
++  lastStepIndex: number;
++  terminalState?: TerminalStateV1;
++  terminalProgress?: {
++    checks: ObjectiveCheck[];
++    progress: number;
++  };
++};
++
++const stableChecks = (checks: ObjectiveCheck[]): ObjectiveCheck[] =>
++  checks.map((check) => ({
++    id: check.id,
++    label: check.label,
++    pass: check.pass,
++    message: check.message,
++  }));
++
++export default function TerminalSandboxRunner({ labSlug, xpReward, spec }: TerminalSandboxRunnerProps) {
++  const initialFromStore = useMemo(() => {
++    const stored = getLabState(labSlug) as PersistedLabState;
++    const terminalState = stored.terminalState ?? createInitialState(spec);
++    const evaluation = evaluateObjectives(terminalState, spec);
++
++    return {
++      startedAt: stored.startedAt ?? null,
++      completedAt: stored.completedAt ?? null,
++      terminalState,
++      checks: stableChecks(stored.terminalProgress?.checks ?? evaluation.checks),
++      progress:
++        typeof stored.terminalProgress?.progress === 'number'
++          ? stored.terminalProgress.progress
++          : evaluation.progress,
++      lastOutput: '',
++      input: '',
++    };
++  }, [labSlug, spec]);
++
++  const [terminalState, setTerminalState] = useState<TerminalStateV1>(initialFromStore.terminalState);
++  const [checks, setChecks] = useState<ObjectiveCheck[]>(initialFromStore.checks);
++  const [progress, setProgress] = useState<number>(initialFromStore.progress);
++  const [startedAt, setStartedAt] = useState<string | null>(initialFromStore.startedAt);
++  const [completedAt, setCompletedAt] = useState<string | null>(initialFromStore.completedAt);
++  const [input, setInput] = useState(initialFromStore.input);
++  const [lastOutput, setLastOutput] = useState(initialFromStore.lastOutput);
++
++  const saveState = (
++    nextState: TerminalStateV1,
++    nextChecks: ObjectiveCheck[],
++    nextProgress: number,
++    completionAt: string | null
++  ) => {
++    const effectiveStartedAt = startedAt ?? new Date().toISOString();
++    if (!startedAt) {
++      setStartedAt(effectiveStartedAt);
++    }
++
++    saveLabState(labSlug, {
++      startedAt: effectiveStartedAt,
++      completedAt: completionAt,
++      completed: Boolean(completionAt),
++      terminalState: nextState,
++      terminalProgress: {
++        checks: nextChecks,
++        progress: nextProgress,
++      },
++      completedStepIds: [],
++      lastStepIndex: 0,
++    } as Partial<PersistedLabState>);
++  };
++
++  const emitWorkspaceResult = (
++    action: 'submit' | 'reset',
++    passed: boolean,
++    nextProgress: number,
++    message: string,
++    nextChecks: ObjectiveCheck[]
++  ) => {
++    window.dispatchEvent(
++      new CustomEvent('workspace:result', {
++        detail: {
++          slug: labSlug,
++          action,
++          passed,
++          progress: nextProgress,
++          message,
++          checks: stableChecks(nextChecks),
++        },
++      })
++    );
++  };
++
++  const runCommand = () => {
++    const exec = execCommand(terminalState, spec, input);
++    const evaluation = evaluateObjectives(exec.nextState, spec);
++    const nextChecks = stableChecks(evaluation.checks);
++    const nextProgress = evaluation.progress;
++
++    setTerminalState(exec.nextState);
++    setChecks(nextChecks);
++    setProgress(nextProgress);
++    setLastOutput(exec.output);
++
++    let nextCompletedAt = completedAt;
++    if (nextProgress === 100 && !completedAt) {
++      const nowIso = new Date().toISOString();
++      nextCompletedAt = nowIso;
++      setCompletedAt(nowIso);
++      markLabCompleted(labSlug, xpReward);
++      window.dispatchEvent(new CustomEvent('progress-updated'));
++    }
++
++    saveState(exec.nextState, nextChecks, nextProgress, nextCompletedAt);
++
++    // Deterministic passed rule: a submit passes if the command executed successfully.
++    const passed = exec.ok;
++    const message = exec.ok ? 'Command executed' : exec.output || 'Command failed';
++    emitWorkspaceResult('submit', passed, nextProgress, message, nextChecks);
++    setInput('');
++  };
++
++  const resetTerminal = () => {
++    const resetState = createInitialState(spec);
++    const evaluation = evaluateObjectives(resetState, spec);
++    const nextChecks = stableChecks(evaluation.checks);
++    const nextProgress = evaluation.progress;
++
++    setTerminalState(resetState);
++    setChecks(nextChecks);
++    setProgress(nextProgress);
++    setInput('');
++    setLastOutput('');
++    setCompletedAt(null);
++
++    saveState(resetState, nextChecks, nextProgress, null);
++
++    emitWorkspaceResult(
++      'reset',
++      false,
++      nextProgress,
++      'Terminal reset',
++      nextChecks.length > 0
++        ? nextChecks
++        : [{ id: 'terminal-reset', label: 'Terminal reset', pass: false, message: 'Terminal reset' }]
++    );
++  };
++
++  return (
++    <article className="card" data-testid="terminal-sandbox-runner">
++      <h3>Terminal Sandbox</h3>
++      <div className="card__meta" style={{ marginBottom: '0.75rem' }}>
++        <span className="badge">Progress {progress}%</span>
++      </div>
++
++      <div
++        data-testid="terminal-output"
++        style={{
++          minHeight: '220px',
++          maxHeight: '220px',
++          overflowY: 'auto',
++          border: '1px solid var(--line)',
++          borderRadius: '12px',
++          padding: '0.75rem',
++          marginBottom: '0.75rem',
++          background: 'var(--surface-2)',
++          fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
++          whiteSpace: 'pre-wrap',
++        }}
++      >
++        {terminalState.history.length === 0 ? 'No commands yet.' : null}
++        {terminalState.history.map((entry, index) => (
++          <div key={`${index}:${entry.cmd}`}>
++            <div>{spec.prompt}{entry.cmd}</div>
++            <div>{entry.output}</div>
++          </div>
++        ))}
++      </div>
++
++      <label className="u-block u-mb-2" htmlFor="terminal-sandbox-input">Command</label>
++      <input
++        id="terminal-sandbox-input"
++        className="input"
++        data-testid="terminal-input"
++        value={input}
++        onChange={(event) => setInput(event.target.value)}
++        placeholder="Type a command"
++        onKeyDown={(event) => {
++          if (event.key === 'Enter') {
++            event.preventDefault();
++            runCommand();
++          }
++        }}
++      />
++
++      <div className="card__footer u-mt-3">
++        <button type="button" className="btn" data-testid="terminal-run" onClick={runCommand}>
++          Run
++        </button>
++        <button type="button" className="btn-ghost" data-testid="terminal-reset" onClick={resetTerminal}>
++          Reset
++        </button>
++      </div>
++
++      <div data-testid="terminal-checks" className="u-mt-3">
++        <h4>Objective checks</h4>
++        <ul>
++          {checks.map((check) => (
++            <li key={check.id}>
++              {check.pass ? 'Γ£ö' : 'Γ£û'} {check.label}
++              {check.message ? ` ΓÇö ${check.message}` : ''}
++            </li>
++          ))}
++        </ul>
++      </div>
++
++      {lastOutput ? <p className="u-mt-2"><strong>Latest output:</strong> {lastOutput}</p> : null}
++      <p className="u-mt-2"><strong>Current directory:</strong> {terminalState.cwd}</p>
++    </article>
++  );
++}
+\ No newline at end of file
+
+diff --git a/src/content/labs/terminal-sandbox-basics.mdx b/src/content/labs/terminal-sandbox-basics.mdx
+new file mode 100644
+index 0000000..95e77e2
+--- /dev/null
++++ b/src/content/labs/terminal-sandbox-basics.mdx
+@@ -0,0 +1,69 @@
++---
++title: Terminal Sandbox Basics
++description: Practice foundational shell commands in a deterministic sandbox terminal.
++slug: terminal-sandbox-basics
++track: network-engineer
++moduleId: net.troubleshooting.tools
++order: 100
++difficulty: Beginner
++estimatedMinutes: 12
++xp: 25
++tier: sandbox
++engine: sim-sandbox-terminal
++terminalSpec:
++  version: 1
++  prompt: "$ "
++  initialCwd: /home/student
++  fs:
++    type: dir
++    children:
++      home:
++        type: dir
++        children:
++          student:
++            type: dir
++            children:
++              README.txt:
++                type: file
++                content: Welcome to the terminal sandbox.
++  allowedCommands:
++    - pwd
++    - ls
++    - cd
++    - mkdir
++    - touch
++    - cat
++    - echo
++  objectives:
++    - id: make-project
++      label: Create project folder
++      kind: fs
++      pass:
++        type: pathExists
++        path: /home/student/project
++        nodeType: dir
++    - id: enter-project
++      label: Move into project folder
++      kind: cwd
++      pass:
++        type: cwdIs
++        path: /home/student/project
++    - id: make-note
++      label: Create note file
++      kind: fs
++      pass:
++        type: pathExists
++        path: /home/student/project/note.txt
++        nodeType: file
++    - id: read-readme
++      label: Read README for welcome text
++      kind: fs
++      pass:
++        type: fileContains
++        path: /home/student/README.txt
++        substring: Welcome
++---
++
++This lab is a **simulated terminal** for educational use only. It is not a real shell and does not execute system commands.
++
++Try the sequence: `pwd`, `mkdir project`, `cd project`, `touch note.txt`, and `ls`.
+\ No newline at end of file
+

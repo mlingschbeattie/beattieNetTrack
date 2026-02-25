@@ -1,0 +1,69 @@
+---
+title: Terminal Sandbox Basics
+description: Practice foundational shell commands in a deterministic sandbox terminal.
+slug: terminal-sandbox-basics
+track: network-engineer
+moduleId: net.troubleshooting.tools
+order: 100
+difficulty: Beginner
+estimatedMinutes: 12
+xp: 25
+tier: sandbox
+engine: sim-sandbox-terminal
+terminalSpec:
+  version: 1
+  prompt: "$ "
+  initialCwd: /home/student
+  fs:
+    type: dir
+    children:
+      home:
+        type: dir
+        children:
+          student:
+            type: dir
+            children:
+              README.txt:
+                type: file
+                content: Welcome to the terminal sandbox.
+  allowedCommands:
+    - pwd
+    - ls
+    - cd
+    - mkdir
+    - touch
+    - cat
+    - echo
+  objectives:
+    - id: make-project
+      label: Create project folder
+      kind: fs
+      pass:
+        type: pathExists
+        path: /home/student/project
+        nodeType: dir
+    - id: enter-project
+      label: Move into project folder
+      kind: cwd
+      pass:
+        type: cwdIs
+        path: /home/student/project
+    - id: make-note
+      label: Create note file
+      kind: fs
+      pass:
+        type: pathExists
+        path: /home/student/project/note.txt
+        nodeType: file
+    - id: read-readme
+      label: Read README for welcome text
+      kind: fs
+      pass:
+        type: fileContains
+        path: /home/student/README.txt
+        substring: Welcome
+---
+
+This lab is a **simulated terminal** for educational use only. It is not a real shell and does not execute system commands.
+
+Try the sequence: `pwd`, `mkdir project`, `cd project`, `touch note.txt`, and `ls`.

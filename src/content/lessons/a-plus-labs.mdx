@@ -23,7 +23,7 @@ import LegacyHtml from '../../components/LegacyHtml.astro';
     <header class="site-header">
       <div class="header-container">
         <div class="logo">
-          <a href="index.html">
+          <a href="/lessons/index">
             <span class="logo-bracket">[</span>
             <span class="logo-text">BEATTIE</span>
             <span class="logo-bracket">]</span>
@@ -39,11 +39,11 @@ import LegacyHtml from '../../components/LegacyHtml.astro';
         
         <nav class="main-nav nav-links">
           <ul>
-            <li><a href="index.html">🏠 Home</a></li>
-            <li><a href="study-guides.html">📖 Study Guides</a></li>
-            <li><a href="learning-tracks.html" class="active">🎯 Learning Tracks</a></li>
-            <li><a href="resources.html">🔬 Study Hub</a></li>
-            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
+            <li><a href="/lessons/index">🏠 Home</a></li>
+            <li><a href="/lessons/study-guides">📖 Study Guides</a></li>
+            <li><a href="/lessons/learning-tracks" class="active">🎯 Learning Tracks</a></li>
+            <li><a href="/lessons/resources">🔬 Study Hub</a></li>
+            <li><a href="/lessons/cheat-sheets">⚡ Cheat Sheets</a></li>
           </ul>
         </nav>
       </div>
@@ -53,9 +53,9 @@ import LegacyHtml from '../../components/LegacyHtml.astro';
     
     <main id="main-content" class="container">
       <nav class="breadcrumbs">
-        <a href="index.html">Home</a>
+        <a href="/lessons/index">Home</a>
         <span class="separator">/</span>
-        <a href="learning-tracks.html">Learning Tracks</a>
+        <a href="/lessons/learning-tracks">Learning Tracks</a>
         <span class="separator">/</span>
         <span class="current">A+ Hands-On Labs</span>
       </nav>
@@ -73,7 +73,7 @@ import LegacyHtml from '../../components/LegacyHtml.astro';
           <div class="card-description">
             Build a compatible gaming PC within budget. Select components, validate compatibility, and get graded feedback on your build.
           </div>
-          <a href="a-plus-lab-pc-assembly.html" class="card-link">Launch Lab</a>
+          <a href="/lessons/a-plus-lab-pc-assembly" class="card-link">Launch Lab</a>
         </div>
         
         {/* BIOS Configuration Lab */}
@@ -106,7 +106,7 @@ import LegacyHtml from '../../components/LegacyHtml.astro';
           <div class="card-description">
             Optimize system performance. Diagnose bottlenecks, enable XMP, adjust power settings, and apply performance tweaks.
           </div>
-          <a href="a-plus-lab-performance-tuning.html" class="card-link">Launch Lab</a>
+          <a href="/lessons/a-plus-lab-performance-tuning" class="card-link">Launch Lab</a>
         </div>
         
         {/* Upgrade Planning Lab */}
@@ -117,7 +117,7 @@ import LegacyHtml from '../../components/LegacyHtml.astro';
           <div class="card-description">
             Plan cost-effective upgrades within a budget. Select components based on specs, validate compatibility, and optimize spending.
           </div>
-          <a href="a-plus-lab-upgrade-planning.html" class="card-link">Launch Lab</a>
+          <a href="/lessons/a-plus-lab-upgrade-planning" class="card-link">Launch Lab</a>
         </div>
         
       </div>
@@ -166,8 +166,8 @@ import LegacyHtml from '../../components/LegacyHtml.astro';
       <div class="section">
         <h2>Back to Learning Tracks</h2>
         <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-          <a href="learning-tracks.html#pc-professional" class="btn-secondary">← PC Professional Track</a>
-          <a href="a-plus-guides.html" class="btn-secondary">Study Guides</a>
+          <a href="/lessons/learning-tracks#pc-professional" class="btn-secondary">← PC Professional Track</a>
+          <a href="/lessons/a-plus-guides" class="btn-secondary">Study Guides</a>
         </div>
       </div>
     </main>
@@ -178,30 +178,30 @@ import LegacyHtml from '../../components/LegacyHtml.astro';
         <div class="footer-section">
           <h3>Quick Links</h3>
           <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="tour.html">Tour Day Info</a></li>
-            <li><a href="about-class.html">About This Class</a></li>
-            <li><a href="resources.html">Study Hub</a></li>
-            <li><a href="cheat-sheets.html">Cheat Sheets</a></li>
+            <li><a href="/lessons/index">Home</a></li>
+            <li><a href="/lessons/tour">Tour Day Info</a></li>
+            <li><a href="/lessons/about-class">About This Class</a></li>
+            <li><a href="/lessons/resources">Study Hub</a></li>
+            <li><a href="/lessons/cheat-sheets">Cheat Sheets</a></li>
           </ul>
         </div>
         
         <div class="footer-section">
           <h3>A+ Learning Path</h3>
           <ul>
-            <li><a href="study-guides.html">Study Guides</a></li>
-            <li><a href="a-plus-guides.html">All Topics</a></li>
-            <li><a href="learning-tracks.html">Learning Tracks</a></li>
-            <li><a href="a-plus-labs.html">Hands-On Labs</a></li>
+            <li><a href="/lessons/study-guides">Study Guides</a></li>
+            <li><a href="/lessons/a-plus-guides">All Topics</a></li>
+            <li><a href="/lessons/learning-tracks">Learning Tracks</a></li>
+            <li><a href="/lessons/a-plus-labs">Hands-On Labs</a></li>
           </ul>
         </div>
         
         <div class="footer-section">
           <h3>🚀 Popular Labs</h3>
           <ul>
-            <li><a href="a-plus-lab-pc-assembly.html">PC Assembly</a></li>
-            <li><a href="a-plus-lab-upgrade-planning.html">Upgrade Planning</a></li>
-            <li><a href="a-plus-lab-performance-tuning.html">Performance Tuning</a></li>
+            <li><a href="/lessons/a-plus-lab-pc-assembly">PC Assembly</a></li>
+            <li><a href="/lessons/a-plus-lab-upgrade-planning">Upgrade Planning</a></li>
+            <li><a href="/lessons/a-plus-lab-performance-tuning">Performance Tuning</a></li>
             <li><a href="/lessons/a-plus-lab-bios-config">BIOS Config</a></li>
           </ul>
         </div>

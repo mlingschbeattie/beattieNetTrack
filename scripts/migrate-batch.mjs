@@ -125,7 +125,7 @@ const readSample = async (filePath) => {
   const buffer = Buffer.alloc(2048);
   const { bytesRead } = await handle.read(buffer, 0, 2048, 0);
   await handle.close();
-  return buffer.slice(0, bytesRead).toString('utf-8');
+  return buffer.subarray(0, bytesRead).toString('utf-8');
 };
 
 const walkFiles = async (dir, matcher, skipReasons) => {

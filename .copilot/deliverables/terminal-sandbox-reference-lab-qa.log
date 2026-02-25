@@ -1,0 +1,382 @@
+Note: The tool simplified the command to `npm run test:ci`, and this is the output of running that command instead:
+
+> site@0.0.1 test:ci
+> npm run validate:tracks && npm run lint && npm run test:unit && npm run build 
+&& npm run test:visual                                                          
+
+> site@0.0.1 validate:tracks
+> node scripts/validate-tracks.mjs
+
+Track validation report
+======================
+Tracks discovered: 9
+Modules discovered: 77
+Collections checked: labs, quizzes, activities, tour
+Entries checked: 35
+
+Validation passed: all activity content is correctly mapped to track + moduleId.
+
+> site@0.0.1 lint
+> astro check
+
+10:23:42 [content] Syncing content
+10:23:42 [content] Synced content
+10:23:42 [types] Generated 244ms
+10:23:42 [check] Getting diagnostics for Astro files in C:\Users\mlingsch\Apps\I
+mages\site...                                                                   scripts/migrate-batch.mjs:128:17 - warning ts(6387): The signature '(start?: num
+ber | undefined, end?: number | undefined): Buffer<ArrayBuffer>' of 'buffer.slice' is deprecated.                                                               
+128   return buffer.slice(0, bytesRead).toString('utf-8');
+                    ~~~~~
+
+Result (113 files): 
+- 0 errors
+- 0 warnings
+- 1 hint
+
+
+> site@0.0.1 test:unit
+> node --test --import tsx src/lib/*.test.ts
+
+✔ missing tier -> LAB_MISSING_TIER (0.5116ms)
+✔ invalid tier -> LAB_INVALID_TIER (0.0821ms)
+✔ missing engine -> LAB_MISSING_ENGINE (0.0626ms)
+✔ invalid engine -> LAB_INVALID_ENGINE (0.0598ms)
+✔ mismatch engine=steps tier=sandbox -> LAB_ENGINE_TIER_MISMATCH (0.0701ms)     
+✔ sim-sandbox-terminal engine is valid when shipped=true (0.3551ms)
+✔ valid engine=steps tier=guided -> no issues (0.0807ms)
+✔ deterministic issue ordering comparator (0.1313ms)
+✔ mark complete/incomplete updates XP (1.4855ms)
+✔ track progress aggregates XP and completion (0.3279ms)
+✔ streak increments across days (0.2263ms)
+✔ level derives from xpTotal (0.0894ms)
+✔ normalizeText normalizes punctuation and spacing (0.4466ms)
+✔ gradeQuiz grades all supported question types (0.1897ms)
+✔ determinism: same initial state + same input => same output and nextState (1.1
+308ms)                                                                          ✔ pwd returns initial cwd (0.1001ms)
+✔ mkdir + ls sorted lexicographically (5.2238ms)
+✔ cd path normalization keeps canonical cwd (0.1039ms)
+✔ touch + cat semantics for empty and seeded files (0.1279ms)
+✔ disallow command when excluded by allowedCommands (0.0641ms)
+✔ history objective: historyIncludes passes after pwd (0.1872ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 179.0568
+
+> site@0.0.1 prebuild
+> npm run validate:tracks
+
+
+> site@0.0.1 validate:tracks
+> node scripts/validate-tracks.mjs
+
+Track validation report
+======================
+Tracks discovered: 9
+Modules discovered: 77
+Collections checked: labs, quizzes, activities, tour
+Entries checked: 35
+
+Validation passed: all activity content is correctly mapped to track + moduleId.
+
+> site@0.0.1 build
+> astro build
+
+10:23:49 [content] Syncing content
+10:23:49 [content] Synced content
+10:23:49 [types] Generated 251ms
+10:23:49 [build] output: "static"
+10:23:49 [build] mode: "static"
+10:23:49 [build] directory: C:\Users\mlingsch\Apps\Images\site\dist\
+10:23:49 [build] Collecting build info...
+10:23:49 [build] ✓ Completed in 265ms.
+10:23:49 [build] Building static entrypoints...
+10:23:50 [vite] ✓ built in 1.55s
+10:23:50 [build] ✓ Completed in 1.57s.
+
+ building client (vite) 
+10:23:51 [vite] ✓ 70 modules transformed.
+10:23:51 [vite] dist/_astro/SidebarTourProgress.DS7XtiXA.js                     
+                0.44 kB │ gzip:  0.30 kB
+10:23:51 [vite] dist/_astro/QuizCatalogBadge.DFDmTy3M.js                        
+                0.46 kB │ gzip:  0.32 kB
+10:23:51 [vite] dist/_astro/TourProgressCard.C5117HSB.js                        
+                0.74 kB │ gzip:  0.43 kB
+10:23:51 [vite] dist/_astro/checksStore.DtlFrmHX.js                             
+                0.77 kB │ gzip:  0.40 kB
+10:23:51 [vite] dist/_astro/jsx-runtime.ClP7wGfN.js                             
+                1.00 kB │ gzip:  0.62 kB
+10:23:51 [vite] dist/_astro/TrackProgressSummary.CGcMn7GU.js                    
+                1.07 kB │ gzip:  0.49 kB
+10:23:51 [vite] dist/_astro/LessonProgressControls.CwzgucSI.js                  
+                1.25 kB │ gzip:  0.55 kB
+10:23:51 [vite] dist/_astro/ProgressStatus.bMXj6az2.js                          
+                1.41 kB │ gzip:  0.50 kB
+10:23:51 [vite] dist/_astro/SidebarTrackProgress.CSIACX4u.js                    
+                1.53 kB │ gzip:  0.69 kB
+10:23:51 [vite] dist/_astro/LabRunner.7gUm15E0.js                               
+                3.51 kB │ gzip:  1.57 kB
+10:23:51 [vite] dist/_astro/progressStore.IksEY2qa.js                           
+                4.84 kB │ gzip:  1.72 kB
+10:23:51 [vite] dist/_astro/CodeRunner.CQPz6VER.js                              
+                5.02 kB │ gzip:  1.96 kB
+10:23:51 [vite] dist/_astro/QuizRunner.Bub1iZuH.js                              
+                5.73 kB │ gzip:  2.16 kB
+10:23:51 [vite] dist/_astro/RightPanel.Df5gyljo.js                              
+                5.80 kB │ gzip:  2.18 kB
+10:23:51 [vite] dist/_astro/index.DK-fsZOb.js                                   
+                6.81 kB │ gzip:  2.73 kB
+10:23:51 [vite] dist/_astro/TerminalSimulator.C0J9ceZs.js                       
+                6.98 kB │ gzip:  2.49 kB
+10:23:51 [vite] dist/_astro/WorkspaceLayout.astro_astro_type_script_index_0_lang
+.CjYD3YDJ.js    7.64 kB │ gzip:  2.68 kB                                        10:23:51 [vite] dist/_astro/TerminalSandboxRunner.DfW0DDA9.js                   
+                8.08 kB │ gzip:  3.03 kB
+10:23:51 [vite] dist/_astro/PcAssemblyLab._6X6v7lU.js                           
+               24.88 kB │ gzip:  7.83 kB
+10:23:51 [vite] dist/_astro/client.nc8uITnr.js                                  
+              136.51 kB │ gzip: 44.01 kB
+10:23:51 [vite] ✓ built in 397ms
+
+ generating static routes 
+10:23:51 ▶ src/pages/labs/code-basics.astro
+10:23:51   └─ /labs/code-basics/index.html (+27ms) 
+10:23:51 ▶ src/pages/labs/[slug].astro
+10:23:51 [WARN] [build] Could not render `/labs/code-basics` from route `/labs/[
+slug]` as it conflicts with higher priority route `/labs/code-basics`.          10:23:51   ├─ /labs/pc-tech-legacy-hardware-lab/index.html (+29ms) 
+10:23:51   ├─ /labs/pc-assembly/index.html (+19ms) 
+10:23:51   ├─ /labs/network-terminal-basics/index.html (+13ms) 
+10:23:51   ├─ /labs/terminal-basics/index.html (+11ms) 
+10:23:51   └─ /labs/terminal-sandbox-basics/index.html (+11ms)
+10:23:51 ▶ src/pages/labs/index.astro
+10:23:51   └─ /labs/index.html (+4ms) 
+10:23:51 ▶ src/pages/legacy/index.astro
+10:23:51   └─ /legacy/index.html (+4ms)
+10:23:51 ▶ src/pages/legacy/[...path].astro
+10:23:51 ▶ src/pages/lessons/[slug].astro
+10:23:51   ├─ /lessons/a-plus-guides/index.html (+18ms) 
+10:23:51   ├─ /lessons/a-plus-hardware/index.html (+14ms) 
+10:23:51   ├─ /lessons/a-plus-lab-bios-config/index.html (+13ms) 
+10:23:51   ├─ /lessons/a-plus-lab-driver-install/index.html (+12ms) 
+10:23:51   ├─ /lessons/a-plus-lab-pc-assembly/index.html (+17ms) 
+10:23:51   ├─ /lessons/a-plus-lab-performance-tuning/index.html (+12ms) 
+10:23:51   ├─ /lessons/a-plus-labs/index.html (+13ms) 
+10:23:51   ├─ /lessons/a-plus-lab-upgrade-planning/index.html (+13ms)
+10:23:51   ├─ /lessons/a-plus-motherboards/index.html (+16ms) 
+10:23:51   ├─ /lessons/a-plus-networking/index.html (+12ms)
+10:23:51   ├─ /lessons/a-plus-power-cooling/index.html (+14ms) 
+10:23:51   ├─ /lessons/a-plus-operating-systems/index.html (+13ms) 
+10:23:51   ├─ /lessons/a-plus-storage/index.html (+13ms) 
+10:23:51   ├─ /lessons/a-plus-security/index.html (+12ms) 
+10:23:51   ├─ /lessons/a-plus-troubleshooting/index.html (+12ms)
+10:23:51   ├─ /lessons/about-class/index.html (+12ms) 
+10:23:51   ├─ /lessons/card-beam-animation-readme/index.html (+13ms) 
+10:23:51   ├─ /lessons/auth-demo/index.html (+12ms) 
+10:23:51   ├─ /lessons/binary-exploitation/index.html (+13ms) 
+10:23:51   ├─ /lessons/cheat-sheets/index.html (+13ms) 
+10:23:51   ├─ /lessons/cryptography/index.html (+13ms)
+10:23:51   ├─ /lessons/download/index.html (+16ms) 
+10:23:51   ├─ /lessons/exif-simulator/index.html (+22ms) 
+10:23:51   ├─ /lessons/forensics/index.html (+18ms) 
+10:23:51   ├─ /lessons/general-skills/index.html (+13ms) 
+10:23:51   ├─ /lessons/https-demo/index.html (+17ms) 
+10:23:51   ├─ /lessons/index/index.html (+16ms) 
+10:23:51   ├─ /lessons/learning-tracks/index.html (+15ms) 
+10:23:51   ├─ /lessons/linux-cli-survival/index.html (+16ms) 
+10:23:51   ├─ /lessons/intro-to-cybersecurity/index.html (+18ms) 
+10:23:51   ├─ /lessons/password-hashing/index.html (+13ms) 
+10:23:51   ├─ /lessons/progress-demo/index.html (+11ms) 
+10:23:51   ├─ /lessons/review-game/index.html (+13ms) 
+10:23:51   ├─ /lessons/resources/index.html (+12ms)
+10:23:51   ├─ /lessons/site-playwright_test_readme/index.html (+15ms) 
+10:23:51   ├─ /lessons/reverse-engineering/index.html (+15ms) 
+10:23:51   ├─ /lessons/site-readme/index.html (+16ms) 
+10:23:51   ├─ /lessons/sql-injection/index.html (+20ms) 
+10:23:52   ├─ /lessons/study-guides/index.html (+14ms) 
+10:23:52   ├─ /lessons/threat-modeling-basics/index.html (+17ms) 
+10:23:52   ├─ /lessons/tour/index.html (+16ms) 
+10:23:52   ├─ /lessons/web-exploitation/index.html (+12ms) 
+10:23:52   └─ /lessons/xss-demo/index.html (+15ms)
+10:23:52 ▶ src/pages/quizzes/[slug].astro
+10:23:52   ├─ /quizzes/network-fundamentals-checkpoint/index.html (+18ms) 
+10:23:52   ├─ /quizzes/pc-tech-hardware-checkpoint/index.html (+21ms) 
+10:23:52   ├─ /quizzes/tour-quick-check/index.html (+17ms) 
+10:23:52   ├─ /quizzes/assessment-1-1-1/index.html (+20ms) 
+10:23:52   ├─ /quizzes/assessment-1-1-2/index.html (+22ms) 
+10:23:52   ├─ /quizzes/assessment-1-1-3/index.html (+18ms) 
+10:23:52   ├─ /quizzes/assessment-1-1-4/index.html (+19ms) 
+10:23:52   ├─ /quizzes/assessment-1-1-5/index.html (+21ms) 
+10:23:52   ├─ /quizzes/assessment-1-2-1/index.html (+25ms) 
+10:23:52   ├─ /quizzes/assessment-1-2-2/index.html (+24ms) 
+10:23:52   ├─ /quizzes/assessment-1-2-3/index.html (+20ms) 
+10:23:52   ├─ /quizzes/assessment-1-2-5/index.html (+24ms) 
+10:23:52   ├─ /quizzes/assessment-1-2-4/index.html (+21ms) 
+10:23:52   ├─ /quizzes/assessment-1-3-1/index.html (+22ms) 
+10:23:52   ├─ /quizzes/assessment-1-3-2/index.html (+19ms) 
+10:23:52   ├─ /quizzes/assessment-1-3-3/index.html (+19ms) 
+10:23:52   ├─ /quizzes/assessment-1-3-4/index.html (+25ms) 
+10:23:52   ├─ /quizzes/assessment-1-3-5/index.html (+19ms) 
+10:23:52   ├─ /quizzes/assessment-1-4-1/index.html (+18ms) 
+10:23:52   ├─ /quizzes/assessment-1-4-2/index.html (+18ms) 
+10:23:52   ├─ /quizzes/assessment-1-4-4/index.html (+19ms) 
+10:23:52   ├─ /quizzes/assessment-1-4-3/index.html (+21ms) 
+10:23:52   └─ /quizzes/assessment-1-4-5/index.html (+20ms) 
+10:23:52 ▶ src/pages/quizzes/index.astro
+10:23:52   └─ /quizzes/index.html (+6ms) 
+10:23:52 ▶ src/pages/study-guides/[slug].astro
+10:23:52   ├─ /study-guides/operating-systems/index.html (+4ms)
+10:23:52   ├─ /study-guides/networking-basics/index.html (+3ms)
+10:23:52   └─ /study-guides/hardware-fundamentals/index.html (+3ms)
+10:23:52 ▶ src/pages/study-guides.astro
+10:23:52   └─ /study-guides/index.html (+4ms)
+10:23:52 ▶ src/pages/tour/[slug].astro
+10:23:52   ├─ /tour/code-challenge/index.html (+10ms) 
+10:23:52   ├─ /tour/completion/index.html (+8ms)
+10:23:52   ├─ /tour/quiz-challenge/index.html (+8ms) 
+10:23:52   ├─ /tour/intro/index.html (+8ms)
+10:23:52   └─ /tour/terminal-challenge/index.html (+11ms) 
+10:23:52 ▶ src/pages/tour/index.astro
+10:23:52   └─ /tour/index.html (+6ms) 
+10:23:52 ▶ src/pages/tracks/legacy/index.astro
+10:23:52   └─ /tracks/legacy/index.html (+7ms)
+10:23:52 ▶ src/pages/tracks/[track]/labs/[slug].astro
+10:23:52   ├─ /tracks/pc-technician/labs/pc-tech-legacy-hardware-lab/index.html 
+(+15ms)                                                                         10:23:52   ├─ /tracks/pc-technician/labs/pc-assembly/index.html (+18ms) 
+10:23:52   └─ /tracks/network-engineer/labs/network-terminal-basics/index.html (
++16ms)                                                                          10:23:52 ▶ src/pages/tracks/[slug].astro
+10:23:52   ├─ /tracks/cybersecurity-foundations/index.html (+5ms) 
+10:23:52   ├─ /tracks/pc-technician/index.html (+6ms)
+10:23:52   ├─ /tracks/network-engineer/index.html (+5ms) 
+10:23:52   ├─ /tracks/cybersecurity-engineer/index.html (+5ms)
+10:23:52   ├─ /tracks/web-developer/index.html (+7ms)
+10:23:52   ├─ /tracks/python-developer/index.html (+6ms) 
+10:23:52   ├─ /tracks/ai-ml/index.html (+6ms)
+10:23:52   └─ /tracks/legacy-grouped/index.html (+8ms) 
+10:23:52 ▶ src/pages/tracks/index.astro
+10:23:52   └─ /tracks/index.html (+3ms)
+10:23:52 ▶ src/pages/workspace/[type]/[slug].astro
+10:23:52   ├─ /workspace/lab/pc-tech-legacy-hardware-lab/index.html (+16ms) 
+10:23:52   ├─ /workspace/lab/code-basics/index.html (+20ms) 
+10:23:52   ├─ /workspace/lab/pc-assembly/index.html (+13ms) 
+10:23:52   ├─ /workspace/lab/network-terminal-basics/index.html (+17ms) 
+10:23:52   ├─ /workspace/lab/terminal-basics/index.html (+13ms) 
+10:23:52   ├─ /workspace/lab/terminal-sandbox-basics/index.html (+16ms) 
+10:23:52   ├─ /workspace/quiz/network-fundamentals-checkpoint/index.html (+19ms)
+
+10:23:52   ├─ /workspace/quiz/pc-tech-hardware-checkpoint/index.html (+17ms) 
+10:23:52   ├─ /workspace/quiz/tour-quick-check/index.html (+19ms) 
+10:23:52   ├─ /workspace/quiz/assessment-1-1-1/index.html (+18ms) 
+10:23:52   ├─ /workspace/quiz/assessment-1-1-2/index.html (+18ms) 
+10:23:52   ├─ /workspace/quiz/assessment-1-1-3/index.html (+18ms) 
+10:23:52   ├─ /workspace/quiz/assessment-1-1-4/index.html (+19ms) 
+10:23:52   ├─ /workspace/quiz/assessment-1-1-5/index.html (+17ms) 
+10:23:52   ├─ /workspace/quiz/assessment-1-2-1/index.html (+17ms) 
+10:23:53   ├─ /workspace/quiz/assessment-1-2-2/index.html (+18ms) 
+10:23:53   ├─ /workspace/quiz/assessment-1-2-3/index.html (+18ms) 
+10:23:53   ├─ /workspace/quiz/assessment-1-2-5/index.html (+15ms) 
+10:23:53   ├─ /workspace/quiz/assessment-1-2-4/index.html (+14ms) 
+10:23:53   ├─ /workspace/quiz/assessment-1-3-1/index.html (+18ms) 
+10:23:53   ├─ /workspace/quiz/assessment-1-3-2/index.html (+19ms) 
+10:23:53   ├─ /workspace/quiz/assessment-1-3-3/index.html (+16ms) 
+10:23:53   ├─ /workspace/quiz/assessment-1-3-4/index.html (+20ms) 
+10:23:53   ├─ /workspace/quiz/assessment-1-3-5/index.html (+15ms) 
+10:23:53   ├─ /workspace/quiz/assessment-1-4-1/index.html (+17ms) 
+10:23:53   ├─ /workspace/quiz/assessment-1-4-2/index.html (+15ms) 
+10:23:53   ├─ /workspace/quiz/assessment-1-4-4/index.html (+13ms) 
+10:23:53   ├─ /workspace/quiz/assessment-1-4-3/index.html (+12ms)
+10:23:53   ├─ /workspace/quiz/assessment-1-4-5/index.html (+17ms) 
+10:23:53   ├─ /workspace/activity/pc-tech-hardware-legacy-page/index.html (+7ms)
+
+10:23:53   ├─ /workspace/activity/a-plus-guides/index.html (+4ms)
+10:23:53   ├─ /workspace/activity/a-plus-hardware/index.html (+6ms) 
+10:23:53   ├─ /workspace/activity/a-plus-lab-bios-config/index.html (+4ms)      
+10:23:53   ├─ /workspace/activity/a-plus-lab-driver-install/index.html (+4ms)   
+10:23:53   ├─ /workspace/activity/a-plus-lab-pc-assembly/index.html (+8ms) 
+10:23:53   ├─ /workspace/activity/a-plus-lab-performance-tuning/index.html (+4ms
+)                                                                               10:23:53   ├─ /workspace/activity/a-plus-labs/index.html (+4ms)
+10:23:53   ├─ /workspace/activity/a-plus-lab-upgrade-planning/index.html (+5ms) 
+10:23:53   ├─ /workspace/activity/a-plus-motherboards/index.html (+5ms)
+10:23:53   ├─ /workspace/activity/a-plus-networking/index.html (+6ms)
+10:23:53   ├─ /workspace/activity/a-plus-power-cooling/index.html (+4ms) 
+10:23:53   ├─ /workspace/activity/a-plus-operating-systems/index.html (+5ms)    
+10:23:53   ├─ /workspace/activity/a-plus-storage/index.html (+4ms)
+10:23:53   ├─ /workspace/activity/a-plus-security/index.html (+7ms) 
+10:23:53   ├─ /workspace/activity/a-plus-troubleshooting/index.html (+6ms)      
+10:23:53   ├─ /workspace/activity/about-class/index.html (+5ms)
+10:23:53   ├─ /workspace/activity/card-beam-animation-readme/index.html (+5ms) 
+10:23:53   ├─ /workspace/activity/auth-demo/index.html (+5ms)
+10:23:53   ├─ /workspace/activity/binary-exploitation/index.html (+4ms)
+10:23:53   ├─ /workspace/activity/cheat-sheets/index.html (+6ms) 
+10:23:53   ├─ /workspace/activity/cryptography/index.html (+5ms)
+10:23:53   ├─ /workspace/activity/download/index.html (+4ms)
+10:23:53   ├─ /workspace/activity/exif-simulator/index.html (+6ms) 
+10:23:53   ├─ /workspace/activity/forensics/index.html (+7ms)
+10:23:53   ├─ /workspace/activity/general-skills/index.html (+7ms) 
+10:23:53   ├─ /workspace/activity/https-demo/index.html (+6ms)
+10:23:53   ├─ /workspace/activity/index/index.html (+6ms)
+10:23:53   ├─ /workspace/activity/learning-tracks/index.html (+8ms) 
+10:23:53   ├─ /workspace/activity/linux-cli-survival/index.html (+6ms)
+10:23:53   ├─ /workspace/activity/intro-to-cybersecurity/index.html (+5ms) 
+10:23:53   ├─ /workspace/activity/password-hashing/index.html (+6ms)
+10:23:53   ├─ /workspace/activity/progress-demo/index.html (+8ms)
+10:23:53   ├─ /workspace/activity/review-game/index.html (+4ms) 
+10:23:53   ├─ /workspace/activity/resources/index.html (+4ms)
+10:23:53   ├─ /workspace/activity/site-playwright_test_readme/index.html (+5ms) 
+10:23:53   ├─ /workspace/activity/reverse-engineering/index.html (+5ms) 
+10:23:53   ├─ /workspace/activity/site-readme/index.html (+6ms)
+10:23:53   ├─ /workspace/activity/sql-injection/index.html (+7ms)
+10:23:53   ├─ /workspace/activity/study-guides/index.html (+6ms) 
+10:23:53   ├─ /workspace/activity/threat-modeling-basics/index.html (+5ms)      
+10:23:53   ├─ /workspace/activity/tour/index.html (+8ms) 
+10:23:53   ├─ /workspace/activity/web-exploitation/index.html (+6ms)
+10:23:53   ├─ /workspace/activity/xss-demo/index.html (+5ms)
+10:23:53   └─ /workspace/lesson/a-plus-lab-pc-assembly/index.html (+3ms) 
+10:23:53 ▶ src/pages/index.astro
+10:23:53   └─ /index.html (+22ms) 
+10:23:53 ✓ Completed in 2.21s.
+
+10:23:53 [build] 173 page(s) built in 4.63s
+10:23:53 [build] Complete!
+
+> site@0.0.1 test:visual
+> playwright test
+
+
+Running 39 tests using 12 workers
+
+  ✓   1 …code-runner.spec.ts:3:1 › code runner executes and prints output (3.0s)
+  ✓   2 …spec.ts:24:1 › completing a lesson updates XP and track progress (2.6s)
+  ✓   3 ….spec.ts:11:1 › lab mounts LabRunner and exposes runner contract (2.7s)
+  ✓   4 tests\quiz.spec.ts:3:1 › complete a quiz updates progress (3.2s)        
+  ✓   5 …rity: mapped activity metadata and canonical hrefs remain valid (133ms)
+  ✓   6 … search overlay opens, finds terminal lab, navigates, and closes (2.4s)
+  ✓   7 …study guides listing renders and navigates to first guide detail (1.2s)
+  ✓   8 …ts\tour.spec.ts:3:1 › tour step 1 completion continues to step 2 (3.5s)
+  ✓   9 …ec.ts:3:1 › terminal basics lab runner renders and accepts input (2.7s)
+  ✓  10 …ing tracks nav goes to primary hub and opens PC technician track (1.4s)
+  ✓  11 tests\visual.spec.ts:69:1 › home page (2.3s)
+  ✓  12 …:3:1 › tracks page keeps key layout boxes stable after hydration (3.2s)
+  ✓  13 …prev/next links remain deterministic for a multi-activity module (3.1s)  ✓  14 …s-navigation.spec.ts:17:1 › tracks landing shows primary tracks (289ms)
+  ✓  15 …ived page remains discoverable with link back to current tracks (528ms)  ✓  16 …gation.spec.ts:32:1 › legacy lab opens in workspace iframe shell (1.8s)  ✓  17 tests\visual.spec.ts:74:1 › track page (1.6s)
+  ✓  18 …ogress.spec.ts:43:1 › streak increments across days via check-in (1.4s)
+  ✓  19 … executes deterministic commands and emits submit/reset payloads (2.3s)
+  ✓  20 …lab.spec.ts:24:1 › mapped lab shows module prev/next navigation (390ms)
+  ✓  21 …ab completes, awards XP, updates streak, and persists completion (1.5s)  ✓  22 …rd continue CTA deterministically advances when progress changes (1.0s)
+  ✓  23 tests\visual.spec.ts:80:1 › lesson page (1.2s)
+  ✓  24 …navigation.spec.ts:38:1 › assessment quiz workspace shell loads (333ms)
+  ✓  25 …pages/layouts do not import legacy trackCatalog or trackSections (10ms)
+  ✓  26 …/module invariants: all activities map to valid track + moduleId (21ms)  ✓  27 …Continue link goes to canonical activity route (no /workspace/) (860ms)
+  ✓  28 …ec.ts:81:1 › pc assembly lab renders as native workspace panels (357ms)
+  ✓  29 … workspace lesson URL points to labs experience for pc assembly (310ms)  ✓  30 tests\visual.spec.ts:86:1 › lesson page (mobile) (892ms)
+  ✓  31 …y workspace cards have no horizontal overflow on desktop widths (536ms)
+  ✓  32 … › stacked drawer tabs and collapse state persist across reload (716ms)  ✓  33 tests\visual.spec.ts:93:1 › legacy page (1.1s)
+  ✓  34 …:1 › stacked drawer defaults open and remains open after reload (304ms)
+  ✓  35 …lab.spec.ts:159:1 › checks tab updates after pc assembly submit (403ms)  ✓  36 tests\visual.spec.ts:98:1 › quizzes page (1.2s)
+  ✓  37 …ts\lab.spec.ts:181:1 › pc scenario changes only on New Scenario (716ms)
+  ✓  38 … › stacked drawer does not clip workspace action bar on desktop (452ms)  ✓  39 tests\visual.spec.ts:103:1 › quiz runner page (669ms)
+
+  39 passed (13.5s)
+
