@@ -89,7 +89,6 @@ const { title = 'Beattie Tech', legacySkin = false } = Astro.props;
           observer.disconnect();
         });
         observer.observe(document.body, { childList: true, subtree: true });
-        window.setTimeout(() => observer.disconnect(), 4000);
       };
 
       markReady('[data-testid="status-level"]', 'progress-ready');

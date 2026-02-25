@@ -11,7 +11,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "validate:tracks": "node scripts/validate-tracks.mjs",
+    "validate:tracks": "node --import tsx scripts/validate-tracks.mjs",
     "ingest:assessments": "node scripts/ingest-assessments-from-manifest.mjs",
     "bootstrap:modules": "node scripts/bootstrap-starter-modules.mjs",
     "lh:chrome-clean": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$p=Join-Path $env:TEMP 'chrome-lh'; New-Item -ItemType Directory -Force -Path $p | Out-Null; Start-Process chrome -ArgumentList '--disable-extensions',('--user-data-dir=' + $p),'http://127.0.0.1:4321/tracks'\"",

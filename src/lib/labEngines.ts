@@ -2,6 +2,11 @@ export const LAB_TIER_VALUES = ['guided', 'state-machine', 'sandbox'] as const;
 export type LabTier = (typeof LAB_TIER_VALUES)[number];
 
 export const LAB_ENGINES = {
+  'sim-reference-checks': {
+    tier: 'sandbox',
+    label: 'Reference Checks Simulator',
+    shipped: true,
+  },
   'sim-sandbox-terminal': {
     tier: 'sandbox',
     label: 'Terminal Sandbox Simulator',

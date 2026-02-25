@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { validateEngineTierAlignment } from '../src/lib/labMetadataRules.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -126,6 +127,23 @@ export const validateTrackModuleMappings = () => {
         errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} missing required order.`);
       } else if (!/^-?\d+$/.test(String(orderRaw))) {
         errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} order '${orderRaw}' is not an integer.`);
+      }
+
+      if (collection.name === 'labs') {
+        const inferredSlug = typeof fm.slug === 'string' && fm.slug.trim().length > 0
+          ? fm.slug.trim()
+          : path.basename(filePath, path.extname(filePath));
+        const alignment = validateEngineTierAlignment({
+          slug: inferredSlug,
+          tier: fm.tier ?? 'guided',
+          engine: fm.engine ?? 'steps',
+          fileHint: path.relative(repoRoot, filePath),
+        });
+        if (!alignment.ok) {
+          for (const issue of alignment.errors) {
+            errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} ${issue.message}`);
+          }
+        }
       }
 
       const labPath = fm.labPath;

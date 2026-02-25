@@ -10,6 +10,8 @@ import PcAssemblyLab from '../../components/labs/PcAssemblyLab.tsx';
 import ActivityCard from '../../components/ActivityCard.astro';
 import LabRunner from '../../components/LabRunner.tsx';
 import TerminalSandboxRunner from '../../components/TerminalSandboxRunner.tsx';
+import ReferenceChecksRunner from '../../components/ReferenceChecksRunner.tsx';
+import CodeRunner from '../../components/islands/CodeRunner.tsx';
 import { getActivityModuleNavigation } from '../../lib/content';
 import type { TerminalSpecV1 } from '../../lib/terminalSandbox';
 
@@ -70,7 +72,9 @@ const resolvedSteps: LabStep[] =
       : [];
 
 const isStepLab = resolvedSteps.length > 0;
+const isReferenceChecksLab = lab.data.engine === 'sim-reference-checks';
 const isTerminalSandboxLab = lab.data.engine === 'sim-sandbox-terminal' && Boolean(lab.data.terminalSpec);
+const isCodeLab = lab.data.activity === 'code';
 const terminalSpec = isTerminalSandboxLab ? (lab.data.terminalSpec as TerminalSpecV1) : null;
 const estimatedMinutes = lab.data.estimatedMinutes ?? lab.data.estMinutes ?? 20;
 const xpReward = typeof lab.data.xp === 'number' ? lab.data.xp : 25;
@@ -86,7 +90,7 @@ if (currentTrack) {
 }
 ---
 
-{isStepLab || isTerminalSandboxLab ? (
+{isStepLab || isReferenceChecksLab || isTerminalSandboxLab || isCodeLab ? (
   <AppShell
     title={`Lab • ${lab.data.title}`}
     tracks={tracks}
@@ -108,13 +112,17 @@ if (currentTrack) {
 
     <Section title="Interactive Lab">
       <Card>
-        {isTerminalSandboxLab ? (
+        {isCodeLab ? (
+          <CodeRunner client:only="react" labSlug={lab.slug} exerciseSlug={lab.slug} />
+        ) : isTerminalSandboxLab ? (
           <TerminalSandboxRunner
             client:only="react"
             labSlug={lab.slug}
             xpReward={xpReward}
             spec={terminalSpec!}
           />
+        ) : isReferenceChecksLab ? (
+          <ReferenceChecksRunner client:only="react" labSlug={lab.slug} />
         ) : (
           <LabRunner
             client:only="react"

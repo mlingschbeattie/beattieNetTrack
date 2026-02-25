@@ -64,31 +64,33 @@ export default function TerminalSandboxRunner({ labSlug, xpReward, spec }: Termi
   const [input, setInput] = useState(initialFromStore.input);
   const [lastOutput, setLastOutput] = useState(initialFromStore.lastOutput);
 
-  const saveState = (
-    nextState: TerminalStateV1,
-    nextChecks: ObjectiveCheck[],
-    nextProgress: number,
-    completionAt: string | null,
-    completedOverride?: boolean
-  ) => {
-    const effectiveStartedAt = startedAt ?? new Date().toISOString();
-    if (!startedAt) {
-      setStartedAt(effectiveStartedAt);
-    }
+ const saveState = (
+  nextState: TerminalStateV1,
+  nextChecks: ObjectiveCheck[],
+  nextProgress: number,
+  completionAt: string | null,
+  completedOverride?: boolean
+) => {
+  const effectiveStartedAt = startedAt ?? new Date().toISOString();
+  if (!startedAt) {
+    setStartedAt(effectiveStartedAt);
+  }
 
-    saveLabState(labSlug, {
-      startedAt: effectiveStartedAt,
-      completedAt: completionAt,
-      completed: completedOverride ?? Boolean(completionAt),
-      terminalState: nextState,
-      terminalProgress: {
-        checks: nextChecks,
-        progress: nextProgress,
-      },
-      completedStepIds: [],
-      lastStepIndex: 0,
-    } as Partial<PersistedLabState>);
-  };
+  const completed = typeof completedOverride === 'boolean' ? completedOverride : Boolean(completionAt);
+
+  saveLabState(labSlug, {
+    startedAt: effectiveStartedAt,
+    completedAt: completionAt,
+    completed,
+    terminalState: nextState,
+    terminalProgress: {
+      checks: nextChecks,
+      progress: nextProgress,
+    },
+    completedStepIds: [],
+    lastStepIndex: 0,
+  } as Partial<PersistedLabState>);
+};
 
   const emitWorkspaceResult = (
     action: 'submit' | 'reset',
@@ -141,41 +143,44 @@ export default function TerminalSandboxRunner({ labSlug, xpReward, spec }: Termi
   };
 
   const resetTerminal = () => {
-    const persisted = getLabState(labSlug) as PersistedLabState;
-    const persistedCompleted = Boolean(persisted.completed);
-    const preservedCompletedAt = completedAt ?? persisted.completedAt ?? null;
-    const shouldPreserveCompletion = persistedCompleted || Boolean(preservedCompletedAt);
+  const persisted = getLabState(labSlug) as PersistedLabState;
 
-    const resetState = createInitialState(spec);
-    const evaluation = evaluateObjectives(resetState, spec);
-    const nextChecks = stableChecks(evaluation.checks);
-    const nextProgress = evaluation.progress;
+  const persistedCompleted = Boolean(persisted.completed);
+  const preservedCompletedAt = completedAt ?? persisted.completedAt ?? null;
+  const shouldPreserveCompletion = persistedCompleted || Boolean(preservedCompletedAt);
 
-    setTerminalState(resetState);
-    setChecks(nextChecks);
-    setProgress(nextProgress);
-    setInput('');
-    setLastOutput('');
-    setCompletedAt(shouldPreserveCompletion ? preservedCompletedAt : null);
+  const resetState = createInitialState(spec);
+  const evaluation = evaluateObjectives(resetState, spec);
+  const nextChecks = stableChecks(evaluation.checks);
+  const nextProgress = evaluation.progress;
 
-    saveState(
-      resetState,
-      nextChecks,
-      nextProgress,
-      shouldPreserveCompletion ? preservedCompletedAt : null,
-      shouldPreserveCompletion
-    );
+  setTerminalState(resetState);
+  setChecks(nextChecks);
+  setProgress(nextProgress);
+  setInput('');
+  setLastOutput('');
 
-    emitWorkspaceResult(
-      'reset',
-      false,
-      nextProgress,
-      'Terminal reset',
-      nextChecks.length > 0
-        ? nextChecks
-        : [{ id: 'terminal-reset', label: 'Terminal reset', pass: false, message: 'Terminal reset' }]
-    );
-  };
+  // IMPORTANT: do not revoke completion once earned
+  setCompletedAt(shouldPreserveCompletion ? preservedCompletedAt : null);
+
+  saveState(
+    resetState,
+    nextChecks,
+    nextProgress,
+    shouldPreserveCompletion ? preservedCompletedAt : null,
+    shouldPreserveCompletion
+  );
+
+  emitWorkspaceResult(
+    'reset',
+    false,
+    nextProgress,
+    'Terminal reset',
+    nextChecks.length > 0
+      ? nextChecks
+      : [{ id: 'terminal-reset', label: 'Terminal reset', pass: false, message: 'Terminal reset' }]
+  );
+};
 
   return (
     <article className="card" data-testid="terminal-sandbox-runner">

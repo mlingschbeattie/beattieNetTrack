@@ -145,7 +145,7 @@ const labs = defineCollection({
       ),
       difficulty: difficultySchema,
       tier: z.enum(['guided', 'state-machine', 'sandbox']).default('guided'),
-      engine: z.enum(['steps', 'sim-sandbox-terminal']).default('steps'),
+      engine: z.enum(['steps', 'sim-reference-checks', 'sim-sandbox-terminal']).default('steps'),
       xp: z.number().int().default(25),
       steps: z
         .array(

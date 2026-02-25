@@ -1,10 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { compareValidationIssues, validateLabMetadata, type ValidationIssue } from './labMetadataRules.ts';
+import { compareValidationIssues, validateEngineTierAlignment, type ValidationIssue } from './labMetadataRules.ts';
 
 test('missing tier -> LAB_MISSING_TIER', () => {
-  const issues = validateLabMetadata('terminal-basics', { engine: 'steps' });
+  const result = validateEngineTierAlignment({ slug: 'terminal-basics', engine: 'steps' });
+  assert.equal(result.ok, false);
+  const issues = result.ok ? [] : result.errors;
   assert.equal(issues.length, 1);
   assert.equal(issues[0]?.code, 'LAB_MISSING_TIER');
   assert.equal(
@@ -16,7 +18,9 @@ test('missing tier -> LAB_MISSING_TIER', () => {
 });
 
 test('invalid tier -> LAB_INVALID_TIER', () => {
-  const issues = validateLabMetadata('terminal-basics', { tier: 'sandboxed', engine: 'steps' });
+  const result = validateEngineTierAlignment({ slug: 'terminal-basics', tier: 'sandboxed', engine: 'steps' });
+  assert.equal(result.ok, false);
+  const issues = result.ok ? [] : result.errors;
   assert.equal(issues.length, 1);
   assert.equal(issues[0]?.code, 'LAB_INVALID_TIER');
   assert.equal(
@@ -28,31 +32,37 @@ test('invalid tier -> LAB_INVALID_TIER', () => {
 });
 
 test('missing engine -> LAB_MISSING_ENGINE', () => {
-  const issues = validateLabMetadata('terminal-basics', { tier: 'guided' });
+  const result = validateEngineTierAlignment({ slug: 'terminal-basics', tier: 'guided' });
+  assert.equal(result.ok, false);
+  const issues = result.ok ? [] : result.errors;
   assert.equal(issues.length, 1);
   assert.equal(issues[0]?.code, 'LAB_MISSING_ENGINE');
   assert.equal(
     issues[0]?.message,
     '[LAB_MISSING_ENGINE] Lab "terminal-basics" is missing required field "engine".\n' +
-      'Allowed values: sim-sandbox-terminal | steps.\n' +
+      'Allowed values: sim-reference-checks | sim-sandbox-terminal | steps.\n' +
       'Action: Add `engine` to src/content/labs/terminal-basics.mdx frontmatter.'
   );
 });
 
 test('invalid engine -> LAB_INVALID_ENGINE', () => {
-  const issues = validateLabMetadata('terminal-basics', { tier: 'guided', engine: 'sim-fsm' });
+  const result = validateEngineTierAlignment({ slug: 'terminal-basics', tier: 'guided', engine: 'sim-fsm' });
+  assert.equal(result.ok, false);
+  const issues = result.ok ? [] : result.errors;
   assert.equal(issues.length, 1);
   assert.equal(issues[0]?.code, 'LAB_INVALID_ENGINE');
   assert.equal(
     issues[0]?.message,
     '[LAB_INVALID_ENGINE] Lab "terminal-basics" declares engine "sim-fsm" which is not currently supported.\n' +
-      'Allowed values: sim-sandbox-terminal | steps.\n' +
+      'Allowed values: sim-reference-checks | sim-sandbox-terminal | steps.\n' +
       'Action: Use a shipped engine or implement and register the new engine before declaring it.'
   );
 });
 
 test('mismatch engine=steps tier=sandbox -> LAB_ENGINE_TIER_MISMATCH', () => {
-  const issues = validateLabMetadata('terminal-basics', { tier: 'sandbox', engine: 'steps' });
+  const result = validateEngineTierAlignment({ slug: 'terminal-basics', tier: 'sandbox', engine: 'steps' });
+  assert.equal(result.ok, false);
+  const issues = result.ok ? [] : result.errors;
   assert.equal(issues.length, 1);
   assert.equal(issues[0]?.code, 'LAB_ENGINE_TIER_MISMATCH');
   assert.equal(
@@ -64,16 +74,17 @@ test('mismatch engine=steps tier=sandbox -> LAB_ENGINE_TIER_MISMATCH', () => {
 });
 
 test('sim-sandbox-terminal engine is valid when shipped=true', () => {
-  const issues = validateLabMetadata('terminal-sandbox-basics', {
+  const result = validateEngineTierAlignment({
+    slug: 'terminal-sandbox-basics',
     tier: 'sandbox',
     engine: 'sim-sandbox-terminal',
   });
-  assert.deepEqual(issues, []);
+  assert.equal(result.ok, true);
 });
 
 test('valid engine=steps tier=guided -> no issues', () => {
-  const issues = validateLabMetadata('terminal-basics', { tier: 'guided', engine: 'steps' });
-  assert.deepEqual(issues, []);
+  const result = validateEngineTierAlignment({ slug: 'terminal-basics', tier: 'guided', engine: 'steps' });
+  assert.equal(result.ok, true);
 });
 
 test('deterministic issue ordering comparator', () => {

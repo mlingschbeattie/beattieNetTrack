@@ -224,6 +224,7 @@ if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson') {
 
 <script>
   import { getLastResult, getRequirementChecklist, setLastResult, setRequirementChecklist, subscribeChecks } from '../lib/checksStore.ts';
+  import { coerceWorkspaceResultPayload } from '../lib/workspaceResultContract.ts';
   import {
     getLessonStatus,
     getLabStatus,
@@ -457,21 +458,11 @@ if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson') {
 
   window.addEventListener('workspace:result', (event) => {
     const customEvent = event as CustomEvent;
-    const payload = customEvent.detail as {
-      slug?: string;
-      action?: string;
-      passed?: boolean;
-      progress?: number;
-      message?: string;
-      difficulty?: string;
-      estMinutes?: number;
-      score?: number;
-      checks?: Array<{ id: string; label: string; pass: boolean; message?: string }>;
-    };
+    const payload = coerceWorkspaceResultPayload(customEvent.detail);
     if (!payload || payload.slug !== itemSlug) return;
-    const action = payload.action ?? 'check';
-    const passed = Boolean(payload.passed);
-    const progress = typeof payload.progress === 'number' ? payload.progress : 0;
+    const action = payload.action;
+    const passed = payload.passed;
+    const progress = payload.progress;
     const message = typeof payload.message === 'string' ? payload.message : passed ? 'Passed checks' : 'Try again';
 
     setLastResult(itemSlug, {
