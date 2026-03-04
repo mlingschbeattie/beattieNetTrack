@@ -3,26 +3,102 @@ title: Intro to Cybersecurity
 description: Understand the security mindset, core terms, and the CIA triad.
 slug: intro-to-cybersecurity
 track: cybersecurity-foundations
+moduleId: sec.fundamentals.security-concepts
 order: 1
 difficulty: Beginner
 estMinutes: 20
 tags: ["CIA triad", "threats", "baseline"]
-legacyUrl: /general-skills.html
 ---
 
-Welcome to the foundations track. We'll build a mental model of how to think about protecting systems.
+import Callout from '../../components/Callout.astro';
 
-<Callout type="info">
-Security is about reducing risk, not eliminating it. Focus on measurable improvements.
-</Callout>
+Cybersecurity is not about buying the most expensive firewall or memorizing a list of attacks. It is about developing a mental model for how things break -- and using that model to make attackers' jobs harder than defenders'. This lesson gives you that foundation.
 
 ## The CIA Triad
 
-- **Confidentiality**: prevent unauthorized access
-- **Integrity**: prevent unauthorized modification
-- **Availability**: keep systems reliable and accessible
+Every security decision ultimately protects one or more of three properties. If you can classify a problem by which property it threatens, you can reason about the right response.
 
-<CodeBlock language="bash">
-# Example: check file integrity with sha256
-sha256sum important-file.txt
-</CodeBlock>
+**Confidentiality** -- only authorized people can read the data. A leaked database of passwords violates confidentiality. So does an employee emailing a spreadsheet to the wrong person.
+
+**Integrity** -- data can only be modified by authorized people in authorized ways. A hacker changing a bank transaction balance violates integrity. So does a corrupted firmware update.
+
+**Availability** -- systems are accessible when legitimate users need them. A ransomware attack encrypting your files violates availability. So does a misconfigured firewall that blocks your own users.
+
+<Callout type="info">
+**CIA Triad quick test:** When something goes wrong, ask which property failed. Was data exposed (Confidentiality)? Was data altered (Integrity)? Was a service blocked (Availability)? Most incidents attack more than one.
+</Callout>
+
+<Callout type="warn">
+**Common misconception:** "We only need security if we have sensitive data." Availability attacks target any system -- a small business website taken offline by a DDoS attack loses revenue even if it stores nothing valuable.
+</Callout>
+
+## Threat, Vulnerability, and Risk
+
+These three words get used interchangeably in casual conversation. In security, they mean very different things.
+
+A **vulnerability** is a weakness -- a gap in a system that could be exploited. An unpatched operating system, a weak password policy, or an unlocked server room door are all vulnerabilities.
+
+A **threat** is anything that could exploit a vulnerability to cause harm. Threats include malicious actors (hackers, disgruntled employees), natural events (floods, power failures), and accidents (an admin deleting the wrong database).
+
+**Risk** is the combination of the two: the probability a threat will exploit a vulnerability multiplied by the impact if it does.
+
+```
+Risk = Likelihood x Impact
+
+High likelihood + High impact = Critical risk  (patch immediately)
+Low likelihood + High impact  = High risk      (mitigate)
+High likelihood + Low impact  = Medium risk    (monitor)
+Low likelihood + Low impact   = Low risk       (accept)
+```
+
+Security work is risk management -- you cannot eliminate all risk, but you can reduce it to an acceptable level.
+
+<Callout type="info">
+**Residual risk** is the risk that remains after controls are applied. Organizations formally accept residual risk rather than pretending it does not exist.
+</Callout>
+
+## Attack Surface and Defense in Depth
+
+Your **attack surface** is the total set of points where an attacker could try to enter or extract data from your system. Every open network port, every user account, every third-party integration, every physical door to a server room -- these are all part of your attack surface.
+
+Reducing attack surface is one of the most effective security strategies: disable unused services, remove old user accounts, close unnecessary ports. A system that is not running cannot be exploited.
+
+**Defense in depth** is the principle that no single control should be your only control. Assume each layer will eventually fail, and design so that multiple failures are required before an attacker wins. A real-world defense-in-depth stack might look like this:
+
+- Perimeter firewall blocks unwanted traffic
+- Endpoint antivirus catches malware that slips through
+- Least-privilege accounts limit what malware can do once running
+- Encrypted backups ensure recovery even if ransomware succeeds
+- Monitoring alerts defenders to suspicious activity in real time
+
+<Callout type="warn">
+**Common misconception:** "We have a firewall, so we're protected." A firewall is one layer. Attackers frequently bypass perimeter controls through phishing, stolen credentials, or supply chain attacks -- none of which involve breaking through a firewall.
+</Callout>
+
+## Threat Actor Categories
+
+Not all attackers are the same. Knowing who is likely to target you helps you prioritize defenses.
+
+| Actor Type | Motivation | Skill Level | Example |
+|---|---|---|---|
+| **Script Kiddie** | Notoriety, curiosity | Low | Runs pre-built tools, targets easy victims |
+| **Cybercriminal** | Financial gain | Low to High | Ransomware gangs, phishing operators |
+| **Insider Threat** | Revenge, greed, accident | Varies | Disgruntled employee, careless contractor |
+| **Hacktivist** | Political/social cause | Medium | Defacing websites, DDoS against ideological targets |
+| **Nation-State (APT)** | Espionage, sabotage | Very High | Long-term infiltration, sophisticated persistent access |
+| **Competitor** | Corporate espionage | Varies | Stealing trade secrets, poaching client lists |
+
+<Callout type="info">
+**APT** stands for Advanced Persistent Threat -- a sophisticated attacker (often state-sponsored) that gains access and stays hidden for months or years, quietly collecting intelligence.
+</Callout>
+
+Most organizations are not targeted by nation-states. Most attacks are opportunistic -- automated scanners probing millions of systems looking for easy vulnerabilities. Fixing the basics (patching, strong passwords, MFA) stops the vast majority of real-world attacks.
+
+## Key Takeaways
+
+- The **CIA triad** -- Confidentiality, Integrity, Availability -- is the framework behind every security decision
+- A **vulnerability** is a weakness; a **threat** is something that exploits it; **risk** is the product of both
+- Security is **risk management**, not risk elimination -- residual risk is formally accepted, not ignored
+- Reducing your **attack surface** (disabling unused services and access) is one of the highest-leverage actions you can take
+- **Defense in depth** means layering controls so that multiple failures are required before an attacker wins
+- Most attacks are **opportunistic** -- solid fundamentals (patching, MFA, least privilege) stop the majority of real-world threats
