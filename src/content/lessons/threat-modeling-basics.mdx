@@ -3,28 +3,137 @@ title: Threat Modeling Basics
 description: Learn how to identify assets, threats, and mitigations using a simple workflow.
 slug: threat-modeling-basics
 track: cybersecurity-foundations
+moduleId: sec.fundamentals.risk-and-policy
 order: 2
 difficulty: Beginner
 estMinutes: 25
 tags: ["threat modeling", "risk"]
-legacyUrl: /forensics.html
 ---
 
-Threat modeling is a repeatable way to identify what can go wrong.
+import Callout from '../../components/Callout.astro';
 
-<Callout type="tip">
-Start simple: list your **assets**, **entry points**, and **trust boundaries**.
+Most security work is reactive -- patch the vulnerability, respond to the incident, block the IP. Threat modeling flips that around. It asks: *before* something breaks, what could go wrong, and what are we doing about it? Done regularly, it prevents incidents instead of cleaning them up.
+
+<Callout type="warn">
+**Threat modeling is not just for big companies.** A small business with a web store and ten employees has real assets, real threats, and real exposure. The process scales down perfectly -- a threat model for a small system takes an afternoon, not a quarter.
 </Callout>
 
-## A simple loop
+## The Worked Example: ShopLocal
 
-1. Map the system
-2. Identify threats
-3. Prioritize risks
-4. Add mitigations
+Throughout this lesson we will use a concrete scenario: **ShopLocal**, a small business running an e-commerce site.
 
-<CodeBlock language="text">
-Asset: Customer data
-Threat: Unauthorized access
-Mitigation: MFA + audit logging
-</CodeBlock>
+Their infrastructure:
+- A public-facing web storefront hosted on a VPS
+- A backend database holding customer orders and payment tokens
+- Employee laptops used for order management and email
+- A managed Wi-Fi router at the physical store
+
+This is a deliberately ordinary setup. Most organizations have something equivalent. The lessons apply anywhere.
+
+## Step 1 -- Identify What You Are Protecting
+
+The first question in threat modeling is: **what do you have worth protecting?** These are your **assets**.
+
+Assets are not just databases and servers. An asset is anything whose loss, exposure, or corruption would cause harm.
+
+For ShopLocal:
+
+| Asset | Why It Matters |
+|---|---|
+| Customer payment tokens | Breach = regulatory fines, lost trust, potential lawsuits |
+| Customer order history | PII exposure; also operationally critical |
+| Web storefront availability | Downtime = lost sales; brand damage |
+| Employee email credentials | Compromised = phishing launchpad into the business |
+| Store Wi-Fi network | Attacker on the LAN can reach internal systems |
+
+**Exercise:** Before reading further, list 3 assets for a system you use every day (your phone, your laptop, a school network). What would hurt most if it were stolen, modified, or taken offline?
+
+## Step 2 -- Map Entry Points and Trust Boundaries
+
+Once you know what you are protecting, identify where an attacker could reach it. These are your **entry points** -- places where data or control crosses from one trust zone to another.
+
+For ShopLocal:
+
+- The public internet can reach the web server (entry point: port 443)
+- The web server talks to the database (entry point: database port, internal only)
+- Employees connect to the store Wi-Fi (entry point: Wi-Fi authentication)
+- Employees receive external email (entry point: inbox)
+- The VPS has SSH enabled for administration (entry point: port 22)
+
+A **trust boundary** is the line between two zones of different trust. The internet is untrusted. The database server is highly trusted. The VPS web application sits in the middle -- it accepts untrusted input and forwards it toward trusted data. That boundary is where most attacks happen.
+
+<Callout type="info">
+**Data Flow Diagrams (DFDs)** are the standard tool for mapping entry points and trust boundaries. You draw boxes for processes and data stores, arrows for data flows, and dashed lines for trust boundaries. Even a rough sketch on paper is more useful than trying to hold it all in your head.
+</Callout>
+
+## Step 3 -- Apply STRIDE
+
+**STRIDE** is a checklist of six threat categories developed by Microsoft. For each entry point and asset, you work through the list and ask: "Could an attacker do this here?"
+
+<Callout type="info">
+**STRIDE definitions:**
+
+- **S -- Spoofing:** Pretending to be someone or something you are not. An attacker faking a valid session cookie to access another customer's account.
+- **T -- Tampering:** Unauthorized modification of data. An attacker changing an order record in the database to redirect a shipment.
+- **R -- Repudiation:** Performing an action and denying it later. A malicious employee canceling orders and claiming the logs don't exist.
+- **I -- Information Disclosure:** Exposing data to people who shouldn't see it. A misconfigured S3 bucket making customer records publicly readable.
+- **D -- Denial of Service:** Making a system unavailable to legitimate users. A DDoS attack taking the storefront offline during a sale.
+- **E -- Elevation of Privilege:** Gaining access beyond what you are authorized for. Exploiting a web app bug to get database admin rights from a normal user session.
+</Callout>
+
+Applying STRIDE to ShopLocal's public web server:
+
+| STRIDE Category | Relevant Threat | Mitigation |
+|---|---|---|
+| **Spoofing** | Attacker replays a stolen session token | Short session expiry; rotate tokens on login |
+| **Tampering** | SQL injection modifies order records | Parameterized queries; input validation |
+| **Repudiation** | Action taken with no audit trail | Append-only access logs with timestamps |
+| **Information Disclosure** | Error pages expose stack traces | Generic error messages in production |
+| **Denial of Service** | Flood of requests overwhelms the server | Rate limiting; CDN with DDoS protection |
+| **Elevation of Privilege** | Web app runs as database root | Principle of least privilege on DB user |
+
+You do not need to solve every threat immediately. The value is in making them **visible** so they can be prioritized and tracked.
+
+## Step 4 -- Prioritize and Mitigate
+
+Not every threat is equally urgent. Use the risk framework from the previous lesson: likelihood times impact.
+
+For ShopLocal, payment token exposure is high-impact and reasonably likely (web apps are constantly probed). Employee credential phishing is high-likelihood (phishing volumes are enormous) with medium-to-high impact. The Wi-Fi network is lower-likelihood for a targeted attack, but misconfiguration could make it trivially exploitable.
+
+A practical output of threat modeling is a short, prioritized list:
+
+```
+Priority 1 (fix this month):
+  - SQL injection vectors on the checkout form
+  - Payment tokens stored instead of a payment processor reference
+
+Priority 2 (fix this quarter):
+  - No MFA on employee email accounts
+  - SSH exposed to the public internet with password auth
+
+Priority 3 (mitigate and monitor):
+  - No DDoS protection on the VPS
+  - Wi-Fi password not rotated in 2 years
+```
+
+This list is the threat model's deliverable. It feeds directly into a remediation backlog.
+
+## How Often Should You Threat Model?
+
+Threat modeling is not a one-time exercise. Revisit it when:
+
+- A new feature or integration is added to the system
+- The infrastructure changes (new VPS, new cloud service, new third-party API)
+- After a security incident -- understand what the attacker's model looked like
+- On a regular schedule (annually at minimum for stable systems)
+
+The goal is not a perfect document. It is a living habit of asking "what could go wrong here?" before the attacker does.
+
+## Key Takeaways
+
+- Threat modeling is **proactive** -- it finds problems before attackers do, not after
+- Start by listing **assets** (what you're protecting), then **entry points** (where attackers could reach them)
+- **STRIDE** gives you a checklist of six threat categories to apply systematically: Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege
+- The output of a threat model is a **prioritized list** of threats -- not a guarantee of safety, but a plan for getting safer
+- Threat modeling **scales to any size** -- a small business or solo project benefits as much as an enterprise
+- Revisit your threat model whenever the system changes, not just once at the start
