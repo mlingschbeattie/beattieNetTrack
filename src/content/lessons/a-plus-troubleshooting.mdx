@@ -1,567 +1,182 @@
 ---
-title: Troubleshooting & Repair - A+ Study Guide
+title: Troubleshooting & Repair
+description: CompTIA A+ diagnostic methodology, hardware and software repair, backup strategies, printer and mobile issues, and preventive maintenance.
 slug: a-plus-troubleshooting
-legacyUrl: /a-plus-troubleshooting.html
-difficulty: medium
-estimatedMinutes: 15
+track: pc-technician
+moduleId: pct.troubleshooting.methodology
+order: 1
+difficulty: Intermediate
+estMinutes: 30
+tags: ["troubleshooting", "A+", "diagnostics", "repair", "backup", "maintenance"]
 ---
 
-import LegacyHtml from '../../components/LegacyHtml.astro';
+import Callout from '../../components/Callout.astro';
 
-<LegacyHtml html={`<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Troubleshooting & Repair - A+ Study Guide</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="site.css" />
-    
-  </head>
-  <body>
-    <a href="#main-content" class="skip-link">Skip to content</a>
-    
-    <header class="site-header">
-      <div class="header-container">
-        <div class="logo">
-          <a href="index.html">
-            <span class="logo-bracket">[</span>
-            <span class="logo-text">BEATTIE</span>
-            <span class="logo-bracket">]</span>
-            <span class="logo-subtitle">TECH</span>
-          </a>
-        </div>
-        
-        <button class="mobile-menu-toggle" aria-label="Toggle menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-        
-        <nav class="main-nav nav-links">
-          <ul>
-            <li><a href="index.html">🏠 Home</a></li>
-            <li><a href="study-guides.html" class="active">📖 Study Guides</a></li>
-            <li><a href="learning-tracks.html">🎯 Learning Tracks</a></li>
-            <li><a href="resources.html">🔬 Study Hub</a></li>
-            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
-          </ul>
-        </nav>
-      </div>
-    </header>
-    
-    <div class="scanlines"></div>
-    
-    <main id="main-content" class="container">
-      <nav class="breadcrumbs">
-        <a href="index.html">Home</a>
-        <span class="separator">/</span>
-        <a href="study-guides.html">Study Guides</a>
-        <span class="separator">/</span>
-        <a href="a-plus-guides.html">A+ Guides</a>
-        <span class="separator">/</span>
-        <span class="current">Troubleshooting & Repair</span>
-      </nav>
-      
-      <h1>Troubleshooting & Repair</h1>
-      <div class="subtitle">CompTIA A+ - Diagnostic methodology, hardware repair, software recovery, preventive maintenance</div>
+Troubleshooting is like being a detective -- you gather clues, narrow down suspects, test theories, and fix the root cause. The goal is not just to make it work; it's to find *what* went wrong so you can prevent it next time.
 
-      <div class="section">
-        <h2>ELI5: Troubleshooting</h2>
-        <div class="info-box">
-          Troubleshooting is like being a detective. You gather clues, narrow down suspects, test theories, and fix the root cause. The goal is not just to make it work—it's to find what went wrong so you can prevent it next time.
-        </div>
-      </div>
+## The CompTIA 7-Step Diagnostic Process
 
-      <div class="section">
-        <h2>Practical Exercises</h2>
-        <div class="command-grid">
-          <div class="command-item"><div class="command">Apply the 7 Steps</div><div class="description">Use the CompTIA process on a sample issue</div></div>
-          <div class="command-item"><div class="command">Safe Mode Flow</div><div class="description">Explain when to use Safe Mode and what it loads</div></div>
-          <div class="command-item"><div class="command">Event Viewer Hunt</div><div class="description">Find the latest critical/error events</div></div>
-          <div class="command-item"><div class="command">Backup Plan</div><div class="description">Design a 3-2-1 backup plan for a student laptop</div></div>
-        </div>
-      </div>
+This is the official A+ troubleshooting methodology. Know all 7 steps and their order.
 
-      <div class="section">
-        <h2>Diagnostic Methodology (CompTIA Standard)</h2>
-        <div class="example-block">
-          <div class="example-title">The 7-Step Process</div>
-          <div class="example-code">1) Identify the problem
-   - Ask questions, document symptoms, gather logs
+```
+Step 1: Identify the problem
+   - Ask questions, document symptoms, review error messages, gather logs
 
-2) Establish a theory of probable cause
-   - Use experience and knowledge to guess root cause
+Step 2: Establish a theory of probable cause
+   - Use experience and knowledge to hypothesize the root cause
+   - Start with the simplest/most likely explanation first
 
-3) Test the theory to determine cause
-   - Run diagnostic tools, test hypothesis
+Step 3: Test the theory to determine cause
+   - Run diagnostic tools, swap components, test the hypothesis
+   - If theory is confirmed -> move to step 4
+   - If disproved -> form a new theory (back to step 2)
 
-4) Establish a plan of action to resolve
-   - Create fix plan, consider impact
+Step 4: Establish a plan of action to resolve the problem
+   - Create a fix plan, consider side effects and impact on users
 
-5) Implement the solution or escalate
-   - Apply the fix, monitor for issues
+Step 5: Implement the solution or escalate as necessary
+   - Apply the fix; if beyond your scope/permissions, escalate
 
-6) Verify full system functionality
-   - Test everything to ensure problem solved
+Step 6: Verify full system functionality
+   - Test everything -- confirm the original problem is solved
+   - Check for new issues introduced by the fix
 
-7) Document findings, actions, outcomes
-   - Write detailed notes for future reference</div>
-        </div>
-      </div>
+Step 7: Document findings, actions, and outcomes
+   - Write detailed notes: date, symptoms, cause, fix, result
+```
 
-      <div class="section">
-        <h2>Common Hardware Issues & Fixes</h2>
-        <div class="command-grid">
-          <div class="command-item"><div class="command">No Power</div><div class="description">Check PSU, cables, power button, wall outlet</div></div>
-          <div class="command-item"><div class="command">No Display</div><div class="description">Reseat RAM, GPU, check monitor cable</div></div>
-          <div class="command-item"><div class="command">Overheating</div><div class="description">Clean fans/filters, reapply thermal paste</div></div>
-          <div class="command-item"><div class="command">Beep Codes</div><div class="description">POST errors (continuous = memory issue)</div></div>
-          <div class="command-item"><div class="command">Intermittent Crashes</div><div class="description">Bad RAM, power supply failing, overheating</div></div>
-          <div class="command-item"><div class="command">Slow Performance</div><div class="description">CPU/GPU pegged, RAM full, disk fragmented/dying</div></div>
-        </div>
-      </div>
+## Common Hardware Issues & Fixes
 
-      <div class="section">
-        <h2>Software Troubleshooting Tools</h2>
-        <div class="command-grid">
-          <div class="command-item"><div class="command">Task Manager (Windows)</div><div class="description">Monitor processes, CPU, memory, startup programs</div></div>
-          <div class="command-item"><div class="command">Device Manager</div><div class="description">Check drivers, disable hardware, update drivers</div></div>
-          <div class="command-item"><div class="command">Event Viewer</div><div class="description">View system, security, application logs</div></div>
-          <div class="command-item"><div class="command">Disk Management</div><div class="description">Partition, format, resize drives</div></div>
-          <div class="command-item"><div class="command">System Restore</div><div class="description">Roll back to previous stable state</div></div>
-          <div class="command-item"><div class="command">Safe Mode</div><div class="description">Boot with minimal drivers/services</div></div>
-        </div>
-      </div>
+| Symptom | Likely Causes | First Steps |
+|---|---|---|
+| **No Power** | PSU failure, loose cables, bad outlet | Check wall outlet, reseat power cables, test PSU |
+| **No Display** | Loose cable, failed GPU, bad RAM | Check monitor cable, reseat RAM and GPU |
+| **Overheating / Shutdowns** | Thermal paste dried, clogged fans | Clean dust, reapply thermal paste, check fan operation |
+| **POST Beep Codes** | Hardware fault detected during POST | Consult motherboard manual -- continuous beeps often = RAM |
+| **Intermittent Crashes / BSOD** | Bad RAM, failing PSU, overheating | Run memory test (MemTest86), check Event Viewer |
+| **Slow Performance** | CPU/RAM maxed, dying drive | Check Task Manager, run disk health check (SMART) |
 
-      <div class="section">
-        <h2>Recovery & Backup Strategies</h2>
-        <div class="command-grid">
-          <div class="command-item"><div class="command">File Backup</div><div class="description">Copy important documents, photos, etc.</div></div>
-          <div class="command-item"><div class="command">Image Backup</div><div class="description">Full system snapshot (whole drive)</div></div>
-          <div class="command-item"><div class="command">3-2-1 Rule</div><div class="description">3 copies, 2 different media, 1 offsite</div></div>
-          <div class="command-item"><div class="command">Incremental Backup</div><div class="description">Only changes since last backup (fast)</div></div>
-          <div class="command-item"><div class="command">Cloud Backup</div><div class="description">OneDrive, Google Drive, Backblaze</div></div>
-          <div class="command-item"><div class="command">Test Restore</div><div class="description">Actually verify backups work</div></div>
-        </div>
-      </div>
+## Software Troubleshooting Tools (Windows)
 
-      <div class="section">
-        <h2>Common Software Issues</h2>
-        <div class="command-grid">
-          <div class="command-item"><div class="command">Slow Boot</div><div class="description">Too many startup apps, failing disk</div></div>
-          <div class="command-item"><div class="command">Application Crash</div><div class="description">Check updates, logs, reinstall if needed</div></div>
-          <div class="command-item"><div class="command">Blue Screen</div><div class="description">Driver issues, memory faults, hardware</div></div>
-          <div class="command-item"><div class="command">No Internet</div><div class="description">Check IP config, DNS, router status</div></div>
-        </div>
-      </div>
+| Tool | Purpose |
+|---|---|
+| **Task Manager** | Monitor processes, CPU/RAM usage, kill hung apps, manage startup |
+| **Device Manager** | Check driver status; yellow ! = driver problem |
+| **Event Viewer** | System, Application, and Security logs -- find error codes |
+| **Disk Management** | Partition, format, and resize drives |
+| **System Restore** | Roll back Windows to a previous stable restore point |
+| **Safe Mode** | Boot with minimal drivers/services -- isolate software vs hardware |
+| **Resource Monitor** | Detailed CPU, memory, disk, and network activity |
+| **SFC / DISM** | Repair corrupted Windows system files |
 
-      <div class="section">
-        <h2>Printer Troubleshooting</h2>
-        <div class="command-grid">
-          <div class="command-item"><div class="command">Paper Jam</div><div class="description">Remove paper gently, check rollers</div></div>
-          <div class="command-item"><div class="command">Low Ink / Toner</div><div class="description">Replace cartridge, run calibration</div></div>
-          <div class="command-item"><div class="command">Wrong Driver</div><div class="description">Install correct model driver</div></div>
-          <div class="command-item"><div class="command">Print Spooler</div><div class="description">Restart service when jobs are stuck</div></div>
-          <div class="command-item"><div class="command">Connectivity</div><div class="description">Check USB, Wi‑Fi, or network IP</div></div>
-          <div class="command-item"><div class="command">Ghosting / Streaks</div><div class="description">Clean drum, replace toner/ink</div></div>
-        </div>
-      </div>
+## Common Software Issues
 
-      <div class="section">
-        <h2>Mobile Device Issues</h2>
-        <div class="command-grid">
-          <div class="command-item"><div class="command">Battery Drain</div><div class="description">Check background apps, brightness</div></div>
-          <div class="command-item"><div class="command">Overheating</div><div class="description">Close apps, remove case, cool down</div></div>
-          <div class="command-item"><div class="command">Storage Full</div><div class="description">Clear cache, remove unused apps</div></div>
-          <div class="command-item"><div class="command">No Signal</div><div class="description">Toggle airplane mode, check SIM</div></div>
-          <div class="command-item"><div class="command">App Crashes</div><div class="description">Update or reinstall app</div></div>
-          <div class="command-item"><div class="command">OS Updates</div><div class="description">Check available updates and reboot</div></div>
-        </div>
-      </div>
+| Issue | Typical Cause | Resolution |
+|---|---|---|
+| **Slow Boot** | Too many startup apps, failing disk | Disable startup items in Task Manager; run disk health check |
+| **Application Crash** | Outdated app, corrupted install | Check for updates; check Event Viewer; reinstall |
+| **Blue Screen (BSOD)** | Driver bug, RAM fault, hardware failure | Note error code; check recent driver installs; run MemTest86 |
+| **No Internet** | IP misconfiguration, DNS failure, router issue | Run ipconfig/ipconfig /renew; check router; ping gateway |
+| **Printer Not Working** | Driver, spooler, connectivity | Restart Print Spooler service; reinstall driver |
 
-      <div class="section">
-        <h2>Ticketing, SLA, and Escalation</h2>
-        <div class="command-grid">
-          <div class="command-item"><div class="command">Ticket Notes</div><div class="description">Record symptoms, actions, and results</div></div>
-          <div class="command-item"><div class="command">SLA Priority</div><div class="description">Set urgency and impact levels</div></div>
-          <div class="command-item"><div class="command">Escalation</div><div class="description">Hand off when beyond scope or permissions</div></div>
-          <div class="command-item"><div class="command">User Communication</div><div class="description">Status updates and resolution summary</div></div>
-        </div>
-      </div>
+## Recovery & Backup Strategies
 
-      <div class="section">
-        <h2>Preventive Maintenance</h2>
-        <div class="example-block">
-          <div class="example-title">Regular Tasks</div>
-          <div class="example-code">Weekly:
-• Clear temp files (Disk Cleanup)
-• Check Task Manager for runaway processes
+| Strategy | Description |
+|---|---|
+| **File Backup** | Copies of documents, photos, and data files |
+| **Image Backup** | Full system snapshot (entire drive) -- fastest full restore |
+| **Incremental Backup** | Only changes since last backup -- fast, small |
+| **Differential Backup** | All changes since last full backup -- faster restore than incremental |
+| **Cloud Backup** | Offsite via OneDrive, Google Drive, Backblaze |
+| **Test Restore** | Periodically verify that backups can actually be restored |
+
+### The 3-2-1 Backup Rule
+
+```
+3 copies of data
+2 different media types (e.g., local drive + external drive)
+1 offsite copy (cloud or physical location)
+```
+
+## Printer Troubleshooting
+
+| Problem | Cause | Fix |
+|---|---|---|
+| **Paper Jam** | Misaligned paper, worn rollers | Remove paper gently; check rollers and tray alignment |
+| **Low Ink / Toner** | Cartridge empty | Replace cartridge; run calibration/alignment |
+| **Wrong Driver** | Incorrect model installed | Uninstall and reinstall the correct driver |
+| **Jobs Stuck in Queue** | Print Spooler hung | Restart the Print Spooler service (services.msc) |
+| **Connectivity** | USB loose, Wi-Fi drop, wrong IP | Check physical connection; verify IP in printer settings |
+| **Ghost Images / Streaks** | Dirty drum or low toner | Clean drum; replace ink/toner; check fuser unit |
+
+## Mobile Device Issues
+
+| Issue | First Steps |
+|---|---|
+| **Battery Draining Fast** | Check background apps and screen brightness; check battery health |
+| **Overheating** | Close apps, remove case, move to cool area |
+| **Storage Full** | Clear app cache, remove unused apps, offload to cloud |
+| **No Signal / Calls Dropping** | Toggle airplane mode; check SIM seating; network settings reset |
+| **App Crashes** | Update or reinstall the app |
+| **Won't Update OS** | Free up storage, ensure battery >50%, retry on Wi-Fi |
+
+## Ticketing, SLA & Escalation
+
+| Concept | Details |
+|---|---|
+| **Ticket Notes** | Record symptoms, steps taken, and results -- always timestamped |
+| **SLA Priority** | Set urgency (impact + number of users affected) |
+| **Escalation** | Hand off when the issue is beyond your scope, permissions, or expertise |
+| **User Communication** | Provide status updates; confirm with user when resolved |
+
+## Preventive Maintenance Schedule
+
+```
+Weekly:
+  - Clear temp files (Disk Cleanup / Storage Sense)
+  - Check Task Manager for runaway processes
 
 Monthly:
-• Defragment drives (HDD only, not SSD)
-• Update Windows and drivers
-• Scan for malware
+  - Update Windows and drivers
+  - Scan for malware
+  - Defragment HDDs (NOT SSDs -- SSDs self-optimize)
 
 Quarterly:
-• Clean internal dust (fans, heatsinks)
-• Check drive health (SMART diagnostics)
-• Review backup status
+  - Clean internal dust (fans, heatsinks, vents)
+  - Check drive health with SMART diagnostics
+  - Review and test backup status
 
 Annually:
-• Replace thermal paste on CPU
-• Upgrade OS if available
-• Audit and remove unused software</div>
-        </div>
-      </div>
+  - Replace thermal paste on CPU heatsink
+  - Upgrade OS if new version available
+  - Audit and remove unused software
+```
 
-      <div class="section">
-        <h2>Interactive Quiz</h2>
-        <div id="progress-badge" style="display: none; text-align: center; margin-bottom: 15px;">
-          <span style="background: linear-gradient(135deg, #00ff88, #00d4ff); color: #0a0e27; padding: 8px 20px; border-radius: 20px; font-weight: 700; font-size: 0.95em;">
-            ✓ COMPLETED
-          </span>
-        </div>
-        <div id="previous-score" style="display: none; text-align: center; margin-bottom: 15px; color: #00d4ff;">
-          Previous Best: <strong id="best-score-display">0</strong> | Attempts: <strong id="attempts-display">0</strong>
-        </div>
-        <div class="info-box" style="margin-bottom: 20px;">
-          <strong>Dynamic Quiz:</strong> Questions randomized from an expanded pool. Refresh for new questions!
-        </div>
-        <div class="quiz-mode-controls">
-          <label>Review length:</label>
-          <button data-review="5min">5 min</button>
-          <button data-review="15min">15 min</button>
-          <button data-review="30min">30 min</button>
-        </div>
-        <div id="review-mode-note" class="review-mode-note"></div>
-        <div id="quiz-container">
-          {/* Questions generated dynamically */}
-        </div>
-      </div>
+## Exam Critical Facts
 
-      <div class="section">
-        <h2>Mini-Lab: Troubleshooting Simulator</h2>
-        <div class="lab-container">
-          <div class="info-box">
-            <strong>Objective:</strong> Diagnose computer issues using the CompTIA methodology
-          </div>
-          <div class="lab-challenge">
-            <div class="scenario-box" id="scenario-text">
-              <strong>Scenario:</strong> User reports: "My computer keeps restarting randomly during work."
-            </div>
-            <div class="troubleshooting-steps">
-              <div class="step-group">
-                <strong>What would you check first?</strong>
-                <div id="step-options" class="step-options">
-                  <button class="step-btn" data-correct="false" data-feedback="Too drastic - start with simpler checks">Reinstall OS</button>
-                  <button class="step-btn" data-correct="true" data-feedback="Good! Check Event Viewer for error codes and patterns">Check Event Viewer logs</button>
-                  <button class="step-btn" data-correct="false" data-feedback="Hardware tests come after checking logs">Replace motherboard</button>
-                  <button class="step-btn" data-correct="false" data-feedback="This might help, but gather info first">Update drivers</button>
-                </div>
-              </div>
-              <div id="next-step" class="next-step"></div>
-            </div>
-            <div class="lab-input-group">
-              <button id="reset-scenario">Reset Scenario</button>
-              <button id="new-scenario">New Scenario</button>
-            </div>
-          </div>
-        </div>
-      </div>
+- **Always document** -- dates, times, symptoms, steps taken, and outcomes
+- Follow the 7-step process **in order** -- don't skip to solutions
+- **Don't assume** -- test every theory before acting on it
+- **Escalate** when the issue is beyond your scope or permissions
+- **Prioritize data safety** before experimenting with fixes
+- Know the difference: **symptom** (what the user sees) vs **cause** (root problem)
+- Always back up before major changes
+- BSOD error codes tell you *which driver or component* failed -- look them up
+- `sfc /scannow` repairs corrupted Windows system files
+- `DISM /Online /Cleanup-Image /RestoreHealth` repairs the Windows image itself
 
-      <div class="section">
-        <h2>Exam Critical Facts</h2>
-        <div class="example-block">
-          <div class="example-title">What You Must Know</div>
-          <div class="example-code">• Always document your work (dates, times, actions)
-• Follow diagnostic methodology in order
-• Don't assume—test every theory
-• Never give up troubleshooting without escalation
-• Keep users informed of progress
-• Prioritize data safety before experimenting
-• Know the difference: symptom vs cause
-• Always back up before major changes</div>
-        </div>
-      </div>
-    </div>
+## Practical Exercises
 
-    
+1. **Apply the 7 Steps** -- Work through a sample scenario (e.g., "PC won't boot") using each step explicitly
+2. **Safe Mode Flow** -- Explain when you'd use Safe Mode and what it does differently from normal boot
+3. **Event Viewer Hunt** -- Open Event Viewer on a Windows machine; find the 3 most recent Critical or Error events
+4. **Backup Plan Design** -- Design a 3-2-1 backup plan for a student laptop with budget constraints
+5. **Printer Recovery** -- Simulate a stuck print queue: open services.msc, stop Print Spooler, clear the spool folder, restart the service
 
-    <script type="module">
-      import { aPlusTroubleshootingQuestions } from "./data/a-plus-troubleshooting-questions.js";
-      import { getProgress, updateProgress } from "./js/progressStore.js";
+<Callout type="info">
+**Interactive Quiz** -- The randomized multiple-choice quiz from the original page (5/15/30-minute modes with progress tracking) is available in the full workspace environment. It covers all 7 steps, hardware symptoms, software tools, backup strategy, and printer troubleshooting.
+</Callout>
 
-      const TRACK_ID = "pc-professional";
-      const MODULE_ID = "a-plus-troubleshooting";
-
-      const REVIEW_PRESETS = {
-        "5min": 6,
-        "15min": 15,
-        "30min": 30
-      };
-
-      const DEFAULT_PRESET = "5min";
-
-      let currentScore = 0;
-      let questionsAnswered = 0;
-      let totalQuestions = 0;
-      let activePreset = DEFAULT_PRESET;
-
-      function shuffleArray(array) {
-        const shuffled = [...array];
-        for (let i = shuffled.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-        return shuffled;
-      }
-
-      function buildReviewSet(presetKey) {
-        const numQuestions = REVIEW_PRESETS[presetKey] || REVIEW_PRESETS[DEFAULT_PRESET];
-
-        const easy = aPlusTroubleshootingQuestions.filter(q => q.difficulty === "easy");
-        const med = aPlusTroubleshootingQuestions.filter(q => q.difficulty === "medium");
-        const hard = aPlusTroubleshootingQuestions.filter(q => q.difficulty === "hard");
-
-        let pool;
-        if (presetKey === "5min") {
-          pool = [...easy, ...med];
-        } else if (presetKey === "15min") {
-          pool = [...easy, ...med, ...hard];
-        } else {
-          pool = [...med, ...hard];
-        }
-
-        if (pool.length === 0) {
-          pool = [...aPlusTroubleshootingQuestions];
-        }
-
-        const shuffled = shuffleArray(pool);
-        return shuffled.slice(0, Math.min(numQuestions, shuffled.length));
-      }
-
-      function setActiveButton(presetKey) {
-        document.querySelectorAll('.quiz-mode-controls button').forEach(btn => {
-          btn.classList.toggle('active', btn.dataset.review === presetKey);
-        });
-      }
-
-      function updateReviewModeNote(presetKey) {
-        const note = document.getElementById('review-mode-note');
-        const labelMap = {
-          "5min": "5-minute",
-          "15min": "15-minute",
-          "30min": "30-minute"
-        };
-        const label = labelMap[presetKey] || labelMap[DEFAULT_PRESET];
-        note.textContent = \`You are in \${label} review mode (\${totalQuestions} questions).\`;
-      }
-
-      function clearQuizContainer() {
-        const container = document.getElementById('quiz-container');
-        container.innerHTML = '';
-        currentScore = 0;
-        questionsAnswered = 0;
-        totalQuestions = 0;
-      }
-
-      function loadProgress() {
-        const progress = getProgress(TRACK_ID, MODULE_ID);
-
-        if (progress.completed) {
-          document.getElementById('progress-badge').style.display = 'block';
-        }
-
-        if (progress.attempts > 0) {
-          document.getElementById('previous-score').style.display = 'block';
-          document.getElementById('best-score-display').textContent = progress.bestScore;
-          document.getElementById('attempts-display').textContent = progress.attempts;
-        }
-
-        return progress.lastPreset || DEFAULT_PRESET;
-      }
-
-      function saveProgress() {
-        const progress = getProgress(TRACK_ID, MODULE_ID);
-        const newBestScore = Math.max(progress.bestScore, currentScore);
-        const isCompleted = totalQuestions > 0 && currentScore === totalQuestions;
-
-        updateProgress(TRACK_ID, MODULE_ID, {
-          attempts: progress.attempts + 1,
-          bestScore: newBestScore,
-          completed: isCompleted || progress.completed,
-          lastVisited: Date.now(),
-          lastPreset: activePreset
-        });
-
-        if (isCompleted) {
-          document.getElementById('progress-badge').style.display = 'block';
-        }
-        document.getElementById('previous-score').style.display = 'block';
-        document.getElementById('best-score-display').textContent = newBestScore;
-        document.getElementById('attempts-display').textContent = progress.attempts + 1;
-      }
-
-      function generateTroubleshootingQuiz(presetKey = DEFAULT_PRESET) {
-        const selectedQuestions = buildReviewSet(presetKey);
-        const container = document.getElementById('quiz-container');
-        totalQuestions = selectedQuestions.length;
-
-        if (totalQuestions === 0) {
-          container.innerHTML = '<div class="info-box">No questions available for this review mode.</div>';
-          return;
-        }
-
-        selectedQuestions.forEach((q, index) => {
-          const shuffledOptions = q.options.map((opt, idx) => ({ text: opt, isCorrect: idx === q.correctIndex }));
-          const randomized = shuffleArray(shuffledOptions);
-
-          const questionDiv = document.createElement('div');
-          questionDiv.className = 'quiz-question';
-          questionDiv.setAttribute('data-question', index + 1);
-
-          const questionText = document.createElement('p');
-          questionText.className = 'question-text';
-          questionText.textContent = q.stem;
-          questionDiv.appendChild(questionText);
-
-          const optionsDiv = document.createElement('div');
-          optionsDiv.className = 'quiz-options';
-
-          randomized.forEach(option => {
-            const btn = document.createElement('button');
-            btn.className = 'quiz-option';
-            btn.textContent = option.text;
-            btn.dataset.correct = option.isCorrect;
-            optionsDiv.appendChild(btn);
-          });
-
-          questionDiv.appendChild(optionsDiv);
-
-          const feedback = document.createElement('div');
-          feedback.className = 'quiz-feedback';
-          questionDiv.appendChild(feedback);
-
-          container.appendChild(questionDiv);
-        });
-
-        const scoreDiv = document.createElement('div');
-        scoreDiv.className = 'quiz-score';
-        scoreDiv.innerHTML = 'Score: <span id="score">0</span>/' + totalQuestions;
-        container.appendChild(scoreDiv);
-
-        document.querySelectorAll('.quiz-option').forEach(btn => {
-          btn.addEventListener('click', handleTroubleshootingQuizAnswer);
-        });
-      }
-
-      function handleTroubleshootingQuizAnswer() {
-        const question = this.closest('.quiz-question');
-        const options = question.querySelectorAll('.quiz-option');
-        const feedback = question.querySelector('.quiz-feedback');
-        const isCorrect = this.dataset.correct === 'true';
-
-        options.forEach(opt => {
-          opt.disabled = true;
-          if (opt.dataset.correct === 'true') opt.classList.add('correct');
-        });
-
-        if (isCorrect) {
-          this.classList.add('correct');
-          feedback.textContent = '✓ Correct!';
-          feedback.style.color = '#00ff88';
-          currentScore++;
-        } else {
-          this.classList.add('incorrect');
-          feedback.textContent = '✗ Incorrect.';
-          feedback.style.color = '#ff4444';
-        }
-
-        questionsAnswered++;
-        updateTroubleshootingScore();
-
-        if (questionsAnswered === totalQuestions) {
-          saveProgress();
-        }
-      }
-
-      function updateTroubleshootingScore() {
-        document.getElementById('score').textContent = currentScore;
-      }
-
-      function setReviewMode(presetKey, persist = true) {
-        activePreset = REVIEW_PRESETS[presetKey] ? presetKey : DEFAULT_PRESET;
-        clearQuizContainer();
-        generateTroubleshootingQuiz(activePreset);
-        setActiveButton(activePreset);
-        updateReviewModeNote(activePreset);
-
-        if (persist) {
-          updateProgress(TRACK_ID, MODULE_ID, {
-            lastPreset: activePreset,
-            lastVisited: Date.now()
-          });
-        }
-      }
-
-      function bindReviewButtons() {
-        document.querySelectorAll('.quiz-mode-controls button').forEach(btn => {
-          btn.addEventListener('click', () => {
-            setReviewMode(btn.dataset.review);
-          });
-        });
-      }
-
-      document.addEventListener('DOMContentLoaded', () => {
-        const initialPreset = loadProgress();
-        bindReviewButtons();
-        setReviewMode(initialPreset, false);
-      });
-
-      const scenarios = [
-        { problem: 'Computer keeps restarting randomly during work', correct: 1, options: ['Reinstall OS', 'Check Event Viewer logs', 'Replace motherboard', 'Update drivers'], feedback: ['Too drastic - start with simpler checks', 'Good! Check Event Viewer for error codes and patterns', 'Hardware tests come after checking logs', 'This might help, but gather info first'], result: 'Event Viewer shows Critical Kernel-Power errors. Next: Check PSU and temperature.' },
-        { problem: 'No display on monitor, but computer powers on', correct: 1, options: ['Replace monitor', 'Reseat GPU and RAM', 'Reinstall OS', 'Update BIOS'], feedback: ['Check connections first', 'Excellent! Loose connections are common', 'Can\\'t reinstall without display', 'Can\\'t access BIOS without display'], result: 'After reseating GPU, display works. Issue resolved!' },
-        { problem: 'Computer extremely slow after recent Windows update', correct: 2, options: ['Buy new computer', 'Wipe and reinstall', 'Check Task Manager for high resource usage', 'Replace hard drive'], feedback: ['Too expensive - diagnose first', 'Too drastic without investigating', 'Perfect! Identify the resource hog', 'Might not be hardware'], result: 'Task Manager shows Windows Search using 90% CPU. Rebuild search index or disable.' },
-        { problem: 'Laptop overheats and shuts down during gaming', correct: 0, options: ['Clean dust from vents and fans', 'Replace CPU', 'Uninstall games', 'Buy cooling pad'], feedback: ['Great first step! Often fixes thermal issues', 'Too drastic - clean first', 'Games aren\\'t the problem', 'Try cleaning first'], result: 'Removed dust buildup. Temps dropped 20°C. Issue resolved!' }
-      ];
-      let currentScenario = 0;
-
-      function loadScenario() {
-        const scenario = scenarios[currentScenario];
-        document.getElementById('scenario-text').innerHTML = \`<strong>Scenario:</strong> User reports: "\${scenario.problem}"\`;
-        const optionsDiv = document.getElementById('step-options');
-        optionsDiv.innerHTML = '';
-        scenario.options.forEach((opt, idx) => {
-          const btn = document.createElement('button');
-          btn.className = 'step-btn';
-          btn.textContent = opt;
-          btn.dataset.correct = (idx === scenario.correct);
-          btn.dataset.feedback = scenario.feedback[idx];
-          btn.addEventListener('click', function() {
-            document.querySelectorAll('.step-btn').forEach(b => { b.disabled = true; if (b.dataset.correct === 'true') b.classList.add('correct'); });
-            const nextStep = document.getElementById('next-step');
-            if (this.dataset.correct === 'true') {
-              this.classList.add('correct');
-              nextStep.innerHTML = \`<strong>✓ \${this.dataset.feedback}</strong><br><br>\${scenario.result}\`;
-            } else {
-              this.classList.add('incorrect');
-              nextStep.innerHTML = \`<strong style="color: #ff4444;">✗ \${this.dataset.feedback}</strong><br>Try the highlighted correct approach.\`;
-            }
-          });
-          optionsDiv.appendChild(btn);
-        });
-        document.getElementById('next-step').textContent = '';
-      }
-
-      loadScenario();
-
-      document.getElementById('reset-scenario').addEventListener('click', loadScenario);
-      document.getElementById('new-scenario').addEventListener('click', () => {
-        currentScenario = (currentScenario + 1) % scenarios.length;
-        loadScenario();
-      });
-    </script>
-    <script type="module" src="site.js"></script>
-  </body>
-</html>`} />
+<Callout type="info">
+**Mini-Lab: Troubleshooting Simulator** -- The original page includes a scenario-based simulator where you diagnose issues like "PC keeps restarting randomly" by choosing from a set of diagnostic steps. Open this lesson in the full workspace to work through multiple scenarios using the CompTIA methodology.
+</Callout>
