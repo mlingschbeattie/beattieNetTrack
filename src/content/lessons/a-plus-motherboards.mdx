@@ -1,504 +1,123 @@
 ---
-title: Motherboards & Architecture - A+ Study Guide
+title: Motherboards & Architecture
+description: Understand the PC motherboard - connectors, BIOS/UEFI, boot process, form factors, and chipsets.
 slug: a-plus-motherboards
-legacyUrl: /a-plus-motherboards.html
-difficulty: medium
-estimatedMinutes: 15
+track: pc-technician
+moduleId: pct.hardware.components-identification
+order: 2
+difficulty: Intermediate
+estMinutes: 25
+tags: ["motherboard", "BIOS", "UEFI", "hardware", "A+", "chipset", "form-factor"]
 ---
 
-import LegacyHtml from '../../components/LegacyHtml.astro';
+import Callout from '../../components/Callout.astro';
 
-<LegacyHtml html={`<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Motherboards & Architecture - A+ Study Guide</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="site.css" />
-    
-  </head>
-  <body>
-    <a href="#main-content" class="skip-link">Skip to content</a>
-    
-    <header class="site-header">
-      <div class="header-container">
-        <div class="logo">
-          <a href="index.html">
-            <span class="logo-bracket">[</span>
-            <span class="logo-text">BEATTIE</span>
-            <span class="logo-bracket">]</span>
-            <span class="logo-subtitle">TECH</span>
-          </a>
-        </div>
-        
-        <button class="mobile-menu-toggle" aria-label="Toggle menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-        
-        <nav class="main-nav nav-links">
-          <ul>
-            <li><a href="index.html">🏠 Home</a></li>
-            <li><a href="study-guides.html" class="active">📖 Study Guides</a></li>
-            <li><a href="learning-tracks.html">🎯 Learning Tracks</a></li>
-            <li><a href="resources.html">🔬 Study Hub</a></li>
-            <li><a href="cheat-sheets.html">⚡ Cheat Sheets</a></li>
-          </ul>
-        </nav>
-      </div>
-    </header>
-    
-    <div class="scanlines"></div>
-    
-    <main id="main-content" class="container">
-      <nav class="breadcrumbs">
-        <a href="index.html">Home</a>
-        <span class="separator">/</span>
-        <a href="study-guides.html">Study Guides</a>
-        <span class="separator">/</span>
-        <a href="a-plus-guides.html">A+ Guides</a>
-        <span class="separator">/</span>
-        <span class="current">Motherboards & Architecture</span>
-      </nav>
-      
-      <h1>Motherboards & Architecture</h1>
-      <div class="subtitle">CompTIA A+ - BIOS, boot process, chipsets, and system interconnects</div>
+The motherboard is the central hub of a PC -- every component connects through it. Understanding its layout, firmware, and boot process is essential for A+ certification and real-world hardware support.
 
-      <div class="section">
-        <h2>ELI5: What is a Motherboard?</h2>
-        <div class="info-box">
-          The motherboard is like the nervous system of a computer. It connects all the parts so they can talk to each other and work as a team.
-        </div>
-      </div>
+## What is a Motherboard?
 
-      <div class="section">
-        <h2>Practical Exercises</h2>
-        <div class="command-grid">
-          <div class="command-item"><div class="command">Connector Hunt</div><div class="description">Locate CPU socket, DIMM slots, PCIe, SATA, M.2 on a board diagram</div></div>
-          <div class="command-item"><div class="command">Enter BIOS/UEFI</div><div class="description">Identify boot order, secure boot, and system info screens</div></div>
-          <div class="command-item"><div class="command">Front Panel Headers</div><div class="description">Map power/reset/LED pins on a motherboard manual</div></div>
-          <div class="command-item"><div class="command">POST Beep Codes</div><div class="description">Match beep patterns to common hardware faults</div></div>
-        </div>
-      </div>
+The motherboard is like the nervous system of a computer. It connects all the parts so they can talk to each other and work as a team. Nothing runs without it -- the CPU, RAM, storage, and every peripheral all plug into or communicate through the board.
 
-      <div class="section">
-        <h2>Key Motherboard Connectors</h2>
-        <div class="command-grid">
-          <div class="command-item"><div class="command">CPU Socket</div><div class="description">Holds the processor (LGA 1200, AM4, etc.)</div></div>
-          <div class="command-item"><div class="command">RAM Slots (DIMM)</div><div class="description">Memory modules plug in vertically</div></div>
-          <div class="command-item"><div class="command">PCIe Slots</div><div class="description">Expansion cards (GPU, NIC, sound, etc.)</div></div>
-          <div class="command-item"><div class="command">SATA Ports</div><div class="description">Connect to hard drives and SSDs</div></div>
-          <div class="command-item"><div class="command">M.2 Slot</div><div class="description">Fast NVMe SSD connection</div></div>
-          <div class="command-item"><div class="command">Power Connectors</div><div class="description">ATX 24-pin, CPU 8-pin</div></div>
-        </div>
-      </div>
+## Key Motherboard Connectors
 
-      <div class="section">
-        <h2>BIOS vs UEFI</h2>
-        <div class="command-grid">
-          <div class="command-item"><div class="command">BIOS (Legacy)</div><div class="description">Older firmware, text-based, 16-bit</div></div>
-          <div class="command-item"><div class="command">UEFI (Modern)</div><div class="description">Newer, GUI, 64-bit, secure boot support</div></div>
-          <div class="command-item"><div class="command">CMOS Battery</div><div class="description">Keeps BIOS settings when powered off</div></div>
-          <div class="command-item"><div class="command">Secure Boot</div><div class="description">UEFI feature to verify boot files</div></div>
-        </div>
-      </div>
+| Connector | Purpose |
+|---|---|
+| **CPU Socket** | Holds the processor (e.g., LGA 1700, AM5). Must match CPU exactly. |
+| **RAM Slots (DIMM)** | Memory modules plug in vertically. Usually 2 or 4 slots. |
+| **PCIe Slots** | Expansion cards: GPU (x16), NIC, sound cards (x1, x4). |
+| **SATA Ports** | Connect to 2.5"/3.5" hard drives and SSDs via data cable. |
+| **M.2 Slot** | Fast NVMe SSD connection directly on the board. |
+| **ATX 24-pin** | Main power connector from the PSU. |
+| **CPU 8-pin** | Additional power for the processor. |
+| **Front Panel Headers** | Power/reset buttons, HDD LED, power LED pins. |
 
-      <div class="section">
-        <h2>Boot Process (POST to OS)</h2>
-        <div class="example-block">
-          <div class="example-title">Step-by-step</div>
-          <div class="example-code">1) Power On: BIOS/UEFI firmware loads
-2) POST (Power-On Self Test): Hardware check
-3) Boot Device Selection: Finds storage device
-4) Bootloader: Loads OS kernel
-5) OS Loads: File systems and drivers
-6) Desktop/Login: Ready for user</div>
-        </div>
-      </div>
+## BIOS vs. UEFI
 
-      <div class="section">
-        <h2>Chipsets & Lanes</h2>
-        <div class="command-grid">
-          <div class="command-item"><div class="command">PCH (Platform Controller Hub)</div><div class="description">Manages slower peripherals</div></div>
-          <div class="command-item"><div class="command">PCIe Lanes</div><div class="description">Bandwidth to slots (x1, x4, x8, x16)</div></div>
-          <div class="command-item"><div class="command">North/South Bridge</div><div class="description">Older architecture (mostly obsolete)</div></div>
-        </div>
-      </div>
+| Feature | BIOS (Legacy) | UEFI (Modern) |
+|---|---|---|
+| Interface | Text-only | GUI with mouse support |
+| Architecture | 16-bit | 32/64-bit |
+| Drive support | MBR only (<= 2 TB) | GPT (large drives) |
+| Secure Boot | No | Yes |
+| Boot speed | Slower | Faster (POST optimization) |
 
-      <div class="section">
-        <h2>Form Factors & Cases</h2>
-        <div class="command-grid">
-          <div class="command-item"><div class="command">ATX</div><div class="description">Standard full‑size boards</div></div>
-          <div class="command-item"><div class="command">Micro‑ATX</div><div class="description">Smaller, fewer expansion slots</div></div>
-          <div class="command-item"><div class="command">Mini‑ITX</div><div class="description">Very small, compact builds</div></div>
-          <div class="command-item"><div class="command">E‑ATX</div><div class="description">Larger boards for high‑end systems</div></div>
-        </div>
-      </div>
+The **CMOS battery** (CR2032 coin cell) keeps BIOS/UEFI settings and the real-time clock alive when the system is powered off. Removing it resets settings to factory defaults.
 
-      <div class="section">
-        <h2>UEFI Settings & Features</h2>
-        <div class="command-grid">
-          <div class="command-item"><div class="command">Boot Order</div><div class="description">Choose device priority on startup</div></div>
-          <div class="command-item"><div class="command">Secure Boot</div><div class="description">Allows only signed bootloaders</div></div>
-          <div class="command-item"><div class="command">XMP / DOCP</div><div class="description">RAM performance profiles</div></div>
-          <div class="command-item"><div class="command">Virtualization (VT‑x/AMD‑V)</div><div class="description">Enable CPU virtualization support</div></div>
-          <div class="command-item"><div class="command">Firmware Updates</div><div class="description">Flash BIOS/UEFI for stability</div></div>
-          <div class="command-item"><div class="command">Trusted Platform Module</div><div class="description">TPM for BitLocker and secure keys</div></div>
-        </div>
-      </div>
+## Boot Process (Power On -> Desktop)
 
-      <div class="section">
-        <h2>Exam Essentials</h2>
-        <div class="example-block">
-          <div class="example-title">What to Remember</div>
-          <div class="example-code">• Motherboards have one CPU socket only
-• RAM is hot-swappable (no reboot needed)
-• UEFI is modern standard; BIOS is legacy
-• PCIe x16 slots handle GPUs
-• Always check CPU compatibility with socket type
-• Firmware updates can improve stability and compatibility</div>
-        </div>
-      </div>
+```
+1. Power On      -> PSU sends power-good signal
+2. POST          -> UEFI/BIOS runs Power-On Self Test (checks CPU, RAM, video)
+3. Boot Device   -> Firmware reads boot order and selects device
+4. Bootloader    -> Loads OS kernel (e.g., Windows Boot Manager)
+5. OS Kernel     -> Initializes file systems, drivers, services
+6. Desktop/Login -> User environment ready
+```
 
-      <div class="section">
-        <h2>Interactive Quiz</h2>
-        <div id="progress-badge" style="display: none; text-align: center; margin-bottom: 15px;">
-          <span style="background: linear-gradient(135deg, #00ff88, #00d4ff); color: #0a0e27; padding: 8px 20px; border-radius: 20px; font-weight: 700; font-size: 0.95em;">
-            ✓ COMPLETED
-          </span>
-        </div>
-        <div id="previous-score" style="display: none; text-align: center; margin-bottom: 15px; color: #00d4ff;">
-          Previous Best: <strong id="best-score-display">0</strong> | Attempts: <strong id="attempts-display">0</strong>
-        </div>
-        <div class="info-box" style="margin-bottom: 20px;">
-          <strong>Dynamic Quiz:</strong> Questions are randomly selected from a larger pool each time you visit this page. Refresh for new questions!
-        </div>
-        <div class="quiz-mode-controls">
-          <label>Review length:</label>
-          <button data-review="5min">5 min</button>
-          <button data-review="15min">15 min</button>
-          <button data-review="30min">30 min</button>
-        </div>
-        <div id="review-mode-note" class="review-mode-note"></div>
-        <div id="quiz-container">
-          {/* Quiz questions will be dynamically generated here */}
-        </div>
-      </div>
+POST beep codes indicate hardware faults. One long beep typically means RAM failure; check your motherboard manual for platform-specific codes.
 
-    <script type="module">
-      import { aPlusMotherboardsQuestions } from "./data/a-plus-motherboards-questions.js";
-      import { getProgress, updateProgress } from "./js/progressStore.js";
+## Chipsets & Lanes
 
-      const TRACK_ID = "pc-professional";
-      const MODULE_ID = "a-plus-motherboards";
+The **Platform Controller Hub (PCH)** manages slower peripherals: USB ports, SATA controllers, audio, and networking.
 
-      const REVIEW_PRESETS = {
-        "5min": 6,
-        "15min": 15,
-        "30min": 30
-      };
+**PCIe lane widths** determine bandwidth to expansion slots:
 
-      const DEFAULT_PRESET = "5min";
+| Width | Typical Use | Bandwidth (Gen 4) |
+|---|---|---|
+| x1 | Network cards, USB cards | 2 GB/s |
+| x4 | NVMe SSDs, some capture cards | 8 GB/s |
+| x8 | Some GPUs, RAID cards | 16 GB/s |
+| x16 | Graphics cards (primary) | 32 GB/s |
 
-      let currentScore = 0;
-      let questionsAnswered = 0;
-      let totalQuestions = 0;
-      let activePreset = DEFAULT_PRESET;
+The older North/South Bridge design is obsolete -- modern boards integrate these functions into the CPU die and PCH.
 
-      function shuffleArray(array) {
-        const shuffled = [...array];
-        for (let i = shuffled.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-        return shuffled;
-      }
+## Form Factors
 
-      function buildReviewSet(presetKey) {
-        const numQuestions = REVIEW_PRESETS[presetKey] || REVIEW_PRESETS[DEFAULT_PRESET];
+| Form Factor | Size | Expansion Slots | Use Case |
+|---|---|---|---|
+| **ATX** | 305 x 244 mm | Up to 7 | Standard desktops |
+| **Micro-ATX** | 244 x 244 mm | Up to 4 | Compact desktops |
+| **Mini-ITX** | 170 x 170 mm | 1 | SFF/compact builds |
+| **E-ATX** | 305 x 330 mm | Up to 8 | High-end workstations |
 
-        const easy = aPlusMotherboardsQuestions.filter(q => q.difficulty === "easy");
-        const med = aPlusMotherboardsQuestions.filter(q => q.difficulty === "medium");
-        const hard = aPlusMotherboardsQuestions.filter(q => q.difficulty === "hard");
+The case must match the board's form factor. ATX boards will not fit in a Micro-ATX case.
 
-        let pool;
-        if (presetKey === "5min") {
-          pool = [...easy, ...med];
-        } else if (presetKey === "15min") {
-          pool = [...easy, ...med, ...hard];
-        } else {
-          pool = [...med, ...hard];
-        }
+## Key UEFI Settings
 
-        if (pool.length === 0) {
-          pool = [...aPlusMotherboardsQuestions];
-        }
+| Setting | What It Does |
+|---|---|
+| **Boot Order** | Choose which device is tried first on startup |
+| **Secure Boot** | Allows only signed bootloaders (required for Windows 11) |
+| **XMP / DOCP** | RAM performance profiles -- enables rated speed |
+| **Virtualization (VT-x / AMD-V)** | Required for hypervisors (Hyper-V, VirtualBox) |
+| **TPM 2.0** | Security chip for BitLocker and Windows 11 |
+| **Firmware Update** | Flash BIOS/UEFI to improve stability and compatibility |
+| **CSM (Compatibility Support Module)** | Enables Legacy BIOS mode for older OS installs |
 
-        const shuffled = shuffleArray(pool);
-        return shuffled.slice(0, Math.min(numQuestions, shuffled.length));
-      }
+<Callout type="info">
+**Mini-Lab: BIOS Configuration Simulator** -- The interactive BIOS scenario exercises from the original page require the workspace environment. Open this lesson in the full workspace to practice selecting correct UEFI settings for scenarios like Windows 11 installation, Hyper-V setup, and RAM performance tuning.
+</Callout>
 
-      function setActiveButton(presetKey) {
-        document.querySelectorAll('.quiz-mode-controls button').forEach(btn => {
-          btn.classList.toggle('active', btn.dataset.review === presetKey);
-        });
-      }
+## Exam Essentials
 
-      function updateReviewModeNote(presetKey) {
-        const note = document.getElementById('review-mode-note');
-        const labelMap = {
-          "5min": "5-minute",
-          "15min": "15-minute",
-          "30min": "30-minute"
-        };
-        const label = labelMap[presetKey] || labelMap[DEFAULT_PRESET];
-        note.textContent = \`You are in \${label} review mode (\${totalQuestions} questions).\`;
-      }
+- A motherboard has **one CPU socket only** -- it dictates which processors are compatible
+- RAM is **not** hot-swappable -- always power off before adding/removing DIMMs
+- **UEFI** is the modern standard; BIOS is legacy
+- **PCIe x16 slots** are designed for GPUs
+- Always check CPU socket compatibility before purchasing a processor
+- **Secure Boot + TPM 2.0** are both required for Windows 11
+- Firmware updates can resolve compatibility issues with new CPU generations
+- The **front panel header** pins are the most commonly misconnected part of a new build
 
-      function clearQuizContainer() {
-        const container = document.getElementById('quiz-container');
-        container.innerHTML = '';
-        currentScore = 0;
-        questionsAnswered = 0;
-        totalQuestions = 0;
-      }
+## Practical Exercises
 
-      function loadProgress() {
-        const progress = getProgress(TRACK_ID, MODULE_ID);
+Work through these hands-on tasks to reinforce the concepts:
 
-        if (progress.completed) {
-          document.getElementById('progress-badge').style.display = 'block';
-        }
+1. **Connector Hunt** -- On a motherboard diagram, locate and label: CPU socket, DIMM slots, PCIe x16, PCIe x1, SATA ports, M.2 slot, ATX 24-pin, CPU 8-pin, front panel headers
+2. **Enter BIOS/UEFI** -- Boot into your system's firmware. Identify: boot order list, secure boot status, system info screen (CPU, RAM speed)
+3. **Front Panel Headers** -- Using a motherboard manual, map the power button, reset button, HDD LED, and power LED pins from the front panel connector
+4. **POST Beep Codes** -- Look up the beep code table for a common chipset (Intel Z790 or AMD X670). What does one long + two short beeps indicate?
 
-        if (progress.attempts > 0) {
-          document.getElementById('previous-score').style.display = 'block';
-          document.getElementById('best-score-display').textContent = progress.bestScore;
-          document.getElementById('attempts-display').textContent = progress.attempts;
-        }
-
-        return progress.lastPreset || DEFAULT_PRESET;
-      }
-
-      function saveProgress() {
-        const progress = getProgress(TRACK_ID, MODULE_ID);
-        const newBestScore = Math.max(progress.bestScore, currentScore);
-        const isCompleted = totalQuestions > 0 && currentScore === totalQuestions;
-
-        updateProgress(TRACK_ID, MODULE_ID, {
-          attempts: progress.attempts + 1,
-          bestScore: newBestScore,
-          completed: isCompleted || progress.completed,
-          lastVisited: Date.now(),
-          lastPreset: activePreset
-        });
-
-        if (isCompleted) {
-          document.getElementById('progress-badge').style.display = 'block';
-        }
-        document.getElementById('previous-score').style.display = 'block';
-        document.getElementById('best-score-display').textContent = newBestScore;
-        document.getElementById('attempts-display').textContent = progress.attempts + 1;
-      }
-
-      function generateMoboQuiz(presetKey = DEFAULT_PRESET) {
-        const selectedQuestions = buildReviewSet(presetKey);
-        const container = document.getElementById('quiz-container');
-        totalQuestions = selectedQuestions.length;
-
-        if (totalQuestions === 0) {
-          container.innerHTML = '<div class="info-box">No questions available for this review mode.</div>';
-          return;
-        }
-
-        selectedQuestions.forEach((q, index) => {
-          const shuffledOptions = q.options.map((opt, idx) => ({ text: opt, isCorrect: idx === q.correctIndex }));
-          const randomized = shuffleArray(shuffledOptions);
-
-          const questionDiv = document.createElement('div');
-          questionDiv.className = 'quiz-question';
-          questionDiv.setAttribute('data-question', index + 1);
-
-          const questionText = document.createElement('p');
-          questionText.className = 'question-text';
-          questionText.textContent = q.stem;
-          questionDiv.appendChild(questionText);
-
-          const optionsDiv = document.createElement('div');
-          optionsDiv.className = 'quiz-options';
-
-          randomized.forEach(option => {
-            const btn = document.createElement('button');
-            btn.className = 'quiz-option';
-            btn.textContent = option.text;
-            btn.dataset.correct = option.isCorrect;
-            optionsDiv.appendChild(btn);
-          });
-
-          questionDiv.appendChild(optionsDiv);
-
-          const feedback = document.createElement('div');
-          feedback.className = 'quiz-feedback';
-          questionDiv.appendChild(feedback);
-
-          container.appendChild(questionDiv);
-        });
-
-        const scoreDiv = document.createElement('div');
-        scoreDiv.className = 'quiz-score';
-        scoreDiv.innerHTML = 'Score: <span id="score">0</span>/' + totalQuestions;
-        container.appendChild(scoreDiv);
-
-        document.querySelectorAll('.quiz-option').forEach(btn => {
-          btn.addEventListener('click', handleMoboAnswer);
-        });
-      }
-
-      function handleMoboAnswer() {
-        const question = this.closest('.quiz-question');
-        const options = question.querySelectorAll('.quiz-option');
-        const feedback = question.querySelector('.quiz-feedback');
-        const isCorrect = this.dataset.correct === 'true';
-
-        options.forEach(opt => {
-          opt.disabled = true;
-          if (opt.dataset.correct === 'true') opt.classList.add('correct');
-        });
-
-        if (isCorrect) {
-          this.classList.add('correct');
-          feedback.textContent = '✓ Correct!';
-          feedback.style.color = '#00ff88';
-          currentScore++;
-        } else {
-          this.classList.add('incorrect');
-          feedback.textContent = '✗ Incorrect.';
-          feedback.style.color = '#ff4444';
-        }
-
-        questionsAnswered++;
-        updateMoboScore();
-
-        if (questionsAnswered === totalQuestions) {
-          saveProgress();
-        }
-      }
-
-      function updateMoboScore() {
-        document.getElementById('score').textContent = currentScore;
-      }
-
-      function setReviewMode(presetKey, persist = true) {
-        activePreset = REVIEW_PRESETS[presetKey] ? presetKey : DEFAULT_PRESET;
-        clearQuizContainer();
-        generateMoboQuiz(activePreset);
-        setActiveButton(activePreset);
-        updateReviewModeNote(activePreset);
-
-        if (persist) {
-          updateProgress(TRACK_ID, MODULE_ID, {
-            lastPreset: activePreset,
-            lastVisited: Date.now()
-          });
-        }
-      }
-
-      function bindReviewButtons() {
-        document.querySelectorAll('.quiz-mode-controls button').forEach(btn => {
-          btn.addEventListener('click', () => {
-            setReviewMode(btn.dataset.review);
-          });
-        });
-      }
-
-      document.addEventListener('DOMContentLoaded', () => {
-        const initialPreset = loadProgress();
-        bindReviewButtons();
-        setReviewMode(initialPreset, false);
-      });
-    </script>
-
-      <div class="section">
-        <h2>Mini-Lab: BIOS Configuration Simulator</h2>
-        <div class="lab-container">
-          <div class="info-box">
-            <strong>Objective:</strong> Select the correct BIOS settings to meet system requirements
-          </div>
-          <div class="lab-challenge">
-            <p class="lab-question" id="bios-scenario">Install Windows 11 with secure boot requirement. What settings are needed?</p>
-            <div class="bios-options" style="margin: 20px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                <input type="checkbox" value="secure-boot"> Secure Boot
-              </label>
-              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                <input type="checkbox" value="tpm"> TPM 2.0
-              </label>
-              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                <input type="checkbox" value="uefi"> UEFI (not Legacy BIOS)
-              </label>
-              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                <input type="checkbox" value="xmp"> XMP/DOCP
-              </label>
-              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                <input type="checkbox" value="virtualization"> Virtualization
-              </label>
-              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                <input type="checkbox" value="fast-boot"> Fast Boot
-              </label>
-            </div>
-            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-              <button id="bios-check" class="quiz-option" style="background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: var(--text-dark); border: none; padding: 10px 20px; cursor: pointer; border-radius: 8px; font-weight: 700;">Check Answer</button>
-              <button id="bios-reset" class="quiz-option" style="background: var(--panel); border: 1px solid var(--border); color: var(--text); padding: 10px 20px; cursor: pointer; border-radius: 8px; font-weight: 700;">Reset</button>
-              <button id="bios-next" class="quiz-option" style="background: var(--panel); border: 1px solid var(--border); color: var(--text); padding: 10px 20px; cursor: pointer; border-radius: 8px; font-weight: 700;">Next Scenario</button>
-            </div>
-            <div id="bios-result" class="quiz-feedback" style="margin-top: 16px;"></div>
-          </div>
-        </div>
-      </div>
-
-    <script>
-      // BIOS Lab
-      const biosScenarios = [
-        { scenario: 'Install Windows 11 with secure boot requirement. What settings are needed?', required: ['secure-boot', 'tpm', 'uefi'] },
-        { scenario: 'Maximize RAM performance on a gaming PC. What should you enable?', required: ['xmp'] },
-        { scenario: 'Set up Hyper-V virtualization on Windows. What BIOS setting is required?', required: ['virtualization', 'uefi'] },
-        { scenario: 'Speed up boot times while maintaining security. What can you enable?', required: ['fast-boot', 'uefi'] }
-      ];
-      let currentBiosScenario = 0;
-
-      document.getElementById('bios-check').addEventListener('click', () => {
-        const checked = Array.from(document.querySelectorAll('.bios-options input:checked')).map(i => i.value);
-        const required = biosScenarios[currentBiosScenario].required;
-        const result = document.getElementById('bios-result');
-        
-        const hasAll = required.every(r => checked.includes(r));
-        const hasExtra = checked.some(c => !required.includes(c));
-        
-        if (hasAll && !hasExtra) {
-          result.textContent = '✓ Perfect configuration!';
-          result.style.color = '#00ff88';
-        } else if (hasAll) {
-          result.textContent = '⚠ Correct required settings, but some extras are unnecessary.';
-          result.style.color = '#ffaa00';
-        } else {
-          result.textContent = \`✗ Missing required settings: \${required.filter(r => !checked.includes(r)).join(', ')}\`;
-          result.style.color = '#ff4444';
-        }
-      });
-
-      document.getElementById('bios-reset').addEventListener('click', () => {
-        document.querySelectorAll('.bios-options input').forEach(i => i.checked = false);
-        document.getElementById('bios-result').textContent = '';
-      });
-
-      document.getElementById('bios-next').addEventListener('click', () => {
-        currentBiosScenario = (currentBiosScenario + 1) % biosScenarios.length;
-        document.getElementById('bios-scenario').textContent = biosScenarios[currentBiosScenario].scenario;
-        document.querySelectorAll('.bios-options input').forEach(i => i.checked = false);
-        document.getElementById('bios-result').textContent = '';
-      });
-    </script>
-    <script type="module" src="site.js"></script>
-  </body>
-</html>`} />
+<Callout type="info">
+**Interactive Quiz** -- The randomized multiple-choice quiz from the original page is available in the full workspace environment. It covers all topics from this lesson with 5, 15, or 30-minute review modes.
+</Callout>
