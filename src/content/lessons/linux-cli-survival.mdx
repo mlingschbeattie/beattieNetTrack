@@ -3,25 +3,261 @@ title: Linux CLI Survival Kit
 description: The commands you need to navigate, inspect, and secure a Linux system.
 slug: linux-cli-survival
 track: cybersecurity-foundations
+moduleId: sec.fundamentals.security-concepts
 order: 3
 difficulty: Beginner
 estMinutes: 30
 tags: ["linux", "cli", "ops"]
-legacyUrl: /a-plus-operating-systems.html
 ---
 
-Linux CLI fundamentals help you move faster in every security workflow.
+import Callout from '../../components/Callout.astro';
 
-<Callout type="warn">
-Never run destructive commands on production machines. Validate in a sandbox first.
+Every security role -- analyst, pentester, sysadmin, DevOps -- requires comfort at the Linux command line. GUIs hide too much. The CLI shows you what is actually happening. This lesson covers the commands you will use daily and the ones that matter most in a security context.
+
+All examples assume a Debian/Ubuntu-based system. Commands work identically on most distributions.
+
+## Navigating the Filesystem
+
+The filesystem is a tree rooted at `/`. Everything -- files, devices, processes -- lives somewhere in this tree.
+
+```bash
+pwd
+# Output: /home/student
+# "Print Working Directory" -- tells you exactly where you are
+```
+
+```bash
+ls
+# Output: Desktop  Documents  Downloads  Pictures
+
+ls -la
+# Output:
+# drwxr-xr-x  2 student student 4096 Mar  1 09:00 Documents
+# -rw-r--r--  1 student student 1234 Mar  1 08:45 notes.txt
+# The long format shows permissions, owner, size, and modification time
+```
+
+```bash
+cd /var/log          # change to an absolute path
+cd ..                # go up one directory
+cd ~                 # go to your home directory
+cd -                 # go back to the previous directory
+```
+
+```bash
+find /etc -name "*.conf"
+# Searches /etc recursively for files ending in .conf
+# Security use: quickly locate all configuration files on a system
+
+find / -perm -4000 2>/dev/null
+# Finds all SUID binaries -- a common privilege escalation target
+```
+
+<Callout type="info">
+**Why `find` matters in security:** Attackers plant backdoors as files. Defenders use `find` to audit for unexpected files, SUID binaries, and recently modified files (`-mtime -1` = modified in the last day).
 </Callout>
 
-## Navigation basics
+## File Permissions
 
-<CodeBlock language="bash">
-# list files with permissions
-ls -la
+The `ls -la` output is dense until you learn to read it. Understanding permissions is non-negotiable for security work.
 
-# check who you are
+```
+-rwxr-xr--  1  alice  devs  4096  Mar 1 09:00  script.sh
+|-----------|  |-----|  |--|
+ permissions   owner   group
+```
+
+Each permission group has three bits: **r** (read=4), **w** (write=2), **x** (execute=1).
+
+| Symbol | Octal | Meaning |
+|---|---|---|
+| `rwx` | 7 | Read, write, execute |
+| `rw-` | 6 | Read and write only |
+| `r-x` | 5 | Read and execute only |
+| `r--` | 4 | Read only |
+| `---` | 0 | No access |
+
+```bash
+chmod 755 script.sh
+# Owner: rwx (7)  Group: r-x (5)  Others: r-x (5)
+# Executable by everyone, writable only by owner
+
+chmod 600 private.key
+# Owner: rw- (6)  Group: --- (0)  Others: --- (0)
+# Only owner can read/write -- correct for SSH private keys
+
+chmod +x deploy.sh   # add execute for everyone
+chmod o-r secret.txt # remove read from "others"
+```
+
+```bash
+chown alice:devs script.sh
+# Change owner to "alice" and group to "devs"
+
+chown -R www-data:www-data /var/www/html
+# -R applies recursively to all files in the directory
+```
+
+<Callout type="warn">
+**Dangerous misconfiguration:** `chmod 777` gives everyone full read/write/execute. This is almost always wrong. A world-writable file can be modified by any process or user on the system -- including malware.
+</Callout>
+
+## Reading and Manipulating Files
+
+```bash
+cat /etc/passwd
+# Prints the entire file to the terminal
+# /etc/passwd lists all user accounts -- legitimate recon target during audits
+```
+
+```bash
+less /var/log/syslog
+# Opens the file in a scrollable pager
+# Press q to quit, /term to search, n to find next match
+# Use "less" instead of "cat" for large files
+```
+
+```bash
+head -20 /var/log/auth.log
+# Prints the first 20 lines
+# Default without -n is 10 lines
+
+tail -50 /var/log/auth.log
+# Prints the last 50 lines
+
+tail -f /var/log/auth.log
+# -f "follows" the file -- live updates as new lines are written
+# Essential for watching logs in real time during an incident
+```
+
+```bash
+grep "Failed password" /var/log/auth.log
+# Search for the pattern "Failed password" in the file
+# Output: every line containing a failed SSH login attempt
+
+grep -i "error" /var/log/syslog
+# -i = case-insensitive
+
+grep -r "password" /etc/
+# -r = recursive search across all files in /etc/
+```
+
+<Callout type="info">
+**Security use of `grep`:** Searching logs for `"Failed password"`, `"Invalid user"`, and `"Accepted publickey"` is how you manually detect brute-force attempts and unauthorized logins before alerting tools exist.
+</Callout>
+
+## Pipes and Redirection
+
+Pipes and redirection let you chain commands and save output -- the core of CLI power.
+
+```bash
+# Pipe: send output of one command into another
+cat /var/log/auth.log | grep "Failed password" | wc -l
+# Counts the total number of failed SSH login attempts in the log
+
+ps aux | grep nginx
+# Find the nginx process in the process list
+```
+
+```bash
+# Redirect stdout to a file (overwrite)
+grep "Failed password" /var/log/auth.log > failed_logins.txt
+
+# Append stdout to a file (keep existing content)
+echo "scan started at $(date)" >> audit.log
+
+# Redirect stderr (error output) to a file
+find / -name "secret.txt" 2>/dev/null
+# 2>/dev/null silences "Permission denied" errors -- keeps output clean
+
+# Redirect both stdout and stderr
+./scan.sh > output.log 2>&1
+```
+
+<Callout type="info">
+**`2>/dev/null` is everywhere in security scripts.** Commands like `find` and `nmap` generate many permission-denied errors when run without root. Redirecting stderr to `/dev/null` suppresses noise so you see only meaningful output.
+</Callout>
+
+## Process Management
+
+```bash
+ps aux
+# Lists every running process with CPU and memory usage
+# Columns: USER, PID, %CPU, %MEM, COMMAND
+# Security use: spot unexpected processes (backdoors, cryptominers)
+
+ps aux | grep sshd
+# Check if the SSH daemon is running and who owns it
+```
+
+```bash
+top
+# Live resource monitor -- updates every 3 seconds
+# Press q to quit, k to kill a process by PID, M to sort by memory
+
+htop
+# Friendlier color version of top (may need to install: apt install htop)
+```
+
+```bash
+kill 1234
+# Send SIGTERM (graceful shutdown) to process with PID 1234
+
+kill -9 1234
+# Send SIGKILL (immediate, forceful termination) -- use when SIGTERM fails
+```
+
+<Callout type="warn">
+**`kill -9` cannot be caught or ignored by the process.** It immediately terminates without cleanup. Data in memory is lost. Use it only when a process will not respond to a normal `kill`.
+</Callout>
+
+```bash
+which python3
+# Shows the full path of the python3 binary
+# Security use: verify you are running the expected binary, not a shadowed one
+
 whoami
-</CodeBlock>
+# Print current username
+
+id
+# Print current user ID, group ID, and all group memberships
+# Security use: confirm you have (or don't have) elevated privileges
+```
+
+## Quick Reference
+
+| Command | Purpose |
+|---|---|
+| `pwd` | Print current directory |
+| `ls -la` | List files with permissions, owner, size |
+| `cd /path` | Change directory |
+| `find /dir -name "*.txt"` | Search for files by name |
+| `find / -perm -4000` | Find SUID binaries |
+| `chmod 755 file` | Set permissions (octal or symbolic) |
+| `chown user:group file` | Change file owner and group |
+| `cat file` | Print file contents |
+| `less file` | Scroll through a file |
+| `head -n file` | Print first n lines |
+| `tail -n file` | Print last n lines |
+| `tail -f file` | Follow file live |
+| `grep "pattern" file` | Search file for pattern |
+| `grep -r "pattern" /dir` | Recursive search |
+| `cmd1 \| cmd2` | Pipe output of cmd1 into cmd2 |
+| `cmd > file` | Redirect stdout to file (overwrite) |
+| `cmd >> file` | Redirect stdout to file (append) |
+| `2>/dev/null` | Discard stderr |
+| `2>&1` | Merge stderr into stdout |
+| `ps aux` | List all running processes |
+| `kill PID` | Gracefully terminate process |
+| `kill -9 PID` | Force-kill process |
+| `top` | Live process monitor |
+| `whoami` / `id` | Show current user and privileges |
+
+## Key Takeaways
+
+- **Permissions are three groups of three bits** (owner / group / others) -- misconfigurations like `chmod 777` are security vulnerabilities
+- **`grep` and `tail -f`** are your first tools when something goes wrong -- log analysis starts here
+- **Pipes** (`|`) let you combine simple commands into powerful one-liners without writing any code
+- **`2>/dev/null`** suppresses permission errors in scripts; `2>&1` merges error output with normal output
+- **`ps aux` and `find /`** are how defenders spot unexpected processes and files during incident response
+- CLI fluency compounds -- every command you learn makes the next one easier to combine
