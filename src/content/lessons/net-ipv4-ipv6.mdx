@@ -1,0 +1,57 @@
+---
+title: IPv4 and IPv6 — Two Versions of the Internet's Address System
+description: How IPv4 works, why it ran out, how IPv6 fixes the problem, and the transition technologies keeping both alive at the same time.
+slug: net-ipv4-ipv6
+track: network-engineer
+moduleId: net.fundamentals.addressing
+order: 2
+difficulty: Beginner
+estMinutes: 25
+tags: ["network+", "IPv4", "IPv6", "subnetting", "CIDR", "N10-009 1.4", "N10-008 1.4"]
+---
+
+## The Address Book That Ran Out of Pages
+
+Here's the problem in one sentence: the internet was designed in the 1970s for a research network connecting a few hundred machines, and the addressing system they chose — 32 bits, roughly 4.3 billion possible addresses — is not enough for a planet with 8 billion people carrying multiple networked devices each. On February 3, 2011, the Internet Assigned Numbers Authority (IANA) handed out the last blocks of IPv4 addresses to the regional registries. The free pool hit zero. We've been living on borrowed time ever since — surviving through NAT, private addressing, and creative reuse of existing allocations. IPv6 is the long-term fix. It's been available since 1998. The migration is still happening. Understanding both protocols isn't optional because you will work with both, simultaneously, for the foreseeable future.
+
+## IPv4 Structure — 32 Bits, Dotted Decimal
+
+An IPv4 address is 32 bits long, written as four octets separated by dots: 192.168.1.50. Each octet is 8 bits, which means each one ranges from 0 to 255. Under the hood, that friendly dotted-decimal notation is just a human-readable version of a 32-bit binary number. 192.168.1.50 in binary is 11000000.10101000.00000001.00110010. You don't need to convert addresses in your head on the job, but you do need to understand that the math governing subnetting, masks, and address ranges is all binary math — the dotted-decimal is just a convenience layer.
+
+Every IPv4 address has two parts: a network portion that identifies which network the device belongs to, and a host portion that identifies the specific device on that network. The subnet mask determines where the split falls. A mask of 255.255.255.0 means the first 24 bits are network and the last 8 bits are host — giving you one network with 254 usable addresses (256 minus the network address and the broadcast address). A mask of 255.255.0.0 dedicates 16 bits to the network and 16 to hosts — over 65,000 usable addresses on one subnet.
+
+## CIDR Notation — Counting the Bits
+
+Classless Inter-Domain Routing notation is the shorthand you'll see everywhere. Instead of writing "192.168.1.0 with a subnet mask of 255.255.255.0," you write 192.168.1.0/24. The /24 means 24 bits are the network portion. /16 means 16 bits. /30 means 30 bits for the network and only 2 bits for hosts — four total addresses, two usable, which is exactly what you need for a point-to-point link between two routers. CIDR replaced the old classful system (Class A, B, C) that wasted enormous chunks of address space by forcing organizations into fixed-size allocations. With CIDR, you can carve the address space into any size that makes sense: /27 gives you 30 hosts, /28 gives you 14, /22 gives you 1022. Subnetting math is an entire skill set you'll build separately, but the principle is this: the mask controls how many networks you have and how many hosts fit in each one.
+
+## IPv6 Structure — 128 Bits, and That's Not a Typo
+
+IPv6 addresses are 128 bits long. That's 2^128 possible addresses — approximately $3.4 \times 10^38, or 340 undecillion. For perspective, that's enough to assign a unique address to every atom on the surface of the Earth and still have addresses left over. IPv6 doesn't have an exhaustion problem. It has an "end of the universe before we run out" situation.
+
+An IPv6 address is written as eight groups of four hexadecimal digits, separated by colons: 2001:0db8:85a3:0000:0000:8a2e:0370:7334. That's intimidating at first, but two shorthand rules clean it up. First, leading zeros in any group can be dropped: 0db8 becomes db8, 0000 becomes 0. Second, one consecutive span of all-zero groups can be replaced with a double colon (::). So 2001:0db8:0000:0000:0000:0000:0000:0001 becomes 2001:db8::1. You can only use :: once per address, because using it twice would make the expansion ambiguous. These rules take about fifteen minutes to internalize and save a lot of writing.
+
+IPv6 uses /prefix notation just like CIDR. A standard subnet assignment is /64, meaning 64 bits for the network prefix and 64 bits for the host identifier. A /64 subnet contains 2^64 addresses — over 18 quintillion — on a single subnet. This sounds absurd, and it kind of is, but the design is intentional: it enables Stateless Address Autoconfiguration (SLAAC), where devices generate their own host portion from their MAC address or a random identifier without needing a DHCP server.
+
+## IPv6 Address Types — Unicast, Multicast, Anycast
+
+IPv6 doesn't have broadcast. That's not a simplification for the exam — there is literally no broadcast address in IPv6. Instead, it uses three communication types:
+
+**Unicast** is one-to-one. A packet addressed to a unicast address goes to exactly one interface. Global unicast addresses (starting with 2000::/3) are the IPv6 equivalent of public IPv4 addresses — globally routable and unique on the internet. Link-local addresses (fe80::/10) are auto-assigned on every IPv6 interface and work only on the local segment — similar in concept to APIPA, except link-local in IPv6 is normal and expected, not an error state. Every IPv6 device always has a link-local address.
+
+**Multicast** is one-to-many. A packet addressed to a multicast address is delivered to all interfaces that have joined that multicast group. IPv6 uses multicast to replace the functions that IPv4 handled with broadcast — neighbor discovery, router advertisements, and address resolution all happen through multicast. Multicast addresses start with ff00::/8.
+
+**Anycast** is one-to-nearest. Multiple devices share the same anycast address, and the network routes the packet to whichever one is topologically closest. Content delivery networks and DNS root servers use anycast to distribute load across geographically dispersed servers. From the user's perspective, they connect to a single address; the network figures out which server answers.
+
+## The Transition — Dual-Stack and Tunneling
+
+The internet didn't switch from IPv4 to IPv6 overnight. It's been twenty-plus years and the switch still isn't complete. The coexistence strategies are what you'll actually encounter in the field.
+
+**Dual-stack** is the most common approach. A device runs both IPv4 and IPv6 simultaneously, with addresses for each protocol on the same interface. The operating system decides which protocol to use for each connection — generally preferring IPv6 when available. Most modern operating systems, routers, and switches support dual-stack out of the box. When you run `ipconfig` on a Windows machine and see both an IPv4 address and an IPv6 address on the same adapter, that's dual-stack.
+
+**Tunneling** encapsulates IPv6 packets inside IPv4 packets so they can cross network segments that only support IPv4. Technologies like 6to4, Teredo, and ISATAP create these tunnels automatically or manually. Think of it as putting an IPv6 letter inside an IPv4 envelope to get it through an IPv4-only post office. The envelope gets stripped at the other end and the IPv6 packet continues on its way. Tunneling is a workaround for the transition period — it adds overhead and complexity, and it'll fade away as native IPv6 deployment expands.
+
+The reality on the ground: most enterprise networks you'll touch run dual-stack or are still IPv4-only with NAT. Pure IPv6-only networks are rare outside of mobile carriers and some cloud providers. But the trajectory is clear — IPv4's limitations are permanent and IPv6 adoption grows every year. Learning both isn't hedging your bets. It's doing the job.
+
+## Why This Matters in the Field
+
+When you configure a server, you'll set both an IPv4 and an IPv6 address. When you write firewall rules, you'll write them for both protocols or leave a gap that someone will exploit. When one of your users can reach a site on one protocol but not the other, you'll troubleshoot dual-stack behavior. When you subnet a new office, you'll carve up a /24 for IPv4 and hand out a /64 for IPv6 and understand why those numbers are different but both correct. When the exam asks you to identify an address type from its prefix, you'll know fe80 is link-local, 2001 is global unicast, and ff02 is multicast — not because you memorized a table, but because you've seen them in `ipconfig` output and packet captures often enough that they're automatic. The addressing layer is the foundation everything else sits on. Get it right and routing, troubleshooting, and security all make more sense. Get it wrong and everything above it is guesswork.

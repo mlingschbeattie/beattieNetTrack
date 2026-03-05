@@ -1,0 +1,55 @@
+---
+title: Public vs. Private Networks — Who Owns the Address
+description: Private IP ranges, NAT, APIPA, and loopback — understanding which addresses travel the internet and which ones stay home, and what that tells you when you're troubleshooting.
+slug: net-public-private-networks
+track: network-engineer
+moduleId: net.fundamentals.addressing
+order: 1
+difficulty: Beginner
+estMinutes: 20
+tags: ["network+", "IP addressing", "NAT", "RFC 1918", "N10-009 1.4", "N10-008 1.4"]
+---
+
+## The Address That Goes Nowhere
+
+You're troubleshooting a workstation that can't reach the internet. You open a command prompt and run `ipconfig`. The IP address reads 169.254.47.118. You don't need to check anything else yet — that number alone tells you DHCP failed. The machine tried to get an address from a DHCP server, got no response, and assigned itself an address from a specific range that is guaranteed to go absolutely nowhere beyond the local link. You've just read a diagnostic from an IP address without running a single test. That's the power of understanding address types. Not all IP addresses are created equal, and knowing which range you're looking at tells you where the traffic can go, where it came from, and sometimes exactly what broke.
+
+## Private IP Ranges — RFC 1918
+
+In 1996, RFC 1918 carved out three blocks of IPv4 addresses and declared them private — meaning they can be used freely inside any organization's network, but they are never routed on the public internet. Every router on the internet is configured to drop packets with these source or destination addresses:
+
+**10.0.0.0 – 10.255.255.255** (10.0.0.0/8) — one massive block with over 16 million addresses. Enterprise networks love this range because a single /8 gives them enormous room for subnetting. If you plug into a corporate network and see a 10.x.x.x address, you're on a private network.
+
+**172.16.0.0 – 172.31.255.255** (172.16.0.0/12) — roughly a million addresses. Less commonly seen than the 10.x range but used in plenty of midsize environments and cloud infrastructure. If a student ever tells you "172 is always private," correct them — only 172.16 through 172.31 qualify.
+
+**192.168.0.0 – 192.168.255.255** (192.168.0.0/16) — the one you know from home. Your home router almost certainly assigns addresses from 192.168.0.x or 192.168.1.x. SOHO networks default to this range because it's small enough to be manageable and everyone's consumer router ships preconfigured with it.
+
+The reason private addressing exists is math. IPv4 provides roughly 4.3 billion addresses, which sounded limitless in the 1980s and ran out in 2011. Private ranges let millions of organizations reuse the same addresses internally as long as those addresses never need to appear directly on the public internet. Your home network uses 192.168.1.0/24. So does your neighbor's. So do millions of other homes. It works because those addresses never leave the building — something else handles the translation.
+
+## NAT and PAT — The Translation Layer
+
+Network Address Translation is how your private addresses reach the public internet. Your router sits at the boundary between your private LAN and the public WAN. When a device on your network sends a request to a web server, the router replaces the private source IP with its own public IP before forwarding the packet. When the reply comes back, the router reverses the translation and sends it to the correct internal device. From the web server's perspective, it only ever talked to one public IP address — your router's.
+
+Port Address Translation (PAT), also called NAT overloading, is the specific flavor that lets an entire network share a single public IP. The router tracks which internal device made which request by assigning unique source port numbers to each outbound connection. Device A's request goes out on port 50001, device B's on port 50002, and so on. When replies come back, the router reads the destination port and routes the packet to the right internal device. This is how your entire household — phones, laptops, game consoles, smart devices — shares one public IP from your ISP. PAT is the reason private addressing actually works at scale.
+
+NAT also provides a side effect that people sometimes mistake for security: devices on the private side can initiate connections outward, but unsolicited inbound connections from the internet can't reach private devices because the router has no translation entry to match them to. It's not a firewall — it doesn't inspect traffic or enforce policy — but it does hide internal addresses from the outside world.
+
+## APIPA — The Self-Assigned Cry for Help
+
+Automatic Private IP Addressing kicks in when a device is configured for DHCP but can't reach a DHCP server. The device assigns itself an address in the 169.254.0.0/16 range (169.254.0.1 through 169.254.255.254), picks one at random, ARPs to make sure no other device on the segment grabbed the same one, and uses it. APIPA addresses are link-local only — they can communicate with other APIPA devices on the same network segment, but they can't reach a gateway, can't be routed, and can't access the internet or any remote network.
+
+When you see 169.254.x.x on a workstation, the diagnostic checklist writes itself: Is the DHCP server running? Is it reachable? Is the scope exhausted (out of addresses to hand out)? Is the network cable connected (because no link means no DHCP discover gets sent)? APIPA is never the desired state on a managed network. It's a fallback that tells you exactly one thing: DHCP didn't work. Find out why.
+
+## Loopback — Talking to Yourself
+
+The 127.0.0.0/8 range is reserved for loopback — traffic addressed here never leaves the device. When you ping 127.0.0.1, you're pinging your own machine's TCP/IP stack. The packet goes down the network stack, immediately comes back up, and never touches a cable or a NIC. This is useful for testing whether the TCP/IP stack itself is functional. If `ping 127.0.0.1` fails, your problem isn't the network — it's the operating system's networking software. If it succeeds, TCP/IP is working locally and the issue is somewhere between your machine and the destination.
+
+The entire /8 block is reserved — 127.0.0.1 through 127.255.255.254 — but in practice, everyone uses 127.0.0.1. Developers use loopback constantly to test services running locally: a web server on 127.0.0.1:8080, a database on 127.0.0.1:3306. On the exam, know that loopback means "this device, locally, no network involved." In the field, it's the first ping you throw when nothing else is responding and you're not sure if the problem is the machine itself or everything beyond it.
+
+## Reading Addresses Like a Technician
+
+Every address you see during troubleshooting carries information before you run a single diagnostic tool. A 10.x or 192.168.x address means the device is behind NAT on a private network. A 169.254.x address means DHCP failed. A 127.x address means you're testing locally. A public IP on a workstation — rare in most environments — means that machine is directly exposed to the internet, which is either intentional (a server in a DMZ) or a serious misconfiguration. The ability to glance at an IP address and immediately know what kind of network you're dealing with is foundational. Everything else in network troubleshooting builds on top of it.
+
+## Why This Matters in the Field
+
+You will work on networks behind NAT every single day. Understanding the private-to-public boundary is the difference between knowing why a device can reach the internet and knowing why it can't. When a help desk ticket says "user can reach internal sites but not external," your first thought should be NAT or default gateway. When a device pulls a 169.254 address on a production network, you don't waste time checking DNS — you go straight to DHCP. When a remote user gives you their IP and it starts with 192.168, you know you're seeing their private address behind a home router and you need a different approach to reach their machine. These aren't exam tricks. They're the first three seconds of every troubleshooting call.
