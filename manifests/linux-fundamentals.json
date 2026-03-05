@@ -1,0 +1,250 @@
+{
+  "manifestVersion": 1,
+
+  "track": {
+    "slug": "linux-fundamentals",
+    "title": "Linux Fundamentals",
+    "description": "Master the Linux command line, file system, and basic administration.",
+    "icon": "🐧",
+    "estimatedHours": 6,
+    "level": "Beginner",
+    "order": 10
+  },
+
+  "modules": [
+    {
+      "id": "lnx.cli.basics",
+      "title": "Command Line Basics",
+      "description": "Navigate the terminal, manage files, and understand the shell.",
+      "order": 1,
+
+      "lessons": [
+        {
+          "slug": "intro-to-linux",
+          "title": "Introduction to Linux",
+          "description": "What Linux is, why it matters, and how it differs from other OSes.",
+          "order": 1,
+          "difficulty": "Beginner",
+          "estMinutes": 10,
+          "tags": ["linux", "overview", "open-source"],
+          "bodyFile": "content/intro-to-linux.md"
+        },
+        {
+          "slug": "navigating-the-filesystem",
+          "title": "Navigating the File System",
+          "description": "Learn pwd, ls, cd, and the Linux directory hierarchy.",
+          "order": 2,
+          "difficulty": "Beginner",
+          "estMinutes": 15,
+          "tags": ["linux", "filesystem", "cli"],
+          "bodyFile": "content/navigating-the-filesystem.md"
+        }
+      ],
+
+      "labs": [
+        {
+          "slug": "linux-cli-basics-lab",
+          "title": "CLI Basics Lab",
+          "description": "Practice essential terminal commands: pwd, ls, cd, mkdir, and rm.",
+          "order": 3,
+          "difficulty": "Beginner",
+          "estimatedMinutes": 15,
+          "xp": 30,
+          "activity": "terminal",
+          "tags": ["linux", "cli", "terminal"],
+          "hints": [
+            "Use 'man <command>' to read the manual for any command.",
+            "Tab completion saves time — press Tab after typing partial names."
+          ],
+          "checklist": [
+            "Completed all 4 steps",
+            "Understood the difference between relative and absolute paths"
+          ],
+          "steps": [
+            {
+              "id": "pwd-check",
+              "title": "Print Working Directory",
+              "prompt": "What command prints your current directory?",
+              "hint": "Three letters, stands for 'print working directory'.",
+              "successMessage": "Correct! pwd shows where you are in the filesystem.",
+              "validator": {
+                "type": "exact",
+                "value": "pwd"
+              }
+            },
+            {
+              "id": "ls-check",
+              "title": "List Directory Contents",
+              "prompt": "What command lists files in the current directory?",
+              "hint": "Two letters. Try the basic form or the long listing.",
+              "validator": {
+                "type": "oneOf",
+                "values": ["ls", "ls -l", "ls -la", "ls -a"]
+              }
+            },
+            {
+              "id": "mkdir-check",
+              "title": "Create a Directory",
+              "prompt": "Write the command to create a directory called 'projects'.",
+              "hint": "The command name is short for 'make directory'.",
+              "validator": {
+                "type": "exact",
+                "value": "mkdir projects"
+              }
+            },
+            {
+              "id": "cd-check",
+              "title": "Change Directory",
+              "prompt": "Write the command to move into the 'projects' directory you just created.",
+              "validator": {
+                "type": "exact",
+                "value": "cd projects"
+              }
+            }
+          ]
+        }
+      ],
+
+      "quizzes": [
+        {
+          "slug": "cli-basics-checkpoint",
+          "title": "CLI Basics Checkpoint",
+          "description": "Test your knowledge of basic Linux commands.",
+          "order": 4,
+          "difficulty": "Beginner",
+          "estMinutes": 5,
+          "passThreshold": 70,
+          "tags": ["linux", "cli", "checkpoint"],
+          "questions": [
+            {
+              "id": "q1",
+              "type": "single",
+              "prompt": "Which command prints the current working directory?",
+              "options": ["ls", "pwd", "cd", "echo"],
+              "correctIndex": 1,
+              "explanation": "pwd (print working directory) displays the full path of the current directory."
+            },
+            {
+              "id": "q2",
+              "type": "multi",
+              "prompt": "Which of the following are valid ls flags? (Select all that apply)",
+              "options": ["-l", "-a", "-z", "-h"],
+              "correctIndices": [0, 1, 3],
+              "explanation": "-l (long listing), -a (show hidden), and -h (human-readable sizes) are all valid. -z is not a standard ls flag."
+            },
+            {
+              "id": "q3",
+              "type": "short",
+              "prompt": "What command removes an empty directory?",
+              "acceptedAnswers": ["rmdir", "rm -d"],
+              "explanation": "rmdir removes empty directories. rm -d also works on some systems."
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "lnx.admin.users",
+      "title": "Users & Permissions",
+      "description": "Manage user accounts, groups, file ownership, and permission bits.",
+      "order": 2,
+
+      "lessons": [
+        {
+          "slug": "linux-users-and-groups",
+          "title": "Users and Groups",
+          "description": "Understand the Linux user model: UIDs, GIDs, /etc/passwd, and /etc/group.",
+          "order": 1,
+          "difficulty": "Intermediate",
+          "estMinutes": 20,
+          "tags": ["linux", "users", "groups", "permissions"],
+          "bodyFile": "content/linux-users-and-groups.md"
+        }
+      ],
+
+      "labs": [
+        {
+          "slug": "linux-permissions-lab",
+          "title": "File Permissions Lab",
+          "description": "Practice reading and setting Linux file permissions with chmod and chown.",
+          "order": 2,
+          "difficulty": "Intermediate",
+          "estimatedMinutes": 20,
+          "xp": 40,
+          "activity": "terminal",
+          "tags": ["linux", "permissions", "chmod", "chown"],
+          "hints": [
+            "Permission bits: r=4, w=2, x=1. Add them to set combined permissions.",
+            "Use 'ls -l' to see current permissions on files."
+          ],
+          "steps": [
+            {
+              "id": "read-permissions",
+              "title": "Read File Permissions",
+              "prompt": "What command shows the permissions of a file named 'report.txt' in long format?",
+              "hint": "Use ls with a flag that shows the long listing.",
+              "validator": {
+                "type": "oneOf",
+                "values": ["ls -l report.txt", "ls -la report.txt"]
+              }
+            },
+            {
+              "id": "chmod-numeric",
+              "title": "Set Permissions (Numeric)",
+              "prompt": "Set report.txt to owner read/write, group read-only, others no access. Use numeric mode.",
+              "hint": "Owner rw = 6, group r = 4, others none = 0.",
+              "validator": {
+                "type": "exact",
+                "value": "chmod 640 report.txt"
+              }
+            },
+            {
+              "id": "chmod-symbolic",
+              "title": "Add Execute Permission",
+              "prompt": "Add execute permission for the owner on a file called 'deploy.sh' using symbolic mode.",
+              "validator": {
+                "type": "regex",
+                "pattern": "^chmod\\s+u\\+x\\s+deploy\\.sh$",
+                "flags": "i"
+              }
+            }
+          ]
+        }
+      ],
+
+      "quizzes": [
+        {
+          "slug": "permissions-checkpoint",
+          "title": "Permissions Checkpoint",
+          "description": "Test your understanding of Linux file permissions.",
+          "order": 3,
+          "difficulty": "Intermediate",
+          "estMinutes": 5,
+          "passThreshold": 70,
+          "tags": ["linux", "permissions", "checkpoint"],
+          "questions": [
+            {
+              "id": "pq1",
+              "type": "single",
+              "prompt": "What does the permission string 'rwxr-x---' mean in numeric notation?",
+              "options": ["750", "640", "755", "700"],
+              "correctIndex": 0,
+              "explanation": "rwx=7, r-x=5, ---=0 → 750"
+            },
+            {
+              "id": "pq2",
+              "type": "short",
+              "prompt": "What command changes file ownership to user 'admin' and group 'staff' for file 'data.csv'?",
+              "acceptedAnswers": [
+                "chown admin:staff data.csv",
+                "chown admin.staff data.csv"
+              ],
+              "explanation": "chown user:group file changes both owner and group."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

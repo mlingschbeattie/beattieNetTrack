@@ -1,0 +1,53 @@
+---
+title: Common Ports and Protocols — The Numbers That Run Everything
+description: The well-known ports every network technician memorizes, why they matter for firewalls and troubleshooting, and what happens when traffic shows up on the wrong one.
+slug: net-common-ports
+track: network-engineer
+moduleId: net.fundamentals.ports-and-protocols
+order: 1
+difficulty: Beginner
+estMinutes: 20
+tags: ["network+", "ports", "protocols", "N10-009 1.5", "N10-008 1.5"]
+---
+
+## The Firewall Rule That Broke Everything
+
+A teacher submits a ticket: "I can't get to the school's website from my classroom, but I can get to Google." You check — the workstation pings the web server fine. DNS resolves the hostname. The server is up. But the browser spins forever. You check the firewall and find a new rule someone added yesterday: block all traffic on port 8080. Turns out the school's internal web server runs on port 8080 instead of the default 80, and whoever wrote that firewall rule didn't know that. One port number, one rule, one broken service for an entire wing of the building. Port numbers are how a single server running multiple services keeps traffic sorted, and knowing which ports belong to which services is the foundation of firewall management, network troubleshooting, and security. This is a memorization topic. There's no way around it. But once these numbers are in your head, you'll read firewall logs, packet captures, and `netstat` output like a language you speak fluently.
+
+## How Ports Work
+
+A port is a 16-bit number — 0 through 65535 — that identifies a specific service or process on a device. When your browser requests a webpage, it sends the request to the server's IP address on port 443 (HTTPS). The server's operating system sees port 443, knows that's the web server process, and hands the packet to it. Without port numbers, the OS would have no way to know whether an incoming packet is meant for the web server, the email server, the SSH daemon, or the file share — they all live at the same IP address.
+
+Ports are divided into three ranges. **Well-known ports (0–1023)** are assigned to standard services by IANA — these are the ones you memorize. **Registered ports (1024–49151)** are used by vendor-specific applications and can be registered with IANA but don't have to be. **Dynamic/ephemeral ports (49152–65535)** are temporary ports the operating system assigns to outbound connections. When your browser connects to a web server on port 443, your machine picks a random ephemeral port — say, 52847 — as the source. The server replies to your IP on port 52847, and your OS routes it back to the browser. The ephemeral port lives only as long as that connection.
+
+## The Ports You Memorize
+
+These are non-negotiable. You will be tested on them. You will use them in the field. They need to be automatic.
+
+**FTP — Ports 20 and 21.** File Transfer Protocol uses two ports: 21 for the control channel (commands, authentication, directory listings) and 20 for the data channel (actual file transfers in active mode). FTP is unencrypted — credentials travel in plaintext — and has been steadily replaced by SFTP (which runs over SSH on port 22) and FTPS (FTP over TLS). You'll still encounter FTP on legacy systems, automated scripts that haven't been updated, and equipment with embedded firmware that only supports it.
+
+**SSH — Port 22.** Secure Shell is encrypted remote access. Terminal sessions, file transfers (SCP, SFTP), and tunneled connections all run through port 22. When you configure a Linux server, manage a switch, or connect to a cloud instance, SSH is how you get there. It replaced Telnet for every situation where security matters, which is every situation.
+
+**Telnet — Port 23.** Unencrypted remote access. Everything — including your password — travels in cleartext. Telnet exists on the exam because it exists on old equipment that hasn't been updated and in lab environments where encryption overhead isn't a concern. In production, if you're using Telnet, something has gone wrong with your security posture.
+
+**SMTP — Port 25.** Simple Mail Transfer Protocol sends email between mail servers. When you hit send, your mail client hands the message to your outgoing mail server, which uses SMTP to relay it to the recipient's mail server. Port 25 is the original unencrypted version. Modern mail commonly uses port 587 (submission with STARTTLS) or port 465 (SMTPS), but port 25 is still the standard for server-to-server relay and the one tested on the exam.
+
+**DNS — Port 53.** Domain Name System translates hostnames to IP addresses. Every time you type a URL or click a link, a DNS query goes out on port 53 — usually UDP for standard lookups, TCP for zone transfers and responses larger than 512 bytes. If port 53 is blocked, nothing resolves and the entire internet appears to be down even though the underlying connections are perfectly fine. DNS is the first thing to break and the last thing people check.
+
+**DHCP — Ports 67 and 68.** Dynamic Host Configuration Protocol assigns IP addresses automatically. The server listens on port 67, the client uses port 68. The DHCP process runs over UDP because the client doesn't have an IP address yet and can't establish a TCP session. If your firewall blocks UDP 67/68, every new device that connects will pull an APIPA address and go nowhere.
+
+**HTTP — Port 80.** Hypertext Transfer Protocol is unencrypted web traffic. It's the original web protocol and still the default when you type a URL without specifying HTTPS. Most modern sites redirect port 80 to port 443 immediately, but HTTP is still used for internal tools, captive portals, IoT device management pages, and legacy applications that never got updated.
+
+**HTTPS — Port 443.** HTTP over TLS. Encrypted web traffic. This is what the padlock in your browser means. Login pages, banking, shopping, email — anything where data needs to be protected in transit. HTTPS is the default for essentially all public-facing web services now. If you're troubleshooting web connectivity and port 443 is blocked, secure sites won't load even if port 80 works fine.
+
+**SMB — Port 445.** Server Message Block is Windows file sharing. When you map a network drive, access a shared folder, or connect to a network printer through Windows, you're using SMB over port 445. Older versions also used ports 137–139 (NetBIOS over TCP/IP), and you'll still see those on legacy systems. SMB has a rocky security history — the WannaCry ransomware in 2017 exploited a vulnerability in SMBv1, which is why modern best practice disables SMBv1 entirely.
+
+**RDP — Port 3389.** Remote Desktop Protocol gives you a full graphical remote session to a Windows machine. IT departments use it constantly for remote support. It's also a favorite target for attackers — brute-force attacks against exposed RDP ports are so common that leaving 3389 open to the internet without additional protections (VPN, MFA, network-level authentication) is considered negligent. You'll use RDP almost daily. You'll also write firewall rules to protect it.
+
+## Port Numbers and Security
+
+Knowing port numbers isn't trivia — it's the language of firewall rules. A firewall rule that says "allow TCP 443 inbound to 10.1.1.50" means "let HTTPS traffic reach our web server." A rule that says "deny TCP 3389 from any" means "no remote desktop from the outside." When you review firewall logs and see connection attempts on port 22 from IP addresses you don't recognize, that's someone probing for SSH access. When a server scan shows port 23 open, that's Telnet exposed, and it needs to be shut down or justified. Every open port is a potential entry point, and every blocked port is a service that can't function. Building firewall policies is a balancing act between access and security, and you can't balance what you can't identify.
+
+## Why This Matters in the Field
+
+Firewall troubleshooting is one of the most common escalation tasks in networking. "The application doesn't work" usually means "the required port is blocked somewhere between the client and the server." If you don't know what port the application uses, you can't write the rule, and you can't diagnose the block. When you run `netstat -an` on a server and see it listening on 0.0.0.0:443 and 0.0.0.0:3306, you instantly know: web server and MySQL database. When a security audit flags open ports, you need to map each one to a running service and decide whether it's necessary or a liability. The port list lives in your head the same way a mechanic knows socket sizes — not because the knowledge is impressive, but because reaching for the reference every time slows you down.

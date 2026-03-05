@@ -1,0 +1,71 @@
+---
+title: Protocols — What's Actually Talking and How
+description: ICMP, ARP, DNS, DHCP, HTTP, and the protocols that make networks function — what each one does, the conversations they have, and what breaks when they stop working.
+slug: net-protocols
+track: network-engineer
+moduleId: net.fundamentals.ports-and-protocols
+order: 2
+difficulty: Beginner
+estMinutes: 25
+tags: ["network+", "protocols", "DNS", "DHCP", "ARP", "ICMP", "N10-009 1.5", "N10-008 1.5"]
+---
+
+## The Invisible Conversations
+
+Before your browser ever shows you a webpage, at least four different protocols had entire conversations on your behalf without you knowing. Your machine asked a DHCP server for an IP address. It queried a DNS server to translate the hostname into an IP. It ARPed the local network to find the MAC address of the default gateway. Then it opened an HTTPS session to the web server and started pulling content. All of that happened in the time it took you to press Enter. Each protocol has a specific job, a defined structure, and a predictable failure mode — and when any one of them breaks, the symptom at the surface is usually the same unhelpful "nothing works." The difference between a twenty-minute troubleshooting session and a two-minute one is knowing which conversation failed.
+
+## ICMP — The Diagnostic Protocol
+
+Internet Control Message Protocol doesn't carry user data. It carries status messages and error reports about the network itself. When you run `ping`, you're sending ICMP Echo Request packets to a destination and waiting for ICMP Echo Reply packets to come back. When you run `traceroute` (or `tracert` on Windows), you're sending packets with incrementally increasing TTL values, and each router along the path responds with an ICMP Time Exceeded message, revealing itself. ICMP is how routers tell your machine "destination unreachable," "network unreachable," "packet too big," or "time exceeded."
+
+ICMP operates at Layer 3 — it rides inside IP packets but doesn't use port numbers like TCP or UDP. This matters because some firewalls and security policies block ICMP entirely to prevent network scanning, which means ping and traceroute stop working. That creates a troubleshooting trap: a host might be perfectly reachable but appear dead because ICMP is filtered. When ping fails, your next move isn't "the host is down" — it's "is ICMP being blocked?" This distinction saves you from misdiagnosis constantly.
+
+## ARP — Mapping IP to MAC
+
+Address Resolution Protocol is the glue between Layer 3 and Layer 2. Your machine knows the IP address it needs to reach, but to actually build a frame and send it across the local network, it needs the destination's MAC address. ARP handles the translation. Your machine broadcasts an ARP Request to the entire local segment: "Who has 10.1.1.1? Tell 10.1.1.50." The device at 10.1.1.1 responds with a unicast ARP Reply: "10.1.1.1 is at AA:BB:CC:DD:EE:FF." Your machine caches that mapping in its ARP table so it doesn't have to ask again for a while.
+
+You can view the ARP cache on any machine with `arp -a`. When you see a mix of IP addresses and their corresponding MAC addresses, that's the local map your machine has built through ARP conversations. If a device on the local network changes its NIC (or you replace the machine entirely) and the old ARP entry is still cached, traffic goes to the wrong MAC address and the connection fails until the cache expires or you clear it manually with `arp -d`. ARP poisoning — where an attacker sends fake ARP replies to redirect traffic through their machine — is one of the oldest man-in-the-middle attacks and the reason Dynamic ARP Inspection exists on managed switches.
+
+## DNS — The Internet's Phone Book
+
+Domain Name System translates human-readable names into IP addresses. You type "google.com" and DNS returns 142.250.80.46 (or whatever IP Google is serving from today). Without DNS, you'd need to memorize IP addresses for every service you use, which worked when the internet had a few hundred hosts and a single text file maintained at Stanford. It does not work at the scale of billions of devices.
+
+The resolution process has layers. Your machine first checks its local DNS cache — has it looked this up recently? If not, it queries its configured DNS server (usually assigned by DHCP). That server checks its own cache. If it doesn't have the answer, it starts a recursive process: query a root name server, which directs it to the TLD (top-level domain) server for .com, which directs it to the authoritative name server for google.com, which returns the actual IP address. That answer flows back down the chain, gets cached at every level, and your machine finally knows where to send the HTTP request. All of this happens in milliseconds, usually over UDP port 53.
+
+When DNS breaks, the internet "stops working" — except it doesn't. The connections are fine, IP routing is fine, but your machine can't translate names to addresses. The classic diagnostic: if `ping 8.8.8.8` succeeds but `ping google.com` fails, the problem is DNS, not connectivity. That test is worth memorizing because it eliminates an entire category of problems in five seconds.
+
+## DHCP — DORA, the Four-Step Handshake
+
+Dynamic Host Configuration Protocol automates IP address assignment, and it follows a four-step process remembered by the acronym DORA.
+
+**Discover.** The client has no IP address yet. It sends a broadcast: "Is there a DHCP server out there?" This is a UDP broadcast from 0.0.0.0 (the client has nothing) to 255.255.255.255 (everyone on the segment) on ports 68 (source) and 67 (destination).
+
+**Offer.** The DHCP server hears the broadcast and responds with an offer: "Here's 10.1.1.50, with a subnet mask of 255.255.255.0, a default gateway of 10.1.1.1, a DNS server of 10.1.1.10, and a lease time of 8 hours."
+
+**Request.** The client receives the offer and formally requests it: "I'll take 10.1.1.50." This is still a broadcast because there might be multiple DHCP servers on the segment, and the client wants all of them to know which offer it accepted.
+
+**Acknowledge.** The server confirms: "10.1.1.50 is yours for 8 hours." The client configures its interface with the provided settings and starts communicating.
+
+The lease time matters. When the lease is halfway expired, the client automatically attempts to renew it with the same server. If the server is unavailable and the lease fully expires, the client loses its IP configuration and starts the DORA process over from scratch — or falls back to an APIPA address. When users suddenly lose connectivity and pull 169.254.x.x addresses, the DHCP server is usually the first suspect. Check if it's running, check if the scope has available addresses, and check if a rogue DHCP server on the network is handing out garbage configurations. That last one is more common than you'd expect — someone plugging a home router into the school network with DHCP enabled can take down a whole segment.
+
+## HTTP and HTTPS — The Web Protocols
+
+HTTP (Hypertext Transfer Protocol) is a request-response protocol: the client sends a request ("GET /index.html"), and the server sends a response (the HTML content plus a status code). It's stateless — each request is independent, and the server doesn't inherently remember previous requests. Cookies, session tokens, and other mechanisms sit on top of HTTP to create the illusion of a continuous session.
+
+HTTP traffic on port 80 is completely unencrypted. Every request, every response, every cookie, every form submission is visible to anyone capturing packets on the same network — including login credentials. HTTPS wraps HTTP inside a TLS (Transport Layer Security) tunnel. Before any application data moves, the client and server perform a TLS handshake: they agree on encryption algorithms, the server presents a certificate to prove its identity, and they establish encrypted session keys. From that point forward, all HTTP traffic inside the tunnel is encrypted. Port 443.
+
+The difference matters beyond privacy. Search engines rank HTTPS sites higher. Browsers flag HTTP sites as "Not Secure." Modern web features like geolocation, camera access, and service workers only work over HTTPS. The industry effectively decided HTTP is obsolete for anything user-facing, and HTTPS is the bare minimum. When you set up a web server — even an internal one — TLS configuration isn't a nice-to-have, it's step one.
+
+## TCP vs. UDP — Revisited at the Protocol Level
+
+You covered the mechanics of TCP and UDP in the encapsulation lesson. Here's the protocol-level view of when each one is used and why.
+
+TCP carries traffic that can't tolerate loss: HTTP/HTTPS, SSH, FTP, SMTP, SMB, RDP. These protocols need every byte delivered, in order, verified. A missing segment in a file transfer corrupts the file. A missing segment in an SSH session garbles your terminal. TCP's overhead — connection setup, acknowledgments, retransmission — is the price of reliability, and for these services, it's worth paying.
+
+UDP carries traffic where speed and simplicity beat reliability: DNS queries (small, single request-response — faster to just re-query than to set up a TCP connection), DHCP (the client doesn't have an IP address to establish a TCP session with), streaming media (a dropped frame is invisible; a delayed frame is annoying), online gaming (the server needs your position now, not your position from 200 milliseconds ago that got retransmitted). SNMP, syslog, TFTP, and NTP also use UDP.
+
+Some protocols use both depending on the situation. DNS normally uses UDP, but switches to TCP for zone transfers between DNS servers and for responses that exceed 512 bytes. Knowing which protocol uses TCP or UDP — and why — tells you what kind of traffic you're looking at in a packet capture and what kind of failures to expect. TCP connection fails? Check firewalls, check the handshake, check for RST packets. UDP traffic not arriving? There's no connection to debug — the packets are either getting there or they're not, and you'll need to check for drops at the firewall or routing level.
+
+## Why This Matters in the Field
+
+Every time you troubleshoot a connectivity issue, you're tracing these protocols. Can the machine ping? ICMP. Does it have an IP address? DHCP. Can it resolve names? DNS. Can it reach the web server? HTTP/HTTPS. Can it find devices on the local segment? ARP. These aren't independent topics — they're a sequence that runs every time a device connects to a network, and a break at any point in the sequence produces a different symptom. When you can map a user's complaint to the protocol that failed, you skip the guessing and go straight to the fix. That's what separates a tech who resolves tickets from a tech who reads about the problem for forty-five minutes first.
