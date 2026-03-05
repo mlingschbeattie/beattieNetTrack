@@ -1,0 +1,133 @@
+---
+title: IPv6 Implementation — Deploying the Address Space That Never Runs Out
+description: IPv6 address types in depth, EUI-64 and interface IDs, SLAAC vs DHCPv6, Neighbor Discovery Protocol, dual-stack and tunneling strategies — moving from understanding IPv6 to actually deploying it.
+slug: net-ipv6-implementation
+track: network-engineer
+moduleId: net.implementation.addressing
+order: 3
+difficulty: Intermediate
+estMinutes: 30
+tags: ["network+", "IPv6", "SLAAC", "DHCPv6", "NDP", "dual-stack", "N10-009 2.3", "N10-008 2.3"]
+---
+
+LESSON 2.3.3 — IPv6 Implementation
+
+## The Protocol Everyone Talks About and Nobody Finishes Deploying
+
+You covered IPv6 fundamentals earlier — the 128-bit address space, the hex notation, the shorthand rules, the basic address types. That was the "what it is" lesson. This is the "how you actually run it" lesson. Configuring IPv6 on real devices, understanding how addresses get assigned without a DHCP server, learning the protocol that replaced ARP, and deploying the transition technologies that let IPv4 and IPv6 coexist on the same network. IPv6 has been "the future" since 1998. It's increasingly the present — Google reports over 45% of its traffic arrives via IPv6, mobile carriers run it natively, and cloud providers default to dual-stack. The exam expects implementation knowledge, and the field is starting to demand it.
+
+## IPv6 Address Types — The Full Picture
+
+IPv6 has several address types, each with a specific scope and purpose. Knowing which prefix maps to which type is a fast exam win and an essential diagnostic skill.
+
+**Global Unicast (2000::/3).** The IPv6 equivalent of a public IPv4 address. Globally routable, unique on the internet, assigned by ISPs and regional registries. Currently, most global unicast addresses start with 2001: through 2fff:, though the entire 2000::/3 range is allocated. When you see an address starting with 2001:, it's a global unicast — that device is directly reachable on the internet (assuming no firewall rules say otherwise). No NAT required. Every device gets its own globally unique address. That's the IPv6 design philosophy: end-to-end connectivity restored.
+
+**Link-Local (fe80::/10).** Automatically assigned to every IPv6-enabled interface the moment it comes up. Link-local addresses are only valid on the local network segment — routers do not forward them. They're used for neighbor discovery, router discovery, and as next-hop addresses in routing tables. In IPv4, link-local (169.254.x.x / APIPA) means DHCP failed and something is wrong. In IPv6, link-local is normal, expected, and required. Every IPv6 interface has a link-local address even if it also has a global unicast address. When you see fe80:: in your output, nothing is broken — that's the protocol working as designed.
+
+**Unique Local (fc00::/7, practically fd00::/8).** The IPv6 equivalent of RFC 1918 private addresses. Not routable on the global internet, used for internal communication within an organization. The fd00::/8 range is the one you'll deploy — you generate a pseudo-random 40-bit identifier to create your unique local prefix, making collisions between organizations unlikely even if two networks merge. Think of unique local addresses the way you think of 10.x.x.x — internal-only, no internet routing, used for services that should never be exposed externally.
+
+**Multicast (ff00::/8).** One-to-many delivery. IPv6 uses multicast extensively where IPv4 used broadcast. A few multicast addresses you'll see constantly: **ff02::1** is all nodes on the link (the closest thing to a broadcast in IPv6), **ff02::2** is all routers on the link, **ff02::1:ff** followed by the last 24 bits of a unicast address is the **solicited-node multicast address** used for neighbor discovery (more on this below). There is no broadcast in IPv6. That's not a subtle distinction — it fundamentally changes how discovery and address resolution work.
+
+**Anycast.** An anycast address is syntactically identical to a unicast address — you can't tell them apart by looking. The difference is configuration: the same address is assigned to multiple devices, and the routing infrastructure delivers traffic to whichever one is nearest. DNS root servers and CDN nodes use anycast to distribute load geographically. You won't configure anycast in a typical enterprise network, but you'll benefit from it every time you resolve a DNS name.
+
+**Loopback (::1).** The IPv6 equivalent of 127.0.0.1. One address, ::1, points back to the local machine. Used for testing the local IPv6 stack.
+
+**Unspecified (::).** All zeros. Used as a source address when a device doesn't yet have an address — similar to 0.0.0.0 in IPv4 DHCP Discover messages.
+
+## EUI-64 — Building an Interface ID from a MAC Address
+
+IPv6 addresses are 128 bits: 64 bits for the network prefix, 64 bits for the interface identifier. One method of generating the interface ID is **EUI-64 (Extended Unique Identifier — 64 bit)**, which derives the 64-bit host portion from the device's 48-bit MAC address.
+
+The process:
+1. Take the MAC address: AA:BB:CC:DD:EE:FF.
+2. Split it in half: AA:BB:CC | DD:EE:FF.
+3. Insert FF:FE in the middle: AA:BB:CC:FF:FE:DD:EE:FF.
+4. Flip the seventh bit (the "universal/local" bit) of the first byte. If A = 1010 in hex, that first byte is AA = 10101010 in binary. The seventh bit (counting from the left, starting at 1) is 0 — flip it to 1: 10101**1**10 = A8. The modified first byte is A8.
+5. Result: A8BB:CCFF:FEDD:EEFF.
+
+Combined with a /64 network prefix like 2001:db8:1:1::/64, the full address becomes 2001:db8:1:1:a8bb:ccff:fedd:eeff.
+
+EUI-64 is deterministic — same MAC, same interface ID every time. That's convenient for administrators who want predictable addresses based on hardware, but it's a privacy concern because it embeds the MAC address (and therefore the device's hardware identity) in every packet. **RFC 7217 stable privacy addresses** and **temporary privacy addresses (RFC 4941)** generate randomized interface IDs instead. Modern operating systems (Windows, macOS, Linux, iOS, Android) use privacy extensions by default, which is why the IPv6 addresses you see in `ipconfig` rarely look like EUI-64-generated addresses. The exam still expects you to know the EUI-64 process — you might be asked to derive an interface ID from a given MAC.
+
+## Address Assignment — SLAAC, Stateless DHCPv6, Stateful DHCPv6
+
+IPv6 gives you three ways to assign addresses to hosts. This is one of the most-tested topics on the Network+ exam, and the distinctions matter operationally.
+
+**SLAAC (Stateless Address Autoconfiguration).** The host generates its own address — no server involved. Here's the sequence: the host sends a **Router Solicitation (RS)** message to ff02::2 (all routers). A router on the segment responds with a **Router Advertisement (RA)** containing the network prefix (e.g., 2001:db8:1:1::/64) and configuration flags. The host combines that prefix with a self-generated interface ID (EUI-64 or privacy-based) and assigns itself a full global unicast address. The host also uses the router's link-local address as its default gateway. No DHCP server touched this transaction. The address is not tracked centrally — the router advertised the prefix, the client did the rest.
+
+SLAAC is elegant and zero-infrastructure — no DHCP server to deploy, manage, or troubleshoot. The downside: SLAAC doesn't provide DNS server addresses or other configuration options in its basic form (though the RDNSS option in RAs can provide DNS, it's not universally supported or deployed). That's where the other options come in.
+
+**Stateless DHCPv6.** SLAAC handles the address, and a DHCPv6 server provides additional configuration — DNS server addresses, domain search lists, NTP servers, and other options that SLAAC doesn't carry. The RA from the router has specific flags set (the O flag — "Other configuration") that tell the host to contact a DHCPv6 server for these extras. The DHCPv6 server doesn't track or assign addresses — it just hands out configuration parameters. The address is still self-generated via SLAAC.
+
+**Stateful DHCPv6.** The DHCPv6 server assigns the address and all configuration, similar to DHCPv4. The RA has the M flag ("Managed address configuration") set, telling the host to get its address from DHCPv6 instead of generating one via SLAAC. The server tracks which addresses are assigned to which clients, providing the centralized address management that some organizations require for compliance, auditing, or IP address management (IPAM) tools.
+
+The choice depends on the environment. A small office or branch with simple needs? SLAAC is fine — minimal infrastructure, addresses just work. An enterprise with strict IPAM requirements and compliance audits? Stateful DHCPv6 gives you the tracking and control. Most production deployments land on SLAAC + stateless DHCPv6 — self-assigned addresses with centrally managed DNS and other options.
+
+## NDP — The Protocol That Replaced ARP
+
+**Neighbor Discovery Protocol (NDP, RFC 4861)** is the IPv6 replacement for ARP, and it does a lot more. NDP uses ICMPv6 messages and operates entirely over multicast instead of broadcast. Five message types handle the work:
+
+**Router Solicitation (RS).** Sent by a host to ff02::2 (all routers) when it comes online, asking routers to immediately send an RA instead of waiting for the next scheduled one.
+
+**Router Advertisement (RA).** Sent periodically by routers (and in response to RS messages) to ff02::1 (all nodes). Contains the network prefix, prefix length, flags indicating which address assignment method to use (SLAAC, stateless DHCPv6, stateful DHCPv6), the router's lifetime as a default gateway, and other parameters. RAs are how hosts discover routers and learn how to configure themselves.
+
+**Neighbor Solicitation (NS).** The functional replacement for an ARP Request, but smarter. Instead of broadcasting to the entire segment, NS sends to the target's **solicited-node multicast address** — a multicast group derived from the last 24 bits of the target's IPv6 address. Only the intended target (and others sharing those last 24 bits, which is rare) processes the message. This drastically reduces the overhead compared to ARP's broadcast-to-everyone model. NS is also used for **Duplicate Address Detection (DAD)** — before a host uses a new address, it sends an NS for that address. If anyone responds, the address is already taken.
+
+**Neighbor Advertisement (NA).** The response to NS. "Yes, that's my address, and here's my MAC address." Equivalent to an ARP Reply.
+
+**Redirect.** Sent by a router to inform a host of a better next-hop for a specific destination. If a host sends traffic to router A, and router A knows that router B is a better path, router A sends a Redirect telling the host to use router B directly.
+
+NDP replaces ARP, ICMP Router Discovery, and the redirect functions that existed as separate mechanisms in IPv4. It's cleaner, more efficient (multicast instead of broadcast), and includes DAD to prevent address conflicts — something ARP never did natively.
+
+## Dual-Stack — Running Both Protocols
+
+Dual-stack is the most common IPv6 deployment strategy and the one you'll encounter most often in the field. A dual-stack device has both an IPv4 address and an IPv6 address on the same interface and can communicate using either protocol. The operating system's resolver decides which to use — modern systems prefer IPv6 when a destination has both an A record (IPv4) and a AAAA record (IPv6), falling back to IPv4 when IPv6 isn't available.
+
+On the infrastructure side, dual-stack means your routers route both protocols, your switches carry both, your firewalls filter both, and your DNS serves both record types. The operational cost is real — you're maintaining two addressing schemes, two sets of ACLs, two routing tables. But dual-stack avoids the complexity of translation (NAT64) and the overhead of tunneling. It's a "run both, phase out IPv4 when ready" strategy, and most organizations are in the "run both" phase with no firm date for the second part.
+
+Dual-stack is safe, interoperable, and boring — which, in network engineering, is exactly what you want.
+
+## Tunneling — IPv6 Through IPv4 Infrastructure
+
+When parts of the network path don't support IPv6 natively, tunneling encapsulates IPv6 packets inside IPv4 packets to traverse the gap. The IPv6 packet becomes the payload of an IPv4 packet, crosses the IPv4 segment, and gets decapsulated at the other end.
+
+**6in4 (Protocol 41).** A simple, manually configured tunnel. You specify the IPv4 addresses of the tunnel endpoints, and IPv6 traffic is encapsulated in IPv4 with protocol number 41 in the IP header. Straightforward but requires static configuration and doesn't traverse NAT well (because NAT doesn't know what to do with protocol 41 — it's not TCP or UDP).
+
+**Teredo.** Designed to work through NAT by encapsulating IPv6 inside UDP on port 3544. A Teredo client behind NAT can reach a Teredo server on the public internet, which brokers the connection. Windows has had a built-in Teredo client since Vista. It's a last-resort mechanism — the performance overhead is notable, the reliability is inconsistent, and it's being deprecated in favor of native IPv6 deployment. But it exists, it's on the exam, and you might see it in `ipconfig` output as a "Teredo Tunneling Pseudo-Interface."
+
+**ISATAP (Intra-Site Automatic Tunnel Addressing Protocol).** Creates IPv6 tunnels over an IPv4 intranet automatically. Hosts on a corporate IPv4 network can communicate via IPv6 by encapsulating traffic in IPv4 within the site. ISATAP was more relevant when enterprise IPv6 deployment was in its early stages. It's largely deprecated now in favor of native dual-stack.
+
+**6to4.** Uses a public IPv4 address to automatically derive an IPv6 prefix (2002::/16 followed by the hex representation of the IPv4 address) and tunnels via relay routers. It's deprecated due to reliability and security concerns but appears on the exam.
+
+The trend line is clear: tunneling technologies were necessary bridges during the transition, and they're being phased out as native IPv6 reaches deeper into networks. New deployments should go dual-stack. Tunneling is the fallback when you can't.
+
+## IPv6 Prefix Notation and Common Prefixes
+
+Quick reference for the prefixes you'll see on the exam and in the field:
+
+| Prefix | Type | Scope |
+|---|---|---|
+| 2000::/3 | Global unicast | Internet-routable |
+| fe80::/10 | Link-local | Single link only |
+| fc00::/7 (fd00::/8) | Unique local | Organization-internal |
+| ff00::/8 | Multicast | Group delivery |
+| ::1/128 | Loopback | Local machine |
+| ::/128 | Unspecified | No address yet |
+| ff02::1 | All nodes (link-local) | Multicast group |
+| ff02::2 | All routers (link-local) | Multicast group |
+
+A /48 is a typical allocation from an ISP to an organization — 65,536 possible /64 subnets within it. A /64 is the standard subnet size — every subnet in IPv6 gets a /64 regardless of how many hosts it has. Don't try to subnet IPv6 the way you subnet IPv4. You don't carve /64s into /72s to save addresses; there are enough addresses in a single /64 to number every device ever manufactured. The 64-bit boundary is a design requirement for SLAAC, and breaking it breaks autoconfiguration.
+
+## No Broadcast — Why It Matters
+
+IPv4 relies on broadcast for critical functions: ARP requests (ff:ff:ff:ff:ff:ff), DHCP discovery (255.255.255.255), and various other discovery protocols. Every device on the subnet processes every broadcast frame, even if it's irrelevant to them. In a subnet with 500 devices, an ARP request wakes up 499 devices that have nothing to do with the conversation. That's wasted CPU and wasted airtime on wireless networks.
+
+IPv6 eliminates broadcast entirely. Neighbor discovery uses solicited-node multicast — targeting only the device (or tiny group of devices) that the message is relevant to. Router discovery uses the all-routers multicast group. DHCPv6 uses specific multicast addresses. The result is less noise on the network, less CPU overhead on end devices, and significantly better behavior on wireless networks where broadcast/multicast traffic competes for shared airtime.
+
+This isn't a theoretical improvement. In a high-density wireless environment — like a school with 500 Chromebooks — the reduction in broadcast traffic from IPv6's multicast-only design measurably improves performance. It's one of the less-glamorous but genuinely impactful differences between the two protocols.
+
+## Why This Matters in the Field
+
+IPv6 implementation isn't a future-state planning exercise anymore. When you configure a Windows server, it has a link-local IPv6 address out of the box. When you set up a firewall and only write IPv4 rules, IPv6 traffic passes through unfiltered — that's a security gap. When Active Directory replication starts using IPv6 because both domain controllers have global unicast addresses and the OS prefers v6, and your monitoring tools only track IPv4 — you're blind to half the traffic.
+
+The practical skill set: configure dual-stack on routers and switches, understand which SLAAC/DHCPv6 mode your environment uses and why, check firewall rules for both protocols, recognize link-local addresses in routing tables and know they're supposed to be there, and be able to read an EUI-64-derived address backward to the source MAC when you're tracking down a device. IPv6 deployment isn't something that happens in one project. It seeps in gradually, and the techs who understand it handle the transition smoothly. The ones who don't spend a lot of time confused about why things work differently than they expected.

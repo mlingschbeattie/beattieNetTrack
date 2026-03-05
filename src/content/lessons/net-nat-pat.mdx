@@ -1,0 +1,95 @@
+---
+title: NAT and PAT — How the Internet Survives on Borrowed Time
+description: Static NAT, dynamic NAT, PAT/overload, inside vs outside addressing, SOHO NAT behavior, and the limitations that come with rewriting addresses — the workaround that kept IPv4 alive decades past its expiration date.
+slug: net-nat-pat
+track: network-engineer
+moduleId: net.implementation.addressing
+order: 2
+difficulty: Intermediate
+estMinutes: 25
+tags: ["network+", "NAT", "PAT", "IPv4", "N10-009 2.3", "N10-008 2.3"]
+---
+
+LESSON 2.3.2 — NAT and PAT
+
+## The Hack That Saved the Internet
+
+In 1981, the engineers who designed IPv4 figured 4.3 billion addresses would be plenty. In their defense, the entire internet at the time was a few hundred machines in universities and government labs. Nobody predicted that by 2025, a single household would have a phone, a laptop, a tablet, a smart TV, two gaming consoles, a thermostat, a doorbell camera, a robot vacuum, and a refrigerator that sends push notifications — all needing IP addresses right now. The addresses ran out. Not theoretically, not eventually — they ran out in 2011. The global pool hit zero.
+
+But the internet kept growing. It kept growing because of NAT — Network Address Translation — a technique that lets an entire network of devices share a single public IP address by rewriting packet headers on the fly. NAT was supposed to be a temporary measure while the world migrated to IPv6. That was 1994. It's still here, and it's on every home router, every corporate firewall, and most cloud architectures you'll ever touch. NAT is a brilliant hack that violates the internet's original design principle of end-to-end connectivity, and we built the modern internet on top of it anyway.
+
+## Why NAT Exists — Public vs. Private
+
+You covered private address ranges in earlier lessons: 10.0.0.0/8, 172.16.0.0/12, and 192.168.0.0/16. These ranges are non-routable on the public internet — routers in the ISP backbone drop any packet with a private source or destination address. That means your home network can use 192.168.1.0/24 and so can your neighbor's, and so can a million other homes, and none of them conflict because private addresses never leave the local network.
+
+NAT sits on the border device — your router, your firewall — and translates private addresses to public ones as traffic exits the network, and translates them back as responses return. The devices on the inside think they're talking directly to the internet. The internet thinks all traffic is coming from the router's single public IP. Neither side knows about the translation happening in the middle, and neither side needs to.
+
+## Static NAT — One-to-One
+
+Static NAT maps a single private address to a single public address permanently. Inside address 10.1.1.100 always translates to outside address 203.0.113.50. The mapping doesn't change, doesn't expire, and works in both directions — traffic initiated from the inside goes out as 203.0.113.50, and traffic initiated from the outside to 203.0.113.50 reaches 10.1.1.100.
+
+Static NAT is used when a device needs to be reachable from the internet — a web server, a mail server, a VPN endpoint. The server lives on the private network but has a dedicated public address that external clients can connect to. The tradeoff is obvious: you burn one public IP address per device. If you only have a handful of public addresses and dozens of servers that need internet-facing access, static NAT doesn't scale. But for the few devices that genuinely need a permanent, predictable public identity, it's the right tool.
+
+## Dynamic NAT — Pool-Based
+
+Dynamic NAT maps private addresses to public addresses from a pool, on a first-come, first-served basis. You configure a pool of public addresses — say 203.0.113.50 through 203.0.113.60, eleven addresses — and when an internal device initiates outbound traffic, the router assigns it the next available public address from the pool. When the session ends (or the translation times out), the public address returns to the pool for someone else.
+
+Dynamic NAT gives you more internal devices than public addresses, as long as not all of them need internet access simultaneously. If you have 200 internal devices and 11 public addresses, the first 11 devices that initiate traffic get translated. Device 12 gets nothing until someone else's translation expires. If all 200 devices try to get out at once, 189 of them fail.
+
+This is why dynamic NAT is rare in modern networks. The pool exhaustion problem makes it impractical for anything but niche scenarios where you know the concurrent demand will always stay below the pool size. What actually runs on almost every network is the next option.
+
+## PAT / NAT Overload — Many to One
+
+**Port Address Translation** — also called NAT overload, or just "what your home router does" — maps many private addresses to a single public address by tracking connections through port numbers. This is the NAT that saved the internet.
+
+When device 10.1.1.100 opens a connection to a web server, it uses a random source port — say 52000. The router translates the source address to its public IP (203.0.113.1) and may also change the source port (say to 40001). It records the mapping in a translation table: 10.1.1.100:52000 ↔ 203.0.113.1:40001. When device 10.1.1.101 opens its own connection, the router translates it to 203.0.113.1:40002. Both devices share the same public IP, distinguished only by port number.
+
+Because port numbers are 16-bit values (0–65535), a single public IP address can theoretically support over 65,000 simultaneous translations. In practice, it's lower because some port ranges are reserved, but the point stands: one public IP covers an entire network. Your home router, your school's firewall, the NAT gateway at a company with 5,000 employees — they're all running PAT. The overwhelming majority of NAT deployments in the world are PAT.
+
+## The NAT Table — Inside Local, Inside Global, Outside
+
+NAT terminology sounds like it was designed to confuse you, but it's actually a precise way to describe the four addresses involved in any translated connection. Think of it from the router's perspective:
+
+**Inside local** — the private address of the internal device as it appears on the inside of the network. 10.1.1.100 — the address the device thinks it has.
+
+**Inside global** — the public address that represents the internal device on the outside of the network. 203.0.113.1 (port 40001 for PAT) — the address the internet sees.
+
+**Outside local** — the address of the external destination as seen from inside the network. Usually the same as outside global unless you're doing destination NAT, which is rare.
+
+**Outside global** — the real public address of the external destination. 142.250.80.46 (Google's server) — the actual destination.
+
+The translation table tracks the mapping between inside local and inside global for every active connection. `show ip nat translations` on a Cisco router displays this table and is one of the primary troubleshooting commands when NAT-related connectivity fails. If the table is empty, translations aren't happening — check the NAT configuration, the interface assignments (which interfaces are "inside" and which are "outside"), and the access lists that control which traffic gets translated.
+
+## NAT on a SOHO Router
+
+On a consumer or small-office router — the kind you buy at a store and plug into the cable modem — NAT is preconfigured and mostly invisible. The WAN port gets a public IP from the ISP (via DHCP). The LAN ports and Wi-Fi hand out 192.168.1.x addresses. PAT runs automatically. You'd be hard-pressed to find a SOHO router that doesn't do this out of the box.
+
+**Port forwarding** is the SOHO equivalent of static NAT for a single service. If you're running a game server or a web server on an internal machine, you create a port forwarding rule: "all traffic arriving on public port 25565 goes to internal address 192.168.1.50 port 25565." The router adds a permanent entry to the translation table for that specific port. Everything else still uses PAT for outbound connections.
+
+**DMZ host** (on consumer routers) forwards all unsolicited inbound traffic to a single internal device. It's a blunt instrument — that device is exposed to everything — and it's a security risk if the device isn't hardened. Enterprise networks use actual DMZ architectures with firewalls; consumer routers use the term loosely.
+
+**UPnP (Universal Plug and Play)** lets devices automatically create their own port forwarding rules without manual configuration. Your Xbox or PlayStation uses UPnP to open the ports it needs for online gaming. Convenient, but it's a security concern — any malware on the network can also open ports outbound. Enterprise networks disable UPnP.
+
+## NAT Limitations — The Price of the Hack
+
+NAT works well enough that the internet runs on it, but it breaks things, and you should know what and why.
+
+**End-to-end connectivity is gone.** The original internet design assumed any device could initiate a connection to any other device. NAT kills that. Devices behind NAT can initiate outbound connections, but inbound connections fail unless you've manually configured port forwarding or static NAT. This breaks peer-to-peer applications, VoIP, video conferencing, and online gaming — all of which have developed workarounds (STUN, TURN, ICE, relay servers) specifically because NAT is in the way.
+
+**Protocols that embed IP addresses in the payload break.** FTP active mode, SIP (VoIP signaling), and some IPsec configurations include IP addresses inside the data payload, not just the header. NAT only translates the header. The payload still references the private address, which the remote side can't reach. Application Layer Gateways (ALGs) on routers attempt to inspect and rewrite these payloads, but ALG support is inconsistent and often causes as many problems as it solves.
+
+**Troubleshooting gets harder.** When a web server's logs show 10,000 connections from a single IP address, that doesn't mean one device is hitting the server 10,000 times — it might be an entire office behind PAT. Correlating activity to a specific internal device requires access to the NAT translation table at the time of the connection, which may not be logged.
+
+**Performance overhead.** Every packet through NAT requires a table lookup, a header rewrite, and a checksum recalculation. On modern hardware, this is trivial for normal traffic volumes. On a firewall handling hundreds of thousands of concurrent connections, NAT table size and lookup speed become real engineering considerations.
+
+## NAT64 — Bridging IPv6 and IPv4
+
+As IPv6 adoption grows, there are networks that are IPv6-only internally but still need to reach IPv4-only servers on the internet. **NAT64** translates between IPv6 and IPv4 at the network border — an IPv6 device sends traffic to a synthesized IPv6 address that represents the IPv4 destination, and the NAT64 gateway translates the packet to IPv4 for delivery. **DNS64** works alongside NAT64 by synthesizing AAAA (IPv6) DNS records for domains that only have A (IPv4) records, so the IPv6 client can resolve the address.
+
+NAT64 is the transitional bridge that lets organizations deploy IPv6 internally without losing access to the IPv4 internet. Mobile carriers were the first large-scale adopters — T-Mobile, for example, runs NAT64 for most of its subscriber base. You'll encounter it less in enterprise LANs right now, but it's on the exam and it's part of the IPv6 migration path.
+
+## Why This Matters in the Field
+
+NAT is on every network you'll manage, and understanding it prevents a whole category of misdiagnoses. When a user says their VoIP phone can make calls but the remote party can't hear them — that's one-way audio caused by NAT not translating the media stream correctly, usually a SIP ALG problem. When someone configures a new server and it works outbound but nobody external can reach it — they forgot the port forwarding or static NAT entry. When the translation table fills up on a busy firewall and new connections start failing — that's PAT exhaustion, and the fix is either increasing the table size, adding a second public IP to the PAT pool, or reducing connection timeouts.
+
+NAT isn't glamorous. It's the duct tape holding IPv4 together while IPv6 finishes its thirty-year rollout. But duct tape you don't understand is duct tape you can't fix when it peels off.

@@ -1,0 +1,144 @@
+---
+title: IP Addressing and Subnetting — The Math That Runs the Network
+description: Binary conversion, subnet masks, CIDR, network and broadcast addresses, subnetting by hand, VLSM, and the shortcuts that get you through the exam and the job — the addressing math every network tech needs cold.
+slug: net-ip-addressing-subnetting
+track: network-engineer
+moduleId: net.implementation.addressing
+order: 1
+difficulty: Intermediate
+estMinutes: 35
+tags: ["network+", "subnetting", "CIDR", "VLSM", "N10-009 2.3", "N10-008 2.3"]
+---
+
+LESSON 2.3.1 — IP Addressing and Subnetting
+
+## The Skill That Separates You
+
+There is exactly one topic on the Network+ exam that scares people more than any other, and you're looking at it. Subnetting. It comes up in multiple questions, it's easy to get wrong under time pressure, and there's no way to fake it — you either know how to break an address range into pieces or you don't. The good news: subnetting is not hard. It's a mechanical process built on a few rules, and once those rules click, the math is repeatable and fast. The bad news: there's no avoiding the binary. You learned in the fundamentals lesson that IPv4 addresses are 32-bit binary numbers wearing a dotted-decimal costume. Now you take the costume off and work with what's underneath.
+
+## Binary — The Language of Subnet Math
+
+Every octet in an IPv4 address is 8 bits. Each bit position has a value that doubles from right to left:
+
+```
+128  64  32  16  8  4  2  1
+```
+
+To convert a decimal number to binary, start at 128 and work right. Does 128 fit into the number? If yes, write a 1 and subtract. If no, write a 0. Move to 64. Repeat.
+
+Convert 200 to binary: 128 fits (200 - 128 = 72, write 1). 64 fits (72 - 64 = 8, write 1). 32 doesn't fit (write 0). 16 doesn't fit (write 0). 8 fits (8 - 8 = 0, write 1). 4, 2, 1 all don't fit (write 000). Result: **11001000**.
+
+Convert 10101100 to decimal: 128 + 0 + 32 + 0 + 8 + 4 + 0 + 0 = **172**.
+
+This conversion is muscle memory, not brilliance. Do it fifty times and it becomes automatic. You'll need it because subnetting is the process of manipulating where the binary ones and zeros fall in the subnet mask — and that manipulation determines how many networks you create and how many hosts fit in each one.
+
+## The Subnet Mask — Drawing the Line
+
+A subnet mask is a 32-bit number that tells devices which part of an IP address is the network portion and which part is the host portion. In binary, a subnet mask is always a contiguous string of 1s followed by a contiguous string of 0s. The 1s mark the network bits. The 0s mark the host bits.
+
+255.255.255.0 in binary: 11111111.11111111.11111111.00000000 — that's 24 network bits and 8 host bits, written as /24 in CIDR notation.
+
+255.255.255.128 in binary: 11111111.11111111.11111111.10000000 — 25 network bits and 7 host bits, /25.
+
+255.255.255.192 in binary: 11111111.11111111.11111111.11000000 — 26 network bits and 6 host bits, /26.
+
+The pattern: every additional 1 in the mask doubles the number of subnets and halves the number of hosts per subnet. That's the entire tradeoff in subnetting — more networks or more hosts, pick one.
+
+## Network Address, Broadcast Address, Usable Hosts
+
+Every subnet has three categories of addresses:
+
+**Network address.** The first address in the range. All host bits are 0. It identifies the subnet itself and can't be assigned to a device. For 192.168.1.0/24, the network address is 192.168.1.0.
+
+**Broadcast address.** The last address in the range. All host bits are 1. A packet sent to this address reaches every device on the subnet. For 192.168.1.0/24, the broadcast address is 192.168.1.255.
+
+**Usable host addresses.** Everything between the network and broadcast addresses. For 192.168.1.0/24, usable hosts are 192.168.1.1 through 192.168.1.254 — that's 254 addresses.
+
+The formula: $2^h - 2$ usable hosts, where $h$ is the number of host bits. Subtract 2 because the network address and broadcast address aren't assignable. A /24 has 8 host bits: $2^8 - 2 = 254$. A /26 has 6 host bits: $2^6 - 2 = 62$. A /30 has 2 host bits: $2^2 - 2 = 2$ — just enough for a point-to-point link between two routers.
+
+## Subnetting by Hand — Borrowing Bits
+
+Subnetting is the process of taking a single network and dividing it into smaller subnets by borrowing bits from the host portion and adding them to the network portion. You're moving the line between network and host to the right.
+
+Start with 192.168.1.0/24. You need four subnets. How many bits do you borrow? You need enough bits to create at least four combinations: $2^1 = 2$ (not enough), $2^2 = 4$ (exactly four). Borrow 2 bits. The mask moves from /24 to /26 — 255.255.255.192.
+
+Now figure out the subnets. The borrowed bits create these binary patterns in the fourth octet:
+
+```
+00 = 0   → Subnet 1: 192.168.1.0/26   (hosts .1–.62, broadcast .63)
+01 = 64  → Subnet 2: 192.168.1.64/26  (hosts .65–.126, broadcast .127)
+10 = 128 → Subnet 3: 192.168.1.128/26 (hosts .129–.190, broadcast .191)
+11 = 192 → Subnet 4: 192.168.1.192/26 (hosts .193–.254, broadcast .255)
+```
+
+Each subnet has $2^6 - 2 = 62$ usable hosts. The block size is 64 (the value of the least significant borrowed bit). Subnets increment by the block size: 0, 64, 128, 192.
+
+That's the entire process:
+1. Determine how many subnets you need.
+2. Calculate bits to borrow ($2^n \geq$ required subnets).
+3. New mask = original mask + borrowed bits.
+4. Block size = 256 minus the new mask's last non-255 octet value.
+5. List subnets starting at 0, incrementing by block size.
+6. For each subnet: first address is network, last is broadcast, everything in between is usable.
+
+## The Common Masks — Know These Cold
+
+You'll see these masks constantly. Memorize the usable host counts and block sizes:
+
+| CIDR | Mask | Hosts | Block Size |
+|---|---|---|---|
+| /24 | 255.255.255.0 | 254 | — |
+| /25 | 255.255.255.128 | 126 | 128 |
+| /26 | 255.255.255.192 | 62 | 64 |
+| /27 | 255.255.255.224 | 30 | 32 |
+| /28 | 255.255.255.240 | 14 | 16 |
+| /29 | 255.255.255.248 | 6 | 8 |
+| /30 | 255.255.255.252 | 2 | 4 |
+
+A /30 is for router-to-router point-to-point links — two usable addresses, one per side. A /28 is for a small server VLAN with a dozen devices. A /24 is the default "give a department a subnet" size. A /25 splits a /24 in half when a department outgrows one of those halves but doesn't need a second full /24.
+
+On the exam, when a question says "which subnet does host 10.1.1.200/27 belong to?" — find the block size (32), divide the host octet by the block size (200 ÷ 32 = 6.25), drop the decimal and multiply back (6 × 32 = 192). The subnet is 10.1.1.192/27. Broadcast is 10.1.1.223 (192 + 32 - 1). Usable range: 10.1.1.193–10.1.1.222. That entire process takes about five seconds once you've drilled it.
+
+## VLSM — Variable Length Subnet Masking
+
+Classic subnetting gives every subnet the same size. That wastes addresses. If you have a /24 and need four subnets, you get four /26 subnets with 62 hosts each. But what if one subnet needs 100 hosts and another needs only 2 (a point-to-point link)? Equal-sized subnets either waste addresses on the small subnets or can't fit enough on the large ones.
+
+**VLSM** lets you use different mask lengths on different subnets within the same network. You start with the largest requirement and work down:
+
+Given 10.1.1.0/24, you need:
+- Subnet A: 100 hosts
+- Subnet B: 50 hosts
+- Subnet C: 25 hosts
+- Subnet D: 2 hosts (point-to-point link)
+
+**Subnet A** needs 100 hosts. $2^7 - 2 = 126$ — a /25 works. Assign 10.1.1.0/25 (hosts .1–.126).
+
+**Subnet B** needs 50 hosts. $2^6 - 2 = 62$ — a /26 works. Next available block after .127 is 10.1.1.128/26 (hosts .129–.190).
+
+**Subnet C** needs 25 hosts. $2^5 - 2 = 30$ — a /27 works. Next available: 10.1.1.192/27 (hosts .193–.222).
+
+**Subnet D** needs 2 hosts. $2^2 - 2 = 2$ — a /30 works. Next available: 10.1.1.224/30 (hosts .225–.226).
+
+VLSM allocates from 10.1.1.0 to 10.1.1.227 — 228 addresses consumed instead of the full 256 a four-subnet equal split would need, and every subnet is right-sized. Addresses .228 through .255 are still available for future subnets. The key rule: always allocate the largest subnet first and work downward. If you allocate small subnets first, you can fragment the address space and not have a contiguous block large enough for the big ones.
+
+## Subnetting Shortcuts for the Exam
+
+The exam is timed. You don't have twenty minutes per subnet question. These shortcuts turn subnet problems into ten-second problems:
+
+**The magic number.** For any mask, the block size in the interesting octet (the octet that isn't 255 or 0) is 256 minus the mask value. Mask 255.255.255.224 → 256 - 224 = 32 block size. Subnets go 0, 32, 64, 96, 128, 160, 192, 224.
+
+**Which subnet does a host belong to?** Divide the host's interesting octet by the block size, drop the remainder, multiply back. Host 172.16.45.200/26 — block size is 64. 200 ÷ 64 = 3.125. 3 × 64 = 192. Subnet: 172.16.45.192/26.
+
+**Broadcast = next subnet minus 1.** The broadcast for 172.16.45.192/26 is 172.16.45.255 (next subnet would be .256, but since .192 is the last subnet in this octet, broadcast is .255).
+
+**First usable = network + 1. Last usable = broadcast - 1.** Always.
+
+**Powers of 2 chart.** Know these instantly: $2^1=2$, $2^2=4$, $2^3=8$, $2^4=16$, $2^5=32$, $2^6=64$, $2^7=128$, $2^8=256$. Subtract 2 for usable hosts, or use the raw number for subnet count.
+
+**When in doubt, go binary.** If a problem confuses you in decimal, write out the binary. AND the IP address with the mask — the result is the network address. Flip the mask's 0s to 1s and OR it with the network address — the result is the broadcast. Binary never lies; decimal shortcuts can mislead you if you're not careful with the edge cases.
+
+## Why This Matters in the Field
+
+Every network you build starts with an addressing plan, and every addressing plan starts with subnetting. When the boss says "we need separate subnets for the office, the warehouse, the guest Wi-Fi, and the security cameras, and we've been allocated 10.50.0.0/22" — your job is to carve that block into appropriately sized pieces using VLSM, document the scheme, and configure it on the routers and DHCP servers. When a help desk ticket says a user can't reach a server, and you realize the user's machine has a /24 mask but the server's subnet is a /25 — and the user's IP falls outside the server's subnet — you just found a misconfigured mask that's causing the machine to route traffic incorrectly. That diagnosis takes seconds when you can do subnet math in your head. It takes forever when you can't.
+
+Subnetting is not a topic you learn for the exam and forget. It's a tool you'll reach for every time you design, expand, troubleshoot, or audit a network. Get fast at it now.
