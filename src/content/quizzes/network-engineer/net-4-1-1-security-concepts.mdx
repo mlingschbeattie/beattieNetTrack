@@ -6,7 +6,7 @@ moduleId: net.security.defense
 order: 1
 difficulty: Beginner
 xp: 20
-passThreshold: 0.7
+passThreshold: 70
 tags: ["network+", "cyberorg"]
 questions:
   - id: q1
@@ -17,7 +17,7 @@ questions:
       - "B. Access to data is only available to those who need to know"
       - "C. Data is prevented from being changed"
       - "D. Access to data is available when needed"
-    correct: "B. Access to data is only available to those who need to know"
+    correctIndex: 1
   - id: q2
     type: single
     prompt: "What does the integrity of data refer to?"
@@ -26,7 +26,7 @@ questions:
       - "B. Assurance of how relevant the data is"
       - "C. Access to data is only available to those who need to know"
       - "D. Assurance of how accurate and trustworthy data is"
-    correct: "D. Assurance of how accurate and trustworthy data is"
+    correctIndex: 3
   - id: q3
     type: single
     prompt: "What does the availability of data refer to?"
@@ -35,7 +35,7 @@ questions:
       - "B. Access to data is only available to those who need to know"
       - "C. Assurance of how relevant the data is"
       - "D. Assurance of how accurate and trustworthy data is"
-    correct: "A. Data can be accessed by the right people when needed"
+    correctIndex: 0
   - id: q4
     type: single
     prompt: "How do you ensure that data has integrity?"
@@ -44,7 +44,7 @@ questions:
       - "B. Redundancy"
       - "C. Biometrics"
       - "D. None of the above"
-    correct: "A. Digital signature"
+    correctIndex: 0
   - id: q5
     type: single
     prompt: "______ are individuals that were given access to the network for a specific purpose."
@@ -53,7 +53,7 @@ questions:
       - "B. Contractors"
       - "C. Trusted partners"
       - "D. All of the above"
-    correct: "D. All of the above"
+    correctIndex: 3
   - id: q6
     type: single
     prompt: "______ are typically malicious users that take advantage of network vulnerabilities and social engineering to gain unauthorized access to the network."
@@ -62,7 +62,7 @@ questions:
       - "B. Script kiddies"
       - "C. Contractors"
       - "D. All of the above"
-    correct: "B. Script kiddies"
+    correctIndex: 1
   - id: q7
     type: single
     prompt: "A(n) ______ is a weakness in software, hardware, or personnel."
@@ -71,7 +71,7 @@ questions:
       - "B. vulnerability"
       - "C. exploit"
       - "D. patch"
-    correct: "B. vulnerability"
+    correctIndex: 1
   - id: q8
     type: single
     prompt: "What does the CVSS do in regards to vulnerabilities?"
@@ -80,7 +80,7 @@ questions:
       - "B. It repairs vulnerabilities that are found"
       - "C. It applies a severity and score to vulnerabilities"
       - "D. Absolutely nothing"
-    correct: "C. It applies a severity and score to vulnerabilities"
+    correctIndex: 2
   - id: q9
     type: single
     prompt: "Which of the following is an attack where no known patch exists?"
@@ -89,7 +89,7 @@ questions:
       - "B. Advanced persistent"
       - "C. Hacktivist"
       - "D. SQL injection"
-    correct: "A. Zero-day"
+    correctIndex: 0
   - id: q10
     type: single
     prompt: "A(n) ______ is a tool used to attack a vulnerability, most commonly a program or binary code."
@@ -98,7 +98,7 @@ questions:
       - "B. payload"
       - "C. exploit"
       - "D. SIEM"
-    correct: "C. exploit"
+    correctIndex: 2
   - id: q11
     type: single
     prompt: "What is the name of the concept that limits user resources access and permissions to only the resources and permissions needed for them to complete their job functions?"
@@ -107,7 +107,7 @@ questions:
       - "B. Zero access"
       - "C. Least privilege"
       - "D. Least access"
-    correct: "C. Least privilege"
+    correctIndex: 2
   - id: q12
     type: single
     prompt: "What concept allows for setting permissions and access based on a user's role in an organization?"
@@ -116,7 +116,7 @@ questions:
       - "B. ABAC"
       - "C. RAC"
       - "D. DAC"
-    correct: "A. RBAC"
+    correctIndex: 0
 ---
 
 Quiz covering Security Concepts — CYBER.ORG unit 4.1.1.

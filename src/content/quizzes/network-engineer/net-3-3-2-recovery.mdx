@@ -6,7 +6,7 @@ moduleId: net.operations.monitoring-and-docs
 order: 8
 difficulty: Beginner
 xp: 20
-passThreshold: 0.7
+passThreshold: 70
 tags: ["network+", "cyberorg"]
 questions:
   - id: q1
@@ -17,7 +17,7 @@ questions:
       - "B. warm site"
       - "C. hot site"
       - "D. cloud recovery site"
-    correct: "C. hot site"
+    correctIndex: 2
   - id: q2
     type: single
     prompt: "A ______ may only have a large room with rack space requiring the organization to bring the hardware."
@@ -26,7 +26,7 @@ questions:
       - "B. warm site"
       - "C. hot site"
       - "D. cloud recovery site"
-    correct: "B. warm site"
+    correctIndex: 1
   - id: q3
     type: single
     prompt: "What is a cold site?"
@@ -35,7 +35,7 @@ questions:
       - "B. A site that only essential people know about to increase its security."
       - "C. A site that has the same hardware and software as the original site."
       - "D. None of the above."
-    correct: "A. A site with no hardware, no data, and no people."
+    correctIndex: 0
   - id: q4
     type: single
     prompt: "A ______ is a site designed to mimic our on-premises network but is completely virtual."
@@ -44,7 +44,7 @@ questions:
       - "B. warm site"
       - "C. hot site"
       - "D. cloud recovery site"
-    correct: "D. cloud recovery site"
+    correctIndex: 3
   - id: q5
     type: single
     prompt: "An ______ configuration is when every server is active and the load balancer can spread the load across all the servers."
@@ -53,7 +53,7 @@ questions:
       - "B. active-active"
       - "C. active-passive"
       - "D. virtual router"
-    correct: "B. active-active"
+    correctIndex: 1
   - id: q6
     type: single
     prompt: "An ______ configuration is when some of the servers are active and others are not, here the load balancer only shares the load with the active servers."
@@ -62,7 +62,7 @@ questions:
       - "B. active-active"
       - "C. active-passive"
       - "D. virtual router"
-    correct: "C. active-passive"
+    correctIndex: 2
   - id: q7
     type: single
     prompt: "What is the mean time to restore?"
@@ -71,7 +71,7 @@ questions:
       - "B. The amount of time you remain upset while waiting for services to be restored"
       - "C. The average time until a system failure"
       - "D. None of the above"
-    correct: "A. The average time taken to restore a system when it fails"
+    correctIndex: 0
   - id: q8
     type: single
     prompt: "What is the mean time between failures?"
@@ -80,7 +80,7 @@ questions:
       - "B. The average time before customer service hangs up on you"
       - "C. The average time until a system failure"
       - "D. None of the above"
-    correct: "C. The average time until a system failure"
+    correctIndex: 2
   - id: q9
     type: single
     prompt: "When you set a target time to resume normal operations and get your systems back up and running, you are accomplishing what?"
@@ -89,7 +89,7 @@ questions:
       - "B. Morphin time"
       - "C. Recovery point objective"
       - "D. Recovery time objective"
-    correct: "D. Recovery time objective"
+    correctIndex: 3
 ---
 
 Quiz covering Recovery — CYBER.ORG unit 3.3.2.

@@ -6,7 +6,7 @@ moduleId: net.security.defense
 order: 10
 difficulty: Beginner
 xp: 20
-passThreshold: 0.7
+passThreshold: 70
 tags: ["network+", "cyberorg"]
 questions:
   - id: q1
@@ -17,7 +17,7 @@ questions:
       - "B. clientless VPN"
       - "C. siteless VPN"
       - "D. full tunnel"
-    correct: "D. full tunnel"
+    correctIndex: 3
   - id: q2
     type: single
     prompt: "Site-to-site VPN concentrators are typically set to  ______."
@@ -26,7 +26,7 @@ questions:
       - "B. always-on"
       - "C. on-demand"
       - "D. Both b and c"
-    correct: "B. always-on"
+    correctIndex: 1
   - id: q3
     type: single
     prompt: "A ______ VPN is when a remote user wants to connect to the companys internal network over the Internet."
@@ -35,7 +35,7 @@ questions:
       - "B. client-to-client"
       - "C. site-to-site"
       - "D. secure"
-    correct: "A. client-to-site"
+    correctIndex: 0
   - id: q4
     type: single
     prompt: "A ______ VPN is when a remote location needs to connect to the companys internal network over the Internet."
@@ -44,7 +44,7 @@ questions:
       - "B. client-to-client"
       - "C. site-to-site"
       - "D. secure"
-    correct: "C. site-to-site"
+    correctIndex: 2
   - id: q5
     type: single
     prompt: "For VPN data to be encrypted and decrypted at either endpoint of the VPN, VPN ______ are used."
@@ -53,7 +53,7 @@ questions:
       - "B. tunnels"
       - "C. certificates"
       - "D. concentrators"
-    correct: "D. concentrators"
+    correctIndex: 3
   - id: q6
     type: single
     prompt: "When all communication coming from the client first goes to the companys VPN device no matter what, this is an example of what kind of connection?"
@@ -62,7 +62,7 @@ questions:
       - "B. Clientless VPN"
       - "C. Siteless VPN"
       - "D. Full tunnel"
-    correct: "D. Full tunnel"
+    correctIndex: 3
   - id: q7
     type: single
     prompt: "A ______ can provide less strain on the companys VPN device due to less traffic being processed, it can also provide a faster connection for the client to connections outside of the companys network."
@@ -71,7 +71,7 @@ questions:
       - "B. clientless VPN"
       - "C. siteless VPN"
       - "D. full tunnel"
-    correct: "A. split tunnel"
+    correctIndex: 0
   - id: q8
     type: single
     prompt: "To perform remote functions on a Microsoft system, Microsoft created a protocol called ______."
@@ -80,7 +80,7 @@ questions:
       - "B. RDP"
       - "C. SSL"
       - "D. DNS"
-    correct: "B. RDP"
+    correctIndex: 1
   - id: q9
     type: single
     prompt: "______ allows network administrators to access, control, and modify network servers over the Internet remotely and securely over TCP 22."
@@ -89,7 +89,7 @@ questions:
       - "B. TLS"
       - "C. SSH"
       - "D. RDP"
-    correct: "C. SSH"
+    correctIndex: 2
 ---
 
 Quiz covering Remote Access Methods — CYBER.ORG unit 4.4.1.

@@ -6,7 +6,7 @@ moduleId: net.fundamentals.network-services
 order: 1
 difficulty: Beginner
 xp: 20
-passThreshold: 0.7
+passThreshold: 70
 tags: ["network+", "cyberorg"]
 questions:
   - id: q1
@@ -17,7 +17,7 @@ questions:
       - "B. Different Hash Collision Protocol"
       - "C. Dynamic Host Configuration Protocol"
       - "D. Dynamically Housed Collision Protocol"
-    correct: "C. Dynamic Host Configuration Protocol"
+    correctIndex: 2
   - id: q2
     type: single
     prompt: "What does DHCP do?"
@@ -26,7 +26,7 @@ questions:
       - "B. It verifies there are no collisions between hashes"
       - "C. It assigns MAC addresses to devices on boot"
       - "D. All of the above"
-    correct: "A. It assigns IP addresses to devices that connect to a network"
+    correctIndex: 0
   - id: q3
     type: single
     prompt: "When a device connects to a network, it sends out a message called ______ that is broadcast to the entire network."
@@ -35,7 +35,7 @@ questions:
       - "B. DHCPACK"
       - "C. DHCPDISCOVER"
       - "D. DHCPREQUEST"
-    correct: "C. DHCPDISCOVER"
+    correctIndex: 2
   - id: q4
     type: single
     prompt: "Which port does the DHCP service run on?"
@@ -44,7 +44,7 @@ questions:
       - "B. 53"
       - "C. 67"
       - "D. 110"
-    correct: "C. 67"
+    correctIndex: 2
   - id: q5
     type: single
     prompt: "Which device would be assigned an IP address from the exclusive range?"
@@ -53,7 +53,7 @@ questions:
       - "B. Router"
       - "C. Scanner"
       - "D. All of the above"
-    correct: "D. All of the above"
+    correctIndex: 3
   - id: q6
     type: single
     prompt: "What is the average default DHCP lease time?"
@@ -62,7 +62,7 @@ questions:
       - "B. 1-2 weeks"
       - "C. 1 month"
       - "D. 3 months"
-    correct: "A. 24-48 hours"
+    correctIndex: 0
   - id: q7
     type: single
     prompt: "If a device not directly connected to the network needs an IP address on that network, the devices in the middle can send a DHCP _____ message to assign an IP to that device."
@@ -71,7 +71,7 @@ questions:
       - "B. relay"
       - "C. delayed"
       - "D. deny"
-    correct: "B. relay"
+    correctIndex: 1
 ---
 
 Quiz covering DHCP — CYBER.ORG unit 1.6.1.

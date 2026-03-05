@@ -6,7 +6,7 @@ moduleId: net.operations.monitoring-and-docs
 order: 7
 difficulty: Beginner
 xp: 20
-passThreshold: 0.7
+passThreshold: 70
 tags: ["network+", "cyberorg"]
 questions:
   - id: q1
@@ -17,7 +17,7 @@ questions:
       - "B. Redundancy"
       - "C. Reengineering"
       - "D. Replication"
-    correct: "B. Redundancy"
+    correctIndex: 1
   - id: q2
     type: single
     prompt: "When does load balancing occur in a network?"
@@ -26,7 +26,7 @@ questions:
       - "B. When requests are sent to only one server, then once that server goes down, requests are then sent to another server."
       - "C. When no requests are sent to the servers to keep servers running efficiently."
       - "D. None of the above"
-    correct: "A. When requests are split among multiple servers to keep servers running efficiently."
+    correctIndex: 0
   - id: q3
     type: single
     prompt: "What are some specific applications redundancy can be applied to?"
@@ -35,7 +35,7 @@ questions:
       - "B. Routers"
       - "C. Firewalls"
       - "D. All of the above"
-    correct: "D. All of the above"
+    correctIndex: 3
   - id: q4
     type: single
     prompt: "Which process provides a backup through another physical connection when the primary connection goes down?"
@@ -44,7 +44,7 @@ questions:
       - "B. Multipathing"
       - "C. Access point"
       - "D. Differential backup"
-    correct: "B. Multipathing"
+    correctIndex: 1
   - id: q5
     type: single
     prompt: "A ______ can provide emergency power and keep the systems running even if the building is not receiving power from an electric provider."
@@ -53,7 +53,7 @@ questions:
       - "B. firewall"
       - "C. generator"
       - "D. PDU"
-    correct: "C. generator"
+    correctIndex: 2
   - id: q6
     type: single
     prompt: "Which method of power redundancy is best to implement if a system needs temporary power to safely power down in cases of power outages?"
@@ -62,7 +62,7 @@ questions:
       - "B. PDU"
       - "C. Generator"
       - "D. Solar"
-    correct: "A. UPS"
+    correctIndex: 0
   - id: q7
     type: single
     prompt: "What are the temperature standards for a class A1 data center?"
@@ -71,7 +71,7 @@ questions:
       - "B. Between 59F to 89.6F"
       - "C. Between 49F to 79.6F"
       - "D. Between 39F to 69.6F"
-    correct: "B. Between 59F to 89.6F"
+    correctIndex: 1
 ---
 
 Quiz covering Redundancy — CYBER.ORG unit 3.3.1.

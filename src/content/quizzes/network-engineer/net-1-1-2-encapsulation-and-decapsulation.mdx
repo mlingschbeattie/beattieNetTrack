@@ -6,7 +6,7 @@ moduleId: net.fundamentals.models-and-standards
 order: 2
 difficulty: Beginner
 xp: 20
-passThreshold: 0.7
+passThreshold: 70
 tags: ["network+", "cyberorg"]
 questions:
   - id: q1
@@ -17,14 +17,14 @@ questions:
       - "B. Adding information to a packet"
       - "C. Uncompressing a packet"
       - "D. Removing information from a packet"
-    correct: "B. Adding information to a packet"
+    correctIndex: 1
   - id: q2
     type: single
     prompt: "Encapsulation transforms the network layer's data to 0's and 1's."
     options:
       - "A. True"
       - "B. False"
-    correct: "B. False"
+    correctIndex: 1
   - id: q3
     type: single
     prompt: "Which of the following is true regarding decapsulation?"
@@ -33,7 +33,7 @@ questions:
       - "B. Decapsulation transforms 0s and 1s to the application layers human-readable data while maintaining the header and footer data"
       - "C. Decapsulation transforms 0s and 1s to the network layers human-readable data while removing maintaining the header and footer data"
       - "D. Decapsulation reverses the process of encapsulation"
-    correct: "D. Decapsulation reverses the process of encapsulation"
+    correctIndex: 3
   - id: q4
     type: single
     prompt: "Which of the following guarantee data arrival and error-checking?"
@@ -42,7 +42,7 @@ questions:
       - "B. TCP headers"
       - "C. UDP headers"
       - "D. AES headers"
-    correct: "B. TCP headers"
+    correctIndex: 1
   - id: q5
     type: single
     prompt: "A(n) ______ includes the ethernet header, the original data/payload itself, and a trailer."
@@ -51,7 +51,7 @@ questions:
       - "B. IP tag"
       - "C. package"
       - "D. dataset"
-    correct: "A. frame"
+    correctIndex: 0
   - id: q6
     type: single
     prompt: "A(n) ______ is the largest packet or frame size that can be sent in a packet- or frame-based network such as the internet."
@@ -60,7 +60,7 @@ questions:
       - "B. IDP"
       - "C. MTU"
       - "D. SFX"
-    correct: "C. MTU"
+    correctIndex: 2
 ---
 
 Quiz covering Encapsulation and Decapsulation — CYBER.ORG unit 1.1.2.

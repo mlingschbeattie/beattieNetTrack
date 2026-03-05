@@ -6,7 +6,7 @@ moduleId: net.fundamentals.addressing
 order: 1
 difficulty: Beginner
 xp: 20
-passThreshold: 0.7
+passThreshold: 70
 tags: ["network+", "cyberorg"]
 questions:
   - id: q1
@@ -17,7 +17,7 @@ questions:
       - "B. Local"
       - "C. Global"
       - "D. External"
-    correct: "B. Local"
+    correctIndex: 1
   - id: q2
     type: single
     prompt: "Which of the following IP addresses belongs to the 10.0.0.0/8 CIDR block?"
@@ -26,7 +26,7 @@ questions:
       - "B. 10.127.127.127"
       - "C. 10.0.50.43"
       - "D. All of the above"
-    correct: "D. All of the above"
+    correctIndex: 3
   - id: q3
     type: single
     prompt: "Which CIDR block is used for the IP address range from 192.168.0.0  192.168.255.255?"
@@ -35,7 +35,7 @@ questions:
       - "B. 192.168.0.0/12"
       - "C. 192.168.0.0/16"
       - "D. 192.168.0.0/24"
-    correct: "C. 192.168.0.0/16"
+    correctIndex: 2
   - id: q4
     type: single
     prompt: "______ translate a private IP address to a public IP address where a machine on a private network can still be accessed by a machine on a public network."
@@ -44,7 +44,7 @@ questions:
       - "B. PATs"
       - "C. MATs"
       - "D. AATs"
-    correct: "A. NATs"
+    correctIndex: 0
   - id: q5
     type: single
     prompt: "An ______ address is an IP address that is assigned by an enterprise organization to an internal host."
@@ -53,7 +53,7 @@ questions:
       - "B. RFC1777"
       - "C. RFC1918"
       - "D. RFC2024"
-    correct: "C. RFC1918"
+    correctIndex: 2
   - id: q6
     type: single
     prompt: "A(n) ______ address is an IP address that does not contain the actual network interface numbers."
@@ -62,7 +62,7 @@ questions:
       - "B. instance IP"
       - "C. temporary IP"
       - "D. interface IP"
-    correct: "A. virtual IP"
+    correctIndex: 0
 ---
 
 Quiz covering Public vs Private Networks — CYBER.ORG unit 1.4.1.

@@ -6,7 +6,7 @@ moduleId: net.implementation.routing
 order: 1
 difficulty: Beginner
 xp: 20
-passThreshold: 0.7
+passThreshold: 70
 tags: ["network+", "cyberorg"]
 questions:
   - id: q1
@@ -17,7 +17,7 @@ questions:
       - "B. A routing method that routes packets based on the amount of static electricity detected in the air"
       - "C. A routing method that routes packets through different routes based on the current conditions of the communication circuits within a system"
       - "D. All of the above"
-    correct: "A. A routing method that routes packets through a network describe by fixed paths"
+    correctIndex: 0
   - id: q2
     type: single
     prompt: "What is dynamic routing?"
@@ -26,7 +26,7 @@ questions:
       - "B. A routing method that routes packets based on the amount of static electricity detected in the air"
       - "C. A routing method that routes packets through different routes based on the current conditions of the communication circuits within a system"
       - "D. None of the above"
-    correct: "C. A routing method that routes packets through different routes based on the current conditions of the communication circuits within a system"
+    correctIndex: 2
   - id: q3
     type: single
     prompt: "What are the two categories dynamic routing is separated into?"
@@ -35,7 +35,7 @@ questions:
       - "B. Inside and outside"
       - "C. Interior and exterior"
       - "D. Upload and download"
-    correct: "C. Interior and exterior"
+    correctIndex: 2
   - id: q4
     type: single
     prompt: "______ uses hop count as a routing metric to determine the most efficient route between the source and its destination using the Bellman-Ford algorithm."
@@ -44,7 +44,7 @@ questions:
       - "B. RIP"
       - "C. EIGRP"
       - "D. BGP"
-    correct: "B. RIP"
+    correctIndex: 1
   - id: q5
     type: single
     prompt: "______ uses the concept of an autonomous system to describe the set of contiguous routers running the same protocols and sharing the same information."
@@ -53,7 +53,7 @@ questions:
       - "B. RIP"
       - "C. EIGRP"
       - "D. BGP"
-    correct: "C. EIGRP"
+    correctIndex: 2
   - id: q6
     type: single
     prompt: "______ works by finding the best path from the source to the destination router according to its own shortest path first algorithm."
@@ -62,7 +62,7 @@ questions:
       - "B. RIP"
       - "C. EIGRP"
       - "D. BGP"
-    correct: "A. OSPF"
+    correctIndex: 0
   - id: q7
     type: single
     prompt: "______ is the core routing protocol of the Internet."
@@ -71,7 +71,7 @@ questions:
       - "B. RIP"
       - "C. EIGRP"
       - "D. BGP"
-    correct: "D. BGP"
+    correctIndex: 3
   - id: q8
     type: single
     prompt: "What type of protocol is OSPF?"
@@ -80,7 +80,7 @@ questions:
       - "B. Link state"
       - "C. Hybrid"
       - "D. All of the above"
-    correct: "B. Link state"
+    correctIndex: 1
   - id: q9
     type: single
     prompt: "BGP and EIGRP are both types of ______ protocols."
@@ -89,7 +89,7 @@ questions:
       - "B. Link state"
       - "C. Hybrid"
       - "D. All of the above"
-    correct: "C. Hybrid"
+    correctIndex: 2
 ---
 
 Quiz covering Routing Technologies — CYBER.ORG unit 2.2.1.
