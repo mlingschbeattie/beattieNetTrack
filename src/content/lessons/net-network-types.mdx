@@ -1,0 +1,55 @@
+---
+title: Network Types — Naming the Networks You Already Use
+description: LAN, WAN, and everything in between — the scope, purpose, and technologies behind every type of network you'll encounter and be tested on.
+slug: net-network-types
+track: network-engineer
+moduleId: net.fundamentals.topologies-and-types
+order: 2
+difficulty: Beginner
+estMinutes: 20
+tags: ["network+", "LAN", "WAN", "SD-WAN", "N10-009 1.2", "N10-008 1.2"]
+---
+
+## Every Day You've Used Five Different Networks
+
+Think about what happened between waking up and getting to school today. Your phone talked to Bluetooth earbuds on your nightstand — that's a network. It connected to your home Wi-Fi to load notifications — different network. You got in a car that synced to your phone over Bluetooth again while the car's GPS pulled map data over a cellular WAN. You walked into the building and your phone jumped to the school's WLAN. You sat down at a workstation connected to the school's wired LAN, which reaches the internet through the district's WAN. Five different network types, all before first period. The networking industry sorts these by geographic scope, transport technology, and architecture — and the exam expects you to know each one cold.
+
+## LAN — The Network You Can Walk
+
+A Local Area Network covers a single building or a small group of adjacent buildings. It's yours — your organization owns the infrastructure, manages the hardware, and controls the addressing. The school network is a LAN. Your home network is a very small LAN. Ethernet and Wi-Fi are the dominant LAN technologies, and LAN speeds have climbed from 10 Mbps in the early days to 1 Gbps as the baseline standard, with 10 Gbps and higher on the backbone links. Because you control the entire path, LAN performance is predictable and latency is low — usually under a millisecond between devices. When someone says "local network" or "internal network" or "on-prem," they're talking about the LAN.
+
+## WAN — Somebody Else's Problem (Partially)
+
+A Wide Area Network connects LANs across large geographic distances — across a city, a state, a country, or the planet. The key difference from a LAN: you almost never own the physical infrastructure. You lease circuits, buy bandwidth, or subscribe to services from carriers and ISPs, and your data crosses hardware you'll never touch in buildings you'll never enter. The internet is the largest WAN in existence. A company with offices in Dallas and Denver connected by a leased MPLS circuit has a private WAN. WAN links are slower, more expensive per megabit, and higher latency than LAN connections, which is why network design spends so much energy optimizing what crosses the WAN versus what stays local.
+
+## MAN, CAN, PAN — Filling in the Scale
+
+A Metropolitan Area Network spans a city or large campus — bigger than a LAN, smaller than a WAN. A city's fiber ring connecting government buildings, libraries, and emergency services is a MAN. A Campus Area Network (CAN) connects multiple buildings in a defined area — a university, a hospital complex, a corporate campus. The school district's fiber connecting this building to the one across the parking lot is a CAN. A Personal Area Network covers your immediate physical space — about a meter. Bluetooth connections between your phone, earbuds, and smartwatch are a PAN. USB between your phone and laptop is a PAN. NFC tapping your phone against a payment terminal is a PAN. These three types show up on the exam as classification questions. The real-world takeaway: the network type tells you who owns it, how fast it is, and who fixes it when it breaks.
+
+## WLAN — LAN Without the Cables
+
+A Wireless LAN uses radio frequencies instead of copper or fiber, typically over the 802.11 (Wi-Fi) standards. It provides the same LAN connectivity — same IP addressing, same access to local resources — but without running cable to every device. Every phone, tablet, and laptop in this building is on the WLAN right now. The tradeoff versus wired: wireless is shared-medium and half-duplex in practice, signal degrades with distance and obstacles, and it's inherently less secure because the signal doesn't stay inside a cable. You manage a WLAN through access points, wireless controllers, and a lot of channel planning to keep neighboring APs from stepping on each other's frequencies. A WLAN is not a separate type of network architecturally — it's a LAN delivered wirelessly. The exam separates them because the technology and troubleshooting are different enough to warrant it.
+
+## MPLS — The Carrier's Private Highway
+
+Multiprotocol Label Switching is a WAN technology that routes traffic using short path labels instead of long IP addresses, making forwarding decisions faster. Carriers sell MPLS circuits to businesses that need private, reliable WAN connectivity with guaranteed bandwidth and quality-of-service. When a company with five branch offices needs all of them to feel like one LAN, MPLS has been the traditional answer — each branch connects to the carrier's MPLS network, and the carrier handles routing between sites with guaranteed SLAs. It's fast, it's predictable, and it's expensive. MPLS dominated enterprise WAN design for over a decade, but it's losing ground to a newer approach.
+
+## SD-WAN — Software Ate the WAN Too
+
+Software-Defined Wide Area Network is the industry's response to paying carrier prices for every branch connection. SD-WAN puts a software layer on top of multiple transport links — MPLS, broadband internet, LTE, whatever's available — and intelligently routes traffic across them based on real-time performance. Mission-critical traffic can ride the MPLS link. Web browsing and streaming can go straight out the cheap broadband connection. If one link degrades, SD-WAN shifts traffic automatically. The management is centralized: one dashboard, one policy engine, hundreds of sites. Companies adopting SD-WAN are often dropping expensive MPLS circuits entirely and running everything over commodity internet connections with encrypted tunnels. It's the biggest shift in enterprise WAN design in years, and the N10-009 exam reflects that by testing it directly. Know what it replaces and why.
+
+## Client-Server vs. Peer-to-Peer
+
+These are network architectures, not physical types, but the exam groups them here. In client-server, dedicated servers provide resources — files, applications, authentication, DNS — and clients consume them. The school network is client-server: your workstation authenticates against a domain controller, pulls files from a file server, and resolves names through a DNS server. Administration is centralized, security is manageable, and scaling means adding server capacity. In peer-to-peer (P2P), every device is both client and server. Your machine can share files with another machine directly, no server in between. Small workgroups, home networks, and BitTorrent all use P2P. It's simple and costs nothing to set up, but it doesn't scale and security is basically nonexistent — every shared folder is managed by whoever's logged into that machine. Past about ten devices, peer-to-peer becomes unmanageable and client-server is the only sane option.
+
+## SOHO Networks — Small Office, Home Office
+
+A SOHO network is a small network — typically under a dozen devices — built for a home office or tiny business. The all-in-one device sitting on a shelf in your house is a SOHO router: it's a router, a switch, a wireless access point, a DHCP server, a firewall, and a NAT gateway in a single box. SOHO networks are almost always a flat design — one subnet, one broadcast domain, no VLANs, no managed switches. The exam tests SOHO concepts because the setup assumptions are different from enterprise. There's no dedicated server room, no redundant links, no IT department. The "IT department" is whoever in the house knows how to log into 192.168.1.1. You'll configure plenty of these — they're the most common network on the planet.
+
+## IoT — When Everything Gets an IP Address
+
+Internet of Things networks connect devices that aren't computers — thermostats, security cameras, smart light bulbs, industrial sensors, medical devices, vending machines. These devices are typically low-power, low-bandwidth, and headless (no screen, no keyboard). They communicate over protocols like Zigbee, Z-Wave, Bluetooth Low Energy, or Wi-Fi, often through a hub or gateway that bridges them to the main LAN. The networking consideration isn't bandwidth — a thermostat sends maybe a few bytes per minute. The consideration is security. IoT devices ship with default credentials, get firmware updates rarely or never, and create attack surface that's hard to monitor because nobody's logging into a smart light bulb to check for malware. Best practice is network segmentation: put IoT devices on their own VLAN or subnet, isolated from the production LAN, so a compromised camera can't reach the file server. The exam expects you to know this, and the field will remind you when you find a botnet running on someone's smart fridge.
+
+## Why This Matters in the Field
+
+When a project manager says "we need to connect the new building," the first question is network type — LAN extension, CAN fiber link, WAN circuit? When a branch office complains about slow application performance, you need to know whether they're on MPLS or commodity broadband and whether SD-WAN is an option. When a home user calls about their printer not showing up, understanding SOHO flat networks saves you thirty minutes of overthinking. These classifications aren't just exam vocabulary. They define the budget, the technology, the vendor, and the troubleshooting playbook for every project you'll touch.

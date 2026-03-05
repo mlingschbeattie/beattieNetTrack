@@ -1,0 +1,47 @@
+---
+title: Network Topologies — How Everything Connects
+description: The physical and logical shapes of networks, from dead standards to the one that won, and why topology is the first thing you check when a whole floor goes dark.
+slug: net-network-topologies
+track: network-engineer
+moduleId: net.fundamentals.topologies-and-types
+order: 1
+difficulty: Beginner
+estMinutes: 20
+tags: ["network+", "topology", "N10-009 1.2", "N10-008 1.2"]
+---
+
+## The Outage That Draws Itself
+
+You get pulled into a network outage at a small office. Twelve people, nobody can reach the internet, nobody can print, nobody can hit the file share. You check the server rack and find one switch dead — the power supply gave out. One device failed and it took down the entire network. That tells you something about how this network is designed before you even look at a diagram. Every device connected back to that single switch like spokes on a wheel, and when the hub of the wheel broke, so did everything. You just diagnosed a topology problem. The word "topology" sounds academic, but it describes something very practical: the shape of how devices connect. That shape determines what fails, how it fails, and how bad it gets when it does.
+
+## Bus — The Topology That Started It All
+
+In a bus topology, every device connects to a single shared cable — one long backbone with machines tapped into it along the way. Data sent by any device travels the full length of the cable, and every other device on the segment sees it. Terminators sit at both ends of the cable to absorb signals and prevent them from bouncing back and causing collisions. If the backbone cable breaks at any point, or someone pulls a terminator off, the entire network goes down. Every. Device. Original Ethernet — 10BASE2, 10BASE5 — ran on bus topologies. You'll encounter it on the exam, but you will almost certainly never see it in production. It died because it couldn't scale, it couldn't tolerate a single fault, and troubleshooting a bad segment meant walking the entire cable with a tester. It taught the industry a lesson: shared media doesn't survive growth.
+
+## Ring — Taking Turns
+
+A ring topology connects each device to exactly two neighbors, forming a closed loop. Data travels in one direction around the ring, passing through each device until it reaches its destination. Token Ring networks — IBM's big play in the 1980s — used this layout. A special "token" frame circulated the ring, and a device could only transmit when it held the token. Orderly, no collisions, predictable performance. The problem: if one device or one cable segment in the ring fails, the entire loop breaks and the network is dead. Dual-ring designs like FDDI (Fiber Distributed Data Interface) added a second ring running the opposite direction as a failover, but the complexity and cost couldn't compete with what was coming. Ring topologies still exist conceptually in some metro fiber deployments, but on the LAN side, ring lost the war to star and never came back.
+
+## Star — The One That Won
+
+In a star topology, every device connects to a central device — a switch, in modern networks. All traffic passes through that center point. If one device or its cable fails, only that device is affected; everyone else keeps working. That fault isolation is the single biggest reason star dominates. You already work with star topologies every day. Every time you patch a PC into a wall jack that runs back to a switch in a closet, you're extending a star. The tradeoff is obvious: the central switch becomes a single point of failure. If it dies, everything connected to it dies — which is exactly the outage you walked into at the top of this lesson. The industry's answer is redundancy: dual power supplies, stacked switches, uplinks to multiple core switches. Star topology with redundancy at the center is the default design for enterprise LANs, and it has been for two decades.
+
+## Mesh — Redundancy Taken Seriously
+
+A mesh topology gives each device multiple paths to reach other devices. In a full mesh, every device connects directly to every other device — which means the number of connections scales exponentially and gets expensive fast. The formula is $n(n-1)/2$ links for $n$ devices. Ten devices? Forty-five links. A hundred devices? Not happening at full mesh. Partial mesh is the real-world compromise: critical devices get multiple connections, less critical ones get fewer. The internet itself is a partial mesh — your packets can take dozens of different paths to reach the same destination, which is why cutting a single undersea cable doesn't break the whole network (just makes it slower for a while and very stressful for some network engineers). You'll see mesh designs in WAN cores, data centers, and wireless mesh networks where access points relay traffic for each other. The exam will ask about both full and partial — know the cost-versus-redundancy tradeoff.
+
+## Hybrid — What Everyone Actually Builds
+
+Almost no real network is a pure anything. A hybrid topology combines two or more topologies into a single design. The textbook example: a star-bus hybrid where multiple star networks (each centered on a switch) connect to a common backbone. Corporate campuses are typically star topologies inside each building with mesh or ring topologies connecting buildings to each other. A school district might have a star topology in every classroom closet, a partial mesh between buildings on a campus, and a WAN link back to a district data center. When someone hands you a network diagram on the job, you'll see a hybrid — your job is to recognize which topology pattern applies to each segment so you know what breaks and how.
+
+## Physical vs. Logical — The Shape You See vs. the Shape Data Takes
+
+Physical topology is the actual layout of cables and devices — what you'd see if you traced every wire. Logical topology is the path data actually follows, which doesn't always match the physical layout. Classic example: a Token Ring network could be physically wired in a star pattern, with every device cabled back to a central hub called a MAU (Multistation Access Unit), but logically the data still traveled in a ring because the MAU connected the ports in a loop internally. In modern networks, VLANs create this same disconnect. Two devices might be plugged into the same physical switch — same rack, same patch panel — but if they're on different VLANs, they can't talk to each other without a router. Physically they're in the same star. Logically they're on separate networks. When you troubleshoot, you need to think about both.
+
+## Point-to-Point and Multipoint
+
+These aren't topologies in the same sense as star or mesh — they describe connection types. A point-to-point link connects exactly two devices, with nothing in between. A WAN circuit between two routers is point-to-point. A direct cable between your PC and a switch port is point-to-point. Simple, dedicated, and predictable. A multipoint (also called multidrop) connection allows multiple devices to share a single communication link. Old serial bus networks were multipoint. Modern wireless networks are multipoint — all devices in range share the same radio channel through the access point. The exam treats these as fundamental connection models that can show up inside any topology.
+
+## Why This Matters in the Field
+
+Topology isn't something you think about once during design and forget. Every time you trace an outage, plan a network expansion, or figure out why traffic between two buildings takes a weird path, you're reasoning about topology. When a single switch failure takes out a floor, that's a star topology with no redundancy at the center — and the fix is adding redundancy, not changing the topology. When a WAN link goes down but traffic reroutes automatically, that's mesh doing its job. The shape of the network dictates the blast radius of every failure, the bandwidth available to every user, and the options you have when something needs to change. Read the shape. Fix the shape.
