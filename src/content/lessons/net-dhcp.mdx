@@ -1,0 +1,65 @@
+---
+title: DHCP — Automatic Addressing and Everything That Can Go Wrong With It
+description: Scopes, leases, reservations, relay agents, and failover — how DHCP actually works in a managed network and how to fix it when it doesn't.
+slug: net-dhcp
+track: network-engineer
+moduleId: net.fundamentals.network-services
+order: 1
+difficulty: Beginner
+estMinutes: 25
+tags: ["network+", "DHCP", "N10-009 1.6", "N10-008 1.6"]
+---
+
+## The Monday Morning Meltdown
+
+You walk in Monday morning and every machine in the east wing is pulling 169.254.x.x addresses. Forty workstations, dead in the water. Teachers are sending emails from their phones — the one network that still works — telling you the internet is down. The internet is fine. The DHCP server's lease database got corrupted over the weekend and the service crashed silently. Nobody noticed because nobody was here. Now the lease expiration timers have run out across the building and every client is failing the DORA process and falling back to APIPA. You restart the DHCP service, the scopes re-initialize, and machines start pulling valid addresses within minutes. Forty tickets, one root cause, five-minute fix — if you know where to look. DHCP is one of those services that's invisible when it works and catastrophic when it stops. You touched the basics in the protocols lesson. Now you need to understand the server side — the configuration, the design decisions, and the failure modes.
+
+## Scopes — Defining the Address Pool
+
+A DHCP scope is the range of IP addresses that a DHCP server is authorized to hand out on a given subnet. When you configure a scope, you define the starting address, the ending address, the subnet mask, and the lease duration. A scope for the 10.1.1.0/24 network might offer addresses from 10.1.1.100 through 10.1.1.200 — a pool of 101 addresses. The addresses outside that range (10.1.1.1 through 10.1.1.99, and 10.1.1.201 through 10.1.1.254) are available for static assignment — servers, printers, routers, access points, and anything else that needs a predictable address.
+
+Within a scope, you can define **exclusions** — addresses inside the range that the server should skip. Maybe 10.1.1.150 is already statically assigned to a network printer that someone configured before the DHCP scope existed. Excluding that address prevents the server from handing it out to a client and creating a conflict. Exclusions are your safety valve for addresses that are technically inside the pool but spoken for.
+
+Every scope also carries **options** — additional configuration data pushed to clients alongside the IP address. The most common options are the default gateway (Option 3), DNS server addresses (Option 6), and the domain name (Option 15). Without these options, a client gets an IP address but can't route traffic off the subnet and can't resolve hostnames. A DHCP address without proper options is like a phone number with no area code — technically valid but functionally useless. Scope options can be set at the server level (applied to all scopes), the scope level (applied to one scope), or the reservation level (applied to one specific client).
+
+## Lease Time — Borrowing vs. Owning
+
+A DHCP lease is temporary. The server doesn't give a client an address permanently — it loans one for a set duration. When the lease expires, the address goes back into the pool. The lease time you set depends on the environment. A corporate office with stable workstations that stay connected all day? Long leases — 8 hours, 24 hours, even a week. The machines aren't going anywhere, and long leases reduce DHCP traffic. A coffee shop or guest Wi-Fi network where devices connect for thirty minutes and leave? Short leases — 1 hour, maybe less. You need those addresses recycled quickly because the pool is small and the turnover is high.
+
+At the 50% mark of the lease, the client automatically attempts a renewal — a DHCP Request sent directly to the server that issued the lease. If the server responds with an ACK, the lease timer resets. If the server doesn't respond (maybe it's down or unreachable), the client tries again at the 87.5% mark, this time broadcasting the request in case a different DHCP server can handle it. If the lease fully expires with no renewal, the client releases the address and starts the full DORA process over. If no server responds at all, APIPA. This renewal cycle is why most users never notice DHCP working — the renewal happens silently in the background while they're browsing.
+
+## Reservations — Dynamic With a Pinned Address
+
+A DHCP reservation assigns a specific IP address to a specific device based on its MAC address. The device still goes through the full DORA process — Discover, Offer, Request, Acknowledge — but the server always offers the same address. From the client's perspective, it looks like DHCP. From the admin's perspective, the address is predictable.
+
+Reservations are the middle ground between fully static and fully dynamic. A network printer needs a consistent IP address so users can find it, but you don't want to walk to the printer and configure a static IP manually (and then remember to update the documentation when something changes). A reservation lets you manage the address from the DHCP server console. Servers that need consistent addresses can use reservations too, though many admins prefer true static assignments for critical infrastructure where you never want a dependency on the DHCP service being up. The choice between reservation and static is a design decision — not a right-or-wrong — and you'll see both approaches in the field.
+
+## DHCP Relay — Crossing Subnet Boundaries
+
+DHCP Discover is a broadcast, and broadcasts don't cross routers. That's by design — the whole point of subnetting is to contain broadcast traffic. But it creates a problem: if the DHCP server is on the 10.1.1.0/24 network and a client is on the 10.1.2.0/24 network, the client's Discover broadcast never reaches the server. You could put a DHCP server on every subnet, but that's expensive and hard to manage.
+
+The solution is a **DHCP relay agent** (also called an IP helper). You configure the router interface on the client's subnet with a helper address — the IP of the remote DHCP server. When the router hears a DHCP broadcast on that interface, it converts it to a unicast packet, stamps it with the interface's IP address (so the server knows which scope to use), and forwards it to the DHCP server as a normal routed packet. The server processes the request, selects an address from the appropriate scope, and sends the reply back to the relay agent, which broadcasts it to the client. On Cisco gear, the command is `ip helper-address 10.1.1.5` on the client-facing interface. On Windows Server, you install the DHCP Relay Agent role.
+
+If you build a multi-subnet network without relay agents, every subnet beyond the DHCP server's local segment will have clients pulling APIPA addresses. This is one of the most common configuration oversights in network expansions — everything works on the server's subnet, but a new VLAN or building segment gets no addresses because nobody configured the relay.
+
+## DHCP Failover — Because the Server Will Go Down
+
+A single DHCP server is a single point of failure. If it crashes, every client on the network will lose its address when the current lease expires. DHCP failover splits scope responsibility between two servers so that if one goes down, the other continues handing out addresses.
+
+In a **hot standby** configuration, one server is primary and handles all requests. The standby server monitors the primary and takes over only if the primary becomes unreachable. In a **load-balance** configuration, both servers actively handle requests, each responsible for a portion of the scope's address pool. Both approaches require the two servers to synchronize their lease databases so they don't hand out duplicate addresses. Windows Server DHCP supports both modes natively. In environments where downtime isn't acceptable — hospitals, finance, anything with SLAs — DHCP failover isn't optional.
+
+## Common Problems and Diagnostics
+
+**Scope exhaustion.** The pool runs out of addresses. New clients send Discover packets, the server has nothing to offer, and the clients fall back to APIPA. Symptoms: some machines work (they got a lease before the pool ran out), new connections fail. Fix: expand the scope, shorten lease times to recycle addresses faster, or find the rogue devices that consumed addresses they shouldn't have.
+
+**Rogue DHCP server.** Someone plugs a consumer router into the network and its built-in DHCP server starts answering Discover broadcasts with addresses from 192.168.1.x. Clients that happen to hear the rogue server first get useless configurations — wrong gateway, wrong DNS, wrong subnet. The network partially works, partially doesn't, and the randomness makes it infuriating to diagnose until you check the clients' DHCP-assigned gateway and realize it's not yours. Managed switches can prevent this with DHCP snooping, which designates trusted ports and drops DHCP Offer packets from untrusted sources.
+
+**Relay misconfiguration.** The new VLAN has no addresses. Clients broadcast, nobody answers. Check the router interface for the helper address. If it's missing or pointing at the wrong server, add it. This one is a five-second fix that can take an hour to identify if you don't think of it.
+
+**Lease conflicts.** Two devices end up with the same IP address. This happens when a device with a static address occupies an address that's also in the DHCP pool without an exclusion. Both devices experience intermittent connectivity as the switch's MAC table flaps between them. Fix: add the exclusion, or change the static device's address.
+
+The diagnostic commands you'll use: `ipconfig /all` on Windows shows the DHCP-assigned address, the server that issued it, the lease obtained and expiration times, and all the options the server pushed. `ipconfig /release` drops the current lease. `ipconfig /renew` triggers a new DORA cycle. On Linux, `dhclient -v` does the same with verbose output. These commands are your first moves when DHCP is the suspect.
+
+## Why This Matters in the Field
+
+DHCP is the first service that runs when a device connects to a network, and it's the service most people never think about until it breaks. When it breaks, the symptoms look like "the whole network is down" even though switches, routers, and servers are all running fine — the clients just can't get addresses. You'll configure DHCP scopes, manage reservations, troubleshoot exhaustion, hunt rogue servers, and set up relay agents. You'll do it on Windows Server, on Linux, and on the DHCP service embedded in consumer routers. It's invisible infrastructure, and invisible infrastructure is the kind that ends your weekend when nobody's monitoring it.

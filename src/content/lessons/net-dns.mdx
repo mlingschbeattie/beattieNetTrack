@@ -1,0 +1,75 @@
+---
+title: DNS — The System That Makes the Internet Usable
+description: Record types, zone files, recursive vs authoritative resolvers, caching, split-horizon, and the diagnostic tools that make DNS problems solvable instead of mysterious.
+slug: net-dns
+track: network-engineer
+moduleId: net.fundamentals.network-services
+order: 2
+difficulty: Beginner
+estMinutes: 25
+tags: ["network+", "DNS", "N10-009 1.6", "N10-008 1.6"]
+---
+
+## The Service That Everything Depends On
+
+A sysadmin joke that isn't really a joke: "It's always DNS." When a web application stops loading, when email stops flowing, when a VPN client can't find the server, when a printer disappears from the network — the first suspect is DNS, and it's right more often than any other guess. You covered the resolution process in the protocols lesson: client asks, server finds, answer comes back in milliseconds. Now you need to know what lives inside DNS — the record types that make up the database, the server roles that manage it, and the failures that make grown engineers stare at screens for hours. DNS is a distributed database spread across millions of servers worldwide and it's the most heavily queried service on the internet. Understanding its internals isn't a certification checkbox — it's a survival skill.
+
+## DNS Record Types
+
+A DNS zone is a database, and each entry in that database is a record with a specific type. These are the ones you need to know cold.
+
+**A (Address) Record.** Maps a hostname to an IPv4 address. When you look up "www.example.com" and get back 93.184.216.34, that's an A record. The most basic, most common record type. Every website with a domain name has at least one.
+
+**AAAA (Quad-A) Record.** Same as an A record, but maps a hostname to an IPv6 address. The name comes from the fact that IPv6 addresses are four times the length of IPv4. As IPv6 adoption grows, AAAA records become increasingly common. Many domains have both A and AAAA records — a dual-stack DNS configuration that lets clients connect over whichever protocol they support.
+
+**CNAME (Canonical Name) Record.** An alias that points one hostname to another hostname. If you want "mail.example.com" to resolve to the same server as "www.example.com," you create a CNAME record pointing mail.example.com to www.example.com. The resolver follows the chain: look up mail.example.com → CNAME says it's really www.example.com → look up www.example.com → A record says 93.184.216.34. CNAMEs simplify management when multiple names should point to the same place — change the IP on the target's A record and all the aliases follow automatically. One restriction: you can't put a CNAME at the zone apex (example.com itself). That must be an A or AAAA record.
+
+**MX (Mail Exchanger) Record.** Tells the world which server handles email for a domain. When someone sends an email to user@example.com, the sender's mail server queries DNS for the MX record of example.com and gets back the hostname of the mail server (like "mail.example.com") along with a priority number. Multiple MX records with different priorities create failover — if the primary mail server is down, the sending server tries the backup. Lower priority numbers are preferred. An MX record of 10 gets mail before an MX record of 20.
+
+**PTR (Pointer) Record.** The reverse of an A record — maps an IP address to a hostname. Reverse lookups are used for logging, email spam filtering (mail servers check whether the sending IP has a PTR that matches the domain it claims to be from), and troubleshooting. PTR records live in special reverse lookup zones. If the forward zone says "webserver.example.com → 10.1.1.50," the reverse zone says "10.1.1.50 → webserver.example.com." Not every IP has a PTR record, but for servers that send email or need to pass security checks, they're essential.
+
+**TXT (Text) Record.** A free-form text field attached to a domain name. Originally designed for human-readable notes, TXT records now carry machine-readable data for multiple purposes: SPF records (which mail servers are authorized to send on behalf of this domain), DKIM keys (email authentication signatures), DMARC policies (what to do with email that fails authentication), and domain ownership verification for services like Google Workspace and Microsoft 365. When you set up a new cloud service and it says "add this TXT record to verify you own the domain," this is what it's talking about.
+
+**NS (Name Server) Record.** Identifies the authoritative DNS servers for a zone. When the .com TLD server needs to tell a resolver where to find the records for example.com, it returns the NS records: "ns1.example.com and ns2.example.com are authoritative for this zone." NS records are the delegation mechanism that makes the hierarchical DNS system work — each level points down to the servers responsible for the next level.
+
+**SOA (Start of Authority) Record.** The first record in every zone file. It identifies the primary authoritative server, the email address of the zone administrator, and a set of timing values that control how secondary servers synchronize: the serial number (incremented on every change so secondaries know when to pull updates), refresh interval, retry interval, expire time, and minimum TTL. You won't edit SOA records often, but you'll reference them when troubleshooting zone transfer failures or checking whether a zone update has propagated.
+
+## Forward and Reverse Lookup Zones
+
+A **forward lookup zone** does what you'd expect — takes a hostname and returns an IP address. This is standard DNS resolution. Your forward zone for example.com contains A records, AAAA records, CNAMEs, MX records, and everything else that maps names to addresses or other names.
+
+A **reverse lookup zone** goes the other direction — takes an IP address and returns a hostname. Reverse zones are structured using the special "in-addr.arpa" domain for IPv4 and "ip6.arpa" for IPv6. The IP address is written backward: the PTR record for 10.1.1.50 lives in the zone 1.1.10.in-addr.arpa. This backward notation aligns with how DNS delegates authority — the most significant octets come first in the zone hierarchy, just like domain names read right to left. Reverse zones aren't required for basic name resolution, but they're expected in any professionally managed network. Troubleshooting tools like `nslookup` and `dig` use reverse lookups to map IPs back to names in their output, and anti-spam systems check reverse DNS constantly.
+
+## Authoritative vs. Recursive Resolvers
+
+These are two fundamentally different roles, and the exam expects you to distinguish them.
+
+An **authoritative DNS server** is the source of truth for a specific zone. It holds the actual zone file — the A records, MX records, CNAMEs, everything — and answers queries about that zone from its own data, not from a cache. When the recursive resolution chain finally reaches the authoritative server for example.com, that server responds with the definitive answer. Organizations run authoritative servers for their own domains. A primary authoritative server holds the master copy of the zone; secondary authoritative servers pull copies via zone transfers and can answer queries if the primary is down.
+
+A **recursive resolver** is the server that does the legwork on behalf of clients. When your workstation queries its configured DNS server, that server is usually a recursive resolver. It receives the query, checks its cache, and if it doesn't have the answer, walks the DNS hierarchy — root servers, TLD servers, authoritative servers — until it gets a response. It caches that response (according to the record's TTL) and returns it to the client. Your ISP runs recursive resolvers. Google runs them at 8.8.8.8 and 8.8.4.4. Cloudflare runs one at 1.1.1.1. Inside a corporate network, your internal DNS servers typically function as both recursive resolvers (for external lookups) and authoritative servers (for internal zones).
+
+## TTL and Caching
+
+Every DNS record has a Time to Live value — measured in seconds — that tells resolvers how long to cache the answer before querying the authoritative server again. A TTL of 3600 means "cache this for one hour." A TTL of 86400 means "cache this for a day." High TTL values reduce DNS traffic and speed up resolution for popular names. Low TTL values ensure changes propagate quickly.
+
+When you're about to change a server's IP address, the standard move is to lower the TTL on the A record well in advance — drop it to 300 (five minutes) a day or two before the change. That way, when you update the record, every resolver's cache expires within minutes and picks up the new address. If you change the IP while the TTL is still set to 86400, some clients will hit the old address for up to a full day, cached at resolvers that haven't refreshed yet. This is the "DNS propagation" delay that web hosting companies warn about, and it's entirely a function of TTL values and caching behavior.
+
+**DNS cache poisoning** is the dark side of caching. An attacker injects a fraudulent record into a resolver's cache — "google.com is at [attacker's IP]" — and every client using that resolver gets sent to the attacker's server until the cache entry expires. DNSSEC (DNS Security Extensions) adds cryptographic signatures to DNS records so resolvers can verify that the answer actually came from the authoritative server and hasn't been tampered with. DNSSEC adoption is growing but still not universal.
+
+## Split-Horizon DNS — Two Faces, One Domain
+
+Split-horizon (also called split-brain) DNS serves different answers for the same hostname depending on where the query comes from. Internal clients querying from the corporate network get the private IP address of the server (10.1.1.50). External clients querying from the internet get the public IP (203.0.113.50). Same hostname, different answers, because the DNS server knows which network the query originated from.
+
+This is standard practice in any organization hosting services that need to be reachable both internally and externally. Without split-horizon, internal clients would resolve the public IP, and their traffic would route out to the firewall and back in (hairpin NAT), which is inefficient and sometimes broken. Split-horizon keeps internal traffic internal and external traffic on its proper path. You configure it by maintaining two separate views or zones for the same domain — one served to internal networks, one served to everyone else.
+
+## Diagnostic Tools — nslookup and dig
+
+**`nslookup`** is available on every platform and is the basic DNS diagnostic tool. Run `nslookup example.com` and it shows you which DNS server answered and what IP address was returned. Use `nslookup -type=mx example.com` to query for MX records. Use `nslookup example.com 8.8.8.8` to query a specific DNS server instead of your default. When troubleshooting, querying multiple servers helps you isolate the problem — if your internal DNS server returns the wrong answer but Google's returns the right one, the issue is your server's zone data or cache, not the domain itself.
+
+**`dig`** (Domain Information Groper) is the more powerful tool, standard on Linux and macOS (installable on Windows). `dig example.com` gives you the full response including the answer section, authority section, TTL values, and query time. `dig +trace example.com` walks the entire resolution chain from root servers to authoritative, letting you see exactly where a failure occurs. `dig -x 10.1.1.50` performs a reverse lookup. In daily troubleshooting, dig gives you more information per query than nslookup, and in the field, it's the preferred tool for DNS work. Learn both — the exam tests nslookup, the job uses dig.
+
+When DNS misbehaves, these tools tell you whether the problem is the client's configuration (wrong DNS server), the resolver's cache (stale record), the authoritative server's data (incorrect record), or the network path (DNS traffic being blocked). You run the query, read the answer, and either fix the record or fix whatever's standing between the client and the server.
+
+## Why This Matters in the Field
+
+You will configure DNS records for every server, every web application, and every email domain your organization manages. You will troubleshoot DNS caching issues when a migration doesn't propagate on schedule because someone forgot to lower the TTL. You will hunt down a "website doesn't load" ticket that turns out to be a missing A record. You will set up split-horizon so internal users don't hairpin through the firewall. You will explain to a vendor that their MX records are wrong and that's why email delivery is failing. DNS is everywhere, it touches everything, and the techs who understand its internals are the ones who solve problems that look impossible to everyone else.
