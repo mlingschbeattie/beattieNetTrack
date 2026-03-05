@@ -1,0 +1,55 @@
+---
+title: Connector Types — Identifying What Plugs Into What
+description: Every connector you'll encounter on copper, fiber, and serial interfaces — what they look like, where they're used, and why grabbing the wrong one wastes time.
+slug: net-connector-types
+track: network-engineer
+moduleId: net.fundamentals.cabling-and-connectors
+order: 3
+difficulty: Beginner
+estMinutes: 20
+tags: ["network+", "connectors", "transceivers", "N10-009 1.3", "N10-008 1.3"]
+---
+
+## The Drawer Full of Cables
+
+Every IT shop has one. A drawer, a bin, maybe an entire shelf — stuffed with cables and adapters accumulated over a decade. Some are labeled. Most aren't. You reach in looking for a patch cable and pull out something with a connector you don't recognize. Is it network? Serial? Telephone? Legacy garbage from 2009? If you can identify connectors on sight, you grab what you need in seconds and move on. If you can't, you stand there plugging things into ports that don't fit while your ticket queue grows. Connector identification is not glamorous knowledge, but it's the kind that saves you five minutes fifty times a year, and the exam tests it with images.
+
+## RJ-45 — The Connector You'll Touch Most
+
+RJ-45 is the standard Ethernet connector. Eight pins, eight conductors, clear plastic housing with a locking tab on top. It terminates twisted pair cable — Cat5e, Cat6, Cat6a, and so on — and plugs into NICs, switches, routers, patch panels, and wall jacks. You've crimped these. You've heard the click when the tab seats into a port. You've also felt the quiet despair when the tab snaps off and the cable won't stay seated. RJ-45 is used for Ethernet connections at every speed from 10 Mbps to 10 Gbps over copper. It's also used for PoE (Power over Ethernet), which pushes DC power and data over the same cable to devices like access points, IP phones, and security cameras. When someone says "Ethernet cable," they mean a cable with RJ-45 on both ends. The connector is technically called 8P8C (eight position, eight contact), but the entire industry calls it RJ-45 and the exam follows suit.
+
+## RJ-11 — The One That Almost Fits
+
+RJ-11 is the telephone connector — six positions, usually two or four conductors, smaller than RJ-45. It plugs into landline phones, DSL modems, and fax machines. It physically fits into an RJ-45 port because it's narrower, but making that mistake connects nothing and potentially damages the port's contacts. Going the other direction doesn't work — RJ-45 is too wide for an RJ-11 jack. The visual distinction is straightforward once you've seen them side by side: RJ-11 is noticeably narrower with fewer visible metal contacts. In a modern network, you'll encounter RJ-11 at DSL demarcation points and anywhere analog phone lines still exist, which is more places than you'd expect. Plenty of schools still have analog phones in every classroom, fax machines that nobody will let die, and alarm systems hardwired to POTS lines.
+
+## BNC and F-Type — Coaxial Connectors
+
+**BNC (Bayonet Neill-Concelman)** is a twist-lock coaxial connector. Push it on, give it a quarter turn, and it locks. Reverse to disconnect. BNC was the standard for 10BASE2 Thinnet Ethernet and still shows up on some video equipment, test instruments, and legacy CCTV systems. If you see BNC on network equipment, you're looking at something very old or very specialized.
+
+**F-type** is the threaded coaxial connector from your cable TV line. Screw it on, screw it off. It connects coax to cable modems, television tuners, and broadband splitters. Every DOCSIS cable internet installation terminates with F-type connectors at the modem. Unlike BNC's positive locking mechanism, F-type relies on threading, which means a loose connection is common and causes the kind of intermittent signal issues that drive people to blame their ISP when the fix is a half-turn of a connector.
+
+## Fiber Connectors — LC, SC, ST, and MPO
+
+You covered these in the fiber lesson, but here's the quick-recognition version focused on identification.
+
+**LC** is small, rectangular, and has a spring-loaded latch like a miniature RJ-45 tab. It's the modern standard — most SFP/SFP+ transceivers accept LC. You'll see these more than any other fiber connector in current deployments.
+
+**SC** is larger, square, and uses a push-pull engagement. No twisting, no latching — push to connect, pull to disconnect. Older than LC and still present on legacy patch panels and carrier equipment.
+
+**ST** is round with a bayonet twist-lock, similar in mechanism to BNC. Push and twist. It was dominant in the 1990s multimode world and is now mostly a "that building hasn't been re-cabled" connector.
+
+**MPO/MTP (Multi-fiber Push On / Multi-fiber Termination Push-on)** is the high-density connector. A single MPO connector carries 8, 12, or 24 fibers in one rectangular housing. It's used in data centers where running individual LC patch cables for every connection would turn the cable management into a nightmare. MPO connectors plug into breakout cassettes or modules that split the multi-fiber connector into individual LC ports. MTP is the brand-name version manufactured by US Conec — functionally identical to MPO but with tighter tolerances. The exam uses both terms interchangeably.
+
+## Serial Connectors — DB-9 and DB-25
+
+**DB-9** (technically DE-9, but the industry says DB-9 and so does CompTIA) is a 9-pin D-shaped connector used for RS-232 serial communication. You'll see it on the console ports of older routers, switches, and UPS devices. The classic Cisco console cable terminates in RJ-45 on the device end and DB-9 on the laptop end — except modern laptops don't have serial ports, so you'll use a USB-to-DB-9 adapter. Serial connections are slow (typically 9600 baud for console access) but they're out-of-band, meaning they work even when the network is completely down. That's why console access still matters.
+
+**DB-25** is the larger 25-pin version of the same D-shaped connector family. It was used for parallel printer ports, older serial connections, and some legacy modem interfaces. You're unlikely to encounter DB-25 in active use, but the exam includes it as a connector identification item. If you see a D-shaped connector with 25 pins on something that isn't in a museum, it's probably a printer port on a machine that someone refuses to replace.
+
+## SFP and SFP+ Transceivers — The Modular Approach
+
+A Small Form-factor Pluggable transceiver is a hot-swappable module that slides into a port on a switch, router, or firewall and provides the physical interface. SFP supports up to 1 Gbps. SFP+ supports up to 10 Gbps. QSFP+ and QSFP28 push 40 Gbps and 100 Gbps respectively. The genius of the design is modularity — the same switch port can accept a fiber transceiver for a long-distance single-mode link, a different fiber transceiver for a short multimode link, or a copper transceiver for an RJ-45 connection. You buy the transceiver for the medium you need, slot it in, and connect. This means a single switch model can serve multiple cable types without dedicated port hardware for each one. Vendors like Cisco sell their own branded transceivers at premium prices and will sometimes log warnings when you use third-party modules, but compatible third-party transceivers from companies like FS.com work fine in practice and cost a fraction of the price. The exam won't test brand politics, but the field will.
+
+## Why This Matters in the Field
+
+Connector identification is a filter. When you can look at a patch panel and immediately read which ports are Ethernet, which are fiber, which are phone, and which are dead legacy serial — you skip the guessing phase and start working. When you're ordering parts for a new installation, knowing the difference between LC and SC means the cables you order actually fit the hardware you bought. When a switch port accepts SFP+ and you need to connect it to a multimode fiber run, you grab the right transceiver, the right LC duplex cable, and you're done in sixty seconds. Every minute you don't spend staring at a connector trying to figure out what it is goes to actually solving the problem.
