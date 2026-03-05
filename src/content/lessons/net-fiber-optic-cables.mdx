@@ -1,0 +1,55 @@
+---
+title: Fiber-Optic Cables — Light Instead of Electricity
+description: Single-mode, multimode, connector types, polish styles, and why fiber goes where copper can't — the cabling that runs backbones, campuses, and the internet itself.
+slug: net-fiber-optic-cables
+track: network-engineer
+moduleId: net.fundamentals.cabling-and-connectors
+order: 2
+difficulty: Beginner
+estMinutes: 20
+tags: ["network+", "cabling", "fiber", "N10-009 1.3", "N10-008 1.3"]
+---
+
+## The Run That Copper Can't Make
+
+The district is connecting two buildings 300 meters apart. Someone suggests running Ethernet copper between them. You already know that's dead on arrival — copper Ethernet maxes out at 100 meters, and even if you daisy-chained switches across the parking lot, you'd be creating failure points in outdoor enclosures exposed to weather, lightning, and landscaping crews with backhoes. The answer is fiber-optic cable: a glass or plastic strand that carries data as pulses of light instead of electrical signals. It laughs at 300 meters. Some fiber runs span 80 kilometers without a repeater. It's immune to electromagnetic interference because there's no electrical signal to interfere with. Lightning can strike right next to a fiber run and the data keeps moving. Fiber costs more to install and terminate than copper, and the equipment on each end is more expensive, but when the distance, speed, or environment demands it, fiber is the only option. And increasingly, it's the preferred option even when copper could technically work.
+
+## Single-Mode vs. Multimode — One Path or Many
+
+All fiber-optic cable works the same basic way: a light source sends pulses into a glass core, the pulses bounce along the core via total internal reflection, and a receiver at the other end converts the light back into electrical signals. The two types differ in how many paths (modes) the light takes through the core.
+
+**Multimode fiber** has a larger core — typically 50 or 62.5 microns — that allows light to enter at multiple angles and bounce along several paths simultaneously. The light source is an LED, which is cheaper than a laser. The tradeoff is modal dispersion: the different paths have slightly different lengths, so the light pulses spread out over distance and eventually overlap enough to cause errors. This limits multimode to shorter distances — roughly 300 meters at 10 Gbps, up to about 2 km at 1 Gbps depending on the standard. Multimode dominates inside buildings: data center switch-to-switch links, building backbones, connections between wiring closets on different floors. It's cheaper than single-mode for the transceivers and the cable, and the distances inside a building rarely exceed its limits. You can identify multimode by its orange or aqua jacket (aqua for the newer OM3/OM4/OM5 grades that support higher speeds).
+
+**Single-mode fiber** has a tiny core — about 8 to 9 microns — that allows only one mode of light to propagate. The light source is a laser, which produces a focused, coherent beam that travels straight through the core with virtually no dispersion. Single-mode goes far. Extremely far. Runs of 10 to 80 kilometers are standard, and with amplification, single-mode carries data across oceans on submarine cables. It also supports the highest speeds at the longest distances. The cost is in the laser transceivers — significantly more expensive than the LEDs used for multimode. Single-mode jacket color is yellow. When a fiber run leaves a building, crosses a campus, or connects sites across a city, it's single-mode.
+
+## Connectors — SC, LC, and ST
+
+Fiber connectors are not interchangeable, and you need to know the common ones by sight.
+
+**SC (Subscriber Connector)** is a square, push-pull connector — you push it in and it clicks, pull it straight out to disconnect. It's been around since the early days of fiber networking. SC connectors are commonly found on older installations, patch panels, and some carrier demarcation equipment. The square shape makes it easy to identify at a glance.
+
+**LC (Lucent Connector)** is the small form-factor connector that dominates modern installations. It's about half the size of SC and uses a latch mechanism like a small RJ-45 clip. The smaller footprint means higher port density — you can fit more connections into the same panel or switch faceplate. Most current SFP and SFP+ transceivers use LC connectors. If you're working with anything installed in the last decade, you're probably touching LC.
+
+**ST (Straight Tip)** is a round, bayonet-style connector — you push it in and twist to lock, twist to unlock. ST was common in the 1990s and early 2000s, especially for multimode installations. You'll still encounter it on legacy equipment and in older buildings, but new installations have moved to LC almost entirely.
+
+Fiber connections are always paired — one strand transmits, the other receives. You'll see duplex connectors (two connectors joined side by side) and individual connectors that you need to keep correctly paired. Swapping the TX and RX strands is a classic mistake that takes about five seconds to make and can waste thirty minutes of troubleshooting if you don't check for it.
+
+## APC vs. UPC — The Polish That Matters
+
+The endface of a fiber connector — the polished tip of the glass where it meets the other connector or transceiver — has a specific polish type that affects signal quality. **UPC (Ultra Physical Contact)** has a slightly curved endface polished to a smooth finish. When two UPC connectors mate, the curved surfaces press together and minimize the air gap, reducing signal reflection back into the fiber. UPC connectors have a blue housing or boot. They're the standard for most multimode and general-purpose single-mode connections.
+
+**APC (Angled Physical Contact)** takes it further by polishing the endface at an 8-degree angle. Any reflected light gets directed into the cladding (the outer layer of the fiber) instead of bouncing straight back down the core toward the transmitter. This produces significantly lower return loss — critical for applications like FTTH (Fiber to the Home), CATV distribution, and long-haul single-mode links where even small reflections degrade signal quality. APC connectors have a green housing. The angle means APC and UPC connectors are physically incompatible — mating them damages both endfaces and produces a terrible connection. Green to green, blue to blue. Always.
+
+## Handling Fiber — Bend Radius and Cleanliness
+
+Fiber-optic cable is glass. It handles differently than copper. Every fiber cable has a minimum bend radius — the tightest curve you can put in it without cracking the core or causing light to leak out through the cladding. Exceed it and you get macrobending loss: signal strength drops and the link may fail or negotiate at a lower speed. The minimum bend radius varies by cable type, but a general rule is ten times the cable diameter for standard fiber and tighter for bend-insensitive fiber designed for tight spaces. In practice, this means no sharp turns around corners, no kinking, no cable-tying fiber into tight bundles against a wall.
+
+The other rule is cleanliness. A speck of dust on a fiber endface is enormous relative to the 9-micron core of single-mode fiber. A contaminated connector causes signal loss, reflections, and the kind of intermittent errors that make you question your career choices. You clean fiber endfaces with lint-free wipes and isopropyl alcohol or purpose-built one-click cleaners every time you make a connection. You cap every unused connector and every unused port. If you skip this, the fiber will punish you and it won't tell you why.
+
+## Where Fiber Wins
+
+Fiber-optic cable beats copper in distance, speed ceiling, EMI immunity, and security. It can't be tapped by induction the way copper can — you'd have to physically break the fiber to intercept the light, which would drop the link immediately. Fiber doesn't conduct electricity, so it's safe to run between buildings without worrying about ground loops or lightning strikes following the cable into your switch. It's lighter and thinner per connection than copper at equivalent speeds. The disadvantages are cost — both the cable and the termination equipment — and fragility. You can't crimp a fiber connector with a $30 crimping tool in a ceiling tile; field termination requires specialized equipment or pre-terminated assemblies. But the gap is narrowing. Pre-terminated fiber assemblies have made deployment dramatically faster, and the cost of fiber transceivers has dropped enough that fiber-to-the-desk is no longer exotic in new builds.
+
+## Why This Matters in the Field
+
+Every network you work on will have fiber somewhere — maybe just the uplinks between switches, maybe the backbone between buildings, maybe the ISP handoff at the demarc. When that backbone link starts throwing CRC errors, you'll grab a fiber light meter and check the power levels. When someone patches a green APC connector into a blue UPC port and the link won't come up, you'll know why in five seconds instead of fifty minutes. When the district asks you to connect a new building 400 meters away, you won't hesitate — it's single-mode fiber, LC connectors, and you'll spec it before lunch. Copper gets data to the desk. Fiber gets data between everything else.

@@ -1,0 +1,59 @@
+---
+title: Copper Cables — The Wiring You'll Touch Every Day
+description: UTP, STP, coax, cable categories, jacket ratings, and pinouts — the physical layer infrastructure that connects most of the devices you'll ever work on.
+slug: net-copper-cables
+track: network-engineer
+moduleId: net.fundamentals.cabling-and-connectors
+order: 1
+difficulty: Beginner
+estMinutes: 20
+tags: ["network+", "cabling", "copper", "N10-009 1.3", "N10-008 1.3"]
+---
+
+## The Cable Run That Teaches You Everything
+
+A teacher wants a new workstation at the back of her classroom. You trace the drop from the wall jack to the patch panel in the wiring closet — and there's no cable. Someone labeled the panel port, but the run was never pulled. So you grab a box of Cat6 from the supply room, route it through the ceiling, terminate both ends with RJ-45 jacks, and patch it into the switch. The workstation comes up at 1 Gbps, full duplex. Then a week later, the night custodian bumps the ceiling tile and kinks the cable. Link drops to 100 Mbps. Then someone across the hall is getting intermittent disconnects and you discover the cable running parallel to a fluorescent light ballast for fifteen feet. Three different problems, three different copper cable lessons, all in the same hallway. Copper cabling is the most hands-on, most testable, most "you will actually do this" topic in the entire Network+ curriculum.
+
+## UTP vs. STP — Shielding and When It Matters
+
+Unshielded Twisted Pair is the standard Ethernet cable in almost every LAN on the planet. Inside the jacket, four pairs of copper wires twist around each other at different rates. The twist is the engineering trick — it cancels out electromagnetic interference (EMI) by ensuring that any noise induced on one wire in a pair is equally induced on the other wire, and the receiving end subtracts it out. It works astonishingly well for how simple it is. Shielded Twisted Pair adds a foil or braided shield around individual pairs, around all the pairs, or both. The notation tells you the shielding configuration: F/UTP means an overall foil shield with unshielded pairs. S/FTP means a braided overall shield with foil-shielded individual pairs. STP is better at rejecting interference, which matters in environments packed with motors, power lines, or industrial equipment. The tradeoff is cost, thicker cable diameter, and the requirement that the shield must be properly grounded at both ends — otherwise it actually makes interference worse by acting as an antenna. In a typical school or office environment, UTP handles the job. In a factory floor or hospital with heavy electrical equipment nearby, STP earns its price.
+
+## Cable Categories — The Speed Ladder
+
+Not all twisted pair cable is the same. The category rating tells you the maximum bandwidth and, by extension, the speeds and distances the cable supports. These are the ones the exam cares about:
+
+**Cat5e** handles Gigabit Ethernet (1 Gbps) at up to 100 meters and is still the most widely installed cable in existing buildings. If you open a ceiling tile in a school built in the last twenty years, you're probably looking at Cat5e. It works. It's fine. But it's the floor, not the ceiling.
+
+**Cat6** also supports Gigabit at 100 meters but can push 10 Gbps at distances up to 55 meters. The tighter twist rates and an internal plastic spline that separates the pairs give it better crosstalk performance than Cat5e. New installations should be Cat6 at minimum.
+
+**Cat6a** extends 10 Gbps to the full 100-meter distance. The "a" stands for augmented. The cable is noticeably thicker and stiffer, which makes pulling it through conduit more of a workout, but it's the go-to for new enterprise deployments that want 10 Gbps to the desk.
+
+**Cat7** uses fully shielded pairs (S/FTP) and supports 10 Gbps at 100 meters with additional headroom. It requires special GG45 or TERA connectors, not standard RJ-45, which limits adoption. The exam mentions it; real-world usage is mostly European data centers.
+
+**Cat8** is the current top end — 25 or 40 Gbps, but only at distances up to 30 meters. It's designed for short runs in data centers connecting servers to top-of-rack switches, not for horizontal runs to workstations. You won't pull Cat8 to a classroom, but you should know it exists.
+
+Every one of these is backward-compatible. A Cat6a cable works fine at Gigabit speeds. The cable category sets the ceiling, not the floor.
+
+## Coaxial Cable — Still Not Dead
+
+Coax is a single copper conductor surrounded by insulation, a metallic shield, and an outer jacket. The design is inherently resistant to EMI because the shield completely surrounds the signal conductor. You know coax from cable TV — the threaded F-type connector screwed into the back of a modem or television. In networking, coax carries broadband internet from the ISP to the cable modem (DOCSIS), and it's still the backbone of many cable TV distribution systems in buildings. Older network standards like 10BASE2 (Thinnet, BNC connectors) and 10BASE5 (Thicknet) ran Ethernet over coax, but those are museum pieces now. Twinaxial cable — a variant with two conductors — shows up in data centers for short 10/25/40 Gbps Direct Attach Copper (DAC) connections between switches. Coax isn't the mainstream LAN cabling anymore, but it's far from irrelevant, and the exam tests both the cable and its connector types.
+
+## Jacket Ratings — Plenum, Riser, and PVC
+
+The plastic jacket around a cable isn't just protection — it's a fire safety classification, and building codes enforce it. **PVC** (polyvinyl chloride) is the standard, cheapest jacket material. It works fine in open areas and surface-mounted runs. But when PVC burns, it produces thick, toxic smoke. **Plenum**-rated cable uses a low-smoke jacket (typically fluorinated ethylene polymer) designed for plenum spaces — the areas above drop ceilings and below raised floors that feed into the building's HVAC system. If PVC cable burning in a plenum space fills the air handling system with toxic smoke, the whole building has a problem. Plenum cable costs more, but fire code requires it in those spaces, full stop. **Riser**-rated cable is designed for vertical runs between floors — it resists fire propagation along the cable so a fire on one floor doesn't climb the cable to the next. Riser-rated cable is acceptable in vertical shafts but not in plenum spaces. The hierarchy: plenum can be used anywhere, riser can substitute for PVC but not for plenum, and PVC stays on the surface. An inspector who finds PVC in a plenum space will make someone very unhappy.
+
+## Straight-Through, Crossover, and Rollover
+
+A straight-through cable is what you use 99% of the time. Pin 1 on one end connects to Pin 1 on the other end, all the way through. It connects unlike devices — a PC to a switch, a switch to a router. Both ends are terminated with the same wiring standard, either T-568A or T-568B (B is dominant in the U.S.).
+
+A crossover cable swaps the transmit and receive pairs — one end is wired T-568A, the other is T-568B. It connects like devices directly: switch to switch, PC to PC, router to router. The reason is that identical devices transmit and receive on the same pins, so you need to cross the pairs so one device's transmit lands on the other device's receive. In practice, most modern equipment supports Auto-MDI/MDI-X, which detects the cable type and swaps internally, making crossover cables largely unnecessary. But the exam still tests the concept, and you'll still find older gear that needs one.
+
+A rollover cable (also called a console cable) reverses all eight pins — Pin 1 to Pin 8, Pin 2 to Pin 7, and so on. It's the light blue cable that ships with Cisco routers and switches, and it connects your laptop's serial port (or USB-to-serial adapter) to the device's console port for initial configuration. You cannot configure a managed switch out of the box over the network because it has no IP address yet. The console cable is always the first cable you connect.
+
+## The 100-Meter Rule
+
+Copper Ethernet has a hard distance limit: 100 meters (328 feet) from the device to the switch, total. That's measured as the entire channel — the horizontal run from the patch panel to the wall jack, plus the patch cables on both ends. The TIA/EIA standard budgets 90 meters for the permanent link and 10 meters for patch cables. Go past 100 meters and the signal attenuates enough that you get errors, speed drops, or the link fails entirely. This is not negotiable and not something you can band-aid with a better cable category. If the run is longer than 100 meters, you either add a switch in the middle to regenerate the signal or you switch to fiber. Every cable run you ever plan starts with this number.
+
+## Why This Matters in the Field
+
+You will pull cable. You will terminate cable. You will test cable with a cable certifier and find out that one of your eight crimps is bad and redo it. You will trace an intermittent network problem to a cable that's been smashed by a filing cabinet for three years. You will argue with a building contractor about plenum ratings. Copper cabling is where networking meets the physical world, and physical world problems — heat, distance, interference, building codes, and someone's decision to run Cat5e in 2003 — are the problems you'll solve most often in your first years on the job.
