@@ -1,0 +1,83 @@
+---
+title: WAN Technologies — Connecting Sites Across Distance
+description: Leased lines, MPLS, Metro Ethernet, broadband, SD-WAN, and the WAN technologies that link offices, campuses, and data centers — how they work, what they cost, and when each one fits.
+slug: net-wan-technologies
+track: network-engineer
+moduleId: net.fundamentals.routing
+order: 3
+difficulty: Beginner
+estMinutes: 25
+tags: ["network+", "WAN", "MPLS", "SD-WAN", "N10-009 1.8", "N10-008 1.8"]
+---
+
+## Two Buildings, One Network
+
+The district has a main campus and an admin building three miles away. Both need to be on the same network — shared file servers, shared authentication, shared phone system, shared internet uplink. You can't run an Ethernet cable three miles (even if you could, copper maxes at 100 meters and fiber across public right-of-way requires permits, trenching, and a budget nobody approved). You need a WAN connection — a service from a carrier that bridges the gap. The question isn't whether you need WAN. It's which type, at what speed, at what cost, with what guarantees. WAN technology choices define the performance ceiling for every remote user, every branch office, and every cloud connection in an organization. This is where networking meets budgets, contracts, and service level agreements.
+
+## Circuit Switching vs. Packet Switching
+
+These are the two fundamental approaches to moving data across a carrier network, and every WAN technology falls into one of them.
+
+**Circuit switching** establishes a dedicated path between two endpoints for the duration of the communication. The old phone system (PSTN) was circuit-switched — when you dialed a number, the network created a dedicated circuit from your phone to the other phone, and that circuit was yours alone until you hung up. The bandwidth was guaranteed and consistent, but if you weren't talking, the circuit sat idle and wasted capacity. ISDN was a circuit-switched data technology that's now essentially extinct.
+
+**Packet switching** breaks data into packets and sends each one independently across the network. Packets from your connection share the carrier's infrastructure with packets from every other customer. There's no dedicated circuit — the network forwards each packet along the best available path. This is far more efficient because bandwidth isn't reserved and idle. The internet is packet-switched. MPLS is packet-switched. Frame Relay (dead) and ATM (mostly dead) were packet-switched. Virtually every WAN technology you'll encounter in practice is packet-switched.
+
+## Leased Lines — T1 and T3
+
+A leased line is a dedicated, point-to-point circuit from a carrier that provides fixed bandwidth between two locations. You pay a flat monthly fee regardless of usage, and the circuit is yours alone — no shared bandwidth, no congestion from other customers.
+
+**T1** provides 1.544 Mbps over copper. It was the enterprise standard for decades — reliable, symmetrical, and available almost everywhere. A T1 in 2026 is painfully slow by modern standards, but some organizations in rural areas still rely on them because nothing faster is available. **T3** (also called DS3) bonds multiple T1 circuits to provide 44.736 Mbps. Faster than T1, but still a fraction of what modern alternatives deliver.
+
+Leased lines offer guaranteed bandwidth and predictable performance, which is why they survived as long as they did. The downside is cost per megabit — dramatically more expensive than broadband or Metro Ethernet. You're paying for dedication and SLAs. Most organizations have moved away from T1/T3 to MPLS, Metro Ethernet, or broadband with SD-WAN, but you'll still find leased lines in environments where they were installed years ago and replacement hasn't been prioritized.
+
+## MPLS — The Carrier's Managed Network
+
+Multiprotocol Label Switching was covered briefly in the network types lesson. Here's the WAN perspective. MPLS is a carrier-managed service that routes traffic using labels instead of IP addresses, creating virtual circuits across the provider's network. You connect each site to the carrier's MPLS network, and the carrier handles routing between sites with guaranteed bandwidth and quality of service.
+
+MPLS supports multiple service types. **Point-to-point** circuits connect exactly two sites, similar to a leased line but running over the carrier's shared MPLS infrastructure. **Any-to-any** (full mesh) configurations let every site talk to every other site directly, which is what enterprises typically want for branch office connectivity.
+
+The advantage of MPLS is performance guarantees — carriers offer SLAs for latency, jitter, and packet loss, and they can prioritize voice and video traffic over general data. The disadvantage is cost. MPLS circuits are priced per megabit and per site, and the per-site charges add up fast when you have fifty branches. For the last decade, MPLS has been the gold standard for enterprise WAN, and for the last five years, organizations have been trying to reduce their MPLS spend by supplementing or replacing it with SD-WAN.
+
+## Metro Ethernet — LAN Speeds Between Buildings
+
+Metro Ethernet extends Ethernet connectivity beyond a single building using the carrier's metropolitan fiber network. From your router's perspective, it looks like a very long Ethernet cable — same frame format, same interface type, just delivered by the carrier over fiber across the city. Speeds range from 10 Mbps to 10 Gbps depending on the service tier.
+
+**Ethernet Private Line (EPL)** is a point-to-point dedicated connection between two sites. **Ethernet Virtual Private Line (EVPL)** provides point-to-point connectivity but over shared infrastructure. **Ethernet LAN (E-LAN)** provides multipoint-to-multipoint connectivity, letting multiple sites communicate as if they were on the same LAN segment.
+
+Metro Ethernet is typically cheaper per megabit than MPLS, offers higher speeds, and is simpler to configure because your routers or switches just see Ethernet interfaces. The limitation is geographic — Metro Ethernet requires the carrier to have fiber infrastructure near both of your sites, which usually means both sites need to be in the same metro area. For connecting buildings across a campus or across a city, Metro Ethernet is often the best option. For connecting offices across the country, you'll need MPLS, internet-based VPN, or a dedicated connection.
+
+## Broadband — Cable, DSL, and Fiber
+
+Broadband is the catch-all term for high-speed internet access delivered over shared infrastructure to business and residential customers. Three delivery mechanisms dominate.
+
+**Cable** uses the same coaxial infrastructure that delivers cable television. DOCSIS (Data Over Cable Service Interface Specification) defines the standards — DOCSIS 3.1 supports speeds up to about 1 Gbps downstream. Cable bandwidth is shared among subscribers in a neighborhood, which means speeds vary with usage. Peak hours — when everyone is streaming after dinner — can noticeably degrade performance. Upload speeds are significantly lower than download speeds (asymmetric).
+
+**DSL (Digital Subscriber Line)** runs over existing telephone copper pairs. ADSL (Asymmetric DSL) is the most common variant, providing faster download than upload. Speeds depend heavily on distance from the provider's central office — farther away means slower. Maximum speeds are in the tens of megabits range, well below cable. DSL is declining as fiber and cable expand, but it persists in areas where those alternatives haven't been built out.
+
+**Fiber** (typically branded as FTTH — Fiber to the Home, or FTTP — Fiber to the Premises) delivers internet over fiber-optic cable directly to the customer's location. Speeds of 1 Gbps symmetrical are standard, and some providers offer 2–10 Gbps tiers. Fiber doesn't degrade with distance the way DSL does, isn't shared at the neighborhood level the way cable is, and offers symmetrical upload and download speeds. It's the best broadband technology and the one every ISP is racing to deploy. If fiber is available, it's the right answer for business broadband.
+
+Broadband connections are inexpensive compared to MPLS or leased lines but come with no SLAs, shared bandwidth, and variable performance. For a single site that needs internet access, broadband is perfect. For connecting branch offices to headquarters with performance guarantees, broadband alone isn't enough — but paired with SD-WAN, it becomes a legitimate option.
+
+## SD-WAN — Software-Defined WAN
+
+SD-WAN was introduced in the network types lesson. Here's how it fits as a WAN technology. Traditional WAN design forces a choice: expensive MPLS with performance guarantees, or cheap broadband with no guarantees. SD-WAN eliminates the binary by layering software intelligence across multiple transport links.
+
+An SD-WAN deployment at a branch office might have an MPLS circuit, a cable broadband connection, and an LTE cellular backup. The SD-WAN appliance at the branch monitors all three links in real time — measuring latency, jitter, packet loss, and available bandwidth. Application-aware policies determine which traffic uses which link. Voice and video traffic — sensitive to latency and jitter — rides the MPLS circuit. Web browsing and cloud application traffic goes directly out the broadband link to the internet, bypassing the headquarters data center entirely. If the MPLS circuit degrades, critical traffic shifts to broadband automatically.
+
+The management layer is centralized. A single controller — usually cloud-hosted — pushes policy to every branch. Deploying a new branch is zero-touch provisioning: ship the appliance, plug it in, and it phones home to the controller for its configuration. Changing a policy across a hundred branches is a single update in the controller dashboard.
+
+SD-WAN's impact on the industry has been massive. Organizations that used to provision $2,000/month MPLS circuits to every branch are replacing them with $100/month broadband connections and $50/month SD-WAN licenses, getting better application performance in the process. The ROI case is so compelling that SD-WAN has gone from bleeding-edge to default WAN strategy in about five years. The N10-009 exam reflects this — expect questions on SD-WAN architecture, benefits, and the types of transport it can aggregate.
+
+## WAN Optimization
+
+When traffic must cross a WAN link — especially a high-latency or bandwidth-constrained one — WAN optimization techniques reduce the pain. **Data deduplication** identifies repeated byte patterns across sessions and replaces them with short references, dramatically reducing bandwidth for repetitive traffic like file shares. **Compression** reduces payload sizes. **Caching** stores frequently accessed content locally at the branch so it doesn't need to cross the WAN repeatedly. **Protocol optimization** tweaks chatty protocols (like SMB file transfers or HTTPS) to reduce the number of round trips required.
+
+WAN optimization appliances or virtual appliances sit at both ends of the WAN link — one at the branch, one at the data center. They're transparent to endpoints. In the MPLS era, WAN optimization was essential because circuits were expensive and bandwidth was precious. With SD-WAN and cheaper broadband, the urgency has decreased, but optimization is still relevant for branches with slow or metered connections.
+
+## The Last Mile
+
+The "last mile" is the connection between the carrier's infrastructure and your building — literally the last stretch of cable or fiber that reaches your premises. It's often the bottleneck. A carrier might have a 100 Gbps backbone across the city, but if the last mile to your building is a copper pair delivering 50 Mbps DSL, that's your ceiling. Last mile technology varies: copper pairs for DSL, coax for cable, fiber for FTTP, wireless for fixed wireless access. The last mile also determines installation timelines — running fiber to a building that doesn't have it can take weeks to months. When evaluating WAN options, the last mile available at each location often narrows your choices before you even look at pricing.
+
+## Why This Matters in the Field
+
+Every organization with more than one site needs a WAN, and the technology choice shapes the budget, the performance, and the resilience of the entire network. You'll inherit MPLS circuits and evaluate whether SD-WAN can reduce costs. You'll provision broadband at a new branch and configure the SD-WAN appliance to integrate it. You'll explain to management why the $200/month cable connection can't provide the same guarantees as the $2,000/month MPLS circuit — and then show them how SD-WAN bridges the gap. WAN technology is where networking meets finance, and the engineers who understand both sides of that conversation are the ones who get called into planning meetings.

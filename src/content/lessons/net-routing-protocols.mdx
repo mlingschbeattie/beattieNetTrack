@@ -1,0 +1,81 @@
+---
+title: Routing Protocols — How Routers Learn the Network
+description: RIP, OSPF, EIGRP, BGP — the protocols that let routers discover paths automatically, the algorithms behind them, and when each one belongs in the design.
+slug: net-routing-protocols
+track: network-engineer
+moduleId: net.fundamentals.routing
+order: 2
+difficulty: Beginner
+estMinutes: 25
+tags: ["network+", "routing protocols", "OSPF", "BGP", "EIGRP", "RIP", "N10-009 1.8", "N10-008 1.8"]
+---
+
+## The Network That Grew Past Static
+
+A small office has two subnets and one router. Two static routes, done. Then the company grows. Three offices, five routers, twelve subnets, two ISP uplinks. Now you need dozens of static routes, and every time a link fails or a subnet changes, you're logging into every router to update them manually. At 3 AM. On a holiday. The routes don't match because you fat-fingered a next-hop address on router three, and half the network is black-holing traffic to accounting. This is the moment every network reaches where static routing stops being simple and starts being dangerous. Routing protocols exist because human-managed route tables don't survive growth, and the protocols that handle it range from simple and slow to complex and fast. The exam tests four of them. The field uses three.
+
+## Distance Vector vs. Link State
+
+Before diving into individual protocols, you need the two categories they fall into — because the category determines how the protocol thinks.
+
+**Distance vector** protocols know directions and distance. Each router shares its entire routing table with its directly connected neighbors at regular intervals. A router using a distance vector protocol doesn't understand the network topology — it only knows "I can reach network X in Y hops through neighbor Z." It trusts what its neighbors tell it. This is sometimes called "routing by rumor." RIP is the textbook distance vector protocol. EIGRP is an advanced distance vector protocol (Cisco calls it "enhanced distance vector") that adds enough sophistication to blur the line.
+
+**Link state** protocols know the entire map. Each router discovers its neighbors, measures the cost of each link, and floods that information to every other router in the area. Every router builds an identical database describing the full network topology, then independently runs a shortest-path-first algorithm to calculate the best route to every destination. Link state protocols converge faster, make better path decisions, and scale further, but they use more memory and CPU because every router holds the complete topology. OSPF is the link state protocol you'll encounter most.
+
+**BGP** fits neither category cleanly — it's classified as a **path vector** protocol, a variant of distance vector that tracks the full path (sequence of autonomous systems) to each destination instead of just the distance.
+
+## RIP — The Protocol That Taught the Concept
+
+Routing Information Protocol is the simplest dynamic routing protocol. It uses **hop count** as its only metric — the number of routers between source and destination. Every 30 seconds, each RIP router broadcasts its entire routing table to its neighbors. Routes with a lower hop count are preferred. The **maximum hop count is 15** — a destination 16 hops away is considered unreachable. This hard limit means RIP can't handle networks with a diameter larger than 15 routers, which eliminates it from any serious enterprise or WAN deployment.
+
+RIP's convergence is painfully slow. When a link fails, the information ripples through the network one update cycle at a time. Hold-down timers, split horizon, and route poisoning mitigate loops during convergence, but the protocol can still take minutes to stabilize after a change. Minutes of packet loss in a production network is unacceptable by modern standards.
+
+RIPv1 uses classful routing and broadcasts. RIPv2 adds classless routing (VLSM support), multicast updates, and authentication. Both versions are functionally obsolete in production. RIP exists on the exam because it illustrates distance vector concepts cleanly, and you'll encounter it on legacy equipment that nobody's had the budget or courage to migrate. If someone proposes deploying RIP on a new network, that's your cue to ask questions.
+
+## OSPF — The Enterprise Standard
+
+Open Shortest Path First is a link state protocol and the most widely deployed interior gateway protocol in enterprise networks. Every OSPF router discovers its neighbors, exchanges **Link State Advertisements (LSAs)** — packets describing the state and cost of each connected link — and builds a **Link State Database (LSDB)** that represents the entire network topology. Then it runs Dijkstra's **Shortest Path First (SPF) algorithm** against that database to calculate the optimal route to every destination.
+
+OSPF's metric is **cost**, which is derived from interface bandwidth. The formula is typically reference bandwidth divided by interface bandwidth — so a 1 Gbps link has a lower cost (and is preferred) over a 100 Mbps link. Unlike RIP's hop count, OSPF's cost metric means the protocol actually chooses the fastest path, not just the shortest.
+
+OSPF uses **areas** to scale. Area 0 is the backbone — every other area must connect to it. Dividing a large network into areas limits the scope of LSA flooding and SPF calculations. A change in Area 1 doesn't force every router in Area 2 to recalculate its entire topology — only the area border router recalculates and summarizes the change. Large OSPF deployments might have dozens of areas, each containing a manageable number of routers.
+
+On multi-access networks (like Ethernet segments with multiple routers), OSPF elects a **Designated Router (DR)** and a **Backup Designated Router (BDR)**. Instead of every router forming a full adjacency with every other router on the segment — which would create an exponential number of relationships — all routers form adjacencies with the DR and BDR only. The DR collects and distributes LSAs on behalf of the segment. The BDR stands by to take over if the DR fails. The election is based on router priority and router ID.
+
+OSPF converges in seconds for most topologies, supports VLSM and classless addressing, scales to thousands of routers with proper area design, and is vendor-neutral. It's the protocol you'll configure most in enterprise environments.
+
+## EIGRP — Cisco's Fast Hybrid
+
+Enhanced Interior Gateway Routing Protocol is Cisco's proprietary routing protocol, though it was published as an RFC in 2016 and a few other vendors now support it. EIGRP is categorized as an advanced distance vector protocol because it shares route information with neighbors (distance vector behavior) but also maintains a topology table and uses algorithms beyond simple distance comparison.
+
+EIGRP's metric is a **composite** calculation based on bandwidth, delay, and optionally load and reliability — though in practice, almost everyone uses just bandwidth and delay. This composite metric gives EIGRP more granular path selection than RIP's hop count and is comparable to OSPF's cost in terms of choosing intelligent paths.
+
+The **DUAL (Diffusing Update Finite-state Machine) algorithm** is EIGRP's engine for loop-free route calculation. EIGRP doesn't flood LSAs like OSPF — it sends updates only when something changes (triggered updates), and only to affected neighbors. This makes it bandwidth-efficient. DUAL also maintains a **feasible successor** — a pre-calculated backup route that's ready to install immediately if the primary route fails. When a link goes down, EIGRP checks for a feasible successor. If one exists, the new route is installed instantly with no recalculation. This gives EIGRP extremely fast convergence, sometimes sub-second.
+
+EIGRP is common in Cisco-dominated environments — and plenty of enterprise networks are exactly that. If the network is all Cisco gear, EIGRP is a strong choice: fast convergence, low bandwidth usage, simple configuration relative to OSPF. The limitation is vendor lock-in. In a multi-vendor environment, OSPF is the safer bet because it's universally supported.
+
+## BGP — The Protocol That Runs the Internet
+
+Border Gateway Protocol is the routing protocol of the internet. While OSPF and EIGRP handle routing within an organization (interior gateway protocols), BGP handles routing between organizations, ISPs, and content providers (exterior gateway protocol). Every ISP, cloud provider, and large enterprise that connects to the internet uses BGP.
+
+BGP is a **path vector** protocol. Instead of a simple metric like hop count or cost, BGP tracks the full **AS path** — the sequence of Autonomous Systems (each identified by an AS number) that traffic must cross to reach a destination. An Autonomous System is a network or group of networks under a single administrative authority — your ISP is an AS, AWS is an AS, Google is an AS. BGP uses the AS path (along with dozens of other attributes and policies) to select the best route.
+
+**eBGP (external BGP)** runs between different autonomous systems — your router to your ISP's router, for example. **iBGP (internal BGP)** runs between routers within the same autonomous system, carrying external routes learned from eBGP peers through the organization's internal network. The distinction matters because eBGP and iBGP have different rules about route advertisement and next-hop handling.
+
+BGP is not designed for speed. It's designed for scale and policy. The internet routing table has over 900,000 prefixes, and BGP manages all of them. Convergence can take seconds to minutes because BGP prioritizes stability — a route that flaps (goes up and down repeatedly) gets dampened to prevent cascading instability across the internet. BGP is also the protocol where routing policy lives — ISPs use BGP attributes to prefer certain paths, deprioritize others, and implement business relationships (customer, peer, transit provider).
+
+You won't configure BGP in a school network. You will encounter it the moment you work at an organization with its own public IP space and ISP connections. On the exam, know BGP's role (internet backbone), its algorithm type (path vector), and the eBGP/iBGP distinction.
+
+## When to Use Each Protocol
+
+**RIP** — lab environments, legacy systems you inherited and haven't migrated yet, certification study to understand distance vector concepts. Not for new production deployments.
+
+**OSPF** — enterprise LANs and WANs, any multi-vendor environment, the default choice when you need dynamic routing and don't have a specific reason to choose something else.
+
+**EIGRP** — Cisco-only environments where you want fast convergence and simple configuration. Common in existing deployments; less common in new multi-vendor designs.
+
+**BGP** — internet edge, multi-homed connections to ISPs, large-scale networks that need policy-based routing, cloud provider peering. Not for internal routing in small to midsize networks.
+
+## Why This Matters in the Field
+
+You'll inherit networks running these protocols and need to understand what you're looking at. You'll read OSPF neighbor tables to figure out why two routers aren't exchanging routes. You'll check EIGRP topology tables to see if a feasible successor exists for a critical path. You'll look at BGP peering sessions with your ISP when internet traffic is taking a suboptimal route. The protocols are different, but the troubleshooting pattern is the same: check adjacencies, check the routing table, check the metrics, find the disconnect. Understanding how each protocol makes decisions is what turns a confusing `show` command output into actionable information.
