@@ -1,0 +1,59 @@
+---
+title: NTP — Why Every Device Needs to Agree on What Time It Is
+description: Time synchronization across a network — stratum hierarchy, NTP configuration, and the authentication failures, broken logs, and expired certificates that happen when clocks drift.
+slug: net-ntp
+track: network-engineer
+moduleId: net.fundamentals.network-services
+order: 3
+difficulty: Beginner
+estMinutes: 15
+tags: ["network+", "NTP", "time synchronization", "N10-009 1.6", "N10-008 1.6"]
+---
+
+## The Five-Minute Difference That Locked Everyone Out
+
+A Monday morning, 7:45 AM, staff start arriving and nobody can log in. Workstations authenticate against Active Directory, and Kerberos — the authentication protocol AD uses — refuses to issue tickets if the time difference between the client and the domain controller exceeds five minutes. Over the weekend, the domain controller's clock drifted. Not by much. Six minutes. That was enough. Every login attempt fails with a vague "authentication error" that doesn't mention time anywhere in the message. You check the DC's clock, compare it to an external reference, see the drift, correct it, and logins start working immediately. Six minutes of clock skew created an outage that looks exactly like a server crash or a credential problem. Time synchronization isn't a background detail — it's infrastructure, and NTP is the protocol that maintains it.
+
+## Why Synchronized Time Matters
+
+The clock skew authentication failure is dramatic, but it's not the only reason time matters. **Log correlation** depends on synchronized timestamps. When you're investigating a security incident and trying to reconstruct what happened across a firewall, a server, and a switch, the timestamps in their logs need to agree. If the firewall thinks it's 10:03:14 and the server thinks it's 10:07:41, you can't build a reliable timeline — events appear out of order, causation looks like correlation, and your forensic analysis is garbage. **Certificate validation** checks the current time against the certificate's "not before" and "not after" dates. A clock set to the wrong year will reject valid certificates or accept expired ones. **Scheduled tasks** — backups, replication, batch jobs — all depend on accurate local time. Two database servers that replicate at "midnight" but disagree on when midnight is will collide or miss their window.
+
+The pattern is simple: any system that makes decisions based on time needs accurate time. On a modern network, that's nearly every system.
+
+## NTP Hierarchy — Stratum Levels
+
+NTP organizes time sources into a hierarchy called strata. **Stratum 0** is the reference clock itself — an atomic clock, a GPS receiver, or a radio clock synchronized to a national time standard. These are hardware devices, not network servers. You don't query a Stratum 0 source over NTP.
+
+**Stratum 1** servers are directly connected to a Stratum 0 source. They read the hardware clock and serve that time over NTP to the network. Government agencies, universities, and major tech companies operate public Stratum 1 servers. NIST (the National Institute of Standards and Technology) runs several.
+
+**Stratum 2** servers synchronize to Stratum 1 servers and serve time to clients below them. **Stratum 3** servers sync to Stratum 2, and so on down to **Stratum 15**. Each hop adds a small amount of potential inaccuracy, but the drift at Stratum 3 or 4 is still measured in milliseconds — more than accurate enough for network infrastructure. **Stratum 16** means "unsynchronized" — the server has lost contact with its upstream source and its time is no longer trustworthy.
+
+In a typical enterprise network, your internal NTP server (often the primary domain controller in a Windows environment) syncs to an external Stratum 1 or Stratum 2 source over the internet, and every device on your network syncs to that internal server. This keeps external NTP traffic to a single connection and gives you a consistent time source even if the internet link goes down temporarily — the internal server continues serving its last-known good time until connectivity is restored.
+
+## NTP vs. SNTP
+
+Simple Network Time Protocol is a stripped-down version of NTP. It queries a time server and sets the local clock, but it doesn't implement the sophisticated algorithms NTP uses to account for network latency, jitter, and clock drift over time. NTP continuously adjusts the local clock in small increments to stay accurate between queries. SNTP just snaps the clock to whatever the server says and waits until the next query.
+
+For most client devices — workstations, phones, IoT devices — SNTP is fine. The precision difference is irrelevant when your accuracy requirement is "within a second or two." For servers, routers, and infrastructure devices where millisecond accuracy matters for log correlation and protocol timing, full NTP is the standard. Windows workstations use the Windows Time Service (w32tm), which behaves more like SNTP than full NTP. Linux servers typically run `chrony` or `ntpd` for full NTP implementation. The exam wants you to know that SNTP exists and is less precise — not that one is wrong and the other is right.
+
+## Configuration Basics
+
+NTP runs on **UDP port 123**. Configuring a client to use NTP typically means pointing it at one or more time servers. On a Cisco router: `ntp server 10.1.1.5`. On a Windows domain controller: `w32tm /config /manualpeerlist:"time.nist.gov" /syncfromflags:MANUAL`. On a Linux server: edit the `chrony.conf` or `ntp.conf` file and list the upstream servers.
+
+Best practice is to configure at least two NTP sources. NTP clients can compare responses from multiple servers and detect if one is providing bad time — a single source gives you no way to validate whether the answer is accurate. Public NTP pools like `pool.ntp.org` rotate through thousands of volunteer servers automatically and are the standard recommendation for external time sources.
+
+In a Windows Active Directory environment, the domain hierarchy handles NTP automatically. Workstations sync to their authenticating domain controller, domain controllers sync to the PDC emulator, and the PDC emulator syncs to an external source. If nobody configures that last step — the PDC emulator pointing to an external reference — the entire domain's time slowly drifts, and eventually Kerberos starts rejecting authentications. This is one of those "set it once during initial deployment and never think about it again until it breaks" configurations.
+
+## Common NTP Problems
+
+**Stratum too high.** A device reports Stratum 16 or "unsynchronized." Its upstream NTP source is unreachable, misconfigured, or itself unsynchronized. Trace the chain upstream until you find the broken link — a firewall blocking UDP 123, a server that was decommissioned, or a Stratum 1 source that went offline.
+
+**Gradual time drift.** A device slowly falls behind or ahead of the correct time. Its NTP source is reachable but the synchronization interval is too long, or the local clock's oscillator is particularly inaccurate (common in virtual machines whose virtual hardware clock doesn't keep time as well as physical hardware). Shortening the poll interval or enabling VM-specific time sync tools usually fixes it.
+
+**Kerberos and certificate failures from clock skew.** Already covered — the symptom is authentication or TLS errors that don't mention time. The fix is correcting the clock and ensuring NTP is working. The hard part is recognizing that time is the problem when the error messages point everywhere else.
+
+**Firewall blocking NTP.** UDP 123 is blocked outbound and the internal NTP server can't reach its external source. Time stays accurate for a while (NTP disciplines the local clock) but eventually drifts far enough to cause problems. The NTP service may still appear to be running — it just hasn't gotten a valid response in days.
+
+## Why This Matters in the Field
+
+NTP is a "set it and forget it" service until it breaks, and when it breaks, the symptoms disguise themselves as completely unrelated problems. Authentication fails. Certificates appear invalid. Logs don't correlate. Scheduled tasks fire at the wrong time. You'll check NTP configuration on every server you deploy, you'll verify it when troubleshooting authentication failures, and you'll include UDP 123 in firewall rules for every infrastructure device. It's one line of configuration that prevents an entire category of outages.
