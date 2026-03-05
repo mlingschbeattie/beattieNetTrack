@@ -1,0 +1,111 @@
+---
+title: Wireless Security and Configuration — Locking Down the Air
+description: WEP through WPA3, encryption protocols, Personal vs Enterprise authentication, SSID management, channel planning, site surveys, and the attacks that exploit wireless — securing the network you can't put walls around.
+slug: net-wireless-security
+track: network-engineer
+moduleId: net.implementation.wireless
+order: 2
+difficulty: Beginner
+estMinutes: 30
+tags: ["network+", "wireless", "WPA3", "802.1X", "RADIUS", "N10-009 2.2", "N10-008 2.2"]
+---
+
+## LESSON 2.2.2 — Wireless Security and Configuration
+
+## The Parking Lot Problem
+
+A wired network has a physical boundary — someone needs to get inside the building, find a live port, and plug in. A wireless network's boundary is wherever the signal reaches, and radio waves don't stop at walls. Your school's Wi-Fi is detectable from the parking lot, the sidewalk, and probably the Taco Bell across the street. Anyone with a laptop and five minutes of YouTube education can try to connect. Anyone with slightly more skill can capture the radio traffic passively without connecting at all. Wireless security isn't optional — it's the only thing preventing the airwaves from being a public invitation.
+
+The history of wireless security is a history of getting it wrong, getting burned, and trying again. Each generation of encryption was the standard until someone broke it, and the industry scrambled to replace it.
+
+## WEP — The Standard That Taught Us What Not to Do
+
+**Wired Equivalent Privacy** shipped with the original 802.11 standard in 1997. The name was aspirational: the goal was security equivalent to a wired connection. It did not deliver. WEP uses the RC4 stream cipher with either a 40-bit or 104-bit key, combined with a 24-bit initialization vector (IV). That IV is the problem. The IV space is small enough that IVs repeat after enough traffic is captured — and "enough" turned out to be an embarrassingly small amount. By 2001, researchers demonstrated that WEP could be cracked in under a minute with freely available tools. By the mid-2000s, cracking WEP was a college homework assignment.
+
+WEP is broken. Irreparably. If you encounter it on the exam, the answer is "replace it." If you encounter it in the field, the answer is also "replace it." There is no scenario in which WEP should be deployed on any network for any reason. You'll still find it on ancient equipment in closets that haven't been touched since the Bush administration — and that equipment needs a retirement party.
+
+## WPA — The Emergency Patch
+
+**Wi-Fi Protected Access** was the Wi-Fi Alliance's rush job to replace WEP before the full 802.11i security standard was finished. WPA uses **TKIP (Temporal Key Integrity Protocol)**, which wraps around the same RC4 cipher as WEP but adds per-packet key mixing, a longer IV, and a message integrity check (MIC) to prevent tampering. TKIP was designed to work on existing WEP-capable hardware with a firmware update — it was a band-aid, not a redesign.
+
+TKIP held up longer than WEP, but it was eventually compromised too. Attacks against TKIP's MIC and its key handling showed that it was a stopgap, not a solution. WPA with TKIP is deprecated. You shouldn't deploy it, but you'll see it on legacy devices and on the exam as a stepping stone between WEP and WPA2.
+
+## WPA2 — The Actual Fix (for a While)
+
+**WPA2** implements the full IEEE 802.11i standard and replaces TKIP with **AES-CCMP (Advanced Encryption Standard with Counter Mode CBC-MAC Protocol)**. AES is a block cipher — fundamentally more secure than RC4 — with 128-bit encryption by default. CCMP handles both encryption and message integrity in a single, efficient protocol. WPA2 was the wireless security standard from 2004 through the late 2010s, and it's still running on the majority of enterprise and consumer access points worldwide.
+
+WPA2 is solid, but not perfect. The **KRACK attack** (Key Reinstallation Attack), published in 2017, demonstrated that an attacker could manipulate the four-way handshake between a client and an AP to reinstall an already-used encryption key, enabling decryption of traffic. The vulnerability was in the protocol specification, not a specific implementation, which meant every WPA2 device was potentially affected. Vendors patched it, but the attack motivated the development of WPA3.
+
+## WPA3 — The Current Standard
+
+**WPA3** was released in 2018 and is required on all Wi-Fi 6 certified devices. The biggest improvements:
+
+**SAE (Simultaneous Authentication of Equals)** replaces the Pre-Shared Key (PSK) exchange with a zero-knowledge proof handshake. In WPA2, if an attacker captures the four-way handshake, they can run an offline brute-force attack against the password at their leisure. SAE makes offline attacks impossible — the attacker would have to interact with the AP for each guess, which is detectable and rate-limitable. Even weak passwords are significantly harder to crack under WPA3.
+
+**Forward secrecy** means that even if the password is eventually compromised, previously captured traffic can't be decrypted. Each session uses unique encryption keys that aren't derived from the password alone.
+
+**192-bit security suite** in WPA3-Enterprise provides stronger encryption for environments that handle sensitive data — government, healthcare, finance.
+
+WPA3 adoption is growing but not universal. Older devices don't support it, which means most networks run a **WPA2/WPA3 transition mode** that accepts both. The exam expects you to know the progression: WEP → WPA/TKIP → WPA2/AES → WPA3/SAE, and why each step was necessary.
+
+## Personal vs. Enterprise — Who Holds the Key
+
+Every WPA version has two authentication modes, and the difference between them is everything.
+
+**Personal (PSK / SAE).** One password, shared by everyone who connects. Your home Wi-Fi works this way — you give the password to guests, family members, and that one friend who saved it two years ago and still connects automatically every time they visit. Simple, zero infrastructure, but no per-user accountability. Everyone shares the same credential. If one person's device is compromised, or if a student writes the password on a whiteboard (they will), you change the password and reconfigure every device. It doesn't scale.
+
+**Enterprise (802.1X / RADIUS).** Each user authenticates with their own unique credentials — a username and password, a certificate, or both. The AP doesn't validate the credential itself; it passes the authentication to a **RADIUS (Remote Authentication Dial-In User Service)** server, which checks the user against a directory (Active Directory, LDAP, etc.) and tells the AP whether to allow or deny access. The AP is just the doorman. RADIUS is the bouncer checking the list.
+
+Enterprise mode gives you individual accountability (you know who's on the network), dynamic VLAN assignment (student authenticates and lands on VLAN 10, teacher authenticates and lands on VLAN 20, same AP), per-user encryption keys (compromising one user's session doesn't expose another's), and centralized revocation (disable an account and they're immediately off the wireless). It requires a RADIUS server and certificate infrastructure, which is real overhead, but every business and school network beyond trivial size should be running Enterprise.
+
+The exam loves this distinction. Personal = shared password, simple, small networks. Enterprise = 802.1X, RADIUS, per-user credentials, scalable.
+
+## SSID Configuration — Naming and Hiding
+
+The **SSID (Service Set Identifier)** is the name of the wireless network — the thing that shows up when you scan for Wi-Fi on your phone. A single AP can broadcast multiple SSIDs, each mapped to a different VLAN with different security policies. A school AP might broadcast "STUDENT" (VLAN 10, filtered internet, WPA2-Enterprise), "STAFF" (VLAN 20, full access, WPA2-Enterprise), and "GUEST" (VLAN 30, internet only, captive portal, no internal access). Same hardware, three networks.
+
+**Hidden SSIDs** — disabling the SSID broadcast so the network doesn't appear in scan results — is a setting you'll encounter and should understand is almost useless as a security measure. The SSID is still transmitted in probe requests, association frames, and other management traffic. Anyone running a wireless analyzer (Wireshark, Kismet, even some phone apps) sees the "hidden" SSID in seconds. Hiding the SSID discourages casual users from noticing the network, which has some marginal value, but it provides zero protection against anyone with intent. CompTIA calls this out as **security through obscurity** — it looks like security, costs nothing, and delivers almost nothing. Use it if you want, but never as your only measure.
+
+## Channel Selection and Interference
+
+Wireless APs don't pick their channels intelligently by default on every platform — and even when they do, auto-channel selection can make poor choices based on a snapshot of the RF environment that changes constantly. Understanding channel selection matters because bad channel planning causes more wireless performance problems than bad hardware.
+
+On 2.4 GHz, use channels **1, 6, and 11** — the only three that don't overlap with each other in the 20 MHz channel width used in North America. If you set an AP to channel 3, it partially overlaps with channels 1 and 6, creating co-channel interference that's worse than full overlap. Partial overlap means devices hear enough of the signal to know something is there but can't decode it cleanly, so they wait. Full overlap (same channel) at least lets devices use carrier sense to take turns. In a building with multiple APs on 2.4 GHz, assign 1, 6, and 11 in a honeycomb pattern so adjacent APs don't share a channel.
+
+On 5 GHz and 6 GHz, there are enough non-overlapping channels that you have flexibility. Wider channels reduce the available channels, so plan accordingly — 20 MHz channels give you the most non-overlapping options at the cost of throughput per client.
+
+**Co-channel interference (CCI)** happens when two APs use the same channel within range of each other. Devices hear both and contend for airtime honestly — each waits its turn, but turns take longer because the channel is shared. CCI reduces throughput but doesn't break things.
+
+**Adjacent channel interference (ACI)** happens when APs use overlapping (but not identical) channels. The resulting signal corruption increases retransmissions and errors. ACI is worse than CCI in most cases, which is why 1/6/11 spacing matters — never use channels 2, 3, 4, 5, 7, 8, 9, or 10 on 2.4 GHz.
+
+## Site Surveys — Designing with Data
+
+A **site survey** maps the RF environment before (or after) deploying APs so you know where to place them, which channels to assign, and what power levels to use. Walking a building with a laptop or tablet running survey software (Ekahau, NetSpot, or similar), you collect signal strength readings at dozens of points, and the software generates a heat map showing coverage areas, dead zones, and interference sources.
+
+**Predictive surveys** use floor plans and material types (drywall, concrete, glass) to estimate coverage before any hardware is installed. Good for initial planning, but not a substitute for validation.
+
+**Active surveys** measure real signal strength and throughput with APs already installed. This is where you confirm that the design actually works — or discover that the elevator shaft creates a dead zone the predictive model didn't catch.
+
+**Passive surveys** listen to all RF activity without connecting to any network, capturing signal-to-noise ratios from all nearby APs and interference sources. This shows you the full picture of the RF environment, including competing networks.
+
+In the real world, you do a predictive survey to design the deployment, install the APs, then run an active/passive survey to validate. Adjustments always follow — more power here, less power there, move this AP six feet to the left because the metal bookshelf is creating a reflection dead zone nobody predicted.
+
+## Rogue APs and Evil Twins — Threats on the Air
+
+A **rogue AP** is any access point connected to your network without authorization. The most common scenario isn't an attacker — it's someone (a well-meaning teacher, a department that doesn't want to submit a ticket) plugging a consumer Wi-Fi router into a network jack because their office coverage is bad. That rogue AP is now bridging your wired network to an uncontrolled wireless network with whatever default security the router shipped with (often WPA2-Personal with "password" as the password, or no security at all). It bypasses your enterprise security, your RADIUS authentication, your VLAN segmentation, and your firewall policies. One unauthorized access point can undo an entire security architecture.
+
+Detection: enterprise wireless controllers and wireless intrusion prevention systems (WIPS) scan for rogue APs by checking for unknown BSSIDs (the AP's MAC address) on the wired network. When detected, alarms fire and the rogue can be located and removed.
+
+An **evil twin** is a deliberate attack. The attacker sets up an AP that mimics a legitimate network — same SSID, same security type (or open), stronger signal. Devices see two networks with the same name and connect to the stronger one — which is the attacker's. From there, the attacker is the man-in-the-middle: they see all traffic, can inject content, and can capture credentials submitted over unencrypted connections. Evil twin attacks are trivially easy to set up with tools like a Wi-Fi Pineapple, and they're effective against any network that uses Personal (PSK) mode because the client has no way to verify the AP's identity.
+
+Enterprise (802.1X) provides some protection — the RADIUS server presents a certificate to the client during authentication, and a properly configured client will reject a certificate it doesn't trust. This is one more reason Enterprise mode matters beyond just user accountability.
+
+**MAC filtering** — allowing or denying devices based on their hardware MAC address — is another security-through-obscurity measure. MAC addresses are trivially spoofed (`ifconfig` or `netsh` and thirty seconds), so MAC filtering keeps out casual users but doesn't slow down anyone with purpose. Like hidden SSIDs, it's a layer you can add but never depend on.
+
+## Putting It Together — A School Wireless Deployment
+
+Take everything from this lesson and the previous one and imagine deploying wireless for a school building:
+
+You choose Wi-Fi 6 APs with 5 GHz primary service and 2.4 GHz fallback. You run a predictive site survey on the floor plan and place APs for overlapping coverage with no dead zones, then validate with an active survey post-installation. You assign 5 GHz channels using 20 MHz widths to maximize non-overlapping channels, staggering assignments so adjacent APs never share. You configure three SSIDs — STUDENT, STAFF, GUEST — each mapped to a different VLAN. Student and Staff use WPA2-Enterprise with 802.1X authentication against the district's Active Directory via a RADIUS server. Guest uses a captive portal with a daily rotating password posted at the front desk. You disable SSID broadcast on the Staff network for marginal obscurity. You enable rogue AP detection on the wireless controller. You configure WPA3 transition mode for WPA3-capable devices. You document everything — AP locations, channel assignments, power levels, SSID-to-VLAN mappings — in the network documentation.
+
+That's a real deployment. Every decision traces back to a concept from these two lessons: standard selection, band selection, channel planning, encryption protocol, authentication mode, SSID design, and threat mitigation. The hardware is the easy part. The design is where the skill lives.

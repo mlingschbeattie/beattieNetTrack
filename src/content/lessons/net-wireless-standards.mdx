@@ -1,0 +1,92 @@
+---
+title: Wireless Standards — The Alphabet Soup That Actually Matters
+description: 802.11a through 802.11ax, frequency bands, channel widths, MIMO, and the real-world throughput numbers nobody advertises — how Wi-Fi evolved and what each generation actually delivers.
+slug: net-wireless-standards
+track: network-engineer
+moduleId: net.implementation.wireless
+order: 1
+difficulty: Beginner
+estMinutes: 25
+tags: ["network+", "wireless", "802.11", "Wi-Fi 6", "N10-009 2.2", "N10-008 2.2"]
+---
+
+## LESSON 2.2.1 — Wireless Standards
+
+## The Lie on the Box
+
+You've seen it. A wireless router box at Best Buy screaming "AX6000" or "WiFi 6E — 9.6 Gbps!" in a font size that suggests you're buying a teleporter. You bring it home, set it up, run a speed test, and get 400 Mbps. On a good day. With the laptop sitting three feet from the router. That gap between the number on the box and the number on your screen isn't false advertising — technically. It's the difference between theoretical maximum throughput under laboratory conditions and what actually happens when radio waves travel through walls, furniture, your neighbor's microwave, and thirty other devices fighting for the same spectrum. Understanding that gap is the entire point of this lesson. The 802.11 standards define what's possible. Physics and your environment decide what you actually get.
+
+## The Frequency Bands — 2.4 GHz, 5 GHz, and 6 GHz
+
+Wireless networks operate on radio frequencies, and every Wi-Fi standard uses one or more of three frequency bands. The band determines range, speed, wall penetration, and how crowded the airspace is.
+
+**2.4 GHz** has been around since the original 802.11 standard in 1997. It offers the best range and the best wall penetration — lower-frequency radio waves travel farther and pass through solid objects more easily. The tradeoff is that the 2.4 GHz band is a warzone. Wi-Fi, Bluetooth, baby monitors, wireless keyboards, microwave ovens, and about a dozen other technologies all share this band. It also has only three non-overlapping channels in the US (1, 6, and 11), which means in a dense environment — an apartment building, a school — the interference is relentless. If you've ever wondered why your Wi-Fi tanks when someone in the break room heats up leftovers, the microwave operates at 2.45 GHz. Same neighborhood.
+
+**5 GHz** became available with 802.11a in 1999 and was adopted widely starting with 802.11n. It offers significantly more channels (up to 25 non-overlapping channels depending on regulatory domain and channel width), much less interference from non-Wi-Fi devices, and higher throughput. The cost is reduced range — higher-frequency signals attenuate faster over distance and don't penetrate walls as well. In a concrete-and-steel building, a 5 GHz signal might not make it two rooms over. In an open office with drywall, it does fine. Most modern enterprise deployments lean heavily on 5 GHz for performance and use 2.4 GHz as a coverage safety net.
+
+**6 GHz** was opened for Wi-Fi use in 2020 and is exclusive to Wi-Fi 6E and Wi-Fi 7 devices. It adds a massive chunk of clean spectrum — 1200 MHz of bandwidth compared to the roughly 500 MHz available in 5 GHz. More spectrum means more channels, wider channels, and less congestion. The tradeoff is the same as 5 GHz but more so: even shorter range, even worse wall penetration. 6 GHz is about raw speed in close-to-medium range — it's ideal for high-density deployments like conference rooms, lecture halls, or stadiums where APs are close to clients and throughput demand is high.
+
+## The Standards — a, b, g, n, ac, ax
+
+The IEEE 802.11 working group has been iterating on wireless standards for almost three decades. Each generation improved speed, range, or efficiency, and some were dead ends. Here's the timeline, stripped to what matters.
+
+**802.11b (1999)** operated at 2.4 GHz with a maximum throughput of 11 Mbps. It was the first standard that saw mass consumer adoption — the one that put "wireless" into the vocabulary of normal people. 11 Mbps was enough for web browsing and email in 1999. It is not enough for anything in the current decade.
+
+**802.11a (1999)** launched the same year as 802.11b but used the 5 GHz band with a maximum of 54 Mbps. Faster, less interference, but terrible range due to the higher frequency. It never saw wide consumer use — enterprise environments adopted it, but home users stuck with b because range mattered more than speed when the fastest internet connection was a 1.5 Mbps DSL line. The 802.11a story is a useful lesson: the technically superior standard doesn't always win if the market doesn't need it yet.
+
+**802.11g (2003)** gave the 2.4 GHz band a speed boost to 54 Mbps — matching 802.11a's speed but with 2.4 GHz range. It was backward-compatible with 802.11b devices, which was both a feature and a curse: if one 802.11b client connected to a g access point, the AP had to slow down its signaling to accommodate it, dragging performance for everyone. This "slowest common denominator" problem followed Wi-Fi for generations.
+
+**802.11n (Wi-Fi 4, 2009)** was the first major leap. It operates on both 2.4 GHz and 5 GHz (dual-band), introduced **MIMO (Multiple Input, Multiple Output)** — using multiple antennas to send and receive multiple data streams simultaneously — and supported channel bonding up to 40 MHz wide. Maximum theoretical throughput: 600 Mbps with four spatial streams. In reality, most consumer devices had two antennas and got 150–300 Mbps under ideal conditions. 802.11n was the standard that made streaming Netflix over Wi-Fi viable. It's still running on cheap IoT devices everywhere.
+
+**802.11ac (Wi-Fi 5, 2013)** moved to 5 GHz only, added **MU-MIMO (Multi-User MIMO)** for downlink (the AP could talk to multiple clients simultaneously instead of one at a time), channel widths up to 160 MHz, and higher-density modulation (256-QAM). Maximum theoretical throughput: 6.93 Gbps with eight spatial streams and 160 MHz channels. In practice, consumer devices with two or three streams and 80 MHz channels saw 400–900 Mbps. Still a massive improvement, and Wi-Fi 5 is the baseline for most enterprise APs in the field right now.
+
+**802.11ax (Wi-Fi 6 / Wi-Fi 6E, 2020)** operates on 2.4 GHz, 5 GHz, and (with 6E) 6 GHz. The headline improvement isn't raw speed for a single client — it's efficiency in dense environments. **OFDMA (Orthogonal Frequency Division Multiple Access)** lets the AP divide a channel into smaller sub-channels and serve multiple clients in a single transmission, instead of making them take turns. MU-MIMO was extended to uplink, not just downlink. **BSS Coloring** reduces interference between neighboring APs by tagging frames so devices can ignore signals from other networks on the same channel instead of waiting for them. **Target Wake Time (TWT)** lets devices schedule when they communicate with the AP, saving battery life on phones and IoT devices. Maximum theoretical throughput: 9.6 Gbps. Real-world single-client speeds top out around 1–2 Gbps, but in a room of fifty devices, Wi-Fi 6 handles the crowd better than anything before it.
+
+## Channel Width — Wider Isn't Always Better
+
+A channel is a slice of the frequency band. The wider the channel, the more data it can carry per transmission — but wider channels use more of the limited spectrum, leaving fewer non-overlapping channels available.
+
+On 2.4 GHz, the standard channel width is 20 MHz. You can bond to 40 MHz, but doing so consumes almost the entire 2.4 GHz band and leaves no room for neighboring networks. In practice, nobody runs 40 MHz channels on 2.4 GHz in a multi-AP environment — the interference is brutal.
+
+On 5 GHz, 20 MHz, 40 MHz, 80 MHz, and 160 MHz widths are available. Enterprise deployments typically use 20 or 40 MHz to maximize the number of non-overlapping channels. A 160 MHz channel delivers monster throughput for a single client but eats the spectrum for everyone else and is usually reserved for low-density, high-bandwidth scenarios.
+
+On 6 GHz, the same widths apply, but the 1200 MHz of available spectrum means you can run 160 MHz channels without starving your neighbors — there's room for seven non-overlapping 160 MHz channels.
+
+The exam will test this tradeoff: wider channels = more speed per client but fewer channels and more contention. The right answer in a high-density environment (school, hospital, stadium) is almost always narrower channels with more APs, not wider channels with fewer.
+
+## MIMO and MU-MIMO — More Antennas, More Streams
+
+**MIMO** uses multiple antennas on both the AP and the client to send parallel data streams over the same channel simultaneously. A "2x2" device has two transmit antennas and two receive antennas and supports two spatial streams. A "4x4" supports four. More streams, more throughput — but only if both the AP and the client support them. A 4x4 AP talking to a 2x2 phone gets two streams. The AP's two extra antennas don't help that specific client. They help when multiple 2x2 clients connect.
+
+**MU-MIMO (Multi-User MIMO)** lets the AP use its antenna array to talk to multiple clients at the same time, with each client getting a dedicated stream. Wi-Fi 5 introduced MU-MIMO on the downlink (AP to clients). Wi-Fi 6 added uplink MU-MIMO. The impact is felt in crowded environments — instead of the AP serving thirty clients one after another in rapid succession, it can handle several simultaneously. In a classroom of Chromebooks, MU-MIMO is the reason the network doesn't grind to a halt during test day.
+
+## Theoretical vs. Real-World Throughput
+
+The marketing numbers on the box represent the combined maximum theoretical throughput across all bands and all spatial streams under perfect lab conditions. Nobody lives in a lab.
+
+Real-world factors that crush theoretical throughput: distance from the AP (signal degrades with range), physical obstacles (every wall, floor, and metal filing cabinet absorbs or reflects signal), interference from other networks and devices on the same frequency, the number of clients sharing the AP's airtime, and the client's own antenna capabilities. A Wi-Fi 6 AP rated at 9.6 Gbps serving a classroom of 30 students with 2x2 Chromebooks through a cinder block wall is delivering maybe 50–150 Mbps per client.
+
+For the exam: know the maximum theoretical throughput for each standard. For the field: know that you'll never see it, plan your deployments around real-world estimates, and always validate with a site survey.
+
+| Standard | Band(s) | Max Theoretical | Real-World Range |
+|---|---|---|---|
+| 802.11b | 2.4 GHz | 11 Mbps | 2–5 Mbps |
+| 802.11a | 5 GHz | 54 Mbps | 20–30 Mbps |
+| 802.11g | 2.4 GHz | 54 Mbps | 20–30 Mbps |
+| 802.11n (Wi-Fi 4) | 2.4/5 GHz | 600 Mbps | 100–300 Mbps |
+| 802.11ac (Wi-Fi 5) | 5 GHz | 6.93 Gbps | 400–900 Mbps |
+| 802.11ax (Wi-Fi 6/6E) | 2.4/5/6 GHz | 9.6 Gbps | 1–2 Gbps |
+
+## Choosing the Right Standard for the Environment
+
+This isn't a question with one correct answer — it depends on the deployment. A few decision patterns:
+
+A warehouse with IoT sensors that transmit tiny packets infrequently? 2.4 GHz 802.11n covers the range at minimal cost, and the bandwidth demand is trivial.
+
+A high school with one-to-one Chromebook programs and 30 students per room? Wi-Fi 6 on 5 GHz with 20 or 40 MHz channels, high AP density, and MU-MIMO to handle the crowd. OFDMA shines here — lots of small, bursty web traffic.
+
+A conference room with 4K video conferencing and wireless screen sharing? Wi-Fi 6E on 6 GHz for the clean spectrum and wide channels, with 5 GHz fallback for older devices.
+
+A hospital with a mix of legacy medical devices, staff phones, and patient entertainment? Dual-band deployment with careful channel planning, because some of those medical devices are running 802.11g firmware from 2008 and aren't getting upgraded. Backward compatibility isn't optional when the IV pump won't connect on 5 GHz.
+
+The pattern: match the standard and band to the density, distance, device capabilities, and throughput requirements. Overspending on the latest standard in a low-demand environment is waste. Under-planning AP density in a high-demand environment is failure. The standard is the starting point — the site survey is where deployment actually gets designed.

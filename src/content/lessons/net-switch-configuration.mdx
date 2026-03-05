@@ -1,0 +1,272 @@
+---
+title: Switch Configuration — Hands on the CLI
+description: Initial setup, hostname and passwords, SSH access, interface settings, VLANs from the command line, trunks, and the show commands that tell you what's actually happening — the first real configuration you'll do on managed network hardware.
+slug: net-switch-configuration
+track: network-engineer
+moduleId: net.implementation.switching
+order: 3
+difficulty: Beginner
+estMinutes: 30
+tags: ["network+", "switching", "CLI", "VLANs", "trunking", "N10-009 2.1", "N10-008 2.1"]
+---
+
+## LESSON 2.1.3 — Switch Configuration
+
+## The Console Cable Moment
+
+Every networking career has this scene. You pull a brand-new switch out of the box, rack it, power it on, and stare at it. No IP address. No web interface. No way to reach it over the network because it hasn't been configured to exist on one yet. The only way in is a console cable — that light-blue rollover cable with an RJ-45 on one end and a DB-9 or USB on the other — plugged directly into the switch's console port and connected to a terminal emulator on your laptop. PuTTY, Tera Term, SecureCRT, whatever you prefer. 9600 baud, 8 data bits, no parity, 1 stop bit, no flow control. You hit Enter and a blank prompt appears. That's it. You're talking directly to the switch's operating system, and everything that happens next is on you.
+
+This is where the concepts from the last two lessons become real. You learned how switches think — MAC tables, forwarding decisions, collision and broadcast domains, STP. You learned what VLANs are and why they matter. Now you configure them. Every command in this lesson is something you'll type on actual hardware in the lab and on the job.
+
+## Initial Setup — Hostname and Passwords
+
+Out of the box, the switch has no hostname (it just says "Switch"), no passwords, and no encryption on anything. First thing you fix: identity and access.
+
+```
+Switch> enable
+Switch# configure terminal
+Switch(config)# hostname BLDG1-SW01
+BLDG1-SW01(config)#
+```
+
+The hostname is cosmetic but operational — when you're SSH'd into four switches simultaneously, "Switch" on every terminal tab is useless. Name them by location and function. BLDG1-SW01 tells you building 1, switch 01. That convention saves you at 2 AM when something is broken and you're bouncing between devices.
+
+Next, passwords. The `enable` password protects privileged EXEC mode — the mode where you can change configuration. Never use the `enable password` command; it stores the password in plaintext in the config file. Always use `enable secret`, which hashes it with MD5 (or better, with a Type 9 scrypt hash on newer IOS versions):
+
+```
+BLDG1-SW01(config)# enable secret Tr0ub4dor&3
+```
+
+Every line into the switch needs a password. The console port:
+
+```
+BLDG1-SW01(config)# line console 0
+BLDG1-SW01(config-line)# password ConsolePass1
+BLDG1-SW01(config-line)# login
+```
+
+And the virtual terminal lines for remote access (Telnet and SSH):
+
+```
+BLDG1-SW01(config)# line vty 0 15
+BLDG1-SW01(config-line)# password VtyPass1
+BLDG1-SW01(config-line)# login
+```
+
+Those passwords are still plaintext in the running config. Run `service password-encryption` to apply a weak (Type 7) encryption — it won't stop anyone with five seconds and a decryption tool, but it prevents shoulder-surfing the config file:
+
+```
+BLDG1-SW01(config)# service password-encryption
+```
+
+A message-of-the-day banner on the switch isn't decoration — it's legal protection. A banner stating that the device is private property and unauthorized access is prohibited establishes that anyone connecting has been warned. Without it, prosecution for unauthorized access gets legally complicated:
+
+```
+BLDG1-SW01(config)# banner motd # Authorized access only. All activity is logged. #
+```
+
+## Console and SSH Access — Kill Telnet, Use SSH
+
+Telnet sends everything — including your passwords — in plaintext across the network. Anyone running a packet capture on the same segment sees your credentials in clear text. Telnet was acceptable in the 1990s when networks were trusted and packet sniffers were expensive. Neither of those things is true anymore.
+
+SSH (Secure Shell) encrypts the entire session. Setting it up requires a few more steps because the switch needs a hostname, a domain name, and an RSA key pair:
+
+```
+BLDG1-SW01(config)# ip domain-name beattielab.local
+BLDG1-SW01(config)# crypto key generate rsa modulus 2048
+BLDG1-SW01(config)# ip ssh version 2
+```
+
+Then lock the VTY lines to SSH only — no Telnet allowed:
+
+```
+BLDG1-SW01(config)# line vty 0 15
+BLDG1-SW01(config-line)# transport input ssh
+BLDG1-SW01(config-line)# login local
+```
+
+The `login local` command tells the switch to authenticate against local usernames instead of a simple line password. Create at least one local user:
+
+```
+BLDG1-SW01(config)# username admin privilege 15 secret AdminPass1
+```
+
+Privilege level 15 gives full access. In production, you'd integrate with a RADIUS or TACACS+ server for centralized authentication, but local accounts are your fallback and your lab default.
+
+## Interface Configuration — Speed, Duplex, Description
+
+Every physical port on the switch is an interface you can configure. Enter interface configuration mode by specifying the interface name:
+
+```
+BLDG1-SW01(config)# interface GigabitEthernet0/1
+BLDG1-SW01(config-if)#
+```
+
+Three settings you'll touch constantly:
+
+**Speed and duplex.** By default, interfaces auto-negotiate both. Auto-negotiation works most of the time — until it doesn't. A duplex mismatch (one side full, the other half) causes terrible performance with climbing error counters. If you're connecting to a device that doesn't negotiate properly (some older IP phones, industrial equipment), set both sides manually to match:
+
+```
+BLDG1-SW01(config-if)# speed 1000
+BLDG1-SW01(config-if)# duplex full
+```
+
+In a standard office environment with modern endpoints, leave auto-negotiation alone and only override it when you're troubleshooting a mismatch.
+
+**Description.** Label the port. Every port. Future you — or the next tech — will thank you when staring at a 48-port config trying to figure out what's plugged into Gi0/37:
+
+```
+BLDG1-SW01(config-if)# description RM-210-PC-TEACHER
+```
+
+**Shutting down unused ports.** Security baseline: every port that doesn't have a device connected should be administratively shut down. An open, active port with no device is an invitation:
+
+```
+BLDG1-SW01(config-if)# shutdown
+```
+
+To configure a range of interfaces at once (say, ports 25 through 48 are all unused):
+
+```
+BLDG1-SW01(config)# interface range GigabitEthernet0/25 - 48
+BLDG1-SW01(config-if-range)# shutdown
+BLDG1-SW01(config-if-range)# description UNUSED
+```
+
+## VLAN Creation and Port Assignment
+
+You learned what VLANs are. Here's how you make them. VLANs are created in global configuration mode:
+
+```
+BLDG1-SW01(config)# vlan 10
+BLDG1-SW01(config-vlan)# name CLASSROOM
+BLDG1-SW01(config-vlan)# exit
+BLDG1-SW01(config)# vlan 20
+BLDG1-SW01(config-vlan)# name ADMIN
+BLDG1-SW01(config-vlan)# exit
+BLDG1-SW01(config)# vlan 30
+BLDG1-SW01(config-vlan)# name SECURITY-CAMS
+BLDG1-SW01(config-vlan)# exit
+BLDG1-SW01(config)# vlan 999
+BLDG1-SW01(config-vlan)# name PARKING-LOT
+BLDG1-SW01(config-vlan)# exit
+```
+
+VLAN 999 is the dead VLAN — no routed interface, no connectivity. That's where unused ports go.
+
+Assigning a port to a VLAN is done in interface configuration mode. Set the port as an access port, then assign the VLAN:
+
+```
+BLDG1-SW01(config)# interface GigabitEthernet0/1
+BLDG1-SW01(config-if)# switchport mode access
+BLDG1-SW01(config-if)# switchport access vlan 10
+BLDG1-SW01(config-if)# description RM-210-PC-TEACHER
+```
+
+That port now belongs to VLAN 10. Any device plugged into it lands in the CLASSROOM VLAN and can only communicate with other VLAN 10 devices at Layer 2. To assign a range of classroom ports:
+
+```
+BLDG1-SW01(config)# interface range GigabitEthernet0/1 - 12
+BLDG1-SW01(config-if-range)# switchport mode access
+BLDG1-SW01(config-if-range)# switchport access vlan 10
+```
+
+Assign unused ports to the parking lot:
+
+```
+BLDG1-SW01(config)# interface range GigabitEthernet0/25 - 48
+BLDG1-SW01(config-if-range)# switchport mode access
+BLDG1-SW01(config-if-range)# switchport access vlan 999
+BLDG1-SW01(config-if-range)# shutdown
+```
+
+## Trunk Configuration
+
+When you need VLANs to span between switches — and you almost always do — you configure a trunk. The uplink port between two switches needs to carry traffic for all (or specific) VLANs across a single physical link using 802.1Q tagging:
+
+```
+BLDG1-SW01(config)# interface GigabitEthernet0/48
+BLDG1-SW01(config-if)# switchport mode trunk
+BLDG1-SW01(config-if)# switchport trunk allowed vlan 10,20,30
+BLDG1-SW01(config-if)# switchport trunk native vlan 99
+BLDG1-SW01(config-if)# description TRUNK-TO-BLDG1-SW02
+```
+
+Three things happening here. `switchport mode trunk` forces the port into trunking — no negotiation, it's a trunk. `switchport trunk allowed vlan` restricts the trunk to only the VLANs that need to cross it — don't carry VLANs you don't need. `switchport trunk native vlan 99` changes the native VLAN away from the default VLAN 1, which you should do on every trunk as a security best practice. Make sure the other side matches — native VLAN mismatch will cause traffic to land in the wrong VLAN.
+
+On the other switch, the same interface configuration — identical allowed VLANs, identical native VLAN. If they don't match, you'll spend the evening figuring out why half your devices work and the other half don't.
+
+## Saving Your Configuration — The Copy That Matters
+
+Everything you've typed so far lives in **running-config** — the active configuration in RAM. If the switch loses power or gets rebooted right now, all of it is gone. The running-config is what the switch is doing. The **startup-config** is what the switch will load when it boots. You need to copy the running config to startup:
+
+```
+BLDG1-SW01# copy running-config startup-config
+```
+
+Or the shorthand that every network engineer types on autopilot:
+
+```
+BLDG1-SW01# copy run start
+```
+
+The switch will prompt for a destination filename — just press Enter to confirm. This one command is the difference between a configured switch and an expensive paperweight after a power cycle. Develop the habit of running it after every change session. The horror stories of techs who spent two hours configuring a switch and then lost power without saving are not exaggerations — they are rites of passage.
+
+## Show Commands — Reading the Switch's Mind
+
+Configuration is half the job. Verification is the other half. You don't assume your config is working; you verify it. These are the show commands you'll use daily:
+
+**`show running-config`** displays the entire active configuration. It's the canonical reference for what the switch is doing right now. Pipe it through filters to find what you need: `show run | include vlan`, `show run | section interface GigabitEthernet0/1`.
+
+**`show vlan brief`** shows every VLAN on the switch and which ports are assigned to each one. When someone can't reach the network, this is the first place you check — is their port in the right VLAN?
+
+```
+BLDG1-SW01# show vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- ---------------------------
+1    default                          active    Gi0/13, Gi0/14...
+10   CLASSROOM                        active    Gi0/1, Gi0/2, Gi0/3...
+20   ADMIN                            active    Gi0/15, Gi0/16
+30   SECURITY-CAMS                    active    Gi0/20, Gi0/21, Gi0/22
+999  PARKING-LOT                      active    Gi0/25, Gi0/26...
+```
+
+**`show interfaces`** gives detailed information about a specific interface — status, speed, duplex, error counters, input/output rates. When a port is misbehaving, this is where you look:
+
+```
+BLDG1-SW01# show interfaces GigabitEthernet0/1
+```
+
+CRC errors, runts, giants, input errors, output errors — all visible here. High error counts mean physical layer problems (bad cable, bad SFP, bad NIC) or duplex mismatch.
+
+**`show mac address-table`** shows the Layer 2 forwarding table — which MAC addresses the switch has learned and on which ports. When a device can't communicate, check if the switch even knows it exists:
+
+```
+BLDG1-SW01# show mac address-table
+```
+
+If the MAC isn't in the table, the switch has never seen a frame from that device. Check the cable, check the port status, check if the port is in the right VLAN.
+
+**`show interfaces trunk`** displays all active trunk ports, the native VLAN, and the allowed VLANs on each trunk. When inter-switch VLAN traffic isn't working, this tells you if the trunk is up and if the VLAN is being carried:
+
+```
+BLDG1-SW01# show interfaces trunk
+```
+
+## The Boot-to-Production Workflow
+
+Putting it all together, here's the sequence you'd walk through on a fresh switch deployment:
+
+1. Console in, enter privileged mode, enter global config.
+2. Set the hostname. Set the enable secret. Set console and VTY passwords. Enable password encryption. Set the MOTD banner.
+3. Configure the domain name, generate RSA keys, enable SSH v2, lock VTY lines to SSH only, create a local admin account.
+4. Create your VLANs with meaningful names.
+5. Assign access ports to VLANs. Configure descriptions on every port.
+6. Configure trunk ports with allowed VLANs and a non-default native VLAN.
+7. Shut down all unused ports and assign them to the dead VLAN.
+8. Assign a management IP to the switch (typically an SVI on a management VLAN) so you can reach it remotely.
+9. `copy run start`.
+10. Verify with `show vlan brief`, `show interfaces trunk`, `show running-config`.
+
+That's the foundation. Every managed switch deployment — a 24-port in a classroom closet or a 48-port in a data center rack — starts with this same sequence. The specifics change (port counts, VLAN schemes, uplink types), but the process doesn't. Get comfortable with it now, because you'll do it hundreds of times.
