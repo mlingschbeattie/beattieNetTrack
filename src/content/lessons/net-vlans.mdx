@@ -1,0 +1,75 @@
+---
+title: VLANs — Splitting One Switch Into Many Networks
+description: What VLANs are, why they exist, how tagging and trunking work, and the inter-VLAN routing that connects them — the tool that gives you network segmentation without buying more hardware.
+slug: net-vlans
+track: network-engineer
+moduleId: net.implementation.switching
+order: 2
+difficulty: Beginner
+estMinutes: 25
+tags: ["network+", "VLANs", "802.1Q", "trunking", "N10-009 2.1", "N10-008 2.1"]
+---
+
+## The Network That Needed Walls
+
+The school has one 48-port switch in the wiring closet. Classrooms, the front office, and the security cameras all plug into it. Without VLANs, every device is in the same broadcast domain — a printer discovery broadcast from Room 210 reaches the security DVR, the front desk workstation, and every classroom. More importantly, a student on a classroom PC is on the same Layer 2 network as the attendance system and the security cameras. There's no segmentation, no isolation, no way to apply different policies to different groups. The fix isn't buying three separate switches — that's expensive and inflexible. The fix is VLANs. You take that single physical switch and carve it into three logical switches: VLAN 10 for classrooms, VLAN 20 for administration, VLAN 30 for security cameras. Ports assigned to VLAN 10 can only talk to other ports on VLAN 10. A broadcast on VLAN 20 never reaches VLAN 10. Same hardware, three isolated networks. That's the entire concept, and it's one of the most important tools in network design.
+
+## What a VLAN Actually Is
+
+A Virtual Local Area Network is a logical subdivision of a switch that creates a separate broadcast domain. Ports assigned to the same VLAN behave as if they're on their own switch — they share broadcast traffic, they can communicate at Layer 2, and they're isolated from ports on other VLANs. A device on VLAN 10 cannot reach a device on VLAN 20 without a router, even if both devices are plugged into the same physical switch and are six inches apart.
+
+VLAN IDs range from 1 to 4094. VLAN 1 is the default — every port on a switch starts in VLAN 1 out of the box. VLANs 1002–1005 are reserved for legacy protocols (FDDI and Token Ring) and can't be used. In practice, most organizations use VLANs in the range of 2–999 or 2–4094 depending on their naming conventions. Best practice is to stop using VLAN 1 for production traffic — it's the default, it's well-known, and leaving management traffic or user traffic on it is a security shortcut you'll eventually regret.
+
+## Access Ports vs. Trunk Ports
+
+An **access port** belongs to a single VLAN and connects to an end device — a workstation, a printer, an AP, a camera. When a frame enters an access port, the switch assigns it to that port's VLAN internally. When a frame leaves an access port, it's a normal Ethernet frame with no VLAN tagging. The end device has no idea it's on a VLAN. It just sees a network connection.
+
+A **trunk port** carries traffic for multiple VLANs simultaneously, typically between switches or between a switch and a router. Because frames from multiple VLANs share the same physical link, they need a way to identify which VLAN each frame belongs to. That's where tagging comes in.
+
+The mental model: access ports are doors to one room. Trunk ports are hallways that connect rooms across buildings.
+
+## 802.1Q Tagging
+
+**IEEE 802.1Q** is the standard for VLAN tagging on trunk links. When a frame travels across a trunk port, the switch inserts a 4-byte tag into the Ethernet frame header between the source MAC address and the EtherType field. That tag contains the VLAN ID, telling the switch on the other end which VLAN the frame belongs to. The receiving switch reads the tag, strips it, and forwards the frame to the correct VLAN's ports.
+
+The tag is only present on trunk links. When a frame exits an access port destined for an end device, the tag is removed. End devices never see 802.1Q tags in normal operation.
+
+The **native VLAN** is a special case on trunk ports. Frames belonging to the native VLAN are sent across the trunk **untagged**. The receiving switch sees an untagged frame on a trunk port and assigns it to its own native VLAN. By default, the native VLAN is VLAN 1 on both sides. If the native VLAN doesn't match between two switches — one side set to VLAN 1 and the other to VLAN 99 — frames end up in the wrong VLAN, causing connectivity issues and potential security vulnerabilities. Native VLAN mismatch is one of the most common trunk misconfigurations, and modern switches will log a warning about it. Best practice: change the native VLAN to something other than VLAN 1 and make sure it matches on both ends of every trunk.
+
+## Inter-VLAN Routing — Connecting the Islands
+
+VLANs are isolated by design. A device on VLAN 10 (10.1.10.0/24) can't reach a device on VLAN 20 (10.1.20.0/24) at Layer 2 — the broadcast domains are separate. If they need to communicate (and they usually do — classroom PCs need to reach the admin file server), you need a router to route between the VLANs. Two approaches:
+
+**Router-on-a-stick.** A single router interface connects to the switch via a trunk port. The router creates **subinterfaces** — virtual interfaces, one per VLAN — each configured with the gateway IP for that VLAN. Subinterface Gi0/0.10 handles VLAN 10 (10.1.10.1), subinterface Gi0/0.20 handles VLAN 20 (10.1.20.1). The trunk carries tagged traffic for all VLANs, and the router routes between them. It works, it's simple to set up, and it's the textbook method the exam loves. The limitation: all inter-VLAN traffic funnels through a single physical router interface. In a small network, that's fine. In a large one, that link becomes a bottleneck.
+
+**Layer 3 switching.** A multilayer switch performs routing internally using hardware ASICs — no external router needed. You create a **Switched Virtual Interface (SVI)** for each VLAN on the switch itself: `interface vlan 10` with IP 10.1.10.1, `interface vlan 20` with IP 10.1.20.1. The switch routes between VLANs at wire speed because the routing is done in hardware, not in software on a separate device. This is the standard approach in enterprise networks. Almost every managed switch sold in the last decade supports Layer 3 routing. Router-on-a-stick is for labs and very small deployments; Layer 3 switching is for everything else.
+
+## Voice VLANs
+
+IP phones need their own VLAN — separate from user data traffic — so that voice can be prioritized with QoS without affecting data policies, and so the voice infrastructure is isolated for security and management. Most enterprise IP phones have a built-in switch: the phone plugs into the wall jack, and the PC plugs into the back of the phone. One cable run carries both.
+
+A **voice VLAN** is configured on the access port alongside the data VLAN. The switch port assignment might look like: `switchport access vlan 10` (data) and `switchport voice vlan 50` (voice). The phone negotiates with the switch (typically via CDP or LLDP), learns that it should tag its traffic with VLAN 50, and does so. The PC's traffic passes through the phone untagged and lands on VLAN 10. One physical port, two VLANs, two isolated traffic streams. QoS policies on VLAN 50 prioritize voice packets, ensuring call quality even when the data VLAN is congested.
+
+## VLAN Best Practices
+
+**Don't use VLAN 1 for production.** It's the default, it carries control traffic (CDP, VTP, STP BPDUs) by default, and it's the first VLAN attackers target. Create dedicated VLANs for each purpose.
+
+**Match native VLANs on both sides of every trunk.** Native VLAN mismatches cause traffic leaks and are a common source of VLAN hopping attacks.
+
+**Assign unused ports to a dead VLAN.** Create a VLAN (say VLAN 999, labeled "parking lot") with no routed interface and no connectivity. Assign every unused switch port to it and shut the port down. If someone plugs into an unused jack, they land in an isolated VLAN that goes nowhere.
+
+**Document your VLAN scheme.** VLAN IDs, names, subnets, and purposes should be in a centralized document. When someone three years from now needs to add a device and doesn't know what VLAN 37 is, the documentation answers it.
+
+## Common VLAN Misconfigurations
+
+**Wrong VLAN assignment.** A workstation gets plugged into a port assigned to the wrong VLAN. The device gets a DHCP address from the wrong scope (or no address if there's no DHCP on that VLAN), and the user can't reach their resources. Check `show vlan brief` and verify the port assignment.
+
+**Trunk not formed.** Two switches are connected but VLANs aren't extending between them because the link isn't trunking. One side is set to access mode, or DTP negotiation failed. Check `show interfaces trunk` on both sides.
+
+**VLAN not allowed on trunk.** By default, a trunk carries all VLANs. But if someone applied `switchport trunk allowed vlan` to restrict the trunk to specific VLANs and forgot to include the new one, traffic for that VLAN won't cross. Check the allowed VLAN list.
+
+**No inter-VLAN routing.** VLANs are configured, devices have addresses, but they can't reach other VLANs because nobody configured the gateway — no SVI on the Layer 3 switch, no router subinterface, no route. The devices are isolated by design, and the routing that's supposed to connect them doesn't exist yet.
+
+## Why This Matters in the Field
+
+VLANs are the primary tool for network segmentation in every organization you'll work in. They separate departments, isolate IoT devices, protect management interfaces, prioritize voice traffic, and contain broadcast domains to manageable sizes. You'll create VLANs, assign ports, configure trunks, and troubleshoot inter-VLAN routing on a weekly basis. When security policies require that cameras can't reach workstations and workstations can't reach servers directly, VLANs are how you implement that — same switches, different logical networks. The physical topology doesn't change. The logical topology does. That's the power of the technology, and it's one of the first things you'll configure on any new deployment.

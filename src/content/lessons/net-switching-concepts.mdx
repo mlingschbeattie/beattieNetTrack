@@ -1,0 +1,65 @@
+---
+title: Switching Concepts — How Switches Actually Think
+description: MAC address tables, frame forwarding decisions, broadcast and collision domains, duplex, and Spanning Tree Protocol — the Layer 2 intelligence that makes modern LANs work.
+slug: net-switching-concepts
+track: network-engineer
+moduleId: net.implementation.switching
+order: 1
+difficulty: Beginner
+estMinutes: 25
+tags: ["network+", "switching", "STP", "N10-009 2.1", "N10-008 2.1"]
+---
+
+## The Switch That Remembers
+
+Plug a new workstation into a switch port and open a browser. Within seconds, the switch knows the workstation's MAC address and which port it's connected to. It didn't need configuration. Nobody told it. It learned — by watching. That single behavior, repeated millions of times per second across every port, is what makes a switch fundamentally different from a hub, and it's the reason modern LANs work at the speeds they do. A hub receives a frame and copies it out every port. A switch receives a frame and sends it only where it needs to go. That difference is the foundation of everything in this lesson, and everything you'll configure on a managed switch from this point forward.
+
+## The MAC Address Table — Learning and Forwarding
+
+Every switch maintains a **MAC address table** (also called a CAM table — Content Addressable Memory). This table maps MAC addresses to switch ports. When a frame arrives on port 1 with a source MAC of AA:BB:CC:DD:EE:01, the switch records the mapping: "AA:BB:CC:DD:EE:01 is on port 1." It doesn't need to be told. It reads the source MAC on every incoming frame and updates the table automatically. Entries age out after a timeout (typically 300 seconds) if no new frames arrive from that address.
+
+When a frame needs to be forwarded, the switch reads the **destination MAC** and checks the table. Three outcomes are possible:
+
+**Forwarding.** The destination MAC is in the table, mapped to a specific port. The switch sends the frame out that port only. This is the normal, efficient operation — one frame, one destination port, no wasted bandwidth.
+
+**Filtering.** The destination MAC is in the table and it's on the same port the frame arrived on. The switch drops the frame — the source and destination are already on the same segment and don't need the switch's help. This prevents unnecessary traffic from being forwarded.
+
+**Flooding.** The destination MAC is not in the table — the switch has never seen that address before or the entry has aged out. The switch sends the frame out every port except the one it arrived on. This is also how broadcast frames (destination FF:FF:FF:FF:FF:FF) are handled — flooded to all ports. Flooding is expensive in bandwidth terms, which is why the table exists: the more the switch learns, the less it needs to flood.
+
+When you run `show mac address-table` on a managed switch, you see every learned mapping. That table is your Layer 2 map of the network. When a device can't communicate, check if the switch has its MAC in the table and on the correct port.
+
+## Collision Domains and Broadcast Domains
+
+A **collision domain** is the set of devices that can collide with each other when transmitting simultaneously. On a hub, every port shares one collision domain — if two devices transmit at the same time, the signals collide and both transmissions are destroyed. On a switch, each port is its own collision domain. The switch buffers frames from each port independently, so two devices on different ports can transmit simultaneously without interfering. This is the primary reason switches replaced hubs — they eliminated collisions by microsegmenting the network.
+
+A **broadcast domain** is the set of devices that receive a broadcast frame. By default, a switch is a single broadcast domain — a broadcast sent by any device reaches every other device on the switch. Routers break broadcast domains. VLANs break broadcast domains on a switch (covered in the next lesson). The distinction matters for scale: a broadcast domain with 20 devices is fine. A broadcast domain with 2,000 devices has so much broadcast traffic — ARP requests, DHCP discovers, NetBIOS announcements — that it degrades performance for everyone. Controlling broadcast domain size is one of the primary reasons networks use VLANs and routers.
+
+## Half Duplex vs. Full Duplex
+
+**Half duplex** means a device can transmit or receive, but not both at the same time. Old hub-based networks were half duplex by necessity — shared media meant only one device could talk at a time without causing a collision. CSMA/CD (Carrier Sense Multiple Access with Collision Detection) was the protocol that managed access: listen before talking, and if you detect a collision, back off and try again.
+
+**Full duplex** means a device can transmit and receive simultaneously. On a switch, every port that connects to a single device (not a hub) can operate in full duplex because the switch's internal fabric handles each direction independently. Full duplex effectively doubles the available bandwidth — a 1 Gbps port can push 1 Gbps in each direction at the same time. CSMA/CD is disabled in full duplex because collisions can't occur.
+
+Most modern connections auto-negotiate speed and duplex. **Duplex mismatch** is one of the classic switch troubleshooting scenarios: one side negotiates full duplex, the other side negotiates half (usually because of a misconfigured manual setting). The result is a connection that technically works but performs terribly — high latency, excessive errors, and late collisions visible in the port counters. If a port is running slower than it should and the error counters are climbing, check duplex settings on both sides.
+
+## Spanning Tree Protocol — Preventing Loops
+
+Redundancy means multiple paths between switches. Multiple paths are good for resilience — if one link fails, traffic takes the other. But multiple active paths in a Layer 2 network create loops, and Layer 2 has no TTL mechanism to kill looping frames. A broadcast frame enters the loop and circulates forever, multiplying at every junction. Within seconds, the network is saturated and every device is unreachable. This is a **broadcast storm**, and it will take down a network faster than almost any other failure. If you've never seen one, you will, and you'll remember it.
+
+**Spanning Tree Protocol (STP, IEEE 802.1D)** prevents loops by logically disabling redundant paths. Here's how it works:
+
+**Root bridge election.** Every switch in the network originates **BPDUs (Bridge Protocol Data Units)** — special frames that carry STP information. Each switch has a Bridge ID composed of a priority value and its MAC address. The switch with the lowest Bridge ID becomes the **root bridge** — the center of the spanning tree. All path calculations reference the root. By default, priority is 32768 on every switch, so the election comes down to the lowest MAC address — which is essentially random. In production, you set the priority manually to ensure the root bridge is the most centrally located, highest-performance switch. Letting STP pick the root randomly based on MAC address is a beginner mistake that leads to suboptimal traffic paths.
+
+**Port roles.** Once the root is elected, every other switch calculates its shortest path to the root. The port with the best path becomes the **root port** — every non-root switch has exactly one. On each network segment, the switch port with the best path to the root becomes the **designated port**. All other ports that would create a loop become **blocked ports** — they're up electrically but don't forward traffic. The result: one loop-free path to the root from everywhere in the network.
+
+**Port states.** In classic STP, a port transitions through five states: **Blocking** (receives BPDUs but doesn't forward frames), **Listening** (participates in the election process), **Learning** (populates the MAC table but still doesn't forward), **Forwarding** (fully operational), and **Disabled** (administratively shut down). The transition from Blocking to Forwarding takes approximately 30–50 seconds by default. During that time, the port is up but not passing traffic. You plug a workstation into a switch, the link light comes on, and the user stares at "No network" for 30 seconds while STP moves through its states. This delay is the tradeoff for loop prevention.
+
+## RSTP and PortFast — Making STP Less Painful
+
+**Rapid Spanning Tree Protocol (RSTP, IEEE 802.1w)** improves convergence dramatically. RSTP reduces the number of port states to three: **Discarding** (combines Blocking and Disabled), **Learning**, and **Forwarding**. It introduces new port roles and an active handshake mechanism between switches that allows ports to transition to Forwarding in seconds instead of 30–50 seconds. RSTP is backward-compatible with classic STP and is the standard in modern networks. If you're configuring a switch and it offers both, use RSTP.
+
+**PortFast** is a Cisco feature (with equivalents on other vendors) that allows a port to skip the Listening and Learning states and transition directly to Forwarding. It's designed for edge ports — ports connected to end devices like workstations and printers, not to other switches. A PortFast-enabled port comes up and forwards traffic immediately, eliminating the 30-second wait. The risk: if someone plugs another switch into a PortFast-enabled port, you could create a temporary loop before STP detects and blocks it. This is why PortFast should only be enabled on access ports where you expect end devices, and why **BPDU Guard** should be enabled alongside it — BPDU Guard shuts down the port immediately if it receives a BPDU, which would indicate a switch was connected where it shouldn't be.
+
+## Why This Matters in the Field
+
+Switches are the workhorses of every LAN, and understanding their internals is the difference between managing a network and babysitting one. When a broadcast storm takes down a floor, you need to know what STP is doing and why it failed to prevent the loop (usually: someone plugged in an unmanaged switch or a cable created a physical loop on a port with no BPDU Guard). When a workstation can't reach a server on the same VLAN, you check the MAC address table to see if the switch knows where both devices are. When a port is running at 100 Mbps instead of 1 Gbps, you check auto-negotiation and duplex. The MAC table, STP, and duplex settings aren't configuration-once-and-forget items — they're the first three things you check when Layer 2 breaks.
