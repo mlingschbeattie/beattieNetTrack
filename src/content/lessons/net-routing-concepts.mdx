@@ -1,0 +1,95 @@
+---
+title: Routing Concepts — How Packets Find Their Way
+description: Routing tables, forwarding decisions, static vs dynamic routes, administrative distance, and the logic that moves traffic across networks — the core of what routers do.
+slug: net-routing-concepts
+track: network-engineer
+moduleId: net.fundamentals.routing
+order: 1
+difficulty: Beginner
+estMinutes: 25
+tags: ["network+", "routing", "N10-009 1.8", "N10-008 1.8"]
+---
+
+## The Intersection That Explains Routing
+
+Imagine you're standing at a four-way intersection with no GPS, no phone, and a handwritten note that says "deliver this to 742 Evergreen Terrace, Springfield." You look at the street signs. You know Evergreen Terrace is north of here, so you turn north. At the next intersection, another sign — Evergreen Terrace is two blocks east. You turn east. Each intersection, you make a decision based on what you know at that point, and each decision moves the package closer. You never see the full route from start to finish. You just make the best next hop.
+
+That's routing. A router examines the destination IP address on every packet it receives, consults its routing table — the equivalent of those intersection signs — and forwards the packet out the interface that moves it closest to its destination. The next router does the same. And the next. Each one makes an independent decision with local information, and somehow the packet crosses the internet and arrives at the right server. The fact that this works reliably across billions of devices and millions of networks is one of the genuinely impressive engineering achievements in human history. And the logic behind it is not that complicated once you see how the table works.
+
+## The Routing Table — The Router's Decision Engine
+
+Every router maintains a routing table — a list of known networks and how to reach them. Each entry includes the destination network (in CIDR notation), the next-hop IP address or exit interface, and metadata like the route's source, metric, and administrative distance. When a packet arrives, the router reads the destination IP, scans the table for matching entries, and forwards the packet accordingly.
+
+On a Cisco router, `show ip route` displays the table. You'll see entries like:
+
+`C 10.1.1.0/24 is directly connected, GigabitEthernet0/0` — a connected route, meaning this network is directly attached to one of the router's interfaces. No next hop needed; the router can deliver directly.
+
+`S 10.2.0.0/16 [1/0] via 10.1.1.2` — a static route. Someone manually configured this entry, telling the router that the 10.2.0.0/16 network is reachable through the next-hop address 10.1.1.2.
+
+`O 10.3.1.0/24 [110/20] via 10.1.1.3` — a route learned from OSPF (a dynamic routing protocol). The router didn't need manual configuration for this entry; OSPF discovered the network and installed the route automatically.
+
+The routing table is everything. If a destination isn't in the table and there's no default route, the router drops the packet and sends an ICMP "destination unreachable" back to the sender. A router doesn't guess. It either has a route or it doesn't.
+
+## Longest Prefix Match — The Tiebreaker
+
+When multiple routing table entries match the same destination, the router uses longest prefix match to pick the winner. This means the most specific route — the one with the longest subnet mask — always wins.
+
+Say the table has three entries: 10.0.0.0/8, 10.1.0.0/16, and 10.1.1.0/24. A packet destined for 10.1.1.50 matches all three. The /24 route matches 24 bits — the most specific — so it wins. A packet destined for 10.1.2.50 matches the /16 and the /8, but not the /24. The /16 wins. A packet destined for 10.2.0.1 only matches the /8, so that route is used.
+
+Longest prefix match is how the internet works at scale. Core routers carry hundreds of thousands of routes, and many destination IPs match multiple entries. The algorithm is deterministic and fast — the most specific entry always wins, no ambiguity. Understanding this rule is essential when you're troubleshooting a packet taking the wrong path. Check the routing table, find all matching entries, and the longest prefix tells you which one the router will actually use.
+
+## Connected and Learned Routes
+
+**Connected routes** appear automatically when you assign an IP address to a router interface and that interface comes up. If you configure GigabitEthernet0/0 with 10.1.1.1/24, the router automatically adds a route for the 10.1.1.0/24 network through that interface. You don't configure connected routes — they exist because the router is physically attached to the network. They're the most trusted routes in the table.
+
+**Learned routes** come from somewhere else — either manual configuration (static routes) or dynamic routing protocols. A static route is a learned route you typed in yourself. A dynamic route is a learned route that a routing protocol discovered and installed. Both types require something beyond a physical connection to exist in the table.
+
+When you look at a routing table on a new router, you'll see only connected routes — one for each configured interface. Everything else has to be added, either by hand or by a routing protocol.
+
+## Static vs. Dynamic Routing
+
+**Static routing** means you manually type every route into the router's configuration. `ip route 10.2.0.0 255.255.0.0 10.1.1.2` tells the router: "To reach the 10.2.0.0/16 network, send packets to 10.1.1.2." Static routes are simple, predictable, and use zero bandwidth for route advertisements. They're also inflexible — if 10.1.1.2 becomes unreachable, the static route stays in the table and the router keeps sending packets into a black hole until someone manually removes or changes the route.
+
+Static routing works for small, stable networks — a SOHO router with a single uplink, a lab environment, or a stub network with only one path in and out. It doesn't scale. A network with ten routers and thirty subnets would require dozens of static routes on each router, manually updated every time the topology changes. Miss one, and traffic goes nowhere.
+
+**Dynamic routing** uses protocols — OSPF, EIGRP, BGP, RIP — that let routers discover networks automatically by talking to their neighbors. Routers exchange information about which networks they can reach, and the protocol algorithm calculates the best path to each destination. When a link fails, routers detect the change, recalculate paths, and update their tables automatically. No manual intervention.
+
+Dynamic routing is essential for any network larger than a handful of routers. The cost is complexity (you need to configure and understand the routing protocol) and resource usage (routers exchange route advertisements, which consume bandwidth and CPU). You'll study individual routing protocols in later units — for now, understand that dynamic routing exists because manual route management doesn't scale.
+
+## Default Routes — The Catch-All
+
+A default route is the route of last resort — it matches every destination that doesn't have a more specific entry in the table. In CIDR notation, it's 0.0.0.0/0. The prefix length is zero, meaning it matches zero bits of the destination address — which means it matches everything.
+
+Your home router has one route that matters: a default route pointing to the ISP's gateway. It doesn't need to know how to reach every network on the internet — it just sends everything upstream and lets the ISP's routers figure it out. Corporate networks use default routes the same way: edge routers point their default route toward the internet uplink. Internal routers might point their default toward the core, which then decides whether traffic stays internal or heads out.
+
+Without a default route, a router can only reach networks explicitly listed in its routing table. On a router with a full internet routing table (over 900,000 entries as of 2026), a default route is still configured as a safety net — if the full table somehow fails to load, the default route prevents total loss of connectivity.
+
+## Administrative Distance — Trusting the Source
+
+When a router learns about the same network from multiple sources — say, a static route and OSPF both claim to know how to reach 10.2.0.0/16 — the router needs a tiebreaker. Administrative distance (AD) is a value assigned to each route source that represents how trustworthy it is. Lower is more trusted.
+
+The default AD values you need to know: **Connected routes: 0** (the router is directly attached — maximum trust). **Static routes: 1** (a human configured it — highly trusted). **EIGRP: 90.** **OSPF: 110.** **RIP: 120.** **External BGP: 20.** **Unknown/untrusted: 255** (never used).
+
+If a static route (AD 1) and an OSPF route (AD 110) both point to the same destination, the static route wins. If the static route is removed, OSPF takes over automatically. AD doesn't determine which path is better in an absolute sense — it determines which source the router believes when there's a conflict. A hand-configured static route is trusted over anything learned dynamically. A connected route is trusted over everything.
+
+## Routing Metrics — Choosing the Best Path Within a Protocol
+
+Administrative distance picks the winning source. Within a single routing protocol, the **metric** picks the winning path. Different protocols use different metrics. RIP uses hop count — the number of routers between here and the destination, with a maximum of 15 hops. OSPF uses cost, which is derived from interface bandwidth — faster links have lower cost. EIGRP uses a composite metric based on bandwidth, delay, and optionally load and reliability.
+
+When OSPF knows two paths to the same destination, it picks the one with the lower cost (faster path). When RIP knows two paths, it picks the one with fewer hops, even if one of those hops is a 10 Mbps link and the other path's extra hop is all 10 Gbps. This is why RIP lost the protocol war — hop count is a terrible metric when link speeds vary. Metrics are the protocol's internal ranking system, and understanding what a protocol values tells you what kind of path it will choose.
+
+## Convergence — The Network Catches Up
+
+When a link or router fails, every router in the network needs to update its routing table to reflect the change. The time it takes for all routers to agree on the new topology is called **convergence time**. During convergence, some routers still have the old path in their tables and may forward packets into a dead link, causing packet loss. The faster a network converges, the shorter the outage.
+
+Different routing protocols converge at different speeds. OSPF and EIGRP converge in seconds for most topologies. RIP can take minutes because of its simple distance-vector algorithm and slow update timers. BGP convergence on the internet can take anywhere from seconds to minutes depending on the topology and policy configuration. Convergence speed is one of the primary reasons enterprise networks use OSPF or EIGRP over RIP — a thirty-second outage during reconvergence is acceptable, a three-minute one usually isn't.
+
+## Routing vs. Switching — The Distinction That Matters
+
+Switches operate at Layer 2 and forward frames based on MAC addresses within a single network. Routers operate at Layer 3 and forward packets based on IP addresses between different networks. A switch gets a frame, reads the destination MAC, checks its MAC address table, and sends it out the right port. A router gets a packet, reads the destination IP, checks its routing table, and sends it out the right interface toward the next hop.
+
+The practical distinction: a switch connects devices on the same subnet. A router connects different subnets. When a PC at 10.1.1.50 talks to a server at 10.1.1.100, traffic stays on the switch — same subnet, Layer 2 forwarding. When that same PC talks to a server at 10.2.1.100, the traffic has to cross a router — different subnet, Layer 3 forwarding. The PC sends the packet to its default gateway (the router), the router makes a forwarding decision, and the packet moves to the other network. Multilayer switches blur this line by doing both Layer 2 switching and Layer 3 routing in the same chassis, but the logical distinction holds: switching is local, routing is between networks.
+
+## Why This Matters in the Field
+
+Every network beyond a single flat LAN requires routing. Every packet that leaves the building goes through at least one routing decision. When a branch office can't reach headquarters, the first place you look is the routing table — is the route present? Is it pointing to the right next hop? When you add a new subnet, you need every router to know about it — either through a static route or a routing protocol. When an ISP link fails and traffic should reroute through the backup, you need dynamic routing to detect the failure and converge. Understanding how routers think — table lookup, longest prefix match, administrative distance, metrics — is the foundation of every network design, every troubleshooting session, and every architecture discussion you'll ever participate in.

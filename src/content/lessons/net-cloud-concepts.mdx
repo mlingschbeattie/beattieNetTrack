@@ -1,0 +1,73 @@
+---
+title: Cloud Concepts and Connectivity — When the Network Leaves the Building
+description: IaaS, PaaS, SaaS, deployment models, cloud networking primitives, and the connectivity options that tie your on-prem infrastructure to somebody else's data center.
+slug: net-cloud-concepts
+track: network-engineer
+moduleId: net.fundamentals.architecture
+order: 2
+difficulty: Beginner
+estMinutes: 25
+tags: ["network+", "cloud", "IaaS", "SaaS", "N10-009 1.7", "N10-008 1.7"]
+---
+
+## The Server Room That Isn't Yours
+
+Five years ago, the school district ran email on a physical server in the back of the IT office. Someone maintained it, patched it, replaced its hard drives, managed its certificates, and rebooted it at 2 AM when it crashed. Today the district uses Microsoft 365. Email lives in Microsoft's data center — somewhere in Virginia, probably, or maybe Texas. Nobody here maintains a mail server anymore. The district pays a monthly subscription, and Microsoft handles the hardware, the operating system, the patches, the backups, and the uptime. That shift — from owning infrastructure to renting it — is cloud computing. It changed the IT industry permanently, and it changed what network engineers do because now a significant chunk of your organization's traffic is heading to data centers you don't control, over links you need to plan for, secured by a shared responsibility model you need to understand.
+
+## Service Models — IaaS, PaaS, SaaS
+
+Cloud services are categorized by how much the provider manages versus how much you manage. Think of it as a stack, and each model draws the line at a different layer.
+
+**IaaS (Infrastructure as a Service)** gives you virtual machines, virtual networks, and virtual storage. The provider manages the physical hardware, the hypervisor, and the data center. You manage everything from the operating system up — patching, configuration, applications, security. AWS EC2, Azure Virtual Machines, and Google Compute Engine are IaaS. When a company says "we moved our servers to the cloud," they usually mean IaaS — same servers, same operating systems, same responsibilities, just running on someone else's hardware. IaaS gives you the most control and the most work.
+
+**PaaS (Platform as a Service)** adds managed runtime environments on top of IaaS. The provider handles the operating system, the middleware, and the runtime — you write and deploy your application code. Azure App Service, AWS Elastic Beanstalk, and Google App Engine are PaaS. A developer pushes their code, the platform handles scaling, patching, and load balancing. Network engineers interact with PaaS when configuring DNS, connectivity, and access rules for the applications running on it, but they're not managing the servers underneath.
+
+**SaaS (Software as a Service)** is the fully managed application. You log in and use it. The provider manages everything — hardware, OS, application code, updates, availability. Microsoft 365, Google Workspace, Salesforce, Zoom — all SaaS. The district's email migration was a move to SaaS. The network engineer's role with SaaS is ensuring connectivity and performance to the provider's endpoints, configuring DNS records, and managing authentication integrations. You don't touch the application itself.
+
+The easy way to remember the line: IaaS — you manage the OS up. PaaS — you manage the app. SaaS — you manage the login.
+
+## Deployment Models — Where the Cloud Lives
+
+**Public cloud** is shared infrastructure operated by a third-party provider and available to anyone who pays. Your resources run alongside other customers' resources on the same physical hardware, isolated through virtualization. AWS, Azure, and Google Cloud are public clouds. "Public" doesn't mean insecure — it means multi-tenant. Your data is isolated, your networks are segmented, and the provider invests more in security than most organizations could afford independently.
+
+**Private cloud** is dedicated infrastructure for a single organization. It can be on-premises (your own data center running cloud management tools like VMware or OpenStack) or hosted by a provider who gives you dedicated hardware. Private cloud offers more control — you set the security policies, you control the physical location of data, you decide the hardware specs. The tradeoff is cost and complexity. You're responsible for everything the public cloud provider would otherwise handle.
+
+**Hybrid cloud** combines public and private. Sensitive data stays on-prem in the private cloud while burst capacity, web-facing applications, or less-sensitive workloads run in the public cloud. Most enterprise environments end up here — some systems are too regulated, too latency-sensitive, or too entrenched to move, while new projects spin up in the public cloud because it's faster and cheaper to start. The network challenge in hybrid cloud is the connection between the two environments — it needs to be fast, secure, and reliable.
+
+**Community cloud** is shared infrastructure used by organizations with common requirements — government agencies sharing a FedRAMP-compliant cloud, hospitals sharing a HIPAA-compliant environment. Less common than the other three, but the exam tests it.
+
+## Connecting to the Cloud
+
+Your on-prem network needs a path to the cloud provider, and that path has to meet your performance and security requirements.
+
+**Internet.** The simplest option. Traffic goes over the public internet, usually through a VPN tunnel for encryption. It works, it's cheap, and for most SaaS access it's all you need. The downside: you share bandwidth with everyone else on the internet, latency varies, and you're dependent on your ISP's performance. For casual cloud access, it's fine. For running production workloads in IaaS that need consistent low-latency connectivity to on-prem resources, it's a gamble.
+
+**Dedicated connection.** AWS calls it Direct Connect. Azure calls it ExpressRoute. Google calls it Cloud Interconnect. The concept is the same: a private, dedicated circuit from your network to the cloud provider's network, bypassing the public internet entirely. You get consistent bandwidth, predictable latency, and traffic that never touches the public internet. The cost is significant — you're paying for a physical circuit and the cloud provider's interconnect fees — but for hybrid environments with heavy traffic between on-prem and cloud, it's standard.
+
+**VPN.** An encrypted tunnel over the internet or a dedicated link. Site-to-site VPN connects your on-prem router to a VPN gateway in the cloud provider's network, creating a secure extension of your LAN into the cloud virtual network. It's cheaper than a dedicated connection and provides encryption, but performance depends on the underlying internet link. Many hybrid setups start with VPN and migrate to a dedicated connection when traffic volumes justify the cost.
+
+## Cloud Networking Concepts
+
+Cloud providers give you networking primitives that mirror physical infrastructure but exist entirely in software.
+
+**Virtual networks** (VPCs in AWS, VNets in Azure) are isolated network environments where you deploy cloud resources. You define the address space — 10.0.0.0/16, for example — and it behaves like a private network. Resources inside the virtual network can communicate with each other. Resources in different virtual networks can't, unless you explicitly peer them.
+
+**Subnets** within a virtual network work like physical subnets. You carve the address space into smaller blocks and assign different subnets to different purposes — a web tier subnet, an application tier subnet, a database subnet. Subnets can be public (with a route to the internet) or private (no direct internet access).
+
+**Security groups** are virtual firewalls attached to individual resources or subnets. They define inbound and outbound rules — allow TCP 443 from anywhere, allow SSH from your office IP only, deny everything else. They're stateful: if you allow inbound traffic, the response is automatically allowed outbound. Security groups are the primary access control mechanism in cloud networking and they're where your firewall skills translate directly.
+
+**Load balancers** distribute incoming traffic across multiple backend instances. A cloud load balancer sits in front of your web servers and sends each request to whichever server is healthiest and least loaded. They handle health checks, SSL termination, and traffic distribution. Load balancers are how cloud applications stay available when individual instances fail — traffic just routes to the remaining healthy ones.
+
+## The Shared Responsibility Model
+
+This is the concept the exam will test and the one that causes real-world security gaps when people don't understand it. The cloud provider and the customer each own different parts of the security stack, and the dividing line depends on the service model.
+
+In IaaS, the provider secures the physical infrastructure, the hypervisor, and the network fabric. You secure the operating system, the applications, the data, and the access controls. If someone exploits an unpatched vulnerability in your VM's operating system, that's on you — the provider gave you a secure foundation and you didn't maintain what was built on top of it.
+
+In SaaS, the provider secures almost everything. Your responsibility narrows to access management (who has accounts, what are their permissions, is MFA enabled) and data classification (what data are you putting into the service and does that comply with your policies).
+
+The shared responsibility model isn't a handshake agreement — it's a legal and operational boundary. When a breach happens, the first question is which side of the line the failure occurred on. Network engineers need to understand this because misconfigured security groups, open management ports, and missing encryption are all customer-side responsibilities that create the cloud's most common security failures.
+
+## Why This Matters in the Field
+
+Cloud didn't eliminate the network engineer's job — it changed the tools. You're still designing networks, segmenting traffic, writing firewall rules, managing connectivity, and troubleshooting latency. The difference is that some of your switches are virtual, some of your firewalls are security groups, and some of your circuits are dedicated cloud interconnects instead of MPLS lines. When a user can't reach a cloud application, you troubleshoot the path: local network, internet uplink or dedicated connection, cloud virtual network, security group rules, and the application itself. The layers are the same. The location shifted. The engineers who adapt fastest are the ones who stop thinking of cloud as someone else's problem and start treating it as an extension of the network they already manage.
