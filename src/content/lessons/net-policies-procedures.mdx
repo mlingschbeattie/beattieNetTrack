@@ -1,0 +1,126 @@
+---
+title: Network Policies and Procedures — The Rules Nobody Reads Until Something Goes Wrong
+description: Acceptable use, BYOD, remote access, password policies, data classification, incident response, onboarding and offboarding, physical security, vendor access, and the difference between a policy and a procedure — the governance framework behind every managed network.
+slug: net-policies-procedures
+track: network-engineer
+moduleId: net.operations.procedures
+order: 2
+difficulty: Intermediate
+estMinutes: 25
+tags: ["network+", "policy", "AUP", "BYOD", "incident response", "N10-009 3.3", "N10-008 3.3"]
+---
+
+
+## The Document Nobody Reads
+
+Somewhere in every organization, there's a document that says what you can and can't do on the network. It was probably written years ago, approved by someone in administration, emailed to everyone once, and never read again. Until someone does something that causes a problem — torrents a movie over the school network, installs a rogue wireless AP on their desk, shares their admin credentials with a student worker — and suddenly the question is: "Is there a policy that says they can't do that?"
+
+If the answer is yes and the employee signed it, the organization has standing to act. If the answer is no — or the policy is so vague it could mean anything — the conversation gets difficult fast. Policies aren't just paperwork. They're the written rules that define acceptable behavior on the network, the procedures that enforce consistency, and the legal framework that protects the organization when something goes wrong. You need to know what these policies cover, why they exist, and how they translate into technical controls — because as a network tech, you're the one implementing and enforcing them.
+
+## Policy vs. Procedure — The Distinction
+
+A **policy** is a statement of intent. It defines what the organization requires, permits, or prohibits, and it's typically written at a high level. "All network access requires authentication" is a policy. It doesn't tell you how to authenticate — it tells you that authentication is required.
+
+A **procedure** is the step-by-step implementation of a policy. "To authenticate, users must connect to the 802.1X-enabled SSID, enter their Active Directory credentials, and accept the certificate prompt on first connection" is a procedure. It tells you exactly how to do the thing the policy requires.
+
+Policies are approved by management and rarely change. Procedures are written by the technical team and change whenever the implementation changes. If you migrate from RADIUS to a new authentication platform, the policy ("authentication is required") stays the same. The procedure (the specific steps) gets rewritten. Keeping these separate means you don't need management approval every time you change a configuration — you just update the procedure documentation to match the new implementation.
+
+The exam asks this distinction directly. Policy = what and why. Procedure = how.
+
+## Acceptable Use Policy — The Rules of the Network
+
+An **Acceptable Use Policy (AUP)** defines what users are allowed to do on the network and what's prohibited. It's the broadest policy and usually the first one a user encounters — new employees and students typically sign it during onboarding.
+
+A school AUP typically covers: no illegal activity, no accessing inappropriate content, no unauthorized software installation, no sharing credentials, no connecting unauthorized devices, no attempting to bypass security controls, no using network resources for personal commercial gain. It also typically includes a monitoring notice — "network activity may be monitored" — which establishes that users have no expectation of privacy on the organization's network. That notice matters legally.
+
+The AUP doesn't need to list every possible violation. It needs to establish clear expectations and consequences, and it needs to be signed. A signed AUP is a documented agreement. An unsigned one is a suggestion.
+
+From the tech side, the AUP drives your technical controls. The policy says "no unauthorized devices"? You implement 802.1X port authentication. The policy says "no inappropriate content"? You deploy web content filtering. The policy says "no personal hotspots"? You configure wireless intrusion detection to flag rogue APs. The policy defines the rule. The technology enforces it.
+
+## Network Security Policy
+
+A **network security policy** defines the security requirements for the network infrastructure itself — not what users do with the network, but how the network is protected. This includes requirements for firewall configurations, encryption standards, access control, patching cadences, logging, and vulnerability management.
+
+Typical security policy elements: all management traffic must use SSH (no Telnet). All wireless networks must use WPA3 or WPA2-Enterprise. Administrator accounts must use multi-factor authentication. Devices must be patched within 30 days of a critical security update. All external-facing services must use TLS 1.2 or higher. Firewall rules must follow a deny-by-default posture.
+
+The security policy is the document that auditors check. When a compliance assessment asks "do you have a policy requiring encrypted management access?", the security policy is the answer. When an auditor asks "is this enforced?", your configuration is the evidence. The policy without enforcement is theater. The enforcement without a policy is unstructured. You need both.
+
+## BYOD Policy — Bring Your Own Device, Bring Your Own Risk
+
+A **BYOD (Bring Your Own Device) policy** defines the rules for personal devices connecting to the organization's network. Students' phones, teachers' personal laptops, that iPad someone brought from home — how are these devices handled?
+
+The policy decisions: Which network segment do BYOD devices connect to? (Usually a guest or BYOD VLAN with restricted access, not the production network.) What authentication is required? (802.1X with personal credentials, a captive portal, a pre-shared key for a dedicated SSID?) What minimum security requirements must the device meet? (Current OS, updated antivirus, screen lock enabled?) Can BYOD devices access internal resources, or are they internet-only? Is the organization permitted to install management software (MDM — Mobile Device Management) on personal devices?
+
+The technical implementation follows the policy. A BYOD SSID that places devices on a VLAN with internet access only. Firewall rules blocking that VLAN from reaching internal servers. A captive portal for authentication and AUP acceptance. NAC (Network Access Control) checking device posture before granting full access. Each of these controls maps to a policy decision.
+
+BYOD is a reality in every school and most workplaces. Pretending personal devices don't exist doesn't keep them off the network — it just means they connect without any controls. A defined BYOD policy lets you provide access while maintaining security boundaries.
+
+## Remote Access Policy
+
+A **remote access policy** defines who can access the network remotely, how, and under what conditions. VPN access for administrators, remote desktop for teachers, cloud-based management consoles for engineers — all governed by this policy.
+
+Policy elements: which roles are authorized for remote access (not everyone needs it). Which technologies are approved (VPN, SSH, vendor-provided remote access — and which are specifically prohibited, like personal TeamViewer installations). Whether MFA is required (it should be). Whether split tunneling is allowed on VPN connections (split tunnel sends only corporate traffic through the VPN, allowing personal traffic to go directly to the internet — faster but less secure; full tunnel routes everything through the corporate network — slower but all traffic is inspected). What logging and monitoring applies to remote sessions.
+
+Remote access is the front door to your network from the internet. A weak remote access policy — or no policy — means that door is unlocked. Every VPN credential that's lost, every unpatched remote access tool, every session that isn't logged is a potential entry point for an attacker.
+
+## Password Policy
+
+A **password policy** defines the rules for credentials across the organization. Minimum length, complexity requirements, expiration interval, account lockout thresholds, and password reuse restrictions.
+
+Industry guidance has shifted in recent years. NIST 800-63B (2017, updated since) recommends: long passphrases over short complex passwords (a 16-character passphrase is stronger than an 8-character password with mandatory symbols). No forced periodic expiration unless there's evidence of compromise (forcing regular changes leads to predictable patterns — "Password1!", "Password2!", "Password3!"). Account lockout after a reasonable number of failed attempts (typically 5–10). Screening passwords against lists of known compromised passwords.
+
+The policy defines these requirements. Active Directory, RADIUS, or whatever authentication system you use enforces them. Password policies without technical enforcement are wishes, not controls. If the policy says 12-character minimum but Active Directory accepts 6-character passwords, the policy is meaningless.
+
+## Data Classification
+
+**Data classification** categorizes data by sensitivity to determine handling, storage, and access requirements. Not all data is equal. A public-facing school calendar has different security needs than student records protected by FERPA.
+
+Common classification levels: **Public** (freely available, no restrictions). **Internal** (not public, but not sensitive — staff directories, internal procedures). **Confidential** (sensitive data requiring access controls — financial records, student grades, personnel files). **Restricted** (the most sensitive data — Social Security numbers, medical records, legal documents, security credentials).
+
+The classification drives the controls. Public data can live on an unencrypted web server. Confidential data requires encrypted storage, access controls, and audit logging. Restricted data requires all of that plus additional protections like encryption in transit, limited access on a need-to-know basis, and strict retention and destruction policies.
+
+As a network tech, data classification affects your decisions: which VLAN stores the student records server (not the general-purpose server VLAN — it gets its own restricted segment). Whether traffic between the client and the records database requires encryption (yes). Whether that traffic is logged and inspected (yes). The classification tells you the sensitivity. The network architecture enforces the protection.
+
+## Incident Response Policy
+
+An **incident response policy** defines how the organization detects, responds to, contains, and recovers from security incidents. A full incident response plan is deep enough for its own lesson (and it'll get one in the security track), but the policy-level concepts belong here.
+
+The policy establishes: who's on the incident response team and their roles. How incidents are classified by severity. When and how incidents are escalated (a failed login attempt is handled differently than a confirmed data breach). Communication procedures — who gets notified internally and externally. Evidence preservation requirements — do not reboot the compromised server until forensic images are captured. Post-incident review requirements — every significant incident gets a root cause analysis and lessons learned.
+
+The network tech's role in incident response is often first responder. You notice the anomaly in the monitoring system. You identify the compromised device. You isolate it by shutting down the port or moving it to a quarantine VLAN. You preserve the logs and notify the right people. Knowing the policy means knowing what to do in those first critical minutes instead of freelancing — and freelancing during a security incident usually makes things worse.
+
+## Onboarding and Offboarding Procedures
+
+**Onboarding** is the process of setting up network access for a new user — creating accounts, assigning permissions, provisioning devices, communicating policies. A documented onboarding procedure ensures that every new user gets the same baseline: an account in Active Directory, assignment to the correct security groups, an email address, VPN credentials if applicable, the AUP signed and on file, and a device configured to the organization's standards.
+
+**Offboarding** is where organizations consistently fail. When someone leaves — whether it's a staff member transferring, a student graduating, or a contractor whose project ended — their network access must be revoked. Immediately. Not "when IT gets around to it." Not "after the next account audit." The day they leave.
+
+Offboarding procedures: disable the Active Directory account (disable, don't delete — you may need the account for audit purposes). Revoke VPN access. Remove from distribution lists and shared mailboxes. Recover any organization-owned devices. Revoke access to cloud services, SaaS platforms, and remote management tools. If the person had privileged access (admin credentials, network device passwords), change those credentials — a former employee with lingering admin access is a risk, whether the departure was friendly or not.
+
+The number of organizations that have active accounts for people who left months or years ago is staggering. Each orphaned account is a potential entry point. Offboarding procedures documented, followed, and audited are a fundamental security control.
+
+## Physical Security Policy
+
+Network security isn't just firewalls and ACLs. If someone can walk into the server room and pull cables — or worse, plug in a rogue device — your digital security is irrelevant.
+
+A **physical security policy** covers: who has access to server rooms, wiring closets, and network equipment areas (key card access, sign-in logs). How network jacks in public areas are secured (unused ports disabled, or authenticated with 802.1X). Whether security cameras cover equipment areas. How equipment is labeled and inventoried. Visitor escort policies for areas with network infrastructure. How equipment is disposed of (hard drives wiped or destroyed, not just thrown in a dumpster with the configuration still on them).
+
+Password recovery on Cisco equipment requires physical console access, as you learned in the router configuration lesson. That makes physical security of the console port a direct network security concern. If someone can touch the console cable, they can own the device. Lock the closet.
+
+## Vendor and Third-Party Access Policy
+
+Vendors need access to your network. The firewall vendor needs to apply a patch. The copier company needs to configure the new printer. The HVAC contractor needs their building management system to reach a controller on your network. Each of these creates a temporary access requirement that needs to be controlled.
+
+A **vendor access policy** defines: how vendors request access (a formal request, not just "hey, can you plug this in?"). How access is provisioned (a temporary account with an expiration date, limited to the specific systems they need). Whether vendor access requires escort or supervision. Whether vendor activity is logged and monitored. How access is revoked when the work is complete.
+
+The worst-case scenario: a vendor gets a VPN account during a project, the project ends, and nobody revokes the account. That credential sits active for months or years. If the vendor's own security is compromised, that orphaned account is a direct path into your network. This is how several high-profile breaches happened. Vendor access is always temporary, always scoped, always revoked when done.
+
+## Policy Enforcement — Connecting Words to Controls
+
+A policy without enforcement is a document nobody follows. Every policy should map to technical controls that make compliance the default and violations detectable:
+
+The AUP says "no unauthorized devices"? → 802.1X authenticates every wired and wireless connection. The security policy says "encrypted management"? → VTY lines are locked to SSH, Telnet is disabled. The password policy says "12-character minimum"? → Active Directory enforces it at the authentication layer. The BYOD policy says "internet only"? → The BYOD VLAN's firewall rules permit DNS and HTTPS outbound, deny everything to internal subnets. The remote access policy says "MFA required"? → The VPN gateway requires a second factor before completing the connection.
+
+Where technical enforcement isn't possible, detective controls (monitoring, logging, auditing) catch violations after the fact. Where neither is practical, the AUP acknowledgment and the consequences defined in the policy are the enforcement — the user agreed to the rules, and violating them has documented repercussions.
+
+The goal isn't to build a prison. It's to build a framework where the network is secure by default, users understand the boundaries, and when something goes wrong, there's a documented process for handling it. That framework starts with the policies in this lesson and translates into every ACL, every firewall rule, and every authentication configuration you deploy.

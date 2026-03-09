@@ -1,0 +1,126 @@
+---
+title: Troubleshooting Network Connectivity — Systematically Destroying "I Can't Get to the Internet"
+description: A layered approach to diagnosing connectivity failures from APIPA addresses to NAT misconfigurations, distinguishing DNS failures from routing failures from firewall blocks.
+slug: net-troubleshooting-connectivity
+track: network-engineer
+moduleId: net.troubleshooting.physical
+order: 2
+difficulty: Intermediate
+estMinutes: 30
+tags: ["network+", "troubleshooting", "connectivity", "DHCP", "DNS", "routing", "VLAN", "NAT", "N10-009 5.2", "N10-008 5.2"]
+---
+
+## Three Tickets, One Symptom, Three Causes
+
+The help desk gets three tickets in ten minutes. All three say the same thing: "I can't get to the internet." Ticket one is a workstation with a 169.254.x.x address because DHCP failed. Ticket two is a laptop with a valid IP but a misconfigured DNS server pointing at an address that doesn't exist. Ticket three is a desktop with a perfect configuration on the wrong VLAN — traffic is reaching the gateway, but the gateway has no route to the internet for that subnet because the VLAN was just created and nobody added the NAT rule.
+
+Same symptom. Completely different problems at completely different layers. If you treat every "can't get to the internet" ticket the same way, you'll fix one out of three and waste time on the other two. The skill isn't knowing every possible cause — it's having a systematic process to isolate which one you're dealing with in under two minutes.
+
+## Start at the Bottom — Layer 1
+
+Before you touch a command prompt, look at the physical layer. Is the cable plugged in? Is the link light on at both the NIC and the switch port? Is the NIC enabled in the OS? These sound absurdly basic, and they solve an embarrassingly high percentage of connectivity tickets.
+
+If there's no link light, check the cable. Swap it with a known-good cable. Check the switch port — is it administratively shut down? Is it err-disabled from a security violation? Run `show interface status` on the switch and look for the port's state. If it's `disabled`, someone shut it down. If it's `err-disabled`, something triggered a violation (port security, BPDU guard, DHCP snooping) and you need to find the cause before re-enabling it.
+
+If the link light is on and the port shows up/up on the switch, Layer 1 is probably fine. Move up.
+
+## Layer 2 — Am I on the Right VLAN?
+
+A solid link doesn't mean the port is configured correctly. The most common Layer 2 misconfiguration is a port assigned to the wrong VLAN.
+
+Check the switch: `show vlan brief` shows which ports are in which VLANs. If the user's port is in VLAN 1 (the default) when it should be in VLAN 20 (the user data VLAN), that's your problem. The workstation has connectivity to the switch, but it's on a network segment that may not have a DHCP server, a gateway, or routing to anything useful.
+
+**Native VLAN mismatches** on trunk links cause subtler havoc. If the switch on one end of a trunk is configured with native VLAN 1 and the switch on the other end has native VLAN 99, untagged traffic gets interpreted differently at each end. Frames sent untagged on VLAN 1 arrive on the other side and get placed in VLAN 99. The result is unpredictable connectivity — some devices work, some don't, and the symptoms change depending on which side of the trunk the client is on. CDP/LLDP logs on the switch often flag native VLAN mismatches explicitly.
+
+If the VLAN is a newly created VLAN, confirm it's been added to all trunk links between the access switch and the distribution/core layer. A VLAN that exists on the access switch but isn't allowed on the uplink trunk is a broadcast domain island — the client gets a local Layer 2 path but can't reach the default gateway because the VLAN traffic never leaves the switch.
+
+## Layer 3 — IP Configuration
+
+Once Layer 2 checks out, verify the workstation's IP configuration. On Windows: `ipconfig /all`. On Linux: `ip addr show` and `ip route show`.
+
+Four things must be correct: IP address, subnet mask, default gateway, and DNS server. Get any one of them wrong and connectivity fails — but in different ways.
+
+### The IP Address
+
+Is the address in the expected range for the VLAN? If the VLAN's subnet is 10.1.20.0/24, the workstation should have an address between 10.1.20.1 and 10.1.20.254. An address outside that range means the workstation got its configuration from somewhere unexpected — possibly a rogue DHCP server.
+
+A **169.254.x.x** address is **APIPA (Automatic Private IP Addressing)**. This is Windows and macOS self-assigning a link-local address when DHCP fails. It means the client sent DHCP Discover broadcasts and got no response. The causes: no DHCP server on the network, the DHCP server is down, the DHCP scope is exhausted (all addresses leased), or the client's DHCP requests aren't reaching the server (wrong VLAN, missing IP helper-address on the gateway for remote DHCP). An APIPA address provides no gateway and no DNS — the client can talk to other APIPA hosts on the local segment and nothing else.
+
+**Duplicate IP addresses** cause intermittent failures that are maddening to troubleshoot. Two devices with the same IP will both respond to ARP requests, and the most recent response wins. Traffic fluctuates between the two devices randomly. One user's sessions work for thirty seconds, then break, then work again. Windows pops up a "duplicate IP address detected" warning, but only if it detects the conflict — which isn't guaranteed. On the switch, `show mac address-table` for the VLAN may show two different MAC addresses flapping on the same IP. On the client, `arp -a` might show the gateway's MAC changing. Statically assigned IPs within a DHCP scope range are the most common cause — someone manually configured an address that the DHCP server also leased to another device.
+
+### The Subnet Mask
+
+A wrong subnet mask changes which addresses the client considers local versus remote. If the subnet is 10.1.20.0/24 (mask 255.255.255.0) but the client has 255.255.0.0 (/16), the client thinks the entire 10.1.x.x range is local and tries to ARP directly for remote hosts instead of sending traffic to the gateway. It can reach hosts on 10.1.20.x but can't reach anything outside that range because it never sends traffic to the router.
+
+The reverse is also broken: a /30 mask on a /24 network means the client thinks only four IP addresses are local. It sends everything else to the gateway, including traffic for the host sitting two desks away on the same subnet. This works if the gateway routes it back, but it's inefficient and can cause asymmetric traffic patterns.
+
+### The Default Gateway
+
+No gateway, no internet. If the default gateway is missing, the client can reach local hosts (same subnet) but nothing else. If the gateway address is wrong — pointing at an IP that isn't a router — the client sends traffic to a non-existent next hop and gets no response.
+
+Test gateway reachability: `ping 10.1.20.1` (or whatever the gateway should be). If the ping fails, either the gateway is down, the client's not on the right VLAN, or there's a Layer 1/2 problem you haven't found yet. If the gateway responds, try pinging something beyond it — a public IP like 8.8.8.8. If the gateway responds but the public IP doesn't, the problem is upstream: routing, NAT, or firewall.
+
+### DNS
+
+If `ping 8.8.8.8` succeeds but `ping google.com` fails, the Layer 3 path is fine and DNS is broken. The client can reach the internet by IP but can't resolve hostnames. Check which DNS server the client is using (`ipconfig /all`), then test with `nslookup google.com`. If the configured DNS server doesn't respond, it's down or unreachable. Try `nslookup google.com 8.8.8.8` — querying a known-good public DNS server. If that works, your DNS server is the problem, not the network.
+
+## Distinguishing DNS Failure vs Routing Failure vs Firewall Block
+
+These three produce symptoms that look nearly identical to the user — "I can't reach the website." The diagnostic sequence separates them:
+
+1. `ping <default gateway>` — if this fails, it's a local or Layer 2 problem. Stop here and fix that first.
+2. `ping 8.8.8.8` (or any known public IP) — if this fails but the gateway responds, the problem is routing, NAT, or a firewall blocking outbound traffic.
+3. `nslookup google.com` — if pings to public IPs work but DNS resolution fails, it's a DNS problem.
+4. `ping google.com` — if DNS resolves but pings fail, ICMP might be blocked (many hosts block ping). Try `curl https://google.com` or open a browser. If the browser works, there's no problem — ICMP was just filtered.
+
+Routing failures typically affect all traffic to a destination or range. If you can't reach 8.8.8.8 but can reach 1.1.1.1, the issue might be a specific route, not general internet connectivity. Check the routing table on the gateway — is there a default route? Does it point to the right next hop? Is the next-hop reachable?
+
+Firewall blocks are selective. If you can browse websites but can't SSH to an external server, the firewall is likely blocking port 22 outbound. If you can ping an external IP but can't reach port 443 on it, the firewall might be blocking HTTPS. `telnet <ip> <port>` or `Test-NetConnection <ip> -Port <port>` (PowerShell) tests whether a specific TCP port is reachable. A connection timeout means a firewall is silently dropping the traffic. A connection refused (RST) means the traffic reached the host but the port is closed — different problem.
+
+## NAT Misconfiguration
+
+**NAT (Network Address Translation)** translates private internal addresses to public addresses for internet access. When NAT is misconfigured, internal hosts can reach the gateway and even send traffic toward the internet, but the traffic either never gets translated (and gets dropped by the ISP because private addresses aren't routable on the internet) or gets translated incorrectly.
+
+Symptoms of NAT failure: the gateway is reachable, the routing table looks correct, but no traffic gets responses from the internet. The packets leave the network but the source address is still 10.1.20.45 — a private address that the destination has no way to send a reply to. On the router or firewall, check the NAT configuration: is the internal subnet included in the NAT rule? Is the outbound interface identified correctly? Is the public IP pool available and not exhausted?
+
+A newly added VLAN is a classic NAT oversight. The network team creates VLAN 25 with a new subnet, configures DHCP, adds the routing — and forgets to add the new subnet to the NAT access list. Everything works internally. Internet access doesn't. The fix is one line in the NAT configuration, but finding it requires knowing where to look.
+
+## VLAN Misconfiguration Patterns
+
+VLAN problems produce connectivity symptoms that look like routing problems because they are routing problems — the traffic never reaches the router.
+
+**Port in wrong VLAN.** Client has the right DHCP-assigned IP for VLAN 20, but the physical port is in VLAN 10. The client's broadcasts (including DHCP) go to VLAN 10, where a DHCP server might hand out a VLAN 10 address. Now the client has an IP for the wrong subnet, the gateway doesn't match, and nothing works. Or there's no DHCP on VLAN 10, and the client gets an APIPA address.
+
+**VLAN not allowed on trunk.** A trunk between switches is configured with `switchport trunk allowed vlan 10,20,30` — an explicit allowlist. Someone adds VLAN 40 to access ports on the downstream switch but doesn't add VLAN 40 to the trunk's allowed list. VLAN 40 clients can reach each other on the same switch, but traffic to any other switch — including the one with the gateway — is silently dropped at the trunk.
+
+**Missing SVI (Switch Virtual Interface).** The Layer 3 switch has VLANs 10, 20, and 30 with corresponding SVIs for inter-VLAN routing. Someone creates VLAN 40 but doesn't create the SVI (`interface vlan 40` with an IP address). VLAN 40 has Layer 2 connectivity, but no gateway exists for it. Clients get DHCP addresses (if the DHCP server is on the same VLAN or a relay is configured) but can't reach anything outside the VLAN.
+
+## Blocked Ports and Firewall Rules
+
+When a specific application or service doesn't work but general connectivity is fine, the problem is often a firewall rule blocking the required port.
+
+Verify by testing the specific port: `Test-NetConnection 10.1.50.10 -Port 443` on Windows PowerShell or `nc -zv 10.1.50.10 443` on Linux. If general browsing works but a specific internal application doesn't, find out what port that application uses and test that port directly.
+
+Host-based firewalls (Windows Firewall, iptables, firewalld) are a separate layer from network firewalls. A packet might pass every network firewall and ACL and still get dropped by the Windows Firewall on the destination host. When troubleshooting, disable the host-based firewall temporarily (in a controlled manner) to determine if it's the blocking element. If connectivity works with the host firewall disabled, the fix is a firewall rule, not a network change.
+
+## Scope of the Problem Tells You Where to Look
+
+The scope of a connectivity failure is your strongest diagnostic clue:
+
+| Scope | Likely cause |
+|-------|-------------|
+| One user can't reach anything | Client configuration, cable, port, VLAN assignment |
+| One user can't reach one host | Firewall rule, DNS for that hostname, host is down |
+| One user can't reach outside the subnet | Default gateway, VLAN issue, routing |
+| Multiple users on one switch can't reach anything | Uplink failure, switch issue, VLAN trunk problem |
+| Multiple users across switches can't reach internet | Core routing, NAT, upstream ISP, DNS server down |
+| Everyone can reach IPs but not hostnames | DNS server failure |
+| Nobody can reach anything | Core infrastructure failure, DHCP down, major outage |
+
+Start by defining the scope. One user or many? One destination or all? Internal or external? The answers eliminate categories of causes before you run a single command.
+
+## Why This Matters in the Field
+
+"I can't get to the internet" will be the most common ticket you handle in your first year. Maybe your first five years. The users aren't wrong — from their perspective, it's all "the internet." Your job is to translate that into a specific, testable failure at a specific layer and fix the actual cause, not the symptom.
+
+The techs who can do this in five minutes instead of fifty aren't smarter — they've internalized the diagnostic sequence. Gateway ping, external ping, DNS test, port test. Four commands that narrow the entire internet to one broken thing. Practice the sequence until it's automatic. It'll save you more time than any other skill in this course.

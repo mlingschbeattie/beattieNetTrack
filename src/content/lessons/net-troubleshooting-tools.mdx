@@ -1,0 +1,269 @@
+---
+title: Troubleshooting Tools — Reading the Output That Tells You What's Actually Broken
+description: Command-line network diagnostic tools from ping to Wireshark, what their output actually means, and how to choose the right tool for the problem in front of you.
+slug: net-troubleshooting-tools
+track: network-engineer
+moduleId: net.troubleshooting.methodology
+order: 2
+difficulty: Intermediate
+estMinutes: 35
+tags: ["network+", "troubleshooting", "ping", "traceroute", "nslookup", "netstat", "Wireshark", "nmap", "N10-009 5.1", "N10-008 5.1"]
+---
+
+## The Terminal That Answers Back
+
+A user reports they can't reach the company intranet. You sit down at their workstation, open a command prompt, and type `ping 10.1.50.10`. Four replies come back, 1ms each. The network path is fine. You type `nslookup intranet.company.local` and get a "server not found" response. DNS can't resolve the hostname. The network is working. Name resolution is broken. Two commands. Ten seconds. You've narrowed the problem from "the internet is down" (it isn't) to "DNS resolution is failing for internal names" — a completely different investigation with a completely different fix.
+
+Every tool in this lesson answers a specific question about the network. The trick isn't knowing the tools exist — it's knowing which question to ask and reading the answer correctly.
+
+## ping — Is the Destination Reachable?
+
+**ping** sends ICMP Echo Request packets to a target and listens for Echo Reply packets. It answers the most fundamental question in network troubleshooting: can this device reach that device at Layer 3?
+
+```
+C:\> ping 10.1.1.1
+
+Pinging 10.1.1.1 with 32 bytes of data:
+Reply from 10.1.1.1: bytes=32 time=1ms TTL=64
+Reply from 10.1.1.1: bytes=32 time=1ms TTL=64
+Reply from 10.1.1.1: bytes=32 time=2ms TTL=64
+Reply from 10.1.1.1: bytes=32 time=1ms TTL=64
+
+Ping statistics for 10.1.1.1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)
+```
+
+What to read: **time** tells you the round-trip latency. 1ms on a LAN is normal. 20-80ms to a server across the country is normal. 300ms+ suggests congestion, routing inefficiency, or a satellite link. **TTL** (Time To Live) tells you how many hops are left. Linux and most network devices start TTL at 64, Windows starts at 128. If you ping a device and the reply shows TTL=56, the packet traversed about 8 hops (64 - 56 = 8). This gives you a rough idea of how many routers sit between you and the target.
+
+**Request timed out** means no reply came back within the timeout window. The target might be down, a firewall might be blocking ICMP, or there's no return route. **Destination host unreachable** is different — it means a router along the path knows the destination doesn't exist or isn't reachable and explicitly told you. That's more informative than a timeout because a router is actively responding.
+
+Ping a sequence to narrow the scope: first your own gateway (Layer 3 connectivity to the first hop), then a remote server by IP (end-to-end Layer 3), then a remote server by hostname (adds DNS into the test). If the IP works but the hostname doesn't, your network is fine and DNS is the problem.
+
+One critical caveat: many firewalls and hosts block ICMP. A failed ping doesn't always mean the host is unreachable — it might just mean ICMP is filtered. Don't declare a host dead based solely on ping.
+
+## traceroute/tracert — What's the Path?
+
+**traceroute** (Linux/macOS) and **tracert** (Windows) map the Layer 3 path between your device and a destination by sending packets with incrementing TTL values. The first packet has TTL=1, so the first router decrements it to 0 and sends back an ICMP Time Exceeded message, revealing its IP address. The next packet has TTL=2, reaching the second router. And so on until the packets reach the destination.
+
+```
+C:\> tracert 8.8.8.8
+
+Tracing route to dns.google [8.8.8.8]
+over a maximum of 30 hops:
+
+  1     1 ms     1 ms     1 ms  10.1.1.1
+  2     5 ms     4 ms     5 ms  192.168.100.1
+  3    12 ms    11 ms    12 ms  10.250.0.1
+  4     *        *        *     Request timed out.
+  5    18 ms    17 ms    18 ms  72.14.236.204
+  6    20 ms    19 ms    20 ms  dns.google [8.8.8.8]
+```
+
+What to read: each line is a hop. Three timing values (three probes per hop). Consistent times with a gradual increase are normal — each hop adds latency. A sudden jump at one hop suggests congestion or a slow link at that point. Asterisks (`*`) mean that hop didn't respond — many routers are configured to not reply to TTL-exceeded packets for security or performance reasons. A single unresponsive hop in an otherwise complete trace is normal and doesn't indicate a problem. Multiple consecutive timeouts at the end of the trace mean the traffic is being dropped somewhere.
+
+**Asymmetric routing** is something traceroute won't show you. Traceroute maps the forward path. The return path might be completely different. If you see unexpected latency, the problem might be on the return path that traceroute never reveals. This is why traceroute from both ends (if you can) provides a more complete picture.
+
+On Linux, `traceroute` uses UDP by default and can be switched to ICMP with `-I`. Windows `tracert` uses ICMP by default. The protocol matters because some firewalls treat ICMP and UDP differently — a traceroute that fails with one protocol might succeed with the other.
+
+## nslookup and dig — Is DNS Working?
+
+**nslookup** (available on all platforms) and **dig** (Linux/macOS, more detailed) query DNS servers and show you exactly what's coming back.
+
+```
+C:\> nslookup intranet.company.local
+Server:  dc01.company.local
+Address:  10.1.1.5
+
+Name:    intranet.company.local
+Address:  10.1.50.10
+```
+
+This tells you which DNS server answered (10.1.1.5) and what address it returned for the name. If the server line shows an unexpected IP, the client is querying the wrong DNS server — check the DHCP configuration or the client's manual DNS settings.
+
+```
+C:\> nslookup -type=MX company.com
+Server:  dc01.company.local
+Address:  10.1.1.5
+
+company.com     MX preference = 10, mail exchanger = mail.company.com
+```
+
+The `-type=` flag queries specific record types: A (IPv4 address), AAAA (IPv6 address), MX (mail), CNAME (alias), NS (name server), PTR (reverse lookup), SOA (start of authority), TXT (text records including SPF). The exam expects you to know these record types and when to query them.
+
+You can query a specific DNS server directly:
+
+```
+C:\> nslookup intranet.company.local 8.8.8.8
+```
+
+This bypasses the client's configured DNS and asks Google's public resolver. If your internal DNS can't resolve a name but an external server can (or vice versa), you've isolated whether the problem is your DNS server, the record itself, or zone replication.
+
+**dig** provides more detail, including TTL values, response flags, and timing:
+
+```
+$ dig company.com A
+
+;; ANSWER SECTION:
+company.com.        300     IN      A       93.184.216.34
+
+;; Query time: 23 msec
+;; SERVER: 10.1.1.5#53(10.1.1.5)
+```
+
+The 300 is the TTL in seconds — after 300 seconds, the resolver will re-query instead of serving the cached response. Unusually low TTLs can indicate DNS load balancing or a recent change. Query time tells you how long the resolution took — useful for diagnosing slow DNS performance.
+
+## ipconfig, ifconfig, and ip — What's My Network Configuration?
+
+These commands show you the local network stack configuration. The output tells you what the OS thinks is happening at Layers 2 and 3.
+
+```
+C:\> ipconfig /all
+
+Ethernet adapter Ethernet0:
+   Connection-specific DNS Suffix  . : company.local
+   Physical Address. . . . . . . . . : 00-1A-2B-3C-4D-5E
+   DHCP Enabled. . . . . . . . . . . : Yes
+   IPv4 Address. . . . . . . . . . . : 10.1.20.45
+   Subnet Mask. . . . . . . . . . . . : 255.255.255.0
+   Default Gateway. . . . . . . . . . : 10.1.20.1
+   DNS Servers . . . . . . . . . . . : 10.1.1.5
+   DHCP Server . . . . . . . . . . . : 10.1.1.5
+   Lease Obtained. . . . . . . . . . : Monday, March 9, 2026 8:01:22 AM
+   Lease Expires . . . . . . . . . . : Tuesday, March 10, 2026 8:01:22 AM
+```
+
+Every field matters. **IPv4 Address** — is it in the expected range? A 169.254.x.x address (APIPA) means DHCP failed and the client self-assigned. That's never correct on a managed network. **Subnet Mask** — wrong mask means the client calculates network boundaries incorrectly and may not be able to reach the gateway. **Default Gateway** — missing or wrong means no route off the local subnet. **DNS Servers** — wrong DNS server means name resolution fails or goes to the wrong place. **DHCP Server** — if this shows an unexpected IP, there might be a rogue DHCP server on the network.
+
+`ipconfig /release` and `ipconfig /renew` drop and re-request a DHCP lease. `ipconfig /flushdns` clears the local DNS cache — useful when a DNS record has changed but the client still has the old one cached. `ipconfig /displaydns` shows what's in that cache.
+
+On Linux, `ifconfig` is legacy but still common. The modern replacement is `ip`:
+
+```
+$ ip addr show eth0
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500
+    inet 10.1.20.45/24 brd 10.1.20.255 scope global dynamic eth0
+```
+
+`ip route show` displays the routing table — essential for verifying that the default route exists and points to the correct gateway.
+
+## netstat — What's Listening and What's Connected?
+
+**netstat** reveals active TCP/UDP connections and listening ports on the local machine. It answers: what services are running, what's connected to them, and where are outbound connections going?
+
+```
+C:\> netstat -an
+
+Active Connections
+  Proto  Local Address          Foreign Address        State
+  TCP    0.0.0.0:80             0.0.0.0:0              LISTENING
+  TCP    10.1.20.45:49721       93.184.216.34:443      ESTABLISHED
+  TCP    10.1.20.45:49730       10.1.50.10:3306        ESTABLISHED
+  UDP    0.0.0.0:53             *:*
+```
+
+**LISTENING** means a service is waiting for inbound connections on that port. Port 80 listening means a web server is running. If you're troubleshooting why users can't reach a web service and port 80 isn't in LISTENING state, the service isn't running — that's your answer, no packet capture needed. **ESTABLISHED** means an active TCP session exists. The local machine has connections to a web server (port 443) and a MySQL database (port 3306).
+
+`netstat -an` shows addresses numerically (skipping DNS resolution, which is faster). `netstat -b` on Windows shows the executable that owns each connection — useful for identifying which application is using a port. `netstat -r` displays the routing table, functioning similarly to `route print` on Windows or `ip route` on Linux.
+
+On Linux, `ss` is the modern replacement for `netstat` — faster and more detailed. `ss -tlnp` shows TCP listening sockets with process information. The flags: `-t` for TCP, `-l` for listening, `-n` for numeric, `-p` for process.
+
+## arp -a — What's in the ARP Cache?
+
+**arp -a** displays the local ARP cache — the mapping of IP addresses to MAC addresses that the device has learned.
+
+```
+C:\> arp -a
+
+Interface: 10.1.20.45 --- 0x3
+  Internet Address      Physical Address      Type
+  10.1.20.1             00-aa-bb-cc-dd-01     dynamic
+  10.1.20.50            00-aa-bb-cc-dd-50     dynamic
+  10.1.20.100           00-11-22-33-44-55     dynamic
+```
+
+This is a troubleshooting goldmine when you suspect Layer 2 issues. If the gateway's MAC address in the ARP cache doesn't match the actual gateway's MAC (visible in the router's configuration), you might have ARP poisoning. If two different IP addresses resolve to the same MAC, you might have a device with two IPs or an ARP issue. If the gateway IP has no ARP entry at all, the client can't reach the gateway at Layer 2 — check the physical connection and VLAN assignment.
+
+`arp -d *` clears the ARP cache, forcing the device to re-learn MAC addresses. This is useful when an ARP entry is stale or incorrect — clearing and re-learning often resolves connectivity issues caused by devices that changed IP addresses or were replaced.
+
+## nmap — What's Out There?
+
+**nmap** is a network scanner that discovers hosts, open ports, running services, and operating system versions. It's the tool you reach for when you need to understand what's actually running on the network versus what the documentation says is running.
+
+```
+$ nmap -sV 10.1.50.10
+
+PORT     STATE  SERVICE    VERSION
+22/tcp   open   ssh        OpenSSH 8.9p1
+80/tcp   open   http       Apache httpd 2.4.52
+443/tcp  open   ssl/http   Apache httpd 2.4.52
+3306/tcp open   mysql      MySQL 8.0.32
+```
+
+`-sV` probes open ports to determine the service and version. This is service detection — knowing that port 443 is running Apache 2.4.52 tells you the exact software and lets you check for known vulnerabilities. A basic port scan (`nmap 10.1.50.10`) just shows open/closed/filtered status without version details.
+
+`-sS` is a SYN scan (stealth scan) — sends SYN packets and analyzes responses without completing the TCP handshake. Faster and less likely to be logged than a full connect scan. `-O` attempts OS detection based on TCP/IP stack fingerprinting. `-sn` performs a ping sweep — discovers which hosts are alive without scanning ports.
+
+**Responsible use matters.** Port scanning a network you don't own or aren't authorized to test is, at best, a policy violation and, at worst, illegal. In a professional context, nmap scans should be authorized, documented, and conducted during approved windows. The exam tests your knowledge of what nmap does and when to use it — always within authorized scope.
+
+## Wireshark — The Full Story
+
+**Wireshark** captures and analyzes every packet on the wire. It's the most powerful troubleshooting tool available because it shows you exactly what's happening at every layer — no interpretation, no summary, just raw protocol data.
+
+**Capture filters** limit what Wireshark records. Set before you start capturing. `host 10.1.20.45` captures only traffic to or from that IP. `port 53` captures only DNS traffic. `net 10.1.20.0/24` captures traffic for an entire subnet. Capture filters use BPF (Berkeley Packet Filter) syntax and reduce the capture file size by excluding irrelevant traffic.
+
+**Display filters** limit what you see in an existing capture. Applied after capture. `dns` shows only DNS packets. `tcp.port == 443` shows only HTTPS traffic. `ip.addr == 10.1.20.45 && tcp.flags.syn == 1` shows only SYN packets from or to a specific host. Display filters use Wireshark's own syntax and are more flexible than capture filters.
+
+Reading a TCP handshake in Wireshark:
+
+| Packet | Source | Destination | Info |
+|--------|--------|-------------|------|
+| 1 | 10.1.20.45 | 10.1.50.10 | SYN |
+| 2 | 10.1.50.10 | 10.1.20.45 | SYN, ACK |
+| 3 | 10.1.20.45 | 10.1.50.10 | ACK |
+
+Three packets. Normal TCP connection establishment. If you see a SYN from the client, a RST from the server (instead of SYN-ACK), the port is closed. If you see a SYN and then nothing — no SYN-ACK, no RST — a firewall is silently dropping the traffic. If you see the SYN-ACK from the server but no ACK from the client, something on the return path is broken.
+
+**Spotting ARP poisoning** in Wireshark: filter for `arp` and look for gratuitous ARP replies — ARP responses that nobody asked for, especially multiple responses claiming different MAC addresses for the same IP. Wireshark has a built-in expert analysis that flags duplicate IP-to-MAC mappings. If you see the gateway IP being claimed by a MAC address that doesn't belong to the router, someone is poisoning the ARP table.
+
+## Hardware Tools — When Software Can't Help
+
+Not every problem is diagnosable from a command prompt. Physical layer issues require physical tools.
+
+**Cable testers** verify that all wire pairs in a copper cable are connected correctly, with no opens, shorts, or crossed pairs. A basic tester confirms continuity. A **certification tester** (like a Fluke DTX or DSX) measures attenuation, crosstalk, return loss, and cable length and compares results against Cat5e, Cat6, or Cat6a standards. If the cable report fails certification, the cable needs to be re-terminated or replaced.
+
+**Tone generators and probes** (fox and hound) help you trace a cable through walls and ceilings when labeling is missing or wrong. The tone generator puts a signal on the cable at one end, and the probe follows the signal at the other end to identify which cable in a bundle corresponds to which port. Low-tech, indispensable.
+
+**Loopback adapters** test a port by connecting its transmit pins to its receive pins. If you plug a loopback into a switch port and the port comes up and can send/receive traffic with itself, the port hardware is functional. If it doesn't, the port is bad. Loopbacks are used during installation to verify port functionality before running cables.
+
+**OTDR (Optical Time-Domain Reflectometer)** is the fiber optic equivalent of a cable tester, but it does more. An OTDR sends light pulses down a fiber strand and measures reflections. It can determine the total length of the fiber, locate breaks or faults to within meters, measure attenuation at each splice and connector, and identify bends that are causing signal loss. An OTDR produces a trace graph showing signal strength versus distance — a sharp drop at a specific distance is a break or a bad splice.
+
+**Visual fault locators** are simpler — they send visible red laser light down the fiber. At a break or a tight bend, the light leaks out and you can see it visually. Good for identifying faults in patch cables or within visible cable runs.
+
+## Choosing the Right Tool
+
+The tool you pick depends on the question you're trying to answer.
+
+| Question | Tool |
+|----------|------|
+| Can I reach this host? | ping |
+| What path does traffic take? | traceroute / tracert |
+| Is DNS resolving correctly? | nslookup / dig |
+| What's my IP / gateway / DNS? | ipconfig / ip addr |
+| What ports are open locally? | netstat / ss |
+| What's the MAC for this IP? | arp -a |
+| What's running on this host? | nmap |
+| What's happening on the wire? | Wireshark |
+| Is this cable good? | Cable tester |
+| Which cable is which? | Tone generator / probe |
+| Is this port working? | Loopback adapter |
+| Where's the fiber break? | OTDR |
+
+Start simple. Ping before you packet-capture. Check ipconfig before you open Wireshark. The fastest troubleshooters use the lightest tool that answers the question. If ping tells you the host is unreachable and traceroute shows the path dying at hop 3, you don't need a full Wireshark capture to know the problem is at that router. Save the heavy tools for problems that the light tools can't diagnose.
+
+## Why This Matters in the Field
+
+You will use ping and traceroute every single day. Not an exaggeration. They're the first two commands a network engineer runs when something breaks — before looking at dashboards, before opening monitoring tools, before checking configs. They answer the "is there a problem and roughly where is it" question in seconds.
+
+Wireshark will save you on the hard problems — the intermittent issue that no one can reproduce, the application that works from one subnet but not another, the mystery traffic that shows up at 3 AM. Learning to read packet captures is a career skill that separates network engineers from people who reboot things until they work.
+
+The hardware tools matter when you're running cable, building out wiring closets, or troubleshooting in environments where the physical layer is the problem. Knowing that an OTDR exists and what it does is exam knowledge. Knowing how to use a cable tester is day-one job knowledge. You'll touch both.

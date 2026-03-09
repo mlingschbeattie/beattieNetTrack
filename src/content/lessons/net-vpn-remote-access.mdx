@@ -1,0 +1,111 @@
+---
+title: VPN and Remote Access Security — Securing the Connection From Anywhere
+description: IPsec AH vs ESP, tunnel vs transport mode, IKE Phase 1 and 2, SSL/TLS vs IPsec VPN, site-to-site vs client-to-site, split vs full tunnel, RADIUS and MFA authentication, always-on VPN, concentrators, endpoint posture checks, and common misconfigurations.
+slug: net-vpn-remote-access
+track: network-engineer
+moduleId: net.security.infrastructure
+order: 2
+difficulty: Intermediate
+estMinutes: 30
+tags: ["network+", "VPN", "IPsec", "SSL VPN", "remote access", "MFA", "N10-009 4.3", "N10-008 4.3"]
+---
+
+## The Coffee Shop Problem
+
+A teacher is grading papers at a coffee shop, connected to the free Wi-Fi, accessing the school's grading portal over HTTPS. The connection is encrypted between the laptop and the portal, so the data is safe — from the coffee shop's perspective. But the teacher also needs to reach the school's internal file server to pull a rubric. That file server isn't exposed to the internet. It's on an internal VLAN behind the school's firewall. From the coffee shop, it doesn't exist.
+
+The solution is a VPN — a Virtual Private Network — that creates an encrypted tunnel between the teacher's laptop and the school's network. Once connected, the laptop behaves as if it's sitting on the school's internal network. The file server is reachable. Internal DNS names resolve. Traffic between the laptop and the school network is encrypted, regardless of what the coffee shop Wi-Fi is doing. The untrusted internet link becomes a secure extension of the trusted network.
+
+VPNs are foundational to remote access security, and they come in multiple flavors with different protocols, architectures, and tradeoffs. Understanding the mechanics — not just "it encrypts traffic" but how it encrypts, what it authenticates, and where it can go wrong — matters for both the exam and every production deployment you'll touch.
+
+## IPsec — The Protocol Suite
+
+**IPsec (Internet Protocol Security)** is a suite of protocols that provides encryption, authentication, and integrity for IP traffic. It operates at Layer 3, which means it can protect any IP-based communication — not just web traffic, but file shares, database connections, VoIP, routing protocol updates, anything carried over IP.
+
+IPsec has two core protocols that handle the actual data protection:
+
+**AH (Authentication Header)** provides integrity and authentication but not encryption. It verifies that packets haven't been tampered with and that they came from a legitimate source, but the payload is visible in cleartext. AH is rarely used alone in modern deployments because confidentiality is almost always required. Its main role on the exam is distinguishing it from ESP.
+
+**ESP (Encapsulating Security Payload)** provides encryption, authentication, and integrity — the full package. ESP encrypts the payload (and optionally the original IP header, depending on mode) so an eavesdropper can't read the traffic, verifies the packet hasn't been modified in transit, and confirms the sender's identity. In practice, IPsec VPNs use ESP. When someone says "IPsec VPN," they mean ESP.
+
+### Tunnel Mode vs. Transport Mode
+
+**Tunnel mode** encapsulates the entire original IP packet — header and payload — inside a new IP packet with a new header. The original packet is encrypted and invisible to anyone inspecting traffic on the wire. They see the new outer IP header (which shows the VPN endpoint addresses) but can't see the original source, destination, or payload. Tunnel mode is the standard for site-to-site VPNs where the VPN gateways at each site encapsulate and forward traffic on behalf of entire subnets.
+
+**Transport mode** encrypts only the payload of the original IP packet, leaving the original IP header intact. The source and destination IP addresses are visible, but the payload is protected. Transport mode is used for host-to-host communication — two devices communicating directly over IPsec without a gateway in between. It's less common than tunnel mode and carries less overhead because it doesn't add a second IP header.
+
+Exam shortcut: site-to-site VPN = tunnel mode. Host-to-host = transport mode. If the question mentions VPN gateways or entire sites communicating, it's tunnel mode.
+
+### IKE — Building the Tunnel
+
+Before IPsec can encrypt traffic, the two endpoints need to agree on encryption algorithms, exchange keys, and authenticate each other. This negotiation is handled by **IKE (Internet Key Exchange)**, and it happens in two phases.
+
+**IKE Phase 1** establishes a secure management channel between the two peers. The peers authenticate each other (using pre-shared keys or certificates), agree on encryption and hashing algorithms, and generate shared secret keys using the Diffie-Hellman key exchange. The result is an IKE Security Association (SA) — a secure, authenticated channel for negotiation. Phase 1 can operate in Main Mode (six messages, more secure, identity protected) or Aggressive Mode (three messages, faster, but the identity is sent in cleartext).
+
+**IKE Phase 2** uses the secure channel from Phase 1 to negotiate the IPsec SAs — the actual parameters for encrypting the data traffic. The peers agree on the encryption algorithm (AES-256, for example), the hashing algorithm (SHA-256), the IPsec protocol (ESP), and the lifetime of the SA (how long before rekeying). Phase 2 uses Quick Mode and produces the IPsec tunnel through which user traffic actually flows.
+
+The two-phase design means that Phase 1's expensive key exchange happens once, and Phase 2 can create multiple IPsec tunnels (for different traffic flows or subnets) without repeating the full negotiation. When the Phase 2 SA expires, it renegotiates using the existing Phase 1 channel — faster and less disruptive.
+
+## SSL/TLS VPN vs. IPsec VPN
+
+**SSL/TLS VPNs** use the same encryption that protects HTTPS web traffic. Instead of tunneling at Layer 3, they typically operate at Layer 4–7, establishing an encrypted session over TCP port 443. The biggest advantage: they work through nearly any firewall and NAT device because port 443 is almost universally permitted. Try running IPsec through a hotel Wi-Fi's NAT and you'll fight with blocked protocols and broken tunnels. SSL/TLS VPN through port 443 just works because it looks like ordinary HTTPS traffic to intermediary devices.
+
+SSL/TLS VPNs come in two forms. A **clientless SSL VPN** provides browser-based access to specific web applications — no software installation required. The user connects to a VPN portal URL, authenticates, and accesses internal web apps through the portal. This is limited to web-based resources and doesn't provide full network access. A **full-tunnel SSL VPN** requires a client application (Cisco AnyConnect, OpenVPN, GlobalProtect) that creates a virtual network adapter and tunnels all traffic — functionally similar to an IPsec tunnel but running over TLS.
+
+**IPsec VPNs** tunnel at Layer 3 and carry any IP protocol. They're the standard for site-to-site connections between fixed locations with dedicated hardware (routers or firewall appliances at each end). They're fast, well-supported on network hardware, and provide full network-to-network connectivity. The downside: IPsec doesn't traverse NAT cleanly (NAT modifies IP headers, which breaks IPsec's integrity checks) — NAT Traversal (NAT-T) wraps IPsec in UDP port 4500 to work around this, but it's an additional layer of complexity. Client-to-site IPsec VPNs work but can be problematic on restrictive networks.
+
+The practical split: IPsec for site-to-site between routers/firewalls. SSL/TLS VPN for remote user access from laptops and devices on arbitrary networks. Most organizations use both.
+
+## Site-to-Site vs. Client-to-Site
+
+A **site-to-site VPN** connects two networks — the main campus to a satellite building, the school to the district data center, the corporate headquarters to a branch office. The VPN tunnel runs between two gateways (routers or firewalls) and is always on. Devices at each site don't know they're using a VPN — they just see routes to the remote subnets that happen to traverse an encrypted tunnel. Configuration happens on the gateways, not on endpoints.
+
+A **client-to-site VPN** (also called remote access VPN) connects a single device — a teacher's laptop, an admin's home workstation — to the network. The user runs VPN client software, authenticates, and receives an IP address on the internal network. The tunnel exists only while the client is connected and typically requires user interaction to initiate (launch the client, enter credentials, accept the MFA prompt).
+
+## Split Tunnel vs. Full Tunnel
+
+When a remote user connects via VPN, a design decision determines what traffic goes through the tunnel.
+
+**Full tunnel** routes all of the client's traffic through the VPN. Web browsing, streaming, email, internal resource access — everything flows through the encrypted tunnel to the organization's network and exits to the internet through the organization's firewall. The advantage: all traffic is subject to the organization's security controls (firewall rules, content filtering, IDS/IPS). The disadvantage: bandwidth. Every Netflix stream, every YouTube video, every Windows Update from every connected remote user consumes bandwidth on the VPN concentrator and the organization's internet link. Latency increases because traffic takes a longer path. Full tunnel is secure but expensive in bandwidth.
+
+**Split tunnel** routes only traffic destined for the organization's internal network through the VPN. Everything else — web browsing, streaming, cloud services — goes directly to the internet through the client's local connection. The advantage: dramatically less bandwidth on the VPN concentrator and lower latency for internet-bound traffic. The disadvantage: the client's internet traffic bypasses the organization's security controls entirely. If the client is compromised and making outbound connections to a command-and-control server, that traffic never touches the organization's IDS/IPS because it goes straight to the internet.
+
+The choice is a risk decision. High-security environments use full tunnel. Environments where bandwidth and user experience are priorities — and endpoint security is strong enough to compensate — use split tunnel. Some deployments use a hybrid approach: split tunnel for general traffic, but specific cloud services (Microsoft 365, for example) routed directly while sensitive internal traffic goes through the tunnel.
+
+## Remote Access Authentication
+
+A VPN is only as secure as its authentication. Username and password alone is insufficient — if the credentials are compromised (phishing, credential stuffing, breach reuse), the attacker has full remote access to the internal network.
+
+**Multi-factor authentication (MFA)** is non-negotiable for VPN access. Something you know (password) plus something you have (a phone receiving a push notification, a hardware token generating a code). Even if the password is compromised, the attacker can't complete the second factor without possessing the physical device.
+
+**Certificate-based authentication** uses digital certificates installed on the client device. The VPN gateway verifies the certificate during connection — if the device doesn't have a valid, organization-issued certificate, the connection is refused regardless of username and password. This prevents credential-only attacks because the attacker would need both the stolen credentials and a device with the correct certificate.
+
+**RADIUS** centralizes VPN authentication against Active Directory or another identity store. The VPN concentrator sends the authentication request to RADIUS, RADIUS checks it against AD, and returns accept or reject along with authorization attributes (which network resources the user can access, which VLAN to assign). RADIUS integration means you manage VPN users in the same directory as everything else — disable an AD account and VPN access dies with it.
+
+## Always-On VPN and VPN Concentrators
+
+**Always-on VPN** establishes the tunnel automatically when the device connects to any network, without user interaction. The moment the laptop connects to Wi-Fi — any Wi-Fi — the VPN client connects to the organization's gateway. The user never browses the internet unprotected, and the device is always subject to organizational security controls. This is particularly valuable for managed devices in high-security environments where the organization needs continuous visibility and control.
+
+A **VPN concentrator** is the device that terminates VPN connections. In a small deployment, the firewall handles VPN termination alongside its other functions. In a larger deployment, a dedicated VPN concentrator (or a cluster of them) handles hundreds or thousands of concurrent client connections, offloading the encryption/decryption processing from the firewall. The concentrator manages tunnel establishment, authentication (often via RADIUS), IP address assignment to remote clients, and enforcing access policies.
+
+## Endpoint Posture and VPN Security
+
+Connecting a VPN doesn't just extend the network — it extends the attack surface. A compromised laptop connecting via VPN brings its malware, its keyloggers, and its command-and-control connections directly inside the trusted network. The VPN encrypted the tunnel faithfully — it just encrypted malicious traffic along with everything else.
+
+**Endpoint posture checks** (also called Network Access Control or host checks) evaluate the client device before granting VPN access or while connected. Is the operating system patched? Is antivirus installed and updated? Is the local firewall enabled? Is the device managed (domain-joined, MDM-enrolled)? Devices that pass the check get full access. Devices that fail get quarantined — limited access with a remediation page explaining what needs to be fixed.
+
+Posture checks aren't foolproof. A determined attacker can fake compliance indicators. But they catch the accidental cases — the teacher whose antivirus expired three months ago, the admin whose personal laptop hasn't been patched since summer — that represent the vast majority of real-world risk.
+
+## Common VPN Misconfigurations
+
+VPNs fail in predictable ways, and attackers know exactly where to look.
+
+**Weak pre-shared keys.** A site-to-site IPsec VPN using a PSK of "vpn123" or the company name is trivially guessable. Pre-shared keys should be long, random, and unique per tunnel. Better: use certificate-based authentication between sites and eliminate PSKs entirely.
+
+**No MFA on remote access.** Username and password alone is a gift to attackers with stolen credential lists. If the VPN gateway doesn't require a second factor, every breached password is a direct network penetration.
+
+**Split tunnel without endpoint security.** Split tunnel saves bandwidth but the client's internet-bound traffic is unmonitored. Without strong endpoint protection (EDR, local firewall, DNS filtering), the organization is blind to threats on the remote device.
+
+**Stale VPN accounts.** A contractor's VPN account that was never deactivated after the project ended. A former employee whose AD account was disabled but whose local VPN certificate is still valid. Stale accounts are the offboarding failure from the policies lesson applied specifically to remote access — same risk, same fix: documented procedures, regular audits.
+
+**Unpatched VPN concentrators.** VPN gateways are internet-facing by definition — they have to be, to accept incoming connections. Every vulnerability in the VPN software is directly exposed to the internet. Patch promptly. Monitor vendor advisories. The most devastating corporate breaches in recent years have started with exploited vulnerabilities in unpatched VPN appliances — Pulse Secure, Fortinet, Citrix, all hit with critical CVEs that were exploited within days of disclosure. Patching VPN infrastructure isn't a routine maintenance task. It's an emergency response priority.

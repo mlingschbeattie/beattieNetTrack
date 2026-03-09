@@ -1,0 +1,129 @@
+---
+title: Troubleshooting Network Security Issues — When the Problem Is an Attack and Not a Misconfiguration
+description: Distinguishing security incidents from connectivity problems, detecting ARP poisoning, rogue DHCP servers, DNS hijacking, compromised hosts, and knowing when to escalate from troubleshooting to incident response.
+slug: net-troubleshooting-security
+track: network-engineer
+moduleId: net.troubleshooting.security
+order: 1
+difficulty: Intermediate
+estMinutes: 30
+tags: ["network+", "troubleshooting", "security", "ARP poisoning", "rogue DHCP", "DNS hijacking", "incident response", "N10-009 5.3", "N10-008 5.3"]
+---
+
+## The Ticket That Wasn't a Network Problem
+
+A teacher submits a ticket: "My browser keeps redirecting to weird sites when I type in the school portal address." The help desk tech checks the network — connectivity is fine, ping works, traceroute looks normal. They clear the browser cache, reset the homepage, and close the ticket. Next day, same teacher, same problem. The tech reinstalls the browser. Problem comes back. On the third visit, someone finally runs `nslookup portal.school.edu` and gets an IP address that doesn't belong to the school. The DNS server the teacher's laptop is using isn't the school's DNS server. It's an address handed out by a rogue DHCP server that someone plugged into the network — a personal router with DHCP enabled, handing out its own address as the DNS server, redirecting every name resolution through a compromised resolver.
+
+Three tickets. Three visits. The problem was a security issue masquerading as a connectivity problem the entire time. The symptoms overlap. A rogue DHCP server looks like a misconfiguration. DNS hijacking looks like a browser issue. ARP poisoning looks like intermittent network flakiness. If you only know how to troubleshoot connectivity, you'll miss the attacks that hide behind the same symptoms.
+
+## The Overlap Between Security and Connectivity
+
+Security incidents and network problems share symptoms because they exploit the same protocols. ARP poisoning corrupts Layer 2 operations the same way a misconfigured NIC does — the ARP table is wrong either way. A rogue DHCP server hands out bad configurations exactly like a legitimate DHCP server with a misconfigured scope. DNS hijacking produces the same visible result as a DNS server with a corrupted zone file.
+
+The difference is intent. A misconfiguration is accidental. An attack is deliberate. But from the client's perspective, the result is identical: traffic goes to the wrong place, services are unreachable, or data is intercepted. The troubleshooting tools are the same too — `arp -a`, `ipconfig /all`, `nslookup`, Wireshark. What changes is what you're looking for and what you do when you find it.
+
+The first rule: don't assume every problem is accidental. If the evidence doesn't fit a typical misconfiguration — if the bad data is too specific, too targeted, or too persistent after a fix — start considering that someone might be doing this on purpose.
+
+## Detecting ARP Poisoning
+
+**ARP poisoning** puts an attacker between victims and their gateway by corrupting ARP tables. The symptoms are subtle: intermittent latency spikes, occasional packet loss, connections that reset unexpectedly. These symptoms also describe a flaky cable, a congested switch, or a dying NIC. The difference shows up in the ARP table and on the wire.
+
+On the affected client, run `arp -a` and look at the MAC address for the default gateway. Compare it to the actual MAC address of the router (from the router's configuration or interface output). If they don't match, someone else is answering ARP requests for the gateway's IP. That "someone else" is either a misconfigured device (two devices with the same IP — covered in the connectivity lesson) or an attacker deliberately poisoning the table.
+
+On the switch, check for MAC address flapping: use `show mac address-table` and look for a single IP address oscillating between two different MAC addresses on different ports. Rapid flapping between MACs is a strong indicator of ARP poisoning — the attacker's MAC and the legitimate gateway's MAC are competing.
+
+In Wireshark, filter for `arp` and look for gratuitous ARP replies — ARP responses sent without a corresponding request. A device legitimately sends a gratuitous ARP when it comes online (to announce its presence). An attacker sends them continuously to keep overwriting the victim's ARP cache. If you see a stream of gratuitous ARP replies for the gateway's IP coming from an unexpected MAC address, that's poisoning. Wireshark's expert info will also flag "duplicate IP address detected" when it sees two different MACs claiming the same IP.
+
+The defense confirms the diagnosis. If you enable **Dynamic ARP Inspection (DAI)** on the switch and the poisoning stops, you've confirmed the cause and deployed the fix simultaneously. DAI validates ARP packets against the DHCP snooping binding table — only ARP entries that match the DHCP-assigned IP-to-MAC mapping are permitted.
+
+## Detecting a Rogue DHCP Server
+
+A **rogue DHCP server** hands out IP configurations that the legitimate DHCP server didn't authorize. The rogue might assign the wrong gateway (redirecting traffic through an attacker), the wrong DNS server (enabling DNS hijacking), or IPs from a completely foreign subnet (breaking connectivity entirely).
+
+The symptom that gives it away: some clients get correct configurations and some get wrong ones. DHCP is a race — the first server to respond to a DHCP Discover wins. If the rogue server responds faster than the legitimate one (which it often does if it's a consumer router with no other load), that client gets the rogue configuration. Other clients that happen to get the legitimate server's response first work fine. The inconsistency across clients on the same VLAN is the clue.
+
+Check a misbehaving client's configuration with `ipconfig /all`. Look at the **DHCP Server** field. If it shows an IP address that isn't your legitimate DHCP server, a rogue is on the network. Note the IP and MAC address of the rogue. On the switch, use `show mac address-table address <rogue-mac>` to find which port it's connected to. Go to that port. Unplug the device. Problem solved immediately.
+
+Prevention: **DHCP snooping** configures the switch to allow DHCP server responses only from trusted ports. You designate the uplink to your legitimate DHCP server as a trusted port. All other ports are untrusted and will have any DHCP Offer or DHCP Ack frames they send silently dropped. A rogue DHCP server on an untrusted port can broadcast all the offers it wants — the switch eats them before they reach any client.
+
+In Wireshark, filter for `bootp` (DHCP uses BOOTP at the protocol level) and examine the server identifier option in DHCP Offer packets. If you see offers from more than one server IP, one of them is rogue.
+
+## DNS Hijacking — When Names Lie
+
+**DNS hijacking** redirects name resolution to attacker-controlled IP addresses. The user types a legitimate URL, the browser resolves it to the wrong IP, and the user lands on a fake page — or worse, a page that silently captures credentials before redirecting to the real site.
+
+DNS hijacking has several vectors. A compromised or rogue DHCP server pushes the attacker's DNS server address to clients. Malware on the client changes the DNS configuration locally (modifying the OS DNS settings or the hosts file). An attacker poisons the DNS cache of the recursive resolver. DNS traffic is intercepted and modified in transit (a man-in-the-middle on port 53).
+
+Verification is straightforward. Run `nslookup portal.school.edu` and note the responding server and the returned IP. Then run `nslookup portal.school.edu 8.8.8.8` — querying Google's public DNS directly. If the results differ, the client's configured DNS server is returning incorrect answers. Check which DNS server the client is using (`ipconfig /all`). If it's not your organization's DNS server, find out where it came from — DHCP configuration, manual entry, or malware.
+
+If the client's configured DNS server is correct but still returns bad results, the DNS server itself might be compromised or its cache might be poisoned. Query the authoritative DNS server directly (find it with `nslookup -type=NS school.edu`) and compare results. If the authoritative server returns the correct answer but the recursive resolver doesn't, the resolver's cache is corrupted. Flush the resolver's cache and investigate how it was poisoned.
+
+**DNSSEC** prevents cache poisoning by cryptographically signing DNS records. If your resolver validates DNSSEC, a poisoned response fails validation and gets rejected. If your infrastructure doesn't implement DNSSEC, cache poisoning remains a viable attack vector.
+
+## Spotting Port Scans in Logs
+
+A **port scan** is reconnaissance — an attacker probing your network to discover open ports and running services. It's not an attack itself, but it's the precursor to one. Detecting it early gives you time to respond before the actual exploitation begins.
+
+Firewall logs reveal port scans as patterns. A single source IP generating connection attempts to hundreds of different ports on the same destination in rapid succession is a vertical scan — probing one host for all open services. A single source IP connecting to the same port across hundreds of different destination IPs is a horizontal scan — looking for a specific vulnerable service across the network.
+
+```
+Mar 09 14:22:01 fw01 DROP: SRC=10.1.20.105 DST=10.1.50.10 PROTO=TCP DPT=22
+Mar 09 14:22:01 fw01 DROP: SRC=10.1.20.105 DST=10.1.50.10 PROTO=TCP DPT=23
+Mar 09 14:22:01 fw01 DROP: SRC=10.1.20.105 DST=10.1.50.10 PROTO=TCP DPT=25
+Mar 09 14:22:01 fw01 DROP: SRC=10.1.20.105 DST=10.1.50.10 PROTO=TCP DPT=53
+Mar 09 14:22:01 fw01 DROP: SRC=10.1.20.105 DST=10.1.50.10 PROTO=TCP DPT=80
+Mar 09 14:22:02 fw01 DROP: SRC=10.1.20.105 DST=10.1.50.10 PROTO=TCP DPT=110
+Mar 09 14:22:02 fw01 DROP: SRC=10.1.20.105 DST=10.1.50.10 PROTO=TCP DPT=443
+```
+
+That's a textbook vertical scan — the same source hitting sequential ports on the same target within one second. Legitimate traffic doesn't look like this. A user connecting to a web server hits port 443 and maybe port 80. They don't touch ports 22, 23, 25, 53, and 110 in the same second.
+
+An **IDS/IPS** automates this detection. Snort, Suricata, and commercial IDS products maintain signature databases for scan patterns. When a scan is detected, the IDS generates an alert. An IPS goes further and blocks the scanning source. When you see IDS alerts for port scan activity, correlate the source IP to a specific device (DHCP logs, switch MAC table) and investigate that device.
+
+## Identifying a Compromised Host
+
+A compromised host — a device that malware or an attacker has taken control of — exhibits behaviors that don't match its legitimate purpose. The challenge is recognizing those behaviors amid normal network noise.
+
+**High outbound traffic** from a workstation that normally generates modest traffic is a red flag. If a student Chromebook is pushing 50 Mbps outbound continuously, it's either uploading to a legitimate cloud service or exfiltrating data. Check the destination. If the traffic is going to IP addresses in unfamiliar geographic ranges or to known-bad IP lists, the device is likely compromised.
+
+**Connections to unusual IP addresses** that don't correspond to any legitimate service are suspicious. Command-and-control (C2) traffic often connects to obscure cloud provider IPs, dynamic DNS hostnames, or IP addresses that change frequently. NetFlow data or firewall logs showing repeated connections from one internal host to a rotating set of external IPs is a classic C2 pattern.
+
+**Unexpected DNS queries** for domains that are randomly generated strings (e.g., `xk4rf9a2.example.com`) suggest **DNS tunneling** or **domain generation algorithms (DGAs)** used by malware to locate command servers. Normal DNS queries resolve human-readable domains. Queries for gibberish domains are almost never legitimate.
+
+**Unusual process activity** visible in `netstat -b` (Windows) or `ss -tlnp` (Linux) — processes listening on ports that shouldn't be, or established connections from applications that don't normally access the network — indicate something is running that shouldn't be.
+
+When you identify a potentially compromised host, the response is not to fix it yourself. This is where troubleshooting hands off to **incident response**. Isolate the device from the network (disable the switch port or disconnect Wi-Fi), preserve the evidence (don't reboot it — that destroys volatile memory), document what you found and when, and escalate to whoever handles security incidents in your organization. Trying to "clean" a compromised machine without following incident response procedures can destroy forensic evidence and miss other compromised devices on the network.
+
+## Certificate Errors as Security Indicators
+
+When a browser shows a certificate warning — "Your connection is not private," "Certificate has expired," "Certificate name mismatch" — most users click through it. In a troubleshooting context, certificate errors are diagnostic information.
+
+An **expired certificate** usually means the server admin didn't renew it. Annoying, not malicious. A **name mismatch** (the certificate is for `server.company.com` but you're accessing `10.1.50.10`) is common when accessing internal servers by IP instead of hostname. Also usually not malicious.
+
+A **certificate issued by an untrusted authority** is different. If the browser says it doesn't trust the certificate's issuer, and the issuer isn't your organization's internal CA, someone might be intercepting the connection. A man-in-the-middle attacker presenting a forged certificate would trigger this warning — the certificate looks valid but wasn't issued by a recognized authority. If users start reporting certificate warnings for websites that normally don't produce them, investigate immediately. An attacker performing SSL/TLS interception substitutes their own certificate for the legitimate one, and the warning is the client's only defense.
+
+Legitimate SSL inspection (a firewall decrypting and re-encrypting HTTPS for content filtering) produces exactly the same warning unless the organization's CA certificate is deployed to all client devices as a trusted root. If your organization uses SSL inspection and clients aren't reporting certificate errors, the enterprise CA is deployed. If they suddenly start reporting errors, either the CA certificate expired, was removed from the trust store by an update, or something else is intercepting.
+
+## Firewall Rules as Troubleshooting Problems
+
+Not every firewall-related issue is an attack. Misconfigured firewall rules are a troubleshooting problem — and one of the most common after changes.
+
+A new application deployment fails because the firewall team didn't open the required port. A change request was submitted but the rule was applied to the wrong interface (inside instead of outside). A rule that should allow traffic to a specific subnet has the wrong mask and is either too broad (security risk) or too narrow (connectivity failure). An implicit deny-all at the bottom of the rule set catches traffic that should have matched an explicit permit higher up.
+
+Firewall rule troubleshooting follows the same methodology: what traffic should be flowing, through which interface, on which port, between which source and destination? Then examine the rule set to find where it should match. If there's no matching rule, the implicit deny catches it. If there's a matching rule but it's after a more specific deny rule, order matters — firewall rules are processed top-down, and the first match wins.
+
+Most firewalls offer a log or trace function that shows which rule a specific packet matched (or that it hit the default deny). Palo Alto has traffic logs. Cisco ASA has `packet-tracer`. pfSense has filter logs. Use the vendor's diagnostic tool to trace a specific flow through the rule set. This eliminates guessing about which rule is or isn't matching.
+
+## When to Escalate to Incident Response
+
+Not every anomaly is a security incident, and not every security incident is your job to handle alone. Knowing when to escalate is as important as knowing how to diagnose.
+
+Escalate when you find evidence of deliberate, targeted activity — ARP poisoning with a clear attacker device, a rogue DHCP server that was placed intentionally, DNS settings modified by malware, or a host communicating with known C2 infrastructure. Escalate when the scope is beyond a single device — if multiple hosts appear compromised, the incident is bigger than one machine. Escalate when you're unsure — if the evidence is ambiguous and you can't determine whether it's an attack or a misconfiguration, escalate and let the security team make that call.
+
+When you escalate, provide everything you've found: timestamps, affected hosts, MAC and IP addresses, switch ports, log entries, packet captures, and your analysis. A clear, documented handoff saves the incident response team hours of re-investigation. They take it from there — forensics, containment, eradication, and recovery are their domain. Your job was detection and initial isolation, and if you did those well, you've already provided the most valuable contribution possible.
+
+## Why This Matters in the Field
+
+The line between network operations and security operations is blurring. Fifteen years ago, the network team and the security team were separate groups with separate tools. Today, the network engineer is often the first person to notice that something is wrong — because the symptoms show up as network anomalies first. The IDS alerts. The firewall logs. The unexplained traffic pattern on the NetFlow dashboard.
+
+You don't need to be a security analyst to be useful in a security incident. You need to know what normal looks like on your network, recognize when something deviates from normal, capture the evidence, and route it to the right people. The ARP table that doesn't match. The DHCP server that isn't yours. The DNS answer that points to the wrong place. These are things a network tech can see with basic tools in under five minutes. Seeing them — and knowing what they mean — is the difference between catching an incident early and discovering it weeks later in a breach report.

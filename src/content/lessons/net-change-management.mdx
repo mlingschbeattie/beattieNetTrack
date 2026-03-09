@@ -1,0 +1,113 @@
+---
+title: Network Change Management — The Outage That Didn't Have to Happen
+description: Change requests, the CAB, change types, maintenance windows, rollback plans, lab testing, peer review, communication, post-change verification, and the disciplined process that keeps configuration changes from becoming unplanned outages.
+slug: net-change-management
+track: network-engineer
+moduleId: net.operations.procedures
+order: 1
+difficulty: Intermediate
+estMinutes: 25
+tags: ["network+", "change management", "operations", "N10-009 3.3", "N10-008 3.3"]
+---
+
+## The Outage That Didn't Have to Happen
+
+Friday afternoon. A network engineer decides to "quickly" update the ACL on the core router before leaving for the weekend. No maintenance window. No notification. No rollback plan. The ACL has a typo — a wildcard mask is inverted — and suddenly the entire admin VLAN can't reach the internet. The engineer doesn't realize the mistake because the change looked right in the config. They leave. The help desk doesn't connect the ACL change to the connectivity complaints because nobody told them a change was happening. Three hours of troubleshooting later, someone finally checks the change and finds the error. Five-minute fix. Three-hour outage. All because nobody followed a process.
+
+This is not a hypothetical. This happens in production networks constantly. Not because the engineers are incompetent — the person who made that change probably understood ACLs perfectly. It happened because there was no process to catch the error before it hit production, no communication to alert the team, and no rollback plan to recover quickly. Change management exists to prevent this exact scenario. It's not bureaucracy for its own sake. It's the process that turns individual competence into organizational reliability.
+
+## The Change Request — Starting the Paper Trail
+
+Every change starts with a **change request** — a documented proposal that describes what's changing, why, when, and how. A change request doesn't need to be a 20-page document. It needs to answer these questions:
+
+What are you changing? Be specific. "Updating the firewall" is useless. "Adding a permit rule for TCP port 8443 from the guest VLAN (10.1.40.0/24) to the application server (10.1.5.20) on the perimeter firewall (FW01)" is useful.
+
+Why is the change needed? A ticket number, a business justification, a security patch — something that ties the change to a reason. "Because I felt like it" is not a reason. "Ticket #2041: New student portal requires HTTPS access from guest wireless" is a reason.
+
+When will the change happen? A specific date and time, ideally during a maintenance window. "Sometime this week" is not a plan.
+
+What's the rollback plan? If the change breaks something, how do you undo it? For an ACL change, the rollback is removing the new rule. For a firmware upgrade, the rollback might be loading the previous firmware image. For a routing protocol change, the rollback is reverting the config and clearing the neighbors. Every change needs a way back.
+
+What's the impact? Which users, services, or systems are affected? Will there be downtime? How long? Who needs to be notified?
+
+The change request creates accountability and traceability. Six months from now, when someone asks "why does the firewall have this rule?", the change request provides the answer instead of a shrug.
+
+## The Change Advisory Board — Peer Review for Infrastructure
+
+A **Change Advisory Board (CAB)** is a group that reviews and approves change requests before they're implemented. In an enterprise, the CAB includes network engineers, system administrators, security staff, and sometimes application owners or business stakeholders. In a smaller organization, the CAB might be two people looking at each other's change requests over coffee. The size doesn't matter. The review does.
+
+The CAB evaluates risk. Is this change likely to cause an outage? Is the maintenance window appropriate? Is the rollback plan realistic? Has the change been tested? Does it conflict with another change scheduled for the same window? A second pair of eyes catches mistakes that the person writing the change can't see because they're too close to it. The engineer who wrote the ACL typo in the opening story would have caught it if someone else had reviewed the config before it went live. That's not a dig at the engineer — it's human nature. You read what you intended to write, not what you actually wrote. Peer review exists because of this universal cognitive blind spot.
+
+The CAB doesn't need to be a formal meeting with agendas and minutes for every change. For routine changes, an async review — an email, a Slack message, a comment on the ticket — is sufficient. The point is that someone other than the person making the change has seen it and agreed it's reasonable.
+
+## Change Types — Not All Changes Are Equal
+
+Change management frameworks classify changes by risk and urgency:
+
+**Standard changes** are low-risk, routine, pre-approved changes that follow an established procedure. Adding a port to a VLAN, creating a DHCP reservation, patching a workstation — these follow a known process with a known outcome. Standard changes don't need individual CAB review because the procedure itself has already been approved. You follow the documented steps, log the change, and move on. The key: a standard change only stays standard as long as the procedure is followed exactly. Deviate from the script and it's no longer standard.
+
+**Normal changes** are planned changes that require review and approval. Adding a new VLAN to the network, updating router firmware, modifying a firewall policy, changing a routing protocol configuration — these carry enough risk that someone should review them before implementation. Normal changes go through the CAB, get scheduled for a maintenance window, and follow the full change request process.
+
+**Emergency changes** are unplanned changes required to restore service during a critical outage or address an active security threat. The production database server is unreachable and you need to modify a firewall rule to restore connectivity — now. Emergency changes bypass the normal approval process because waiting for a CAB meeting while the network is down is absurd. But they don't bypass documentation. You make the fix, you restore service, and then you file the change request retroactively. Every emergency change gets reviewed after the fact to determine if it was truly an emergency, if the fix was appropriate, and if the root cause should be addressed with a planned normal change.
+
+The trap: everything becomes an "emergency" if the process is inconvenient. A team that classifies every change as an emergency to skip the review process doesn't have a change management problem — it has a culture problem. Emergency changes should be rare. If they're frequent, either the infrastructure is unstable (fix the root causes) or the change process is too slow (streamline the normal path).
+
+## Maintenance Windows — Picking the Right Time to Break Things
+
+A **maintenance window** is a scheduled time period during which changes are made, with the understanding that services may be disrupted. Maintenance windows are chosen to minimize user impact — evenings, weekends, school breaks, whenever the least number of people are affected if something goes wrong.
+
+The maintenance window isn't just "when you do the work." It includes time for testing, verification, and rollback if needed. If your change takes fifteen minutes but you need thirty minutes to verify and another fifteen for a potential rollback, schedule a sixty-minute window. Underestimating the window is a classic mistake that leads to rushed verification ("it looks fine") or changes that run past the window and impact business hours.
+
+Communicate the maintenance window to everyone affected. Users, help desk, management, the other engineers on the team. An email. A calendar event. A ticket annotation. Whatever the organization uses. The goal is that when users experience disruption during the window, they already know why. And when the help desk gets calls, they know to say "we're aware, maintenance is in progress" instead of opening incident tickets that waste everyone's time.
+
+## Lab Testing — Breaking Things Where It Doesn't Matter
+
+Test the change in a lab before you touch production. This principle is so obvious it shouldn't need stating, and it's violated so frequently that it clearly does.
+
+A lab doesn't need to be an exact replica of production. It needs to be close enough that a change that works in the lab will work in production, and a change that fails in the lab would have failed in production. For a router firmware upgrade, the lab needs the same model router running the same current firmware. For an ACL change, the lab needs a router with the same interface topology so you can verify traffic flows. For a VLAN change, the lab needs switches with the same VLAN configuration.
+
+Simulation environments — GNS3, EVE-NG, Cisco Packet Tracer, Cisco CML — let you build virtual labs that replicate production topologies without physical hardware. They're not perfect substitutes (performance characteristics differ, some features aren't supported), but they catch configuration errors and logical mistakes before those mistakes reach live traffic.
+
+The change request should include a field for "tested in lab: yes/no." If the answer is no, the CAB should ask why and whether the risk is acceptable.
+
+## Rollback Planning — The Plan B You Hope You Don't Need
+
+Every change has a rollback plan. This isn't optional and it isn't a suggestion. If the change fails or causes unexpected problems, the rollback plan restores the previous state. Before you touch anything, you need to know exactly how to undo what you're about to do.
+
+For configuration changes: save the running config before making the change. If the change breaks something, reload the saved config. On Cisco devices, `copy running-config tftp:` or `archive config` gives you a backup. Some engineers use the `configure replace` command, which diffs the running config against a saved version and reverts all differences.
+
+For firmware upgrades: keep the previous firmware image on the device or on a TFTP server. Know the boot process to load the old image if the new one fails.
+
+For physical changes: label the cables before you move them. Document which port was connected where. If the new cabling doesn't work, you can restore the original connections in minutes instead of re-tracing every run.
+
+The rollback plan also has a **trigger** — the criteria that tell you the change has failed and you should roll back instead of continuing to troubleshoot. "If the new OSPF configuration doesn't form adjacencies within five minutes, revert to the saved config." Without a trigger, engineers spend two hours chasing a failing change that should have been rolled back in ten minutes. Define the failure criteria before you start, not while you're staring at error messages at 11 PM.
+
+## Post-Change Verification — Trust but Verify
+
+After the change is implemented, verify that it worked and that nothing else broke. This isn't "it seems fine." This is methodical verification against a checklist.
+
+For a routing change: `show ip route` — are the expected routes present? `show ip ospf neighbor` — are all adjacencies FULL? Ping test between key endpoints. Check monitoring dashboards for unexpected alerts.
+
+For a firewall change: test the specific traffic flow the rule was intended to permit or deny. Test adjacent rules to make sure you didn't accidentally affect other traffic. Check the firewall logs for drops that shouldn't be happening.
+
+For a VLAN change: `show vlan brief` — is the VLAN present on the correct switches? Can devices in the VLAN communicate? Can they reach their default gateway? Does inter-VLAN routing still work for other VLANs?
+
+Post-change verification should be defined in the change request. If you know what "success" looks like before you start, you can verify against it. If you're improvising the verification after the change, you're testing your memory under pressure at 11 PM, and your memory is not as reliable as you think it is.
+
+## Communication — The Underrated Skill
+
+The technical execution of a change is half the job. Communication is the other half.
+
+Before the change: notify affected users, the help desk, management, and peer engineers. Include the what, when, expected duration, and expected impact. "Network maintenance tonight from 10 PM to midnight. Internet access may be intermittent for up to 15 minutes during the window. Contact the help desk if issues persist after midnight."
+
+During the change: update the team on progress, especially if the window needs to be extended or the rollback is triggered. Silence during a maintenance window tells the help desk nothing — they don't know if you're on track, behind schedule, or in trouble.
+
+After the change: confirm completion. "Maintenance complete. All services verified operational. Change ticket #2041 updated." This closes the loop and tells everyone they can stop worrying.
+
+The change log — whether it's a field in the ticketing system, a shared document, or a dedicated tool — records the final state. What was changed, when, by whom, and the outcome. This feeds directly back into the documentation discipline from the earlier lesson. The change log is the living history of the network. When something breaks next month and the first question is "what changed?", the log answers it.
+
+## The Relationship Between Change Management and Documentation
+
+Change management and documentation aren't separate disciplines — they're two sides of the same practice. Documentation tells you what the network looks like now. Change management controls how that picture evolves. Every approved change should result in updated documentation — diagrams, IPAM records, port maps, VLAN tables, whatever the change affected. A change that's implemented but not reflected in the documentation creates a gap between the documented state and the actual state, and that gap grows with every undocumented change until the documentation is so far from reality that nobody trusts it.
+
+The simplest enforcement: the change request isn't closed until the documentation is updated. Make it a checkbox. Make it a required field. Make it someone's responsibility. The specifics don't matter. The habit does.

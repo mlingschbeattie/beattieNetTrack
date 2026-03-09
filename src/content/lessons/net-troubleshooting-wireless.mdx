@@ -1,0 +1,111 @@
+---
+title: Troubleshooting Wireless Issues — Debugging a Medium You Can't See
+description: RF signal problems, channel interference, association failures, roaming issues, and the diagnostic approach for wireless connectivity problems that have no blinking lights to check.
+slug: net-troubleshooting-wireless
+track: network-engineer
+moduleId: net.troubleshooting.wireless
+order: 1
+difficulty: Intermediate
+estMinutes: 30
+tags: ["network+", "troubleshooting", "wireless", "Wi-Fi", "interference", "roaming", "RSSI", "N10-009 5.3", "N10-008 5.3"]
+---
+
+## The Auditorium Problem
+
+The school's wireless network works perfectly everywhere except the auditorium during assemblies. Three hundred students sit down, pull out their phones, and the network collapses. Not slow — dead. The AP is right there on the ceiling, the signal strength is fine, and the configuration hasn't changed. But the AP that handles thirty simultaneous clients without breaking a sweat can't handle three hundred. The problem isn't coverage. It's capacity. And no amount of rebooting the AP or adjusting the channel will fix it because the AP wasn't designed to serve that many clients simultaneously.
+
+Wireless troubleshooting is harder than wired troubleshooting for one fundamental reason: you can't see the medium. A bad Ethernet cable has a light that goes out. A bad RF environment looks exactly the same as a good one until you pull out diagnostic tools. The signal is invisible, the interference is invisible, and the client's decision about which AP to associate with is largely invisible too. Solving wireless problems means measuring what you can't see and understanding the physics behind it.
+
+## Signal Strength vs Signal Quality
+
+**Signal strength** tells you how loud the AP's signal is when it reaches the client. It's measured in **dBm** (decibels relative to one milliwatt) and is always negative — closer to zero is stronger. -30 dBm is excellent (you're practically sitting on the AP). -67 dBm is the minimum for reliable VoIP. -70 dBm is acceptable for general data. Below -80 dBm and you're in trouble — retransmissions spike, throughput drops, and connections become unreliable.
+
+**RSSI (Received Signal Strength Indicator)** is the vendor-specific representation of signal strength. Some vendors report RSSI on a 0-100 scale, others use raw dBm. When a user says "I have full bars," that's the OS interpreting RSSI into a bar graph. Full bars ≠ good connectivity. A client can show four bars and still perform terribly if the signal-to-noise ratio is bad.
+
+**Signal-to-Noise Ratio (SNR)** is the real metric. It's the difference between the signal strength and the noise floor. If your signal is -65 dBm and the noise floor is -90 dBm, your SNR is 25 dB — adequate. If the noise floor rises to -70 dBm (from interference), your SNR drops to -5 dB, and the client can barely distinguish the AP's signal from the background noise. High signal strength with high noise is worse than moderate signal strength with low noise.
+
+When troubleshooting "slow Wi-Fi," check SNR, not just signal strength. A user sitting next to the AP with -40 dBm signal strength but 0 dB SNR because a malfunctioning microwave is blasting interference at 2.4 GHz has a worse experience than a user across the building at -70 dBm with 25 dB SNR.
+
+## Channel Interference
+
+Wi-Fi channels share spectrum. When two APs transmit on the same channel in overlapping coverage areas, they create **co-channel interference (CCI)** — both APs and their clients must share airtime through the CSMA/CA mechanism. They take turns transmitting, which halves (or worse) the available bandwidth for each. Co-channel interference is the most common wireless performance problem in dense deployments. It's not noise — it's contention. The APs can hear each other and defer transmissions, which reduces throughput.
+
+**Adjacent channel interference (ACI)** is worse in a way, because the APs can partially hear each other but not clearly enough to defer properly. They transmit over each other, corrupting frames on both channels. In the 2.4 GHz band, only channels 1, 6, and 11 are non-overlapping. If you configure APs on channels 1 and 3, their signals overlap and interfere. Always use 1, 6, and 11 in a 2.4 GHz deployment — never the channels between them.
+
+The **5 GHz band** has 25 non-overlapping channels (depending on regulatory domain), which makes channel planning dramatically easier. The tradeoff: 5 GHz has shorter range and less wall penetration than 2.4 GHz. A 5 GHz signal that provides solid coverage in an open office might not reach through two walls of an older building with plaster-and-lath construction.
+
+**6 GHz (Wi-Fi 6E/7)** adds even more channels and bandwidth but with even shorter range. The channel planning problem mostly disappears at 6 GHz because there's so much spectrum. The coverage problem gets worse.
+
+When troubleshooting channel interference: run a Wi-Fi analyzer (tools like WiFi Analyzer on Android or inSSIDer on Windows) to see which channels are in use by your APs and neighboring networks. If you're in an apartment building or office park, your channel plan doesn't exist in isolation — neighbor APs on the same channels create co-channel interference you can't control. Adjust your channels to avoid the densest overlaps.
+
+## The Hidden Node Problem
+
+The **hidden node problem** occurs when two clients can both reach the AP but can't hear each other. Client A is on the left side of the AP's coverage area. Client B is on the right. They're both in range of the AP, but they're too far apart to detect each other's transmissions. When Client A transmits, Client B doesn't hear it and transmits simultaneously. Both frames collide at the AP, and both are corrupted.
+
+**RTS/CTS (Request to Send / Clear to Send)** mitigates this. Before transmitting, the client sends an RTS frame to the AP. The AP responds with a CTS frame that every client in range can hear. The CTS contains a duration field that tells all other clients to wait. This prevents collisions at the cost of additional overhead — every transmission requires a handshake before the data. RTS/CTS is typically enabled automatically when frame sizes exceed a threshold, but you can force it on when hidden nodes are causing measurable collisions.
+
+## Association Failures
+
+A client that can see the SSID but can't connect has an association or authentication failure. The causes vary by security configuration.
+
+**Wrong passphrase** on a WPA2-Personal or WPA3-Personal network is the most common and most obvious. The client prompts for a password, the user types it wrong, and authentication fails. Some clients silently fail. Others show a generic "cannot connect" error that doesn't specify the passphrase was wrong. Verify by connecting a known-good device with the known-correct passphrase.
+
+**RADIUS authentication failures** on WPA2-Enterprise or WPA3-Enterprise are more complex. The client presents credentials (username/password or certificate) to the AP, which forwards them to the RADIUS server. If the RADIUS server rejects the credentials, the client can't associate. Causes: expired password, user not in the correct RADIUS group, wrong RADIUS shared secret between the AP and the server (everything fails), or the RADIUS server itself is unreachable (the AP can't forward the authentication request).
+
+**Certificate errors** occur when the client doesn't trust the RADIUS server's certificate. Enterprise wireless uses EAP methods (PEAP, EAP-TLS) that present a server certificate during authentication. If the certificate is expired, self-signed without being trusted on the client, or issued for a different hostname, the client may reject the connection or show a warning. Some operating systems silently refuse to connect when the certificate doesn't validate. Others pop up a warning that most users dismiss without reading — which creates a different security problem.
+
+**MAC filtering** can block clients that aren't on the allowed list. If the AP is configured to permit only specific MAC addresses and the client's MAC isn't listed, association fails silently. Check the AP's MAC filter configuration and the client's actual MAC address (some modern devices randomize their MAC by default — a privacy feature that breaks MAC-based access controls).
+
+## Wrong AP, Wrong Band
+
+Modern dual-band and tri-band APs broadcast on multiple frequencies simultaneously. A client might associate with the 2.4 GHz radio when the 5 GHz radio would provide better performance — or vice versa. **Band steering** is supposed to guide capable clients to the 5 GHz band, but it's advisory, not mandatory. Some clients stubbornly cling to 2.4 GHz because the signal strength is slightly better, even though the 5 GHz radio is less congested and faster.
+
+In environments with multiple APs, a client might connect to a distant AP with weak signal instead of the nearby AP with strong signal. This happens when the client previously connected to the distant AP (walked past it earlier) and hasn't roamed. Most wireless clients are lazy about roaming — they hold onto the current AP until the signal is genuinely terrible before scanning for a better one.
+
+Check which AP and which band the client is connected to. On Windows: `netsh wlan show interfaces` displays the current BSSID (the specific AP radio's MAC), channel, signal strength, and radio type. On macOS: Option-click the Wi-Fi icon for detailed connection info. If the client is connected to the wrong AP or the wrong band, the fix might be client-side (forgetting the network and reconnecting) or infrastructure-side (adjusting AP power levels or enabling band steering).
+
+## Roaming Problems and Sticky Clients
+
+**Roaming** is the process of a wireless client disconnecting from one AP and connecting to another as the user moves. In theory, it's seamless. In practice, it's a constant source of complaints.
+
+**Sticky clients** are devices that refuse to roam even when a much closer AP is available. The client connected to AP-1 in the lobby, and as the user walked to the far end of the building, the client maintained its association with AP-1 at -82 dBm instead of switching to AP-3 at -55 dBm. The client's Wi-Fi driver decides when to roam, not the AP, and many drivers are conservative — they'd rather keep a weak connection than risk the disruption of a handoff.
+
+AP-side mitigations include **minimum RSSI thresholds** — the AP deauthenticates clients whose signal drops below a set level (say, -75 dBm), forcing them to reassociate with a closer AP. This doesn't guarantee the client picks the right AP, but it at least kicks them off the wrong one. **802.11r (Fast BSS Transition)** reduces the roaming handoff time by pre-authenticating with the target AP. **802.11k** provides the client with a neighbor report — a list of nearby APs and their channels — so the client doesn't have to scan every channel to find an alternative. **802.11v** lets the AP suggest that the client roam to a specific AP. These 802.11 amendments work together as the "fast roaming" suite, but both the AP and the client must support them.
+
+## Capacity vs Coverage
+
+Adding more APs doesn't always solve wireless problems. Sometimes it makes them worse.
+
+**Coverage** is about signal reach — can every area of the building receive adequate signal from at least one AP? Coverage gaps result in dead zones where clients can't connect. The fix is adding or repositioning APs, increasing transmit power, or using external antennas.
+
+**Capacity** is about client density — can the AP handle the number of clients trying to use it simultaneously? Each AP has a practical client limit. A consumer AP might struggle above 20 concurrent clients. Enterprise APs handle 50-100+, depending on traffic patterns. Beyond the limit, airtime contention drives throughput into the floor. More clients mean each client waits longer for its turn to transmit.
+
+Adding APs to solve capacity requires careful power management. If you add a second AP to the auditorium and both are at full power, they interfere with each other — creating co-channel interference that makes performance worse, not better. The correct approach is adding APs at reduced power levels so each serves a smaller cell with fewer clients, without their coverage areas overlapping excessively.
+
+A **site survey** — walking through the building with a Wi-Fi survey tool to map signal strength, noise, channel utilization, and client density — is the diagnostic tool for capacity and coverage problems. Predictive surveys use floor plans and building materials to model coverage before deployment. Post-deployment surveys validate the model against reality.
+
+## Non-Wi-Fi Interference
+
+The 2.4 GHz band is shared with devices that don't speak Wi-Fi and don't follow Wi-Fi's politeness rules.
+
+**Microwaves** operate at 2.45 GHz — dead center in the 2.4 GHz Wi-Fi band. A running microwave in a break room can wipe out Wi-Fi on channels 6-11 within 20 meters. The interference is periodic (it lasts as long as the microwave runs) and brutally strong. If users in the break room report intermittent Wi-Fi failures that coincide with lunch, you have your answer.
+
+**Bluetooth** uses 2.4 GHz with frequency hopping. Modern Bluetooth is designed to coexist with Wi-Fi (Adaptive Frequency Hopping avoids occupied Wi-Fi channels), but older devices or high-density Bluetooth environments still create measurable interference.
+
+**Cordless phones, baby monitors, wireless cameras,** and other consumer devices populate the 2.4 GHz band in unpredictable ways. In a school, personally owned devices can be significant interference sources.
+
+The 5 GHz band has far less non-Wi-Fi interference, which is another reason to steer clients there when possible. A spectrum analyzer (as opposed to a Wi-Fi analyzer — it sees all RF activity, not just Wi-Fi frames) identifies non-Wi-Fi interference sources by showing energy on frequencies that don't correspond to any Wi-Fi channel usage.
+
+## Firmware and Driver Issues
+
+Wireless performance problems that don't correlate with signal strength, interference, or client density sometimes trace back to firmware or drivers.
+
+AP firmware bugs can cause random disconnections, authentication failures, or memory leaks that degrade performance over time (the AP works fine after a reboot and slowly gets worse). Check the manufacturer's release notes for known issues matching your symptoms, and keep firmware current.
+
+Client-side Wi-Fi driver issues are equally common and harder to control. A Windows update that ships a new Wi-Fi driver can break roaming behavior, reduce throughput, or cause intermittent disconnections across an entire fleet of laptops. If wireless problems suddenly appear across multiple clients of the same model after an update, the driver is the prime suspect. Rolling back the driver or deploying a known-good version through your management tools is the fix.
+
+## Why This Matters in the Field
+
+Wireless is now the primary network connection for most users. Laptops, phones, tablets, IoT devices — they all connect over Wi-Fi. When wireless fails, it affects more users than a single switch outage. And because users can see that other devices around them are working fine (different bands, different APs, different client hardware), they're convinced the network is broken when it's actually their specific device-to-AP interaction that's the problem.
+
+The techs who solve wireless issues efficiently are the ones who can measure what users can only feel. "It's slow" becomes "the client is associated to a distant AP at -78 dBm on a congested channel with 5 dB SNR." That's a diagnosis you can fix. "It's slow" isn't. Learn the tools, learn the metrics, and learn to translate user frustration into measurable RF conditions. That's the job.

@@ -1,0 +1,109 @@
+---
+title: Wireless Security Threats and Defenses — Locking Down the Air
+description: WEP through WPA3, TKIP vs CCMP/AES, Personal vs Enterprise mode, PEAP and EAP-TLS, RADIUS integration, WIDS/WIPS, deauthentication attacks, 802.11w Protected Management Frames, captive portal weaknesses, site survey security, and common school misconfigurations.
+slug: net-wireless-security-threats
+track: network-engineer
+moduleId: net.security.wireless
+order: 1
+difficulty: Intermediate
+estMinutes: 30
+tags: ["network+", "WPA3", "802.1X", "RADIUS", "WIDS", "evil twin", "PMF", "N10-009 4.4", "N10-008 4.4"]
+---
+
+## The Password on the Whiteboard
+
+A school installs a new wireless network. The SSID is "StaffWiFi," the security is WPA2-Personal, and the passphrase is written on the whiteboard in the teachers' lounge. Within a week, every student in the building has the password — someone took a photo, it hit a group chat, and now three hundred personal devices are connected to the staff network. The network, which was designed for fifty staff devices accessing internal resources, is saturated. Worse, student devices on the staff VLAN can reach the grading system, the student records server, and the admin shares. The password can't be changed without updating every legitimate staff device, so IT changes it, distributes the new password via email, and three days later it's back on a group chat.
+
+This is WPA2-Personal in an environment where it was never designed to work. A shared passphrase works in a home with four devices and one family. It fails in an organization where hundreds of users need different levels of access and credentials need to be revocable per user. Wireless security isn't just about encryption algorithms — it's about choosing the right authentication model for the environment, understanding what each standard actually protects, and knowing where the real-world weak points live.
+
+## WEP — A History Lesson in Why We Can't Have Nice Things
+
+**WEP (Wired Equivalent Privacy)** was the original 802.11 encryption standard, ratified in 1999. It used RC4 stream cipher encryption with 40-bit or 104-bit keys and a 24-bit initialization vector (IV). The IV was the fatal flaw. With only 24 bits, there are roughly 16.7 million possible IVs. On a busy wireless network, IVs repeat within hours. Once an attacker collects enough packets with repeated IVs, they can mathematically recover the encryption key. Tools like aircrack-ng automate this process — capture enough frames, run the tool, get the key. On a modern laptop, cracking a WEP key takes minutes, not hours.
+
+WEP is broken beyond repair. It's not a matter of configuration or key length — the protocol design is fundamentally flawed. No amount of hardening fixes WEP. The only correct action is to not use it. If you encounter WEP on a network in production, it provides effectively zero encryption — an attacker with a wireless adapter and free software has the key in the time it takes to drink a coffee.
+
+The exam tests WEP as a "which of these is insecure" question. The answer is always WEP. Always.
+
+## WPA — The Emergency Patch
+
+**WPA (Wi-Fi Protected Access)** was a stopgap released in 2003 while the full 802.11i standard (WPA2) was being finalized. WPA replaced WEP's broken IV handling with **TKIP (Temporal Key Integrity Protocol)** — a wrapper around RC4 that used per-packet key mixing, a longer 48-bit IV, and a message integrity check (MIC) to prevent tampering.
+
+TKIP was designed to run on existing WEP-era hardware through a firmware update, which was its primary advantage — organizations could upgrade from WEP to WPA without replacing every access point. But TKIP was always a bridge, not a destination. It inherited RC4's weaknesses, and practical attacks against TKIP were demonstrated by 2009. WPA with TKIP is deprecated. It's better than WEP (everything is), but it's not acceptable for any current deployment.
+
+## WPA2 — The Standard That Actually Works
+
+**WPA2** implements the full IEEE 802.11i standard and replaces TKIP with **CCMP (Counter Mode with Cipher Block Chaining Message Authentication Code Protocol)**, which uses **AES (Advanced Encryption Standard)** for encryption. AES is a block cipher — fundamentally different from RC4 — and CCMP provides both confidentiality and integrity with no known practical attacks against the cryptographic core.
+
+WPA2 has been the wireless security standard since 2004 and remains acceptable for production networks today. It's what you'll find on the vast majority of enterprise and institutional wireless deployments. When WPA2 is breached, it's virtually never because someone cracked AES. It's because the passphrase was weak (in Personal mode), the authentication infrastructure was misconfigured (in Enterprise mode), or an attack targeted the protocol handshake rather than the encryption itself — KRACK (Key Reinstallation Attack, 2017) exploited a flaw in the four-way handshake to force nonce reuse, not a weakness in AES.
+
+WPA2 can run in two modes, and the mode you choose determines everything about the network's security posture.
+
+## Personal vs. Enterprise — PSK vs. 802.1X
+
+**WPA2-Personal (WPA2-PSK)** uses a pre-shared key — a passphrase configured on the access point and entered by every client. Every device uses the same passphrase to derive the encryption keys. It's simple to set up, requires no infrastructure beyond the AP itself, and works fine for a home network.
+
+In an organizational setting, PSK falls apart. The password is shared with every user who needs access. If one person leaves — or one student screenshots it and posts it — the password is compromised for everyone. Changing it means reconfiguring every device that uses it. You can't revoke access for a single user without revoking it for all users. You can't determine which user is associated with which device because the authentication is the same passphrase for everyone. PSK provides encryption but not individual accountability.
+
+**WPA2-Enterprise (WPA2-802.1X)** uses individual credentials authenticated through a RADIUS server. Each user logs in with their own username and password (or certificate). The AP acts as the authenticator, passing credentials to RADIUS, which validates them against Active Directory or another identity store. If a user leaves, you disable their AD account — their wireless access dies instantly without affecting anyone else. You know exactly which user is associated with which device because the authentication is per-user. You can assign different users to different VLANs dynamically (students to VLAN 20, staff to VLAN 30) based on their group membership in AD.
+
+The authentication uses **EAP (Extensible Authentication Protocol)** in a specific variant. **PEAP (Protected EAP)** is the most common — it creates a TLS tunnel between the client and the RADIUS server, protecting the user's credentials during transmission, then authenticates inside the tunnel using MSCHAPv2. **EAP-TLS** uses certificates on both the server and the client for mutual authentication — more secure than PEAP because no password is transmitted, but requires a PKI to issue and manage client certificates, which adds complexity.
+
+Enterprise mode is the correct choice for any school, business, or organization where individual accountability, per-user access control, and credential revocation matter. The overhead is a RADIUS server (which you likely already have for other purposes) and the EAP configuration on APs and clients. The security and manageability gains are enormous.
+
+## WPA3 — The Next Generation
+
+**WPA3**, released in 2018 and required on all Wi-Fi 6 (802.11ax) certified devices, addresses several weaknesses in WPA2.
+
+**WPA3-Personal** replaces PSK authentication with **SAE (Simultaneous Authentication of Equals)**, a protocol based on the Dragonfly key exchange. SAE provides forward secrecy — even if the passphrase is compromised later, previously captured traffic can't be decrypted because each session derives unique keys that aren't recoverable from the passphrase alone. SAE also resists offline dictionary attacks: an attacker who captures the handshake can't take it offline and brute-force the passphrase the way they can with WPA2-PSK's four-way handshake.
+
+**WPA3-Enterprise** adds an optional 192-bit security mode using CNSA (Commercial National Security Algorithm) suite-aligned cryptography for environments requiring the highest levels of protection. For most deployments, standard WPA3-Enterprise with CCMP/AES and RADIUS authentication is sufficient.
+
+**802.11w Protected Management Frames (PMF)** was optional in WPA2 and is mandatory in WPA3. Management frames — deauthentication, disassociation, action frames — were sent unencrypted in legacy Wi-Fi, which enabled deauthentication attacks (an attacker sends forged deauth frames to disconnect clients). PMF authenticates and encrypts management frames so that forged deauth frames are detected and rejected. This eliminates the deauthentication attack vector that makes evil twin attacks effective, which is why WPA3 with PMF is a meaningful security improvement beyond just stronger encryption.
+
+## RADIUS Integration for Wireless
+
+In an Enterprise wireless deployment, the authentication flow involves three parties: the **supplicant** (the client device), the **authenticator** (the access point), and the **authentication server** (the RADIUS server).
+
+The client associates with the AP and begins the EAP exchange. The AP doesn't validate the credentials itself — it relays EAP messages between the client and the RADIUS server. The RADIUS server checks the credentials against its identity store (Active Directory, LDAP, a local database) and returns an Accept or Reject to the AP. On Accept, RADIUS can also send dynamic VLAN assignment attributes, ACL assignments, and bandwidth limits — so a staff member authenticating to the same SSID as a student gets placed on a different VLAN with different access rights, all controlled centrally in AD group membership.
+
+This is the same RADIUS you studied in AAA — applied to wireless authentication. The infrastructure serves both wired 802.1X and wireless 802.1X. One RADIUS server, one identity store, one policy for both.
+
+## Evil Twin and Rogue AP Detection — WIDS/WIPS
+
+You covered evil twin and rogue AP attacks in the attacks lesson. The defense on the wireless side is **WIDS/WIPS — Wireless Intrusion Detection/Prevention Systems**.
+
+A **WIDS** passively monitors the RF environment using dedicated sensors (or APs operating in monitor mode) that scan all channels for unauthorized activity. It detects rogue APs by comparing observed BSSIDs and SSIDs against a known-good list — an AP broadcasting your SSID that isn't in your AP inventory is flagged as a potential evil twin. It detects rogue clients, ad-hoc networks, and unauthorized SSIDs. WIDS reports findings to a central controller or management platform for review.
+
+A **WIPS** adds prevention: it can automatically send deauthentication frames to clients associated with a rogue AP (forcing them to disconnect from the attacker and reconnect to a legitimate AP), suppress rogue APs by disrupting their communications, and alert administrators in real time. The ethics and legality of active wireless containment depend on jurisdiction — transmitting deauth frames targeting devices you don't own raises regulatory questions. Most enterprise-grade wireless controllers (Cisco WLC, Aruba, Meraki) include WIDS/WIPS functionality integrated into the AP infrastructure.
+
+Detection without someone responding to the alerts is just expensive monitoring. WIDS/WIPS needs to be paired with procedures — who investigates a rogue AP alert, how quickly, and what physical action is taken (find the device and unplug it).
+
+## Captive Portal Weaknesses
+
+A **captive portal** intercepts HTTP traffic from unauthenticated clients and redirects them to a login or acceptance page — the "agree to terms of service" page on public Wi-Fi. Captive portals are common on guest networks and open SSIDs.
+
+The security limitations are significant. Before the user authenticates, traffic is unencrypted on an open SSID — the captive portal redirect itself happens over HTTP. An attacker on the same open network can intercept traffic from other clients during this pre-authentication window. Captive portals authenticate the user (or accept a click-through) but don't encrypt ongoing traffic — after accepting the terms, the client is on an open network unless other encryption is in place. MAC address spoofing bypasses captive portals easily: an attacker observes the MAC of an authenticated client, clones it, and gains access without ever seeing the portal.
+
+Captive portals provide user acknowledgment and basic access control. They do not provide meaningful security. A guest SSID using a captive portal should still use WPA2/WPA3 encryption (the portal runs within the encrypted session) and place clients on an isolated VLAN with no access to internal resources.
+
+## Wireless Site Survey Security Considerations
+
+A **wireless site survey** determines AP placement for coverage and performance, but security is part of that planning. APs near windows or exterior walls broadcast signal outside the building — an attacker in the parking lot with a directional antenna can capture frames, attempt handshake captures on WPA2-PSK networks, and perform reconnaissance. Power levels should be tuned to provide coverage where needed without excessive signal bleed beyond the building perimeter. Channel assignments should minimize interference, which also reduces the number of frames an external observer can capture on any single channel.
+
+Physical AP placement matters too. An AP mounted in a locked ceiling plenum is harder to tamper with than one sitting on a shelf in a classroom. The Ethernet uplink to the AP should be on a secured port with 802.1X — if someone unplugs the AP and plugs in their laptop, port authentication prevents network access.
+
+## Common Wireless Misconfigurations in Schools
+
+Schools are repeat offenders on wireless security because the pressure to "just make it work" overrides security planning. The patterns are predictable.
+
+Using WPA2-Personal for staff networks because Enterprise mode seems too complex to set up. The passphrase leaks within days. The fix is Enterprise with RADIUS — the infrastructure is already there if the school has Active Directory.
+
+Running an open guest network with a captive portal and no VLAN isolation. Student devices on the guest network can reach internal servers because nobody configured inter-VLAN ACLs or firewall rules. The fix is a guest VLAN with explicit deny rules for all internal subnets and permit rules for internet-only access.
+
+Failing to disable legacy protocols. An SSID configured for "WPA2/WPA compatibility" accepts WPA-TKIP connections, which downgrades the security of the entire network to the weakest supported protocol. If every client supports WPA2-AES (and in 2026, every client does), disable WPA-TKIP entirely.
+
+Never updating AP firmware. Access points run software. That software has vulnerabilities. A Meraki, UniFi, or Aruba AP that hasn't been updated in two years carries two years of unpatched security bugs — including potentially critical ones that allow remote code execution or credential disclosure.
+
+Leaving default SNMP community strings on wireless controllers. The controller manages every AP in the network. Compromising the controller with default credentials gives the attacker control over the entire wireless infrastructure — SSIDs, encryption settings, VLAN assignments, everything. Change the defaults. Use SNMPv3. Restrict management access by IP.
+
+Wireless security isn't a single setting — it's the combination of the encryption standard, the authentication model, the network segmentation, the detection systems, the physical placement, and the ongoing maintenance. Get one wrong and the rest compensate. Get several wrong and you're the school with the staff password on a group chat.

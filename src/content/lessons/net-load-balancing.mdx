@@ -1,0 +1,110 @@
+---
+title: Load Balancing — Spreading the Weight So Nothing Breaks
+description: Layer 4 vs Layer 7 load balancing, scheduling algorithms, health checks, virtual IPs, sticky sessions, hardware and software balancers, DNS round robin, and global server load balancing — distributing traffic so no single server takes the hit alone.
+slug: net-load-balancing
+track: network-engineer
+moduleId: net.operations.availability
+order: 2
+difficulty: Intermediate
+estMinutes: 30
+tags: ["network+", "load balancing", "HA", "VIP", "N10-009 3.2", "N10-008 3.2"]
+---
+
+
+## The Server That Couldn't
+
+One web server handles a hundred users without breaking a sweat. A thousand users, and response times start climbing. Five thousand, and the server is pegging CPU at 100%, requests are timing out, and your monitoring dashboard looks like a Christmas tree of red alerts. You could buy a bigger server — more CPU, more RAM, faster storage. That's called **scaling up** (vertical scaling), and it works until you hit the ceiling of what a single machine can handle. It's also expensive, and it leaves you with a single point of failure. The server dies, the service dies.
+
+The alternative: buy multiple servers and split the work between them. That's **scaling out** (horizontal scaling), and it's how most production services of any meaningful size operate. Netflix doesn't run on one server. Google doesn't run on one server. Your school's learning management system probably shouldn't run on one server either, if it matters enough that an outage causes problems. The mechanism that splits traffic across multiple servers is a **load balancer**, and it's one of the most important pieces of infrastructure in any high-availability design.
+
+## What a Load Balancer Actually Does
+
+A load balancer sits between clients and a pool of backend servers. Clients send requests to the load balancer's IP address — they don't know or care that multiple servers exist behind it. The load balancer receives each request, picks a backend server based on a scheduling algorithm, and forwards the request. The server processes it and sends the response back through the load balancer to the client. From the client's perspective, they're talking to one server. From the backend's perspective, each server handles a fraction of the total traffic.
+
+The load balancer's IP address is a **virtual IP (VIP)** — a single address that represents the entire cluster. DNS resolves the service name (like `portal.school.edu`) to the VIP. Clients connect to the VIP. The load balancer translates that into a connection to whichever backend server it selects. This abstraction is the key: you can add servers to the pool, remove servers for maintenance, or replace failed servers, and the clients never need to know. The VIP stays the same. The DNS record stays the same. The service stays up.
+
+## Layer 4 vs. Layer 7 — How Deep Does the Balancer Look?
+
+Load balancers operate at two primary levels of the network stack, and the distinction determines what they can do.
+
+**Layer 4 load balancing** operates at the transport layer. The load balancer sees source IP, destination IP, source port, and destination port — that's it. It makes its forwarding decision based on this tuple without inspecting the actual content of the traffic. Layer 4 balancing is fast because the decision is simple. It works for any TCP or UDP protocol — HTTP, HTTPS, SMTP, database connections, game servers, whatever. The load balancer doesn't understand the application; it just distributes connections.
+
+**Layer 7 load balancing** operates at the application layer. The load balancer inspects the actual content of the request — HTTP headers, URLs, cookies, query strings, even the body of the request in some configurations. This lets it make intelligent decisions: route requests for `/api/` to one pool of servers and requests for `/static/` to another. Send mobile user-agents to a server pool optimized for mobile. Route traffic based on the hostname in the HTTP Host header so a single load balancer can serve multiple domains. Layer 7 is slower than Layer 4 because inspecting content takes more processing, but the flexibility is enormous.
+
+For HTTPS traffic, Layer 7 load balancing requires the load balancer to either terminate the TLS connection (decrypt the traffic, inspect it, re-encrypt if needed for the backend) or use TLS passthrough (forward the encrypted traffic without inspection, but then you lose the ability to make content-based decisions). **TLS termination** at the load balancer is the common approach in production — the load balancer handles the certificate and encryption overhead, and backend servers receive unencrypted HTTP on a trusted internal network. This offloads the CPU-intensive TLS processing from the backend servers, which is another hidden benefit of Layer 7 balancing.
+
+The exam question format: if the scenario describes routing decisions based on URL path, cookie, or HTTP header, the answer is Layer 7. If the scenario describes distributing connections without content inspection, it's Layer 4.
+
+## Scheduling Algorithms — How the Decision Gets Made
+
+When the load balancer receives a request, it needs to pick a server. The algorithm it uses to make that choice determines how evenly traffic is distributed and how well the system handles servers with different capabilities.
+
+**Round robin.** Requests are distributed to servers in sequential order. Server 1, server 2, server 3, server 1, server 2, server 3. Simple, stateless, and fair — assuming all servers have identical hardware and all requests take roughly the same amount of processing time. When those assumptions hold, round robin works beautifully. When they don't — one server is slower, or some requests are heavy database queries while others are static file serves — round robin distributes requests evenly but not load evenly. The fast server finishes quickly and sits idle while the slow server accumulates a backlog.
+
+**Weighted round robin.** Same concept, but servers are assigned weights proportional to their capacity. A server with weight 3 gets three requests for every one request a server with weight 1 receives. This handles heterogeneous pools — if you've got two beefy servers and one older box, weight them accordingly so the older box doesn't get overwhelmed.
+
+**Least connections.** The load balancer tracks how many active connections each server currently has and sends the next request to the server with the fewest. This naturally adapts to differences in server performance and request complexity — a server that processes requests quickly frees up connections and gets more traffic, while a slow server that's still chewing through previous requests gets fewer new ones. Least connections is a strong default choice for most workloads.
+
+**Weighted least connections.** Combines least connections with server weights. A server with weight 3 is considered "less loaded" than a server with weight 1 even if they have the same number of connections. This handles both heterogeneous hardware and variable request complexity.
+
+**IP hash.** The load balancer hashes the client's source IP address and uses the result to select a server. The same client IP always maps to the same server — which provides a form of session persistence without cookies. The downside: if a large number of clients share the same source IP (a school behind a NAT, an office behind a proxy), they all land on the same server, creating an uneven distribution. IP hash is useful when you need simple persistence and don't have Layer 7 cookie-based options.
+
+No single algorithm is universally best. Round robin for homogeneous pools with uniform requests. Least connections for variable workloads. Weighted variants when servers differ in capacity. IP hash when you need basic persistence. The choice depends on the environment, and most load balancers let you change algorithms per pool.
+
+## Health Checks — Knowing When a Server Is Dead
+
+A load balancer is worse than useless if it sends traffic to a dead server. Health checks are the mechanism that prevents this — the load balancer periodically tests each backend server and removes any server that fails from the pool.
+
+Health checks operate at different levels of sophistication:
+
+**Layer 3/4 health check.** Ping the server (ICMP) or attempt a TCP connection on the service port. If the server responds to a TCP SYN on port 443, it's "alive." This catches dead servers and crashed services, but it doesn't catch application problems. A web server might accept TCP connections on port 443 while returning 500 Internal Server Error on every request — the TCP health check says "healthy" while users see broken pages.
+
+**Layer 7 health check.** Send an actual HTTP request (usually GET /health or a similar endpoint) and verify the response. The load balancer checks the HTTP status code (200 OK = healthy, anything else = unhealthy), and optionally checks the response body for a specific string. This catches application-level failures that TCP checks miss. If the app can't reach its database, the health endpoint returns a 503, the load balancer pulls the server from the pool, and users don't see error pages.
+
+Health checks have configurable parameters: **interval** (how often to check — every 5 seconds, every 30 seconds), **timeout** (how long to wait for a response before declaring failure), and **threshold** (how many consecutive failures before removing the server, and how many consecutive successes before adding it back). A single failed check shouldn't pull a server from the pool — a momentary network glitch or a brief CPU spike can cause one missed response. Two or three consecutive failures provide confidence that the server is actually down. Similarly, requiring multiple consecutive successes before re-adding a server prevents a flapping server from bouncing in and out of the pool.
+
+Well-designed health check endpoints test the full application stack — web server, application code, database connectivity, disk space — and return a simple healthy/unhealthy result. If any critical dependency is down, the health endpoint reports unhealthy, and the load balancer stops sending traffic. This is the difference between a health check that answers "is the process running?" and one that answers "can this server actually serve users right now?"
+
+## Session Persistence — Sticky Sessions
+
+HTTP is stateless. Each request is independent. But web applications aren't stateless — they maintain sessions. A user logs in, adds items to a cart, fills out a multi-page form. That session data has to live somewhere. If it lives on the server (in memory or local disk), then every request from that user needs to land on the same server, because the other servers don't have that session data. Send request one to server A, request two to server B, and server B has no idea who the user is. They get logged out, their cart is empty, and the form they were filling out resets. Users love that.
+
+**Session persistence** (also called **sticky sessions**) ensures that all requests from the same client go to the same backend server for the duration of a session. Implementation varies:
+
+**Cookie-based persistence.** The load balancer injects a cookie into the HTTP response identifying which server handled the first request. Subsequent requests from the client include that cookie, and the load balancer reads it to route the request to the same server. This is the most common method for Layer 7 load balancers and the most reliable — it works regardless of source IP changes (mobile users switching from Wi-Fi to cellular) and doesn't depend on the application doing anything special.
+
+**Source IP persistence.** The load balancer routes all requests from the same source IP to the same server — functionally the same as IP hash. The limitations are the same: shared IPs behind NAT break the model.
+
+The better architectural solution is to make the application stateless by storing session data in a shared backend — a database, a Redis cache, a memcached cluster — so that any server can handle any request. Then you don't need sticky sessions at all, and the load balancer can use pure round robin or least connections. Sticky sessions are a workaround for applications that aren't designed for horizontal scaling. They work, but they reduce the effectiveness of load balancing (an uneven distribution of sticky sessions can overload one server) and complicate failover (if the sticky server dies, the session is lost).
+
+## Hardware vs. Software Load Balancers
+
+**Hardware load balancers** are dedicated physical appliances — purpose-built devices from vendors like F5 (BIG-IP), Citrix (ADC/NetScaler), or A10 Networks. They use custom ASICs or FPGAs to handle traffic at wire speed, support millions of concurrent connections, and include advanced features like SSL offloading, DDoS mitigation, web application firewalls, and global traffic management. Hardware load balancers are the gold standard for performance and reliability in enterprise and service provider environments. They're also expensive — a mid-range F5 appliance costs more than the server infrastructure at a small business.
+
+**Software load balancers** run as processes on general-purpose servers or virtual machines. HAProxy, NGINX, Envoy, and Traefik are the dominant open-source options. AWS Elastic Load Balancer, Azure Load Balancer, and Google Cloud Load Balancing are cloud-native software balancers. Software load balancers cost less (often free for the open-source versions), scale horizontally by adding more instances, and integrate with modern infrastructure automation. They handle less raw throughput per instance than hardware appliances but scale by deploying more instances — which, in a cloud environment, is trivial.
+
+The industry has shifted heavily toward software load balancers and cloud-native options. Unless you're walking into a legacy data center or a service provider with extreme throughput requirements, you're more likely to encounter HAProxy or an AWS ALB than an F5 appliance. But F5 and its competitors are still deployed widely in enterprise environments, so know they exist and that they operate at both Layer 4 and Layer 7.
+
+## DNS Load Balancing — Cheap and Imperfect
+
+The simplest form of load balancing doesn't involve a load balancer at all. **DNS round robin** assigns multiple A records (or AAAA records) to the same hostname. When a client queries `portal.school.edu`, the DNS server returns all IP addresses in a rotating order. The client typically connects to the first address in the response. Because the order rotates, different clients connect to different servers.
+
+```
+portal.school.edu  A  10.1.5.10
+portal.school.edu  A  10.1.5.11
+portal.school.edu  A  10.1.5.12
+```
+
+DNS round robin is free, requires no additional infrastructure, and distributes traffic across servers. Its limitations are significant: DNS has no health checking — if server 10.1.5.11 goes down, DNS keeps handing out that IP address and a third of your clients hit a dead server until the record is manually updated or the TTL expires. DNS doesn't understand server load — a server at 95% utilization gets the same share of new clients as a server at 10%. And DNS caching means clients hold onto the resolved IP for the duration of the TTL, so the distribution isn't as even as it appears.
+
+DNS round robin is acceptable as a first-pass distribution method for stateless, fault-tolerant services where each server can independently validate clients. It's not acceptable as the sole availability mechanism for anything where a server failure needs to be handled in seconds rather than the minutes-to-hours that DNS TTL expiration takes.
+
+## Global Server Load Balancing — Across Geographies
+
+Standard load balancing distributes traffic across servers in one location. **Global Server Load Balancing (GSLB)** distributes traffic across multiple data centers or geographic regions. A user in New York gets directed to the East Coast data center. A user in London gets directed to the European data center. If the East Coast data center goes down entirely, all traffic shifts to the surviving sites.
+
+GSLB typically works through DNS — the GSLB system acts as the authoritative DNS server for the service's domain and returns different IP addresses based on the client's geographic location, the health of each data center, and the current load. When a data center fails health checks, the GSLB system stops returning its IP addresses in DNS responses, effectively removing it from rotation.
+
+CDNs (Content Delivery Networks) like Cloudflare, Akamai, and AWS CloudFront use GSLB concepts extensively — they route users to the nearest healthy edge node to minimize latency and maximize availability. Enterprise GSLB solutions from F5 (DNS) and Citrix (GSLB) provide the same functionality for organizations running their own multi-site infrastructure.
+
+For the exam, know that GSLB extends load balancing beyond a single site using DNS-based traffic steering, that it provides geographic distribution and disaster recovery across data centers, and that it relies on health checks to detect site failures. The implementation details are beyond Network+ scope, but the concept appears in availability and redundancy questions.

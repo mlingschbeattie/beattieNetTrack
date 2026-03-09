@@ -1,0 +1,113 @@
+---
+title: Physical Security — When Someone Can Touch It, You've Already Lost
+description: Physical access controls, environmental safeguards, asset tracking, and disposal standards that protect network infrastructure from the threats no firewall can stop.
+slug: net-physical-security
+track: network-engineer
+moduleId: net.security.physical
+order: 1
+difficulty: Intermediate
+estMinutes: 30
+tags: ["network+", "physical security", "access control", "environmental controls", "N10-009 4.4", "N10-008 4.4"]
+---
+
+## The Wiring Closet Nobody Locked
+
+A contractor walks into an office building, past the front desk, down the hall, and into the unlocked wiring closet. No badge needed. No camera covering the door. No sign-in sheet. He plugs a small device into an open switch port, tucks it behind the patch panel where nobody will notice, and walks out. Twelve minutes total. That device is now a persistent backdoor on the internal network — full access to every VLAN, no firewall in the path, and no one will find it until someone physically traces every cable in the closet. Every firewall rule, every ACL, every intrusion prevention signature in the building is irrelevant because the attacker bypassed all of it by opening an unlocked door.
+
+Physical security is where network security starts. Not conceptually — literally. If an attacker can touch your infrastructure, the game is over before your software defenses even get a turn.
+
+## Physical Access Equals Game Over
+
+This isn't hyperbole. Console access to a Cisco switch means password recovery in under five minutes — documented in Cisco's own support articles. Physical access to a server means booting from a USB drive and reading the hard disk directly, bypassing every OS-level permission. Pull a hard drive from a server that isn't using full-disk encryption and you can mount it on any other system and read the data at your leisure. Grab an unlocked laptop and you've got cached credentials, VPN configurations, saved passwords, browser sessions — the entire digital identity of whoever left it unattended.
+
+**Cold boot attacks** take this further. RAM doesn't clear instantly when power is removed — data persists for seconds to minutes, longer if the RAM is chilled. An attacker with physical access can reboot the machine into a custom environment and dump the contents of memory, potentially extracting encryption keys that were loaded in RAM. It sounds like science fiction. It's published academic research with working tools.
+
+Device theft is the simplest physical attack. A stolen switch contains the running configuration — SNMP community strings, VLAN maps, routing protocol keys, management credentials. A stolen access point reveals the wireless configuration including PSK or RADIUS shared secrets. A stolen backup tape or external drive may contain the entire organization's data. The defense equation is straightforward: if someone can carry it away, it needs to be encrypted, locked down, or both.
+
+## Access Control Vestibules and Entry Systems
+
+The first line of physical defense is controlling who gets into the building and who gets into sensitive areas within it.
+
+An **access control vestibule** (sometimes still called a mantrap on older exams) is a small room with two interlocking doors. You badge into the first door. It closes behind you. The system verifies your credentials. Only then does the second door unlock. The purpose is to prevent unauthorized people from following authorized people through a door — a problem called **tailgating**. If two people enter the vestibule, the system can detect it (weight sensors, cameras, occupancy detection) and refuse to open the inner door.
+
+**Badge and key card systems** use RFID or smart card technology to control access at every door. Each badge is associated with an identity and a set of permissions — the network engineer's badge opens the server room and wiring closets, the accounting clerk's badge does not. Every badge swipe is logged with a timestamp, which provides an audit trail. When an employee is terminated, you disable the badge immediately. When a badge is lost, you disable it and issue a new one. The system is centralized, so access changes propagate in real time.
+
+**Biometric systems** authenticate based on physical characteristics: fingerprint scanners, retinal scanners, facial recognition, hand geometry. Biometrics solve the problem that badges can be lost, stolen, or shared. Your fingerprint can't be left on a bus. The tradeoff is cost, false rejection rates (legitimate users being denied), and privacy concerns. Biometrics are typically deployed at high-security entry points — the server room, the data center — not at every office door.
+
+These systems work in layers. The building entrance uses a badge reader. The server room hallway uses badge plus PIN. The server room itself uses badge plus biometric. Each layer narrows the population of people who can access the next area — defense in depth applied to physical space.
+
+## Tailgating and Piggybacking
+
+**Tailgating** is when an unauthorized person follows an authorized person through a secured door without presenting credentials. The authorized person badges in, the door opens, and someone walks in behind them. Maybe they're carrying a box and look like they belong. Maybe they just walk confidently. Social engineering doesn't require a computer.
+
+**Piggybacking** is similar but with the authorized person's knowledge — holding the door open for someone who says they forgot their badge. It's polite. It's also a security failure.
+
+The technical controls are access control vestibules (one person at a time), turnstiles, and cameras at entry points. The human control is training: employees must understand that holding the door is not politeness, it's a policy violation. Visitors and vendors get escorted. No badge, no entry, no exceptions. That sounds harsh until someone plugs a rogue device into your server room because a helpful employee held the door.
+
+## Camera Placement and Monitoring
+
+**Security cameras** serve two purposes: deterrence and evidence. A visible camera at the wiring closet door discourages casual intrusion. Recorded footage provides evidence when something happens.
+
+Placement matters more than camera count. Cameras should cover every entry point to the building, every entry point to sensitive areas (server rooms, wiring closets, network operations centers), and the areas around critical infrastructure. A camera inside the server room captures who accessed which racks. A camera in the parking lot captures license plates. A camera at the loading dock captures who brought equipment in or took it out.
+
+Video retention policies define how long footage is stored. Thirty to ninety days is common. Longer retention means more storage, but if you discover a breach six weeks after it happened, you need that footage. Motion-activated recording reduces storage requirements while maintaining coverage. Tamper-resistant housings prevent cameras from being physically defeated. Network-connected cameras (IP cameras) should be on their own VLAN with restricted access — a camera network that's accessible from the general user VLAN is a camera network that an attacker can disable remotely.
+
+## Locking Down the Physical Network
+
+Patch panels, switches, routers, and cable runs are all attack surfaces when left physically accessible.
+
+**Locking patch panels** prevent unauthorized cable changes. In a school environment, this stops someone from moving a patch cable to gain access to a different VLAN. In an enterprise, it prevents accidental disconnections that cause outages and intentional reconnections that bypass security controls.
+
+**Locked server racks** with keyed or combination locks restrict access to specific personnel. Standard practice is key-controlled racks with logged access — you sign out the key, the sign-out is timestamped, and the key goes back when you're done.
+
+**Port security** complements physical locks. Even if someone accesses a port, 802.1X authentication prevents unauthorized devices from getting network access. Unused switch ports should be administratively disabled. If a port isn't in use, shut it down — `shutdown` on the interface. An attacker can't use a port that's disabled, even if they physically connect to it.
+
+Cable management isn't just for aesthetics. Organized, labeled cable runs make it obvious when something has been added that shouldn't be there. A rogue device hidden in a mess of unlabeled spaghetti cables can go unnoticed for months. Clean cable runs with consistent labeling expose anomalies.
+
+## Server Room and Wiring Closet Standards
+
+Server rooms and wiring closets have specific physical requirements beyond just a lock on the door.
+
+Access should be restricted to authorized IT personnel only. Visitor access requires an escort and a logged entry. The door should be solid-core (not something you can kick through), self-closing, and equipped with a badge reader that logs every entry. No propped doors. No wedges. No "I'll just be a minute."
+
+**Environmental monitoring** in the server room should track temperature, humidity, and water detection. A temperature spike from a failed HVAC unit can take down servers before anyone notices. A humidity sensor catches water intrusion before it reaches the equipment. These sensors should feed into the network monitoring system so alerts fire immediately.
+
+Wiring closets often get less attention than server rooms, but they contain switches and patch panels that provide direct network access. A compromised wiring closet switch gives an attacker the same footing as a compromised server room switch. Same lock requirements. Same access logging. Same standards.
+
+## Environmental Controls
+
+Network equipment has specific environmental requirements, and failing to meet them is a reliability problem that becomes a security problem when it causes unplanned downtime.
+
+**Temperature** should stay between 64°F and 75°F (18°C to 24°C) for most network equipment. Hardware running outside that range throttles performance or fails outright. Cooling is typically provided by dedicated HVAC systems or in-row cooling units in data centers. Hot aisle/cold aisle containment directs airflow efficiently through the racks.
+
+**Humidity** matters more than people expect. Too low (below 40% relative humidity) and static discharge becomes a risk — a static spark can damage sensitive electronics. Too high (above 60%) and condensation forms on components, causing corrosion and short circuits. The sweet spot is 40–60% relative humidity, monitored continuously.
+
+**Fire suppression** in a room full of electronics requires clean agent systems — not water sprinklers. Water destroys electronics. Clean agent systems (FM-200, Novec 1230, or inert gas systems) extinguish fires by removing heat or displacing oxygen without leaving residue and without destroying the hardware. Some facilities still use pre-action sprinkler systems that require two triggers (smoke detection and heat detection) before water flows, preventing accidental discharge. The exam expects you to know that water-based suppression is the last resort for rooms containing active electronics.
+
+**Uninterruptible power supplies (UPS)** provide battery backup during power outages, giving enough time for graceful shutdowns or generator activation. A hard power loss can corrupt file systems, crash databases, and kill active sessions. A UPS paired with a generator provides continuous power through extended outages. Power distribution units (PDUs) manage and monitor power delivery to individual racks.
+
+## Asset Tracking and Disposal
+
+Every piece of network equipment should be tracked from purchase to disposal. **Asset management** maintains a database of every device — serial number, location, configuration, firmware version, warranty status. When a switch goes missing, you need to know immediately so you can revoke its credentials and investigate. When it's time to patch a vulnerability, you need to know every device running the affected firmware.
+
+Disposal is where organizations routinely fail. That decommissioned switch still has its configuration in NVRAM — SNMP strings, RADIUS secrets, VLAN maps. That retired server's hard drives still contain data unless they've been properly wiped. Tossing hardware in a dumpster is a data breach waiting to happen.
+
+**Drive wiping** standards vary by sensitivity. For standard business data, a multi-pass overwrite using tools like DBAN (Darik's Boot and Nuke) meets most compliance requirements. The DoD 5220.22-M standard specifies a three-pass overwrite pattern. For SSDs, overwriting is unreliable due to wear leveling — the drive's controller may not overwrite every physical cell. SSD sanitization requires the manufacturer's secure erase command or physical destruction.
+
+**Degaussing** uses a powerful magnetic field to scramble the data on magnetic media (hard drives, tapes). It renders the media completely unusable — you can't degauss a drive and reuse it. This is appropriate for high-sensitivity data where the media will be recycled or destroyed anyway. Degaussing doesn't work on SSDs because SSDs don't store data magnetically.
+
+**Physical destruction** — shredding, drilling, crushing, or incinerating — is the only method that guarantees data is unrecoverable regardless of media type. Many organizations use certified destruction vendors who provide a certificate of destruction with serial numbers for each device destroyed.
+
+## Visitor and Vendor Policies
+
+Third-party access is one of the most common physical security gaps. A vendor arrives to service the HVAC system in the server room. Do they get unsupervised access to the server room? They shouldn't. **Escort policies** require that visitors and vendors are accompanied by authorized personnel at all times in sensitive areas. Visitor badges should be visually distinct from employee badges — different color, "VISITOR" printed in large text — so anyone can spot an unescorted visitor.
+
+Vendor access to network equipment (firmware updates, hardware replacement) should be scheduled, logged, and supervised. A vendor who needs console access to a router gets that access while an IT staff member watches. The access is documented: who, when, what device, what changes. This isn't paranoia — it's the same change management discipline you'd apply to any configuration change.
+
+Sign-in sheets at building entrances and sensitive areas create an audit trail. They're low-tech but effective: a paper trail that can't be remotely deleted.
+
+## Why This Matters in the Field
+
+Your first IT job will probably not involve configuring access control vestibules or selecting fire suppression systems. But you will be responsible for locking the wiring closet when you leave. You will notice when a door that should be locked is propped open. You will be the person who spots an unfamiliar device cabled into the patch panel and knows that it shouldn't be there.
+
+Physical security failures cause some of the most devastating breaches in the industry, and they're almost always preventable. A locked door, a disabled port, an escort policy that's actually enforced — these aren't glamorous controls. They don't make good conference talks. But they stop the attacks that bypass every piece of security software you own. The best firewall in the world can't stop someone who walks in, plugs into the network, and walks out. That's your job.

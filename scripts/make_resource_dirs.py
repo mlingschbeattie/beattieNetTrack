@@ -28,65 +28,84 @@ def dir_name(unit, slug):
 
 TRACKS = {
 
-    # ── NETWORK ENGINEER ──────────────────────────────────────────────────────
+      # ── NETWORK ENGINEER ──────────────────────────────────────────────────────
+    # Ground truth: extracted from frontmatter of all 51 committed lessons
+    # moduleId | order | slug — DO NOT EDIT SPECULATIVELY
     "network-engineer": [
-        # Domain 1 — Networking Concepts
+        # net.fundamentals.models-and-standards
         ("1.1.1", "osi-model"),
         ("1.1.2", "encapsulation-decapsulation"),
+        # net.fundamentals.topologies-and-types
         ("1.2.1", "network-topologies"),
         ("1.2.2", "network-types"),
+        # net.fundamentals.cabling-and-connectors
         ("1.3.1", "copper-cables"),
         ("1.3.2", "fiber-optic-cables"),
         ("1.3.3", "connector-types"),
         ("1.3.4", "cable-management"),
+        # net.fundamentals.addressing
         ("1.4.1", "public-private-networks"),
         ("1.4.2", "ipv4-ipv6"),
+        # net.fundamentals.ports-and-protocols
         ("1.5.1", "common-ports"),
         ("1.5.2", "protocols"),
+        # net.fundamentals.network-services
         ("1.6.1", "dhcp"),
         ("1.6.2", "dns"),
         ("1.6.3", "ntp"),
+        # net.fundamentals.architecture
         ("1.7.1", "corporate-datacenter-architecture"),
         ("1.7.2", "cloud-concepts"),
+        # net.fundamentals.routing
         ("1.8.1", "routing-concepts"),
         ("1.8.2", "routing-protocols"),
         ("1.8.3", "wan-technologies"),
-        # Domain 2 — Network Implementation
+        # net.implementation.switching
         ("2.1.1", "switching-concepts"),
         ("2.1.2", "vlans"),
         ("2.1.3", "switch-configuration"),
+        # net.implementation.wireless
         ("2.2.1", "wireless-standards"),
         ("2.2.2", "wireless-security"),
+        # net.implementation.addressing
         ("2.3.1", "ip-addressing-subnetting"),
         ("2.3.2", "nat-pat"),
         ("2.3.3", "ipv6-implementation"),
+        # net.implementation.routing
         ("2.4.1", "routing-protocol-configuration"),
         ("2.4.2", "router-configuration-cli"),
+        # net.implementation.services
         ("2.5.1", "network-services-configuration"),
-        # Domain 3 — Network Operations
+        # net.operations.documentation
         ("3.1.1", "network-documentation"),
-        ("3.1.2", "network-monitoring-management"),
-        ("3.2.1", "high-availability-redundancy"),
+        ("3.1.2", "network-monitoring"),
+        # net.operations.availability
+        ("3.2.1", "high-availability"),
         ("3.2.2", "load-balancing"),
-        ("3.3.1", "network-change-management"),
-        ("3.3.2", "network-policies-procedures"),
-        # Domain 4 — Network Security (pending authoring)
-        ("4.1.1", "security-concepts"),
-        ("4.1.2", "common-attacks"),
-        ("4.1.3", "social-engineering"),
-        ("4.2.1", "network-hardening"),
-        ("4.2.2", "wireless-security-threats"),
-        ("4.3.1", "firewalls-and-ids"),
-        ("4.3.2", "vpn-and-remote-access-security"),
+        # net.operations.procedures
+        ("3.3.1", "change-management"),
+        ("3.3.2", "policies-procedures"),
+        # net.security.fundamentals
+        ("4.1.1", "network-security-concepts"),
+        ("4.1.2", "common-network-attacks"),
+        ("4.1.3", "network-hardening"),
+        # net.security.infrastructure
+        ("4.2.1", "firewalls-ids-ips"),
+        ("4.2.2", "vpn-remote-access"),
+        # net.security.wireless
+        ("4.3.1", "wireless-security-threats"),
+        # net.security.physical
         ("4.4.1", "physical-security"),
         ("4.4.2", "data-loss-prevention"),
-        # Domain 5 — Network Troubleshooting (pending authoring)
+        # net.troubleshooting.methodology
         ("5.1.1", "troubleshooting-methodology"),
         ("5.1.2", "troubleshooting-tools"),
-        ("5.2.1", "troubleshooting-cables-and-physical"),
-        ("5.2.2", "troubleshooting-network-connectivity"),
-        ("5.2.3", "troubleshooting-performance"),
+        # net.troubleshooting.physical
+        ("5.2.1", "troubleshooting-physical-layer"),
+        ("5.2.2", "troubleshooting-connectivity"),
+        # net.troubleshooting.wireless
         ("5.3.1", "troubleshooting-wireless"),
+        # net.troubleshooting.security
         ("5.3.2", "troubleshooting-security"),
     ],
 
