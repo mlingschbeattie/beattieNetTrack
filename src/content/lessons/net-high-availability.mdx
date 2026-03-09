@@ -1,0 +1,135 @@
+---
+title: High Availability and Redundancy — Designing Networks That Don't Go Down
+description: Single points of failure, EtherChannel, FHRP protocols (HSRP, VRRP, GLBP), redundant hardware and WAN links, the nines of uptime, and the engineering discipline of keeping services alive when things break.
+slug: net-high-availability
+track: network-engineer
+moduleId: net.operations.availability
+order: 1
+difficulty: Intermediate
+estMinutes: 30
+tags: ["network+", "HA", "HSRP", "VRRP", "EtherChannel", "redundancy", "N10-009 3.2", "N10-008 3.2"]
+---
+
+## LESSON 3.2.1 — High Availability and Redundancy
+
+## Everything Fails
+
+Hard drives fail. Power supplies fail. Switches fail. Fiber gets cut by a backhoe. Software crashes. Firmware updates brick devices. A janitor unplugs something to plug in a vacuum. A squirrel chews through a cable on the utility pole — this has happened more times than the telecom industry cares to admit. The question isn't whether your network will experience a failure. It's whether the failure takes the network down with it.
+
+High availability is the engineering discipline of designing networks that survive component failures without users noticing. Redundancy is the primary mechanism — duplicate the things that can fail, so that when one fails, the other takes over. The goal is never "nothing ever breaks." The goal is "things break and the network keeps running." The difference between those two goals is everything. The first one is fantasy. The second one is architecture.
+
+## Single Point of Failure — Finding the Weakness
+
+A **single point of failure (SPOF)** is any component whose failure alone is enough to take down a service or the entire network. One router connecting the building to the internet — SPOF. One switch connecting the server VLAN to the rest of the network — SPOF. One power supply in the core switch — SPOF. One ISP uplink — SPOF. One fiber path between buildings — SPOF.
+
+Identifying SPOFs is a design exercise. Draw your topology — physical and logical — and ask: if this component dies right now, what stops working? Walk every path from user to service. The first time a path passes through something that has no backup, you've found a SPOF. Do this for links, devices, power feeds, cooling, and the WAN connection. Then prioritize: which SPOFs are acceptable (a single access switch in a closet serving ten workstations — probably fine to tolerate a brief outage) and which are not (the single uplink to the internet serving the entire building — eliminate that immediately)?
+
+Not every SPOF needs to be eliminated. Redundancy costs money — double the hardware, double the licensing, double the config complexity. The decision is always a tradeoff between the cost of redundancy and the cost of downtime. A school tolerates an hour of downtime more easily than a hospital. A bank tolerates zero downtime. The architecture matches the tolerance.
+
+## Redundant Links — EtherChannel / Port Channels
+
+If a single link between two switches fails, everything that depends on that link goes down. The obvious fix is adding a second link. The problem: Spanning Tree Protocol sees two links between the same two switches and blocks one to prevent a loop. You just paid for two cables and you're only using one. Helpful.
+
+**EtherChannel** (Cisco's name — the vendor-neutral term is **link aggregation**, and the IEEE standard is **802.3ad / LACP**) bundles multiple physical links into a single logical link. STP sees one fat link instead of multiple parallel links, so nothing gets blocked. Traffic is distributed across all the member links, effectively multiplying the bandwidth. Two 1 Gbps links in a channel give you 2 Gbps of aggregate throughput. Four links give you 4 Gbps. If one member link fails, the channel keeps running on the remaining links — degraded capacity, but no outage.
+
+EtherChannel can be negotiated with one of two protocols:
+
+**LACP (Link Aggregation Control Protocol, 802.3ad)** is the standards-based option. Both switches negotiate the channel dynamically. One side is configured as "active" (initiates negotiation) and the other as either "active" or "passive" (waits for the other side to initiate). LACP verifies that both sides agree on the channel configuration before forming it, which prevents misconfigurations from silently creating a loop. Use LACP. It's vendor-neutral and it validates the channel.
+
+**PAgP (Port Aggregation Protocol)** is Cisco-proprietary. Modes are "desirable" (initiates) and "auto" (waits). It works the same way as LACP conceptually but only between Cisco devices. If your environment is all Cisco and you're inheriting a legacy configuration, you'll see PAgP. For new deployments, LACP is the standard answer.
+
+You can also force a channel without negotiation using the "on" mode on both sides. This skips the protocol handshake entirely — the switches just bundle the links. If one side is misconfigured, there's no protocol to catch the error, and you can create a loop. Don't use "on" mode unless you have a specific reason and you understand the risk.
+
+Critical rule: every link in the channel must have identical settings — same speed, same duplex, same VLAN assignment (access or trunk, same allowed VLANs), same native VLAN. A mismatch on any parameter and the channel won't form, or worse, it forms incorrectly and creates intermittent problems that are miserable to troubleshoot.
+
+## Redundant Hardware — Power and NICs
+
+**Dual power supplies** are standard in enterprise switches, routers, and servers. Each power supply can run the device alone. They're connected to separate power circuits — ideally fed from separate UPS units or separate electrical panels — so that a single power feed failure doesn't kill the device. When a power supply fails, the device keeps running on the surviving supply, and the management system sends an alert so you can replace the failed unit before the redundancy is gone.
+
+If both power supplies are plugged into the same power strip, you haven't built redundancy — you've built a more expensive single point of failure. Diverse power paths matter as much as dual supplies.
+
+**Dual NICs** (or **NIC teaming** on servers) provide redundant network connections. Two physical NICs connect to two different switches. If one NIC or switch fails, traffic fails over to the surviving path. NIC teaming can operate in active/standby mode (one NIC handles traffic, the other waits) or active/active mode (both NICs handle traffic, providing load balancing and redundancy simultaneously). The configuration lives on the server's OS — Windows calls it NIC teaming, Linux calls it bonding — and the switch ports need to be configured to match.
+
+## FHRP — First Hop Redundancy Protocols
+
+Every device on a subnet has a single default gateway — the router that handles traffic leaving the local network. If that router dies, every device on the subnet loses connectivity even if another router is sitting right there, perfectly healthy, waiting to help. The devices don't know about the backup router because their gateway is statically configured to point at the dead one. DHCP won't help until the lease renews. ARP won't help because the dead router's IP doesn't respond.
+
+**First Hop Redundancy Protocols** solve this by creating a **virtual IP address** shared between two or more routers. The devices on the subnet point their default gateway at the virtual IP. Behind the scenes, one physical router actively responds to that virtual IP while the others stand by. If the active router fails, a standby takes over the virtual IP and starts responding. From the client's perspective, the gateway never moved — the IP address is the same, the MAC address (also virtual) is the same, and traffic flows without interruption or reconfiguration.
+
+Three FHRPs exist for the exam:
+
+**HSRP (Hot Standby Router Protocol)** is Cisco-proprietary and the one you'll configure most in Cisco-centric environments. Two (or more) routers share a virtual IP. One is **active** (forwarding traffic), the other is **standby** (monitoring and ready to take over). HSRP uses hello messages between the routers to detect failure — if the standby stops hearing hellos from the active router, it assumes the active has failed and takes over. The transition is typically a few seconds.
+
+HSRP configuration on the active router's interface:
+
+```
+Router-A(config)# interface GigabitEthernet0/0
+Router-A(config-if)# standby 1 ip 10.1.10.254
+Router-A(config-if)# standby 1 priority 110
+Router-A(config-if)# standby 1 preempt
+```
+
+And on the standby router:
+
+```
+Router-B(config)# interface GigabitEthernet0/0
+Router-B(config-if)# standby 1 ip 10.1.10.254
+Router-B(config-if)# standby 1 priority 100
+```
+
+The virtual IP is 10.1.10.254 — this is what every client uses as its default gateway. Router A has priority 110 (higher wins), so it's the active router. Router B has the default priority of 100 and becomes standby. The `preempt` command on Router A means that if Router A goes down, Router B takes over, and when Router A comes back online, it automatically reclaims the active role. Without preempt, Router B would stay active even after Router A recovers — which might be fine, but it's usually not the design intent.
+
+**VRRP (Virtual Router Redundancy Protocol)** is the standards-based equivalent of HSRP. It works almost identically — virtual IP, priority-based election, hello-based failure detection — but it's vendor-neutral. The terminology differs slightly: VRRP uses "master" instead of "active" and "backup" instead of "standby." VRRP also allows the virtual IP to be the same as one of the physical router interfaces, which HSRP does not. In a multi-vendor environment, VRRP is the protocol of choice because both sides need to speak the same language.
+
+**GLBP (Gateway Load Balancing Protocol)** is Cisco-proprietary and adds load balancing to the redundancy equation. Where HSRP and VRRP have one active router and one or more standby routers (the standbys sit idle unless there's a failover), GLBP distributes traffic across all routers in the group simultaneously. It does this by assigning different virtual MAC addresses to different routers while sharing the same virtual IP. ARP requests for the virtual IP return different MAC addresses to different clients, spreading the load. GLBP is the most complex FHRP and the least commonly deployed, but it's on the exam because it's the only one that load-balances by default.
+
+For the exam: HSRP = Cisco, active/standby. VRRP = standard, master/backup. GLBP = Cisco, active/active with load balancing. If the question says "vendor-neutral" or "open standard," the answer is VRRP. If the question says "load balancing across gateways," the answer is GLBP.
+
+## Redundant WAN Links
+
+A single internet connection is the most common SPOF in small and medium networks. ISP goes down, fiber gets cut, equipment at the provider's POP fails — any of these kill your internet connectivity. A second WAN link through a different ISP (or at minimum a different path from the same ISP) eliminates that single point of failure.
+
+Dual-ISP designs use one of three approaches:
+
+**Active/passive.** One link handles all traffic. The second link is idle until the first fails. A floating static route (from the routing lesson) or a dynamic routing protocol handles the failover. Simple, cheap, and the backup link sits wasting its subscription cost 99% of the time — but it's there when you need it.
+
+**Active/active with load balancing.** Both links carry traffic simultaneously. Policy-based routing or SD-WAN directs different traffic types down different paths — maybe web traffic goes through ISP A and VoIP goes through ISP B. Utilization is better, but the configuration is more complex, and if one link fails, the surviving link needs to absorb all traffic.
+
+**Active/active with BGP.** For organizations with their own public IP space (PI addresses) and their own AS number, BGP multihoming advertises the same prefixes through both ISPs. The internet routes traffic through whichever path is better. If one ISP goes down, BGP withdraws the route and traffic automatically reroutes through the surviving provider. This is the gold standard for enterprise WAN redundancy, but it requires expertise and resources (an AS number, provider-independent addresses, and engineers who understand BGP policy). A school network is likely active/passive. A corporate headquarters is likely BGP multihomed.
+
+## SLAs — The Nines
+
+Service Level Agreements define the expected uptime of a service or network. Uptime is expressed as a percentage — the "nines" — and each additional nine represents a dramatic reduction in allowable downtime:
+
+| Uptime | Downtime per Year |
+|---|---|
+| 99% ("two nines") | 3 days, 15 hours |
+| 99.9% ("three nines") | 8 hours, 46 minutes |
+| 99.99% ("four nines") | 52 minutes |
+| 99.999% ("five nines") | 5 minutes, 15 seconds |
+
+Going from three nines to four nines doesn't sound like much — it's 0.09% difference. But it's the difference between nearly nine hours of downtime per year and under an hour. Achieving five nines requires extraordinary redundancy, automation, and operational discipline. Most enterprise networks target three or four nines. Five nines is for financial trading platforms, 911 systems, and infrastructure where minutes of downtime have serious consequences.
+
+SLAs between your organization and an ISP or cloud provider typically define uptime commitments, response times for different severity levels, and financial penalties (credits) for violations. Internally, your team might define SLAs for network services — "the WAN link will have 99.9% uptime measured monthly." The SLA drives the architecture: if you need four nines, you need redundant everything. If you can tolerate three nines, you can accept some SPOFs in non-critical paths.
+
+## Cold, Warm, and Hot Standby
+
+Not all redundancy is instant. The time it takes for a backup system to become operational defines whether it's cold, warm, or hot:
+
+**Cold standby.** The backup hardware exists but isn't running. It might be sitting on a shelf, unpowered, or configured but turned off. When the primary fails, someone physically installs or powers on the backup, loads the most recent configuration, and brings it online. Recovery time: hours. Cold standby is cheap — you have a spare, but you're not paying for power and licensing until you need it. Acceptable for non-critical systems.
+
+**Warm standby.** The backup is powered on, partially configured, and running, but not actively handling traffic. It might have a recent (but not real-time) copy of the configuration and data. When the primary fails, the warm standby is brought into service with minimal intervention — update the config, sync the latest data, switch routing. Recovery time: minutes to an hour. Warm standby handles the middle ground where cold is too slow and hot is too expensive.
+
+**Hot standby.** The backup is running, fully synchronized with the primary, and ready to take over immediately. HSRP is a hot standby — Router B mirrors Router A's configuration and assumes the active role in seconds when A fails. Database clusters with real-time replication are hot standby — the secondary has an identical copy of the data and serves queries the moment the primary drops. Recovery time: seconds. Hot standby is the most expensive (two devices running, two licenses, real-time synchronization overhead) and the most resilient.
+
+The standby model you choose matches the SLA you're targeting, which matches the budget you have, which matches the cost of downtime for that service. The core router serving the entire campus? Hot standby with HSRP. The backup DNS server? Warm standby is fine — queries fail over to the secondary automatically, and a few seconds of DNS timeout is tolerable. The spare access switch for the storage closet? Cold standby on the shelf. Not everything gets the same treatment, and that's by design.
+
+## Graceful Degradation vs. Full Failover
+
+**Full failover** means the backup system takes over completely — all services, all traffic, full functionality. Hot standby with HSRP is a full failover model. When Router A fails, Router B handles everything Router A was handling. No loss of features.
+
+**Graceful degradation** means the network continues operating at reduced capacity instead of failing entirely. An EtherChannel loses one of four member links — the channel keeps running at 75% bandwidth. A dual-ISP setup loses one ISP — the surviving link carries all traffic, but bandwidth is halved and some non-essential services (like cloud backups) might be deprioritized to protect business-critical traffic. A VRRP failover preserves connectivity, but the backup router might have a lower-spec CPU and can't handle the same number of VPN tunnels, so some remote sites run slower.
+
+Graceful degradation is the realistic outcome of most redundancy designs. True full failover with zero loss of capacity requires identical backup hardware running in parallel — which doubles the cost. Most networks are designed so that a single failure preserves all critical services (user connectivity, email, business applications) while non-critical services (backups, updates, bulk transfers) are temporarily reduced or paused. Users stay productive. The non-critical stuff catches up later.
+
+The design principle: define which services are critical. Ensure those survive a single failure at full capacity. Let everything else degrade gracefully. This is a conversation with the people who use the network, not a unilateral engineering decision. When the principal says "if the internet goes down during standardized testing, that's a catastrophe," that's a requirement for hot standby on the WAN. When the IT director says "if internal file shares are slow for an hour during a switch replacement, that's acceptable," that's a tolerance for graceful degradation at the access layer. Build the network to match the promises.

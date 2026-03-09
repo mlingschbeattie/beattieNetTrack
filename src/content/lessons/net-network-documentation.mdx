@@ -1,0 +1,103 @@
+---
+title: Network Documentation — The Map You'll Wish You Had at 3 AM
+description: Logical and physical diagrams, rack layouts, IPAM, VLAN tables, cable labels, baselines, change logs, and the tools that keep a network knowable — documentation as survival infrastructure.
+slug: net-network-documentation
+track: network-engineer
+moduleId: net.operations.documentation
+order: 1
+difficulty: Intermediate
+estMinutes: 30
+tags: ["network+", "documentation", "diagrams", "IPAM", "N10-009 3.1", "N10-008 3.1"]
+---
+
+## LESSON 3.1.1 — Network Documentation
+
+## The 3 AM Phone Call
+
+Your phone rings at 3 AM. The monitoring system fired an alert: the core switch in Building 2 is unreachable. Half the campus has no network. You're in your car, driving to the site, trying to remember which closet that switch is in. Which rack? Which port connects to the distribution switch? What's the management IP? Which VLANs does it carry? What's upstream, what's downstream, and if you have to bypass it, where does the fiber go?
+
+If the documentation is good, you pull it up on your phone while you're still in the parking lot. You know the rack, the port, the topology, the IP, and the workaround before you touch the door handle. Fix is underway in minutes.
+
+If the documentation is bad — or doesn't exist — you're standing in front of a rack at 3:15 AM tracing cables by hand, guessing at IP addresses, and calling a coworker who "might remember" how it was set up two years ago. That coworker left the company six months ago.
+
+Documentation is not a school assignment you write to prove you did the work. It's the artifact that lets you — or anyone who comes after you — operate the network without reverse-engineering it every time something breaks. The time you spend documenting is time you save in every future emergency. The industry has a saying: if it's not documented, it doesn't exist. The corollary is harsher: if it's not documented, it'll break at the worst possible time and nobody will know how to fix it.
+
+## Physical Diagrams — What's Plugged Into What
+
+A physical network diagram shows the actual hardware and how it's connected. Physical switches, routers, firewalls, access points, servers, patch panels, and the cables running between them. It answers questions like: "Which port on the core switch connects to the MDF?" "Where does the fiber run between buildings?" "Which rack houses the firewall?"
+
+Physical diagrams use standard topology symbols — routers are circles with arrows, switches are rectangles with arrows, firewalls are brick walls (or vendor-specific icons), servers are tower shapes, wireless APs are antenna symbols. You don't need artistic talent. You need accuracy. Every device on the network appears on the diagram with its hostname, location, and the physical connections between it. Cable types matter here — you mark whether a link is Cat6, Cat6a, single-mode fiber, or multimode, because that determines what happens when you need to replace it at 3 AM and the patch cable you grabbed from the bin doesn't work because it's the wrong type.
+
+Physical diagrams live on the wall in the server room and in a shared document repository that's accessible when the network is down — which means not exclusively on a server that depends on the network you're trying to fix. Print a copy. Laminate it. Tape it to the inside of the rack cabinet door. Your future self will be profoundly grateful.
+
+## Logical Diagrams — How Traffic Flows
+
+A logical network diagram abstracts away the physical hardware and shows the network's logical structure — IP addressing schemes, subnets, VLANs, routing domains, WAN connections, and how traffic moves between segments. A physical diagram tells you which port a cable is plugged into. A logical diagram tells you that VLAN 10 is the classroom network on 10.1.10.0/24, VLAN 20 is admin on 10.1.20.0/24, traffic between them routes through the core router, and the default route points to the firewall at 10.1.1.1 which connects to the ISP.
+
+Logical diagrams answer a different class of question: "Which subnet does the east wing use?" "How does traffic from the student VLAN reach the internet?" "If OSPF area 0 is on the core routers, which interfaces are the area boundaries?" You can look at a logical diagram and trace the path a packet takes from a classroom workstation to an external website, identifying every routing decision, every VLAN boundary, and every firewall it crosses.
+
+Most networks need both. The physical diagram gets you to the right rack and the right port. The logical diagram tells you what should be happening with the traffic once you get there. They complement each other, and maintaining one without the other leaves a gap that will cost you time during troubleshooting.
+
+## IP Address Management — The Spreadsheet That Runs the Network
+
+Every device on the network has an IP address. In a small network — two subnets, twenty devices — you can keep track in your head. In a network with fifty VLANs, a thousand devices, DHCP scopes, static reservations, and addresses that change when someone reconfigures a server, keeping track in your head is a fantasy. IP Address Management (IPAM) is the practice of maintaining an authoritative record of which addresses are assigned, to what device, on which subnet, and whether they're static or DHCP-assigned.
+
+The simplest IPAM is a spreadsheet. Columns for IP address, hostname, MAC address, VLAN, location, assignment type (static/DHCP/reserved), and notes. This works for small environments, and it's where most people start. The problem with spreadsheets is that they require manual updates, they don't enforce uniqueness (you can accidentally assign the same IP to two entries and the spreadsheet won't stop you), and they drift out of date the moment someone makes a change and doesn't update the sheet. A spreadsheet is better than nothing. A spreadsheet that's six months out of date is worse than nothing because now you're trusting data that's wrong, and wrong data creates wrong assumptions that create longer outages.
+
+Dedicated IPAM tools — NetBox, phpIPAM, Infoblox, SolarWinds IPAM — solve the drift problem by integrating with DNS, DHCP, and network scanning. They auto-discover what's on the network, flag conflicts, and provide a single source of truth. NetBox in particular has become an industry standard for open-source network documentation — it handles IPAM, rack layouts, device inventory, cable management, and circuit tracking in one platform. For the exam, you need to know that IPAM exists and why it matters. For the field, you need to pick a tool and use it religiously, because the alternative is the spreadsheet decaying silently until an IP conflict takes down a production server and nobody can figure out who assigned the duplicate.
+
+## VLAN and Port Documentation
+
+Every switch port should be documented — what VLAN it's in, what device is connected to it, and where that device is physically located. This sounds tedious. It is tedious. It's also the difference between a five-minute fix and a forty-five-minute cable trace.
+
+A VLAN table records every VLAN ID, its name, the associated subnet, the default gateway, the DHCP scope, and its purpose. VLAN 10: Classroom, 10.1.10.0/24, gateway 10.1.10.1, DHCP pool .21–.200. VLAN 20: Admin, 10.1.20.0/24, gateway 10.1.20.1, DHCP pool .11–.100. VLAN 999: Parking Lot, no IP, disabled. When someone asks "what subnet is the east wing on?", the VLAN table answers instantly. When you're configuring a new switch and need to know which VLANs to trunk, the VLAN table tells you without having to SSH into the existing switch and piece it together from the running config.
+
+Port maps document each physical switch port — port number, connected device, device location, VLAN assignment, and any special configuration (PoE, port security, voice VLAN). In a 48-port switch, only half the ports might be in use. A port map tells you which ones are available, which saves you from patching into a port that's configured for the security camera VLAN when you meant to connect a classroom PC.
+
+The `description` command on every switch port is part of this documentation — it's the inline version. But the description field has character limits and doesn't capture the full picture. Maintain port maps externally in your IPAM tool or documentation system, and keep the interface descriptions consistent with the external record.
+
+## Rack Diagrams — What's Where in the Cabinet
+
+A rack diagram is a visual representation of a network rack — which devices occupy which rack units (Us), front-to-back orientation, power connections, and cable routing. A standard 42U rack can hold a dozen switches, a couple of routers, a patch panel, a UPS, and a few servers. Without a rack diagram, you're counting rack units from the top and hoping the device you need is where you think it is.
+
+Rack diagrams don't need to be fancy. A simple vertical layout showing each U position and the device name is sufficient. Tools like NetBox, RackTables, or even draw.io with a rack template produce clean rack diagrams that you can update when hardware changes. The important thing is accuracy — if you rack a new switch in U22, update the diagram before you close the cabinet. Out-of-date rack diagrams are worse than missing ones because they send you to the wrong device.
+
+## Cable Labeling — The Cheapest Insurance
+
+Label your cables. Both ends. Every cable. This is not optional.
+
+A cable label identifies where the cable goes without tracing it. It can be as simple as "SW01-Gi0/1 → PP1-12" (switch 1, port GigabitEthernet0/1, connected to patch panel 1, position 12). When you're staring at a cabinet with forty identical blue cables and you need to disconnect one specific link, labels are the difference between pulling the right cable and pulling the cable that carries the principal's VoIP phone during a parent conference.
+
+Label printers (Brady, Brother P-Touch) produce clean, durable labels. Heat-shrink labels survive better in hot environments. Handwritten tape labels work in a pinch but degrade over time. Whatever method you use, be consistent with the format across the entire site. A labeling standard documented in your operational procedures means anyone — not just the person who originally ran the cables — can read and follow the labels.
+
+Cable labels also expose unauthorized changes. If you arrive at a patch panel and find an unlabeled cable patched into a port, someone bypassed the documentation process. That cable needs to be identified, documented, and explained before it stays connected.
+
+## Baseline Documentation — What "Normal" Looks Like
+
+A baseline is a snapshot of the network's normal operating state — interface utilization, CPU and memory on switches and routers, latency between key points, throughput on WAN links, error rates on interfaces, number of active DHCP leases, typical traffic patterns by time of day. You capture this data when the network is healthy and functioning as designed.
+
+The baseline becomes your reference point for every future issue. A user says "the network is slow." Compared to what? If you know the baseline throughput on the uplink is 400 Mbps during peak hours and today it's at 980 Mbps, you have a quantifiable problem. If you don't have a baseline, "slow" is subjective and the troubleshooting starts from zero.
+
+Baselines aren't one-time captures. Network traffic patterns change — a new classroom of Chromebooks, a video streaming service for a teacher's curriculum, a backup job that was rescheduled to run during business hours. Recapture baselines quarterly, or after any significant infrastructure change, so the reference stays relevant.
+
+## Change Management — The Log That Saves Your Job
+
+A change log records every modification made to the network — what changed, when it changed, who changed it, and why. "Added VLAN 40 for guest wireless, configured on SW01 through SW04, DHCP pool on RTR01, firewall rule added for internet-only access. Changed by M. Beattie, 2026-03-09, ticket #1847."
+
+Change management matters because networks don't break randomly. They break because something changed. When a service goes down, the first question is always "what changed recently?" If the change log is current, you can correlate the outage with recent changes in minutes. If the change log is empty or six months stale, you're guessing — and you're probably going to blame DNS even when DNS did nothing wrong.
+
+Formal change management in enterprise environments includes a change advisory board, risk assessments, rollback plans, and maintenance windows. In a school or small business, it might be a shared document or a ticket system. The scale doesn't matter. The discipline does. Every change gets logged. Every log entry includes enough detail that someone unfamiliar with the change can understand what happened and reverse it if needed.
+
+The habit starts now. Get comfortable writing down what you did, when you did it, and why. It's not bureaucracy — it's the pattern that separates professionals from amateurs. Every experienced tech has a war story about spending hours troubleshooting a mystery outage only to discover that someone made an undocumented change three days earlier. Write it down. Every time.
+
+## Tools of the Trade
+
+**draw.io (diagrams.net)** is free, browser-based, and has built-in networking shape libraries. Physical and logical diagrams, rack layouts, flow charts — all functional and shareable without a software license. For a school lab or small business, draw.io covers 90% of your diagramming needs. Export to PNG, SVG, or PDF for printing and posting.
+
+**Microsoft Visio** is the enterprise standard for network diagrams. More polish, more templates, better integration with Microsoft ecosystems. It costs money. If the organization has a license, use it. If they don't, draw.io does the same job.
+
+**NetBox** is an open-source network documentation platform that handles IPAM, device inventory, rack layouts, circuits, cables, and more. It's backed by a database, provides a REST API, and integrates with automation tools. It's what a spreadsheet dreams of becoming. Learning NetBox now — even just the concepts — puts you ahead of most entry-level techs.
+
+**Excel/Google Sheets** is where documentation goes to die. It's where it starts, too, because it's accessible and everyone knows how to use it. The trap is that spreadsheets don't validate data, don't enforce consistency, and become unmaintainable as the network grows. Use a spreadsheet as a starting point or a quick reference, not as your primary documentation system. The moment you have more than two VLANs and a dozen static IPs, migrate to a proper tool.
+
+The best documentation tool is the one that actually gets used. A perfectly designed NetBox instance that nobody updates is worse than a Google Sheet that the team maintains religiously. Pick the tool that matches your team's discipline level and grow from there.
