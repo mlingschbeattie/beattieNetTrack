@@ -237,7 +237,7 @@ a student might use. It's not Quizlet. It's a full certification rehearsal.
 
 ## Success Criteria
 
-Phase 5 is complete when:
+Phase 5A (Instructor Batch) is complete when:
 - [ ] CoachClient activated, Edge Function deployed
 - [ ] Generation UI available to instructor (not students)
 - [ ] Automated validation catches schema errors before review queue
@@ -245,3 +245,277 @@ Phase 5 is complete when:
 - [ ] 50+ approved questions in the bank across all 5 domains
 - [ ] Exam simulation mode functional (90Q / 90min / domain breakdown)
 - [ ] Export to MDX script working
+
+---
+
+## Phase 5B — Adaptive Student Mode
+
+**Status:** Roadmap — design complete, not started  
+**Prerequisite:** Phase 5A complete (approved question bank must exist for fallback)
+
+---
+
+### Two Modes, One Engine
+
+**Mode A — Instructor Batch (original spec above)**  
+Instructor requests questions → AI generates → instructor reviews → approved questions enter permanent bank → students see them in quizzes and exam simulation.  
+Quality gate: human review required before student exposure.
+
+**Mode B — Adaptive Student Mode**  
+Student completes a lesson or quiz → system generates a fresh challenge question in real time → student answers immediately → question is consumed and discarded (or queued for instructor review).  
+Quality gate: automated validation only — no human in the loop per question, but multiple safety layers prevent bad content from reaching students.
+
+---
+
+### Why Adaptive Without Human Review Is Acceptable Here
+
+The risk with AI-generated content: factually wrong, misleading, or confusing questions that a student believes and internalizes incorrectly.
+
+The mitigation strategy:
+
+**Grounding** — the generation prompt includes the actual lesson text as context. The AI generates questions about content the student just read, not from general knowledge. Hallucination risk drops dramatically when the model is summarizing source material it was given rather than recalling from training.
+
+**Strict schema validation** — automated checks catch structural problems before the question is shown. A question that fails validation is silently discarded and replaced with a question from the approved bank.
+
+**Low stakes** — adaptive questions are formative, not summative. They don't affect XP, grades, or completion status. A wrong question is annoying, not harmful.
+
+**Student reporting** — every adaptive question has a "flag this question" button. Flagged questions go to the instructor review queue. Three flags auto-retire a question from the adaptive pool.
+
+**Fallback** — if generation fails or produces nothing that passes validation, the system falls back to a random approved question from the bank. The student never sees a failure state.
+
+---
+
+### Architecture
+
+```
+Student completes lesson/quiz
+        ↓
+[AdaptiveChallenge island] — React, client-only
+        ↓
+POST to Supabase Edge Function: generate-adaptive-question
+  payload: { lessonSlug, moduleId, track, studentWeakAreas }
+        ↓
+Edge Function:
+  1. Fetches lesson MDX content from storage (or passes slug)
+  2. Calls Anthropic API with lesson content as context
+  3. Validates response against schema
+  4. If valid → returns question to client
+  5. If invalid → fetches fallback from approved bank
+        ↓
+Student sees question, answers, gets immediate feedback with explanation
+        ↓
+Question logged to adaptive_questions table with student response
+        ↓
+If flagged → moves to instructor review queue
+```
+
+---
+
+### Generation Prompt — Adaptive Mode
+
+The key difference from batch mode: the lesson content is injected as context.
+
+```
+You are generating a single formative assessment question for a student who just
+finished reading the following lesson content:
+
+---LESSON CONTENT START---
+{lesson_text}
+---LESSON CONTENT END---
+
+Generate ONE multiple-choice question that:
+- Tests understanding of a concept from this specific lesson content above
+- Is scenario-based ("A technician...", "A student notices...", "You are configuring...")
+- Has one clearly correct answer supported by the lesson content
+- Has three plausible distractors representing common misconceptions
+- Includes an explanation citing why each answer is right or wrong
+- Is appropriate for difficulty level: {difficulty}
+
+CRITICAL RULES:
+- Only test content that appears in the lesson above
+- Do not introduce concepts not covered in the lesson
+- The correct answer must be unambiguously supported by the lesson text
+- Do not ask "what is X" recall questions — ask application questions
+
+OUTPUT: Valid JSON only. No preamble, no markdown fences.
+{
+  "prompt": "string",
+  "options": ["A. text", "B. text", "C. text", "D. text"],
+  "correctIndex": 0,
+  "explanation": "string",
+  "lessonSlug": "{lessonSlug}",
+  "generatedAt": "{timestamp}"
+}
+```
+
+**Why grounding works:** The model is given the source material and told to only test what's in it. This is a retrieval task, not a recall task. The model doesn't need to know whether 802.11ax supports 6 GHz — it reads that from the lesson content and asks a question about it. Hallucination requires the model to invent facts; grounded generation asks it to reflect facts back.
+
+---
+
+### Automated Validation Gates
+
+Every generated question passes ALL of the following before reaching a student. Failure at any gate → silent discard → fallback to approved bank.
+
+**Gate 1 — Schema**
+- JSON parses without error
+- All required fields present
+- `options` has exactly 4 items
+- `correctIndex` is 0–3
+- `explanation` is present and > 50 characters
+
+**Gate 2 — Content Safety**
+- `prompt` does not start with "What is" or "Define" (recall, not application)
+- `prompt` length > 40 characters (too short = too vague)
+- No option is a substring of another option (copy-paste error)
+- Options are not all the same length within 3 characters (likely templated garbage)
+
+**Gate 3 — Grounding Check (lightweight)**
+- At least one key term from the lesson appears in the question prompt
+- The explanation is longer than the combined length of the options (short explanations = didn't actually explain anything)
+
+**Gate 4 — Duplicate Check**
+- Fuzzy match against last 20 questions shown to this student
+- Prevents the same question appearing twice in a session
+
+Fallback trigger: any gate failure → fetch random question from approved bank for this `lessonSlug`/`moduleId` → show that instead. Student sees no error.
+
+---
+
+### Database Schema — Additions
+
+```sql
+-- Adaptive questions log — every generated question, shown or not
+create table adaptive_questions (
+  id uuid primary key default gen_random_uuid(),
+  lesson_slug text not null,
+  module_id text not null,
+  track text not null,
+  prompt text not null,
+  options jsonb not null,
+  correct_index integer not null,
+  explanation text not null,
+  difficulty text not null,
+  -- Student interaction
+  shown_to uuid references auth.users,
+  student_answer integer,          -- null if not answered
+  was_correct boolean,
+  time_to_answer_ms integer,
+  -- Quality signals
+  was_flagged boolean default false,
+  flag_reason text,
+  flag_count integer default 0,
+  -- Generation metadata
+  generation_prompt_version text,
+  passed_validation boolean default true,
+  fallback_used boolean default false,
+  created_at timestamptz default now()
+);
+
+-- Row Level Security
+alter table adaptive_questions enable row level security;
+
+-- Students can only see their own responses
+create policy "students see own adaptive responses"
+  on adaptive_questions for select
+  using (shown_to = auth.uid());
+
+-- Instructors see all
+create policy "instructors see all adaptive"
+  on adaptive_questions for select
+  using (
+    exists (
+      select 1 from user_roles
+      where user_id = auth.uid() and role = 'instructor'
+    )
+  );
+```
+
+---
+
+### Instructor Visibility
+
+Adaptive questions are not invisible — they're just not blocking.
+
+Instructor dashboard shows:
+- Total adaptive questions generated this week
+- Pass rate through validation gates (low pass rate = prompt needs work)
+- Flag queue — student-flagged questions for review
+- Per-lesson breakdown: correct vs. incorrect rate on adaptive questions (signals which lessons need more depth or better explanations)
+- Option to promote a high-quality adaptive question to the approved bank
+
+The feedback loop:
+```
+Student struggles with adaptive questions on lesson X
+→ instructor sees low correct-answer rate in dashboard
+→ instructor reviews the lesson content and the questions being generated
+→ either improves the lesson or adds approved questions to reinforce the concept
+→ adaptive generation improves because the source material improved
+```
+
+---
+
+### Student Experience
+
+After completing a lesson, the student sees:
+
+```
+┌─────────────────────────────────────────────┐
+│  Quick Check — Lesson Complete              │
+│                                             │
+│  [Question text]                            │
+│                                             │
+│  ○ A. [option]                              │
+│  ○ B. [option]                              │
+│  ○ C. [option]                              │
+│  ○ D. [option]                              │
+│                                             │
+│  [Submit Answer]          [Skip]            │
+│                                             │
+│  🚩 Flag this question                      │
+└─────────────────────────────────────────────┘
+```
+
+After answering:
+- **Correct:** green highlight + explanation + 5 XP awarded
+- **Incorrect:** red highlight + correct answer highlighted + full explanation
+- **Skip:** no penalty, proceeds to next lesson
+
+The explanation is the learning moment — not just right/wrong, but why.
+
+---
+
+### Difficulty Adaptation — Phase 5.5 (Future)
+
+Initial implementation uses fixed difficulty per lesson (matching the lesson's `difficulty` frontmatter field). Future enhancement:
+
+- Track student's correct/incorrect rate per module
+- If >80% correct → increase difficulty on next generation
+- If <40% correct → decrease difficulty, flag for instructor
+- Difficulty adjusts per student, per module, in real time
+
+Requires `adaptive_questions` response data to accumulate across a few sessions before the system has enough signal. Design the schema for it now; implement the logic later.
+
+---
+
+### Implementation Order
+
+1. **Phase 3** — Supabase integration, `lesson_completions` table, auth
+2. **Phase 5A** — Instructor batch mode (original spec) — build approved bank first
+3. **Phase 5B** — Adaptive mode — add Edge Function, `AdaptiveChallenge` island, validation pipeline, fallback logic
+4. **Phase 5C** — Instructor dashboard for adaptive quality monitoring
+5. **Phase 5.5** — Difficulty adaptation per student
+
+Do not build 5B before 5A. The fallback mechanism requires an approved bank to fall back to. Building adaptive mode before the bank exists means every fallback returns nothing, which breaks the student experience.
+
+---
+
+### Success Criteria — Adaptive Mode
+
+- [ ] Edge Function generates grounded questions from lesson content
+- [ ] All 4 validation gates implemented and tested
+- [ ] Fallback to approved bank works silently on any gate failure
+- [ ] `AdaptiveChallenge` island renders after lesson completion
+- [ ] Student flag button works, routes to instructor queue
+- [ ] `adaptive_questions` table logging all interactions
+- [ ] Instructor dashboard shows generation quality metrics
+- [ ] Zero student-visible error states (all failures are silent fallbacks)
