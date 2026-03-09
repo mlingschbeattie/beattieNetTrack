@@ -1,0 +1,99 @@
+---
+title: Network Security Concepts — The Framework Behind Every Control
+description: Defense in depth, the CIA triad applied to network infrastructure, AAA with RADIUS and TACACS+, least privilege, network segmentation, zero trust, and the distinction between vulnerability, threat, and risk.
+slug: net-network-security-concepts
+track: network-engineer
+moduleId: net.security.fundamentals
+order: 1
+difficulty: Intermediate
+estMinutes: 25
+tags: ["network+", "security", "AAA", "defense in depth", "zero trust", "N10-009 4.1", "N10-008 4.1"]
+---
+
+## The Unlocked Door
+
+A school network admin finishes configuring the new firewall. Stateful inspection, application-layer filtering, intrusion prevention — the works. Thousands of dollars of hardware sitting at the perimeter doing exactly what it's supposed to do. Two weeks later, a student plugs a personal Raspberry Pi into an open Ethernet jack in the library, runs a DHCP server on it, and half the library clients start getting bogus IP addresses. The firewall didn't stop it because the firewall never saw it. The attack came from inside the network, on a flat Layer 2 segment with no port security and no segmentation. The perimeter was locked. The interior was wide open.
+
+Network security isn't a product you buy and install. It's a set of principles applied consistently across every layer of the infrastructure — from the physical ports to the routing decisions to the policies that govern who can access what. This lesson covers the foundational concepts that drive every security decision you'll make as a network engineer. Get these wrong, and no amount of expensive hardware saves you.
+
+## The CIA Triad — Three Goals, Every Decision
+
+Every network security control exists to protect one or more of three properties: **confidentiality**, **integrity**, and **availability**. This is the CIA triad, and it's the lens through which you evaluate every security decision.
+
+**Confidentiality** means that data is accessible only to authorized parties. When you encrypt traffic with TLS, you're protecting confidentiality — an eavesdropper captures the packets but can't read the contents. When you put the student records server on a restricted VLAN with ACLs limiting access, that's confidentiality. When you use SNMPv3 with authentication and encryption instead of SNMPv2c with a community string of "public" transmitted in cleartext, that's confidentiality. The threat to confidentiality is unauthorized disclosure — someone seeing data they shouldn't see.
+
+**Integrity** means that data hasn't been altered by unauthorized parties during storage or transit. When a routing protocol uses MD5 authentication to verify that route updates actually came from a legitimate neighbor and weren't injected by an attacker, that's protecting integrity. When you use hashing to verify a firmware image before loading it on a switch, that's integrity. The threat to integrity is unauthorized modification — someone changing data without detection.
+
+**Availability** means that systems and data are accessible when authorized users need them. Redundant links, UPS systems, load balancers, HSRP/VRRP — everything you studied in the high availability lessons exists to protect availability. A DDoS attack that overwhelms a server is an attack on availability. A ransomware infection that encrypts files is an attack on both confidentiality and availability. A misconfigured ACL that blocks legitimate traffic is an availability failure caused by your own team — no attacker required.
+
+Every security control involves tradeoffs between these three. Encrypting every link improves confidentiality but adds processing overhead that can affect availability. Requiring MFA for every login improves confidentiality but adds friction that affects availability (in the usability sense). The job isn't to maximize all three simultaneously — it's to balance them based on what the organization values most for a given system.
+
+## Authentication, Authorization, and Accounting — AAA
+
+When someone connects to the network, three questions need answers: Who are you? What are you allowed to do? What did you do?
+
+**Authentication** verifies identity. The user provides credentials — a username and password, a certificate, a smart card, a biometric — and the system confirms they are who they claim to be. 802.1X on a switch port authenticates devices before granting network access. A VPN gateway authenticates remote users before allowing the tunnel. A RADIUS server centralizes authentication so you don't manage credentials on every device individually.
+
+**Authorization** determines what an authenticated user is permitted to do. You've authenticated as a student — that means you get access to the student VLAN with internet and the learning management system. You don't get access to the admin VLAN, the server VLAN, or the management network. A teacher authenticates and gets a different VLAN assignment with access to grading systems. The network engineer authenticates and gets SSH access to infrastructure. Same authentication mechanism, different authorization based on role. RADIUS can assign VLAN membership, ACLs, and bandwidth limits dynamically based on group membership — authorization applied at the moment of connection.
+
+**Accounting** logs what happened. User X authenticated at 9:03 AM from port Gi0/12, was assigned to VLAN 20, transferred 1.2 GB of data, and disconnected at 3:15 PM. Accounting provides the audit trail — critical for troubleshooting, compliance, and incident investigation. When something goes wrong, accounting answers "who was on the network and what were they doing?"
+
+AAA is typically implemented through **RADIUS** or **TACACS+**. RADIUS combines authentication and authorization in a single exchange and encrypts only the password. TACACS+ separates authentication, authorization, and accounting into independent processes and encrypts the entire session. TACACS+ is the standard for managing network device access (who can SSH into the switches), while RADIUS is the standard for user network access (802.1X, VPN). The exam expects you to know both.
+
+## Least Privilege — Only What You Need
+
+The **principle of least privilege** states that users, processes, and systems should have only the minimum access rights necessary to perform their function — nothing more. A student account doesn't get admin access to the domain controller. A help desk technician gets read-only access to switch configurations, not enable-level access to production routers. A VLAN for security cameras doesn't need routes to the internet — it needs to reach the NVR and nothing else.
+
+Least privilege limits the blast radius of a compromise. If an attacker gets credentials for a student account, they can access the student VLAN and the LMS. That's bad, but it's contained. If that same account had access to the server VLAN because someone configured overly permissive ACLs, now the attacker can reach the file servers, the database, and potentially everything else.
+
+Every permission you grant is attack surface. Every ACL entry, every firewall rule, every VLAN trunk, every route advertisement expands what an attacker can reach once they get a foothold. Least privilege means starting from deny-all and adding only what's explicitly required. It's more work upfront. It's significantly less work during an incident.
+
+## Defense in Depth — Layers, Not Walls
+
+**Defense in depth** is the principle that no single security control is sufficient. You layer multiple controls so that if one fails, others still protect the asset.
+
+Consider a school's student records database. The perimeter firewall blocks unauthorized external access — layer one. The internal firewall segments the database server onto a restricted VLAN — layer two. 802.1X ensures only authenticated devices can reach the network at all — layer three. The database requires its own authentication — layer four. Traffic between the application server and the database is encrypted — layer five. The database server logs all access for auditing — layer six. If the perimeter firewall gets bypassed (a zero-day, a misconfiguration), the attacker still faces internal segmentation, port authentication, application-layer credentials, encryption, and monitoring.
+
+This isn't paranoia. It's engineering. A single firewall has vulnerabilities — every product does. A single ACL has potential for misconfiguration — every human-written rule does. Defense in depth acknowledges that no control is perfect and builds redundancy into the security architecture the same way you build redundancy into the network topology. One link fails, traffic re-routes. One security control fails, others compensate.
+
+The layers span the full stack: physical security (locked wiring closets), network security (firewalls, segmentation, ACLs), host security (patching, endpoint protection), application security (input validation, secure coding), data security (encryption, access controls), and administrative controls (policies, training, incident response). Each layer catches threats that the other layers might miss.
+
+## Network Segmentation as a Security Control
+
+You've already configured VLANs to organize traffic and reduce broadcast domains. From a security perspective, segmentation is one of the most powerful controls available because it limits lateral movement — an attacker who compromises one segment can't automatically reach others.
+
+A flat network — one VLAN, one subnet, everything can talk to everything — is an attacker's paradise. Compromise one device and you can scan, attack, and pivot to every other device on the network without crossing a single security boundary. Segment the network — students on VLAN 20, staff on VLAN 30, servers on VLAN 50, management on VLAN 99, IoT on VLAN 100 — and suddenly an attacker on the student VLAN hits a Layer 3 boundary with ACLs or firewall rules blocking access to the server and management VLANs. They've compromised a student Chromebook, but the path to the domain controller is blocked.
+
+Segmentation isn't just VLANs. It's VLANs plus inter-VLAN routing controls (ACLs or firewall rules that restrict which VLANs can communicate and on which ports). A VLAN without routing restrictions between segments is just organizational — it reduces broadcasts but provides no security boundary. The security comes from the rules applied at the Layer 3 boundary between VLANs.
+
+Micro-segmentation takes this further by applying security policies at the individual workload level — every server, every application, every VM has its own policy. This is common in data centers and cloud environments and is a core component of zero trust architectures.
+
+## Zero Trust — Never Trust, Always Verify
+
+Traditional network security follows a perimeter model: everything inside the firewall is trusted, everything outside is untrusted. Build a strong perimeter, and the inside is safe. This model worked when all users, devices, and applications were physically inside the building. It breaks down when users are remote, applications are in the cloud, and the "inside" includes personal devices, IoT sensors, and vendors with VPN access.
+
+**Zero trust** abandons the idea of a trusted internal network. The core principle: no user, device, or application is trusted by default, regardless of network location. Every access request is authenticated, authorized, and continuously validated. A device on the internal LAN is treated with the same suspicion as a device connecting over VPN.
+
+Zero trust implementations typically include: identity-based access (authenticate the user and the device, not just the network location), micro-segmentation (every resource has its own access policy), continuous validation (not just authenticate at login — re-verify throughout the session), least privilege access (grant the minimum required, revoke when the session ends), and comprehensive logging (every access decision is recorded).
+
+Zero trust is a model, not a product. No single vendor sells a "zero trust box." It's an architecture assembled from identity providers, network segmentation, endpoint validation, policy engines, and monitoring — many of which you've already studied. The exam tests the concept and principles, not a specific vendor implementation.
+
+## Vulnerability, Threat, Risk — The Terminology That Matters
+
+These three terms get confused constantly, and the exam expects precision.
+
+A **vulnerability** is a weakness in a system that could be exploited. An unpatched switch running firmware with a known remote code execution bug — that's a vulnerability. An open port running an unnecessary service — vulnerability. Default credentials that were never changed — vulnerability. A vulnerability exists whether or not anyone exploits it.
+
+A **threat** is something that could exploit a vulnerability. A threat could be a person (a hacker, a disgruntled employee), a natural event (a flood, a power surge), or a process (a misconfigured script that deletes files). Threats exist whether or not vulnerabilities exist — the hacker is out there regardless of whether your switch is patched.
+
+**Risk** is the likelihood that a threat will exploit a vulnerability and the impact if it does. Risk = Threat × Vulnerability × Impact (conceptually — the actual math varies by framework). A vulnerability with no realistic threat has low risk. A critical vulnerability facing active exploitation has high risk. Risk assessment determines where you spend your limited time and budget — patch the vulnerability being actively exploited in the wild before the theoretical one that requires physical console access.
+
+Applied to a network scenario: your edge switch has a known vulnerability in its web management interface (vulnerability). Script kiddies are actively scanning the internet for that vulnerability (threat). The switch is exposed to the internet because someone enabled the web interface on a public-facing port (risk is high — the threat is real, the vulnerability is present, and the impact is full device compromise). Fix: disable the web interface on the public-facing port. The vulnerability still exists in the firmware, but the risk drops because the attack surface is gone. Patch the firmware too — but triage based on risk.
+
+## Security Through Obscurity — Necessary but Never Sufficient
+
+Changing the SSH port from 22 to 2222. Hiding the SSID on the wireless network. Using non-standard VLAN numbers. These are examples of **security through obscurity** — making something harder to find rather than harder to exploit.
+
+Obscurity is not worthless. Changing the default SSH port reduces noise from automated scanners hitting port 22. Hiding an SSID keeps casual users from seeing the network. But obscurity alone provides zero real security. An attacker running a port scan finds SSH on 2222 in seconds. A wireless survey tool reveals hidden SSIDs immediately because the network still broadcasts beacons — the SSID field is just empty. A determined attacker is not stopped by non-standard VLAN numbers.
+
+Obscurity is a speed bump, not a barrier. Use it as one layer in a defense-in-depth strategy — not as the strategy itself. The exam asks this directly: security through obscurity is not a sufficient security measure on its own. Pair it with authentication, encryption, access controls, and monitoring. The SSID can be hidden, but the network also needs WPA3-Enterprise, 802.1X, and client isolation. The SSH port can be non-standard, but the service also needs key-based authentication, access restricted by ACL, and failed-login lockout. Obscurity buys time. Real controls provide protection.

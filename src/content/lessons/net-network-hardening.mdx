@@ -1,0 +1,210 @@
+---
+title: Network Hardening — Closing the Gaps Before Someone Else Does
+description: Disabling unused ports and services, default credential changes, SSH vs Telnet, port security and sticky MAC, DHCP snooping, Dynamic ARP Inspection, IP Source Guard, CDP/LLDP hardening, management plane security, banner messages, and patch cadence.
+slug: net-network-hardening
+track: network-engineer
+moduleId: net.security.fundamentals
+order: 3
+difficulty: Intermediate
+estMinutes: 30
+tags: ["network+", "hardening", "port security", "DHCP snooping", "DAI", "N10-009 4.2", "N10-008 4.2"]
+---
+
+## The Default Password That Lasted Three Years
+
+A school district deploys forty new managed switches across six buildings. The vendor ships them with a default username of `admin` and a default password of `admin`. The deployment team racks the switches, cables them, assigns management IPs, configures VLANs and trunking — a solid deployment by all technical measures. Nobody changes the default credentials. Three years later, a student with fifteen minutes of curiosity and access to Google discovers the default password, logs into a switch from a classroom jack, and starts experimenting with the spanning-tree configuration. The network goes down across an entire building during state testing.
+
+This wasn't a sophisticated attack. The student didn't exploit a zero-day or write custom malware. They typed the manufacturer's default password into a web browser. Every hardening task in this lesson exists to close the gaps that are obvious in hindsight but routinely left open in practice — because the network worked fine without them until the day it didn't.
+
+## Disabling Unused Ports and Services
+
+Every enabled port is a potential entry point. Every running service is attack surface. Hardening starts with shutting down what you don't need.
+
+On a 48-port switch where only 30 ports are connected, the remaining 18 should be administratively disabled. A port that's shut down can't be used by someone who plugs in an unauthorized device — they get nothing, not even link light.
+
+```
+interface range GigabitEthernet0/31 - 48
+ shutdown
+ description UNUSED - DISABLED
+```
+
+When a port is needed, enable it, apply the appropriate VLAN and security configuration, and document what's connected. This takes thirty seconds and eliminates a class of attack that requires zero skill to execute.
+
+Services follow the same principle. That HTTP management interface running on the switch that nobody uses? Disable it — it's an extra attack surface with its own vulnerability history. The small services — echo, daytime, chargen — that some platforms enable by default? Disable them. SNMP v1/v2c with default community strings? Disable it or reconfigure with SNMPv3. If a service doesn't serve an operational purpose on that device, it shouldn't be running.
+
+```
+no ip http server
+no ip http secure-server
+no service tcp-small-servers
+no service udp-small-servers
+no snmp-server community public
+no snmp-server community private
+```
+
+Every disabled service is one fewer thing to patch, monitor, and explain during a security audit.
+
+## Default Credentials — Change Them. All of Them.
+
+The default credentials story repeats across every category of network equipment: switches, routers, firewalls, wireless controllers, UPS management cards, IPMI interfaces on servers, IP cameras, managed PDUs. Manufacturers publish default credentials in documentation that's indexed by search engines. Databases like `cirt.net` and the Mirai botnet's source code contain hundreds of default username/password pairs.
+
+Change default passwords on every managed device during initial deployment — not "when we get around to it," during deployment. Use strong, unique credentials. Store them in a password manager or a secured credential vault, not a spreadsheet on a file share labeled "network passwords.xlsx."
+
+This includes SNMP community strings. The default strings of `public` (read-only) and `private` (read-write) are effectively passwords transmitted in cleartext. If you must run SNMPv2c, change the community strings to something non-obvious and restrict SNMP access with ACLs. Better: run SNMPv3 with authentication and encryption and stop transmitting credentials in cleartext entirely.
+
+## SSH vs. Telnet — Close the Door That's Wide Open
+
+Telnet transmits everything in cleartext. Usernames, passwords, commands, output — all visible to anyone capturing traffic on the management VLAN. An attacker with a packet capture on the management segment doesn't need to crack anything. They just read the enable password out of the pcap.
+
+SSH encrypts the entire session. Same functionality as Telnet — remote CLI access — but the traffic is encrypted in transit. There is no scenario where Telnet is the better choice for managing production equipment.
+
+```
+line vty 0 15
+ transport input ssh
+ login local
+ exec-timeout 10 0
+!
+ip ssh version 2
+ip ssh time-out 60
+ip ssh authentication-retries 3
+```
+
+`transport input ssh` restricts VTY lines to SSH only — Telnet connections are refused. `ip ssh version 2` forces SSHv2, since SSHv1 has known vulnerabilities. The exec-timeout disconnects idle sessions after 10 minutes so someone doesn't leave an authenticated session open on a console they walked away from.
+
+If you find Telnet enabled on a production device, disable it. If someone argues "but Telnet is easier to set up," the response is that generating an RSA key pair and enabling SSH takes two commands and eliminates the risk of credential interception. The effort-to-security-gain ratio is the best you'll find in any hardening task.
+
+```
+crypto key generate rsa modulus 2048
+```
+
+Done. You now have SSH.
+
+## Port Security — Controlling What Connects
+
+Port security on a Cisco switch restricts which MAC addresses are allowed on a port and defines what happens when a violation occurs.
+
+```
+interface GigabitEthernet0/1
+ switchport mode access
+ switchport access vlan 20
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security violation restrict
+ switchport port-security mac-address sticky
+```
+
+**Maximum** sets how many unique MAC addresses the port will learn. A desktop workstation needs one. A desk with a VoIP phone daisy-chained to a computer needs two. Setting maximum to 2 permits both and blocks any additional devices — someone can't plug in a switch or hub and expand the port to additional unauthorized devices.
+
+**Sticky MAC** dynamically learns the MAC address of the connected device and writes it into the running configuration. After the first device connects, that specific MAC is bound to the port. If a different device plugs in, it's a violation. Sticky MACs are useful when you want the security of static MAC binding without manually entering every MAC address for every port across the campus.
+
+**Violation modes** define the response when an unauthorized MAC appears:
+
+| Mode | Action | Port stays up? | Logged? | Violation counter? |
+|---|---|---|---|---|
+| **Protect** | Drops traffic from the violating MAC | Yes | No | No |
+| **Restrict** | Drops traffic from the violating MAC | Yes | Yes (syslog + SNMP) | Yes |
+| **Shutdown** | Disables the port entirely (err-disabled) | No | Yes | Yes |
+
+**Shutdown** is the most secure — the port goes down and stays down until an administrator manually re-enables it with `shutdown` / `no shutdown`. This prevents ongoing attacks but creates a support call for every violation, including accidental ones (a student unplugging a desktop and plugging in a laptop). **Restrict** is a common middle ground — traffic is blocked but the port stays up for the legitimate device, and the violation is logged for review. **Protect** silently drops traffic without logging, which makes troubleshooting painful because nothing in the logs explains why the new device isn't working.
+
+## DHCP Snooping — Trust Boundaries at Layer 2
+
+DHCP snooping prevents rogue DHCP servers from handing out bogus IP configurations. It works by inspecting DHCP messages and classifying switch ports as **trusted** or **untrusted**.
+
+Trusted ports connect to legitimate DHCP servers — typically uplinks to the distribution layer or the server VLAN. Untrusted ports connect to clients — desktops, phones, access points. DHCP server responses (OFFER, ACK) are only permitted on trusted ports. If a rogue DHCP server on an untrusted port sends an OFFER, the switch drops it.
+
+```
+ip dhcp snooping
+ip dhcp snooping vlan 20,30
+!
+interface GigabitEthernet0/1
+ description UPLINK TO DISTRIBUTION
+ ip dhcp snooping trust
+!
+interface range GigabitEthernet0/2 - 48
+ description ACCESS PORTS
+ no ip dhcp snooping trust
+```
+
+DHCP snooping also builds a **binding table** that maps client IP addresses to MAC addresses, VLAN IDs, and ports. This binding table is critical — it's used by both Dynamic ARP Inspection and IP Source Guard to validate traffic. Think of DHCP snooping as the foundation that other Layer 2 security features build on.
+
+One common gotcha: when enabling DHCP snooping on a trunk, the uplink must be trusted. If you forget to trust the port connected to the legitimate DHCP server, every client on the VLAN loses the ability to get an address. Test in a maintenance window, verify first with a single VLAN, and expand.
+
+## Dynamic ARP Inspection — Stopping ARP Poisoning
+
+ARP poisoning works because ARP is unauthenticated — any device can claim any IP-to-MAC mapping. **Dynamic ARP Inspection (DAI)** validates ARP packets on untrusted ports against the DHCP snooping binding table. If a device sends an ARP reply claiming to be 10.1.20.1 but the snooping table shows that IP bound to a different MAC on a different port, DAI drops the packet.
+
+```
+ip arp inspection vlan 20,30
+!
+interface GigabitEthernet0/1
+ ip arp inspection trust
+!
+interface range GigabitEthernet0/2 - 48
+ no ip arp inspection trust
+```
+
+The trust model mirrors DHCP snooping: uplinks and infrastructure ports are trusted, access ports are untrusted. DAI on untrusted ports validates every ARP packet against the binding table. Devices with statically assigned IP addresses (which don't appear in the snooping table) need ARP ACLs — manual entries that permit their IP-to-MAC mappings.
+
+DAI rate-limits ARP packets on untrusted ports by default (typically 15 pps) to prevent an attacker from overwhelming the switch's CPU with ARP floods. If a legitimate port exceeds the rate — unusual for a single workstation but possible for a virtualization host — you can adjust the rate with `ip arp inspection limit rate`.
+
+Without DHCP snooping enabled and populated, DAI has no binding table to validate against and won't function correctly. Always enable snooping first, verify the binding table is populated, then enable DAI.
+
+## IP Source Guard — Validating the Source
+
+**IP Source Guard** goes one step further: it filters traffic based on the DHCP snooping binding table at the IP layer. If a device on port Gi0/5 was assigned 10.1.20.15 via DHCP, IP Source Guard only permits traffic from that IP on that port. If someone statically configures a different IP address on the device — either accidentally or maliciously — the traffic is dropped.
+
+```
+interface GigabitEthernet0/5
+ ip verify source
+```
+
+This prevents IP spoofing at the access layer. An attacker can't configure their laptop with the IP address of a server or gateway and inject traffic as that device — the switch won't forward it because the source IP doesn't match the snooping binding for that port.
+
+Like DAI, IP Source Guard depends on the DHCP snooping binding table. Devices with static IPs need manual source bindings configured on the switch. This creates management overhead but eliminates an entire category of spoofing attacks on the access layer.
+
+## Disabling CDP and LLDP on Untrusted Interfaces
+
+**CDP (Cisco Discovery Protocol)** and **LLDP (Link Layer Discovery Protocol)** share device information — hostname, IP address, platform, capabilities, native VLAN — with directly connected devices. This is enormously useful between infrastructure devices: a switch sees its neighbors, their platform types, and their management addresses. It's a security liability on ports facing untrusted devices.
+
+An attacker connected to a CDP-enabled access port receives the switch's hostname, IOS version, management IP, native VLAN, and port ID — all the reconnaissance data they need to plan further attacks. Disable CDP and LLDP on access ports:
+
+```
+interface range GigabitEthernet0/2 - 48
+ no cdp enable
+ no lldp transmit
+ no lldp receive
+```
+
+Leave CDP/LLDP enabled on infrastructure ports (uplinks, trunk ports to other switches) where the information is operationally useful. The principle is the same as everywhere else in hardening: expose only what's needed to the entities that need it.
+
+## Management Plane Security
+
+The management plane — how administrators access and control network devices — requires its own protections. A dedicated **management VLAN** isolates management traffic from user traffic. ACLs on VTY lines restrict SSH access to specific source subnets, so even if someone reaches the management VLAN, they can't authenticate from an unauthorized source.
+
+```
+access-list 10 permit 10.1.99.0 0.0.0.255
+!
+line vty 0 15
+ access-class 10 in
+ transport input ssh
+```
+
+Only devices on the 10.1.99.0/24 management subnet can reach the VTY lines. Everything else is rejected before the SSH prompt even appears.
+
+**Banner messages** serve a legal purpose: a login banner states that the system is for authorized use only and that access is monitored. This is a legal requirement in many jurisdictions — without a banner, prosecuting unauthorized access becomes legally complicated because the system didn't assert any access restriction. Use `banner login` with legal notice language reviewed by the organization's counsel. Do not put the hostname, device type, or any identifying information in the banner — that's free reconnaissance. "Authorized access only. Activity is monitored and logged. Unauthorized access will be prosecuted." Not "Welcome to CORE-SWITCH-01, Cisco Catalyst 9300, IOS-XE 17.6."
+
+## Control Plane Policing
+
+The **control plane** processes traffic destined to the switch itself — management sessions, routing protocol updates, SNMP queries, ARP, and other protocol traffic. An attacker flooding the control plane with garbage traffic (thousands of bogus SNMP requests, ARP floods, routing updates) can overwhelm the switch CPU and degrade forwarding performance for all traffic.
+
+**Control Plane Policing (CoPP)** rate-limits traffic to the control plane, prioritizing legitimate management and protocol traffic while dropping excessive or unexpected traffic. CoPP uses a policy-map applied to the control plane interface to classify traffic and enforce rate limits by category — routing protocols get guaranteed bandwidth, SNMP is rate-limited, and everything unclassified is policed aggressively.
+
+CoPP is a more advanced configuration that varies by platform, but the concept is exam-relevant: the control plane needs protection from traffic floods just like the data plane needs protection from DDoS.
+
+## Firmware and Patch Management
+
+A switch running firmware from two years ago has two years of unpatched vulnerabilities. Firmware updates fix security bugs, improve stability, and add features. Skipping them because "it works fine" is accepting risk that compounds over time.
+
+Patch management for network equipment follows a cadence: monitor vendor advisories (Cisco PSIRT, Juniper security bulletins, vendor-specific CVE notifications). Evaluate patches for criticality — a remote code execution vulnerability on a management interface gets fast-tracked; a minor cosmetic bug in the web GUI can wait. Test the update in a lab or on a non-critical device before deploying to production. Schedule the update during a maintenance window with a rollback plan (keep the previous firmware image on the device's flash). Verify the update with `show version` and validate that services are functioning post-upgrade.
+
+Automated update mechanisms for network equipment are less mature than server patching. Most network gear still gets updated manually or through orchestration tools with human approval. The process matters more than the tooling: know what's running, know what's vulnerable, and have a plan to close the gap before someone else finds it for you.

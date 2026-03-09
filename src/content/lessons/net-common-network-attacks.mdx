@@ -1,0 +1,93 @@
+---
+title: Common Network Attacks — Protocol-Level Threats and Defenses
+description: Passive and active reconnaissance, DoS and DDoS, ARP poisoning, DNS poisoning, VLAN hopping, man-in-the-middle, evil twin, rogue APs, deauthentication attacks, brute force, and credential stuffing — how each works and how to stop it.
+slug: net-common-network-attacks
+track: network-engineer
+moduleId: net.security.fundamentals
+order: 2
+difficulty: Intermediate
+estMinutes: 30
+tags: ["network+", "attacks", "ARP poisoning", "DoS", "VLAN hopping", "evil twin", "N10-009 4.2", "N10-008 4.2"]
+---
+
+## The Packet That Shouldn't Be There
+
+You're reviewing the syslog output from the core switch and notice something odd: hundreds of ARP replies flooding a VLAN, all claiming the same IP address — the default gateway — but with different MAC addresses every few seconds. No legitimate device changes its MAC address that fast. Someone on the network is poisoning the ARP table of every host in that VLAN, redirecting traffic through their machine. They're watching everything — credentials, session tokens, internal traffic that never leaves the building. The firewall didn't catch it because the attack never crossed the perimeter. It's inside the network, at Layer 2, and it's been running for hours.
+
+Knowing how attacks work at the protocol level is the difference between staring at logs and actually recognizing what's happening. This lesson breaks down the most common network attacks — not as abstract definitions, but as protocol-level operations you can detect and defend against.
+
+## Reconnaissance — Mapping the Target
+
+Before attacking a network, an attacker needs to understand it. Reconnaissance is the information-gathering phase, and it comes in two flavors.
+
+**Passive reconnaissance** collects information without touching the target. Querying public DNS records to map an organization's externally-facing servers. Looking up IP address ranges in WHOIS databases. Browsing LinkedIn to identify the network team and the technologies they list on their profiles. Examining job postings that mention specific firewall vendors or routing platforms. Scraped metadata from documents posted on the organization's website. The target never knows passive recon is happening because there's no interaction with their systems.
+
+**Active reconnaissance** directly probes the target. Port scans using tools like Nmap to discover open services. Ping sweeps to identify live hosts. Banner grabbing — connecting to a service and reading the version string it returns ("SSH-2.0-OpenSSH_8.9" tells an attacker exactly which version you're running and which CVEs apply). Traceroute to map the network path and identify intermediate devices. Active recon is detectable — an IDS watching for port scan patterns, an anomaly in NetFlow showing a single host touching every IP in a subnet — but only if someone is watching.
+
+Defense: minimize your public footprint (don't publish internal network details). Monitor for scanning activity on the IDS. Rate-limit ICMP and reject unnecessary probes at the firewall. Disable service version banners where possible. And assume that a determined attacker already knows more about your network than you're comfortable with.
+
+## DoS and DDoS — Drowning the Target
+
+A **Denial of Service (DoS)** attack overwhelms a target so that legitimate users can't access it. This is an attack on availability — the "A" in the CIA triad.
+
+A single-source DoS might be a SYN flood: the attacker sends thousands of TCP SYN packets with spoofed source addresses. The target responds to each with a SYN-ACK and allocates memory to track the half-open connection, waiting for the ACK that never comes. The connection table fills up, and legitimate clients can't establish new connections. Another variant is the amplification attack — the attacker sends a small DNS or NTP query to a public server with the source address spoofed to the target's IP. The response is many times larger than the query. Send enough of these, and the target's bandwidth is consumed by amplified response traffic it never asked for.
+
+A **Distributed Denial of Service (DDoS)** uses thousands or millions of compromised devices (a botnet) to flood the target simultaneously. The volume is so large that no single upstream filter can handle it. DDoS mitigation requires scrubbing services — cloud providers like Cloudflare or Akamai that absorb the traffic, filter out the attack, and pass clean traffic to the target. On-premise DDoS defense is limited to rate-limiting, SYN cookies (the server doesn't allocate resources until the handshake completes), and upstream provider cooperation.
+
+The distinction matters: DoS can sometimes be stopped with a firewall rule blocking the source. DDoS can't — there are too many sources, and blocking them all blocks legitimate traffic too.
+
+## ARP Poisoning — Corrupting the Layer 2 Trust Model
+
+ARP has no authentication. When a device broadcasts "Who has 10.1.1.1?", any device on the VLAN can respond "That's me, here's my MAC address." The requesting device blindly trusts the response and updates its ARP table. This is how ARP is supposed to work — and it's why ARP poisoning is so effective.
+
+In an **ARP poisoning** (or ARP spoofing) attack, the attacker sends gratuitous ARP replies to hosts on the VLAN, claiming that the default gateway's IP address maps to the attacker's MAC address. Every host that receives and caches this poisoned entry starts sending traffic destined for the gateway to the attacker instead. The attacker receives the traffic, inspects it, and forwards it to the real gateway so the victim's connectivity appears normal. This is a **man-in-the-middle (on-path) attack** at Layer 2, and the victim has no idea it's happening because their traffic still works — it just makes an extra stop.
+
+Detection: watch for multiple MAC addresses claiming the same IP. Static ARP entries for critical infrastructure (the default gateway) prevent overwriting, but don't scale. The real defense is **Dynamic ARP Inspection (DAI)**, which validates ARP packets against the DHCP snooping binding table — a topic covered in the hardening lesson.
+
+## DNS Poisoning — Redirecting Names to Wrong Addresses
+
+DNS is another protocol that was designed for functionality, not security. **DNS poisoning** (or DNS spoofing) corrupts a DNS resolver's cache so that queries for a legitimate domain return an attacker-controlled IP address. A student types `portal.school.edu` and gets sent to a clone of the login page hosted on the attacker's server. They enter their credentials. The attacker now has valid credentials and redirects the victim to the real portal so they never notice anything was wrong.
+
+DNS cache poisoning targets the recursive resolver. The attacker races to send a forged DNS response before the legitimate authoritative server responds, matching the query's transaction ID. If the forged response arrives first, the resolver caches the bogus record and serves it to every subsequent client until the TTL expires.
+
+Defense: DNSSEC validates DNS responses with cryptographic signatures — a forged response fails validation and gets rejected. Randomizing source ports and transaction IDs on DNS queries makes forging responses harder. Running your own internal resolver with a hardened configuration limits exposure. Monitoring for unexpected changes in DNS resolution results catches some attacks after they start.
+
+## VLAN Hopping — Escaping the Segment
+
+VLANs are supposed to isolate traffic, but two attacks can break that isolation if switches aren't hardened.
+
+**Switch spoofing.** By default, many switches will negotiate a trunk link with any connected device using DTP (Dynamic Trunking Protocol). An attacker configures their device to send DTP negotiation frames, and the switch port forms a trunk. Once trunked, the attacker can tag frames with any VLAN ID and access traffic on VLANs they were never assigned to. Defense: set every access port to `switchport mode access` and disable DTP with `switchport nonegotiate`. Never leave a port in its default `dynamic desirable` or `dynamic auto` state.
+
+**Double tagging.** The attacker sends a frame with two 802.1Q tags: the outer tag matches the native VLAN of the trunk, and the inner tag matches the target VLAN. The first switch strips the outer tag (because it matches the native VLAN) and forwards the frame — still carrying the inner tag — across the trunk. The next switch reads the inner tag and delivers the frame to the target VLAN. This is a one-way attack (the return traffic won't reach the attacker through normal means), but it's enough to inject malicious frames into a VLAN the attacker shouldn't reach. Defense: never use VLAN 1 as the native VLAN on trunks. Set the native VLAN to an unused VLAN ID. Tag native VLAN traffic explicitly with `vlan dot1q tag native`.
+
+## Man-in-the-Middle and On-Path Attacks
+
+A **man-in-the-middle (MitM)** — increasingly called an **on-path attack** — places the attacker between two communicating parties. Both parties think they're talking directly to each other, but the attacker intercepts, reads, and potentially modifies every packet in transit.
+
+ARP poisoning is the classic Layer 2 MitM. At higher layers, a MitM can exploit insecure protocols: an attacker on the same network intercepts an HTTP session (unencrypted) and injects content or steals session cookies. A compromised or rogue proxy server inspects and modifies HTTPS traffic if the client accepts a forged certificate. A BGP hijack at the ISP level redirects traffic through an attacker-controlled router — an on-path attack at the routing layer.
+
+Defense is protocol-level encryption and authentication. HTTPS with certificate validation prevents web MitM. SSH with host key verification prevents terminal session MitM. Encrypted routing protocol authentication prevents route injection. The common theme: if the protocol doesn't authenticate the other party and encrypt the session, an on-path attacker can exploit it.
+
+## Evil Twin and Rogue Access Points
+
+A **rogue access point** is an unauthorized AP connected to the network — a teacher plugging in a personal wireless router, a student running a hotspot bridged to Ethernet. It bypasses your wireless security controls entirely because traffic enters the wired network through an unauthenticated port.
+
+An **evil twin** is a specific type of rogue AP designed to impersonate a legitimate network. The attacker creates an AP with the same SSID as the organization's wireless network — same name, same appearance to client devices. If the evil twin has a stronger signal (the attacker is closer to the victim than the legitimate AP), clients may automatically associate with it. Once connected, all the victim's traffic flows through the attacker's AP. Combined with a captive portal mimicking the real login page, the attacker harvests credentials.
+
+A **deauthentication attack** makes evil twins more effective. The attacker sends forged 802.11 deauthentication frames (which are unencrypted management frames in legacy Wi-Fi) to disconnect clients from the legitimate AP. The disconnected clients automatically attempt to reconnect and may associate with the evil twin if its signal is stronger. This is why **802.11w (Protected Management Frames)**, mandatory in WPA3, matters — it authenticates management frames so forged deauth frames are rejected.
+
+Defense: wireless intrusion detection/prevention (WIDS/WIPS) systems monitor the RF environment for rogue APs and evil twins. 802.1X on all wired ports prevents rogue APs from gaining network access even if physically connected. Educating users to verify they're connecting to the correct network with the correct certificate helps — though "just be careful" is never a primary control.
+
+## Brute Force and Credential Stuffing
+
+A **brute force attack** tries every possible password combination against an authentication system. Short passwords fall quickly — an 8-character lowercase-only password has about 200 billion combinations, which modern hardware can exhaust in minutes. Complexity and length increase the search space exponentially. A 16-character passphrase with mixed case, numbers, and symbols is effectively immune to brute force with current technology.
+
+**Credential stuffing** is smarter. Instead of trying every possible password, the attacker uses stolen credential lists from previous data breaches. People reuse passwords across sites. If a student used the same password for a gaming forum that got breached and for their school account, the attacker imports the breach list, tries every username/password pair against the school's login portal, and lands hits without brute-forcing anything.
+
+Defense: account lockout after a threshold of failed attempts (5–10 attempts, then lock for 15–30 minutes). Rate limiting on authentication endpoints. Multi-factor authentication — even if the password is compromised, the second factor blocks the login. Monitoring for patterns like a single source IP attempting logins against hundreds of different accounts (credential stuffing signature) or hundreds of attempts against a single account (brute force signature). Password policies that prevent common and breached passwords. RADIUS and Active Directory support all of these controls.
+
+## Putting It Together — Defense Is Protocol Awareness
+
+Each of these attacks exploits a specific protocol weakness: ARP has no authentication, DNS has no built-in validation, DTP negotiates trunks automatically, 802.11 management frames are unencrypted in legacy standards, passwords are only as strong as the human choosing them. Understanding the attack means understanding the protocol flaw. Understanding the protocol flaw points directly at the defense: DAI for ARP, DNSSEC for DNS, disabling DTP for VLAN hopping, WPA3 for deauth attacks, MFA for credential attacks.
+
+The exam presents scenarios and asks you to identify the attack or the appropriate defense. If you understand what's happening at the protocol level, the answer follows naturally. If you've only memorized definitions without understanding the mechanism, the scenario-based questions will trip you up. Know the how, not just the what.
