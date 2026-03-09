@@ -10,8 +10,6 @@ estMinutes: 35
 tags: ["network+", "subnetting", "CIDR", "VLSM", "N10-009 2.3", "N10-008 2.3"]
 ---
 
-LESSON 2.3.1 — IP Addressing and Subnetting
-
 ## The Skill That Separates You
 
 There is exactly one topic on the Network+ exam that scares people more than any other, and you're looking at it. Subnetting. It comes up in multiple questions, it's easy to get wrong under time pressure, and there's no way to fake it — you either know how to break an address range into pieces or you don't. The good news: subnetting is not hard. It's a mechanical process built on a few rules, and once those rules click, the math is repeatable and fast. The bad news: there's no avoiding the binary. You learned in the fundamentals lesson that IPv4 addresses are 32-bit binary numbers wearing a dotted-decimal costume. Now you take the costume off and work with what's underneath.
@@ -54,13 +52,13 @@ Every subnet has three categories of addresses:
 
 **Usable host addresses.** Everything between the network and broadcast addresses. For 192.168.1.0/24, usable hosts are 192.168.1.1 through 192.168.1.254 — that's 254 addresses.
 
-The formula: $2^h - 2$ usable hosts, where $h$ is the number of host bits. Subtract 2 because the network address and broadcast address aren't assignable. A /24 has 8 host bits: $2^8 - 2 = 254$. A /26 has 6 host bits: $2^6 - 2 = 62$. A /30 has 2 host bits: $2^2 - 2 = 2$ — just enough for a point-to-point link between two routers.
+The formula: 2^h - 2 usable hosts, where h is the number of host bits. Subtract 2 because the network address and broadcast address aren't assignable. A /24 has 8 host bits: 2^8 - 2 = 254. A /26 has 6 host bits: 2^6 - 2 = 62. A /30 has 2 host bits: 2^2 - 2 = 2 — just enough for a point-to-point link between two routers.
 
 ## Subnetting by Hand — Borrowing Bits
 
 Subnetting is the process of taking a single network and dividing it into smaller subnets by borrowing bits from the host portion and adding them to the network portion. You're moving the line between network and host to the right.
 
-Start with 192.168.1.0/24. You need four subnets. How many bits do you borrow? You need enough bits to create at least four combinations: $2^1 = 2$ (not enough), $2^2 = 4$ (exactly four). Borrow 2 bits. The mask moves from /24 to /26 — 255.255.255.192.
+Start with 192.168.1.0/24. You need four subnets. How many bits do you borrow? You need enough bits to create at least four combinations: 2^1 = 2 (not enough), 2^2 = 4 (exactly four). Borrow 2 bits. The mask moves from /24 to /26 — 255.255.255.192.
 
 Now figure out the subnets. The borrowed bits create these binary patterns in the fourth octet:
 
@@ -71,11 +69,11 @@ Now figure out the subnets. The borrowed bits create these binary patterns in th
 11 = 192 → Subnet 4: 192.168.1.192/26 (hosts .193–.254, broadcast .255)
 ```
 
-Each subnet has $2^6 - 2 = 62$ usable hosts. The block size is 64 (the value of the least significant borrowed bit). Subnets increment by the block size: 0, 64, 128, 192.
+Each subnet has 2^6 - 2 = 62 usable hosts. The block size is 64 (the value of the least significant borrowed bit). Subnets increment by the block size: 0, 64, 128, 192.
 
 That's the entire process:
 1. Determine how many subnets you need.
-2. Calculate bits to borrow ($2^n \geq$ required subnets).
+2. Calculate bits to borrow (2^n \geq required subnets).
 3. New mask = original mask + borrowed bits.
 4. Block size = 256 minus the new mask's last non-255 octet value.
 5. List subnets starting at 0, incrementing by block size.
@@ -111,13 +109,13 @@ Given 10.1.1.0/24, you need:
 - Subnet C: 25 hosts
 - Subnet D: 2 hosts (point-to-point link)
 
-**Subnet A** needs 100 hosts. $2^7 - 2 = 126$ — a /25 works. Assign 10.1.1.0/25 (hosts .1–.126).
+**Subnet A** needs 100 hosts. 2^7 - 2 = 126 — a /25 works. Assign 10.1.1.0/25 (hosts .1–.126).
 
-**Subnet B** needs 50 hosts. $2^6 - 2 = 62$ — a /26 works. Next available block after .127 is 10.1.1.128/26 (hosts .129–.190).
+**Subnet B** needs 50 hosts. 2^6 - 2 = 62 — a /26 works. Next available block after .127 is 10.1.1.128/26 (hosts .129–.190).
 
-**Subnet C** needs 25 hosts. $2^5 - 2 = 30$ — a /27 works. Next available: 10.1.1.192/27 (hosts .193–.222).
+**Subnet C** needs 25 hosts. 2^5 - 2 = 30 — a /27 works. Next available: 10.1.1.192/27 (hosts .193–.222).
 
-**Subnet D** needs 2 hosts. $2^2 - 2 = 2$ — a /30 works. Next available: 10.1.1.224/30 (hosts .225–.226).
+**Subnet D** needs 2 hosts. 2^2 - 2 = 2 — a /30 works. Next available: 10.1.1.224/30 (hosts .225–.226).
 
 VLSM allocates from 10.1.1.0 to 10.1.1.227 — 228 addresses consumed instead of the full 256 a four-subnet equal split would need, and every subnet is right-sized. Addresses .228 through .255 are still available for future subnets. The key rule: always allocate the largest subnet first and work downward. If you allocate small subnets first, you can fragment the address space and not have a contiguous block large enough for the big ones.
 
@@ -133,7 +131,7 @@ The exam is timed. You don't have twenty minutes per subnet question. These shor
 
 **First usable = network + 1. Last usable = broadcast - 1.** Always.
 
-**Powers of 2 chart.** Know these instantly: $2^1=2$, $2^2=4$, $2^3=8$, $2^4=16$, $2^5=32$, $2^6=64$, $2^7=128$, $2^8=256$. Subtract 2 for usable hosts, or use the raw number for subnet count.
+**Powers of 2 chart.** Know these instantly: 2^1=2, 2^2=4, 2^3=8, 2^4=16, 2^5=32, 2^6=64, 2^7=128, 2^8=256. Subtract 2 for usable hosts, or use the raw number for subnet count.
 
 **When in doubt, go binary.** If a problem confuses you in decimal, write out the binary. AND the IP address with the mask — the result is the network address. Flip the mask's 0s to 1s and OR it with the network address — the result is the broadcast. Binary never lies; decimal shortcuts can mislead you if you're not careful with the edge cases.
 

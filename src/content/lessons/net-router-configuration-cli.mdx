@@ -1,0 +1,201 @@
+---
+title: Router Configuration CLI — Setup, Interfaces, Inter-VLAN Routing, and ACLs
+description: Initial router setup, interface configuration, subinterfaces for inter-VLAN routing, basic access control lists, and the show commands that tell you what's broken — the hands-on CLI skills for Cisco routers.
+slug: net-router-configuration-cli
+track: network-engineer
+moduleId: net.implementation.routing
+order: 2
+difficulty: Intermediate
+estMinutes: 35
+tags: ["network+", "router", "CLI", "ACL", "inter-VLAN", "N10-009 2.4", "N10-008 2.4"]
+---
+
+## LESSON 2.4.2 — Router Configuration CLI
+
+## Same Console Cable, Different Box
+
+If you configured a switch in the last module, good news: the IOS CLI on a router is structurally identical. Same modes — user EXEC, privileged EXEC, global configuration, interface configuration. Same `enable`, same `configure terminal`, same `copy run start`. Same hostname, password, SSH setup. Cisco designed it this way on purpose. Once you know the command hierarchy on one device, you know it on all of them. The difference is what you're configuring. A switch thinks about VLANs, MAC addresses, and trunk ports. A router thinks about IP addresses, routing tables, and the boundaries between networks. You're moving from Layer 2 to Layer 3, and every command in this lesson reflects that shift.
+
+## Initial Setup — The Familiar Pattern
+
+The first five minutes on a new router look identical to a new switch. Console cable in, terminal emulator open, blinking cursor waiting.
+
+```
+Router> enable
+Router# configure terminal
+Router(config)# hostname BLDG1-RTR01
+BLDG1-RTR01(config)# enable secret R0ut3rP@ss!
+BLDG1-RTR01(config)# service password-encryption
+BLDG1-RTR01(config)# banner motd # Authorized access only. All activity is logged. #
+```
+
+Console and VTY access, same deal:
+
+```
+BLDG1-RTR01(config)# line console 0
+BLDG1-RTR01(config-line)# password ConsoleP@ss
+BLDG1-RTR01(config-line)# login
+BLDG1-RTR01(config-line)# exit
+BLDG1-RTR01(config)# line vty 0 4
+BLDG1-RTR01(config-line)# transport input ssh
+BLDG1-RTR01(config-line)# login local
+BLDG1-RTR01(config-line)# exit
+BLDG1-RTR01(config)# username admin privilege 15 secret AdminP@ss1
+BLDG1-RTR01(config)# ip domain-name beattielab.local
+BLDG1-RTR01(config)# crypto key generate rsa modulus 2048
+BLDG1-RTR01(config)# ip ssh version 2
+```
+
+If this looks like you're copy-pasting the switch setup lesson, that's because you mostly are. Cisco IOS is Cisco IOS. The hostname convention changes (RTR instead of SW), the passwords are different, but the structure is the same. This repetition is a feature, not a bug. In a production environment, you'll have baseline templates for routers and switches that share 80% of their initial config. The 20% that differs is where the interesting stuff lives.
+
+## Interface Configuration — Giving a Router Its Identity
+
+A switch has dozens of ports and they're all basically the same — Layer 2 access or trunk. A router typically has fewer interfaces, and each one connects to a different network. Configuring an interface on a router means assigning it an IP address and bringing it up. That's the minimum. A router interface without an IP address is a brick wall — traffic hits it and has nowhere to go.
+
+```
+BLDG1-RTR01(config)# interface GigabitEthernet0/0
+BLDG1-RTR01(config-if)# ip address 10.1.1.1 255.255.255.0
+BLDG1-RTR01(config-if)# no shutdown
+BLDG1-RTR01(config-if)# description LINK-TO-CORE-SW
+BLDG1-RTR01(config-if)# exit
+BLDG1-RTR01(config)# interface GigabitEthernet0/1
+BLDG1-RTR01(config-if)# ip address 10.1.2.1 255.255.255.0
+BLDG1-RTR01(config-if)# no shutdown
+BLDG1-RTR01(config-if)# description LINK-TO-SERVER-VLAN
+```
+
+Three commands per interface that matter: `ip address` assigns the address and mask, `no shutdown` brings the interface up (router interfaces are administratively down by default — unlike switches, which default to up), and `description` labels the link so future-you doesn't have to trace cables at midnight.
+
+That `no shutdown` catches people the first time. You configure the IP, everything looks right, and the interface just sits there doing nothing. The status says "administratively down" because Cisco's default for router interfaces is shut down. The logic is that a misconfigured router interface can cause more damage than a misconfigured switch port — bad routes can black-hole traffic across the entire network — so the default is off until you explicitly enable it. Always check `show ip interface brief` after configuration:
+
+```
+BLDG1-RTR01# show ip interface brief
+
+Interface              IP-Address    OK?  Method  Status                Protocol
+GigabitEthernet0/0     10.1.1.1      YES  manual  up                    up
+GigabitEthernet0/1     10.1.2.1      YES  manual  up                    up
+GigabitEthernet0/2     unassigned    YES  unset   administratively down down
+```
+
+"up/up" means the interface is physically connected and the protocol is running. "administratively down/down" means you haven't issued `no shutdown` yet. "up/down" means the physical link is connected but something at Layer 2 is wrong — protocol mismatch, bad cable on the far end, or the other side is shut down. Reading this output is a reflex you develop. Every troubleshooting session starts here.
+
+## Inter-VLAN Routing — Router-on-a-Stick
+
+You've got VLANs on your switch. Devices in VLAN 10 can talk to each other. Devices in VLAN 20 can talk to each other. But VLAN 10 can't talk to VLAN 20 because VLANs are separate broadcast domains and Layer 2 doesn't route between them. You need a router. You could connect a separate physical router interface to each VLAN — one cable for VLAN 10, one for VLAN 20, one for VLAN 30. That works but burns through interfaces fast. A router with four physical ports supports four VLANs, and most routers don't have twenty Ethernet ports.
+
+The solution: **router-on-a-stick**. One physical interface carries traffic for multiple VLANs using 802.1Q trunking, and the router uses **subinterfaces** — logical divisions of the physical interface — to route between them. The physical interface connects to a trunk port on the switch, and each subinterface handles one VLAN.
+
+```
+BLDG1-RTR01(config)# interface GigabitEthernet0/0
+BLDG1-RTR01(config-if)# no shutdown
+BLDG1-RTR01(config-if)# no ip address
+BLDG1-RTR01(config-if)# exit
+BLDG1-RTR01(config)# interface GigabitEthernet0/0.10
+BLDG1-RTR01(config-subif)# encapsulation dot1q 10
+BLDG1-RTR01(config-subif)# ip address 10.1.10.1 255.255.255.0
+BLDG1-RTR01(config-subif)# description VLAN10-CLASSROOM
+BLDG1-RTR01(config-subif)# exit
+BLDG1-RTR01(config)# interface GigabitEthernet0/0.20
+BLDG1-RTR01(config-subif)# encapsulation dot1q 20
+BLDG1-RTR01(config-subif)# ip address 10.1.20.1 255.255.255.0
+BLDG1-RTR01(config-subif)# description VLAN20-ADMIN
+BLDG1-RTR01(config-subif)# exit
+BLDG1-RTR01(config)# interface GigabitEthernet0/0.30
+BLDG1-RTR01(config-subif)# encapsulation dot1q 30
+BLDG1-RTR01(config-subif)# ip address 10.1.30.1 255.255.255.0
+BLDG1-RTR01(config-subif)# description VLAN30-SECURITY-CAMS
+```
+
+The subinterface number (0/0.10, 0/0.20, 0/0.30) is arbitrary — it's convention to match the VLAN number so the config is self-documenting. `encapsulation dot1q 10` tells the subinterface to tag and accept frames for VLAN 10 using 802.1Q encapsulation. The IP address on each subinterface becomes the default gateway for that VLAN. Devices in VLAN 10 set their gateway to 10.1.10.1, VLAN 20 to 10.1.20.1, and so on.
+
+On the switch side, the port connecting to the router must be a trunk carrying all the relevant VLANs:
+
+```
+BLDG1-SW01(config)# interface GigabitEthernet0/48
+BLDG1-SW01(config-if)# switchport mode trunk
+BLDG1-SW01(config-if)# switchport trunk allowed vlan 10,20,30
+BLDG1-SW01(config-if)# description TRUNK-TO-ROUTER
+```
+
+When a device in VLAN 10 sends a packet to a device in VLAN 20, the packet goes to the switch, gets tagged with VLAN 10, travels the trunk to the router, hits subinterface Gi0/0.10, the router makes a routing decision ("destination is in the 10.1.20.0/24 network, forward out Gi0/0.20"), the packet gets tagged with VLAN 20, travels back down the same trunk to the switch, and the switch delivers it to the correct VLAN 20 port. The traffic goes up to the router and comes back down the same wire. It's not elegant from a bandwidth perspective — all inter-VLAN traffic funnels through one link — but it works, it's cheap, and for a school or small office it's perfectly adequate.
+
+The limitation: that single physical link is a bottleneck. If you have heavy inter-VLAN traffic, a Layer 3 switch handles it in hardware at wire speed. Router-on-a-stick routes in software and shares a single gigabit link. For a hundred classroom machines and a few security cameras, the link is fine. For a data center with thousands of east-west flows, it's not. Know the tradeoff.
+
+## Basic ACLs — Controlling Who Goes Where
+
+An **Access Control List** is a set of rules applied to a router interface that permits or denies traffic based on criteria you define. ACLs are the router's bouncer — they inspect packets and decide who gets in and who gets turned away. On the Network+ exam, you need to understand standard and extended ACLs, where to place them, and the basic syntax.
+
+**Standard ACLs** filter based on source IP address only. They're numbered 1–99 (and 1300–1999 in the expanded range). They're simple but blunt — you can say "deny all traffic from 10.1.30.0/24" but you can't specify what kind of traffic or where it's going.
+
+```
+BLDG1-RTR01(config)# access-list 10 deny 10.1.30.0 0.0.0.255
+BLDG1-RTR01(config)# access-list 10 permit any
+```
+
+Two rules. First: deny any traffic with a source address in the 10.1.30.0/24 range. Second: permit everything else. The `permit any` at the end is mandatory because every ACL has an implicit "deny all" at the bottom. If you don't add it, the ACL blocks everything that doesn't match an explicit permit rule — and the phone calls start immediately.
+
+**Extended ACLs** filter based on source IP, destination IP, protocol, and port numbers. They're numbered 100–199 (and 2000–2699 expanded). Extended ACLs give you surgical control:
+
+```
+BLDG1-RTR01(config)# access-list 100 permit tcp 10.1.10.0 0.0.0.255 any eq 80
+BLDG1-RTR01(config)# access-list 100 permit tcp 10.1.10.0 0.0.0.255 any eq 443
+BLDG1-RTR01(config)# access-list 100 deny ip 10.1.10.0 0.0.0.255 10.1.30.0 0.0.0.255
+BLDG1-RTR01(config)# access-list 100 permit ip any any
+```
+
+Translation: Allow the classroom VLAN to reach web servers on ports 80 and 443 anywhere. Deny the classroom from accessing the security camera VLAN. Permit everything else. ACLs are processed top to bottom — the first matching rule wins. Order matters. If you put `permit ip any any` at the top, nothing below it ever gets evaluated.
+
+After creating the ACL, you apply it to an interface:
+
+```
+BLDG1-RTR01(config)# interface GigabitEthernet0/0.10
+BLDG1-RTR01(config-subif)# ip access-group 100 in
+```
+
+`in` means apply to inbound traffic — packets entering the router through this interface. `out` means apply to outbound traffic — packets leaving through this interface. The placement rule: **standard ACLs are placed close to the destination** (because they can only filter on source, placing them at the source would block that traffic from reaching any destination). **Extended ACLs are placed close to the source** (because they're specific enough to filter precisely, saving bandwidth by stopping unwanted traffic early). This placement rule is an exam favorite.
+
+Named ACLs do the same thing with readable names instead of numbers, and they allow you to edit individual entries without rewriting the whole list:
+
+```
+BLDG1-RTR01(config)# ip access-list extended CLASSROOM-FILTER
+BLDG1-RTR01(config-ext-nacl)# permit tcp 10.1.10.0 0.0.0.255 any eq 80
+BLDG1-RTR01(config-ext-nacl)# permit tcp 10.1.10.0 0.0.0.255 any eq 443
+BLDG1-RTR01(config-ext-nacl)# deny ip 10.1.10.0 0.0.0.255 10.1.30.0 0.0.0.255
+BLDG1-RTR01(config-ext-nacl)# permit ip any any
+```
+
+Named ACLs are the modern approach. Use them.
+
+## Show Commands — The Router's Vital Signs
+
+You already know `show ip interface brief` and `show ip route` from the routing protocol lesson. Here are the additional show commands you'll use daily on a router:
+
+**`show interfaces GigabitEthernet0/0`** gives you the full dump on an interface — line status, protocol status, MAC address, MTU, bandwidth, input/output packet rates, error counters, CRC errors, and queue information. When an interface is "up/up" but performance is terrible, the error counters in this output tell you if it's a physical layer problem (CRC errors, runts, giants) or congestion (output drops, queue overflows).
+
+**`show ip interface brief`** is the quick-glance view. Interface name, IP address, status, protocol. Two columns that matter: Status and Protocol. Both say "up" and the interface is working. Anything else and you're troubleshooting.
+
+**`show version`** tells you the IOS version, uptime, hardware model, amount of RAM and flash, and configuration register. When you call TAC or check a CVE and they ask what IOS version you're running, this is where you find it. The uptime counter also tells you when the router last rebooted — useful when someone claims "nothing changed" and the router shows it was reloaded at 2 AM last night.
+
+**`show running-config`** displays the active configuration in its entirety. Pipe it with `| section` or `| include` to filter:
+
+```
+BLDG1-RTR01# show running-config | section interface
+BLDG1-RTR01# show running-config | include access-list
+BLDG1-RTR01# show running-config | section router ospf
+```
+
+**`show access-lists`** displays all configured ACLs with hit counters — how many packets matched each rule. When you're unsure whether an ACL is actually doing anything, the hit counters tell you. Zero hits on a deny rule means either the traffic isn't arriving or the rule isn't matching what you think it's matching.
+
+## Saving Configuration — The Same Lesson, Again
+
+```
+BLDG1-RTR01# copy running-config startup-config
+```
+
+Same as the switch. Running-config is RAM. Startup-config is NVRAM. Power goes out, RAM is gone. If this is the second time you're reading this warning, good — it means you'll remember it the first time it matters.
+
+## Password Recovery — The Concept
+
+You don't need to memorize the exact password recovery procedure for the Network+ exam, but you need to know it exists and how it works conceptually. If you forget the enable secret on a router, you're locked out of privileged mode. The recovery process involves interrupting the boot sequence (sending a break signal during startup), changing the configuration register to tell the router to ignore the startup config on next boot (the register value 0x2142), rebooting, entering the system with no config loaded, copying the startup config to running, changing the password, restoring the configuration register to normal (0x2102), and saving.
+
+The key takeaway: password recovery requires physical access to the console port. This is why physical security of network equipment matters — if someone can touch the console cable, they can reset the password and own the device. In high-security environments, administrators disable password recovery entirely, accepting that a lost password means a factory reset. The tradeoff between recoverability and security is an architectural decision, not a technical one.

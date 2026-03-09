@@ -241,11 +241,23 @@ Build a lightweight session API (Supabase Edge Functions work well here): create
 
 Build a script that takes a topic description (e.g., "subnetting practice — CIDR notation") and uses the Anthropic API to generate a complete lab MDX file in the correct schema. A curriculum author reviews and approves before ingest. This dramatically accelerates content creation.
 
-**5.2 — Adaptive Quiz Generation**
+**5A — Instructor Batch Question Generation**
 
-For quizzes, generate additional question variants from lesson content using the API. Store variants in the quiz MDX as the `questions` array. This lets quizzes feel fresh across retakes.
+Instructor-facing UI for generating CompTIA Network+ practice questions on demand. Each generated question is scenario-based ("A technician notices…"), includes per-distractor explanations, maps to a specific N10-009 objective, and passes automated schema validation before surfacing in an instructor review queue (approve / edit / reject). Approved questions enter a permanent Supabase bank and are available in quizzes and exam simulation mode. The API key never touches the browser — all Anthropic calls go through a Supabase Edge Function. Target: 50+ approved questions across all five N10-009 domains; exam simulation at 90 questions / 90 minutes mirroring the real exam's domain weighting. Full spec: `docs/PHASE5_QUESTION_ENGINE.md`.
 
-**5.3 — Content Versioning**
+**5B — Adaptive Student Mode** *(requires 5A complete)*
+
+After a student finishes a lesson, the system generates a single fresh challenge question grounded in that lesson's content and serves it in real time — no instructor in the loop. The lesson MDX is injected directly into the generation prompt, so the model summarizes facts it was just given rather than recalling from training (dramatically reducing hallucination risk). Every generated question passes four automated validation gates (schema, content safety, grounding check, duplicate check) before the student sees it; any failure silently falls back to a random approved question from the 5A bank. Questions are low-stakes and formative — no grade impact, 5 XP on correct answer, skip always available. Students can flag bad questions; three flags auto-retire a question. An instructor dashboard exposes generation quality metrics (gate pass rate, per-lesson correct/incorrect rate, flag queue) and closes the feedback loop: a lesson with poor adaptive question performance signals that the lesson content itself needs work. Full spec: `docs/PHASE5_QUESTION_ENGINE.md § Phase 5B`.
+
+**5C — Instructor Adaptive Dashboard**
+
+Visibility layer for 5B: generation quality metrics, per-lesson correct/incorrect rates on adaptive questions, student flag queue, and the ability to promote a high-quality adaptive question into the approved 5A bank. The feedback loop this creates — student performance on adaptive questions → lesson quality signal → instructor improves lesson → better generated questions — is the mechanism that makes the system self-improving over time.
+
+**5.5 — Per-Student Difficulty Adaptation** *(future, schema-ready)*
+
+Track correct/incorrect rates per student per module. Above 80% correct → next adaptive question generates at higher difficulty. Below 40% → lower difficulty and flag for instructor. The `adaptive_questions` table is already designed to accumulate this data; the adaptation logic is intentionally deferred until enough sessions exist to provide a reliable signal.
+
+**5.2 — Content Versioning**
 
 As tracks get updated, version them (`v1`, `v2` etc.) so learners mid-track don't get broken experiences. The ingest script handles version stamping.
 

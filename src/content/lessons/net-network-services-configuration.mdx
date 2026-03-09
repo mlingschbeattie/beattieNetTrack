@@ -1,0 +1,178 @@
+---
+title: Network Services Configuration — DHCP, DNS, and NTP on the CLI
+description: Configuring DHCP pools on a Cisco router, relay agents, DNS forwarding, split-horizon DNS, NTP client setup, and verifying that time, names, and addresses are all doing their jobs.
+slug: net-network-services-configuration
+track: network-engineer
+moduleId: net.implementation.services
+order: 1
+difficulty: Intermediate
+estMinutes: 30
+tags: ["network+", "DHCP", "DNS", "NTP", "N10-009 2.5", "N10-008 2.5"]
+---
+
+## LESSON 2.5.1 — Network Services Configuration
+
+## The Invisible Infrastructure
+
+Nobody notices DHCP until it stops working. Nobody thinks about DNS until names stop resolving. Nobody cares about NTP until the logs from two different devices disagree by three hours and you can't figure out the sequence of events during an outage. These three services — address assignment, name resolution, and time synchronization — are the invisible foundation under every network. They run quietly, they're configured once, and they're forgotten until they break. And when they break, everything looks broken, because almost every other service depends on at least one of them. You covered the theory in earlier lessons. Now you configure them — on a Cisco router, from the CLI, with the commands you'll type in the lab and see on the exam.
+
+## DHCP on a Router — Building the Address Pool
+
+You already know how DHCP works — DORA, leases, scopes, the whole sequence. A dedicated DHCP server (Windows Server, Linux ISC DHCP) handles this in most enterprise networks. But in smaller environments — branch offices, lab networks, school buildings — the router itself can be the DHCP server. One less box to manage, one less thing to break. Cisco IOS has a built-in DHCP server, and configuring it is straightforward.
+
+First, exclude addresses you don't want the DHCP pool handing out. These are your static assignments — the router itself, servers, printers, access points, anything with a fixed address:
+
+```
+BLDG1-RTR01(config)# ip dhcp excluded-address 10.1.10.1 10.1.10.20
+```
+
+This excludes 10.1.10.1 through 10.1.10.20 from being offered to clients. The router's own interface is 10.1.10.1, and you've reserved .2 through .20 for infrastructure devices. Without exclusions, the router happily hands out its own IP to a laptop, and suddenly two devices claim 10.1.10.1 and neither one works. Exclude first, pool second. Always.
+
+Now create the DHCP pool:
+
+```
+BLDG1-RTR01(config)# ip dhcp pool CLASSROOM-VLAN10
+BLDG1-RTR01(dhcp-config)# network 10.1.10.0 255.255.255.0
+BLDG1-RTR01(dhcp-config)# default-router 10.1.10.1
+BLDG1-RTR01(dhcp-config)# dns-server 10.1.1.10 8.8.8.8
+BLDG1-RTR01(dhcp-config)# lease 8
+BLDG1-RTR01(dhcp-config)# exit
+```
+
+Line by line: `ip dhcp pool CLASSROOM-VLAN10` creates a named pool and enters DHCP configuration mode. `network` defines the subnet this pool serves — any DHCP Discover arriving on an interface in the 10.1.10.0/24 range gets an address from this pool. `default-router` is Option 3 — the default gateway pushed to clients. `dns-server` is Option 6 — the DNS servers they'll use. You can list multiple DNS servers separated by spaces; clients get them in order. `lease 8` sets the lease duration to 8 days. You can also specify `lease 0 8` for 0 days and 8 hours, or `lease infinite` if you want addresses that never expire (don't do this on a network with any user turnover — you'll exhaust the pool).
+
+For a second VLAN, same pattern:
+
+```
+BLDG1-RTR01(config)# ip dhcp excluded-address 10.1.20.1 10.1.20.10
+BLDG1-RTR01(config)# ip dhcp pool ADMIN-VLAN20
+BLDG1-RTR01(dhcp-config)# network 10.1.20.0 255.255.255.0
+BLDG1-RTR01(dhcp-config)# default-router 10.1.20.1
+BLDG1-RTR01(dhcp-config)# dns-server 10.1.1.10
+BLDG1-RTR01(dhcp-config)# lease 1
+```
+
+The admin VLAN gets a one-day lease because the devices are stable and you don't want lease renewals every few hours cluttering the network. The classroom VLAN gets an eight-day lease because student laptops might not reconnect for a week between classes. Lease durations are design decisions — match them to how devices on that subnet actually behave.
+
+## DHCP Relay — When the Server Is Across the Network
+
+The router-as-DHCP-server approach works when the router has an interface on the client's subnet. But what if clients are on a subnet served by a different router, and the DHCP server (or the router running DHCP) is somewhere else on the network? DHCP Discover is a broadcast. Broadcasts don't cross routers. The client screams into the void and nobody answers.
+
+The fix is `ip helper-address`, configured on the interface facing the clients:
+
+```
+BLDG2-RTR01(config)# interface GigabitEthernet0/0.40
+BLDG2-RTR01(config-subif)# ip helper-address 10.1.1.1
+```
+
+When the router hears a DHCP broadcast on this interface, it converts the broadcast to a unicast directed at 10.1.1.1 (the DHCP server or the router running the DHCP service), stamps the packet with the interface's own IP address (the `giaddr` field — gateway address), and forwards it. The DHCP server reads the giaddr to determine which pool to use — "this request came from a relay at 10.1.40.1, which is in the 10.1.40.0/24 subnet, so I'll offer an address from that pool." The reply goes back to the relay, which broadcasts it to the client.
+
+A detail that catches people: `ip helper-address` doesn't just relay DHCP. By default, it forwards eight different UDP broadcast services — DHCP, TFTP, DNS, TACACS, NetBIOS, and a couple of legacy services. In most environments this is fine. If you need to restrict it to DHCP only, you can control which services get relayed with `no ip forward-protocol udp` commands, but that's beyond what the Network+ expects.
+
+If you have two DHCP servers for redundancy, configure two helper addresses:
+
+```
+BLDG2-RTR01(config-subif)# ip helper-address 10.1.1.1
+BLDG2-RTR01(config-subif)# ip helper-address 10.1.1.2
+```
+
+The relay forwards the broadcast to both servers. Whichever responds first wins the DORA race. This provides basic failover without configuring DHCP failover between the servers themselves.
+
+## Verifying DHCP — Proving Addresses Are Flowing
+
+Configuration without verification is hope-based networking. Three show commands tell you everything about the DHCP service on a router:
+
+**`show ip dhcp binding`** displays every address currently leased — the IP address, the client's MAC address, the lease expiration time, and the type (automatic or manual). This is your active lease table. When a user calls and says "I don't have an IP address," you check this output to see if the server ever gave them one, and if it did, whether the lease is still valid.
+
+```
+BLDG1-RTR01# show ip dhcp binding
+
+IP address      Client-Identifier      Lease expiration        Type
+10.1.10.21      0100.1a2b.3c4d.5e      Mar 17 2026 08:15 AM   Automatic
+10.1.10.22      0100.2b3c.4d5e.6f      Mar 17 2026 09:30 AM   Automatic
+10.1.10.23      0100.3c4d.5e6f.70      Mar 16 2026 02:45 PM   Automatic
+```
+
+If the binding table is empty and clients are pulling APIPA addresses, the DHCP service is either not running or the pool configuration doesn't match the client's subnet.
+
+**`show ip dhcp pool`** shows the configuration and utilization of each pool — total addresses, addresses in use, addresses available, and the number of pending or declined addresses. When a pool shows zero available addresses, you've either run out of addresses (scope is exhausted) or the excluded range is too large. This is the command that answers "why are new devices not getting addresses?"
+
+**`show ip dhcp server statistics`** gives you global DHCP counters — how many Discovers, Offers, Requests, and ACKs the server has processed. A high number of Discovers with a low number of Offers means the server is hearing requests but not responding — usually a pool misconfiguration or exhaustion issue.
+
+## DNS — The Service That Makes Names Work
+
+Configuring a full DNS server is outside the typical Cisco router scope — enterprises run BIND, Unbound, Windows DNS, or cloud-hosted DNS for authoritative name resolution. But the router interacts with DNS in two important ways: as a DNS client (it needs to resolve names itself) and as a DNS forwarder (it can relay DNS queries from clients to upstream resolvers).
+
+To configure the router to use specific DNS servers for its own lookups:
+
+```
+BLDG1-RTR01(config)# ip name-server 10.1.1.10 8.8.8.8
+```
+
+Now the router can resolve hostnames — useful for commands like `ping google.com` from the router CLI or when you configure features that reference hostnames.
+
+To make the router act as a caching DNS forwarder — clients point to the router as their DNS server, and the router forwards queries upstream:
+
+```
+BLDG1-RTR01(config)# ip dns server
+```
+
+With `ip dns server` enabled and `ip name-server` pointing to upstream resolvers, the router accepts DNS queries from clients, checks its local cache, and forwards cache misses to the configured name servers. Clients get their DNS through the same device that's their default gateway. For small networks, this simplifies the configuration — you don't need a separate DNS server, and the router caches frequent queries to speed up repeat lookups.
+
+## Split-Horizon DNS — Internal Names, External Answers
+
+Split-horizon DNS (also called split-brain DNS) is a design concept, not a single command. It means presenting different DNS answers depending on where the query comes from. Internal clients asking for "mail.company.com" get the internal IP (10.1.5.20). External clients asking for the same name get the public IP (203.0.113.20). Same name, different answer, based on the source.
+
+Why this matters: without split-horizon, internal clients resolve "mail.company.com" to the public IP and send their traffic out to the internet, through the firewall, and back in — a hairpin turn that wastes bandwidth and complicates firewall rules. With split-horizon, internal traffic stays internal.
+
+You implement split-horizon DNS on the DNS servers themselves, not on the router. BIND uses views, Windows DNS uses policies or separate zones per interface, and cloud DNS services have their own mechanisms. On the Cisco side, the router's role is pointing different client groups to different DNS servers through DHCP options — the internal VLAN's DHCP pool might push the internal DNS server, while a guest VLAN's pool pushes a public resolver. The router doesn't resolve the split; the DNS infrastructure does. But you need to understand the concept because the exam asks about it, and because misconfigured DNS resolution paths are a constant source of "it works from outside but not inside" tickets.
+
+## NTP — Time Synchronization That Actually Matters
+
+Correct time on network devices is not vanity. It's operational necessity. Syslog entries, SNMP traps, authentication certificates, Kerberos tickets, OSPF dead timers, DHCP lease expirations — all of them depend on accurate time. When two devices disagree on what time it is, log correlation becomes guesswork. When the time is wrong by more than five minutes, Kerberos authentication breaks entirely and Active Directory logins start failing across the building. That's not a theoretical scenario. That's a Tuesday.
+
+NTP (Network Time Protocol) synchronizes clocks across the network by querying upstream time sources. Time sources are organized in a hierarchy called **strata**. Stratum 0 is the reference clock itself — an atomic clock, a GPS receiver, something that measures time directly. Stratum 1 is a server directly connected to a Stratum 0 source. Stratum 2 synchronizes from Stratum 1. Each level adds a small amount of drift. Public NTP pools (pool.ntp.org) are typically Stratum 2 or 3, and they're accurate enough for anything short of scientific instrumentation.
+
+Configuring a Cisco router as an NTP client:
+
+```
+BLDG1-RTR01(config)# ntp server 10.1.1.10
+BLDG1-RTR01(config)# ntp server pool.ntp.org
+```
+
+The router queries 10.1.1.10 (your internal NTP server, if you have one) and pool.ntp.org (public NTP) and synchronizes to whichever is the most accurate and reachable source. Configuring multiple NTP servers provides redundancy — if the internal server goes down, the router falls back to the public pool.
+
+You can also set the time zone and configure daylight saving time adjustments:
+
+```
+BLDG1-RTR01(config)# clock timezone EST -5
+BLDG1-RTR01(config)# clock summer-time EDT recurring
+```
+
+Verify NTP synchronization:
+
+```
+BLDG1-RTR01# show ntp status
+
+Clock is synchronized, stratum 3, reference is 10.1.1.10
+nominal freq is 250.0000 Hz, actual freq is 249.9998 Hz, precision is 2**18
+...
+```
+
+"Clock is synchronized" is what you want to see. If it says "Clock is unsynchronized," the router hasn't been able to reach the NTP server. Check connectivity to the NTP server (ping it), check if a firewall or ACL is blocking UDP port 123, and make sure the NTP server address is correct.
+
+```
+BLDG1-RTR01# show ntp associations
+
+  address         ref clock     st  when  poll  reach  delay  offset  disp
+*~10.1.1.10       .GPS.         2   45    64    377    1.2    0.45    0.8
++~pool.ntp.org    .POOL.        2   30    64    377    15.3   1.12    2.1
+```
+
+The asterisk (*) marks the currently selected source. The plus (+) marks an acceptable alternative. The `reach` column is an octal representation of the last eight poll attempts — 377 means all eight succeeded. A reach value of 0 means the server hasn't responded to any recent polls, and you have a connectivity problem.
+
+## Tying It All Together
+
+These three services form a dependency chain. DHCP gives clients an address, a gateway, and DNS server addresses. DNS gives those clients the ability to resolve names into IPs. NTP keeps every device on the same clock so the logs make sense when something fails. Misconfigure DHCP and clients can't reach anything. Misconfigure DNS and clients can reach IPs but not names — which means browsers don't work, email doesn't resolve, and users report "the internet is down" when the internet is perfectly fine. Misconfigure NTP and everything works until a certificate expires prematurely, Kerberos fails, or you're reading logs trying to reconstruct the timeline of an outage and the timestamps from your router and your server are twelve minutes apart.
+
+When you're building a new network or troubleshooting an existing one, verify these services in order. Does the client have an IP address? Is it in the right subnet? Can it resolve names? Is the time correct across devices? Three services, three checks, and you've eliminated the most common category of "nothing works" tickets before you even touch the routing table.

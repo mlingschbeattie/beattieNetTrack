@@ -1,7 +1,7 @@
 # CONSTITUTION.md
 
-Beattie Net Track — LMS Constitution v2  
-Effective: 2026-02-23
+Beattie Net Track — LMS Constitution v3
+Effective: 2026-03-09
 
 This repository is governed by the contracts below. All changes must comply.
 
@@ -184,7 +184,35 @@ Security content must be educational and clearly labeled.
 
 - Include ethical use warnings for offensive techniques.
 - Avoid real-world exploitation instructions outside of explicit lab/workspace/CTF context.
+- Cybersecurity track content must frame offensive techniques within legal and ethical boundaries at every point of instruction.
 
 The LMS teaches responsible defense and understanding.
 
 ---
+
+## 14) Multi-Track Content Contract
+
+Content is authored once and referenced across tracks — never duplicated.
+
+- Every lesson declares a canonical `track` owner in frontmatter.
+- Lessons that appear in multiple tracks declare a `sharedWith` array listing additional tracks.
+- Completion is tracked by `lesson_slug` globally — a lesson completed in any track is marked complete everywhere.
+- When a student encounters a previously completed lesson in a new track, the UI displays a Review badge and offers condensed mode.
+- No lesson content may be copied into a second MDX file to serve a second track. If a lesson belongs to two tracks, it belongs to one file with `sharedWith` set.
+
+Duplication is a content defect.
+
+---
+
+## 15) AI-Generated Content Contract
+
+AI-generated content is permitted under strict quality controls.
+
+- Lessons authored via Opus are canonical. They may not be rewritten by a lower-tier model without explicit instructor approval.
+- Adaptive questions generated at runtime are never stored as canonical curriculum content.
+- All questions entering the approved question bank must be tagged `source: ai-generated`, `reviewed_by`, and `reviewed_at`.
+- No AI-generated question reaches a student without either instructor approval (batch mode) or passing all automated validation gates (adaptive mode).
+- Adaptive question generation must use the lesson text as grounding context. Generation from general knowledge alone is prohibited.
+- The generation prompt version must be stored with every generated question to enable quality auditing over time.
+
+AI accelerates content creation. Humans own content quality. 

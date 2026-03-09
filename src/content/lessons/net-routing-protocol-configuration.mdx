@@ -1,0 +1,235 @@
+---
+title: Routing Protocol Configuration — Making Routers Talk
+description: Configuring OSPF and EIGRP on Cisco IOS, building static and default routes, reading routing tables, and fixing adjacencies that won't form — turning routing theory into running networks.
+slug: net-routing-protocol-configuration
+track: network-engineer
+moduleId: net.implementation.routing
+order: 1
+difficulty: Intermediate
+estMinutes: 35
+tags: ["network+", "OSPF", "EIGRP", "static routes", "routing", "N10-009 2.4", "N10-008 2.4"]
+---
+
+## LESSON 2.4.1 — Routing Protocol Configuration
+
+## Theory Is Over. Type the Commands.
+
+You've learned what routing protocols do — OSPF builds a topology map, EIGRP maintains a neighbor table and topology table, static routes are manually configured paths. You know about administrative distance, metrics, convergence. All of that was the "how it works" layer. This is the "make it work" layer. You're going to configure OSPF on a router, configure EIGRP on a router, build static and default routes, read the output of `show ip route` like it's English, and troubleshoot the adjacencies that inevitably refuse to form the first time. Every command here runs on Cisco IOS. The concepts transfer to other vendors, but the syntax is Cisco because that's what the exam speaks and what most labs run.
+
+## OSPF Configuration — Area 0 and the Network Statement
+
+OSPF configuration on IOS starts with one command that enters router configuration mode and assigns a process ID:
+
+```
+Router(config)# router ospf 1
+```
+
+The process ID (1 in this case) is locally significant — it doesn't need to match on the other router. You could use 1 on one router and 42 on the other and they'd still form an adjacency. The process ID just identifies the OSPF instance on this specific device. Don't overthink it. Pick a number, be consistent across your network, move on.
+
+Next, you tell OSPF which interfaces to activate on and which area those interfaces belong to. This is the `network` command, and it trips people up because it uses wildcard masks instead of subnet masks:
+
+```
+Router(config-router)# network 10.1.1.0 0.0.0.255 area 0
+Router(config-router)# network 10.1.2.0 0.0.0.255 area 0
+```
+
+The wildcard mask 0.0.0.255 is the inverse of 255.255.255.0. Where the subnet mask has 1s, the wildcard has 0s, and vice versa. The `network` command doesn't advertise a route — it tells OSPF "activate on any interface whose IP address falls within this range, and place that interface in the specified area." So `network 10.1.1.0 0.0.0.255 area 0` means "any interface with an IP in the 10.1.1.x range participates in OSPF Area 0." If your router has an interface at 10.1.1.1/24, OSPF activates on that interface and starts sending Hellos.
+
+Area 0 is the backbone. On the Network+ exam and in most small-to-medium deployments, everything lives in Area 0. Multi-area OSPF is a design topic for larger networks — you need to understand that areas exist and that Area 0 is mandatory, but you won't be designing multi-area topologies on this exam.
+
+A more specific alternative: you can match a single interface exactly with a wildcard of 0.0.0.0:
+
+```
+Router(config-router)# network 10.1.1.1 0.0.0.0 area 0
+```
+
+This matches only the interface with that exact IP address — no ambiguity. Some network engineers prefer this style because it's explicit. Either approach works.
+
+## Passive Interfaces — Stop Talking Where Nobody's Listening
+
+By default, OSPF sends Hello packets out every interface it's activated on. That's correct behavior for interfaces connected to other routers — that's how adjacencies form. But it's wrong for interfaces connected to end-user LANs. There's no OSPF neighbor on the classroom VLAN. Sending Hellos there wastes bandwidth, exposes routing information to devices that don't need it, and creates a security risk — anyone could plug in a device running OSPF and inject routes into your network.
+
+The fix is `passive-interface`:
+
+```
+Router(config-router)# passive-interface GigabitEthernet0/2
+```
+
+A passive interface still advertises its connected network in OSPF — other routers learn about that subnet. But the interface stops sending and receiving OSPF Hello packets, so no adjacency can form on it. In practice, most router interfaces face user segments, and only one or two face other routers. Some engineers flip the default and then selectively un-passive the router-facing links:
+
+```
+Router(config-router)# passive-interface default
+Router(config-router)# no passive-interface GigabitEthernet0/0
+Router(config-router)# no passive-interface GigabitEthernet0/1
+```
+
+This approach means any new interface added to the router is passive by default — secure until explicitly told to participate in OSPF. It's a better security posture for production networks.
+
+## Verifying OSPF — Show Commands That Matter
+
+You configured OSPF. Now prove it works.
+
+**`show ip ospf neighbor`** is your first stop. This shows every OSPF adjacency the router has formed — the neighbor's router ID, the state of the relationship, the interface it's reachable through, and the dead timer countdown:
+
+```
+Router# show ip ospf neighbor
+
+Neighbor ID   Pri  State      Dead Time  Address      Interface
+10.1.1.2       1  FULL/DR    00:00:38   10.1.1.2     Gi0/0
+10.1.2.2       1  FULL/  -   00:00:35   10.1.2.2     Gi0/1
+```
+
+The state you want to see is **FULL**. That means the routers have fully synchronized their link-state databases. If you see **INIT**, **2-WAY**, or **EXSTART/EXCHANGE**, the adjacency is still forming or stuck. A neighbor stuck in 2-WAY on a broadcast network might be a non-DR/BDR relationship (normal), but stuck in EXSTART usually means an MTU mismatch between the two sides — one of the most common OSPF adjacency failures and one of the most annoying to find.
+
+**`show ip route`** displays the full routing table. OSPF-learned routes are marked with an "O":
+
+```
+Router# show ip route
+
+O    10.3.1.0/24 [110/20] via 10.1.1.2, 00:15:32, GigabitEthernet0/0
+O    10.4.0.0/16 [110/30] via 10.1.2.2, 00:15:30, GigabitEthernet0/1
+C    10.1.1.0/24 is directly connected, GigabitEthernet0/0
+C    10.1.2.0/24 is directly connected, GigabitEthernet0/1
+```
+
+The `[110/20]` means administrative distance 110 (OSPF's default) and a metric of 20 (cost). If you don't see the routes you expect, either the adjacency didn't form, the remote router isn't advertising the network, or a more-preferred route from another source is winning.
+
+**`show ip ospf interface`** tells you the OSPF state of each interface — the area, the hello and dead timers, the DR/BDR election results, and neighbor count. When an interface should be participating in OSPF but isn't, this command reveals why.
+
+## EIGRP Configuration — Cisco's Protocol, Cisco's Syntax
+
+EIGRP configuration follows a similar structure to OSPF. Enter the routing protocol mode with an autonomous system (AS) number:
+
+```
+Router(config)# router eigrp 100
+```
+
+Unlike OSPF's process ID, the EIGRP AS number **must match** on all routers that need to form neighbor relationships. If one router is `router eigrp 100` and the other is `router eigrp 200`, they will never become neighbors. This is a common lab mistake and an easy exam question.
+
+Then advertise your networks:
+
+```
+Router(config-router)# network 10.1.1.0 0.0.0.255
+Router(config-router)# network 10.1.2.0 0.0.0.255
+```
+
+Same wildcard mask logic as OSPF. EIGRP activates on matching interfaces and starts sending Hello packets to discover neighbors. Unlike OSPF, there's no area concept — EIGRP uses the AS number as its administrative boundary.
+
+EIGRP's default behavior includes auto-summary, which can cause problems in discontiguous networks by summarizing routes to classful boundaries. On modern IOS versions this is usually off by default, but verify and disable it explicitly if needed:
+
+```
+Router(config-router)# no auto-summary
+```
+
+Verify EIGRP neighbors:
+
+```
+Router# show ip eigrp neighbors
+
+IP-EIGRP neighbors for process 100
+H   Address        Interface    Hold  Uptime    SRTT  RTO   Q   Seq
+                                (sec)           (ms)        Cnt Num
+0   10.1.1.2       Gi0/0        12    00:25:14  5     200   0   15
+```
+
+If the neighbor table is empty, the routers aren't seeing each other's Hellos. Check that the AS numbers match, the interfaces are up, the network statements include the correct interfaces, and no ACLs are blocking EIGRP multicast (224.0.0.10).
+
+EIGRP routes show up in the routing table with a "D" code (yes, D, because E was already taken by EGP — a protocol so dead most of you have never heard of it):
+
+```
+D    10.3.1.0/24 [90/2170112] via 10.1.1.2, 00:25:14, GigabitEthernet0/0
+```
+
+Administrative distance 90, composite metric 2170112. The metric looks absurdly large because EIGRP factors bandwidth and delay into a formula that produces these values. You don't need to calculate it by hand for the Network+ — just know that lower is better and that EIGRP's AD of 90 beats OSPF's 110 if both are running.
+
+## Static Routes — The Manual Override
+
+Static routes are dead simple. You tell the router exactly where to send traffic for a specific destination:
+
+```
+Router(config)# ip route 192.168.5.0 255.255.255.0 10.1.1.2
+```
+
+Translation: "To reach the 192.168.5.0/24 network, forward packets to 10.1.1.2." That's it. The router installs the route with an administrative distance of 1 (highly trusted, second only to connected routes) and uses it until you remove it or the next-hop becomes unreachable on interfaces without CEF.
+
+You can also point a static route at an exit interface instead of a next-hop IP:
+
+```
+Router(config)# ip route 192.168.5.0 255.255.255.0 GigabitEthernet0/1
+```
+
+This tells the router to send matching traffic out Gi0/1 without specifying a next-hop. It works on point-to-point links where there's only one possible neighbor on the other end. On multi-access networks (Ethernet), use the next-hop IP — otherwise the router has to ARP for every destination address individually, which tanks performance.
+
+## Default Routes — The Route of Last Resort
+
+The default route is the most important static route you'll configure. It's the catch-all that matches every destination not explicitly listed in the routing table:
+
+```
+Router(config)# ip route 0.0.0.0 0.0.0.0 203.0.113.1
+```
+
+0.0.0.0/0 matches zero bits — meaning everything. This says "any traffic I don't have a specific route for, send it to 203.0.113.1." On edge routers, the default route points toward the ISP. On internal routers, the default route often points toward the core. Without a default route on an edge router, the network can reach internal destinations but nothing on the internet.
+
+If you want OSPF to distribute the default route to other routers in the network so you don't have to configure it on every device:
+
+```
+Router(config-router)# default-information originate
+```
+
+This tells OSPF to advertise the default route to all OSPF neighbors. Now every OSPF router in the network learns the path to the internet through the edge router automatically.
+
+## Floating Static Routes — The Backup Plan
+
+A floating static route is a static route configured with a higher administrative distance than the primary route, so it only enters the routing table when the primary route disappears. It sits in the configuration, invisible in the routing table, waiting.
+
+Say OSPF is providing a route to 192.168.5.0/24 with AD 110. You want a backup static route through a different path:
+
+```
+Router(config)# ip route 192.168.5.0 255.255.255.0 10.2.1.1 130
+```
+
+The 130 at the end is the administrative distance. Since 130 is higher than OSPF's 110, this route loses and doesn't appear in the table. But if OSPF withdraws the route — the primary link fails, the OSPF neighbor goes down — the routing table has no 110-AD entry for that destination anymore. Suddenly the static route at 130 is the best option, and it installs. Traffic shifts to the backup path. When OSPF reconverges and the original route comes back at 110, the floating static silently drops out again.
+
+Floating statics are the simplest form of redundancy. They're common on dual-WAN setups where the primary path runs a dynamic protocol and the backup is a static route through a secondary ISP.
+
+## Reading `show ip route` — The Rosetta Stone
+
+The routing table is the single most important output you'll read on a router. Understanding every piece of it prevents misdiagnosis. Here's a typical entry:
+
+```
+O    10.3.1.0/24 [110/20] via 10.1.1.2, 00:15:32, GigabitEthernet0/0
+```
+
+Breaking it down:
+
+**O** — Route source code. O = OSPF. C = Connected. S = Static. D = EIGRP. R = RIP. B = BGP. An asterisk (*) next to a code means "candidate default route."
+
+**10.3.1.0/24** — Destination network in CIDR notation.
+
+**[110/20]** — Administrative distance / metric. AD 110 = OSPF. Metric 20 = OSPF cost to reach this network.
+
+**via 10.1.1.2** — Next-hop address. Packets for this destination are forwarded to 10.1.1.2.
+
+**00:15:32** — How long this route has been in the table.
+
+**GigabitEthernet0/0** — Exit interface. The physical port used to reach the next hop.
+
+When a route you expect is missing, work backward: Is the source protocol running? Is the neighbor up? Is the network being advertised? Is a route with a lower AD winning? When a route is present but traffic isn't flowing, check if the next-hop is reachable and if the return path exists — routing is bidirectional. A packet can reach the destination just fine, but if the destination doesn't have a route back to the source, the return traffic gets dropped and the connection appears dead.
+
+## Troubleshooting Adjacencies — When Neighbors Won't Neighbor
+
+OSPF and EIGRP adjacencies fail for a finite, predictable set of reasons. When `show ip ospf neighbor` or `show ip eigrp neighbors` is empty, walk this list:
+
+**Layer 1/2.** Is the link up? Check `show ip interface brief`. If the interface shows "down/down," you have a physical problem. If it shows "up/down," the link protocol failed — bad encapsulation, dead neighbor port, layer 2 issue. Fix the interface status before blaming the routing protocol.
+
+**Interface not in the protocol.** The `network` statement might not match the interface's IP address. Run `show ip ospf interface` or `show ip eigrp interfaces` to see which interfaces the protocol is running on. If the interface isn't listed, the network statement is wrong.
+
+**Mismatched parameters.** OSPF adjacencies require matching hello and dead timers, matching area IDs, matching authentication settings, matching network types, and matching MTU (for full adjacency). EIGRP requires matching AS numbers and matching K-values (metric components). Any mismatch and the adjacency won't form — or will form and get stuck in a partial state.
+
+**ACL or firewall blocking.** OSPF uses multicast 224.0.0.5 (all OSPF routers) and 224.0.0.6 (DR/BDR). EIGRP uses multicast 224.0.0.10. If an ACL on the interface is blocking these multicast addresses, Hello packets never arrive and neighbors never discover each other. This one is subtle because the interface is up, the protocol is running, the config looks right — but an ACL somewhere is silently killing the Hellos.
+
+**Passive interface.** If you set an interface as passive, it won't send or receive Hellos. The adjacency can't form through a passive interface. Check `show ip ospf interface` — it'll show "No Hellos (Passive interface)" right there in the output.
+
+**Subnet mismatch.** Two routers on the same link with different subnet masks (one side configured as /24, the other as /30) won't form an OSPF adjacency. OSPF checks the mask in the Hello packet. EIGRP is more forgiving here in some cases, but mismatched subnets are still a problem for actual traffic flow.
+
+Work the list top to bottom. Most adjacency failures are one of these causes, and you can usually identify the culprit within two or three show commands. The exam loves this troubleshooting scenario — a diagram with two routers, a link between them, and a question about why OSPF isn't working. The answer is almost always in this list.
