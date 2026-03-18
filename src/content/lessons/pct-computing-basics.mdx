@@ -1,0 +1,129 @@
+---
+title: Computing Basics — How a PC Actually Works
+description: The fetch-decode-execute cycle, how CPU, RAM, and storage work together, the role of the motherboard, input/output fundamentals, and the mental model every technician needs before touching hardware.
+slug: pct-computing-basics
+track: pc-technician
+moduleId: pct.fundamentals.computing-basics
+order: 1
+difficulty: Beginner
+estMinutes: 25
+tags: ["computing", "CPU", "RAM", "storage", "motherboard", "A+", "Core 1", "CompTIA"]
+---
+
+## Before You Touch Anything
+
+You can memorize the name of every component in a PC and still be a bad technician. What separates the techs who fix problems from the ones who swap parts until something works is a mental model — an understanding of how the pieces interact. Once you have that model, symptoms tell you stories. A system that boots but crashes under load tells you something different than one that won't POST at all. A machine that runs fine for an hour then throttles tells you something different than one that's slow from the first second.
+
+This lesson builds that model. It's not about memorizing specs. It's about understanding what each component does and why it matters when it fails.
+
+## The Four Functions of Every Computer
+
+Every computer ever built — from a 1950s mainframe to the phone in your pocket — performs the same four functions:
+
+**Input** — receiving data from the outside world (keyboard, mouse, microphone, camera, network)
+
+**Processing** — performing operations on that data (the CPU)
+
+**Storage** — holding data temporarily or permanently (RAM, SSD, HDD)
+
+**Output** — sending results back to the outside world (monitor, speakers, printer, network)
+
+Every component in a PC exists to serve one of these four functions. When you're diagnosing a problem, asking "which function is affected?" immediately narrows your search.
+
+## The CPU — The Brain That Does the Work
+
+The Central Processing Unit is where actual computation happens. Every calculation, every instruction in every program, runs through the CPU. Understanding a few key concepts makes CPU-related problems much easier to diagnose.
+
+### The Fetch-Decode-Execute Cycle
+
+CPUs work by repeating the same three-step process billions of times per second:
+
+1. **Fetch** — retrieve the next instruction from memory
+2. **Decode** — figure out what the instruction is asking the CPU to do
+3. **Execute** — perform the operation
+
+This cycle is the heartbeat of the computer. Clock speed (measured in GHz) is how many times per second the CPU can complete this cycle. A 3.5 GHz CPU completes 3.5 billion cycles per second. More cycles per second generally means faster processing — but clock speed alone doesn't tell the whole story.
+
+### Cores and Threads
+
+Modern CPUs have multiple cores — independent processing units on the same chip. A quad-core CPU can execute four instruction streams simultaneously. Most modern CPUs also use hyperthreading (Intel) or SMT (AMD), which allows each physical core to handle two threads at once, effectively doubling the number of tasks the CPU can juggle.
+
+For a technician, the practical implication: a system that feels slow on a single heavy task may benefit from a faster clock speed; a system that feels slow when doing many things at once may benefit from more cores.
+
+### CPU Cache
+
+Cache is extremely fast memory built directly into the CPU die. It stores frequently used data and instructions so the CPU doesn't have to wait for slower main memory. L1 cache is fastest and smallest (kilobytes); L2 is larger and slightly slower; L3 is shared across cores and largest. Cache misses — when needed data isn't in cache — force the CPU to reach out to RAM, which is significantly slower.
+
+### Thermal Management
+
+CPUs generate substantial heat under load. The thermal design power (TDP) rating tells you how much heat a CPU produces at its base clock speed — this dictates the minimum cooling solution required. A CPU without adequate cooling will throttle (reduce its clock speed to lower heat output) or shut down entirely to prevent damage. Unexplained slowdowns and sudden shutdowns are often thermal problems.
+
+## RAM — The Workspace
+
+RAM (Random Access Memory) is the computer's working memory — where active programs and data live while they're being used. Unlike storage, RAM is volatile: everything in RAM disappears when power is cut. When you open a program, its code and data are loaded from storage into RAM. The CPU then reads from and writes to RAM during execution.
+
+### Why RAM Size Matters
+
+RAM capacity determines how much the system can actively work with simultaneously. When RAM fills up, the operating system begins using a portion of the storage drive as virtual memory (called a page file or swap space). This is dramatically slower than real RAM — sometimes 100x slower for HDDs. A system that's constantly hitting its RAM limit will feel sluggish in a very specific way: good performance that suddenly drops and becomes unresponsive as it starts swapping to disk.
+
+### RAM Speed and Type
+
+Current systems use DDR4 or DDR5 SDRAM. The DDR generation must match what the motherboard supports — DDR4 and DDR5 sticks are physically different and will not fit in the wrong slot. Speed is measured in MHz (e.g., DDR4-3200 runs at 3200 MHz). Faster RAM provides modest real-world performance gains in most tasks, but it must be supported by both the CPU and motherboard.
+
+### RAM Slots and Dual Channel
+
+Most consumer motherboards have 2 or 4 RAM slots. Installing RAM in matched pairs in the correct slots (check the motherboard manual) enables dual-channel mode, effectively doubling the memory bandwidth. A system with 2x8GB in dual channel significantly outperforms the same 16GB in a single stick.
+
+## Storage — Long-Term Memory
+
+Storage holds data permanently — programs, the operating system, documents, everything that survives a power cycle.
+
+### HDD vs SSD
+
+**Hard Disk Drives (HDDs)** use spinning magnetic platters and a moving read/write head. They are slower, mechanically complex, and sensitive to physical shock — but remain cost-effective for large capacities.
+
+**Solid State Drives (SSDs)** use flash memory with no moving parts. They are dramatically faster (10-100x for random reads/writes), more durable, and more power-efficient. NVMe SSDs, which connect via the PCIe bus rather than SATA, are the fastest option available for consumer systems.
+
+For a technician, the choice is almost always SSD for the operating system drive. The performance difference is the single biggest upgrade most legacy systems can receive.
+
+### The Storage Hierarchy
+
+Data moves between storage and RAM constantly. The CPU can only directly work with data that's in RAM. When a program needs data from storage, there's a latency cost — milliseconds for HDDs, microseconds for SSDs, nanoseconds for RAM. Understanding this hierarchy explains why storage speed matters for perceived system performance even when the CPU is fast.
+
+## The Motherboard — The Communication Hub
+
+The motherboard is the central circuit board that connects every other component. It provides:
+
+- **CPU socket** — the physical mount and electrical connection for the processor
+- **RAM slots** — DIMM slots for system memory
+- **Expansion slots** — PCIe slots for GPUs, NVMe drives, and other cards
+- **Storage connectors** — SATA ports for drives, M.2 slots for NVMe
+- **I/O ports** — USB, audio, display outputs on the rear panel
+- **Power connectors** — 24-pin ATX main connector and 4/8-pin CPU power connector
+- **Chipset** — manages communication between the CPU and slower peripherals
+
+The motherboard's form factor (ATX, Micro-ATX, Mini-ITX) determines its physical size and the number of expansion slots available. The socket type must match the CPU — Intel and AMD use different, incompatible sockets, and both change socket designs periodically.
+
+## The Power Supply — Feeding Everything
+
+The Power Supply Unit (PSU) converts AC power from the wall to the DC voltages components need. The three main rails are +12V (for CPU and GPU), +5V (for older components and USB), and +3.3V (for memory and some chipset functions). PSU capacity is rated in watts — the total must exceed the combined power draw of all components, with headroom for spikes.
+
+A failing PSU causes some of the most confusing symptoms in PC repair: random crashes, failure to boot, system restarts under load. Always consider the PSU when symptoms are inconsistent and don't point to a specific component.
+
+## How It All Connects — The Data Path
+
+When you double-click a program icon, here's what actually happens:
+
+1. The OS reads the program file from **storage** into **RAM**
+2. The **CPU** begins fetching instructions from **RAM**
+3. The CPU executes those instructions, storing intermediate results in **cache** and **RAM**
+4. Output is sent to the **GPU** (via PCIe), which renders it to the **monitor**
+5. Your keyboard and mouse input travels through **USB** to the **CPU** for processing
+
+Every component in that chain has a performance ceiling. The slowest component limits the whole system — this is the concept of a bottleneck. Identifying bottlenecks is a core diagnostic skill.
+
+## Why This Matters in the Field
+
+A client calls and says their computer is slow. Without a mental model, you run a virus scan and hope. With it, you ask: slow at what, exactly? Slow to start (storage)? Slow when many programs are open (RAM)? Slow under sustained load (thermal throttling)? Slow for specific tasks like video editing (CPU or GPU)? 
+
+Each answer points to a different component, a different test, and a different solution. The mental model is the difference between guessing and diagnosing.

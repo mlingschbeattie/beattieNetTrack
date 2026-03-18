@@ -1,0 +1,207 @@
+---
+title: Number Systems — Binary and Hex for Technicians
+description: Binary counting, hexadecimal notation, converting between bases, why computers use these systems, and how they show up in real technician work — IP addresses, MAC addresses, color codes, and error codes.
+slug: pct-number-systems
+track: pc-technician
+moduleId: pct.fundamentals.number-systems
+order: 1
+difficulty: Beginner
+estMinutes: 25
+tags: ["binary", "hexadecimal", "number systems", "A+", "Core 1", "CompTIA", "IP addressing"]
+---
+
+## Why a Technician Needs to Know This
+
+Number systems feel like math class. They're not. They're the language computers use to represent everything — memory addresses, IP addresses, MAC addresses, error codes, color values, file permissions. When you see a blue screen stop code like `0x0000007E`, that `0x` prefix tells you it's hexadecimal. When you subnet a network, you're doing binary math. When you read a MAC address like `A4:C3:F0:85:7D:22`, every pair is a hex byte.
+
+You don't need to be a mathematician. You need to be fluent enough to read these values, convert them when necessary, and understand what they represent. That fluency takes about an hour to build and lasts a career.
+
+## The Decimal System — What You Already Know
+
+Before learning other number systems, understand why decimal works the way it does. Decimal uses ten digits: 0–9. Each position in a number represents a power of ten:
+
+```
+Thousands  Hundreds  Tens  Ones
+  10³        10²      10¹   10⁰
+  1000       100       10    1
+```
+
+The number 4,392 means: (4 × 1000) + (3 × 100) + (9 × 10) + (2 × 1).
+
+Every number system works this way — positions represent powers of the base. Change the base, change the system.
+
+## Binary — Base 2
+
+Binary uses only two digits: 0 and 1. Each position represents a power of two:
+
+```
+128   64   32   16    8    4    2    1
+ 2⁷   2⁶   2⁵   2⁴   2³   2²   2¹   2⁰
+```
+
+Computers use binary because transistors — the fundamental building blocks of all digital electronics — have two states: on and off. On = 1, off = 0. Every piece of data in a computer is ultimately represented as a sequence of these binary digits (bits).
+
+### Reading Binary
+
+To read a binary number, multiply each digit by its position value and add the results.
+
+**Example: 10110100**
+
+```
+128  64  32  16   8   4   2   1
+  1   0   1   1   0   1   0   0
+
+(1×128) + (0×64) + (1×32) + (1×16) + (0×8) + (1×4) + (0×2) + (0×1)
+= 128 + 0 + 32 + 16 + 0 + 4 + 0 + 0
+= 180
+```
+
+### Converting Decimal to Binary
+
+Start with the largest power of 2 that fits. Subtract it and write a 1. If it doesn't fit, write a 0. Move to the next position and repeat.
+
+**Convert 200 to binary:**
+
+- 128 fits (200 - 128 = 72) → write **1**
+- 64 fits (72 - 64 = 8) → write **1**
+- 32 doesn't fit → write **0**
+- 16 doesn't fit → write **0**
+- 8 fits (8 - 8 = 0) → write **1**
+- 4 doesn't fit → write **0**
+- 2 doesn't fit → write **0**
+- 1 doesn't fit → write **0**
+
+Result: **11001000** = 200
+
+**Verify:** 128 + 64 + 8 = 200 ✓
+
+### Binary in Practice — IP Addresses
+
+IPv4 addresses are 32-bit binary numbers written in four 8-bit groups (octets) in decimal for human readability. The address 192.168.1.100 in binary is:
+
+```
+192      168        1        100
+11000000 10101000 00000001 01100100
+```
+
+Subnet masks work entirely in binary. The mask /24 (255.255.255.0) in binary is:
+```
+11111111 11111111 11111111 00000000
+```
+The 1s mark the network portion; the 0s mark the host portion. This is why you cannot understand subnetting without binary — the math is fundamentally binary AND and OR operations.
+
+## Hexadecimal — Base 16
+
+Hexadecimal (hex) uses sixteen digits: 0–9 and A–F, where A=10, B=11, C=12, D=13, E=14, F=15.
+
+| Decimal | Hex | Binary |
+|---------|-----|--------|
+| 0 | 0 | 0000 |
+| 1 | 1 | 0001 |
+| 2 | 2 | 0010 |
+| 3 | 3 | 0011 |
+| 4 | 4 | 0100 |
+| 5 | 5 | 0101 |
+| 6 | 6 | 0110 |
+| 7 | 7 | 0111 |
+| 8 | 8 | 1000 |
+| 9 | 9 | 1001 |
+| 10 | A | 1010 |
+| 11 | B | 1011 |
+| 12 | C | 1100 |
+| 13 | D | 1101 |
+| 14 | E | 1110 |
+| 15 | F | 1111 |
+
+### Why Hex Exists
+
+Binary is precise but unreadable for humans. A 32-bit memory address in binary is 32 digits long. In hex, the same address is 8 digits. One hex digit represents exactly 4 binary digits (a nibble), so conversion between binary and hex is fast and exact — no arithmetic required.
+
+Hex is prefixed with `0x` in most contexts (e.g., `0xFF`) to distinguish it from decimal. Sometimes you'll see `h` as a suffix instead (e.g., `FFh`).
+
+### Converting Hex to Decimal
+
+Each position is a power of 16: 16⁰=1, 16¹=16, 16²=256, 16³=4096.
+
+**Convert 0x2F to decimal:**
+- 2 × 16 = 32
+- F (15) × 1 = 15
+- 32 + 15 = **47**
+
+**Convert 0xFF to decimal:**
+- F (15) × 16 = 240
+- F (15) × 1 = 15
+- 240 + 15 = **255**
+
+This is why 0xFF = 255 — the maximum value of one byte. A byte is 8 bits, which gives 2⁸ = 256 possible values (0–255). In hex, that's 0x00 to 0xFF.
+
+### Converting Binary to Hex
+
+Group binary digits into sets of 4 from right to left. Convert each group using the table above.
+
+**Convert 11010110 to hex:**
+```
+1101   0110
+  D      6
+```
+Result: **0xD6**
+
+**Convert 10101111 to hex:**
+```
+1010   1111
+  A      F
+```
+Result: **0xAF**
+
+This is why hex is so useful — one hex digit maps exactly to four binary digits. No arithmetic needed once you know the table.
+
+### Hex in Practice
+
+**MAC addresses** — every network interface has a 48-bit (6-byte) hardware address written in hex: `A4:C3:F0:85:7D:22`. Each pair of hex digits is one byte. The first three bytes identify the manufacturer (OUI); the last three identify the specific device.
+
+**Memory addresses** — when a program crashes and Windows shows a stop code or memory address, it's in hex. `0x0000007E` is a hex error code. Searching that exact string finds the specific error.
+
+**Color codes** — web colors are hex: `#FF5733` means red=FF(255), green=57(87), blue=33(51). Every web designer and many display technicians use this daily.
+
+**BIOS and firmware** — BIOS settings, firmware update checksums, and hardware identifiers are consistently in hex.
+
+## Bits, Bytes, and Beyond
+
+A **bit** is a single binary digit (0 or 1) — the smallest unit of data.
+
+A **byte** is 8 bits. One byte can represent 256 values (0–255, or 0x00–0xFF).
+
+| Unit | Size |
+|------|------|
+| 1 Byte | 8 bits |
+| 1 Kilobyte (KB) | 1,024 bytes |
+| 1 Megabyte (MB) | 1,024 KB |
+| 1 Gigabyte (GB) | 1,024 MB |
+| 1 Terabyte (TB) | 1,024 GB |
+
+Note that storage manufacturers use decimal (1 KB = 1,000 bytes) while operating systems use binary (1 KB = 1,024 bytes). This is why a "500 GB" hard drive shows as ~465 GB in Windows — the math is done differently.
+
+**Bits vs bytes in bandwidth:** Network speeds are measured in bits per second (Mbps, Gbps). File sizes are in bytes. A 100 Mbps connection transfers 100 megabits — about 12.5 megabytes — per second. Forgetting to divide by 8 is the source of endless confusion when download speeds "seem slow."
+
+## Practice Problems
+
+Work these without a calculator. Check your answers at the bottom.
+
+1. Convert 10101010 (binary) to decimal
+2. Convert 255 (decimal) to binary
+3. Convert 0xC0 to decimal
+4. Convert 172 (decimal) to hex
+5. Convert 11111100 (binary) to hex
+
+**Answers:**
+1. 128+32+8+2 = **170**
+2. **11111111**
+3. C=12, so (12×16)+0 = **192**
+4. 172 ÷ 16 = 10 remainder 12 → A=10, C=12 → **0xAC**
+5. 1111=F, 1100=C → **0xFC**
+
+## Why This Matters in the Field
+
+You will encounter binary and hex constantly — in IP addressing, network troubleshooting, BIOS settings, error codes, and hardware identifiers. Technicians who can't read these values have to look everything up. Technicians who can read them fluently diagnose faster, communicate more precisely, and look competent in front of clients.
+
+The binary-to-hex conversion table is worth memorizing. The rest follows from understanding how positional notation works. Spend 20 minutes with the practice problems and this becomes second nature.

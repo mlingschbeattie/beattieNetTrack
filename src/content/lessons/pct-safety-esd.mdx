@@ -1,0 +1,95 @@
+---
+title: Safety and ESD — Protecting Yourself and the Hardware
+description: Electrical safety, electrostatic discharge prevention, proper grounding techniques, and the tools every technician uses to work safely inside a PC — the habits that separate professionals from people who fry components.
+slug: pct-safety-esd
+track: pc-technician
+moduleId: pct.fundamentals.safety-esd
+order: 1
+difficulty: Beginner
+estMinutes: 20
+tags: ["safety", "ESD", "grounding", "antistatic", "A+", "Core 1", "CompTIA"]
+---
+ 
+## The Rule Nobody Teaches First (But Should)
+ 
+Before you open a case, before you touch a component, before you do anything inside a computer — you need to understand two things that can end your career as a technician before it starts: electricity that can hurt you, and electricity that can hurt the hardware. They are not the same problem, and they don't have the same solution.
+ 
+The first is obvious. High-voltage systems — power supplies, CRT monitors, laser printers — can kill. The second is subtle. Electrostatic discharge (ESD) is invisible, painless, and can silently destroy a component worth hundreds of dollars with a static shock you never even felt.
+ 
+Professional technicians develop habits around both. This lesson covers those habits.
+ 
+## Electrical Safety — The Stuff That Can Hurt You
+ 
+### Power Supplies and High-Voltage Components
+ 
+A PC power supply converts AC wall power (120V in the US, 240V in Europe) to the DC voltages components need (12V, 5V, 3.3V). Even when the computer is off, a power supply can hold a lethal charge. The rule is simple: **never open a power supply**. If it's dead, replace it. There is nothing inside worth dying for.
+ 
+The same applies to CRT monitors (now rare, but still found in some industrial settings) and laser printers. Laser printers use high-voltage corona wires and fuser assemblies that reach temperatures above 400°F. Both can cause serious injury. Power off and unplug before servicing. Wait several minutes before touching internal components of a laser printer — the fuser retains heat long after shutdown.
+ 
+### Safe Work Practices
+ 
+Remove all jewelry before working inside a computer. Rings, bracelets, and watches are excellent conductors. A ring that bridges two pins on a motherboard can short the board and potentially cause burns. This is not theoretical — it happens.
+ 
+Work on non-conductive surfaces when possible. A wooden desk is better than a metal workbench. Never work on carpet if you can avoid it — carpet generates enormous amounts of static.
+ 
+Keep liquids away from the work area. This should be obvious, but it ends careers every year.
+ 
+### The Power-Off Rule
+ 
+Always power off and unplug the system before working inside it — but understand what "off" means. When a modern ATX power supply is plugged in, the motherboard receives 5V standby power even when the system appears off. The power button is a signal to the motherboard, not a true power cut. Unplugging the power cable (or switching off the PSU's rear switch) is the only way to fully de-energize the board.
+ 
+After unplugging, press the power button once. This drains residual charge from the capacitors on the board.
+ 
+## ESD — The Invisible Threat
+ 
+### What Electrostatic Discharge Is
+ 
+Static electricity builds up on your body through friction — walking across a floor, sliding out of a car seat, moving around in a chair. The voltage can be enormous: walking across carpet can generate 35,000 volts of static charge. You only feel a shock when the voltage exceeds about 3,000 volts. Below that, the discharge is painless and completely undetectable.
+ 
+The problem: many semiconductors can be damaged or destroyed by discharges as low as 100 volts. A component can be partially damaged — weakened without fully failing — and then fail days or weeks later under normal use. This is called a latent failure, and it's the most dangerous kind because it's nearly impossible to trace back to ESD.
+ 
+The components most vulnerable to ESD are CPUs, RAM, GPUs, storage drives (especially SSDs and HDDs), and expansion cards. Motherboards are highly vulnerable because they contain all of these in integrated form.
+ 
+### The Equalization Principle
+ 
+ESD damage occurs when there is a voltage difference between your body and the component. The solution is not to eliminate static — that's impractical — but to equalize the charge between you and the equipment so there is no difference to discharge across.
+ 
+This is why ESD protection works by connecting you to the same ground potential as the equipment, not by making you "static free."
+ 
+### ESD Prevention Tools
+ 
+**Antistatic wrist strap** — A conductive strap worn around the wrist with a coiled cable that connects to a grounding point, typically the metal chassis of the computer. The strap contains a 1-megaohm resistor that allows static to bleed off slowly while preventing a sudden shock if you accidentally contact a live circuit. This is the most reliable ESD protection available. Wear it every time you work inside a system.
+ 
+**Antistatic mat** — A conductive mat placed on the work surface and connected to ground. Components placed on the mat are protected from discharge. Often used in combination with a wrist strap.
+ 
+**Antistatic bags** — The silvery or pink bags that components ship in. They protect components in transit by distributing static charge evenly across the outside of the bag. Never place a component directly on top of an antistatic bag — the outside surface can carry charge. Always put the component inside the bag.
+ 
+**ESD-safe tools** — Screwdrivers and other tools with non-conductive handles. Standard tools work fine for most tasks, but in high-ESD environments, dedicated ESD-safe tools are used.
+ 
+### What to Do When You Don't Have a Wrist Strap
+ 
+A wrist strap is the right answer. But if you're in a field situation without one, you can partially mitigate ESD risk by touching the metal chassis of the unplugged computer before touching any components, and re-touching it regularly throughout the work. This equalizes your charge with the chassis. It is not as reliable as a wrist strap, but it is significantly better than nothing.
+ 
+Do not touch the metal chassis while the computer is plugged in as an ESD mitigation technique — this defeats the purpose and introduces electrical risk.
+ 
+## Handling Components Correctly
+ 
+Even with proper grounding, how you physically handle components matters.
+ 
+Hold circuit boards by the edges. Avoid touching the gold contact fingers on RAM and expansion cards — oils from your skin can interfere with electrical contact. Never touch the underside of a motherboard where solder points and traces are exposed.
+ 
+When transporting components — from the parts shelf to the bench, from one room to another — keep them in their antistatic bags. The few seconds it takes to bag a component properly is trivial compared to the cost of replacing a dead GPU.
+ 
+Stack components carefully. Never stack motherboards or cards directly on top of each other. Never place components on metal surfaces without antistatic protection.
+ 
+## Component Disposal
+ 
+Computers and their components contain hazardous materials: lead solder, mercury in older displays, cadmium in batteries, and various heavy metals in circuit boards. Improper disposal — throwing components in regular trash — is illegal in most jurisdictions under environmental regulations.
+ 
+Proper disposal options include manufacturer recycling programs, certified e-waste recyclers, and local government electronics collection events. Many retailers offer drop-off recycling for old electronics. When working for a business, check whether they have an IT asset disposal (ITAD) policy — many organizations require documentation of secure destruction for drives that contained sensitive data.
+ 
+## Why This Matters in the Field
+ 
+ESD failures are insidious. A technician who works without a wrist strap may go months without an obvious failure — and then be blamed when a client's system starts having intermittent crashes three weeks after service. Latent ESD damage is nearly impossible to prove after the fact.
+ 
+The technicians who build reputations for reliable work are not necessarily the ones with the most technical knowledge. They are the ones with the best habits. A wrist strap takes three seconds to put on. Antistatic bags take five seconds to use properly. These habits cost nothing and protect everything. Build them now, before you develop the bad habits that are much harder to break.
