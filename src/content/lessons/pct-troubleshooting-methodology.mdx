@@ -1,0 +1,154 @@
+---
+title: Troubleshooting Methodology — The CompTIA Seven-Step Process
+description: CompTIA's structured seven-step troubleshooting methodology, how to identify problems before touching hardware or software, forming and testing theories, planning fixes, verifying outcomes, and documenting everything — the professional approach that separates guesswork from diagnosis.
+slug: pct-troubleshooting-methodology
+track: pc-technician
+moduleId: pct.troubleshooting.methodology
+order: 1
+difficulty: Beginner
+estMinutes: 25
+tags: ["troubleshooting", "methodology", "CompTIA", "A+", "documentation", "seven steps"]
+---
+
+## The Technician Who Skipped Step One
+
+A student was convinced his laptop had a hardware problem. The fan made a new noise, performance was slow, and the display flickered occasionally. He spent forty minutes pulling RAM and reseating the heatsink before anyone asked: "When did this start?" The answer was: yesterday afternoon, after he installed a graphics driver update. Revert the driver. All three symptoms gone.
+
+He had the technical skills to do the hardware work. What he lacked was a process — a defined starting point that gathers information before tools come out. Troubleshooting without a methodology is guessing with extra steps. CompTIA's seven-step process is not bureaucracy. It's the sequence professionals have converged on because skipping steps consistently creates more work, not less.
+
+## Overview: The Seven Steps
+
+CompTIA A+ defines a specific troubleshooting methodology that appears on both the Core 1 and Core 2 exams and, more importantly, reflects how effective technicians actually work. The steps are:
+
+1. Identify the problem
+2. Establish a theory of probable cause
+3. Test the theory to determine cause
+4. Establish a plan of action and implement the solution or escalate
+5. Verify full system functionality and implement preventive measures
+6. Document findings, actions, and outcomes
+
+Each step builds on the previous. Skipping step one means your theory in step two is built on incomplete information. Testing before establishing a theory means you're changing things randomly. Skipping documentation means the next person — or future you — has nothing to work from.
+
+## Step 1: Identify the Problem
+
+**Identify the problem** is an information-gathering phase. Before you touch the machine, you need to understand what the machine is doing and what it should be doing.
+
+### Questioning the User
+
+The most powerful diagnostic tool in this step is a conversation. Ask:
+
+- What exactly is happening? Describe the symptom in their words, not a diagnosis.
+- When did it start? Exact time, date, or event.
+- Has anything changed recently? New software, updates, hardware additions, physical moves, lightning storms, cable pulls.
+- Does it happen every time, or intermittently?
+- What has already been tried?
+
+Non-technical users often describe symptoms in terms of conclusions: "The internet is broken." That could mean the network adapter failed, the cable is unplugged, the router is down, the ISP has an outage, or DNS is misconfigured. Don't accept the diagnosis — get the symptom. "What does it do when you try to open a website? Does it say anything specific?"
+
+**Inquire about environmental and infrastructure changes.** A symptom that appeared after a power outage is different from the same symptom that appeared after a software install. New hardware, a moved cable, a changed password, a recently applied update — these are the most common causes of "suddenly broken" problems.
+
+### Backing Up Before Proceeding
+
+If the problem involves data at risk — a failing drive, a corrupted OS, an unstable system — document that you recommended backup before any work proceeds. For drives showing physical symptoms (clicking, grinding, not detecting), imaging the drive before repair attempts may be the only chance to preserve data.
+
+### Observing the System
+
+Power-cycle the affected system and watch the boot process yourself. What does the screen actually say? Are there error messages, BSOD codes, POST failures? Does the machine boot at all? Baseline observations lock in the current state before any changes.
+
+## Step 2: Establish a Theory of Probable Cause
+
+With symptoms and context collected, form a specific, testable hypothesis about the most likely cause. A good theory is narrow: not "something is wrong with the network," but "the network adapter driver may have been affected by last Tuesday's Windows Update."
+
+### Question the Obvious First
+
+Experience teaches technicians to always check the simple explanations before pursuing complex ones. A machine that "won't turn on" — is it plugged in? Is the power strip switched on? Is the outlet working? Is the battery dead? These sound condescending to ask aloud, but they're responsible for a significant fraction of service calls.
+
+The formal version of this principle is **Occam's Razor**: among competing theories, prefer the one with the fewest assumptions. If the symptom appeared right after a specific change, that change is suspect. If multiple unrelated components all appear to fail simultaneously, you're more likely looking at a shared dependency (power supply, motherboard) than three independent coincident failures.
+
+### Considering Multiple Theories
+
+Don't commit to a single theory to the exclusion of all others before you've tested. Keep a short mental list ordered by probability. This prevents **confirmation bias** — the tendency to interpret observations as confirming the theory you've already committed to, even when they don't.
+
+## Step 3: Test the Theory to Determine Cause
+
+Testing means taking a specific action designed to confirm or refute your theory. This distinguishes testing from randomly trying things.
+
+**If the test confirms the theory:** you've found the cause. Move to step four.
+
+**If the test fails to confirm the theory:** the theory is wrong (or incomplete). Return to step two, revise the theory, and test again. This is normal — troubleshooting often requires two or three iterations before the actual cause is identified.
+
+**Example**: Theory is "the GPU driver is corrupt." Test: boot into Safe Mode (which loads only basic display drivers). If the display flicker is gone in Safe Mode but present in normal boot, the theory is confirmed. If the flicker persists in Safe Mode, the GPU driver isn't the cause — look at hardware.
+
+### When to Escalate During Testing
+
+Some tests require access, authority, or tools you don't have in the field. Testing a suspected failing drive requires diagnostic software that gives definitive results — not a guess. A domain-joined machine where you suspect Active Directory permissions requires administrative access at a level you may not have. Recognize when further testing requires escalating to a higher tier before proceeding.
+
+## Step 4: Establish a Plan of Action and Implement or Escalate
+
+Testing found the cause. Before implementing a fix, establish an explicit plan.
+
+**Think through the fix endpoint**: What does success look like? What's the exact sequence of actions? If the fix requires a driver reinstall, what's the version, where does it come from, what has to be uninstalled first?
+
+**Back up first if changes are risky**: if you're about to edit the registry, clear partitions, uninstall system components, or apply a BIOS update, make sure there's a recovery path. Create a restore point. Image the drive. Write down the current settings.
+
+**Implement one change at a time**: if your plan involves multiple changes, make them one at a time and test between each. Making three changes simultaneously and then observing whether the problem is fixed doesn't tell you which change worked. Making them sequentially allows attribution.
+
+### Escalating
+
+Some problems exceed your authorization, skill level, or available tools. Escalation is not failure — it's a correct response to a situation where proceeding would risk making things worse, consuming excessive time, or operating outside your support scope.
+
+When escalating: document what you found, what you tested, what you concluded, and why you're escalating. Being the person who hands off a clean summary of the diagnosis to a higher-level technician is more professional than guessing your way through a problem you're not equipped to handle.
+
+## Step 5: Verify Full System Functionality and Implement Preventive Measures
+
+The fix is done. Don't close the ticket yet.
+
+**Verify that the original problem is resolved**: reproduce the exact scenario that triggered the symptom. If the problem was "can't print," print something. If the problem was "BSOD during gaming," and you installed a new GPU driver, that specific test requires actually running the workload that triggered the crash — not just confirming Windows boots.
+
+**Check for collateral damage**: does anything that was working before your repair still work? A common technician mistake is to fix one thing and inadvertently break something adjacent. Check the whole workflow, not just the specific symptom.
+
+**Implement preventive measures**: if the problem had an underlying cause that could recur, address it. If the machine crashed due to overheating from dust accumulation, cleaning the system was the fix, but establishing a maintenance schedule and communicating it to the user is the preventive measure. If a virus caused the problem, cleaning it was the fix — ensuring Defender is updated and real-time protection is active is the prevention.
+
+**Return the machine in the same or better physical state** as you received it. Reconnect any cables you touched, replace any covers, ensure peripherals work.
+
+## Step 6: Document Findings, Actions, and Outcomes
+
+This step is where new technicians stumble most. Documentation feels like overhead. It isn't.
+
+A proper record includes:
+
+- The original symptom as reported
+- The date and technician
+- What you observed when you evaluated the machine
+- The theories you considered
+- What tests you ran and their results
+- The actual cause determined
+- What you did to fix it
+- The outcome — specifically verified working
+- Any recommendations for follow-up
+
+**Why documentation matters**: it's the difference between a one-time fix and institutional knowledge. When the same symptom recurs on a different machine, the documentation tells the next technician what worked. When the same machine comes back, there's a history — revealing whether a problem is recurrent. When a client disputes the work, the documentation is your record of what happened.
+
+Use a ticketing system if your organization has one. If not, even a shared spreadsheet or email trail is better than nothing. The format matters less than the habit.
+
+## Applying the Method Under Pressure
+
+Real-world troubleshooting is rarely as linear as the seven steps suggest. You'll sometimes skip from step one directly to an obvious fix, circle back from step four to step two, or be interrupted between steps by a second problem. The methodology isn't a rigid checklist — it's a mental framework that keeps you from going in random circles.
+
+The most common failures in troubleshooting are:
+
+- Skipping the information-gathering because "I already know what it is" — and being wrong
+- Testing multiple hypotheses simultaneously and not knowing what worked
+- Performing a fix and walking away without verifying it actually solved the original problem
+- Solving the immediate problem and ignoring the root cause
+- Not documenting because "I'll remember"
+
+Each of those failure modes has a corresponding step in the methodology that would have prevented it.
+
+## Why This Matters in the Field
+
+Clients don't come to technicians because they want someone to try random things on their computers. They come because they want a problem solved. The seven-step methodology is how you solve problems reliably instead of occasionally — how you become the technician people actually trust rather than the one who "got lucky."
+
+The methodology also protects you professionally. A documented sequence of diagnosis shows you acted competently and deliberately. If something goes wrong later — if a machine that was working when you left develops a different problem the next day — having documentation shows exactly what you did and what state the machine was in when you finished.
+
+CompTIA tests the methodology because it's the foundation of everything else. The hardware-specific troubleshooting in the lessons that follow this one will make much more sense with this framework established.

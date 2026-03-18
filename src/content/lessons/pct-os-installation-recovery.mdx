@@ -1,0 +1,151 @@
+---
+title: OS Installation and Recovery — Getting Windows Running from Scratch
+description: Clean installs vs in-place upgrades, creating boot media, BIOS/UEFI boot order, partition setup, post-install configuration, the Windows Recovery Environment, Safe Mode, and System Restore — the full workflow for deploying and rescuing Windows.
+slug: pct-os-installation-recovery
+track: pc-technician
+moduleId: pct.os.installation-recovery
+order: 1
+difficulty: Beginner
+estMinutes: 35
+tags: ["Windows", "installation", "boot media", "WinRE", "Safe Mode", "System Restore", "A+", "Core 2", "CompTIA"]
+---
+
+## The Machine That Won't Boot
+
+It's the morning of a presentation. A teacher's laptop shows "Operating System Not Found." They've tried rebooting three times. They're panicking. You arrive with a USB drive, a recovery key, and a plan.
+
+Not every situation is that dramatic, but OS installation and recovery are skills that get called on regularly — and called on urgently. A clean install on a new drive, a repair on a system that corrupts after a failed update, a factory reset on a client's machine before resale. The process is teachable, repeatable, and forgiving of mistakes when you understand the structure. When you don't, it's a sequence of random clicks that sometimes works and sometimes makes things worse.
+
+## Understanding Installation Types
+
+Before touching a machine, you need to decide what kind of operation you're performing. The choice determines how much disruption occurs and what happens to existing data.
+
+### Clean Install
+
+A **clean install** completely replaces the existing OS. You boot from external media, wipe the target partition (or entire drive), and install a fresh copy of Windows. Everything on the drive before the process — applications, files, settings — is gone.
+
+When to use a clean install: new build with an empty drive, a machine so corrupted or infested that repair isn't effective, repurposing a machine for a new owner, or deploying a standardized base image. A clean install always gives you the most reliable starting point because there's no accumulated bloat or misconfiguration from the previous installation.
+
+The critical step before any clean install: **verify backup**. If the client is losing data, that's their loss only if you confirmed backup and they accepted the risk. If you wiped a drive and the client thought you were preserving their files, that's your problem. Before you touch anything, ask: "Is everything important backed up?" and document their answer.
+
+### In-Place Upgrade
+
+An **in-place upgrade** installs a new version of Windows over the existing one, preserving applications, settings, and user files. When Windows prompts "Keep personal files and apps" or "Keep personal files only" or "Nothing" during the setup process, that's the in-place upgrade path.
+
+When to use it: upgrading from Windows 10 to Windows 11 on a supported machine, upgrading from Home to Pro (using a new license key), or attempting to repair a corrupted Windows installation without data loss (the "Keep nothing" upgrade path reinstalls Windows while preserving the user directory structure).
+
+In-place upgrades can fail or leave the system in a problematic state if the existing Windows installation is badly corrupted. They're not a substitute for a clean install when the corruption is severe.
+
+### Repair Install
+
+A **repair install** (technically a special case of in-place upgrade: "Upgrade this PC now" with "Keep personal files and apps" selected, run from within the running OS) replaces OS files while preserving installed applications and user data. It's useful for fixing corrupted system files that `sfc /scannow` and DISM haven't resolved. The installation media version must match the installed Windows version.
+
+## Creating Boot Media
+
+To install or recover Windows on a machine that can't boot normally, you need bootable media — most commonly a USB drive.
+
+**The official Microsoft approach**: Download the Windows Media Creation Tool from Microsoft's website, run it, and have it build a bootable USB drive. This creates a properly structured USB with the latest Windows 10 or Windows 11 installer. The tool handles formatting and layout automatically.
+
+**For a specific ISO**: If you have an ISO file (from MSDN, a volume license, or a downloaded copy), use the **Rufus** utility (free, reputable) to write the ISO to a USB drive in the correct boot mode. Rufus lets you specify whether to create the drive for UEFI boot (GPT partition scheme) or legacy BIOS boot (MBR partition scheme) — this must match the target machine's firmware mode.
+
+The USB drive must be at least **8 GB** for a modern Windows installer. The drive will be completely wiped during the creation process.
+
+## BIOS/UEFI and Boot Order
+
+After creating bootable media, you need to tell the machine to boot from it rather than the primary drive. This happens in BIOS/UEFI.
+
+**Accessing firmware settings**: the key to press during boot varies by manufacturer — common keys are **F2**, **F10**, **F12**, **Delete**, and **Escape**. Some manufacturers display the key briefly on the POST screen. If you miss it, reboot and try again.
+
+**Changing boot order**: in the firmware settings, find the Boot menu (names vary). Move the USB drive to the top of the boot priority list, save changes, and exit. The machine will attempt to boot from USB before the internal drive. After installation, either remove the USB drive or move the internal drive back to first priority.
+
+**One-time boot menu**: most modern systems support a one-time boot menu accessible with a different key (often **F12** at startup). This lets you select the boot device for this one boot without permanently changing the boot order — faster for a single installation, especially useful when the client will use the machine after you're done.
+
+**UEFI vs Legacy (CSM) boot**: Modern computers use UEFI firmware. The boot media and installation configuration must match the mode. Windows 11 requires UEFI and Secure Boot. Windows 10 supports both. If the target drive will use GPT partitioning (required for drives over 2 TB and for UEFI boot), the boot media must be set for UEFI. If you see "UEFI: Kingston DataTraveler" and "Kingston DataTraveler" as separate boot options, the first is UEFI mode and the second is legacy — select the UEFI version for modern installs.
+
+**Secure Boot** is a UEFI feature that only allows signed bootloaders to run at startup. It blocks unauthorized boot code (like some bootloader-level malware). Windows 10 and 11 installation media are signed and work with Secure Boot enabled. If you're installing Linux or using a third-party recovery tool that isn't signed, you may need to temporarily disable Secure Boot.
+
+## Walking Through the Windows Installation
+
+After booting from the USB drive, the Windows Setup wizard presents the following key steps:
+
+**Language, time, and keyboard settings**: typically accept defaults.
+
+**Install now → Enter product key**: for a supported upgrade from Windows 10 Home to 11 Home, the key may auto-populate. On a new build, enter the product key or select "I don't have a product key" and activate later.
+
+**Edition selection**: if your key determines the edition, the installer automatically selects it. If entering later, select the edition matching the license you have.
+
+**License terms**: accept to continue.
+
+**Installation type — Custom: Install Windows only (advanced)**: choose this for a clean install. "Upgrade: Install Windows and keep files, settings, and applications" is the in-place upgrade path and only appears if you're running setup from within Windows.
+
+**Drive selection and partition management**: for a clean install, delete all existing partitions on the target drive (this destroys all data on that drive), leaving unallocated space, then click Next. Windows setup automatically creates the required partitions: a 100 MB EFI System Partition (ESP) for UEFI boot, a small recovery partition, and the main Windows partition. You don't need to manually create these.
+
+After partition setup, installation copies files and reboots several times. Don't remove the USB drive until Windows is up and you're in the initial setup experience. After installation, remove the USB or change boot order back.
+
+**Out-of-Box Experience (OOBE)**: the final setup wizard. Region, keyboard layout, network connection. For Pro/Enterprise, you can join a domain or Azure AD here. For Clean installs intended for a client, set up a local account rather than forcing a Microsoft account unless the client specifically wants one.
+
+## The Windows Recovery Environment (WinRE)
+
+**Windows Recovery Environment (WinRE)** is a lightweight version of Windows that boots when the main installation can't. It's stored on a hidden recovery partition and accessed in several ways:
+
+- Hold Shift while clicking Restart in Windows (if Windows runs well enough for this)
+- Booting from Windows installation USB and selecting "Repair your computer" instead of "Install now"
+- Automatically after two failed boot attempts (Windows will drop into WinRE after detecting consecutive failures)
+
+WinRE's tools:
+
+**Startup Repair** automatically diagnoses and attempts to fix problems preventing Windows from booting — corrupted boot configuration, missing system files. It's often the right first attempt on a system that fails to boot. It doesn't fix everything, but when it works, it's fast.
+
+**System Restore** rolls Windows back to a restore point — a snapshot of the system's configuration files, registry, and some system files taken before a significant change. User files are not affected. This is the primary recovery tool for "worked yesterday, broke today" scenarios where the trigger was a driver installation, Windows update, or software installation.
+
+**System Image Recovery** restores a full drive image backup created by the Windows Backup utility. This returns the system to the state it was in when the image was taken.
+
+**Startup Settings** provides access to safe boot modes (covered below) and other boot-time options in environments where the normal F8 key method is too fast for modern UEFI systems.
+
+**Command Prompt** in WinRE gives you a command-line environment with access to `diskpart`, `sfc /scannow`, `bootrec`, and `bcdedit` for manual repair operations. `bootrec /fixmbr`, `bootrec /fixboot`, and `bootrec /rebuildbcd` address the most common boot configuration issues.
+
+## Safe Mode
+
+**Safe Mode** loads Windows with only the minimum required drivers and services — no third-party drivers, no startup programs, no network (unless you select Safe Mode with Networking). It's used to diagnose whether a problem is caused by a driver, software, or the core Windows installation.
+
+If a system behaves normally in Safe Mode but crashes in normal mode, the cause is external to Windows: a driver, startup program, or service. If it crashes in Safe Mode too, the problem is in a core Windows component or hardware.
+
+To enter Safe Mode on a system that boots:
+- Press **F8** during boot (Windows 10 on legacy BIOS/slow systems — often too fast to catch)
+- Hold **Shift** and restart → Troubleshoot → Advanced Options → Startup Settings → Restart → select Safe Mode option
+- From `msconfig` → Boot tab → enable "Safe boot" → reboot
+
+To enter Safe Mode on a system that won't boot into Windows: access WinRE through the recovery partition or USB media, navigate to Startup Settings, and select a Safe Mode option.
+
+**Safe Mode with Networking** adds network drivers and connectivity. Use this when the diagnostic process requires internet access (downloading removal tools, checking for updates).
+
+**Safe Mode with Command Prompt** loads only the command line instead of the full GUI. Used for advanced manual repairs.
+
+## System Restore
+
+**System Restore** creates restore points — snapshots of the system registry and certain protected system files — automatically before major system events like driver installations, application installations, and Windows updates. You can also manually create restore points.
+
+Restore points are not backups — they don't contain user files. If a restore point was created before a driver update that caused problems, restoring to that point removes the driver and returns the registry to its prior state. The user's documents remain untouched.
+
+Access System Restore from WinRE → System Restore, or from within Windows: right-click Start → System → System Protection → System Restore. Select a restore point, review what will be affected, and confirm. Windows reboots and completes the restore.
+
+System Restore requires that System Protection is enabled on the drive. Check Protection Settings in the System Protection dialog — if it shows "Off" for the C: drive, no restore points exist for that drive regardless of what you hoped.
+
+## Post-Installation Checklist
+
+After a clean install and through the OOBE:
+
+1. Connect to internet and run **Windows Update** — multiple times if necessary until no further updates are pending. Windows installs updates in batches; the first run often leaves more to install.
+2. Install drivers — particularly chipset, GPU, and network adapter drivers from the manufacturer's website. Windows Update gets most drivers, but GPU drivers should come directly from Nvidia or AMD for current versions.
+3. Enable **BitLocker** if appropriate (save the recovery key before leaving).
+4. Create a System Restore point manually — a known-good baseline to return to.
+5. Install the client's required applications.
+6. Remove any trial software or unnecessary applications that shipped with the Windows install media.
+7. Confirm Windows Defender is active and updated.
+8. Verify the correct edition is activated (Settings → System → Activation).
+
+## Why This Matters in the Field
+
+OS installation is one of the highest-visibility tasks a technician performs. A clean install that's done right — machine boots, everything works, client's files came back from backup intact, nothing is broken — builds enormous trust. One done carelessly — wrong edition, skipped drivers, forgot to save the product key, didn't verify backup before wiping — leaves the client worse off than before and the technician in an uncomfortable conversation.
+
+The recovery skills — Safe Mode, WinRE, System Restore — let you fix problems in place instead of escalating immediately to a full reinstall. The reinstall is always an option, but it's the last option. Knowing how to repair before you wipe means more problems stay solved instead of being avoided, and clients don't lose work they didn't know they were about to lose.

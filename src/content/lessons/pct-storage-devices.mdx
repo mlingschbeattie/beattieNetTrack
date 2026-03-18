@@ -1,0 +1,173 @@
+---
+title: Storage Devices — HDDs, SSDs, and Everything In Between
+description: Hard drives, solid state drives, NVMe, optical drives, RAID configurations, file systems, and the practical knowledge technicians need to select, install, and troubleshoot storage in any system.
+slug: pct-storage-devices
+track: pc-technician
+moduleId: pct.hardware.components-identification
+order: 3
+difficulty: Beginner
+estMinutes: 30
+tags: ["storage", "HDD", "SSD", "NVMe", "RAID", "file system", "A+", "Core 1", "CompTIA"]
+---
+
+## Storage Is Where Everything Lives
+
+The operating system, every application, every file, every photo — all of it lives on storage. When storage fails, clients lose everything. When storage is slow, every operation the computer performs is slower. When storage is misconfigured, systems fail to boot or lose data silently.
+
+Storage is also the component technicians replace most often. HDDs fail mechanically. SSDs fill up. Systems slow down when the OS drive gets old. Understanding storage thoroughly means faster diagnoses and better upgrade recommendations.
+
+## Hard Disk Drives (HDDs)
+
+HDDs store data magnetically on spinning platters. A read/write head moves across the platter surface to read and write data — this mechanical action is what makes HDDs slower and more fragile than SSDs.
+
+### HDD Specifications
+
+**RPM (Revolutions Per Minute)** — how fast the platters spin. Common speeds:
+- 5400 RPM — laptop drives, external drives, low-power NAS
+- 7200 RPM — standard desktop drives, best performance for HDDs
+- 10,000–15,000 RPM — enterprise drives (rare in consumer systems)
+
+Higher RPM = faster data access, more noise, more heat, more power.
+
+**Cache** — a small amount of fast flash memory on the drive (8MB–256MB) that buffers reads and writes. Larger cache improves performance for sequential operations.
+
+**Form factors:**
+- 3.5" — standard desktop, mounts in drive bays with screws
+- 2.5" — laptop, slim desktop, external drives
+
+**Interface:** Modern HDDs use SATA III (6 Gb/s). Older drives used PATA (IDE) — wide ribbon cables, now obsolete.
+
+### HDD Failure Signs
+
+HDDs are mechanical — they wear out. Warning signs:
+- Clicking or grinding noise (head crash or mechanical failure)
+- Slow response, long load times (bad sectors)
+- Frequent freezing
+- S.M.A.R.T. errors reported by the OS or diagnostic tools
+- Files becoming corrupted or unreadable
+
+**S.M.A.R.T.** (Self-Monitoring, Analysis and Reporting Technology) — built-in diagnostic data the drive reports about its own health. Tools like CrystalDiskInfo read S.M.A.R.T. data and flag failing drives before they completely die.
+
+A clicking HDD is an emergency. Back up immediately — it may have hours or days of life left.
+
+## Solid State Drives (SSDs)
+
+SSDs store data in NAND flash memory — no moving parts. This makes them dramatically faster, more durable, silent, and more power-efficient than HDDs.
+
+### SSD Types by Interface
+
+**SATA SSD (2.5")** — uses the same SATA interface as HDDs. Looks like a thin HDD. Maximum speed is limited by the SATA III interface: ~550 MB/s sequential read. Excellent upgrade for older systems — plug-in replacement for a 2.5" HDD.
+
+**M.2 SATA SSD** — M.2 form factor but uses SATA protocol. Same speed limitation as 2.5" SATA (~550 MB/s). Less common than M.2 NVMe.
+
+**M.2 NVMe SSD** — M.2 form factor, NVMe protocol over PCIe. Dramatically faster: 3,000–7,000 MB/s for PCIe 4.0 drives. The standard for new builds. Requires an M.2 slot that supports NVMe (not all M.2 slots do — check specs).
+
+**PCIe Add-In Card SSD** — NVMe SSD on a PCIe expansion card. Used in older systems without M.2 slots, or for enterprise/workstation use requiring maximum performance.
+
+### M.2 Form Factors
+
+M.2 drives are named by their width and length:
+
+| Size | Width × Length | Common Use |
+|------|---------------|-----------|
+| 2230 | 22 × 30mm | Small laptops, Steam Deck |
+| 2242 | 22 × 42mm | Some laptops |
+| 2260 | 22 × 60mm | Less common |
+| 2280 | 22 × 80mm | Standard desktop/laptop |
+
+The motherboard has a standoff screw at a specific position to support the drive length. Most boards support multiple lengths.
+
+### M.2 Key Types
+
+M.2 connectors have different notch positions (keys):
+- **M key** — supports both SATA and NVMe (PCIe)
+- **B key** — supports SATA and PCIe x2 (not x4)
+- **B+M key** — fits both B and M keyed slots, used for SATA M.2 drives
+
+Most NVMe SSDs use M key. Most M.2 slots on consumer motherboards are M key. Check before buying.
+
+### SSD Endurance — TBW
+
+SSDs have a finite number of write cycles per cell. Manufacturers rate drives by **TBW (Terabytes Written)** — the total amount of data that can be written before the drive is expected to wear out. A consumer drive rated at 300 TBW can have 300 terabytes of data written to it over its life.
+
+For typical consumer use (a few gigabytes written per day), TBW rarely limits lifespan. Enterprise use (servers writing constantly) requires enterprise-grade drives with higher TBW ratings.
+
+## Optical Drives
+
+DVD and Blu-ray drives read and write optical discs. Now rare in new builds but still found in:
+- Older systems
+- Systems that need to read media (legacy software, movies)
+- Some enterprise environments
+
+**Interface:** SATA (modern) or PATA/IDE (legacy)
+**Form factor:** 5.25" for desktop, slim 9.5mm for laptops
+
+For the exam: know that optical drives exist and use SATA, but don't expect heavy coverage — they're a declining technology.
+
+## Flash Storage — USB and Memory Cards
+
+**USB flash drives** — use NAND flash, connect via USB. Speeds vary enormously: cheap drives run USB 2.0 speeds (~25 MB/s); quality drives run USB 3.0+ (~150 MB/s+). Used for portable storage, OS installation media, and file transfer.
+
+**SD cards** — used in cameras, some laptops, Raspberry Pi. Rated by speed class (Class 10, UHS-I, UHS-II, V30, V60, V90). Full-size SD and microSD are the common formats.
+
+**CompactFlash / CFexpress** — professional camera storage formats, much faster than SD.
+
+## RAID — Redundant Array of Independent Disks
+
+RAID combines multiple drives to provide redundancy, performance, or both. Common RAID levels for the A+ exam:
+
+| RAID Level | Drives Required | What It Does | Use Case |
+|------------|----------------|--------------|----------|
+| RAID 0 | 2+ | Stripes data across drives for speed. No redundancy — one drive fails, all data lost. | Speed, no data protection |
+| RAID 1 | 2 | Mirrors data — identical copy on each drive. One drive fails, no data loss. Half the total capacity used. | Data protection, simple |
+| RAID 5 | 3+ | Stripes data with parity across all drives. One drive can fail without data loss. Requires rebuild after failure. | Balance of speed, capacity, redundancy |
+| RAID 10 | 4+ | Mirrors then stripes (RAID 1+0). Two drives can fail if they're from different mirrors. | High performance + redundancy |
+
+**Software RAID vs Hardware RAID:**
+- Software RAID is managed by the OS (Windows Storage Spaces, Linux mdadm) — uses CPU resources, no special hardware
+- Hardware RAID uses a dedicated RAID controller card — offloads processing, better performance, battery-backed cache on enterprise cards
+
+**RAID is not a backup.** RAID 1 protects against a drive failure. It does not protect against accidental deletion, ransomware, fire, or theft. Clients who think RAID replaces backups need to be corrected.
+
+## File Systems
+
+A file system defines how data is organized and stored on a drive. The OS must support the file system to read the drive.
+
+| File System | OS | Notes |
+|-------------|-----|-------|
+| NTFS | Windows | Default for Windows. Supports large files, permissions, encryption, journaling. |
+| FAT32 | Universal | Compatible with everything. Max file size 4GB, max volume 2TB. Used for USB drives. |
+| exFAT | Windows/Mac/Linux | Like FAT32 but without size limits. Best for large USB drives and SD cards. |
+| ext4 | Linux | Default Linux file system. Not natively readable by Windows. |
+| APFS | macOS | Apple's modern file system. Not readable by Windows natively. |
+| HFS+ | macOS (older) | Older Mac file system, used before APFS. |
+
+**For technicians:** Windows drives are NTFS. USB drives for cross-platform use should be exFAT. A Mac-formatted drive won't be readable in Windows without third-party software.
+
+## Partitioning — MBR vs GPT
+
+Before a file system is created, a drive must be partitioned. Two partitioning schemes:
+
+**MBR (Master Boot Record)** — legacy scheme. Maximum 4 primary partitions, maximum 2TB volume size. Required for legacy BIOS boot.
+
+**GPT (GUID Partition Table)** — modern scheme. Up to 128 partitions, supports drives larger than 2TB. Required for UEFI boot and Windows 11.
+
+When installing Windows on a new drive, use GPT. The only reason to use MBR is compatibility with very old hardware.
+
+## Storage Performance — What the Numbers Mean
+
+When evaluating storage, three metrics matter:
+
+**Sequential read/write** — speed reading/writing large contiguous files. What manufacturers advertise. Relevant for video editing, large file transfers.
+
+**Random read/write (IOPS)** — speed accessing small chunks of data scattered across the drive. What matters most for OS performance, loading applications, database operations. HDDs are terrible at random I/O; SSDs excel.
+
+**Latency** — time from requesting data to receiving it. HDDs: 5–15ms. SSDs: 0.1ms or less. This is why an SSD makes a system feel dramatically faster even when sequential speeds are similar.
+
+## Why This Matters in the Field
+
+A client's computer takes 3 minutes to boot and applications take forever to open. You check — it's a 5400 RPM HDD from 2014. S.M.A.R.T. shows no errors. The drive isn't failing, it's just slow. A $60 SATA SSD transforms this machine. You clone the old drive to the new one with free software, swap the drives, and the client thinks they have a new computer.
+
+Another scenario: a client reports that their server "lost a drive" and they're worried. You check — it's RAID 5 with one failed drive. The array is degraded but still running. You replace the dead drive and the RAID rebuilds. No data lost. Then you explain that they still need a backup, because if a second drive fails during the rebuild, they lose everything.
+
+Storage knowledge is directly tied to data safety. Get it right.

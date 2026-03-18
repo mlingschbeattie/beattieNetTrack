@@ -1,0 +1,146 @@
+---
+title: Build Compatibility — Making Sure Everything Fits and Works Together
+description: CPU socket matching, chipset selection, RAM compatibility, PSU sizing, case clearance, and the pre-purchase checklist that prevents expensive mistakes on every build.
+slug: pct-build-compatibility
+track: pc-technician
+moduleId: pct.hardware.build-compatibility
+order: 1
+difficulty: Beginner
+estMinutes: 30
+tags: ["build", "compatibility", "CPU", "socket", "PSU", "RAM", "A+", "Core 1", "CompTIA"]
+---
+
+## The $200 Paperweight
+
+A student buys a new AMD Ryzen 7000 series processor and a motherboard they found on sale. The box arrives, they open it, line up the CPU, and press down — and the CPU doesn't fit. At all. The socket on the motherboard is AM4. The Ryzen 7000 uses AM5. Same brand, two consecutive generations, completely incompatible. The processor goes back. The build sits on a desk for a week.
+
+This is one of the most common and most preventable mistakes in PC building. Every build requires components that are compatible with each other — not just in the sense that they're both "PC parts," but specifically matched by socket type, generation, power requirements, physical dimensions, and memory standard. Get one wrong and you have an expensive collection of parts that don't function together. This lesson covers the compatibility decisions that matter before you buy a single component.
+
+## CPU and Socket Compatibility — The Foundation of Every Build
+
+The **socket** is the physical interface on the motherboard where the CPU installs. Every CPU supports exactly one socket type, and every motherboard supports exactly one socket type. If they don't match, the CPU will not physically seat. There are no adapters. There is no workaround.
+
+Intel and AMD use completely different sockets, and neither is compatible with the other. Within each brand, socket compatibility varies by CPU generation:
+
+| Brand | Socket | Compatible Generations |
+|-------|--------|----------------------|
+| Intel | LGA 1700 | 12th gen (Alder Lake), 13th gen (Raptor Lake), 14th gen (Raptor Lake Refresh) |
+| Intel | LGA 1200 | 10th gen (Comet Lake), 11th gen (Rocket Lake) |
+| Intel | LGA 1851 | 14th gen (Meteor Lake Core Ultra), 15th gen (Arrow Lake) |
+| AMD | AM4 | Ryzen 1000 through 5000 series |
+| AMD | AM5 | Ryzen 7000 series and forward |
+
+The socket name appears on both the CPU specifications and the motherboard specifications. Before ordering anything, verify these match exactly. The processor box will list the socket (e.g., "Socket AM5"). The motherboard box will list supported socket (e.g., "Supports AMD AM5"). They must be identical.
+
+Socket compatibility is necessary but not sufficient. A Ryzen 5000 series CPU uses AM4, and many AM4 motherboards support it — but not all AM4 motherboards do. The motherboard's **chipset** and its manufacturer's BIOS support list determine which specific processors it will run.
+
+### Chipsets and BIOS Support
+
+The **chipset** is a chip on the motherboard that manages communication between the CPU, RAM, storage, and expansion slots. It determines which features are available (PCIe generation, overclocking support, number of USB ports) and which CPUs are supported.
+
+For Intel, the chipset designations are H (budget), B (mainstream), and Z (performance/overclockable). For AMD, the pattern is A (budget), B (mainstream), and X (performance). A B550 motherboard supports Ryzen 3000 and 5000 series CPUs natively and some 1000/2000 series with a BIOS update. An X570 board has broader support but costs more.
+
+Beyond chipset, the motherboard's **BIOS version** matters. AMD released several Ryzen generations on the same AM4 socket, which meant motherboard manufacturers had to release BIOS updates to support newer CPUs. A motherboard with an outdated BIOS won't recognize a newer-generation CPU that the socket physically supports. For AM4 builds using a Ryzen 5000 processor on an older 400-series board, the BIOS must be updated first — which requires a compatible CPU to boot into BIOS in the first place, creating a chicken-and-egg problem that often requires borrowing an older processor or sending the board to the manufacturer for a flash update.
+
+The lesson: always check the motherboard manufacturer's CPU compatibility list (the "CPU Support List" on their website) for the specific model, not just the socket and chipset family.
+
+## RAM Compatibility — Type, Speed, and Capacity
+
+RAM compatibility has three dimensions: type, speed, and whether the board recognizes the configuration.
+
+### DDR Generation
+
+Modern systems use DDR4 or DDR5. These are physically different — DDR4 and DDR5 DIMMs have different notch positions and will not seat in the wrong slot. A motherboard specifies which DDR generation it supports. Ryzen 7000 / AM5 platforms require DDR5. Most Intel 12th and 13th gen platforms support DDR4 or DDR5 (depending on the specific board). Mixing is impossible — you can't put one DDR4 stick and one DDR5 stick in the same board.
+
+### Speed and XMP/EXPO Profiles
+
+RAM is sold with a rated speed (e.g., DDR4-3200, DDR5-6000). Without configuration, most RAM boots at a lower JEDEC standard speed (DDR4-2133, for example) regardless of what the packaging says. The full rated speed requires enabling XMP (Extreme Memory Profile — Intel's standard) or EXPO (Extended Profiles for Overclocking — AMD's equivalent) in BIOS.
+
+The motherboard's specifications list the maximum RAM speed it officially supports, and there's a separate "OC" speed for what's possible with XMP/EXPO enabled. Pairing RAM that runs at a higher speed than the board officially supports can cause instability. Check the board's Qualified Vendor List (QVL) — the list of RAM kits the manufacturer has tested and verified to work — especially for high-speed DDR5.
+
+### Capacity and Slot Configuration
+
+Motherboards specify maximum RAM capacity (e.g., 128 GB max across 4 slots) and the number of physical slots. Running RAM in dual-channel mode — with matched sticks in the correct paired slots — increases memory bandwidth significantly compared to single-channel. A board with four slots typically uses slots 2 and 4 for dual-channel with two sticks. Consult the manual's slot configuration diagram before installing.
+
+Check the maximum per-slot capacity. A board might support 128 GB total across four slots with 32 GB DIMMs, but not support 64 GB DIMMs at all. Specs matter.
+
+## PSU Sizing — Calculating What You Actually Need
+
+The **power supply unit (PSU)** converts AC wall power to the DC voltages components need. Undersizing the PSU is one of the most common causes of system instability — the system works fine at idle but crashes under load when power demand spikes beyond the PSU's capacity.
+
+### Calculating Power Requirements
+
+Each component draws power. For a desktop build, the major consumers are:
+
+- CPU: 65–253 W depending on TDP (Thermal Design Power — listed in specifications)
+- GPU: 150–450 W for discrete cards
+- RAM: ~3 W per stick (negligible)
+- SSD: 2–7 W per drive
+- HDD: 5–10 W per drive
+- Case fans: 1–5 W each
+- Motherboard: 25–50 W
+
+Online PSU calculators (use Cooler Master's or OuterVision's) take component lists and output a recommended wattage. Add a 20–30% headroom buffer on top of the calculated number for efficiency, future upgrades, and aging PSU capacity.
+
+For a system with a Core i7 (125 W TDP) and an RTX 4070 (200 W), the core components draw around 350 W. Add peripherals, drives, and fans — about 400 W total. With 25% headroom, a 550 W PSU is the minimum. A 650–750 W unit is the practical choice for upgrade flexibility.
+
+### PSU Efficiency Rating
+
+PSU efficiency is rated on the 80 PLUS scale: Standard (80%), Bronze (82–85%), Silver (85–88%), Gold (87–90%), Platinum (90–92%), Titanium (90–94%). A more efficient PSU wastes less power as heat and imposes less stress on your electrical circuit. For a 400 W system pulling from an 80 PLUS Gold PSU, the unit draws about 444 W from the wall. With a standard 80% PSU, it draws 500 W for the same output.
+
+### PSU Form Factor and Connectors
+
+The PSU must physically fit the case (**ATX** is the standard size; **SFX** is smaller for compact cases). It must also provide the right connectors: a 24-pin ATX motherboard connector, a 4+4 pin CPU connector (some high-end boards need two of these), PCIe power connectors for the GPU (6-pin, 8-pin, or the newer 12+4 pin 12VHPWR for high-end Nvidia cards), and SATA/Molex for drives. A modular or semi-modular PSU only cables what's needed, reducing clutter and improving airflow.
+
+## Case Compatibility — Physical Clearances
+
+The case must accommodate the motherboard form factor and leave enough interior space for components.
+
+### Motherboard Form Factor
+
+| Form Factor | Dimensions | Notes |
+|-------------|-----------|-------|
+| ATX | 305 × 244 mm | Standard full desktop boards |
+| Micro-ATX (mATX) | 244 × 244 mm | Compact, fewer expansion slots |
+| Mini-ITX | 170 × 170 mm | Very small; one PCIe slot, limited RAM |
+| EATX | up to 305 × 330 mm | Server/high-end workstation boards |
+
+Cases specify which form factors they accept. An ATX case accepts ATX, mATX, and Mini-ITX boards (smaller boards fit larger cases). A Mini-ITX case only accepts Mini-ITX boards. Never force a larger board into a smaller case.
+
+### CPU Cooler Height Clearance
+
+Tower air coolers are measured in height from the top of the CPU socket. A 165 mm tall cooler requires a case with at least 165 mm of CPU cooler clearance. Mid-tower cases typically allow 155–170 mm. Check both the cooler's height and the case's maximum clearance spec.
+
+All-in-one liquid coolers (AIO) are rated by radiator size (120 mm, 240 mm, 280 mm, 360 mm). The case must have mounting points for the radiator in top, front, or rear fan positions of adequate size.
+
+### GPU Length
+
+High-end discrete GPUs can exceed 340 mm in length. Budget and mid-range cards are typically 200–280 mm. The case lists maximum GPU length. Watch for drive cages that reduce effective GPU clearance — some cases have removable cages specifically to accommodate longer cards.
+
+### M.2 Slots and Storage Clearances
+
+M.2 drives install directly on the motherboard, but the board must have M.2 slots and they must be in the right key format. M.2 drives come in NVMe (PCIe) and SATA variants — both can physically fit in the same slot on some boards, but the board must explicitly support the type. NVMe M.2 is dramatically faster than M.2 SATA and should be the default choice for system drives.
+
+## The Pre-Purchase Checklist
+
+Before finalizing a component list, verify each pair:
+
+**CPU ↔ Motherboard:** Same socket. BIOS support list includes this specific processor. Chipset meets your feature requirements.
+
+**CPU ↔ Cooler:** Cooler explicitly supports the socket. Height within case clearance. TDP rating meets or exceeds CPU TDP.
+
+**RAM ↔ Motherboard:** Same DDR generation (DDR4 or DDR5). Speed supported (check QVL for high speeds). Total capacity within board limits.
+
+**PSU ↔ System:** Wattage meets calculated draw plus 25% headroom. Correct connectors for GPU. Correct form factor for case.
+
+**GPU ↔ Case:** Length within case max. PCIe slots fit (case standoffs at correct position for the slot).
+
+**Motherboard ↔ Case:** Form factor matches (ATX into ATX case, etc.). I/O shield fits (usually comes with board).
+
+## Why This Matters in the Field
+
+A client walks into a repair shop with a bag of parts and asks you to assemble them. Three components in, you realize the DDR5 RAM they bought doesn't match the DDR4 motherboard. The client already paid for everything. Now someone has to return something, wait for shipping, and delay the build.
+
+Compatibility verification takes fifteen minutes with the component spec sheets. The return-and-reship cycle takes a week or more. Professional technicians verify before ordering, not after unboxing. When clients bring part lists for review before purchase, catching the mismatch at that stage is the difference between a clean successful build and an expensive, trust-damaging mistake.
+
+Memorizing every compatible combination is impossible — hardware generations move too fast. What you need to know is where to look: CPU support lists on the manufacturer's site, the board's memory QVL, case spec sheets for clearances, and a power draw calculator. The habit of checking these every time, on every build, is what separates a technician who professionally manages builds from one who guesses and hopes.

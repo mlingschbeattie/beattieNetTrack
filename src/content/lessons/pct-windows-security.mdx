@@ -1,0 +1,118 @@
+---
+title: Windows Security — Protecting the System You're Responsible For
+description: Authentication methods, malware types and removal, Windows Defender, BitLocker, UAC, local security policy, data sanitization, and the security practices that keep client machines safe and your professional reputation intact.
+slug: pct-windows-security
+track: pc-technician
+moduleId: pct.os.windows-basics
+order: 2
+difficulty: Beginner
+estMinutes: 30
+tags: ["security", "malware", "BitLocker", "Windows Defender", "UAC", "A+", "Core 2", "CompTIA"]
+---
+
+## The Machine That Was "Fine Yesterday"
+
+A teacher brings in their laptop. It was "working fine yesterday." Today, the browser won't open without redirecting to random sites, new toolbar applications appeared that they didn't install, and the machine is running significantly slower than usual. They want you to "run a scan and fix it."
+
+You run Windows Defender. It finds three items. You quarantine them. New tabs still auto-open. You look in the browser extensions — six unfamiliar names. You remove them. You check running processes in Task Manager — two processes in the Startup tab that belong to nothing you recognize. You dig into Add/Remove Programs. Two applications installed last Wednesday. The teacher was out Wednesday. Someone else used the machine.
+
+Malware removal is twenty percent running a scanner and eighty percent knowing what to look for, where to look, and what belongs there versus what doesn't. This lesson covers the security concepts that make that work possible.
+
+## Authentication — Proving You Are Who You Claim to Be
+
+Authentication is the process of verifying identity before granting access. Every access control decision depends on authentication working correctly. The three factors of authentication:
+
+**Something you know** — a password, PIN, or security question answer. Passwords are the most common authentication factor and the most frequently compromised. A good password is long (12+ characters), uses mixed character types, doesn't appear in breach databases, and isn't reused across sites. Windows local accounts can be protected by Windows Hello PIN (which is different from a password in that it binds to the specific device and doesn't traverse the network).
+
+**Something you have** — a physical token, a smart card, an authenticator app generating a time-based code. The key principle: even if an attacker steals the password, they still need the physical object. This is why multi-factor authentication (MFA) — combining two or more factors — is so much stronger than a password alone. Microsoft Authenticator, Google Authenticator, and hardware tokens like YubiKeys are common implementations.
+
+**Something you are** — biometric identifiers: fingerprint, face, iris scan. Windows Hello Facial Recognition and Fingerprint Sign-in are the most common Windows biometrics. Biometrics are convenient but have specific weaknesses: they can't be changed if compromised, and quality varies significantly across hardware.
+
+**Windows Hello** is Microsoft's modern authentication framework that supports PINs, biometrics, and security keys as alternatives to passwords. A Windows Hello PIN looks like a password but is fundamentally different: it's stored locally on the device (not on Microsoft's servers), it's bound to that specific hardware, and it's protected by the device's TPM (Trusted Platform Module — a chip that stores cryptographic keys). A Windows Hello PIN stolen from a database doesn't work anywhere except the specific machine it belongs to.
+
+**Single Sign-On (SSO)** allows one authentication to access multiple services. In an Active Directory domain, a Windows login authenticates the user to the domain, which then grants access to file shares, printers, and web applications without additional logins. Students experience this when logging into a school Chromebook — the same Google credentials work for Drive, Classroom, and web apps.
+
+## Malware — The Field Guide
+
+Every technician needs to recognize malware types not because the CompTIA exam categorizes them, but because understanding the category tells you what to look for and where.
+
+**Viruses** attach themselves to legitimate files and execute when those files are run. They spread through file sharing — emailed attachments, downloaded files, infected USB drives. When the infected file is opened, the virus executes and can infect other files on the system. Viruses require human action to spread (someone has to open the file).
+
+**Worms** self-replicate and spread across networks without user action. They exploit vulnerabilities in services and operating systems to move from machine to machine. The WannaCry ransomworm (2017) spread by exploiting an SMB vulnerability — a system could become infected just by being reachable on the network with an unpatched Windows installation, no user interaction required.
+
+**Trojans** appear to be legitimate software but contain malicious functionality. A "free game" that installs perfectly and runs fine, while also logging keystrokes in the background, is a Trojan. The defining characteristic is the disguise — the user believes they're installing or running something benign.
+
+**Ransomware** encrypts the victim's files and demands payment (typically cryptocurrency) in exchange for the decryption key. The encryption is usually legitimate AES or RSA — there is typically no technical way to recover files without the key. The defense is backups: if you have a clean recovery point, ransomware is a nuisance rather than a catastrophe. If you don't have backups, ransomware is a catastrophe.
+
+**Spyware** monitors user activity without knowledge or consent. Keyloggers (capturing every keystroke), screen capture malware, and credential-harvesting software are spyware variants. Symptoms include unexplained network activity, browser settings that keep changing, and unusual outbound connections in network monitoring.
+
+**Rootkits** embed themselves deep in the operating system — sometimes at the kernel level or in the boot process (bootkit) — and hide their own presence. They actively modify OS components to make themselves invisible to standard detection. A rootkit that hides itself from the file system won't appear in Task Manager, won't show in Autoruns, and may not be detectable while Windows is running. Offline scanning tools run before Windows boots are required for reliable rootkit detection.
+
+**Adware** generates unwanted advertisements — browser redirects, popup windows, additional toolbars. It's annoying rather than immediately damaging, but adware often bundles with spyware, and aggressive adware can redirect DNS queries to expose users to more dangerous content.
+
+**Cryptomining malware** uses the victim's hardware to mine cryptocurrency for the attacker. The symptom is consistent high CPU and/or GPU utilization at idle, elevated power consumption, and potential thermal throttling. The machine runs, but runs slowly, and runs hot.
+
+## Windows Defender and Malware Removal
+
+**Windows Defender Antivirus** (built into Windows 10/11) provides real-time protection, scheduled scanning, and cloud-delivered threat intelligence. It's legitimately competitive with third-party antivirus — independent lab tests consistently rank it among the top performers. There's no longer a strong case for installing third-party antivirus on a personal Windows machine when Defender is active and up to date.
+
+Defender integrates with **Windows Security Center** (the shield icon in the taskbar), which provides a dashboard view of protection status: antivirus, firewall, account protection, and device performance. If Defender's real-time protection is disabled and nothing else is active, Windows Security Center flags it.
+
+For malware removal, the process is rarely just "run one scanner and reboot":
+
+1. Isolate the machine from the network if possible — stop active malware from communicating with command-and-control servers or spreading further.
+2. Run a full Windows Defender scan. Address everything it finds.
+3. Check **Autoruns** (Microsoft's Sysinternals tool, free download) — the definitive tool for finding everything that auto-starts on a Windows system. It shows startup entries, scheduled tasks, browser extensions, drivers, and services that Defender might miss.
+4. Check installed programs in **Settings → Apps** for unfamiliar software installed recently.
+5. Check browser extensions in each browser the user uses.
+6. Review the Startup tab in Task Manager.
+7. Consider a second-opinion scan with Microsoft Safety Scanner or Malwarebytes Free (one-time scans, not persistent — they don't conflict with Defender).
+8. Verify the system is clean: no unexpected network traffic, no unexplained processes, no browser redirects.
+
+If a rootkit is suspected — if the system's behavior doesn't match what the tools are showing — boot from external media and scan offline.
+
+## User Account Control — Why It Matters
+
+**UAC (User Account Control)** prompts for confirmation or administrator credentials when an action requires elevated permissions. The prompt is either a blue shield ("show details" type) or a yellow/red warning. The color indicates source trust: blue means the file is signed by a trusted publisher; yellow/red means unsigned or from an unknown publisher.
+
+The security value: malware running in a standard user context cannot silently install system-level components, modify protected system files, or change security settings without triggering a UAC prompt. If a user is in the habit of clicking "Yes" on every UAC prompt without reading it, they are undermining this protection. If a UAC prompt appears unexpectedly — without the user having initiated any action — that is a red flag that something is attempting to escalate privileges.
+
+UAC is configured in **Control Panel → User Accounts → Change User Account Control Settings**. On a corporate managed machine, UAC settings are enforced by Group Policy. Never recommend lowering UAC to "Never Notify" as a solution to UAC interruptions.
+
+## BitLocker Drive Encryption
+
+**BitLocker** encrypts the entire contents of a drive so that physical access to the drive doesn't grant access to the data. Without the correct PIN, password, or recovery key, the drive's contents are unreadable cipher text — a stolen laptop with BitLocker enabled exposes nothing.
+
+BitLocker on the system drive is most secure with a **TPM (Trusted Platform Module)** — a chip that stores the encryption keys. On boot, the TPM verifies that the hardware configuration hasn't changed and automatically provides the key (on TPM-only mode) or requires an additional PIN. If the drive is moved to a different machine, the TPM key isn't there, and the drive won't mount without the recovery key.
+
+The **BitLocker Recovery Key** is a 48-digit number generated when BitLocker is first enabled. It's the only way to unlock a BitLocker drive when normal authentication fails (wrong PIN, TPM cleared, hardware change). **Back this up immediately.** It can be saved to Azure AD (for Microsoft account or AAD-joined machines), stored in Active Directory (for domain-joined machines), saved as a file, or printed. A BitLocker drive without its recovery key — and where normal authentication fails — contains unrecoverable data.
+
+BitLocker is available on Windows 10/11 Pro, Enterprise, and Education. Windows Home has a limited version called Device Encryption that requires modern hardware but provides similar basic protection.
+
+**BitLocker To Go** extends encryption to removable drives (USB drives, external hard drives). Configured through the same BitLocker control panel.
+
+## Data Sanitization — Disposing of Drives Securely
+
+When a machine is being decommissioned, the storage device needs to be handled appropriately. "Deleting" files doesn't make them unrecoverable — it marks the space as available but leaves the data physically on the drive until overwritten. Standard formatting has the same limitation on traditional HDDs.
+
+The three levels of sanitization recognized in security frameworks:
+
+**Clear** — logical overwriting of data using software tools. For HDDs: a DOD-standard seven-pass overwrite or NIST 800-88 one-pass overwrite makes data practically unrecoverable with standard tools. For SSDs: manufacturer secure erase commands or OS-level encrypted wipe. Clearing is appropriate for equipment being reassigned within the organization.
+
+**Purge** — secure erase methods that resist laboratory recovery attempts. For SSDs: the ATA Secure Erase command (built into the drive firmware) cryptographically invalidates all data by erasing the internal encryption key. For HDDs: degaussing (exposing to a strong magnetic field, rendering the drive nonfunctional but data destroyed). For **Crypto Erase** (a specific purge method): encrypting the drive, then erasing the key — the data is unreadable because the key is gone. Purging is appropriate for sensitive data before equipment leaves the organization.
+
+**Destroy** — physical destruction of the storage media. Shredding, drilling, incineration. Recovery becomes physically impossible. Required for classified, regulated, or extremely sensitive data. Note: destroying an SSD by drilling through it may not destroy all flash chips — shredding to specific particle sizes is the reliable method.
+
+## Local Security Policy
+
+**Local Security Policy** (`secpol.msc`) — available on Windows 10/11 Pro and higher — configures security settings on a standalone (non-domain) machine: password policies (minimum length, complexity, expiration), account lockout policies (how many failed attempts before lockout, lockout duration), audit policies (what gets logged to the Security event log), and user rights assignments.
+
+Key policies every technician should know: **Password Complexity** (requires uppercase, lowercase, number, symbol), **Minimum Password Length** (14+ characters per NIST recommendations), **Account Lockout Threshold** (commonly 5–10 attempts), and **Audit Logon Events** (log both successful and failed logins to the Security event log).
+
+In domain environments, Group Policy Objects (GPOs) set these policies centrally across all machines. Local Security Policy settings are overridden by domain Group Policy — if a machine is domain-joined and a setting doesn't stick when configured locally, a conflicting GPO is the likely explanation.
+
+## Why This Matters in the Field
+
+A client's machine with malware is a trust problem. They trusted the machine with passwords, financial information, and personal files. Something violated that trust. Your job isn't just to remove the malware — it's to restore the machine to a state the client can trust, explain what happened in terms they understand, and help them avoid it happening again.
+
+Removing adware without explaining that accepting every "free" software bundle is how adware gets installed means it'll be back in three months. Encrypting a business laptop with BitLocker and then failing to save the recovery key means a firmware update or hardware failure turns a recoverable situation into a data loss event. Understanding these tools at the level this lesson covers — not just "run the scanner" but knowing what the scanner looks for, what it misses, and what the backup safety net looks like — is what makes the difference.

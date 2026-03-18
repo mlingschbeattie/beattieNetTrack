@@ -1,0 +1,135 @@
+---
+title: Troubleshooting Software — OS Errors, Crashes, and Slow Systems
+description: Diagnosing slow boot, application crashes, BSOD stop errors, driver conflicts, failed updates, and malware using Windows diagnostic tools — Safe Mode, Event Viewer, Task Manager, System Restore, and disk utilities — with a complete approach to software-layer troubleshooting.
+slug: pct-troubleshooting-software
+track: pc-technician
+moduleId: pct.troubleshooting.common-issues
+order: 2
+difficulty: Beginner
+estMinutes: 30
+tags: ["software troubleshooting", "BSOD", "Safe Mode", "Event Viewer", "driver errors", "malware", "A+", "Core 2"]
+---
+
+## The Machine That Used to Be Fast
+
+The user says the computer is "too slow." It takes four minutes to boot. Applications open eventually, but the loading spinners are longer than they used to be. Nothing specific has changed — or so they say. This is one of the most common complaints in desktop support, and the diagnostic approach depends entirely on where the slowness originates. Software troubleshooting is about reading the operating system's own output — the tools are already there.
+
+## The Difference Between Software and Hardware Problems
+
+Before committing to a software diagnosis, rule out hardware. Software problems and hardware problems can produce identical user-visible symptoms. A genuinely slow drive makes the OS seem slow. A failing network card causes intermittent internet problems that look like software misconfiguration. RAM failure causes application crashes that look like software bugs.
+
+The key differentiator: **does the problem persist in Safe Mode?** Safe Mode loads only core Windows components and Microsoft-signed drivers. No third-party software, no startup programs, no vendor drivers. If the system is slow in Safe Mode, the problem is core hardware or core Windows. If the system runs well in Safe Mode, the problem is in the software, drivers, or configuration that loads in normal mode.
+
+## Slow Boot: Where the Time Goes
+
+A slow boot is almost always one or more of: too many startup programs, a failing drive, or a degraded Windows installation.
+
+**Task Manager's Startup tab** (Ctrl+Shift+Esc → Startup) lists every application configured to launch at login. The "Startup impact" column (High/Medium/Low) shows which applications most affect boot time. Applications with High impact that appear unnecessary should be disabled here — right-click, Disable. Common culprits: cloud sync clients (OneDrive, Dropbox, Google Drive) starting multiple processes, video card control panels, vendor utilities for peripherals, old browser update daemons, and applications that were installed without asking for permission to start.
+
+**Disk read speed during boot**: right after login, open Task Manager's Performance tab and look at Disk activity. If the disk is at 100% utilization for extended periods after login, storage I/O is the bottleneck. This happens because Windows and applications are all reading from disk simultaneously. On HDDs, this is severe — HDDs seek between multiple files extremely slowly compared to SSDs. An old machine with an HDD that feels dramatically sluggish after login is often fixed with an SSD upgrade rather than software optimization.
+
+**Services delaying boot**: the Services tab in Task Manager and the services.msc console show all services and their startup type (Automatic, Automatic (Delayed Start), Manual, Disabled). Services set to Automatic launch during boot; Delayed Start services launch a short time after. Third-party services from installed software sometimes set themselves to Automatic and consume boot time. Setting non-essential services to Manual (start on demand) or Disabled reduces boot overhead.
+
+**msconfig** (System Configuration) under the Boot tab allows temporarily disabling all non-Microsoft services and all startup items (selective startup mode) to establish a clean baseline. If the system boots quickly in selective startup, add services and startup items back in batches to identify the culprit.
+
+## Application Crashes and Errors
+
+Applications that crash or produce errors are the second-most common software complaint category. Diagnosis depends on whether the crash is specific to one application or affects multiple.
+
+**Single application crashing**: check for application-specific updates. Most software has an update mechanism — install the latest version. Check whether crash reports are generated in the application's own logs. If the application has recently updated and started crashing, consider rolling it back. For commercial software, check the vendor's known issues list and support forums with the error message as the search term.
+
+**Application crashes that produce error IDs** (hex codes, specific error strings) should be searched exactly as written. The exact error code narrows the problem. "Application Error 0xc0000005" means access violation — the application tried to read or write memory it shouldn't access, which can be a bug in the application, corrupted application files, or — significantly — bad RAM. The access violation code appearing in multiple unrelated applications strengthens the RAM hypothesis.
+
+**DLL errors** ("The program can't start because MSVCP140.dll is missing") indicate missing redistributable packages. Microsoft's Visual C++ Redistributable installer resolves most of these. Installing the application's required redistributables from Microsoft's official download center is the correct fix; downloading DLLs from random third-party sites is not.
+
+**Administrative privileges**: some applications require elevation and produce errors when run without it. Right-click > Run as administrator to test. If the application works as admin but not as a normal user, the issue is permissions — often missing write rights to a directory the application expects to control.
+
+## Blue Screen of Death (BSOD) Stop Errors
+
+Windows displays a BSOD when the kernel encounters a condition it cannot recover from — typically a driver accessing invalid memory, a failed critical system component, or unrecoverable hardware errors.
+
+**Reading the BSOD**: modern Windows BSODs show a stop code below the sad face emoji. Common stop codes and their implications:
+
+| Stop Code | Common Cause |
+|-----------|-------------|
+| IRQL\_NOT\_LESS\_OR\_EQUAL | Driver accessing memory at improper priority level — driver bug or bad RAM |
+| SYSTEM\_SERVICE\_EXCEPTION | Kernel-mode driver crash |
+| CRITICAL\_PROCESS\_DIED | A critical Windows process terminated unexpectedly |
+| MEMORY\_MANAGEMENT | RAM errors — suspect faulty memory |
+| NTFS\_FILE\_SYSTEM | File system corruption on the NTFS volume |
+| WHEA\_UNCORRECTABLE\_ERROR | Hardware error uncorrectable by the system — CPU, memory, or hardware instability |
+| PAGE\_FAULT\_IN\_NONPAGED\_AREA | Driver or application tried to access memory that should be in RAM but wasn't |
+
+The stop code tells you the category of failure. The **minidump file** tells you who. Minidumps are saved to `C:\Windows\Minidump\` after each BSOD (if configured — verify in System Properties → Advanced → Startup and Recovery → Write debugging information, set to "Small memory dump"). Analyze minidumps using **WinDbg** or the simpler **WhoCrashed** application, which reads the dump and names the responsible driver in plain language.
+
+If BSODs happen regularly but inconsistently after a new driver or application install, rolling back that driver or application is the first test.
+
+## Driver Problems
+
+Driver issues are among the most common software-layer hardware failures. Signs of driver problems:
+
+- Yellow exclamation mark in Device Manager
+- Red X (device disabled)
+- "Code 43" errors (generic device failure, often GPU)
+- Device listed as "Unknown device" (driver not found)
+- BSOD with a stop code pointing to a driver file name
+
+**Device Manager workflow**: open Device Manager (devmgmt.msc or right-click Start → Device Manager). Expand any category with a yellow warning icon. Right-click the device → Properties → Device status to read the error code. Right-click → Update driver → Search automatically — Windows will attempt to find a better driver via Windows Update.
+
+For GPU drivers: Windows Update's driver distribution lags behind manufacturer releases. Download GPU drivers directly from Nvidia's or AMD's website, use their clean install option (DDU — Display Driver Uninstaller — if problematic drivers are present), and install fresh. The "clean install" checkbox in the Nvidia/AMD installer removes old driver files before installing new ones.
+
+**Rolling back a driver**: Device Manager → device Properties → Driver tab → Roll Back Driver. This restores the previously installed driver version. Use when a recent driver update introduced problems.
+
+**Signed vs unsigned drivers**: Windows requires drivers be digitally signed in 64-bit environments. Unsigned drivers fail to load. Some older or infrequently updated drivers lack signatures. Test signing mode (available but not recommended for daily use) bypasses this requirement. Generally: unsigned drivers for modern hardware are suspicious — either the hardware is very old or the driver source is questionable.
+
+## Windows Update Failures and Corrupt System Files
+
+Windows updates exist in a state of perpetual partial installation across many machines. Failed updates, stuck updates, and corrupted update caches produce error codes in Windows Update and sometimes cause boot problems.
+
+**sfc /scannow** (run Command Prompt as administrator) scans system files and reports and repairs corrupted files against the Windows Component Store. This is the first tool for "Windows is acting strange but I can't identify a specific cause" — it's non-destructive, fast, and often finds issues the user didn't know to mention.
+
+**DISM (Deployment Image Servicing and Management)**: `DISM /Online /Cleanup-Image /RestoreHealth` repairs the component store itself if it's corrupted. Run DISM before sfc if both are needed — sfc relies on the component store being healthy to restore files. Both require administrator Command Prompt.
+
+**Clearing the Windows Update cache**: when updates are stuck downloading or installing, stopping the Windows Update service and deleting the contents of `C:\Windows\SoftwareDistribution\Download\` clears cached (possibly corrupted) downloaded files and forces Windows Update to re-download from scratch. After deletion, restart the Windows Update service.
+
+## Diagnosing with Event Viewer
+
+**Event Viewer** (eventvwr.msc) is Windows' central log of system, application, and security events. For software troubleshooting, it's often the difference between guessing and knowing.
+
+Navigate to: Windows Logs → System (hardware drivers, kernel events, system services) and Windows Logs → Application (application crashes and errors). Filter by Error and Critical. Sort by date. Look at what happened in the minutes before the problem occurred.
+
+**Reading an event**: every event has an Event ID, Source (the application or driver that logged it), and description. The Event ID, combined with the Source, is a specific searchable code. Search "Event ID 41 source Kernel-Power" — this is the unexpected shutdown error logged after power loss or forced reboot without a proper shutdown. It's also logged after a BSOD-triggered reboot. Finding multiple Event ID 41s correlated with BSOD timestamps confirms you're analyzing the right crash history.
+
+The **Custom Views → Administrative Events** built-in view aggregates critical and error events from all logs into a single view, which is faster for scanning than opening each log individually.
+
+## Slow Performance During Use (Not Boot)
+
+Persistent slowness after the system is running points to resource exhaustion.
+
+**Task Manager's Performance tab** shows real-time CPU, memory, disk, and network utilization. A CPU at 90%+ constantly indicates something is consuming processor time — look at the Processes tab, sort by CPU, and identify the process. Common causes: malware, a crashed background process spinning, browser tabs running JavaScript-heavy pages.
+
+**Memory pressure**: if Memory shows in use: 7.5/8 GB and the Committed counter significantly exceeds Available, Windows is paging — writing memory contents to the pagefile on disk because physical RAM is exhausted. This causes significant disk I/O and makes everything feel slow. Solutions: reduce memory-heavy programs, add RAM, or investigate for memory leaks when specific applications' memory use grows over time without releasing.
+
+**Disk at 100% constantly**: covered under boot, but also occurs during use if antivirus is scanning during work hours, a cloud sync client is consuming I/O, or Windows Search is indexing. The Resource Monitor (resmon.exe) provides more granular disk activity detail than Task Manager — it shows which specific files are being read/written and by which process.
+
+## Malware Indications
+
+Malware doesn't always announce itself. Indicators that suggest malware investigation:
+
+- Browser homepage has changed without user action
+- Multiple browser toolbars appeared
+- Antivirus warnings about threats being removed repeatedly
+- System is slow specifically when connected to the internet
+- New tasks in Task Scheduler that the user didn't create
+- Entries in the Startup tab in Task Manager the user doesn't recognize
+- Unusual processes in Task Manager that can't be identified as legitimate Windows components or installed applications
+
+Run Windows Defender Full Scan as the first step. For persistent infections: boot into Safe Mode with Networking, download Malwarebytes and run a full scan, use Autoruns (Sysinternals, free from Microsoft) to review everything configured to start with Windows and remove unauthorized entries. Malwarebytes targets adware, PUPs, and malware classes that Defender may miss. The combination covers most scenarios encountered in the field.
+
+For rooted infections — where malware has embedded itself deeply enough that it survives product scans and Safe Mode — the reliable solution becomes a clean install after data backup. Time spent fighting deeply rooted malware typically exceeds the time to reinstall, and the rootkill never reaches certainty.
+
+## Why This Matters in the Field
+
+Software troubleshooting is what fills most of a desktop technician's actual service tickets. Not dramatic hardware failures — slow machines, crashing applications, BSODs that happened once, systems that need updates that won't apply. These are solvable problems if you know where to look.
+
+The technicians who can sit down at a sick machine, open Event Viewer, read what it says, identify the pattern, and make a targeted fix are faster and more reliable than technicians who guess and try. The tools described here are all built into Windows or freely available from Microsoft. They don't require expensive software — they require knowing they exist and understanding what they report.

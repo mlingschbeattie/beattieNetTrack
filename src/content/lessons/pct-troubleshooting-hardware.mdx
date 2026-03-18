@@ -1,0 +1,95 @@
+---
+title: Troubleshooting Hardware — Diagnosing Physical Component Failures
+description: Diagnosing no-power, no-POST, no-display, overheating, memory failures, storage degradation, and intermittent crashes — symptom patterns, isolation techniques, and the tools used to identify failed hardware before replacing it.
+slug: pct-troubleshooting-hardware
+track: pc-technician
+moduleId: pct.troubleshooting.common-issues
+order: 1
+difficulty: Beginner
+estMinutes: 30
+tags: ["hardware", "troubleshooting", "POST", "beep codes", "overheating", "RAM", "storage", "A+", "Core 1"]
+---
+
+## The Machine That Does Nothing
+
+You press the power button. Nothing happens. Not a fan spin, not an LED, not a beep — nothing. Before you start substituting components at random, there's a structured sequence for narrowing down where the failure is. Hardware troubleshooting is a process of elimination guided by symptom interpretation. Different failure modes produce different symptoms, and the symptoms point toward the failed component when you know how to read them.
+
+## No Power: Working Backward from Dead
+
+A system that shows zero signs of life when the power button is pressed has the problem somewhere between the wall and the CPU.
+
+Begin at the power source. Verify the outlet works by plugging something else into it. Inspect the power cable — is it fully seated at both ends? If the desktop has a physical switch on the rear of the PSU, is it in the "on" position (|, not O)? On laptops, try removing the battery and running on AC power only to rule out a failed battery preventing startup.
+
+If the power source is confirmed good, test the power supply unit. The simplest PSU test requires only a paperclip: disconnect all power connectors, connect only the ATX 24-pin connector, and short pin 16 (PS\_ON, typically a green wire) to any ground (black wire) using a bent paperclip to jumper them. If the PSU is functional, its fan will spin. No spin indicates a dead PSU. This test confirms the PSU can produce power — not that it's producing clean regulated power, but it eliminates a completely dead unit quickly.
+
+If you have a PSU tester, use it instead. PSU testers measure each voltage rail: +3.3V, +5V, +12V, and -12V. The +12V rail powers the CPU and most drives; the +5V powers USB and storage controllers; the +3.3V supplies RAM. Rails that read significantly out of spec indicate a failing PSU even if it can produce some power.
+
+If the PSU checks out, the problem moves to the motherboard. Common signs of a dead motherboard: a burned capacitor (bulging or leaking top), a POST indicator code on the motherboard debug LED display (most mid-range and higher motherboards now include a two-digit hex display showing POST progress codes), or simply no response with a known-good PSU. Substitute motherboards are the only definitive test when no visible damage is present.
+
+## POST Failures and Beep Codes
+
+**Power-On Self-Test (POST)** is the firmware routine that runs every time the system powers on. It checks that critical components are present and responsive before handing control to the bootloader. When POST fails, the system stops and signals the failure.
+
+On systems with a speaker (discrete physical header speaker, not a full audio subsystem), different failures produce different patterns of beeps. The POST code system is **not standardized** — it varies by BIOS vendor (AMI, Award, Phoenix) and motherboard manufacturer. A common AMI pattern: one long beep plus two short beeps indicates a video card failure. Three long beeps may indicate memory failure. The exact interpretation requires the manual for that specific board.
+
+Modern motherboards with debug LEDs (often labeled BOOT, VGA, DRAM, CPU) light up specific LEDs to indicate where POST stopped. These are significantly more useful than beep codes. If the DRAM LED is lit, the board stopped during memory initialization — reseat the RAM modules, try them in different slots (consult the manual for single-channel vs. dual-channel slot configuration), try one stick at a time to isolate a bad module.
+
+For no-display situations where the system otherwise appears to start (fans spin, lights on): POST is producing an error that requires a display to show, but the display isn't receiving signal. Systematically isolate: is the monitor powered on and connected? Try a different cable. If using discrete GPU, try the motherboard's integrated display output if available. If integrated output works, the GPU is the suspect. If nothing produces an image, try a known-good monitor. For desktop systems with a discrete GPU, try reseating it — GPU slot seating problems are common, especially after a system has been moved.
+
+## Overheating: Symptoms and Diagnosis
+
+Thermal problems produce a distinctive pattern: the system runs normally for some time — seconds, minutes, or hours depending on the load — and then either shuts down abruptly, reduces performance, or becomes unstable with random crashes. These symptoms during workload are almost always thermal until proven otherwise.
+
+**CPU temperature monitoring**: use software like HWiNFO64, HWMonitor, or Core Temp to read CPU temperatures in real-time. Idle temperatures for most desktop CPUs should be in the 30–50°C range. Under sustained full load, temperatures should stay under 95°C for AMD Ryzen and under 100°C for Intel Core (though sustained operation near those limits suggests inadequate cooling). Laptops run hotter by design, but temperatures consistently above 90°C under moderate load are concerning.
+
+**Thermal throttling** is the CPU or GPU reducing its clock speed and voltage to bring temperatures down. The processor is protecting itself but delivering reduced performance. In software, this appears as significant performance drops during compute-heavy tasks. Task Manager's CPU frequency graph will show the frequency dropping well below the base clock under load.
+
+Common causes:
+- **Dried or insufficient thermal paste**: over years of heat cycling, thermal paste between the CPU and heatsink degrades and loses conductivity. Reapply fresh paste after cleaning both surfaces with isopropyl alcohol (90%+).
+- **Dust accumulation**: dust in the heatsink fins acts as insulation. In high-dust environments, a single year can reduce cooling effectiveness significantly. Clean with compressed air — outdoors or with exhaust aimed away from other equipment.
+- **Fan failure**: a CPU cooler fan that stops spinning (visible in BIOS under PC Health or in monitoring software) causes immediate temperature spikes. Verify the fan connector is properly seated on the CPU\_FAN header. Physical obstruction from a loose cable is a common cause.
+- **Inadequate case airflow**: correct case airflow for most configurations is front-to-back and bottom-to-top: intake at front and bottom; exhaust at rear and top. Fans installed backwards create turbulence and reduce airflow. A case full of cables with no management restricts airflow physically.
+
+For laptops specifically: the thermal pathway from CPU to heatsink often involves heat pipes to a small fin array and single fan. If the vent is blocked by a soft surface (used on a bed or couch), temperatures rise dramatically. Laptop thermal paste also dries out and should be reapplied on machines several years old that show thermal symptoms.
+
+## Memory Failures
+
+RAM failures produce some of the most variable symptoms in hardware troubleshooting: random crashes, BSOD with different stop codes each time, application errors, failure to boot, system freezes, and visible corruption on screen. Because memory is used constantly by every application, a failing module can manifest in almost any way.
+
+**Reseating first**: memory module contacts can oxidize or work loose over time. Power down, remove modules, blow out the slot, and firmly reseat. A surprising number of apparent memory failures are contact issues.
+
+**If symptoms continue**: run **MemTest86** (free, bootable from USB). MemTest86 runs outside the operating system, testing the physical RAM cells with multiple read/write patterns. A single error on any pass indicates defective memory. MemTest86 requires multiple passes for high confidence — if time allows, let it run overnight.
+
+**Isolation**: if you have multiple modules, test them one at a time. If the system works with module A but crashes with module B in the same slot, module B is faulty. If it crashes with module A in slot 1 but not slot 2, the slot may be faulty. Trace through all combinations if necessary.
+
+Note that memory is also paired with frequency profiles controlled by XMP/EXPO settings in BIOS. Enabling XMP at a speed the specific sticks can't sustain stably can produce symptoms that look like bad RAM. Test with XMP/EXPO disabled (JEDEC speeds) before concluding hardware is bad.
+
+## Storage Failures
+
+Hard drives and SSDs fail differently but both require attention to early warning signs.
+
+**HDDs** give more audible and gradual warning. Clicking sounds (the head repositioning due to read errors) indicate imminent failure — prioritize data backup immediately. Grinding sounds are worse. Slow performance, especially during file operations, combined with increasing error counts in S.M.A.R.T. data is the most common pattern.
+
+**S.M.A.R.T. (Self-Monitoring, Analysis, and Reporting Technology)** is an internal monitoring system in modern drives that tracks health indicators: reallocated sectors (sectors the drive moved data away from because they became unreliable), pending sectors (sectors with read errors being monitored), uncorrectable sector errors, power-on hours, and drive temperature. Tools like **CrystalDiskInfo** (Windows) read S.M.A.R.T. data and give pass/warn/fail ratings. A drive showing **Caution** in CrystalDiskInfo warrants data backup before the drive is trusted for any further use.
+
+**SSDs** typically fail more abruptly than HDDs. Symptoms include the drive suddenly appearing read-only, disappearing from Device Manager, applications crashing with file access errors, or Windows BSOD pointing to disk errors. SSDs also have S.M.A.R.T. data including wear level indicators showing how much of the write endurance has been consumed.
+
+**Drive diagnostics**: most manufacturers provide their own drive diagnostic utility (Seagate's SeaTools, WD Data Lifeguard, Samsung Magician). These run targeted tests including short self-test, long self-test, and surface scan. For drives you can't identify by brand, MHDD and Victoria (Linux-based) provide manufacturer-agnostic testing.
+
+**When diagnostic tools show failures**: that drive needs to be replaced, not reformatted and returned to service. Reformatting hides the S.M.A.R.T. errors in log files but doesn't fix the physical sectors. The drive will fail again.
+
+## Intermittent and Hard-to-Reproduce Issues
+
+Some of the most challenging hardware problems are intermittent: the system works fine during your diagnosis session and fails when the user has it. Strategies for intermittent problems:
+
+**Stress testing** reproduces failures that only occur under load. For CPU and RAM stress: **Prime95** (CPU arithmetic intensive) or **OCCT**. For GPU stress: **FurMark**. Run these with temperature monitoring open and observe whether the system fails, throttles, or logs errors under sustained load. A system that passes casual use but fails under stress is almost certainly a thermal issue or marginal component.
+
+**Event Viewer correlation**: even for intermittent problems, Windows Event Viewer (covered in detail in the software troubleshooting lesson) logs critical and error events. After a crash, a crash timestamp, combined with the System and Application logs immediately before it, often reveals the driver or component involved. BSOD minidump analysis (using WinDbg or WhoCrashed) identifies the driver that triggered the stop error.
+
+**The paper clip test and power substitution**: when symptoms suggest power instability (random reboots, instability that gets worse when more components are added, components that don't initialize reliably), swap in a known-good PSU. Power supply degradation — where the unit functions well enough to mostly work but can't sustain load spikes — produces exactly this pattern and is more common in older or low-quality PSUs than any other hardware failure mode.
+
+## Why This Matters in the Field
+
+Hardware diagnosis is where technicians earn the most trust — and lose it the fastest. Replacing components without diagnosis wastes client money on parts that may not fix the problem. Worse, replacing a component on a client's machine and having it still fail looks like incompetence regardless of how logical the guess was.
+
+The diagnostic sequence matters: use symptoms to narrow the suspect list, test the suspicion before acting on it, verify the fix resolved the problem before closing out. A system that was dead when the client brought it in and leaves working, with a clear explanation of what failed and why it failed, is the outcome that builds the reputation that sustains a career. The symptom patterns in this lesson are the patterns that will come up again and again — recognize them and you'll have a reliable first theory every time.

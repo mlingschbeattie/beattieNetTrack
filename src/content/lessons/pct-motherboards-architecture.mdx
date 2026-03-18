@@ -1,0 +1,198 @@
+---
+title: Motherboards and Architecture — The Board That Connects Everything
+description: Motherboard form factors, CPU sockets, chipsets, expansion slots, memory compatibility, BIOS/UEFI, and the compatibility rules every technician must know before recommending or installing any component.
+slug: pct-motherboards-architecture
+track: pc-technician
+moduleId: pct.hardware.components-identification
+order: 2
+difficulty: Beginner
+estMinutes: 30
+tags: ["motherboard", "BIOS", "UEFI", "chipset", "form factor", "A+", "Core 1", "CompTIA"]
+---
+
+## Why Motherboards Matter More Than Any Other Component
+
+Every compatibility decision in a PC build flows through the motherboard. You cannot put any CPU in any board. You cannot use any RAM in any slot. You cannot install any GPU in any case. The motherboard defines what's possible — its socket, chipset, form factor, and slot configuration determine every other component you can use.
+
+Technicians who don't understand motherboards make expensive mistakes: ordering a CPU that won't fit, installing RAM that won't run at rated speed, recommending an upgrade that's physically incompatible. This lesson prevents those mistakes.
+
+## Form Factors — Physical Size and Layout
+
+Form factor describes the physical dimensions of the motherboard and where its mounting holes are. Cases are designed for specific form factors — a Micro-ATX board fits in an ATX case, but an ATX board won't fit in a Micro-ATX case.
+
+| Form Factor | Dimensions | PCIe Slots | Use Case |
+|-------------|-----------|-----------|----------|
+| ATX | 305mm × 244mm | Up to 7 | Full-size desktop, workstation |
+| Micro-ATX | 244mm × 244mm | Up to 4 | Mid-size desktop, budget builds |
+| Mini-ITX | 170mm × 170mm | 1 | Small form factor, HTPC |
+| E-ATX | 305mm × 330mm+ | Up to 8 | High-end workstation, HEDT |
+
+The mounting hole pattern for each form factor is standardized — an ATX case has holes for ATX, Micro-ATX, and Mini-ITX boards. Cases list which form factors they support.
+
+**For the exam:** Know ATX, Micro-ATX, and Mini-ITX dimensions and characteristics. ATX is the standard; Mini-ITX is the smallest common consumer form factor.
+
+## CPU Sockets — The Compatibility Chokepoint
+
+The CPU socket is the most critical compatibility factor. CPU and socket must match exactly — there is no workaround.
+
+### Intel Sockets
+
+Intel has changed sockets frequently. Current and recent sockets:
+
+| Socket | CPUs Supported | Generation |
+|--------|---------------|-----------|
+| LGA 1700 | 12th, 13th, 14th Gen Core | Current mainstream |
+| LGA 1200 | 10th, 11th Gen Core | Previous gen |
+| LGA 1151 | 6th–9th Gen Core | Older |
+| LGA 2066 | Core X series | High-end desktop |
+
+Intel LGA sockets have pins on the socket, not the CPU. The CPU has flat contact pads. Bent socket pins are a serious (and expensive) problem.
+
+### AMD Sockets
+
+AMD has maintained better socket longevity:
+
+| Socket | CPUs Supported | Generation |
+|--------|---------------|-----------|
+| AM5 | Ryzen 7000 series | Current |
+| AM4 | Ryzen 1000–5000 series | Previous gen (long-lived) |
+| TRX40/TRX50 | Threadripper | High-end desktop |
+
+AMD AM4 used PGA (pins on CPU); AM5 switched to LGA (pins on socket, like Intel). AM4's longevity — supporting four generations of Ryzen — made it popular for budget upgrades.
+
+**Critical rule:** Even if a CPU physically fits a socket, it may not be supported by the motherboard's chipset or BIOS version. Always check the motherboard manufacturer's CPU support list before purchasing.
+
+## Chipsets — What They Control
+
+The chipset manages communication between the CPU and the rest of the system — PCIe lanes, USB ports, SATA ports, and other I/O. The CPU communicates with the chipset over a high-speed link.
+
+Within a CPU generation, chipsets are tiered by features:
+
+**Intel (12th/13th Gen example):**
+- Z790 — full overclocking support, maximum PCIe lanes, premium features
+- B760 — mid-range, some overclocking limitations, fewer PCIe lanes
+- H770/H610 — budget, no CPU overclocking, fewer ports
+
+**AMD (AM5 example):**
+- X670E — enthusiast, maximum PCIe 5.0 lanes
+- X670 — high-end
+- B650 — mainstream
+- A620 — budget
+
+The chipset is soldered to the motherboard — you cannot upgrade it. Choosing the right chipset tier is a build-time decision.
+
+## RAM Compatibility — More Complicated Than It Looks
+
+RAM compatibility depends on four factors that must all align:
+
+**1. Generation** — DDR4 and DDR5 are physically incompatible. The notch position on the module is different. A DDR5 stick will not fit in a DDR4 slot and vice versa. The CPU and motherboard must both support the same DDR generation.
+
+**2. Speed** — RAM is rated at a maximum speed (e.g., DDR4-3200). The motherboard has a maximum supported speed. Installing faster RAM than the motherboard supports results in the RAM running at the lower speed. Installing slower RAM is fine but wastes potential.
+
+**3. Capacity per slot** — each slot has a maximum supported capacity (typically 16GB or 32GB for consumer boards). A board that supports 64GB total with 4 slots supports 16GB per slot maximum.
+
+**4. Configuration** — dual-channel requires matching sticks in the correct slots. Check the motherboard manual for which slots to use (typically slots 2 and 4, or A2 and B2, not 1 and 2).
+
+**XMP/EXPO** — RAM rated above the base JEDEC spec (DDR4-2133, DDR5-4800) requires enabling XMP (Intel) or EXPO (AMD) in the BIOS to run at its rated speed. Without this, it runs at base spec.
+
+## Expansion Slots — PCIe
+
+PCIe (Peripheral Component Interconnect Express) slots come in different physical sizes and electrical configurations:
+
+| Slot Size | Physical Length | Typical Use |
+|-----------|----------------|-------------|
+| x16 | Longest | GPU (primary slot) |
+| x8 | Medium-long | GPU (secondary), some NICs |
+| x4 | Medium | NVMe adapters, some NICs |
+| x1 | Shortest | Sound cards, USB cards, basic NICs |
+
+A key fact: a physically larger slot can accept a smaller card. An x1 card can go in an x16 slot. The card will only use x1 electrical lanes but it will work. The reverse — an x16 card in an x1 slot — won't fit without physically modifying the slot.
+
+PCIe versions (3.0, 4.0, 5.0) are backward compatible but at the lower speed. An PCIe 4.0 GPU in a PCIe 3.0 slot works, but at PCIe 3.0 speeds.
+
+## BIOS and UEFI
+
+### What BIOS Does
+
+BIOS (Basic Input/Output System) is firmware stored on a chip on the motherboard. It runs before the operating system loads and handles:
+
+- **POST** (Power-On Self Test) — checks that hardware is present and functional
+- **Hardware initialization** — configures CPU, RAM, and storage controllers
+- **Boot device selection** — determines what device to boot from and in what order
+- **Hardware configuration** — clock speeds, voltage, fan curves, security settings
+
+### BIOS vs UEFI
+
+Modern systems use UEFI (Unified Extensible Firmware Interface), which replaced traditional BIOS. You'll still hear both terms used interchangeably. Key differences:
+
+| Feature | Legacy BIOS | UEFI |
+|---------|-------------|------|
+| Interface | Text-only | Graphical (mouse support) |
+| Drive size support | Up to 2TB (MBR) | 9.4ZB (GPT) |
+| Boot speed | Slower | Faster (supports fast boot) |
+| Secure Boot | No | Yes |
+| Architecture | 16-bit | 32/64-bit |
+
+### Accessing UEFI/BIOS
+
+Press a key during POST — before the OS loads. Common keys: Delete, F2, F10, F12 (varies by manufacturer). The key is usually displayed briefly on screen during boot.
+
+### Key BIOS Settings for Technicians
+
+**Boot order** — determines which device is tried first for booting. Change this to boot from USB for OS installation or recovery.
+
+**Secure Boot** — a security feature that prevents booting unsigned code. May need to be disabled to install certain Linux distributions or run bootable USB tools.
+
+**XMP/EXPO** — enables RAM to run at its rated speed (disabled by default).
+
+**Virtualization (Intel VT-x / AMD-V)** — must be enabled for virtual machines to run. Disabled by default on some boards.
+
+**Fan control** — set fan curves based on temperature. Relevant when configuring a quiet build or diagnosing thermal issues.
+
+**TPM** — Trusted Platform Module, required for Windows 11. Can be enabled/configured in UEFI on boards that have a TPM chip or firmware TPM.
+
+### BIOS Updates (Flashing)
+
+Motherboard manufacturers release BIOS updates to add CPU support, fix bugs, and improve stability. Updating BIOS:
+
+1. Download the update file from the manufacturer's support page
+2. Copy to a FAT32-formatted USB drive
+3. Enter UEFI and use the built-in flash utility (EZ Flash, Q-Flash, etc.)
+
+**Critical warning:** Never interrupt a BIOS flash. Power loss during a flash can brick the motherboard. Some boards have a dual-BIOS feature (backup chip) for recovery from a failed flash.
+
+## CMOS Battery
+
+The small coin cell battery (CR2032) on the motherboard maintains BIOS settings and the real-time clock when the system is unplugged. When this battery dies:
+
+- System time resets to a default date on every boot
+- BIOS settings may reset to defaults
+- POST may display a "CMOS checksum error"
+
+Replacing it costs under $5 and takes two minutes. It's a common fix for older systems showing clock issues or BIOS resets.
+
+**Clearing CMOS** — removing the battery (or using the CLRTC jumper on the board) resets all BIOS settings to factory defaults. This is useful when a system won't boot after a bad BIOS change, or when you've forgotten a BIOS password.
+
+## Motherboard Connectors Reference
+
+| Connector | Description |
+|-----------|-------------|
+| 24-pin ATX | Main power from PSU |
+| 4/8-pin EPS | CPU power |
+| SATA data | Storage drives |
+| M.2 | NVMe/SATA SSDs direct |
+| USB 2.0 header | Front-panel USB 2.0 |
+| USB 3.0 header | Front-panel USB 3.0 |
+| USB-C header | Front-panel USB-C |
+| Fan headers (3/4-pin) | CPU fan, case fans |
+| Front panel header | Power/reset buttons, LEDs |
+| RGB/ARGB headers | Lighting control |
+| COM port | Legacy serial |
+
+## Why This Matters in the Field
+
+A client wants to upgrade their i7-8700 system with a new CPU. You check: it's on an LGA 1151 board with a Z370 chipset. You look up the CPU support list — 9th Gen Intel CPUs are supported with a BIOS update. A 10th Gen i7 is not supported at all (requires LGA 1200). Without knowing this, you'd order a $400 CPU that won't post.
+
+Another scenario: a client's system randomly resets every time they try to run RAM at 3600MHz. You check BIOS — XMP is disabled, so the system is running the RAM at 2133MHz base spec, but the board is unstable at the manually set 3600MHz without the XMP profile. Enable XMP, problem solved.
+
+Motherboard knowledge prevents expensive mistakes and enables fast, confident upgrades.

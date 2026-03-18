@@ -1,0 +1,1628 @@
+.
+├── BeattieNetTrack_LMS_Roadmap.md
+├── CONSTITUTION.md
+├── P0Audit.md
+├── PROMPT_GUIDE.md
+├── README.md
+├── Server_Project_Grading_Matrix.md
+├── astro.config.mjs
+├── dist
+│   ├── _astro
+│   │   ├── CodeRunner.CQPz6VER.js
+│   │   ├── LabRunner.7gUm15E0.js
+│   │   ├── LessonProgressControls.CwzgucSI.js
+│   │   ├── PcAssemblyLab._6X6v7lU.js
+│   │   ├── ProgressStatus.bMXj6az2.js
+│   │   ├── QuizCatalogBadge.DFDmTy3M.js
+│   │   ├── QuizRunner.Bub1iZuH.js
+│   │   ├── RightPanel.Df5gyljo.js
+│   │   ├── SidebarTourProgress.DS7XtiXA.js
+│   │   ├── SidebarTrackProgress.CSIACX4u.js
+│   │   ├── TerminalSimulator.C0J9ceZs.js
+│   │   ├── TourProgressCard.C5117HSB.js
+│   │   ├── TrackProgressSummary.CGcMn7GU.js
+│   │   ├── WorkspaceLayout.astro_astro_type_script_index_0_lang.CjYD3YDJ.js
+│   │   ├── _slug_.DQJnp3Pz.css
+│   │   ├── checksStore.DtlFrmHX.js
+│   │   ├── client.nc8uITnr.js
+│   │   ├── index.DK-fsZOb.js
+│   │   ├── jsx-runtime.ClP7wGfN.js
+│   │   └── progressStore.IksEY2qa.js
+│   ├── favicon.ico
+│   ├── favicon.svg
+│   ├── index.html
+│   ├── labs
+│   │   ├── code-basics
+│   │   │   └── index.html
+│   │   ├── index.html
+│   │   ├── network-terminal-basics
+│   │   │   └── index.html
+│   │   ├── pc-assembly
+│   │   │   ├── index.html
+│   │   │   ├── site.css
+│   │   │   └── site.js
+│   │   ├── pc-tech-legacy-hardware-lab
+│   │   │   └── index.html
+│   │   ├── runtime
+│   │   │   └── lab-api.js
+│   │   └── terminal-basics
+│   │       └── index.html
+│   ├── legacy
+│   │   ├── a-plus-guides.html
+│   │   ├── a-plus-hardware.html
+│   │   ├── a-plus-lab-bios-config.html
+│   │   ├── a-plus-lab-driver-install.html
+│   │   ├── a-plus-lab-pc-assembly.html
+│   │   ├── a-plus-lab-performance-tuning.html
+│   │   ├── a-plus-lab-upgrade-planning.html
+│   │   ├── a-plus-labs.html
+│   │   ├── a-plus-motherboards.html
+│   │   ├── a-plus-networking.html
+│   │   ├── a-plus-operating-systems.html
+│   │   ├── a-plus-power-cooling.html
+│   │   ├── a-plus-security.html
+│   │   ├── a-plus-storage.html
+│   │   ├── a-plus-troubleshooting.html
+│   │   ├── about-class.html
+│   │   ├── auth-demo.html
+│   │   ├── binary-exploitation.html
+│   │   ├── cheat-sheets.html
+│   │   ├── cryptography.html
+│   │   ├── download.html
+│   │   ├── exif-simulator.html
+│   │   ├── forensics.html
+│   │   ├── general-skills.html
+│   │   ├── https-demo.html
+│   │   ├── index.html
+│   │   ├── learning-tracks.html
+│   │   ├── password-hashing.html
+│   │   ├── progress-demo.html
+│   │   ├── resources.html
+│   │   ├── reverse-engineering.html
+│   │   ├── review-game.html
+│   │   ├── sql-injection.html
+│   │   ├── study-guides.html
+│   │   ├── tour.html
+│   │   ├── web-exploitation.html
+│   │   └── xss-demo.html
+│   ├── lessons
+│   │   ├── a-plus-guides
+│   │   │   └── index.html
+│   │   ├── a-plus-hardware
+│   │   │   └── index.html
+│   │   ├── a-plus-lab-bios-config
+│   │   │   └── index.html
+│   │   ├── a-plus-lab-driver-install
+│   │   │   └── index.html
+│   │   ├── a-plus-lab-pc-assembly
+│   │   │   └── index.html
+│   │   ├── a-plus-lab-performance-tuning
+│   │   │   └── index.html
+│   │   ├── a-plus-lab-upgrade-planning
+│   │   │   └── index.html
+│   │   ├── a-plus-labs
+│   │   │   └── index.html
+│   │   ├── a-plus-motherboards
+│   │   │   └── index.html
+│   │   ├── a-plus-networking
+│   │   │   └── index.html
+│   │   ├── a-plus-operating-systems
+│   │   │   └── index.html
+│   │   ├── a-plus-power-cooling
+│   │   │   └── index.html
+│   │   ├── a-plus-security
+│   │   │   └── index.html
+│   │   ├── a-plus-storage
+│   │   │   └── index.html
+│   │   ├── a-plus-troubleshooting
+│   │   │   └── index.html
+│   │   ├── about-class
+│   │   │   └── index.html
+│   │   ├── auth-demo
+│   │   │   └── index.html
+│   │   ├── binary-exploitation
+│   │   │   └── index.html
+│   │   ├── card-beam-animation-readme
+│   │   │   └── index.html
+│   │   ├── cheat-sheets
+│   │   │   └── index.html
+│   │   ├── cryptography
+│   │   │   └── index.html
+│   │   ├── download
+│   │   │   └── index.html
+│   │   ├── exif-simulator
+│   │   │   └── index.html
+│   │   ├── forensics
+│   │   │   └── index.html
+│   │   ├── general-skills
+│   │   │   └── index.html
+│   │   ├── https-demo
+│   │   │   └── index.html
+│   │   ├── index
+│   │   │   └── index.html
+│   │   ├── intro-to-cybersecurity
+│   │   │   └── index.html
+│   │   ├── learning-tracks
+│   │   │   └── index.html
+│   │   ├── linux-cli-survival
+│   │   │   └── index.html
+│   │   ├── net-cable-management
+│   │   │   └── index.html
+│   │   ├── net-cloud-concepts
+│   │   │   └── index.html
+│   │   ├── net-common-ports
+│   │   │   └── index.html
+│   │   ├── net-connector-types
+│   │   │   └── index.html
+│   │   ├── net-copper-cables
+│   │   │   └── index.html
+│   │   ├── net-corporate-datacenter-architecture
+│   │   │   └── index.html
+│   │   ├── net-dhcp
+│   │   │   └── index.html
+│   │   ├── net-dns
+│   │   │   └── index.html
+│   │   ├── net-encapsulation-decapsulation
+│   │   │   └── index.html
+│   │   ├── net-fiber-optic-cables
+│   │   │   └── index.html
+│   │   ├── net-ip-addressing-subnetting
+│   │   │   └── index.html
+│   │   ├── net-ipv4-ipv6
+│   │   │   └── index.html
+│   │   ├── net-ipv6-implementation
+│   │   │   └── index.html
+│   │   ├── net-nat-pat
+│   │   │   └── index.html
+│   │   ├── net-network-topologies
+│   │   │   └── index.html
+│   │   ├── net-network-types
+│   │   │   └── index.html
+│   │   ├── net-ntp
+│   │   │   └── index.html
+│   │   ├── net-osi-model
+│   │   │   └── index.html
+│   │   ├── net-protocols
+│   │   │   └── index.html
+│   │   ├── net-public-private-networks
+│   │   │   └── index.html
+│   │   ├── net-routing-concepts
+│   │   │   └── index.html
+│   │   ├── net-routing-protocols
+│   │   │   └── index.html
+│   │   ├── net-switch-configuration
+│   │   │   └── index.html
+│   │   ├── net-switching-concepts
+│   │   │   └── index.html
+│   │   ├── net-vlans
+│   │   │   └── index.html
+│   │   ├── net-wan-technologies
+│   │   │   └── index.html
+│   │   ├── net-wireless-security
+│   │   │   └── index.html
+│   │   ├── net-wireless-standards
+│   │   │   └── index.html
+│   │   ├── password-hashing
+│   │   │   └── index.html
+│   │   ├── progress-demo
+│   │   │   └── index.html
+│   │   ├── resources
+│   │   │   └── index.html
+│   │   ├── reverse-engineering
+│   │   │   └── index.html
+│   │   ├── review-game
+│   │   │   └── index.html
+│   │   ├── site-playwright_test_readme
+│   │   │   └── index.html
+│   │   ├── site-readme
+│   │   │   └── index.html
+│   │   ├── sql-injection
+│   │   │   └── index.html
+│   │   ├── study-guides
+│   │   │   └── index.html
+│   │   ├── threat-modeling-basics
+│   │   │   └── index.html
+│   │   ├── tour
+│   │   │   └── index.html
+│   │   ├── web-exploitation
+│   │   │   └── index.html
+│   │   └── xss-demo
+│   │       └── index.html
+│   ├── quizzes
+│   │   ├── assessment-1-1-1
+│   │   │   └── index.html
+│   │   ├── assessment-1-1-2
+│   │   │   └── index.html
+│   │   ├── assessment-1-1-3
+│   │   │   └── index.html
+│   │   ├── assessment-1-1-4
+│   │   │   └── index.html
+│   │   ├── assessment-1-1-5
+│   │   │   └── index.html
+│   │   ├── assessment-1-2-1
+│   │   │   └── index.html
+│   │   ├── assessment-1-2-2
+│   │   │   └── index.html
+│   │   ├── assessment-1-2-3
+│   │   │   └── index.html
+│   │   ├── assessment-1-2-4
+│   │   │   └── index.html
+│   │   ├── assessment-1-2-5
+│   │   │   └── index.html
+│   │   ├── assessment-1-3-1
+│   │   │   └── index.html
+│   │   ├── assessment-1-3-2
+│   │   │   └── index.html
+│   │   ├── assessment-1-3-3
+│   │   │   └── index.html
+│   │   ├── assessment-1-3-4
+│   │   │   └── index.html
+│   │   ├── assessment-1-3-5
+│   │   │   └── index.html
+│   │   ├── assessment-1-4-1
+│   │   │   └── index.html
+│   │   ├── assessment-1-4-2
+│   │   │   └── index.html
+│   │   ├── assessment-1-4-3
+│   │   │   └── index.html
+│   │   ├── assessment-1-4-4
+│   │   │   └── index.html
+│   │   ├── assessment-1-4-5
+│   │   │   └── index.html
+│   │   ├── index.html
+│   │   ├── net-1-1-1-osi-model
+│   │   │   └── index.html
+│   │   ├── net-1-1-2-encapsulation-and-decapsulation
+│   │   │   └── index.html
+│   │   ├── net-1-2-1-network-topologies
+│   │   │   └── index.html
+│   │   ├── net-1-2-2-network-types
+│   │   │   └── index.html
+│   │   ├── net-1-3-1-copper-cables
+│   │   │   └── index.html
+│   │   ├── net-1-3-2-fiber-optic-cables
+│   │   │   └── index.html
+│   │   ├── net-1-3-3-connector-types
+│   │   │   └── index.html
+│   │   ├── net-1-3-4-cable-management
+│   │   │   └── index.html
+│   │   ├── net-1-4-1-public-vs-private-networks
+│   │   │   └── index.html
+│   │   ├── net-1-4-2-ipv4-and-ipv6
+│   │   │   └── index.html
+│   │   ├── net-1-5-1-common-ports
+│   │   │   └── index.html
+│   │   ├── net-1-5-2-protocols
+│   │   │   └── index.html
+│   │   ├── net-1-6-1-dhcp
+│   │   │   └── index.html
+│   │   ├── net-1-6-2-dns
+│   │   │   └── index.html
+│   │   ├── net-1-6-3-ntp
+│   │   │   └── index.html
+│   │   ├── net-1-7-1-corporate-and-datacenter-network-architecture
+│   │   │   └── index.html
+│   │   ├── net-1-8-1-cloud-concepts
+│   │   │   └── index.html
+│   │   ├── net-1-8-2-cloud-connectivity-options
+│   │   │   └── index.html
+│   │   ├── net-2-1-1-networking-devices
+│   │   │   └── index.html
+│   │   ├── net-2-1-2-networked-devices
+│   │   │   └── index.html
+│   │   ├── net-2-2-1-routing-technologies
+│   │   │   └── index.html
+│   │   ├── net-2-2-2-bandwidth-management
+│   │   │   └── index.html
+│   │   ├── net-2-3-1-ethernet-switching-features
+│   │   │   └── index.html
+│   │   ├── net-2-3-2-ethernet-port-configurations
+│   │   │   └── index.html
+│   │   ├── net-2-4-1-wifi-standards
+│   │   │   └── index.html
+│   │   ├── net-2-4-2-ssid
+│   │   │   └── index.html
+│   │   ├── net-2-4-3-wireless-technologies
+│   │   │   └── index.html
+│   │   ├── net-3-1-1-performance-metrics
+│   │   │   └── index.html
+│   │   ├── net-3-1-2-snmp-and-network-device-logs
+│   │   │   └── index.html
+│   │   ├── net-3-1-3-interface-stats-and-alerts
+│   │   │   └── index.html
+│   │   ├── net-3-1-4-environmental-factors-and-sensors
+│   │   │   └── index.html
+│   │   ├── net-3-2-1-plans-procedures-and-policies
+│   │   │   └── index.html
+│   │   ├── net-3-2-2-common-documentation-and-agreements
+│   │   │   └── index.html
+│   │   ├── net-3-3-1-redundancy
+│   │   │   └── index.html
+│   │   ├── net-3-3-2-recovery
+│   │   │   └── index.html
+│   │   ├── net-4-1-1-security-concepts
+│   │   │   └── index.html
+│   │   ├── net-4-1-2-defense-in-depth
+│   │   │   └── index.html
+│   │   ├── net-4-1-3-authentication-methods
+│   │   │   └── index.html
+│   │   ├── net-4-1-4-risk-management
+│   │   │   └── index.html
+│   │   ├── net-4-1-5-security-information-and-event-management
+│   │   │   └── index.html
+│   │   ├── net-4-2-1-technology-based-attacks
+│   │   │   └── index.html
+│   │   ├── net-4-2-2-social-engineering-attacks
+│   │   │   └── index.html
+│   │   ├── net-4-3-1-network-hardening-best-practices
+│   │   │   └── index.html
+│   │   ├── net-4-3-2-wireless-security
+│   │   │   └── index.html
+│   │   ├── net-4-4-1-remote-access-methods
+│   │   │   └── index.html
+│   │   ├── net-4-4-2-remote-security-implications
+│   │   │   └── index.html
+│   │   ├── net-4-5-1-physical-detection-methods
+│   │   │   └── index.html
+│   │   ├── net-4-5-2-physical-prevention-methods
+│   │   │   └── index.html
+│   │   ├── net-4-5-3-physical-asset-disposal
+│   │   │   └── index.html
+│   │   ├── net-5-1-1-network-troubleshooting-methodology
+│   │   │   └── index.html
+│   │   ├── net-5-2-1-cable-specifications
+│   │   │   └── index.html
+│   │   ├── net-5-2-2-common-cable-issues
+│   │   │   └── index.html
+│   │   ├── net-5-2-3-common-cable-tools
+│   │   │   └── index.html
+│   │   ├── net-5-3-1-network-software-tools
+│   │   │   └── index.html
+│   │   ├── net-5-3-2-network-command-line-tools
+│   │   │   └── index.html
+│   │   ├── net-5-4-1-wireless-specifications-and-limitations
+│   │   │   └── index.html
+│   │   ├── net-5-4-2-wireless-considerations
+│   │   │   └── index.html
+│   │   ├── net-5-4-3-common-wireless-connectivity-issues
+│   │   │   └── index.html
+│   │   ├── net-5-5-1-networking-considerations
+│   │   │   └── index.html
+│   │   ├── net-5-5-2-common-networking-issues
+│   │   │   └── index.html
+│   │   ├── network-fundamentals-checkpoint
+│   │   │   └── index.html
+│   │   ├── pc-tech-hardware-checkpoint
+│   │   │   └── index.html
+│   │   ├── tech-plus
+│   │   │   ├── assessment-1.1.1.json
+│   │   │   ├── assessment-1.1.2.json
+│   │   │   ├── assessment-1.1.3.json
+│   │   │   ├── assessment-1.1.4.json
+│   │   │   ├── assessment-1.1.5.json
+│   │   │   ├── assessment-1.2.1.json
+│   │   │   ├── assessment-1.2.2.json
+│   │   │   ├── assessment-1.2.3.json
+│   │   │   ├── assessment-1.2.4.json
+│   │   │   ├── assessment-1.2.5.json
+│   │   │   ├── assessment-1.3.1.json
+│   │   │   ├── assessment-1.3.2.json
+│   │   │   ├── assessment-1.3.3.json
+│   │   │   ├── assessment-1.3.4.json
+│   │   │   ├── assessment-1.3.5.json
+│   │   │   ├── assessment-1.4.1.json
+│   │   │   ├── assessment-1.4.2.json
+│   │   │   ├── assessment-1.4.3.json
+│   │   │   ├── assessment-1.4.4.json
+│   │   │   └── assessment-1.4.5.json
+│   │   └── tour-quick-check
+│   │       └── index.html
+│   ├── resources
+│   │   └── network-engineer
+│   │       ├── 1-1-1-osi-model
+│   │       │   ├── net-1-1-1-osi-answer-key.md
+│   │       │   └── net-1-1-1-osi-guided-notes.md
+│   │       ├── 1-2-1-network-topologies
+│   │       │   ├── 1-2-1-network-topologies-answer-key.pdf
+│   │       │   └── 1-2-1-network-topologies-guided-notes.pdf
+│   │       ├── 1-2-2-network-types
+│   │       │   ├── 1-2-2-network-types-answer-key.pdf
+│   │       │   └── 1-2-2-network-types-guided-notes.pdf
+│   │       ├── 1-3-1-copper-cables
+│   │       │   ├── 1-3-1-copper-cables-answer-key.pdf
+│   │       │   └── 1-3-1-copper-cables-guided-notes.pdf
+│   │       ├── 1-3-2-fiber-optic-cables
+│   │       │   ├── 1-3-2-fiber-optic-cables-answer-key.pdf
+│   │       │   └── 1-3-2-fiber-optic-cables-guided-notes.pdf
+│   │       ├── 1-3-3-connector-types
+│   │       │   ├── 1-3-3-connector-types-answer-key.pdf
+│   │       │   └── 1-3-3-connector-types-guided-notes.pdf
+│   │       ├── 1-3-4-cable-management
+│   │       │   ├── 1-3-4-cable-management-answer-key.pdf
+│   │       │   └── 1-3-4-cable-management-guided-notes.pdf
+│   │       ├── 1-4-1-public-vs-private-networks
+│   │       │   ├── 1-4-1-public-vs-private-networks-answer-key.pdf
+│   │       │   └── 1-4-1-public-vs-private-networks-guided-notes.pdf
+│   │       ├── 1-4-2-ipv4-and-ipv6
+│   │       │   ├── 1-4-2-ipv4-and-ipv6-answer-key.pdf
+│   │       │   └── 1-4-2-ipv4-and-ipv6-guided-notes.pdf
+│   │       ├── 1-5-1-common-ports-and-protocols
+│   │       │   ├── 1-5-1-common-ports-and-protocols-answer-key.pdf
+│   │       │   └── 1-5-1-common-ports-and-protocols-guided-notes.pdf
+│   │       ├── 1-5-2-protocols
+│   │       │   ├── 1-5-2-protocols-answer-key.pdf
+│   │       │   └── 1-5-2-protocols-guided-notes.pdf
+│   │       ├── 1-6-1-dhcp
+│   │       │   ├── 1-6-1-dhcp-answer-key.pdf
+│   │       │   └── 1-6-1-dhcp-guided-notes.pdf
+│   │       ├── 1-6-2-dns
+│   │       │   ├── 1-6-2-dns-answer-key.pdf
+│   │       │   └── 1-6-2-dns-guided-notes.pdf
+│   │       ├── 1-6-3-ntp
+│   │       │   ├── 1-6-3-ntp-answer-key.pdf
+│   │       │   └── 1-6-3-ntp-guided-notes.pdf
+│   │       ├── 1-7-1-corporate-and-datacenter-network-architecture
+│   │       │   ├── 1-7-1-corporate-and-datacenter-network-architecture-answer-key.pdf
+│   │       │   └── 1-7-1-corporate-and-datacenter-network-architecture-guided-notes.pdf
+│   │       ├── 1-7-2-cloud-concepts-and-connectivity
+│   │       │   ├── 1-7-2-cloud-concepts-and-connectivity-answer-key.pdf
+│   │       │   └── 1-7-2-cloud-concepts-and-connectivity-guided-notes.pdf
+│   │       ├── 1-8-1-routing-concepts
+│   │       │   ├── 1-8-1-routing-concepts-answer-key.pdf
+│   │       │   └── 1-8-1-routing-concepts-guided-notes.pdf
+│   │       ├── 1-8-2-routing-protocols
+│   │       │   ├── 1-8-2-routing-protocols-answer-key.pdf
+│   │       │   └── 1-8-2-routing-protocols-guided-notes.pdf
+│   │       ├── 1-8-3-wan-technologies
+│   │       │   ├── 1-8-3-wan-technologies-answer-key.pdf
+│   │       │   └── 1-8-3-wan-technologies-guided-notes.pdf
+│   │       ├── 1.1.2-encapsulation
+│   │       │   ├── encapsulation-answer-key.pdf
+│   │       │   └── encapsulation-guided-notes.pdf
+│   │       ├── 2-1-1-switching-concepts
+│   │       │   ├── 2-1-1-switching-concepts-answer-key.pdf
+│   │       │   └── 2-1-1-switching-concepts-guided-notes.pdf
+│   │       ├── 2-1-2-vlans
+│   │       │   ├── 2-1-2-vlans-answer-key.pdf
+│   │       │   └── 2-1-2-vlans-guided-notes.pdf
+│   │       ├── 2-1-3-switch-configuration
+│   │       │   ├── 2-1-3-switch-configuration-answer-key.pdf
+│   │       │   └── 2-1-3-switch-configuration-guided-notes.pdf
+│   │       ├── 2-2-1-wireless-standards
+│   │       │   ├── 2-2-1-wireless-standards-answer-key.pdf
+│   │       │   └── 2-2-1-wireless-standards-guided-notes.pdf
+│   │       ├── 2-2-2-wireless-security-and-configuration
+│   │       │   ├── 2-2-2-wireless-security-and-configuration-answer-key.pdf
+│   │       │   └── 2-2-2-wireless-security-and-configuration-guided-notes.pdf
+│   │       └── output_v2
+│   │           ├── net-1-1-1-osi-model.mdx
+│   │           ├── net-1-1-2-encapsulation-and-decapsulation.mdx
+│   │           ├── net-1-2-1-network-topologies.mdx
+│   │           ├── net-1-2-2-network-types.mdx
+│   │           ├── net-1-3-1-copper-cables.mdx
+│   │           ├── net-1-3-2-fiber-optic-cables.mdx
+│   │           ├── net-1-3-3-connector-types.mdx
+│   │           ├── net-1-3-4-cable-management.mdx
+│   │           ├── net-1-4-1-public-vs-private-networks.mdx
+│   │           ├── net-1-4-2-ipv4-and-ipv6.mdx
+│   │           ├── net-1-5-1-common-ports.mdx
+│   │           ├── net-1-5-2-protocols.mdx
+│   │           ├── net-1-6-1-dhcp.mdx
+│   │           ├── net-1-6-2-dns.mdx
+│   │           ├── net-1-6-3-ntp.mdx
+│   │           ├── net-1-7-1-corporate-and-datacenter-network-architecture.mdx
+│   │           ├── net-1-8-1-cloud-concepts.mdx
+│   │           ├── net-1-8-2-cloud-connectivity-options.mdx
+│   │           ├── net-2-1-1-networking-devices.mdx
+│   │           ├── net-2-1-2-networked-devices.mdx
+│   │           ├── net-2-2-1-routing-technologies.mdx
+│   │           ├── net-2-2-2-bandwidth-management.mdx
+│   │           ├── net-2-3-1-ethernet-switching-features.mdx
+│   │           ├── net-2-3-2-ethernet-port-configurations.mdx
+│   │           ├── net-2-4-1-wifi-standards.mdx
+│   │           ├── net-2-4-2-ssid.mdx
+│   │           ├── net-2-4-3-wireless-technologies.mdx
+│   │           ├── net-3-1-1-performance-metrics.mdx
+│   │           ├── net-3-1-2-snmp-and-network-device-logs.mdx
+│   │           ├── net-3-1-3-interface-stats-and-alerts.mdx
+│   │           ├── net-3-1-4-environmental-factors-and-sensors.mdx
+│   │           ├── net-3-2-1-plans-procedures-and-policies.mdx
+│   │           ├── net-3-2-2-common-documentation-and-agreements.mdx
+│   │           ├── net-3-3-1-redundancy.mdx
+│   │           ├── net-3-3-2-recovery.mdx
+│   │           ├── net-4-1-1-security-concepts.mdx
+│   │           ├── net-4-1-2-defense-in-depth.mdx
+│   │           ├── net-4-1-3-authentication-methods.mdx
+│   │           ├── net-4-1-4-risk-management.mdx
+│   │           ├── net-4-1-5-security-information-and-event-management.mdx
+│   │           ├── net-4-2-1-technology-based-attacks.mdx
+│   │           ├── net-4-2-2-social-engineering-attacks.mdx
+│   │           ├── net-4-3-1-network-hardening-best-practices.mdx
+│   │           ├── net-4-3-2-wireless-security.mdx
+│   │           ├── net-4-4-1-remote-access-methods.mdx
+│   │           ├── net-4-4-2-remote-security-implications.mdx
+│   │           ├── net-4-5-1-physical-detection-methods.mdx
+│   │           ├── net-4-5-2-physical-prevention-methods.mdx
+│   │           ├── net-4-5-3-physical-asset-disposal.mdx
+│   │           ├── net-5-1-1-network-troubleshooting-methodology.mdx
+│   │           ├── net-5-2-1-cable-specifications.mdx
+│   │           ├── net-5-2-2-common-cable-issues.mdx
+│   │           ├── net-5-2-3-common-cable-tools.mdx
+│   │           ├── net-5-3-1-network-software-tools.mdx
+│   │           ├── net-5-3-2-network-command-line-tools.mdx
+│   │           ├── net-5-4-1-wireless-specifications-and-limitations.mdx
+│   │           ├── net-5-4-2-wireless-considerations.mdx
+│   │           ├── net-5-4-3-common-wireless-connectivity-issues.mdx
+│   │           ├── net-5-5-1-networking-considerations.mdx
+│   │           └── net-5-5-2-common-networking-issues.mdx
+│   ├── study-guides
+│   │   ├── hardware-fundamentals
+│   │   │   └── index.html
+│   │   ├── index.html
+│   │   ├── networking-basics
+│   │   │   └── index.html
+│   │   └── operating-systems
+│   │       └── index.html
+│   ├── styles
+│   │   └── lab-shared.css
+│   ├── tour
+│   │   ├── code-challenge
+│   │   │   └── index.html
+│   │   ├── completion
+│   │   │   └── index.html
+│   │   ├── index.html
+│   │   ├── intro
+│   │   │   └── index.html
+│   │   ├── quiz-challenge
+│   │   │   └── index.html
+│   │   └── terminal-challenge
+│   │       └── index.html
+│   ├── tracks
+│   │   ├── ai-ml
+│   │   │   └── index.html
+│   │   ├── cybersecurity-engineer
+│   │   │   └── index.html
+│   │   ├── cybersecurity-foundations
+│   │   │   └── index.html
+│   │   ├── index.html
+│   │   ├── legacy
+│   │   │   └── index.html
+│   │   ├── legacy-grouped
+│   │   │   └── index.html
+│   │   ├── network-engineer
+│   │   │   ├── index.html
+│   │   │   └── labs
+│   │   │       └── network-terminal-basics
+│   │   │           └── index.html
+│   │   ├── pc-technician
+│   │   │   ├── index.html
+│   │   │   └── labs
+│   │   │       ├── pc-assembly
+│   │   │       │   └── index.html
+│   │   │       └── pc-tech-legacy-hardware-lab
+│   │   │           └── index.html
+│   │   ├── python-developer
+│   │   │   └── index.html
+│   │   └── web-developer
+│   │       └── index.html
+│   └── workspace
+│       ├── activity
+│       │   ├── a-plus-guides
+│       │   │   └── index.html
+│       │   ├── a-plus-lab-bios-config
+│       │   │   └── index.html
+│       │   ├── a-plus-lab-driver-install
+│       │   │   └── index.html
+│       │   ├── a-plus-lab-pc-assembly
+│       │   │   └── index.html
+│       │   ├── a-plus-lab-performance-tuning
+│       │   │   └── index.html
+│       │   ├── a-plus-lab-upgrade-planning
+│       │   │   └── index.html
+│       │   ├── a-plus-labs
+│       │   │   └── index.html
+│       │   ├── a-plus-networking
+│       │   │   └── index.html
+│       │   ├── a-plus-power-cooling
+│       │   │   └── index.html
+│       │   ├── a-plus-security
+│       │   │   └── index.html
+│       │   ├── a-plus-storage
+│       │   │   └── index.html
+│       │   ├── about-class
+│       │   │   └── index.html
+│       │   ├── auth-demo
+│       │   │   └── index.html
+│       │   ├── binary-exploitation
+│       │   │   └── index.html
+│       │   ├── card-beam-animation-readme
+│       │   │   └── index.html
+│       │   ├── cheat-sheets
+│       │   │   └── index.html
+│       │   ├── cryptography
+│       │   │   └── index.html
+│       │   ├── download
+│       │   │   └── index.html
+│       │   ├── exif-simulator
+│       │   │   └── index.html
+│       │   ├── forensics
+│       │   │   └── index.html
+│       │   ├── general-skills
+│       │   │   └── index.html
+│       │   ├── https-demo
+│       │   │   └── index.html
+│       │   ├── index
+│       │   │   └── index.html
+│       │   ├── learning-tracks
+│       │   │   └── index.html
+│       │   ├── password-hashing
+│       │   │   └── index.html
+│       │   ├── pc-tech-hardware-legacy-page
+│       │   │   └── index.html
+│       │   ├── progress-demo
+│       │   │   └── index.html
+│       │   ├── resources
+│       │   │   └── index.html
+│       │   ├── reverse-engineering
+│       │   │   └── index.html
+│       │   ├── review-game
+│       │   │   └── index.html
+│       │   ├── site-playwright_test_readme
+│       │   │   └── index.html
+│       │   ├── site-readme
+│       │   │   └── index.html
+│       │   ├── sql-injection
+│       │   │   └── index.html
+│       │   ├── study-guides
+│       │   │   └── index.html
+│       │   ├── tour
+│       │   │   └── index.html
+│       │   ├── web-exploitation
+│       │   │   └── index.html
+│       │   └── xss-demo
+│       │       └── index.html
+│       ├── lab
+│       │   ├── code-basics
+│       │   │   └── index.html
+│       │   ├── network-terminal-basics
+│       │   │   └── index.html
+│       │   ├── pc-assembly
+│       │   │   └── index.html
+│       │   ├── pc-tech-legacy-hardware-lab
+│       │   │   └── index.html
+│       │   └── terminal-basics
+│       │       └── index.html
+│       ├── lesson
+│       │   └── a-plus-lab-pc-assembly
+│       │       └── index.html
+│       └── quiz
+│           ├── assessment-1-1-1
+│           │   └── index.html
+│           ├── assessment-1-1-2
+│           │   └── index.html
+│           ├── assessment-1-1-3
+│           │   └── index.html
+│           ├── assessment-1-1-4
+│           │   └── index.html
+│           ├── assessment-1-1-5
+│           │   └── index.html
+│           ├── assessment-1-2-1
+│           │   └── index.html
+│           ├── assessment-1-2-2
+│           │   └── index.html
+│           ├── assessment-1-2-3
+│           │   └── index.html
+│           ├── assessment-1-2-4
+│           │   └── index.html
+│           ├── assessment-1-2-5
+│           │   └── index.html
+│           ├── assessment-1-3-1
+│           │   └── index.html
+│           ├── assessment-1-3-2
+│           │   └── index.html
+│           ├── assessment-1-3-3
+│           │   └── index.html
+│           ├── assessment-1-3-4
+│           │   └── index.html
+│           ├── assessment-1-3-5
+│           │   └── index.html
+│           ├── assessment-1-4-1
+│           │   └── index.html
+│           ├── assessment-1-4-2
+│           │   └── index.html
+│           ├── assessment-1-4-3
+│           │   └── index.html
+│           ├── assessment-1-4-4
+│           │   └── index.html
+│           ├── assessment-1-4-5
+│           │   └── index.html
+│           ├── net-1-1-1-osi-model
+│           │   └── index.html
+│           ├── net-1-1-2-encapsulation-and-decapsulation
+│           │   └── index.html
+│           ├── net-1-2-1-network-topologies
+│           │   └── index.html
+│           ├── net-1-2-2-network-types
+│           │   └── index.html
+│           ├── net-1-3-1-copper-cables
+│           │   └── index.html
+│           ├── net-1-3-2-fiber-optic-cables
+│           │   └── index.html
+│           ├── net-1-3-3-connector-types
+│           │   └── index.html
+│           ├── net-1-3-4-cable-management
+│           │   └── index.html
+│           ├── net-1-4-1-public-vs-private-networks
+│           │   └── index.html
+│           ├── net-1-4-2-ipv4-and-ipv6
+│           │   └── index.html
+│           ├── net-1-5-1-common-ports
+│           │   └── index.html
+│           ├── net-1-5-2-protocols
+│           │   └── index.html
+│           ├── net-1-6-1-dhcp
+│           │   └── index.html
+│           ├── net-1-6-2-dns
+│           │   └── index.html
+│           ├── net-1-6-3-ntp
+│           │   └── index.html
+│           ├── net-1-7-1-corporate-and-datacenter-network-architecture
+│           │   └── index.html
+│           ├── net-1-8-1-cloud-concepts
+│           │   └── index.html
+│           ├── net-1-8-2-cloud-connectivity-options
+│           │   └── index.html
+│           ├── net-2-1-1-networking-devices
+│           │   └── index.html
+│           ├── net-2-1-2-networked-devices
+│           │   └── index.html
+│           ├── net-2-2-1-routing-technologies
+│           │   └── index.html
+│           ├── net-2-2-2-bandwidth-management
+│           │   └── index.html
+│           ├── net-2-3-1-ethernet-switching-features
+│           │   └── index.html
+│           ├── net-2-3-2-ethernet-port-configurations
+│           │   └── index.html
+│           ├── net-2-4-1-wifi-standards
+│           │   └── index.html
+│           ├── net-2-4-2-ssid
+│           │   └── index.html
+│           ├── net-2-4-3-wireless-technologies
+│           │   └── index.html
+│           ├── net-3-1-1-performance-metrics
+│           │   └── index.html
+│           ├── net-3-1-2-snmp-and-network-device-logs
+│           │   └── index.html
+│           ├── net-3-1-3-interface-stats-and-alerts
+│           │   └── index.html
+│           ├── net-3-1-4-environmental-factors-and-sensors
+│           │   └── index.html
+│           ├── net-3-2-1-plans-procedures-and-policies
+│           │   └── index.html
+│           ├── net-3-2-2-common-documentation-and-agreements
+│           │   └── index.html
+│           ├── net-3-3-1-redundancy
+│           │   └── index.html
+│           ├── net-3-3-2-recovery
+│           │   └── index.html
+│           ├── net-4-1-1-security-concepts
+│           │   └── index.html
+│           ├── net-4-1-2-defense-in-depth
+│           │   └── index.html
+│           ├── net-4-1-3-authentication-methods
+│           │   └── index.html
+│           ├── net-4-1-4-risk-management
+│           │   └── index.html
+│           ├── net-4-1-5-security-information-and-event-management
+│           │   └── index.html
+│           ├── net-4-2-1-technology-based-attacks
+│           │   └── index.html
+│           ├── net-4-2-2-social-engineering-attacks
+│           │   └── index.html
+│           ├── net-4-3-1-network-hardening-best-practices
+│           │   └── index.html
+│           ├── net-4-3-2-wireless-security
+│           │   └── index.html
+│           ├── net-4-4-1-remote-access-methods
+│           │   └── index.html
+│           ├── net-4-4-2-remote-security-implications
+│           │   └── index.html
+│           ├── net-4-5-1-physical-detection-methods
+│           │   └── index.html
+│           ├── net-4-5-2-physical-prevention-methods
+│           │   └── index.html
+│           ├── net-4-5-3-physical-asset-disposal
+│           │   └── index.html
+│           ├── net-5-1-1-network-troubleshooting-methodology
+│           │   └── index.html
+│           ├── net-5-2-1-cable-specifications
+│           │   └── index.html
+│           ├── net-5-2-2-common-cable-issues
+│           │   └── index.html
+│           ├── net-5-2-3-common-cable-tools
+│           │   └── index.html
+│           ├── net-5-3-1-network-software-tools
+│           │   └── index.html
+│           ├── net-5-3-2-network-command-line-tools
+│           │   └── index.html
+│           ├── net-5-4-1-wireless-specifications-and-limitations
+│           │   └── index.html
+│           ├── net-5-4-2-wireless-considerations
+│           │   └── index.html
+│           ├── net-5-4-3-common-wireless-connectivity-issues
+│           │   └── index.html
+│           ├── net-5-5-1-networking-considerations
+│           │   └── index.html
+│           ├── net-5-5-2-common-networking-issues
+│           │   └── index.html
+│           ├── network-fundamentals-checkpoint
+│           │   └── index.html
+│           ├── pc-tech-hardware-checkpoint
+│           │   └── index.html
+│           └── tour-quick-check
+│               └── index.html
+├── docs
+│   ├── ADD_A_LAB.md
+│   ├── ADD_A_TOUR_STEP.md
+│   ├── CURRICULUM_MANIFEST_SCHEMA.md
+│   ├── LMS_MASTER_PLAN.md
+│   ├── NETWORK_ENGINEER_MODULE_MAP.md
+│   ├── PHASE5_ADAPTIVE_ENGINE.md
+│   ├── PHASE5_QUESTION_ENGINE.md
+│   ├── README.md
+│   ├── SESSION_CONTEXT.md
+│   ├── TRACK_AUDIT.md
+│   └── labs.md
+├── manifests
+│   └── linux-fundamentals.json
+├── new-pdfs
+├── opus-pretext.txt
+├── package-lock.json
+├── package.json
+├── playwright.config.ts
+├── playwright_test_readme.md
+├── public
+│   ├── favicon.ico
+│   ├── favicon.svg
+│   ├── labs
+│   │   ├── network-terminal-basics
+│   │   │   └── index.html
+│   │   ├── pc-assembly
+│   │   │   ├── index.html
+│   │   │   ├── site.css
+│   │   │   └── site.js
+│   │   └── runtime
+│   │       └── lab-api.js
+│   ├── legacy
+│   │   ├── a-plus-guides.html
+│   │   ├── a-plus-hardware.html
+│   │   ├── a-plus-lab-bios-config.html
+│   │   ├── a-plus-lab-driver-install.html
+│   │   ├── a-plus-lab-pc-assembly.html
+│   │   ├── a-plus-lab-performance-tuning.html
+│   │   ├── a-plus-lab-upgrade-planning.html
+│   │   ├── a-plus-labs.html
+│   │   ├── a-plus-motherboards.html
+│   │   ├── a-plus-networking.html
+│   │   ├── a-plus-operating-systems.html
+│   │   ├── a-plus-power-cooling.html
+│   │   ├── a-plus-security.html
+│   │   ├── a-plus-storage.html
+│   │   ├── a-plus-troubleshooting.html
+│   │   ├── about-class.html
+│   │   ├── auth-demo.html
+│   │   ├── binary-exploitation.html
+│   │   ├── cheat-sheets.html
+│   │   ├── cryptography.html
+│   │   ├── download.html
+│   │   ├── exif-simulator.html
+│   │   ├── forensics.html
+│   │   ├── general-skills.html
+│   │   ├── https-demo.html
+│   │   ├── index.html
+│   │   ├── learning-tracks.html
+│   │   ├── password-hashing.html
+│   │   ├── progress-demo.html
+│   │   ├── resources.html
+│   │   ├── reverse-engineering.html
+│   │   ├── review-game.html
+│   │   ├── sql-injection.html
+│   │   ├── study-guides.html
+│   │   ├── tour.html
+│   │   ├── web-exploitation.html
+│   │   └── xss-demo.html
+│   ├── quizzes
+│   │   └── tech-plus
+│   │       ├── assessment-1.1.1.json
+│   │       ├── assessment-1.1.2.json
+│   │       ├── assessment-1.1.3.json
+│   │       ├── assessment-1.1.4.json
+│   │       ├── assessment-1.1.5.json
+│   │       ├── assessment-1.2.1.json
+│   │       ├── assessment-1.2.2.json
+│   │       ├── assessment-1.2.3.json
+│   │       ├── assessment-1.2.4.json
+│   │       ├── assessment-1.2.5.json
+│   │       ├── assessment-1.3.1.json
+│   │       ├── assessment-1.3.2.json
+│   │       ├── assessment-1.3.3.json
+│   │       ├── assessment-1.3.4.json
+│   │       ├── assessment-1.3.5.json
+│   │       ├── assessment-1.4.1.json
+│   │       ├── assessment-1.4.2.json
+│   │       ├── assessment-1.4.3.json
+│   │       ├── assessment-1.4.4.json
+│   │       └── assessment-1.4.5.json
+│   ├── resources
+│   │   ├── cybersecurity
+│   │   │   ├── 1-1-1-security-concepts-and-cia
+│   │   │   ├── 1-1-2-threat-vulnerability-risk
+│   │   │   ├── 1-1-3-security-controls
+│   │   │   ├── 1-1-4-cryptography-basics
+│   │   │   ├── 1-1-5-pki-and-certificates
+│   │   │   ├── 1-2-1-malware-and-ransomware
+│   │   │   ├── 1-2-2-social-engineering
+│   │   │   ├── 1-2-3-network-attacks
+│   │   │   ├── 1-2-4-application-attacks
+│   │   │   ├── 1-2-5-threat-intelligence
+│   │   │   ├── 2-1-1-security-architecture
+│   │   │   ├── 2-1-2-network-security-design
+│   │   │   ├── 2-1-3-cloud-security
+│   │   │   ├── 2-1-4-virtualization-security
+│   │   │   ├── 2-2-1-identity-and-access-management
+│   │   │   ├── 2-2-2-authentication-protocols
+│   │   │   ├── 2-2-3-authorization-and-accounting
+│   │   │   ├── 3-1-1-security-monitoring
+│   │   │   ├── 3-1-2-siem-and-log-analysis
+│   │   │   ├── 3-1-3-incident-response
+│   │   │   ├── 3-1-4-digital-forensics
+│   │   │   ├── 3-2-1-vulnerability-scanning
+│   │   │   ├── 3-2-2-penetration-testing-concepts
+│   │   │   ├── 4-1-1-compliance-frameworks
+│   │   │   ├── 4-1-2-data-privacy-regulations
+│   │   │   ├── 4-1-3-risk-management
+│   │   │   ├── 4-2-1-security-policies
+│   │   │   ├── 4-2-2-business-continuity
+│   │   │   ├── 5-1-1-ethical-hacking-overview
+│   │   │   ├── 5-1-2-reconnaissance
+│   │   │   ├── 5-1-3-scanning-and-enumeration
+│   │   │   ├── 5-1-4-exploitation-basics
+│   │   │   ├── 5-1-5-post-exploitation
+│   │   │   └── 5-1-6-reporting
+│   │   ├── network-engineer
+│   │   │   ├── 1-1-1-osi-model
+│   │   │   │   ├── 1-1-1-osi-model-answer-key.pdf
+│   │   │   │   └── 1-1-1-osi-model-guided-notes.pdf
+│   │   │   ├── 1-1-2-encapsulation-decapsulation
+│   │   │   │   ├── encapsulation-answer-key.pdf
+│   │   │   │   └── encapsulation-guided-notes.pdf
+│   │   │   ├── 1-2-1-network-topologies
+│   │   │   │   ├── 1-2-1-network-topologies-answer-key.pdf
+│   │   │   │   └── 1-2-1-network-topologies-guided-notes.pdf
+│   │   │   ├── 1-2-2-network-types
+│   │   │   │   ├── 1-2-2-network-types-answer-key.pdf
+│   │   │   │   └── 1-2-2-network-types-guided-notes.pdf
+│   │   │   ├── 1-3-1-copper-cables
+│   │   │   │   ├── 1-3-1-copper-cables-answer-key.pdf
+│   │   │   │   └── 1-3-1-copper-cables-guided-notes.pdf
+│   │   │   ├── 1-3-2-fiber-optic-cables
+│   │   │   │   ├── 1-3-2-fiber-optic-cables-answer-key.pdf
+│   │   │   │   └── 1-3-2-fiber-optic-cables-guided-notes.pdf
+│   │   │   ├── 1-3-3-connector-types
+│   │   │   │   ├── 1-3-3-connector-types-answer-key.pdf
+│   │   │   │   └── 1-3-3-connector-types-guided-notes.pdf
+│   │   │   ├── 1-3-4-cable-management
+│   │   │   │   ├── 1-3-4-cable-management-answer-key.pdf
+│   │   │   │   └── 1-3-4-cable-management-guided-notes.pdf
+│   │   │   ├── 1-4-1-public-private-networks
+│   │   │   │   ├── 1-4-1-public-vs-private-networks-answer-key.pdf
+│   │   │   │   └── 1-4-1-public-vs-private-networks-guided-notes.pdf
+│   │   │   ├── 1-4-2-ipv4-ipv6
+│   │   │   │   ├── 1-4-2-ipv4-and-ipv6-answer-key.pdf
+│   │   │   │   └── 1-4-2-ipv4-and-ipv6-guided-notes.pdf
+│   │   │   ├── 1-5-1-common-ports
+│   │   │   │   ├── 1-5-1-common-ports-and-protocols-answer-key.pdf
+│   │   │   │   └── 1-5-1-common-ports-and-protocols-guided-notes.pdf
+│   │   │   ├── 1-5-2-protocols
+│   │   │   │   ├── 1-5-2-protocols-answer-key.pdf
+│   │   │   │   └── 1-5-2-protocols-guided-notes.pdf
+│   │   │   ├── 1-6-1-dhcp
+│   │   │   │   ├── 1-6-1-dhcp-answer-key.pdf
+│   │   │   │   └── 1-6-1-dhcp-guided-notes.pdf
+│   │   │   ├── 1-6-2-dns
+│   │   │   │   ├── 1-6-2-dns-answer-key.pdf
+│   │   │   │   └── 1-6-2-dns-guided-notes.pdf
+│   │   │   ├── 1-6-3-ntp
+│   │   │   │   ├── 1-6-3-ntp-answer-key.pdf
+│   │   │   │   └── 1-6-3-ntp-guided-notes.pdf
+│   │   │   ├── 1-7-1-corporate-datacenter-architecture
+│   │   │   │   ├── 1-7-1-corporate-and-datacenter-network-architecture-answer-key.pdf
+│   │   │   │   └── 1-7-1-corporate-and-datacenter-network-architecture-guided-notes.pdf
+│   │   │   ├── 1-7-2-cloud-concepts
+│   │   │   │   ├── 1-7-2-cloud-concepts-and-connectivity-answer-key.pdf
+│   │   │   │   └── 1-7-2-cloud-concepts-and-connectivity-guided-notes.pdf
+│   │   │   ├── 1-8-1-routing-concepts
+│   │   │   │   ├── 1-8-1-routing-concepts-answer-key.pdf
+│   │   │   │   └── 1-8-1-routing-concepts-guided-notes.pdf
+│   │   │   ├── 1-8-2-routing-protocols
+│   │   │   │   ├── 1-8-2-routing-protocols-answer-key.pdf
+│   │   │   │   └── 1-8-2-routing-protocols-guided-notes.pdf
+│   │   │   ├── 1-8-3-wan-technologies
+│   │   │   │   ├── 1-8-3-wan-technologies-answer-key.pdf
+│   │   │   │   └── 1-8-3-wan-technologies-guided-notes.pdf
+│   │   │   ├── 2-1-1-switching-concepts
+│   │   │   │   ├── 2-1-1-switching-concepts-answer-key.pdf
+│   │   │   │   └── 2-1-1-switching-concepts-guided-notes.pdf
+│   │   │   ├── 2-1-2-vlans
+│   │   │   │   ├── 2-1-2-vlans-answer-key.pdf
+│   │   │   │   └── 2-1-2-vlans-guided-notes.pdf
+│   │   │   ├── 2-1-3-switch-configuration
+│   │   │   │   ├── 2-1-3-switch-configuration-answer-key.pdf
+│   │   │   │   └── 2-1-3-switch-configuration-guided-notes.pdf
+│   │   │   ├── 2-2-1-wireless-standards
+│   │   │   │   ├── 2-2-1-wireless-standards-answer-key.pdf
+│   │   │   │   └── 2-2-1-wireless-standards-guided-notes.pdf
+│   │   │   ├── 2-2-2-wireless-security
+│   │   │   │   ├── 2-2-2-wireless-security-and-configuration-answer-key.pdf
+│   │   │   │   └── 2-2-2-wireless-security-and-configuration-guided-notes.pdf
+│   │   │   ├── 2-3-1-ip-addressing-and-subnetting
+│   │   │   │   ├── 2-3-1-ip-addressing-and-subnetting-answer-key.pdf
+│   │   │   │   └── 2-3-1-ip-addressing-and-subnetting-guided-notes.pdf
+│   │   │   ├── 2-3-2-nat-and-pat
+│   │   │   │   ├── 2-3-2-nat-and-pat-answer-key.pdf
+│   │   │   │   └── 2-3-2-nat-and-pat-guided-notes.pdf
+│   │   │   ├── 2-3-3-ipv6-implementation
+│   │   │   │   ├── 2-3-3-ipv6-implementation-answer-key.pdf
+│   │   │   │   └── 2-3-3-ipv6-implementation-guided-notes.pdf
+│   │   │   ├── 2-4-1-routing-protocol-configuration
+│   │   │   │   ├── 2-4-1-routing-protocol-configuration-answer-key.pdf
+│   │   │   │   └── 2-4-1-routing-protocol-configuration-guided-notes.pdf
+│   │   │   ├── 2-4-2-router-configuration-cli
+│   │   │   │   ├── 2-4-2-router-configuration-cli-answer-key.pdf
+│   │   │   │   └── 2-4-2-router-configuration-cli-guided-notes.pdf
+│   │   │   ├── 2-5-1-network-services-configuration
+│   │   │   │   ├── 2-5-1-network-services-configuration-answer-key.pdf
+│   │   │   │   └── 2-5-1-network-services-configuration-guided-notes.pdf
+│   │   │   ├── 3-1-1-network-documentation
+│   │   │   │   ├── 3-1-1-network-documentation-answer-key.pdf
+│   │   │   │   └── 3-1-1-network-documentation-guided-notes.pdf
+│   │   │   ├── 3-1-2-network-monitoring
+│   │   │   │   ├── 3-1-2-network-monitoring-answer-key.pdf
+│   │   │   │   └── 3-1-2-network-monitoring-guided-notes.pdf
+│   │   │   ├── 3-2-1-high-availability
+│   │   │   │   ├── 3-2-1-high-availability-answer-key.pdf
+│   │   │   │   └── 3-2-1-high-availability-guided-notes.pdf
+│   │   │   ├── 3-2-2-load-balancing
+│   │   │   │   ├── 3-2-2-load-balancing-answer-key.pdf
+│   │   │   │   └── 3-2-2-load-balancing-guided-notes.pdf
+│   │   │   ├── 3-3-1-change-management
+│   │   │   │   ├── 3-3-1-change-management-answer-key.pdf
+│   │   │   │   └── 3-3-1-change-management-guided-notes.pdf
+│   │   │   ├── 3-3-2-policies-procedures
+│   │   │   │   ├── 3-3-2-policies-and-procedures-answer-key.pdf
+│   │   │   │   └── 3-3-2-policies-and-procedures-guided-notes.pdf
+│   │   │   ├── 4-1-1-network-security-concepts
+│   │   │   │   ├── 4-1-1-network-security-concepts-answer-key.pdf
+│   │   │   │   └── 4-1-1-network-security-concepts-guided-notes.pdf
+│   │   │   ├── 4-1-2-common-network-attacks
+│   │   │   │   ├── 4-1-2-common-network-attacks-answer-key.pdf
+│   │   │   │   └── 4-1-2-common-network-attacks-guided-notes.pdf
+│   │   │   ├── 4-1-3-network-hardening
+│   │   │   │   ├── 4-1-3-network-hardening-answer-key.pdf
+│   │   │   │   └── 4-1-3-network-hardening-guided-notes.pdf
+│   │   │   ├── 4-2-1-firewalls-and-idsips
+│   │   │   │   ├── 4-2-1-firewalls-and-idsips-answer-key.pdf
+│   │   │   │   └── 4-2-1-firewalls-and-idsips-guided-notes.pdf
+│   │   │   ├── 4-2-2-vpn-and-remote-access-security
+│   │   │   │   ├── 4-2-2-vpn-and-remote-access-security-answer-key.pdf
+│   │   │   │   └── 4-2-2-vpn-and-remote-access-security-guided-notes.pdf
+│   │   │   ├── 4-3-1-wireless-security-threats-and-defenses
+│   │   │   │   ├── 4-3-1-wireless-security-threats-and-defenses-answer-key.pdf
+│   │   │   │   └── 4-3-1-wireless-security-threats-and-defenses-guided-notes.pdf
+│   │   │   ├── 4-4-1-physical-security
+│   │   │   │   ├── 4-4-1-physical-security-answer-key.pdf
+│   │   │   │   └── 4-4-1-physical-security-guided-notes.pdf
+│   │   │   ├── 4-4-2-data-loss-prevention
+│   │   │   │   ├── 4-4-2-data-loss-prevention-answer-key.pdf
+│   │   │   │   └── 4-4-2-data-loss-prevention-guided-notes.pdf
+│   │   │   ├── 5-1-1-troubleshooting-methodology
+│   │   │   │   ├── 5-1-1-troubleshooting-methodology-answer-key.pdf
+│   │   │   │   └── 5-1-1-troubleshooting-methodology-guided-notes.pdf
+│   │   │   ├── 5-1-2-troubleshooting-tools
+│   │   │   │   ├── 5-1-2-troubleshooting-tools-answer-key.pdf
+│   │   │   │   └── 5-1-2-troubleshooting-tools-guided-notes.pdf
+│   │   │   ├── 5-2-1-troubleshooting-cables-and-physical-layer
+│   │   │   │   ├── 5-2-1-troubleshooting-cables-and-physical-layer-answer-key.pdf
+│   │   │   │   └── 5-2-1-troubleshooting-cables-and-physical-layer-guided-notes.pdf
+│   │   │   ├── 5-2-2-troubleshooting-network-connectivity
+│   │   │   │   ├── 5-2-2-troubleshooting-network-connectivity-answer-key.pdf
+│   │   │   │   └── 5-2-2-troubleshooting-network-connectivity-guided-notes.pdf
+│   │   │   ├── 5-3-1-troubleshooting-wireless-issues
+│   │   │   │   ├── 5-3-1-troubleshooting-wireless-issues-answer-key.pdf
+│   │   │   │   └── 5-3-1-troubleshooting-wireless-issues-guided-notes.pdf
+│   │   │   └── 5-3-2-troubleshooting-network-security-issues
+│   │   │       ├── 5-3-2-troubleshooting-network-security-issues-answer-key.pdf
+│   │   │       └── 5-3-2-troubleshooting-network-security-issues-guided-notes.pdf
+│   │   └── pc-technician
+│   │       ├── 1-1-1-hardware-components-overview
+│   │       ├── 1-1-2-cpu-architecture
+│   │       ├── 1-1-3-ram-memory
+│   │       ├── 1-1-4-storage-devices
+│   │       ├── 1-1-5-motherboards
+│   │       ├── 1-1-6-power-supplies
+│   │       ├── 1-1-7-display-technologies
+│   │       ├── 1-2-1-input-devices
+│   │       ├── 1-2-2-output-devices
+│   │       ├── 1-2-3-connectors-and-ports
+│   │       ├── 1-3-1-networking-basics
+│   │       ├── 1-3-2-wireless-networking
+│   │       ├── 1-3-3-network-troubleshooting-basics
+│   │       ├── 2-1-1-windows-os-overview
+│   │       ├── 2-1-2-windows-installation
+│   │       ├── 2-1-3-windows-configuration
+│   │       ├── 2-1-4-windows-command-line
+│   │       ├── 2-1-5-windows-troubleshooting
+│   │       ├── 2-2-1-macos-overview
+│   │       ├── 2-2-2-linux-overview
+│   │       ├── 2-2-3-mobile-os
+│   │       ├── 3-1-1-security-fundamentals
+│   │       ├── 3-1-2-malware-types
+│   │       ├── 3-1-3-security-best-practices
+│   │       ├── 3-1-4-data-destruction-and-disposal
+│   │       ├── 4-1-1-troubleshooting-methodology
+│   │       ├── 4-1-2-troubleshooting-hardware
+│   │       ├── 4-1-3-troubleshooting-os
+│   │       ├── 4-1-4-troubleshooting-networks
+│   │       ├── 4-1-5-troubleshooting-security
+│   │       ├── 5-1-1-professionalism-and-communication
+│   │       └── 5-1-2-safety-and-environmental
+│   └── styles
+│       └── lab-shared.css
+├── scripts
+│   ├── assessment-manifest.techplus.json
+│   ├── beattieNetTrack.code-workspace
+│   ├── bootstrap-starter-modules.mjs
+│   ├── extract-cyberorg-quizzes.py
+│   ├── extract_cyberorg_quizzes.py
+│   ├── extract_units_from_pdfs.py
+│   ├── extracted_units.py
+│   ├── generate-tracks-from-lessons.mjs
+│   ├── ingest-assessments-from-manifest.mjs
+│   ├── legacy-html-to-mdx.mjs
+│   ├── make_resource_dirs.py
+│   ├── make_resource_pdfs.py
+│   ├── migrate-batch.mjs
+│   ├── migration-map.json
+│   ├── sort_pdfs.py
+│   └── validate-tracks.mjs
+├── src
+│   ├── changes
+│   │   └── lesson-link-updates-diff.md
+│   ├── components
+│   │   ├── ActivityCard.astro
+│   │   ├── Breadcrumbs.astro
+│   │   ├── Callout.astro
+│   │   ├── Card.astro
+│   │   ├── CodeBlock.astro
+│   │   ├── LabFrame.astro
+│   │   ├── LabRunner.tsx
+│   │   ├── LegacyBanner.astro
+│   │   ├── LegacyHtml.astro
+│   │   ├── LessonHeader.astro
+│   │   ├── LessonNav.astro
+│   │   ├── Navbar.astro
+│   │   ├── ProgressBar.astro
+│   │   ├── QuizRunner.tsx
+│   │   ├── SearchOverlay.astro
+│   │   ├── Section.astro
+│   │   ├── Sidebar.astro
+│   │   ├── islands
+│   │   │   ├── CodeRunner.tsx
+│   │   │   ├── LessonProgressControls.tsx
+│   │   │   ├── LessonProgressToggle.tsx
+│   │   │   ├── ProgressStatus.tsx
+│   │   │   ├── QuizCatalogBadge.tsx
+│   │   │   ├── QuizRunner.tsx
+│   │   │   ├── RightPanel.tsx
+│   │   │   ├── SidebarTourProgress.tsx
+│   │   │   ├── SidebarTrackProgress.tsx
+│   │   │   ├── TerminalSimulator.tsx
+│   │   │   ├── TourProgressCard.tsx
+│   │   │   ├── TrackLessonMarkers.tsx
+│   │   │   └── TrackProgressSummary.tsx
+│   │   ├── labs
+│   │   │   ├── MotherboardDiagram.tsx
+│   │   │   └── PcAssemblyLab.tsx
+│   │   ├── tracks
+│   │   │   └── TrackModulesView.astro
+│   │   ├── ui
+│   │   │   ├── ActivityCard.astro
+│   │   │   └── Pane.astro
+│   │   └── workspace
+│   │       ├── BottomBar.astro
+│   │       ├── InstructionSteps.astro
+│   │       ├── LabActivity.astro
+│   │       ├── QuizActivity.astro
+│   │       └── Tabs.astro
+│   ├── content
+│   │   ├── activities
+│   │   │   └── pc-tech-hardware-legacy-page.mdx
+│   │   ├── config.ts
+│   │   ├── labs
+│   │   │   ├── code-basics.mdx
+│   │   │   ├── network-terminal-basics.mdx
+│   │   │   ├── pc-assembly.mdx
+│   │   │   ├── pc-tech-legacy-hardware-lab.mdx
+│   │   │   └── terminal-basics.mdx
+│   │   ├── lessons
+│   │   │   ├── a-plus-guides.mdx
+│   │   │   ├── a-plus-hardware.mdx
+│   │   │   ├── a-plus-lab-bios-config.mdx
+│   │   │   ├── a-plus-lab-driver-install.mdx
+│   │   │   ├── a-plus-lab-pc-assembly.mdx
+│   │   │   ├── a-plus-lab-performance-tuning.mdx
+│   │   │   ├── a-plus-lab-upgrade-planning.mdx
+│   │   │   ├── a-plus-labs.mdx
+│   │   │   ├── a-plus-motherboards.mdx
+│   │   │   ├── a-plus-networking.mdx
+│   │   │   ├── a-plus-operating-systems.mdx
+│   │   │   ├── a-plus-power-cooling.mdx
+│   │   │   ├── a-plus-security.mdx
+│   │   │   ├── a-plus-storage.mdx
+│   │   │   ├── a-plus-troubleshooting.mdx
+│   │   │   ├── about-class.mdx
+│   │   │   ├── auth-demo.mdx
+│   │   │   ├── binary-exploitation.mdx
+│   │   │   ├── card-beam-animation-readme.mdx
+│   │   │   ├── cheat-sheets.mdx
+│   │   │   ├── cryptography.mdx
+│   │   │   ├── download.mdx
+│   │   │   ├── exif-simulator.mdx
+│   │   │   ├── forensics.mdx
+│   │   │   ├── general-skills.mdx
+│   │   │   ├── https-demo.mdx
+│   │   │   ├── index.mdx
+│   │   │   ├── intro-to-cybersecurity.mdx
+│   │   │   ├── learning-tracks.mdx
+│   │   │   ├── linux-cli-survival.mdx
+│   │   │   ├── net-cable-management.mdx
+│   │   │   ├── net-change-management.mdx
+│   │   │   ├── net-cloud-concepts.mdx
+│   │   │   ├── net-common-network-attacks.mdx
+│   │   │   ├── net-common-ports.mdx
+│   │   │   ├── net-connector-types.mdx
+│   │   │   ├── net-copper-cables.mdx
+│   │   │   ├── net-corporate-datacenter-architecture.mdx
+│   │   │   ├── net-data-loss-prevention.mdx
+│   │   │   ├── net-dhcp.mdx
+│   │   │   ├── net-dns.mdx
+│   │   │   ├── net-encapsulation-decapsulation.mdx
+│   │   │   ├── net-fiber-optic-cables.mdx
+│   │   │   ├── net-firewalls-ids-ips.mdx
+│   │   │   ├── net-high-availability.mdx
+│   │   │   ├── net-ip-addressing-subnetting.mdx
+│   │   │   ├── net-ipv4-ipv6.mdx
+│   │   │   ├── net-ipv6-implementation.mdx
+│   │   │   ├── net-load-balancing.mdx
+│   │   │   ├── net-nat-pat.mdx
+│   │   │   ├── net-network-documentation.mdx
+│   │   │   ├── net-network-hardening.mdx
+│   │   │   ├── net-network-monitoring.mdx
+│   │   │   ├── net-network-security-concepts.mdx
+│   │   │   ├── net-network-services-configuration.mdx
+│   │   │   ├── net-network-topologies.mdx
+│   │   │   ├── net-network-types.mdx
+│   │   │   ├── net-ntp.mdx
+│   │   │   ├── net-osi-model.mdx
+│   │   │   ├── net-physical-security.mdx
+│   │   │   ├── net-policies-procedures.mdx
+│   │   │   ├── net-protocols.mdx
+│   │   │   ├── net-public-private-networks.mdx
+│   │   │   ├── net-router-configuration-cli.mdx
+│   │   │   ├── net-routing-concepts.mdx
+│   │   │   ├── net-routing-protocol-configuration.mdx
+│   │   │   ├── net-routing-protocols.mdx
+│   │   │   ├── net-switch-configuration.mdx
+│   │   │   ├── net-switching-concepts.mdx
+│   │   │   ├── net-troubleshooting-connectivity.mdx
+│   │   │   ├── net-troubleshooting-methodology.mdx
+│   │   │   ├── net-troubleshooting-physical-layer.mdx
+│   │   │   ├── net-troubleshooting-security.mdx
+│   │   │   ├── net-troubleshooting-tools.mdx
+│   │   │   ├── net-troubleshooting-wireless.mdx
+│   │   │   ├── net-vlans.mdx
+│   │   │   ├── net-vpn-remote-access.mdx
+│   │   │   ├── net-wan-technologies.mdx
+│   │   │   ├── net-wireless-security-threats.mdx
+│   │   │   ├── net-wireless-security.mdx
+│   │   │   ├── net-wireless-standards.mdx
+│   │   │   ├── net.security.infrastructure.mdx
+│   │   │   ├── net.security.wireless.mdx
+│   │   │   ├── password-hashing.mdx
+│   │   │   ├── progress-demo.mdx
+│   │   │   ├── resources.mdx
+│   │   │   ├── reverse-engineering.mdx
+│   │   │   ├── review-game.mdx
+│   │   │   ├── site-playwright_test_readme.mdx
+│   │   │   ├── site-readme.mdx
+│   │   │   ├── sql-injection.mdx
+│   │   │   ├── study-guides.mdx
+│   │   │   ├── threat-modeling-basics.mdx
+│   │   │   ├── tour.mdx
+│   │   │   ├── web-exploitation.mdx
+│   │   │   └── xss-demo.mdx
+│   │   ├── lessons (2).zip
+│   │   ├── modules
+│   │   │   ├── ai
+│   │   │   │   ├── ai.data.basics.mdx
+│   │   │   │   ├── ai.fundamentals.ai-literacy.mdx
+│   │   │   │   ├── ai.ml.basics.mdx
+│   │   │   │   ├── ai.prompting.best-practices.mdx
+│   │   │   │   └── ai.usage.responsible-use.mdx
+│   │   │   ├── cybersecurity
+│   │   │   │   └── cybersecurity-legacy.mdx
+│   │   │   ├── net
+│   │   │   │   ├── net.fundamentals.addressing.mdx
+│   │   │   │   ├── net.fundamentals.architecture.mdx
+│   │   │   │   ├── net.fundamentals.cabling-and-connectors.mdx
+│   │   │   │   ├── net.fundamentals.models-and-standards.mdx
+│   │   │   │   ├── net.fundamentals.network-services.mdx
+│   │   │   │   ├── net.fundamentals.ports-and-protocols.mdx
+│   │   │   │   ├── net.fundamentals.routing.mdx
+│   │   │   │   ├── net.fundamentals.topologies-and-types.mdx
+│   │   │   │   ├── net.implementation.addressing.mdx
+│   │   │   │   ├── net.implementation.routing.mdx
+│   │   │   │   ├── net.implementation.services.mdx
+│   │   │   │   ├── net.implementation.switching.mdx
+│   │   │   │   ├── net.implementation.wireless.mdx
+│   │   │   │   ├── net.operations.availability.mdx
+│   │   │   │   ├── net.operations.documentation.mdx
+│   │   │   │   ├── net.operations.procedures.mdx
+│   │   │   │   ├── net.security.fundamentals.mdx
+│   │   │   │   ├── net.security.infrastructure.mdx
+│   │   │   │   ├── net.security.physical.mdx
+│   │   │   │   ├── net.security.wireless.mdx
+│   │   │   │   ├── net.troubleshooting.methodology.mdx
+│   │   │   │   ├── net.troubleshooting.physical.mdx
+│   │   │   │   ├── net.troubleshooting.security.mdx
+│   │   │   │   └── net.troubleshooting.wireless.mdx
+│   │   │   ├── network
+│   │   │   │   └── network-legacy.mdx
+│   │   │   ├── pc-tech
+│   │   │   │   ├── hardware-fundamentals.mdx
+│   │   │   │   ├── pc-tech-labs.mdx
+│   │   │   │   └── pc-tech-legacy.mdx
+│   │   │   ├── pct
+│   │   │   │   ├── pct.customer.professionalism.mdx
+│   │   │   │   ├── pct.fundamentals.computing-basics.mdx
+│   │   │   │   ├── pct.fundamentals.number-systems.mdx
+│   │   │   │   ├── pct.fundamentals.safety-esd.mdx
+│   │   │   │   ├── pct.hardware.build-compatibility.mdx
+│   │   │   │   ├── pct.hardware.components-identification.mdx
+│   │   │   │   ├── pct.os.installation-recovery.mdx
+│   │   │   │   ├── pct.os.windows-basics.mdx
+│   │   │   │   ├── pct.troubleshooting.common-issues.mdx
+│   │   │   │   └── pct.troubleshooting.methodology.mdx
+│   │   │   ├── py
+│   │   │   │   ├── py.files.data-io.mdx
+│   │   │   │   ├── py.fundamentals.data-structures.mdx
+│   │   │   │   ├── py.fundamentals.syntax.mdx
+│   │   │   │   ├── py.testing.debugging.mdx
+│   │   │   │   └── py.web.api-basics.mdx
+│   │   │   ├── sec
+│   │   │   │   ├── sec.crypto.basics.mdx
+│   │   │   │   ├── sec.endpoint.hardening.mdx
+│   │   │   │   ├── sec.fundamentals.risk-and-policy.mdx
+│   │   │   │   ├── sec.fundamentals.security-concepts.mdx
+│   │   │   │   ├── sec.identity.access-management.mdx
+│   │   │   │   ├── sec.incident.response-basics.mdx
+│   │   │   │   ├── sec.network.defense-basics.mdx
+│   │   │   │   └── sec.security-awareness.social-engineering.mdx
+│   │   │   ├── starter
+│   │   │   └── web
+│   │   │       ├── web.backend.apis.mdx
+│   │   │       ├── web.frontend.components.mdx
+│   │   │       ├── web.fundamentals.html-css.mdx
+│   │   │       ├── web.fundamentals.http.mdx
+│   │   │       ├── web.fundamentals.javascript.mdx
+│   │   │       └── web.security.basics.mdx
+│   │   ├── quizzes
+│   │   │   ├── network-engineer
+│   │   │   │   ├── net-1-1-1-osi-model.mdx
+│   │   │   │   ├── net-1-1-2-encapsulation-and-decapsulation.mdx
+│   │   │   │   ├── net-1-2-1-network-topologies.mdx
+│   │   │   │   ├── net-1-2-2-network-types.mdx
+│   │   │   │   ├── net-1-3-1-copper-cables.mdx
+│   │   │   │   ├── net-1-3-2-fiber-optic-cables.mdx
+│   │   │   │   ├── net-1-3-3-connector-types.mdx
+│   │   │   │   ├── net-1-3-4-cable-management.mdx
+│   │   │   │   ├── net-1-4-1-public-vs-private-networks.mdx
+│   │   │   │   ├── net-1-4-2-ipv4-and-ipv6.mdx
+│   │   │   │   ├── net-1-5-1-common-ports.mdx
+│   │   │   │   ├── net-1-5-2-protocols.mdx
+│   │   │   │   ├── net-1-6-1-dhcp.mdx
+│   │   │   │   ├── net-1-6-2-dns.mdx
+│   │   │   │   ├── net-1-6-3-ntp.mdx
+│   │   │   │   ├── net-1-7-1-corporate-and-datacenter-network-architecture.mdx
+│   │   │   │   ├── net-1-8-1-cloud-concepts.mdx
+│   │   │   │   ├── net-1-8-2-cloud-connectivity-options.mdx
+│   │   │   │   ├── net-2-1-1-networking-devices.mdx
+│   │   │   │   ├── net-2-1-2-networked-devices.mdx
+│   │   │   │   ├── net-2-2-1-routing-technologies.mdx
+│   │   │   │   ├── net-2-2-2-bandwidth-management.mdx
+│   │   │   │   ├── net-2-3-1-ethernet-switching-features.mdx
+│   │   │   │   ├── net-2-3-2-ethernet-port-configurations.mdx
+│   │   │   │   ├── net-2-4-1-wifi-standards.mdx
+│   │   │   │   ├── net-2-4-2-ssid.mdx
+│   │   │   │   ├── net-2-4-3-wireless-technologies.mdx
+│   │   │   │   ├── net-3-1-1-performance-metrics.mdx
+│   │   │   │   ├── net-3-1-2-snmp-and-network-device-logs.mdx
+│   │   │   │   ├── net-3-1-3-interface-stats-and-alerts.mdx
+│   │   │   │   ├── net-3-1-4-environmental-factors-and-sensors.mdx
+│   │   │   │   ├── net-3-2-1-plans-procedures-and-policies.mdx
+│   │   │   │   ├── net-3-2-2-common-documentation-and-agreements.mdx
+│   │   │   │   ├── net-3-3-1-redundancy.mdx
+│   │   │   │   ├── net-3-3-2-recovery.mdx
+│   │   │   │   ├── net-4-1-1-security-concepts.mdx
+│   │   │   │   ├── net-4-1-2-defense-in-depth.mdx
+│   │   │   │   ├── net-4-1-3-authentication-methods.mdx
+│   │   │   │   ├── net-4-1-4-risk-management.mdx
+│   │   │   │   ├── net-4-1-5-security-information-and-event-management.mdx
+│   │   │   │   ├── net-4-2-1-technology-based-attacks.mdx
+│   │   │   │   ├── net-4-2-2-social-engineering-attacks.mdx
+│   │   │   │   ├── net-4-3-1-network-hardening-best-practices.mdx
+│   │   │   │   ├── net-4-3-2-wireless-security.mdx
+│   │   │   │   ├── net-4-4-1-remote-access-methods.mdx
+│   │   │   │   ├── net-4-4-2-remote-security-implications.mdx
+│   │   │   │   ├── net-4-5-1-physical-detection-methods.mdx
+│   │   │   │   ├── net-4-5-2-physical-prevention-methods.mdx
+│   │   │   │   ├── net-4-5-3-physical-asset-disposal.mdx
+│   │   │   │   ├── net-5-1-1-network-troubleshooting-methodology.mdx
+│   │   │   │   ├── net-5-2-1-cable-specifications.mdx
+│   │   │   │   ├── net-5-2-2-common-cable-issues.mdx
+│   │   │   │   ├── net-5-2-3-common-cable-tools.mdx
+│   │   │   │   ├── net-5-3-1-network-software-tools.mdx
+│   │   │   │   ├── net-5-3-2-network-command-line-tools.mdx
+│   │   │   │   ├── net-5-4-1-wireless-specifications-and-limitations.mdx
+│   │   │   │   ├── net-5-4-2-wireless-considerations.mdx
+│   │   │   │   ├── net-5-4-3-common-wireless-connectivity-issues.mdx
+│   │   │   │   ├── net-5-5-1-networking-considerations.mdx
+│   │   │   │   └── net-5-5-2-common-networking-issues.mdx
+│   │   │   ├── network-fundamentals-checkpoint.mdx
+│   │   │   ├── pc-tech-hardware-checkpoint.mdx
+│   │   │   ├── tech-plus
+│   │   │   │   ├── assessment-1-1-1.mdx
+│   │   │   │   ├── assessment-1-1-2.mdx
+│   │   │   │   ├── assessment-1-1-3.mdx
+│   │   │   │   ├── assessment-1-1-4.mdx
+│   │   │   │   ├── assessment-1-1-5.mdx
+│   │   │   │   ├── assessment-1-2-1.mdx
+│   │   │   │   ├── assessment-1-2-2.mdx
+│   │   │   │   ├── assessment-1-2-3.mdx
+│   │   │   │   ├── assessment-1-2-4.mdx
+│   │   │   │   ├── assessment-1-2-5.mdx
+│   │   │   │   ├── assessment-1-3-1.mdx
+│   │   │   │   ├── assessment-1-3-2.mdx
+│   │   │   │   ├── assessment-1-3-3.mdx
+│   │   │   │   ├── assessment-1-3-4.mdx
+│   │   │   │   ├── assessment-1-3-5.mdx
+│   │   │   │   ├── assessment-1-4-1.mdx
+│   │   │   │   ├── assessment-1-4-2.mdx
+│   │   │   │   ├── assessment-1-4-3.mdx
+│   │   │   │   ├── assessment-1-4-4.mdx
+│   │   │   │   └── assessment-1-4-5.mdx
+│   │   │   └── tour-quick-check.mdx
+│   │   ├── studyGuides
+│   │   │   ├── hardware-fundamentals.mdx
+│   │   │   ├── networking-basics.mdx
+│   │   │   └── operating-systems.mdx
+│   │   ├── tour
+│   │   │   ├── code-challenge.mdx
+│   │   │   ├── completion.mdx
+│   │   │   ├── intro.mdx
+│   │   │   ├── quiz-challenge.mdx
+│   │   │   └── terminal-challenge.mdx
+│   │   └── tracks
+│   │       ├── ai-ml.mdx
+│   │       ├── cybersecurity-engineer.mdx
+│   │       ├── cybersecurity-foundations.mdx
+│   │       ├── legacy-grouped.mdx
+│   │       ├── legacy.mdx
+│   │       ├── network-engineer.mdx
+│   │       ├── pc-technician.mdx
+│   │       ├── python-developer.mdx
+│   │       └── web-developer.mdx
+│   ├── content.config.ts
+│   ├── layouts
+│   │   ├── AppShell.astro
+│   │   ├── BaseLayout.astro
+│   │   └── WorkspaceLayout.astro
+│   ├── lib
+│   │   ├── checksStore.ts
+│   │   ├── coach
+│   │   │   └── CoachClient.ts
+│   │   ├── codeExercises.ts
+│   │   ├── content
+│   │   │   └── invariants.ts
+│   │   ├── content.ts
+│   │   ├── contextSnapshot.ts
+│   │   ├── lessonMeta.ts
+│   │   ├── panelStore.ts
+│   │   ├── progressStore.test.ts
+│   │   ├── progressStore.ts
+│   │   ├── quizBank.ts
+│   │   ├── quizEngine.test.ts
+│   │   ├── quizEngine.ts
+│   │   ├── quizLoader.ts
+│   │   ├── searchIndex.ts
+│   │   └── terminalScenarios.ts
+│   ├── pages
+│   │   ├── index.astro
+│   │   ├── labs
+│   │   │   ├── [slug].astro
+│   │   │   ├── code-basics.astro
+│   │   │   └── index.astro
+│   │   ├── legacy
+│   │   │   ├── [...path].astro
+│   │   │   └── index.astro
+│   │   ├── lessons
+│   │   │   └── [slug].astro
+│   │   ├── quizzes
+│   │   │   ├── [slug].astro
+│   │   │   └── index.astro
+│   │   ├── study-guides
+│   │   │   └── [slug].astro
+│   │   ├── study-guides.astro
+│   │   ├── tour
+│   │   │   ├── [slug].astro
+│   │   │   └── index.astro
+│   │   ├── tracks
+│   │   │   ├── [slug].astro
+│   │   │   ├── [track]
+│   │   │   │   └── labs
+│   │   │   │       └── [slug].astro
+│   │   │   ├── index.astro
+│   │   │   └── legacy
+│   │   │       └── index.astro
+│   │   └── workspace
+│   │       └── [type]
+│   │           └── [slug].astro
+│   └── styles
+│       ├── global.css
+│       ├── legacy-compat.css
+│       └── tokens.css
+├── structure.txt
+├── test-results
+├── tests
+│   ├── code-runner.spec.ts
+│   ├── content-integrity.spec.ts
+│   ├── fixtures.ts
+│   ├── lab.spec.ts
+│   ├── progress.spec.ts
+│   ├── quiz.spec.ts
+│   ├── search.spec.ts
+│   ├── study-guides.spec.ts
+│   ├── terminal.spec.ts
+│   ├── tour.spec.ts
+│   ├── tracks-cls.spec.ts
+│   ├── tracks-navigation.spec.ts
+│   ├── visual.spec.ts
+│   └── visual.spec.ts-snapshots
+│       ├── home-linux.png
+│       ├── home-win32.png
+│       ├── legacy-linux.png
+│       ├── legacy-win32.png
+│       ├── lesson-linux.png
+│       ├── lesson-mobile-linux.png
+│       ├── lesson-mobile-win32.png
+│       ├── lesson-win32.png
+│       ├── quiz-runner-linux.png
+│       ├── quiz-runner-win32.png
+│       ├── quizzes-linux.png
+│       ├── quizzes-win32.png
+│       ├── track-linux.png
+│       └── track-win32.png
+└── tsconfig.json
+
+538 directories, 1088 files

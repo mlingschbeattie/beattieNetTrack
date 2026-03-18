@@ -1,0 +1,187 @@
+---
+title: Hardware Components — Identify What's Inside a PC
+description: Identify every major component inside a desktop and laptop PC — CPU, RAM, GPU, PSU, motherboard, storage, cooling, and ports — with what each looks like, what it does, and how to recognize it on the job.
+slug: pct-components-identification
+track: pc-technician
+moduleId: pct.hardware.components-identification
+order: 1
+difficulty: Beginner
+estMinutes: 30
+tags: ["hardware", "components", "CPU", "RAM", "GPU", "PSU", "A+", "Core 1", "CompTIA"]
+---
+
+## The Technician's First Skill
+
+Before you can troubleshoot anything, you need to know what you're looking at. A client hands you a tower that won't boot. You open the side panel and see a board full of chips, cables, fans, and slots. If you can name every piece and tell it apart from everything else, you're a technician. If you can't, you're guessing.
+
+This lesson is a systematic tour of every major component inside a PC. By the end, you should be able to identify any part by sight, know what it does, and know where it connects.
+
+## The Motherboard — Start Here
+
+The motherboard is the largest component in the case — a flat circuit board that everything else connects to. It's your map. Once you can read a motherboard, you can find everything else.
+
+Key landmarks on any motherboard:
+
+**CPU socket** — the large square socket near the top-center of the board, usually covered by the CPU cooler. Intel sockets have pins on the socket (LGA — Land Grid Array); AMD sockets have pins on the CPU itself (PGA — Pin Grid Array) for older models, or use LGA for newer AM5 platforms.
+
+**RAM slots** — long, narrow slots running parallel to the CPU socket, usually 2 or 4 of them. They have locking tabs at one or both ends. DDR4 and DDR5 slots look similar but have the key notch in different positions.
+
+**PCIe slots** — horizontal expansion slots of varying lengths. The longest (x16) is for the GPU. Shorter slots (x1, x4) are for other expansion cards.
+
+**M.2 slots** — small horizontal slots, about 2cm wide, for NVMe SSDs. Often hidden under a heatsink cover.
+
+**SATA ports** — L-shaped connectors, usually along the right edge of the board, for connecting SATA drives and optical drives.
+
+**24-pin ATX power connector** — large rectangular connector on the right side of the board, where the main power cable from the PSU connects.
+
+**4/8-pin CPU power connector** — smaller square connector near the top-left corner, provides dedicated power to the CPU.
+
+**Front panel headers** — small pin clusters near the bottom of the board for power button, reset button, and front-panel LEDs.
+
+**I/O shield area** — the back edge of the board, which aligns with the rear port panel of the case.
+
+## The CPU — The Processor
+
+The CPU sits under the cooler. To identify it, you'd need to remove the cooler — in practice, you read the label on the cooler or check system information software (CPU-Z, Task Manager, System Information).
+
+What to know by sight:
+
+- Intel CPUs have a flat underside (LGA — contacts are on the socket, not the chip)
+- AMD CPUs have pins on the underside (PGA) for older AM4, flat for newer AM5
+- CPUs are roughly square, 3–4cm per side
+- The CPU has an arrow or notch in one corner that aligns with a matching mark on the socket — this is how you orient it correctly
+
+**Never touch the underside of a CPU.** Bent pins on an AMD CPU or contaminated contacts on an Intel CPU mean a replacement.
+
+## RAM — The Sticks
+
+RAM modules (DIMMs — Dual Inline Memory Modules) are easy to identify: long, narrow circuit boards with chips on one or both sides, inserted vertically into the RAM slots.
+
+What to look for:
+
+- **DDR generation label** — printed on the stick or its heatspreader: DDR4, DDR5
+- **Capacity** — printed on the label: 8GB, 16GB, 32GB
+- **Speed** — also on the label: 3200MHz, 4800MHz
+- **Heatspreaders** — many performance modules have metal covers for cooling; budget modules may be bare PCB
+
+To remove RAM: press down on both locking tabs simultaneously. The stick pops up at an angle. To install: align the notch with the slot key, press straight down until both tabs click.
+
+## The GPU — The Graphics Card
+
+The GPU (Graphics Processing Unit) is the large expansion card installed in the top PCIe x16 slot. It's usually the biggest card in the system and has one of the most recognizable profiles:
+
+- One or more fans on the bottom face
+- Rear I/O ports facing the back of the case: DisplayPort, HDMI, sometimes DVI or VGA
+- Often has a 6-pin or 8-pin PCIe power connector (or two) on the end facing the case interior
+- A locking tab on the PCIe slot secures it — release this before removing the card
+
+GPUs range from single-slot thin cards to massive triple-fan triple-slot designs. Modern high-end GPUs can be 30cm long and require case clearance measurement before installation.
+
+**Integrated graphics** — many CPUs include graphics processing on-die. Systems without a discrete GPU use the motherboard's rear display ports (connected to the CPU's integrated graphics). If a system has both, the discrete GPU's ports are used by default.
+
+## Storage Drives
+
+### Hard Disk Drive (HDD)
+
+HDDs are the older, heavier, magnetic storage format. Identification:
+
+- Metal enclosure, 3.5" (desktop) or 2.5" (laptop/slim desktop)
+- SATA data connector (small L-shaped) and SATA power connector (larger L-shaped) on the rear
+- Audible: you can hear them spin and seek
+- Heavier than SSDs of the same size
+
+### 2.5" SATA SSD
+
+The most common SSD form factor for upgrades. Looks like a thin HDD:
+
+- Same 2.5" enclosure as laptop HDDs, about 7mm thick
+- Same SATA connectors as HDDs
+- Silent, lighter than HDDs
+- Common brands: Samsung, Crucial, WD, Kingston
+
+### M.2 NVMe SSD
+
+The fastest and now most common form factor for new builds:
+
+- Small card, 22mm wide, available in lengths: 2242, 2260, 2280 (80mm is most common)
+- Installs flat into M.2 slot on motherboard, secured with a single small screw
+- No power or data cables — connects directly to the motherboard
+- May have a heatsink installed over it
+
+M.2 slots can support SATA or NVMe protocol — check the motherboard spec to know which your system supports. NVMe is significantly faster.
+
+### Optical Drive
+
+DVD/Blu-ray drives are increasingly rare but still found in older systems:
+
+- 5.25" bay, front-loading tray
+- SATA data and power connections same as HDDs
+- Eject button on the front
+
+## The Power Supply Unit (PSU)
+
+The PSU is the metal box in the corner of the case (usually top-rear or bottom-rear depending on case design). It converts AC wall power to DC.
+
+Identification:
+
+- Fan facing into the case (or down through a vented floor panel)
+- Bundle of cables emerging from one side — the modular or semi-modular units have connectors on the PSU itself
+- Wattage and efficiency rating on a label: "650W 80 PLUS Gold"
+- Power cable receptacle on the outside of the case
+
+**Key cables to recognize:**
+
+| Cable | Connector | Goes to |
+|-------|-----------|---------|
+| 24-pin ATX | Wide rectangular | Motherboard main power |
+| 4/8-pin EPS | Square | Motherboard CPU power |
+| 6/8-pin PCIe | Rectangular | GPU |
+| SATA power | Wide L-shape | HDDs, SSDs, optical drives |
+| Molex | Large 4-pin | Older devices, some fans |
+
+## Cooling Components
+
+### CPU Cooler
+
+Sits directly on top of the CPU, secured by a mounting bracket or push-pins. Two types:
+
+**Air cooler** — heatsink (metal fins) with one or more fans. Ranges from the stock Intel/AMD cooler (small, basic) to large tower coolers (120mm+ fans, tall heatsink tower).
+
+**AIO liquid cooler** — a closed-loop water cooling system with a pump block on the CPU, tubes running to a radiator mounted in the case, and fans on the radiator. Radiators are typically 120mm, 240mm, or 360mm.
+
+### Case Fans
+
+Additional fans mounted in the case for airflow. Usually 80mm, 120mm, or 140mm. Connect to fan headers on the motherboard (3-pin or 4-pin) or directly to PSU Molex connectors.
+
+## Ports — Front and Rear
+
+### Rear I/O (Motherboard)
+
+- **USB-A** (rectangular) — various speeds: USB 2.0 (black), USB 3.0 (blue), USB 3.1/3.2 (teal/red)
+- **USB-C** — oval connector, often USB 3.1+ or Thunderbolt
+- **DisplayPort / HDMI** — video output (on integrated graphics)
+- **Audio jacks** — 3.5mm TRS, color-coded: green (output), blue (line-in), pink (microphone)
+- **Ethernet (RJ-45)** — rectangular, 8-pin network port
+- **PS/2** — round purple (keyboard) or green (mouse) — older systems only
+
+### Front Panel
+
+- USB ports (usually USB-A, sometimes USB-C on newer cases)
+- Audio jacks (headphone + microphone)
+- Power button, reset button, drive activity LED
+
+## Laptop Components — What's Different
+
+Laptops use the same components but in smaller, integrated form. Key differences:
+
+- **SO-DIMM RAM** — smaller RAM modules, about half the length of desktop DIMMs
+- **2.5" or M.2 storage** — no 3.5" drives; many ultrabooks have M.2 only
+- **Integrated GPU** most common; discrete GPUs soldered on high-end models
+- **Battery** — internal, often not user-replaceable on modern thin laptops
+- **Display** — LVDS or eDP cable connecting the panel to the motherboard
+
+## Why This Matters in the Field
+
+A client says "my computer is making a grinding noise." You need to know immediately that grinding = mechanical = HDD or fan. You visually locate the HDD and the fans, listen for which one. You don't open a ticket and wait for a parts order before you've even looked.
+
+Identification is the foundation of speed. The technician who can look at an open case and immediately inventory it — brand of PSU, CPU generation, RAM configuration, storage layout — diagnoses twice as fast as the one who has to look up every part. Build this skill by looking at as many systems as you can.

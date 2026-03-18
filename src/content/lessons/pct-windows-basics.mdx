@@ -1,0 +1,141 @@
+---
+title: Windows Basics — The Operating System Every Technician Lives In
+description: How Windows manages hardware, files, users, and services — including Task Manager, Device Manager, Event Viewer, Disk Management, msconfig, and the tools you'll use every day as a technician.
+slug: pct-windows-basics
+track: pc-technician
+moduleId: pct.os.windows-basics
+order: 1
+difficulty: Beginner
+estMinutes: 30
+tags: ["Windows", "OS", "Task Manager", "Event Viewer", "NTFS", "A+", "Core 2", "CompTIA"]
+---
+
+## The Toolkit You Can't Ignore
+
+A client calls. Their Windows 11 PC is running slowly, and they think they have a virus. You sit down at the machine. The first thing you open is Task Manager — not antivirus, not a third-party utility, not some downloaded scanner. Task Manager. Within ninety seconds you can see which process is consuming CPU, RAM, and disk, whether it belongs there, and whether the system's startup list is full of junk that should never have been loading at boot.
+
+Windows includes an enormous set of built-in tools that competent technicians use before reaching for anything else. This lesson covers how Windows is structured, how it manages users and files, and the tools that will constitute most of your daily diagnostic work.
+
+## What an Operating System Actually Does
+
+The OS sits between hardware and applications. Without an OS, applications would each need to write their own code to communicate with the specific hard drive model, the specific GPU, the specific network adapter installed in a given system. That's obviously unworkable. The OS provides a standardized layer: applications make OS calls, the OS handles the hardware communication through drivers.
+
+Windows handles four primary functions constantly:
+
+**Hardware abstraction** — translating application requests into hardware-specific commands through device drivers. When a browser requests that a file be read from disk, it doesn't know or care whether the storage is an NVMe SSD or a 7200 RPM HDD. Windows handles that detail.
+
+**Memory management** — allocating RAM to running applications, managing virtual memory (paging file on disk when RAM is full), and ensuring applications can't overwrite each other's memory space.
+
+**File system management** — organizing data on storage devices, enforcing permissions, tracking what's stored where, and managing the metadata that makes files findable.
+
+**Process management** — launching, scheduling, prioritizing, and terminating processes. The OS decides which process gets CPU time, for how long, and at what priority.
+
+Understanding this structure tells you where to look when things break.
+
+## User Accounts and Permissions
+
+Windows has two primary account types that a technician encounters constantly.
+
+**Standard users** can run applications, access their own files, and change personal settings — but they cannot install software, modify system files, or change system-wide settings without entering administrator credentials. This is by design. In a corporate or school environment, standard user accounts are the default because they limit the damage a malware infection or a careless user can cause.
+
+**Administrator accounts** have full control over the system: installing software, modifying the registry, changing security settings, creating and deleting user accounts, and accessing any file on the system. Running day-to-day as an administrator is a security risk — every process launched by an administrator inherits its elevated privileges. A malicious file double-clicked by an administrator can do far more damage than the same file run by a standard user.
+
+**User Account Control (UAC)** is Windows's mechanism for making administrators act like standard users by default. When an action requires elevation (installing software, changing system settings), UAC prompts for confirmation or credentials. This prompt is not optional noise — it's a meaningful security gate. Users (and inexperienced technicians) who click through UAC prompts without reading them are bypassing one of Windows's most important protections.
+
+There is also a built-in **Administrator** account, disabled by default in modern Windows. It has unrestricted access and is not subject to UAC. It exists for recovery scenarios, not daily use. If you find it enabled on a client's machine, that's worth investigating.
+
+User accounts are managed through **Computer Management** → **Local Users and Groups**, or through **Settings → Accounts** for simpler tasks. In domain environments, accounts are managed through Active Directory on the domain controller, not locally.
+
+## The NTFS File System and Permissions
+
+Windows uses **NTFS (New Technology File System)** as its primary file system. NTFS supports file-level permissions, encryption, auditing, compression, and large partition sizes. The older **FAT32** format (still used on some USB drives and media cards) supports none of these features. If a drive is formatted FAT32, it has no permissions, no encryption, and a maximum file size of 4 GB.
+
+NTFS permissions control what users can do with files and folders:
+
+| Permission | What it allows |
+|-----------|---------------|
+| Read | View file contents and attributes |
+| Write | Create and modify files and folders |
+| Read & Execute | Read + run executable files |
+| Modify | Read, Write, and Delete |
+| Full Control | Everything, including changing permissions |
+
+Permissions are inherited by default — a folder's permissions apply to all files and subfolders within it. You can break inheritance on individual files or folders and set explicit permissions.
+
+One critical rule: **when share permissions and NTFS permissions conflict, the more restrictive wins**. If a shared folder's share permissions grant Full Control but the NTFS permissions for the user only allow Read, the effective permission is Read. Technicians troubleshooting "I can see the folder but can't open files" problems need to check both levels.
+
+## The Windows Registry
+
+The **registry** is Windows's central configuration database — a hierarchical database storing settings for the OS, installed applications, hardware drivers, and user preferences. It's organized into hives (root keys):
+
+- **HKEY_LOCAL_MACHINE (HKLM)** — system-wide settings, hardware, installed software, boot configuration
+- **HKEY_CURRENT_USER (HKCU)** — settings for the currently logged-in user
+- **HKEY_USERS (HKU)** — settings for all user profiles on the system
+- **HKEY_CLASSES_ROOT (HKCR)** — file type associations and COM objects
+- **HKEY_CURRENT_CONFIG (HKCC)** — current hardware profile
+
+You access it with `regedit`. Registry editing is powerful and dangerous. An incorrect registry change can prevent Windows from booting. Before modifying any registry key, export a backup of the key (File → Export) and consider creating a System Restore point. Never edit registry values from an unverified source without understanding what they do.
+
+The registry comes up in troubleshooting frequently — startup programs, file associations, driver settings, and application configurations all live there.
+
+## Task Manager — Your Daily Driver
+
+You will open Task Manager more than almost any other tool. Access it with **Ctrl+Shift+Esc**, **Ctrl+Alt+Del → Task Manager**, or right-clicking the taskbar.
+
+The **Processes tab** shows every running application and background process with real-time CPU, memory, disk, and network usage. A process consuming 90% CPU when the user says the machine is slow is your starting point. Right-click → End Task to terminate a misbehaving process. Right-click → Open File Location to find where a suspicious process lives. Right-click → Properties to see the file's digital signature.
+
+The **Performance tab** shows aggregate CPU, memory, disk, network, and GPU usage over time with graphs. A memory chart that shows committed memory near the total installed RAM tells you the system is paging to disk, which explains slowness. A CPU graph that shows consistent 80–90% usage at idle tells you something is running that shouldn't be.
+
+The **Startup tab** is one of the first places to check on a slow-booting machine. It lists every application configured to launch at login, with an impact rating (Low/Medium/High) based on how much it slows startup. Unnecessary startup programs are the single most common cause of slow boot times. Right-click → Disable to stop a program from loading at startup without uninstalling it.
+
+The **Services tab** shows running and stopped Windows services. Services are background processes that run independently of user sessions. Some services are essential (DNS Client, Windows Update, Print Spooler); others are optional. If a service is causing problems, you can stop, start, or restart it here or through the dedicated **Services console (services.msc)**.
+
+## Device Manager
+
+**Device Manager** (open via right-clicking the Start Menu → Device Manager, or `devmgmt.msc`) shows every hardware device in the system and the status of its driver.
+
+A yellow triangle with an exclamation mark (!) means the device has a driver error. A down-arrow means the device is disabled. A red X means the device has failed or is not recognized.
+
+Common tasks in Device Manager: updating a driver (right-click → Update Driver), rolling back a driver after an update caused problems (right-click → Properties → Driver → Roll Back Driver), disabling a device, and viewing IRQ assignments for conflict resolution.
+
+Device Manager is how you confirm hardware is recognized by Windows. If a component isn't listed here, Windows doesn't know it exists. If it's listed with an error, Windows knows it exists but can't communicate with it properly. Both are different starting points for diagnosis.
+
+## Event Viewer
+
+**Event Viewer** (`eventvwr.msc`) records system events — errors, warnings, informational messages, and security audit events. It's the closest thing Windows has to a black box flight recorder: when something crashes or fails, the event log often tells you why.
+
+The logs most relevant to a technician:
+
+**Windows Logs → Application** — errors and warnings from applications. A program crashing typically records an application error here with the faulting module name.
+
+**Windows Logs → System** — errors and warnings from Windows components and drivers. Driver failures, service crashes, disk errors (look for disk errors related to Event IDs 7 and 11 in Disk category), and boot issues appear here.
+
+**Windows Logs → Security** — login successes and failures, privilege use, object access. If you suspect unauthorized account access, this is where you look.
+
+When troubleshooting a blue screen or a crash, check Event Viewer in the System and Application logs for Critical and Error events around the time of the crash. They often name the responsible driver or service.
+
+## Disk Management
+
+**Disk Management** (`diskmgmt.msc`) shows physical drives and their partitions, lets you create and delete partitions, format volumes, assign drive letters, and initialize new drives.
+
+Key concepts: a **partition** is a logical division of a physical disk. A **volume** is a formatted partition with a file system (NTFS, FAT32, exFAT) and drive letter. A basic disk can have up to four primary partitions. A dynamic disk (rarely needed for modern setups) supports advanced configurations like spanning and striping.
+
+When a new drive appears as "Unknown" with "Not Initialized" status, you must initialize it (MBR or GPT) before partitioning. Use GPT for modern drives — it supports drives larger than 2 TB and is required for UEFI boot drives.
+
+The shrink and extend volume operations (right-click a volume) let you resize partitions without data loss — but you can't shrink below what's being used, and you can only extend a volume into unallocated space immediately to its right on the disk.
+
+## System Configuration (msconfig) and Other Utilities
+
+**System Configuration** (`msconfig`) controls boot options and startup behavior. The Boot tab lets you enable safe boot (which we cover in the troubleshooting lessons), set the default OS on multi-boot systems, and configure advanced processor/memory limits for testing. The Services tab matches what you see in Task Manager's Services tab. The Startup tab redirects to Task Manager in Windows 10/11.
+
+**msinfo32** generates a comprehensive system information report: hardware resources, installed drivers, running services, software environment. When you need a complete snapshot of a system's configuration, this is the tool.
+
+**Resource Monitor** (`resmon.exe`) provides more granular process activity than Task Manager — per-process disk I/O, network connections, memory private working sets. When Task Manager shows high disk activity but doesn't tell you which process is causing it, Resource Monitor does.
+
+**Reliability Monitor** (search "reliability" in Start) shows a timeline of installation events, application crashes, hardware failures, and Windows failures. A system that has been degrading over weeks often shows a clear pattern in Reliability Monitor — a driver installation on Tuesday followed by daily crashes starting that evening.
+
+## Why This Matters in the Field
+
+Every Windows machine you touch will use these tools. A client who says "it's running slow" — you open Task Manager. A client who says "it keeps crashing" — you open Event Viewer. A client who says "new drive isn't showing up" — you open Disk Management. A client who says "it takes forever to boot" — you check the Startup tab.
+
+Third-party tools have their place, but they're additions to a toolkit that starts with what's already there. The technicians who look most competent to clients aren't necessarily the ones who know the most obscure software — they're the ones who sit down, open the right built-in tool, and read what it's telling them within the first few minutes. These tools, used fluently, solve the majority of common PC problems without installing anything.
