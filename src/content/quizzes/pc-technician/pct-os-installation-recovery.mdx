@@ -1,0 +1,102 @@
+---
+title: "OS Installation and Recovery"
+slug: "pct-os-installation-recovery"
+track: pc-technician
+moduleId: pct.os.installation-recovery
+order: 1
+difficulty: Beginner
+xp: 20
+passThreshold: 70
+tags: ["A+", "CompTIA"]
+questions:
+  - id: q1
+    type: single
+    prompt: "What is the primary difference between a clean install and an in-place upgrade of Windows?"
+    options:
+      - "A. A clean install keeps all existing applications; an upgrade erases everything"
+      - "B. A clean install erases the drive and starts fresh; an upgrade preserves existing applications, files, and settings"
+      - "C. A clean install is faster because it skips driver installation"
+      - "D. An upgrade is only available through Windows Update"
+    correctIndex: 1
+  - id: q2
+    type: single
+    prompt: "What is Rufus used for in a Windows installation workflow?"
+    options:
+      - "A. Partitioning and formatting a hard drive before installation"
+      - "B. Creating a bootable USB drive from a Windows ISO image"
+      - "C. Activating Windows after a clean install"
+      - "D. Checking hardware compatibility before installing Windows 11"
+    correctIndex: 1
+  - id: q3
+    type: single
+    prompt: "A technician sets up a new system with a UEFI motherboard and a 3TB drive. Which partition table type is required for a UEFI boot?"
+    options:
+      - "A. MBR — UEFI only supports MBR partitions"
+      - "B. GPT — UEFI requires GPT and MBR cannot address drives larger than 2TB"
+      - "C. Either MBR or GPT can be used interchangeably on UEFI systems"
+      - "D. GUID — a special format required only for UEFI installations"
+    correctIndex: 1
+  - id: q4
+    type: single
+    prompt: "How does a technician access the Windows Recovery Environment (WinRE) on a system that will not boot normally?"
+    options:
+      - "A. Press Delete during POST to enter the recovery partition"
+      - "B. Hold Shift and click Restart from the Windows login screen, or interrupt the boot process three times"
+      - "C. Boot from a Linux USB and run the Windows recovery agent"
+      - "D. Enter the BIOS and select the Repair Installation option"
+    correctIndex: 1
+  - id: q5
+    type: single
+    prompt: "What does System Restore do?"
+    options:
+      - "A. It reinstalls Windows from the recovery partition, erasing all user data"
+      - "B. It rolls the operating system state back to a previous restore point, undoing software changes while preserving personal files"
+      - "C. It backs up all user files to a system recovery folder"
+      - "D. It restores factory default hardware drivers"
+    correctIndex: 1
+  - id: q6
+    type: single
+    prompt: "A technician performs a repair install of Windows. What is preserved during this process?"
+    options:
+      - "A. Nothing — a repair install is equivalent to a clean install"
+      - "B. Personal files and installed applications are preserved while Windows system files are replaced"
+      - "C. Only the Windows registry is preserved"
+      - "D. Only user documents are preserved; applications must be reinstalled"
+    correctIndex: 1
+  - id: q7
+    type: single
+    prompt: "After a clean Windows installation, what is the correct order for installing drivers?"
+    options:
+      - "A. GPU > network > audio > chipset"
+      - "B. Chipset > network > GPU > other devices"
+      - "C. Any order — Windows automatically installs all drivers correctly"
+      - "D. Network > GPU > chipset > USB controllers"
+    correctIndex: 1
+  - id: q8
+    type: single
+    prompt: "Windows 11 requires which hardware component that Windows 10 does not mandate for installation?"
+    options:
+      - "A. A dedicated GPU"
+      - "B. NVMe storage"
+      - "C. TPM 2.0"
+      - "D. UEFI with Secure Boot enabled only"
+    correctIndex: 2
+  - id: q9
+    type: single
+    prompt: "True or False: MBR (Master Boot Record) supports drives larger than 2TB and is fully compatible with UEFI boot."
+    options:
+      - "A. True"
+      - "B. False"
+    correctIndex: 1
+  - id: q10
+    type: single
+    prompt: "A client wants to reset their PC but keep their personal files. Which WinRE option should the technician use?"
+    options:
+      - "A. Startup Repair"
+      - "B. System Restore"
+      - "C. Reset This PC — Keep my files"
+      - "D. Repair Install from media"
+    correctIndex: 2
+---
+
+Quiz covering OS Installation and Recovery — PC Technician unit pct-os-installation-recovery.

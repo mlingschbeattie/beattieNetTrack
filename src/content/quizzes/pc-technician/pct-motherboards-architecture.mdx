@@ -1,0 +1,102 @@
+---
+title: "Motherboards and Architecture"
+slug: "pct-motherboards-architecture"
+track: pc-technician
+moduleId: pct.hardware.components-identification
+order: 2
+difficulty: Beginner
+xp: 20
+passThreshold: 70
+tags: ["A+", "CompTIA"]
+questions:
+  - id: q1
+    type: single
+    prompt: "A client wants to install a Micro-ATX motherboard in a standard ATX mid-tower case. Will this work?"
+    options:
+      - "A. No, Micro-ATX boards require a Micro-ATX specific case"
+      - "B. Yes, ATX cases support Micro-ATX boards because larger cases accommodate smaller form factors"
+      - "C. No, the mounting holes on Micro-ATX boards are in different positions than ATX cases support"
+      - "D. Yes, but only if a Micro-ATX adapter tray is installed first"
+    correctIndex: 1
+  - id: q2
+    type: single
+    prompt: "Intel 12th and 13th generation Core processors use which CPU socket?"
+    options:
+      - "A. LGA1200"
+      - "B. AM5"
+      - "C. LGA1700"
+      - "D. LGA1851"
+    correctIndex: 2
+  - id: q3
+    type: single
+    prompt: "A technician wants to upgrade a Ryzen 5000 series CPU to a Ryzen 7000 series CPU on the same motherboard. Is this possible?"
+    options:
+      - "A. Yes, both use AM4 socket"
+      - "B. No, Ryzen 7000 uses AM5 socket which is incompatible with AM4 boards"
+      - "C. Yes, as long as a BIOS update is applied first"
+      - "D. No, because Ryzen 7000 requires DDR3 memory which AM4 boards do not support"
+    correctIndex: 1
+  - id: q4
+    type: single
+    prompt: "What is the primary difference between a Z-series chipset and a B-series chipset for Intel platforms?"
+    options:
+      - "A. Z-series chipsets support more SATA ports; B-series chipsets support more USB ports"
+      - "B. Z-series chipsets support CPU overclocking; B-series chipsets do not"
+      - "C. B-series chipsets are newer and faster than Z-series chipsets"
+      - "D. Z-series chipsets only work with Core i9 CPUs"
+    correctIndex: 1
+  - id: q5
+    type: single
+    prompt: "A client purchases DDR5 RAM to upgrade a system that currently has DDR4 slots. Will the upgrade work?"
+    options:
+      - "A. Yes, DDR5 is backward compatible with DDR4 slots"
+      - "B. Yes, but the DDR5 RAM will operate at DDR4 speeds"
+      - "C. No, DDR4 and DDR5 use different physical slots and are not compatible"
+      - "D. No, but an adapter can be purchased to make them compatible"
+    correctIndex: 2
+  - id: q6
+    type: single
+    prompt: "A technician installs 32GB DDR4-3600 RAM but the system reports it running at 2133 MHz. What is the most likely fix?"
+    options:
+      - "A. Return the RAM — it is defective and cannot run at its rated speed"
+      - "B. Enable the XMP profile in the BIOS settings"
+      - "C. Reinstall Windows to allow the OS to detect the correct RAM speed"
+      - "D. Install the RAM in different slots to access the higher speed"
+    correctIndex: 1
+  - id: q7
+    type: single
+    prompt: "True or False: A PCIe 3.0 graphics card will work in a PCIe 4.0 slot, though it may not achieve PCIe 4.0 speeds."
+    options:
+      - "A. True"
+      - "B. False"
+    correctIndex: 0
+  - id: q8
+    type: single
+    prompt: "What is the purpose of the CMOS battery on a motherboard?"
+    options:
+      - "A. It powers the CPU when the main power supply fails"
+      - "B. It maintains power to the BIOS chip so BIOS settings and the real-time clock are preserved when the system is off"
+      - "C. It acts as a surge protector for the motherboard circuitry"
+      - "D. It provides backup power to RAM so data is not lost during power outages"
+    correctIndex: 1
+  - id: q9
+    type: single
+    prompt: "What is the main risk of flashing (updating) the BIOS on a motherboard?"
+    options:
+      - "A. The system will permanently run slower after the update"
+      - "B. If power is lost or the update is interrupted, the motherboard can be bricked and may need professional repair"
+      - "C. The update will erase all user data on connected storage drives"
+      - "D. BIOS updates are automatically applied and carry no risk"
+    correctIndex: 1
+  - id: q10
+    type: single
+    prompt: "What does Secure Boot do in a UEFI firmware environment?"
+    options:
+      - "A. It encrypts the contents of the hard drive at the hardware level"
+      - "B. It verifies that the bootloader and OS are signed with trusted keys, preventing unauthorized or malicious software from loading during startup"
+      - "C. It requires a password before the system will POST"
+      - "D. It prevents users from booting from external USB drives"
+    correctIndex: 1
+---
+
+Quiz covering Motherboards and Architecture — PC Technician unit pct-motherboards-architecture.

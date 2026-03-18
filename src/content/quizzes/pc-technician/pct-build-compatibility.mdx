@@ -1,0 +1,93 @@
+---
+title: "Build Compatibility"
+slug: "pct-build-compatibility"
+track: pc-technician
+moduleId: pct.hardware.build-compatibility
+order: 1
+difficulty: Beginner
+xp: 20
+passThreshold: 70
+tags: ["A+", "CompTIA"]
+questions:
+  - id: q1
+    type: single
+    prompt: "A client buys a new AMD Ryzen 7000 processor and an existing AM4 motherboard. The CPU will not seat. What is the most likely cause?"
+    options:
+      - "A. The BIOS needs to be updated before the CPU will be recognized"
+      - "B. The Ryzen 7000 uses the AM5 socket, which is physically different from AM4"
+      - "C. The AM4 board requires a BIOS flashback before accepting newer CPUs"
+      - "D. The CPU cooler is preventing the socket latch from opening"
+    correctIndex: 1
+  - id: q2
+    type: single
+    prompt: "A motherboard supports a new CPU but requires a BIOS update to do so. The client has already sold their old CPU. What is one solution?"
+    options:
+      - "A. The new CPU cannot be used — a new motherboard must be purchased"
+      - "B. Borrow a compatible older CPU temporarily to boot the system and perform the BIOS update, or use BIOS Flashback if the board supports it"
+      - "C. Flash the BIOS using a USB drive without any CPU installed — this always works on all boards"
+      - "D. Contact AMD or Intel to request a firmware exception for the new CPU"
+    correctIndex: 1
+  - id: q3
+    type: single
+    prompt: "A client wants to add DDR5 RAM to a motherboard that currently has DDR4 slots. What should the technician tell them?"
+    options:
+      - "A. This is possible with a DDR4 to DDR5 adapter kit"
+      - "B. DDR5 will work but the system will run it at DDR4 speeds"
+      - "C. DDR5 and DDR4 use different physical slots and are incompatible — a new motherboard and CPU are required"
+      - "D. This works only if the DDR5 kit is the same capacity as the existing DDR4 kit"
+    correctIndex: 2
+  - id: q4
+    type: single
+    prompt: "A system has a calculated total power draw of 420W. Which PSU best follows the proper sizing rule?"
+    options:
+      - "A. 430W — just above the load for maximum efficiency"
+      - "B. 500W — 80W of headroom is sufficient"
+      - "C. 650W — puts the system in the 60-65% load range for efficiency and headroom"
+      - "D. 1200W — maximum wattage provides the most stable power delivery"
+    correctIndex: 2
+  - id: q5
+    type: single
+    prompt: "True or False: A PCIe x16 graphics card can be inserted into a PCIe x1 slot."
+    options:
+      - "A. True"
+      - "B. False"
+    correctIndex: 1
+  - id: q6
+    type: single
+    prompt: "A client wants to install a 380mm GPU into a mid-tower case that supports a maximum GPU length of 330mm. What will happen?"
+    options:
+      - "A. The GPU will fit but must be installed at an angle using a riser cable"
+      - "B. The GPU will not physically fit — it will collide with drive cages or the front panel"
+      - "C. The GPU will fit if the front drive cage is removed"
+      - "D. The GPU will fit but will require an ATX extension bracket"
+    correctIndex: 1
+  - id: q7
+    type: single
+    prompt: "Where should a technician look to confirm which CPUs are officially supported by a specific motherboard model?"
+    options:
+      - "A. The PC case manufacturer website"
+      - "B. The CPU packaging box"
+      - "C. The motherboard manufacturer CPU support list page for that specific model"
+      - "D. The operating system device manager"
+    correctIndex: 2
+  - id: q8
+    type: single
+    prompt: "A Micro-ATX motherboard is being installed in a Mini-ITX case. Will this work?"
+    options:
+      - "A. Yes, Micro-ATX is smaller than ATX so it fits in any case"
+      - "B. No, a Micro-ATX board is larger than Mini-ITX and will not fit in a Mini-ITX case"
+      - "C. Yes, with the included Micro-ATX adapter bracket"
+      - "D. No, but an extended Mini-ITX case will work"
+    correctIndex: 1
+  - id: q9
+    type: single
+    prompt: "A client wants to pair a 125W TDP processor with an aftermarket cooler. What is the minimum cooler requirement?"
+    options:
+      - "A. Any cooler works — TDP ratings do not affect cooler selection"
+      - "B. The cooler TDP rating must meet or exceed the CPU TDP — use a cooler rated for 125W or higher"
+      - "C. Use a 65W rated cooler since TDP ratings are always overstated by at least 50%"
+      - "D. The stock cooler included with the CPU is always the best option"
+    correctIndex: 1
+---
+
+Quiz covering Build Compatibility — PC Technician unit pct-build-compatibility.

@@ -1,0 +1,102 @@
+---
+title: "Windows Security"
+slug: "pct-windows-security"
+track: pc-technician
+moduleId: pct.os.windows-basics
+order: 2
+difficulty: Beginner
+xp: 20
+passThreshold: 70
+tags: ["A+", "CompTIA"]
+questions:
+  - id: q1
+    type: single
+    prompt: "What is the primary function of Windows Defender in a modern Windows installation?"
+    options:
+      - "A. It monitors network traffic for intrusion attempts"
+      - "B. It provides real-time antivirus and antimalware protection built into the operating system"
+      - "C. It blocks unauthorized applications from being installed"
+      - "D. It encrypts user files to prevent unauthorized access"
+    correctIndex: 1
+  - id: q2
+    type: single
+    prompt: "A technician needs to allow a specific application through the firewall while blocking all other unsolicited inbound connections. Which Windows tool handles this?"
+    options:
+      - "A. Windows Defender Antivirus"
+      - "B. BitLocker"
+      - "C. Windows Defender Firewall"
+      - "D. Local Security Policy"
+    correctIndex: 2
+  - id: q3
+    type: single
+    prompt: "A client wants to enable BitLocker full-disk encryption on their Windows Pro laptop. What hardware prerequisite does BitLocker typically require?"
+    options:
+      - "A. A dedicated GPU with hardware encryption support"
+      - "B. A TPM (Trusted Platform Module) chip version 1.2 or higher"
+      - "C. A UEFI firmware with Secure Boot enabled"
+      - "D. At least 16GB of RAM for the encryption buffer"
+    correctIndex: 1
+  - id: q4
+    type: single
+    prompt: "Why is keeping Windows Update current critical from a security standpoint?"
+    options:
+      - "A. Updates improve system performance by defragmenting the file system"
+      - "B. Updates patch known vulnerabilities that attackers actively exploit — unpatched systems are primary targets"
+      - "C. Windows Update installs antivirus definitions for Windows Defender"
+      - "D. Updates add new features that improve user productivity"
+    correctIndex: 1
+  - id: q5
+    type: single
+    prompt: "A user receives a pop-up claiming their computer is infected and they must call a phone number immediately to fix it. The pop-up cannot be closed normally. What type of malware is this?"
+    options:
+      - "A. Ransomware"
+      - "B. Rootkit"
+      - "C. Scareware or rogue antivirus software"
+      - "D. Trojan"
+    correctIndex: 2
+  - id: q6
+    type: single
+    prompt: "A client has lost access to all their files and sees a message demanding payment in cryptocurrency to restore them. What type of malware caused this?"
+    options:
+      - "A. Adware"
+      - "B. Spyware"
+      - "C. Ransomware"
+      - "D. Worm"
+    correctIndex: 2
+  - id: q7
+    type: single
+    prompt: "What is the recommended first step when beginning a malware removal process on an infected Windows machine?"
+    options:
+      - "A. Run Windows Update to ensure the latest definitions are installed"
+      - "B. Boot into Safe Mode or use an offline bootable scanner to prevent the malware from running during the scan"
+      - "C. Reinstall Windows immediately without attempting to remove the malware"
+      - "D. Disable Windows Defender before running a third-party scanner"
+    correctIndex: 1
+  - id: q8
+    type: single
+    prompt: "Where is the Local Security Policy editor found in Windows?"
+    options:
+      - "A. It is only available through the Windows Registry"
+      - "B. In Task Manager under the Security tab"
+      - "C. Run secpol.msc or access it through Administrative Tools"
+      - "D. In Device Manager under Security Controllers"
+    correctIndex: 2
+  - id: q9
+    type: single
+    prompt: "True or False: A standard user account and an administrator account both receive the same UAC elevation prompt when attempting system-level changes."
+    options:
+      - "A. True"
+      - "B. False"
+    correctIndex: 1
+  - id: q10
+    type: single
+    prompt: "A client enables BitLocker on their laptop but does not save the recovery key. Their hard drive is moved to a new system. What will happen?"
+    options:
+      - "A. Windows will automatically generate a new recovery key on the new system"
+      - "B. The drive data will be permanently inaccessible because the recovery key is required to unlock the encrypted drive on any system other than the original"
+      - "C. BitLocker will prompt for the Windows login password to unlock the drive"
+      - "D. The drive will unlock automatically if the same Microsoft account is signed in"
+    correctIndex: 1
+---
+
+Quiz covering Windows Security — PC Technician unit pct-windows-security.

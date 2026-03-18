@@ -1,0 +1,102 @@
+---
+title: "Storage Devices"
+slug: "pct-storage-devices"
+track: pc-technician
+moduleId: pct.hardware.components-identification
+order: 3
+difficulty: Beginner
+xp: 20
+passThreshold: 70
+tags: ["A+", "CompTIA"]
+questions:
+  - id: q1
+    type: single
+    prompt: "A client has an older desktop with a 5400 RPM hard drive and wants better performance. A technician suggests a 7200 RPM drive. What does the RPM rating indicate?"
+    options:
+      - "A. The number of read/write operations per minute the drive can perform"
+      - "B. The rotational speed of the drive platters, which directly affects how quickly data can be accessed"
+      - "C. The number of sectors per minute read during sequential operations"
+      - "D. The drive bus speed in megabits per minute"
+    correctIndex: 1
+  - id: q2
+    type: single
+    prompt: "What does S.M.A.R.T. monitoring do for storage drives?"
+    options:
+      - "A. It automatically backs up data to a cloud service"
+      - "B. It monitors drive health metrics and can predict imminent failure before it occurs"
+      - "C. It optimizes the file system layout to improve read performance"
+      - "D. It encrypts drive contents using hardware-level AES encryption"
+    correctIndex: 1
+  - id: q3
+    type: single
+    prompt: "What is the approximate maximum sequential read/write speed of a SATA SSD?"
+    options:
+      - "A. 150 MB/s"
+      - "B. 300 MB/s"
+      - "C. 550 MB/s"
+      - "D. 3,500 MB/s"
+    correctIndex: 2
+  - id: q4
+    type: single
+    prompt: "A technician compares an NVMe SSD to a SATA SSD. Which statement is accurate?"
+    options:
+      - "A. NVMe drives are only faster during sequential reads; SATA drives are faster for random access"
+      - "B. NVMe uses the PCIe bus and can reach speeds 5 to 7 times faster than SATA SSDs"
+      - "C. NVMe and SATA SSDs perform identically because they both use flash storage"
+      - "D. SATA SSDs are more reliable than NVMe drives for long-term storage"
+    correctIndex: 1
+  - id: q5
+    type: single
+    prompt: "What do the numbers 2280 refer to in an M.2 2280 drive specification?"
+    options:
+      - "A. The drive capacity in gigabytes"
+      - "B. The PCIe lane speed in MB/s"
+      - "C. The physical dimensions: 22mm wide and 80mm long"
+      - "D. The number of NAND chips multiplied by the flash generation"
+    correctIndex: 2
+  - id: q6
+    type: single
+    prompt: "A RAID 1 array uses two 2TB drives. How much usable storage does RAID 1 provide?"
+    options:
+      - "A. 4TB — both drives combined"
+      - "B. 2TB — because RAID 1 mirrors data across both drives"
+      - "C. 1TB — RAID 1 reserves half of each drive for parity"
+      - "D. 3TB — one drive is used for data and half of the second for redundancy"
+    correctIndex: 1
+  - id: q7
+    type: single
+    prompt: "True or False: A properly configured RAID array is an acceptable substitute for a regular data backup."
+    options:
+      - "A. True"
+      - "B. False"
+    correctIndex: 1
+  - id: q8
+    type: single
+    prompt: "A technician needs to format a 4TB external drive so that individual files larger than 4GB can be stored on it. Which file system should be used?"
+    options:
+      - "A. FAT32"
+      - "B. FAT16"
+      - "C. NTFS"
+      - "D. exFAT or NTFS"
+    correctIndex: 3
+  - id: q9
+    type: single
+    prompt: "A technician is partitioning a new 3TB drive for a UEFI system. Which partition table type must be used, and why?"
+    options:
+      - "A. MBR, because it is the only format compatible with UEFI"
+      - "B. GPT, because MBR cannot address drives larger than 2TB and does not support UEFI boot"
+      - "C. MBR, because GPT is only supported on server operating systems"
+      - "D. Either GPT or MBR — there is no difference for UEFI systems"
+    correctIndex: 1
+  - id: q10
+    type: single
+    prompt: "What does TBW (Terabytes Written) indicate about an SSD?"
+    options:
+      - "A. The maximum file transfer speed the drive can sustain"
+      - "B. The total amount of data that can be written to the drive over its rated lifetime before flash cells may begin to wear out"
+      - "C. The total storage capacity of the drive"
+      - "D. The number of terabytes the drive has written since it was manufactured"
+    correctIndex: 1
+---
+
+Quiz covering Storage Devices — PC Technician unit pct-storage-devices.

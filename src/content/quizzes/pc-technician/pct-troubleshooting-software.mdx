@@ -1,0 +1,104 @@
+---
+title: "Troubleshooting Software"
+slug: "pct-troubleshooting-software"
+track: pc-technician
+moduleId: pct.troubleshooting.common-issues
+order: 2
+difficulty: Beginner
+xp: 20
+passThreshold: 70
+tags: ["A+", "CompTIA"]
+questions:
+  - id: q1
+    type: single
+    prompt: "What is the primary purpose of Safe Mode in Windows?"
+    options:
+      - "A. To run Windows with maximum performance settings for diagnostic purposes"
+      - "B. To load Windows with only essential drivers and services, allowing a technician to diagnose and remove software causing problems in normal mode"
+      - "C. To create a backup of system files before making changes"
+      - "D. To run a hardware memory test without loading the OS"
+    correctIndex: 1
+  - id: q2
+    type: single
+    prompt: "A system displays the error: Boot Configuration Data file is missing. What does this mean and where can it be repaired?"
+    options:
+      - "A. The Windows installation files are corrupt; reinstalling Windows is the only option"
+      - "B. The BCD store is damaged or missing; it can be rebuilt using Startup Repair or the bootrec /rebuildbcd command from WinRE"
+      - "C. The boot drive is failing and must be replaced before any repair"
+      - "D. The UEFI firmware needs to be reset to factory defaults"
+    correctIndex: 1
+  - id: q3
+    type: single
+    prompt: "Where does a technician find Startup Repair for a Windows system that fails to boot?"
+    options:
+      - "A. In the Windows Settings app under Recovery"
+      - "B. In the Windows Recovery Environment (WinRE) under Troubleshoot > Advanced Options"
+      - "C. By pressing F8 during POST to access the repair console"
+      - "D. In Device Manager under System Recovery Tools"
+    correctIndex: 1
+  - id: q4
+    type: single
+    prompt: "A blue screen stop code appears as 0x0000007E. What does the 0x prefix in this code indicate?"
+    options:
+      - "A. The error is rated severity level zero"
+      - "B. The number is written in hexadecimal format"
+      - "C. The code represents a driver error specifically"
+      - "D. The stop code is associated with memory failures only"
+    correctIndex: 1
+  - id: q5
+    type: single
+    prompt: "Where are Windows minidump files stored after a blue screen crash?"
+    options:
+      - "A. C:\\Windows\\Logs\\CBS\\"
+      - "B. C:\\Windows\\Temp\\"
+      - "C. C:\\Windows\\Minidump\\"
+      - "D. C:\\ProgramData\\Microsoft\\Windows\\WER\\"
+    correctIndex: 2
+  - id: q6
+    type: single
+    prompt: "A client reports their computer is running very slowly. As the first diagnostic step, a technician opens Task Manager. What should they look for?"
+    options:
+      - "A. Whether the Event Viewer shows critical errors"
+      - "B. Which processes are consuming excessive CPU, memory, or disk I/O"
+      - "C. The number of installed startup programs"
+      - "D. Whether Windows Defender is running a scheduled scan"
+    correctIndex: 1
+  - id: q7
+    type: single
+    prompt: "After a Windows update, a client reports their audio device has stopped working. How should a technician attempt to restore audio using Device Manager?"
+    options:
+      - "A. Uninstall the audio device and let Windows reinstall it automatically on reboot"
+      - "B. Use the Roll Back Driver option to restore the previous driver version that was working before the update"
+      - "C. Disable and re-enable the audio device in the device list"
+      - "D. Install a third-party audio driver from a general download site"
+    correctIndex: 1
+  - id: q8
+    type: single
+    prompt: "A client logs into Windows and finds that all their desktop icons, browser favorites, and application settings are missing, even though their files are still present. What has most likely occurred?"
+    options:
+      - "A. The display settings were reset by a Windows update"
+      - "B. A Windows profile corruption occurred and the user was logged into a temporary profile"
+      - "C. A virus deleted the user settings folder"
+      - "D. The system was reset using the Keep my files option"
+    correctIndex: 1
+  - id: q9
+    type: single
+    prompt: "A technician is removing malware from a Windows system. After rebooting into Safe Mode, which is the correct next step?"
+    options:
+      - "A. Wipe the drive and reinstall Windows before running any scans"
+      - "B. Run a full scan with updated antivirus or antimalware software while in Safe Mode to prevent the malware from actively evading removal"
+      - "C. Disable Windows Defender before running a third-party scanner"
+      - "D. Run System Restore first, then scan after restoring"
+    correctIndex: 1
+  - id: q10
+    type: single
+    prompt: "An application crashes and closes without an error message. Where should a technician look to find details about the crash?"
+    options:
+      - "A. The Windows Update history log"
+      - "B. Task Manager under the Performance tab"
+      - "C. Event Viewer under Windows Logs > Application"
+      - "D. The application installation folder"
+    correctIndex: 2
+---
+
+Quiz covering Troubleshooting Software — PC Technician unit pct-troubleshooting-software.
