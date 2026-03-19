@@ -12,13 +12,13 @@ tags: ["linux", "cli", "ops"]
 
 import Callout from '../../components/Callout.astro';
 
-Every security role -- analyst, pentester, sysadmin, DevOps -- requires comfort at the Linux command line. GUIs hide too much. The CLI shows you what is actually happening. This lesson covers the commands you will use daily and the ones that matter most in a security context.
+Every security role — analyst, pentester, sysadmin, DevOps — requires comfort at the Linux command line. GUIs hide too much. The CLI shows you what is actually happening. This lesson covers the commands you will use daily and the ones that matter most in a security context.
 
 All examples assume a Debian/Ubuntu-based system. Commands work identically on most distributions.
 
 ## Navigating the Filesystem
 
-The filesystem is a tree rooted at `/`. Everything -- files, devices, processes -- lives somewhere in this tree.
+The filesystem is a tree rooted at `/`. Everything — files, devices, processes — lives somewhere in this tree.
 
 ```bash
 pwd
@@ -99,7 +99,7 @@ chown -R www-data:www-data /var/www/html
 ```
 
 <Callout type="warn">
-**Dangerous misconfiguration:** `chmod 777` gives everyone full read/write/execute. This is almost always wrong. A world-writable file can be modified by any process or user on the system -- including malware.
+**Dangerous misconfiguration:** `chmod 777` gives everyone full read/write/execute. This is almost always wrong. A world-writable file can be modified by any process or user on the system — including malware.
 </Callout>
 
 ## Reading and Manipulating Files
@@ -148,7 +148,7 @@ grep -r "password" /etc/
 
 ## Pipes and Redirection
 
-Pipes and redirection let you chain commands and save output -- the core of CLI power.
+Pipes and redirection let you chain commands and save output — the core of CLI power.
 
 ```bash
 # Pipe: send output of one command into another
@@ -253,11 +253,6 @@ id
 | `top` | Live process monitor |
 | `whoami` / `id` | Show current user and privileges |
 
-## Key Takeaways
+## Key Terms
 
-- **Permissions are three groups of three bits** (owner / group / others) -- misconfigurations like `chmod 777` are security vulnerabilities
-- **`grep` and `tail -f`** are your first tools when something goes wrong -- log analysis starts here
-- **Pipes** (`|`) let you combine simple commands into powerful one-liners without writing any code
-- **`2>/dev/null`** suppresses permission errors in scripts; `2>&1` merges error output with normal output
-- **`ps aux` and `find /`** are how defenders spot unexpected processes and files during incident response
-- CLI fluency compounds -- every command you learn makes the next one easier to combine
+Filesystem tree · Working directory · File permissions · Read / Write / Execute · Octal notation · SUID binary · chmod · chown · Pipe · Redirection · stdout · stderr · grep · tail · SIGTERM · SIGKILL · PID
