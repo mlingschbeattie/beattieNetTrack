@@ -1,0 +1,86 @@
+---
+title: Small Wireless Network Basics
+description: Set up and configure a basic Wi-Fi network — SSID, security modes, channels, frequency bands, and common troubleshooting. FC0-U71 objective 2.9.
+slug: tech-plus-2-9-1-small-wireless-network-basics
+track: tech-plus
+moduleId: tech-plus.infrastructure
+order: 13
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 2.9", "wireless", "Wi-Fi", "SSID"]
+---
+
+## Small Wireless Network Basics
+
+Nearly every home, school, and small business runs a wireless network. Understanding how to set one up — and how to troubleshoot when the Wi-Fi is "broken" — is one of the most common real-world IT tasks.
+
+### Wi-Fi Standards (IEEE 802.11)
+
+| Standard | Max Speed | Frequency | Also Called |
+|---|---|---|---|
+| 802.11b | 11 Mbps | 2.4 GHz | Wi-Fi 1 (legacy) |
+| 802.11g | 54 Mbps | 2.4 GHz | Wi-Fi 3 (legacy) |
+| 802.11n | 600 Mbps | 2.4 / 5 GHz | Wi-Fi 4 |
+| 802.11ac | 3.5 Gbps | 5 GHz | Wi-Fi 5 |
+| 802.11ax | 9.6 Gbps | 2.4 / 5 / 6 GHz | Wi-Fi 6 / 6E |
+| 802.11be | 46 Gbps | 2.4 / 5 / 6 GHz | Wi-Fi 7 |
+
+### Frequency Bands
+
+**2.4 GHz**
+- Longer range, better wall penetration
+- More interference (microwaves, older devices, neighbors)
+- Fewer non-overlapping channels: only 3 (1, 6, 11)
+
+**5 GHz**
+- Shorter range, less wall penetration
+- Much faster; less interference
+- More non-overlapping channels (up to 24 at 20 MHz width)
+
+**6 GHz (Wi-Fi 6E only)**
+- Newest band; no legacy interference
+- High speed; shortest range
+
+### Key Wireless Configuration Settings
+
+**SSID (Service Set Identifier)** — the name of the Wi-Fi network. Can be hidden (but hiding provides minimal security).
+
+**Security Mode**
+
+| Mode | Status | Notes |
+|---|---|---|
+| WEP | Broken — never use | Cracked in minutes |
+| WPA | Deprecated — avoid | RC4 cipher weaknesses |
+| WPA2 | Current standard | AES-CCMP; use when WPA3 unavailable |
+| WPA3 | Best — use when supported | SAE handshake; stronger password protection |
+
+**Channel** — Use **auto** or manually select a non-overlapping channel for 2.4 GHz (1, 6, or 11).
+
+**Channel Width** — 20 MHz (least interference), 40 MHz, 80 MHz, 160 MHz (fastest, most interference).
+
+### Setting Up a Small Wireless Network
+
+1. Connect router/AP to internet (modem or ISP handoff)
+2. Log into router admin interface (typically `192.168.1.1` or `192.168.0.1`)
+3. Set a strong SSID (not manufacturer default like "NETGEAR_2G")
+4. Set security to **WPA3** or **WPA2-AES**
+5. Set a strong password (12+ characters, mixed)
+6. Change default admin credentials on the router
+7. Disable WPS (Wi-Fi Protected Setup) — it has known PIN brute-force vulnerabilities
+
+### Troubleshooting Wi-Fi
+
+| Problem | Check |
+|---|---|
+| Can't see SSID | Hidden network; client too far from AP; 5 GHz on 2.4 GHz-only device |
+| Connected but no internet | Gateway/DNS issue; ISP outage; check with `ping 8.8.8.8` |
+| Slow speeds | Interference; channel congestion; distance; too many devices |
+| Intermittent drops | RF interference nearby; AP overheating; old firmware |
+
+### Key Exam Points
+
+- WPA3 is the current best practice; WEP is **completely broken**
+- 2.4 GHz = longer range, more interference; 5 GHz = shorter range, faster
+- Non-overlapping 2.4 GHz channels: **1, 6, 11**
+- Always change default router admin credentials — default passwords are publicly documented
+- Disable **WPS** — the PIN mode is vulnerable to brute force

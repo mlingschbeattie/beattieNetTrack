@@ -1,0 +1,69 @@
+---
+title: Network Storage Devices
+description: Understand NAS, SAN, cloud storage, and RAID — how organizations store and protect data across a network. FC0-U71 objective 2.3.
+slug: tech-plus-2-3-2-network-storage-devices
+track: tech-plus
+moduleId: tech-plus.infrastructure
+order: 5
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 2.3", "storage", "NAS", "SAN", "RAID"]
+---
+
+## Network Storage Devices
+
+When multiple users or systems need to share storage, individual drives in a PC aren't enough. Network storage solutions centralize data, improve access, and provide redundancy.
+
+### NAS — Network Attached Storage
+
+A NAS is a dedicated file server on the local network. It presents storage as shared folders accessible from any device.
+
+- Connects via **Ethernet** to the LAN
+- Uses file-sharing protocols: **SMB/CIFS** (Windows), **NFS** (Linux), **AFP** (macOS legacy)
+- Common brands: Synology, QNAP, Western Digital
+- Best for: Home and small business file sharing, media servers, personal backup
+
+### SAN — Storage Area Network
+
+A SAN is a high-speed private network dedicated entirely to storage traffic.
+
+- Connects via **Fibre Channel** or **iSCSI** (Ethernet-based)
+- Presents storage as **block devices** (the server thinks it's a direct-attached disk)
+- High performance, high cost — used in enterprise data centers
+- Best for: Databases, VMs, any workload needing ultra-low latency block I/O
+
+### NAS vs. SAN
+
+| | NAS | SAN |
+|---|---|---|
+| Protocol | File (SMB, NFS) | Block (FC, iSCSI) |
+| Access | Network share (folder) | Appears as local disk |
+| Cost | Low–Medium | High |
+| Use case | File sharing | Databases, VMs |
+
+### Cloud Storage
+
+- Data stored on remote servers managed by a provider
+- **Examples:** Google Drive, OneDrive, Dropbox, Amazon S3, Azure Blob
+- Accessed via internet; no local hardware required
+- Trade-offs: dependent on connectivity; recurring cost; data sovereignty concerns
+
+### RAID (Redundant Array of Independent Disks)
+
+RAID distributes or mirrors data across multiple drives for performance and/or redundancy.
+
+| RAID Level | Drives Needed | What It Does | Notes |
+|---|---|---|---|
+| RAID 0 | 2+ | Striping — splits data across drives | No redundancy; maximum speed |
+| RAID 1 | 2 | Mirroring — exact copy on each drive | Can lose 1 drive; half usable capacity |
+| RAID 5 | 3+ | Striping + distributed parity | Can lose 1 drive; efficient storage |
+| RAID 10 | 4 | Mirroring + striping | Can lose 1 drive per mirror pair; fast + redundant |
+
+> RAID is **not a backup**. It protects against drive failure, not accidental deletion or ransomware.
+
+### Key Exam Points
+
+- NAS = file-level access via network; SAN = block-level access
+- RAID 1 requires the most drives for the least capacity gain (50% usable)
+- RAID 5 minimum is 3 drives; loses 1 drive worth of capacity to parity
+- Cloud storage = off-premises; local NAS = on-premises

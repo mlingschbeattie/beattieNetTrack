@@ -1,0 +1,68 @@
+---
+title: Internal Computing Components
+description: Identify and explain motherboards, CPUs, RAM, storage, power supplies, and cooling inside a computer. FC0-U71 objective 2.2.
+slug: tech-plus-2-2-1-internal-computing-components
+track: tech-plus
+moduleId: tech-plus.infrastructure
+order: 3
+difficulty: Beginner
+estMinutes: 25
+tags: ["tech+", "FC0-U71 2.2", "hardware", "components"]
+---
+
+## Internal Computing Components
+
+Opening a computer case reveals the core components that make all computing possible. Every device — from a phone to a server — has versions of these same parts.
+
+### Motherboard
+
+The motherboard is the central circuit board that connects everything. Key features:
+- **Chipset** — controls communication between CPU, RAM, and peripherals
+- **CPU socket** — physical interface for the processor (LGA vs. PGA)
+- **RAM slots** — DIMM slots for memory modules
+- **Expansion slots** — PCIe for GPUs, NIC cards, NVMe SSDs
+- **I/O ports** — USB, audio, video outputs on the rear panel
+- **BIOS/UEFI chip** — firmware that initializes hardware before the OS loads
+
+### CPU (Central Processing Unit)
+
+The processor executes instructions. Key specs:
+- **Clock speed** — GHz; how many cycles per second
+- **Cores** — independent execution units (dual-core, quad-core, octa-core)
+- **Threads** — logical processors per core (hyperthreading doubles thread count)
+- **Cache** — L1, L2, L3 on-chip memory for ultra-fast access
+- **TDP** — thermal design power; how much heat it generates
+
+### RAM (Random Access Memory)
+
+Volatile, fast, temporary storage. The OS and active applications live here while the computer is on. Types:
+- **DDR4 / DDR5** — current standards for desktops/laptops
+- **LPDDR** — low-power variant for mobile devices
+- **Capacity** — 8 GB minimum for modern use; 16–32 GB recommended for tech work
+
+### Storage
+
+| Type | Speed | Persistence | Notes |
+|---|---|---|---|
+| HDD | Slow | Yes | Spinning magnetic disk; cheap per GB |
+| SSD (SATA) | Fast | Yes | Flash; no moving parts |
+| NVMe SSD | Very fast | Yes | PCIe-attached; M.2 or U.2 form factor |
+| RAM | Fastest | No | Volatile — cleared on power loss |
+
+### Power Supply Unit (PSU)
+
+Converts AC wall power to DC voltages the computer needs (+12V, +5V, +3.3V). Wattage rating must exceed the total draw of all components. Efficiency rating (80 Plus Bronze/Gold/Platinum) indicates waste heat.
+
+### Cooling
+
+- **Heat sink + fan (HSF)** — attached to CPU; conducts and dissipates heat
+- **Liquid cooling (AIO / custom loop)** — better for high-TDP processors
+- **Case fans** — maintain airflow through the chassis (intake front/bottom, exhaust rear/top)
+- **Thermal paste** — fills microscopic gaps between CPU and heat sink
+
+### Key Exam Points
+
+- RAM is **volatile** — storage is **non-volatile**
+- NVMe SSDs connect via **PCIe**, not SATA
+- CPU socket type must match motherboard (you can't put an Intel CPU in an AMD socket)
+- PSU wattage must exceed combined component TDP

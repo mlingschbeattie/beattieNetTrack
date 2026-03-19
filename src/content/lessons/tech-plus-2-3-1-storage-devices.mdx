@@ -1,0 +1,61 @@
+---
+title: Storage Devices
+description: Compare HDDs, SSDs, optical drives, and flash storage — capacity, speed, use cases, and form factors. FC0-U71 objective 2.3.
+slug: tech-plus-2-3-1-storage-devices
+track: tech-plus
+moduleId: tech-plus.infrastructure
+order: 4
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 2.3", "storage", "hardware"]
+---
+
+## Storage Devices
+
+Storage devices hold data persistently — data survives a power cycle. Choosing the right type depends on speed requirements, capacity needs, and budget.
+
+### Hard Disk Drive (HDD)
+
+- **Mechanism:** Spinning magnetic platters read/written by an actuator arm
+- **Interface:** SATA (3 Gbps or 6 Gbps)
+- **Speed:** 80–160 MB/s sequential read; high latency (5–10ms) due to seek time
+- **Capacity:** 1 TB – 20+ TB consumer drives
+- **Best for:** Bulk storage, backups, archival — where speed matters less than cost per GB
+- **Failure modes:** Mechanical failure, head crash, platter damage
+
+### Solid State Drive (SSD)
+
+- **Mechanism:** NAND flash memory cells (no moving parts)
+- **Interface:** SATA or NVMe (PCIe)
+- **Speed:** SATA SSD ~550 MB/s; NVMe SSD 3,500–7,000 MB/s
+- **Capacity:** 256 GB – 4+ TB consumer SSDs
+- **Best for:** OS drive, applications, anything speed-critical
+- **Failure modes:** Flash wear (write cycles), controller failure
+
+### NVMe vs. SATA SSD
+
+| | SATA SSD | NVMe SSD |
+|---|---|---|
+| Interface | SATA bus | PCIe (M.2 or U.2) |
+| Max speed | ~550 MB/s | 3,500–7,000 MB/s |
+| Latency | ~0.1ms | ~0.02ms |
+| Form factor | 2.5" or M.2 SATA | M.2, U.2 |
+
+### Flash Storage
+
+- **USB Flash Drive** — portable, removable; USB 2.0 (slow) or USB 3.x (fast)
+- **SD / microSD card** — common in cameras, Raspberry Pi, Android devices; rated by class/speed
+- **eMMC** — embedded flash soldered to the board; common in tablets and Chromebooks; slower than NVMe
+
+### Optical Drives
+
+- **CD, DVD, Blu-ray** — spinning optical disc read by a laser
+- **Largely legacy** — rare in modern laptops; external USB drives still sold
+- **Use cases:** Software distribution (legacy), archival, physical media playback
+
+### Key Exam Points
+
+- HDDs fail mechanically; SSDs fail from write cycle exhaustion
+- NVMe is faster than SATA SSD because PCIe has much higher bandwidth than SATA
+- **Form factors:** 3.5" (desktop HDD), 2.5" (laptop HDD/SSD), M.2 (NVMe/SATA SSD)
+- **IOPS** (Input/Output Operations Per Second) matters more than sequential speed for OS/app workloads

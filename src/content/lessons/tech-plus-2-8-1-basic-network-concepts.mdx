@@ -1,0 +1,79 @@
+---
+title: Basic Network Concepts
+description: Understand how networks work — IP addresses, DNS, DHCP, routers, switches, and the difference between LAN, WAN, and the internet. FC0-U71 objective 2.8.
+slug: tech-plus-2-8-1-basic-network-concepts
+track: tech-plus
+moduleId: tech-plus.infrastructure
+order: 12
+difficulty: Beginner
+estMinutes: 25
+tags: ["tech+", "FC0-U71 2.8", "networking", "IP", "DNS", "DHCP"]
+---
+
+## Basic Network Concepts
+
+A network is two or more devices connected to share resources and communicate. Understanding the building blocks of networking is essential for any IT role — you'll encounter them on day one.
+
+### Types of Networks
+
+| Type | Scope | Example |
+|---|---|---|
+| **PAN** — Personal Area Network | ~10 meters | Bluetooth devices around one person |
+| **LAN** — Local Area Network | Building or campus | Office computers on the same switch |
+| **MAN** — Metropolitan Area Network | City-wide | City government network |
+| **WAN** — Wide Area Network | Country / global | The internet; corporate branch connections |
+
+### Network Hardware
+
+**Router** — connects different networks (e.g., your LAN to the ISP/WAN). Forwards packets based on IP addresses. Every home has one.
+
+**Switch** — connects devices within the same LAN. Forwards frames based on MAC addresses. Faster and smarter than a hub.
+
+**Access Point (AP)** — provides Wi-Fi connectivity. Bridges wireless devices onto the wired LAN.
+
+**Modem** — modulates/demodulates the signal between your ISP and your router (DSL, cable, fiber ONT).
+
+**Firewall** — filters traffic based on rules. Blocks unauthorized connections.
+
+### IP Addressing
+
+Every device on a network needs an IP address to communicate.
+
+- **IPv4:** 32-bit address written as four octets — e.g., `192.168.1.100`
+- **IPv6:** 128-bit address written in hexadecimal — e.g., `2001:0db8::1`
+- **Subnet mask** — defines which part of the IP is the network vs. the host (e.g., `255.255.255.0` = `/24`)
+- **Default gateway** — the router's IP address; this is where non-local traffic is sent
+
+### DHCP (Dynamic Host Configuration Protocol)
+
+DHCP automatically assigns IP addresses to devices on a network.
+
+- Without DHCP, every device would need a manually configured IP (static)
+- DHCP server (usually the router) hands out: IP address, subnet mask, default gateway, DNS server
+- **Lease** — temporary assignment; device renews before expiry
+
+### DNS (Domain Name System)
+
+DNS translates domain names to IP addresses.
+
+- Typing `google.com` → DNS returns `142.250.80.46` → browser connects to that IP
+- Without DNS, you'd need to memorize every website's IP address
+- **DNS server** — provided by ISP by default; alternatives: `8.8.8.8` (Google), `1.1.1.1` (Cloudflare)
+
+### Basic Troubleshooting Flow
+
+```
+ipconfig /all       → Check IP, gateway, DNS
+ping 127.0.0.1      → Test local TCP/IP stack
+ping [gateway IP]   → Test LAN connectivity
+ping 8.8.8.8        → Test internet (no DNS)
+ping google.com     → Test DNS resolution
+```
+
+### Key Exam Points
+
+- LAN = local network; WAN = wide area (internet/branches)
+- Router connects **different networks**; switch connects devices on the **same network**
+- DHCP automatically assigns IP config; DNS translates names to IPs
+- Default gateway = the router's IP on the LAN
+- IPv4 = 32-bit; IPv6 = 128-bit

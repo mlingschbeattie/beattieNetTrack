@@ -1,0 +1,56 @@
+---
+title: IoT Devices
+description: Understand Internet of Things devices, smart sensors, embedded systems, and their role in networks. FC0-U71 objective 2.1.
+slug: tech-plus-2-1-2-iot-devices
+track: tech-plus
+moduleId: tech-plus.infrastructure
+order: 2
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 2.1", "IoT", "embedded"]
+---
+
+## IoT Devices
+
+The Internet of Things (IoT) describes physical devices embedded with sensors, software, and network connectivity that allow them to collect and exchange data without direct human interaction.
+
+### What Makes a Device "IoT"
+
+An IoT device has three characteristics:
+1. **A sensor or actuator** — it measures something (temperature, motion, light) or controls something (a valve, a lock)
+2. **Processing capability** — even a tiny microcontroller to read the sensor and format data
+3. **Network connectivity** — Wi-Fi, Bluetooth, Zigbee, Z-Wave, cellular, or LoRaWAN
+
+### Common IoT Device Examples
+
+| Category | Examples |
+|---|---|
+| Smart home | Thermostats (Nest), smart bulbs, video doorbells |
+| Industrial | Factory floor sensors, predictive maintenance monitors |
+| Medical | Continuous glucose monitors, remote patient monitors |
+| Infrastructure | Smart meters, traffic sensors, water quality monitors |
+| Agriculture | Soil moisture sensors, automated irrigation systems |
+| Wearables | Activity trackers, GPS tags |
+
+### IoT Communication Protocols
+
+- **MQTT** — Lightweight publish/subscribe protocol. Low bandwidth. Common in IoT.
+- **HTTP/HTTPS** — Standard web protocol. Higher overhead but universal.
+- **Zigbee / Z-Wave** — Short-range, low-power mesh protocols for smart home.
+- **LoRaWAN** — Long-range, very low power for wide-area sensor networks.
+- **Bluetooth LE (BLE)** — Short-range, battery-friendly (wearables, beacons).
+
+### Security Considerations
+
+IoT devices are a known attack surface:
+- Many ship with **default credentials** — change them immediately
+- Firmware updates are infrequent or absent on budget devices
+- Place IoT devices on a **separate VLAN** to limit blast radius
+- Some devices phone home to vendor cloud services — consider **privacy implications**
+
+### Key Exam Points
+
+- IoT devices are often **resource-constrained** (limited CPU, RAM, storage)
+- They usually run **embedded or real-time OSes**, not Windows/macOS/Linux
+- Security hardening is critical — IoT botnets (Mirai) exploited default credentials at scale
+- IoT = sensor data **in**, commands **out** (actuators)
