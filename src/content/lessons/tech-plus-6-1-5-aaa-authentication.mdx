@@ -1,0 +1,71 @@
+---
+title: AAA — Authentication
+description: Understand authentication — verifying identity using passwords, MFA, biometrics, and certificate-based methods. FC0-U71 objective 6.1.
+slug: tech-plus-6-1-5-aaa-authentication
+track: tech-plus
+moduleId: tech-plus.security
+order: 5
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 6.1", "AAA", "authentication", "MFA", "passwords"]
+---
+
+## AAA — Authentication
+
+**AAA** stands for **Authentication, Authorization, and Accounting** — the three-part framework that controls who gets into a system, what they can do, and what they did. This lesson covers the first A: **Authentication**.
+
+### What Is Authentication?
+
+Authentication is the process of **verifying that someone is who they claim to be** before granting access. It answers the question: "Are you really you?"
+
+### Authentication Factors
+
+Authentication is categorized by three factor types — strong systems use **more than one** (Multi-Factor Authentication):
+
+| Factor | Type | Examples |
+|---|---|---|
+| **Something you know** | Knowledge | Password, PIN, security question |
+| **Something you have** | Possession | Smart card, hardware token, phone (TOTP app) |
+| **Something you are** | Inherence (biometric) | Fingerprint, iris scan, facial recognition, voice |
+
+**Multi-Factor Authentication (MFA)** combines two or more *different* factor types. A password + TOTP code = two factors (know + have). A password + another password = still one factor type (knowledge only) — not true MFA.
+
+### Authentication Methods
+
+**Passwords**
+- Most common; weakest when used alone
+- Strength: length > complexity; passphrases are strong and memorable
+- Threats: brute force, dictionary attack, credential stuffing, phishing
+
+**Tokens and OTPs**
+- **TOTP** (Time-Based One-Time Password) — 6-digit code from an app (Google Authenticator, Authy) that changes every 30 seconds
+- **Hardware token** — physical device (YubiKey, RSA SecurID) generates codes or uses FIDO2/WebAuthn
+- **SMS OTP** — code sent via text; weaker than app-based (SIM swapping attacks)
+
+**Biometrics**
+- Fingerprint, face ID, iris scan
+- Convenient; can't be forgotten or easily shared
+- Cannot be changed if compromised (unlike a password)
+- Privacy implications — biometric data is sensitive PII
+
+**Certificate-Based Authentication**
+- Uses a digital certificate (X.509) issued by a Certificate Authority (CA)
+- Common in enterprise environments (smart cards, PKI infrastructure)
+- More secure than passwords; resistant to phishing
+
+**Single Sign-On (SSO)**
+- Authenticate once; access multiple systems without re-logging in
+- Examples: Google, Microsoft, Okta as identity providers
+- Convenient but creates a single point of failure — if SSO is compromised, all linked apps are exposed
+
+### OWASP Connection
+
+**Identification and Authentication Failures** (OWASP #7) directly targets weak authentication: default credentials, weak passwords, missing MFA, and broken session management are all authentication failures.
+
+### Key Exam Points
+
+- Authentication = verifying identity (who are you?)
+- Three factors: **know**, **have**, **are** — MFA requires two *different* factor types
+- **TOTP** apps are stronger than SMS OTP
+- Biometrics cannot be reset — protect biometric databases with extreme care
+- SSO is convenient but creates a high-value single target for attackers

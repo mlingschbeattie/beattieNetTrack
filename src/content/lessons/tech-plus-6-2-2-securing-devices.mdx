@@ -1,0 +1,84 @@
+---
+title: Securing Devices
+description: Apply security hardening to computers, mobile devices, and network equipment — patching, encryption, firewalls, and endpoint protection. FC0-U71 objective 6.2.
+slug: tech-plus-6-2-2-securing-devices
+track: tech-plus
+moduleId: tech-plus.security
+order: 9
+difficulty: Beginner
+estMinutes: 25
+tags: ["tech+", "FC0-U71 6.2", "device security", "hardening", "encryption", "patching"]
+---
+
+## Securing Devices
+
+Every device connected to a network is a potential entry point for attackers. Securing devices means reducing their attack surface and ensuring that if they are lost, stolen, or compromised, damage is limited.
+
+### Operating System Hardening
+
+**Keep systems patched**
+- Most malware exploits known vulnerabilities that have had patches available for months
+- Enable **automatic updates** on Windows, macOS, Linux
+- Patch schedule: critical patches within 24–72 hours; others within your maintenance window
+
+**Disable unnecessary services and features**
+- Every running service that isn't needed is an unmonitored attack surface
+- Disable Bluetooth if not used; disable remote desktop if not needed
+- Uninstall software that is not in use
+
+**Enable host-based firewall**
+- Windows Defender Firewall (and equivalents) block inbound connections to unauthorized ports
+- Review and tighten inbound rules; don't disable for convenience
+
+**BIOS/UEFI security**
+- Set a BIOS/UEFI password to prevent boot-level changes
+- Enable **Secure Boot** to prevent unauthorized bootloaders from loading before the OS
+- Disable boot from USB/CD if physical access is a concern
+
+### Endpoint Protection
+
+**Antivirus / Anti-malware**
+- Signature-based detection: matches against known malware signatures (requires updates)
+- Behavioral/heuristic detection: flags unusual behavior even for unknown malware
+- **EDR** (Endpoint Detection and Response) provides more advanced monitoring and response
+
+**Full-Disk Encryption (FDE)**
+- Encrypts the entire drive — if the device is stolen, the data is unreadable without the key
+- **BitLocker** (Windows), **FileVault** (macOS), **LUKS** (Linux)
+- TPM (Trusted Platform Module) chip stores the encryption key and ties it to the hardware
+
+### Mobile Device Security
+
+- Enable **screen lock** with PIN/biometric — set a short auto-lock timeout
+- Enable **remote wipe** capability (Find My iPhone, Android Device Manager)
+- Only install apps from official stores (App Store, Google Play)
+- Enable **encryption** — modern iOS and recent Android devices encrypt by default
+- Keep OS and apps updated
+- Avoid connecting to untrusted Wi-Fi networks; use VPN on public Wi-Fi
+
+### Network Device Security
+
+- Change default credentials on routers, switches, and APs — defaults are publicly documented
+- Disable management interfaces on WAN-facing ports
+- Enable HTTPS management; disable HTTP, Telnet (unencrypted)
+- Keep firmware updated
+- Disable features not in use (UPnP, WPS)
+
+### Physical Security
+
+- **Cable locks** on laptops in shared spaces
+- **Secure boot** + **BIOS password** prevents local tampering
+- Screen locks when stepping away (Windows + L)
+- **Clean desk policy** — lock away sensitive documents
+
+### OWASP Connection
+
+**Security Misconfiguration** (OWASP #5) is one of the most common vulnerabilities — leaving default credentials, unnecessary services running, or missing patches creates exploitable openings across every device type.
+
+### Key Exam Points
+
+- **Patching** is the single highest-ROI security action — most breaches exploit known, patched vulnerabilities
+- **Full-disk encryption** protects data on lost/stolen devices
+- **Secure Boot** prevents bootkit malware from running before the OS
+- Change **default credentials** on all network devices immediately
+- Enable device encryption and screen locks on all mobile devices

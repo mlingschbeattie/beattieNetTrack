@@ -1,0 +1,76 @@
+---
+title: Device Use Best Practices
+description: Apply responsible device use habits — acceptable use, clean desk, screen locking, USB safety, and personal vs. work device boundaries. FC0-U71 objective 6.2.
+slug: tech-plus-6-2-3-device-use-best-practices
+track: tech-plus
+moduleId: tech-plus.security
+order: 10
+difficulty: Beginner
+estMinutes: 15
+tags: ["tech+", "FC0-U71 6.2", "device use", "AUP", "BYOD", "physical security"]
+---
+
+## Device Use Best Practices
+
+Technical controls are only part of the security equation. How people **use** devices every day determines whether those controls actually work. These are the habits that prevent the most overlooked exposures.
+
+### Acceptable Use Policies (AUP)
+
+An **Acceptable Use Policy** is a written agreement specifying how company-owned devices and networks may be used. Key provisions typically include:
+- Devices are for business purposes; personal use may be monitored
+- No installation of unauthorized software
+- No accessing illegal content
+- No circumventing security controls (VPN, content filters)
+- Expected behavior when a device is lost or stolen (report immediately)
+
+All employees or students should acknowledge the AUP in writing. Unknowing violations still cause breaches — awareness matters.
+
+### Screen Locking
+
+- **Always lock your screen** when stepping away, even for a moment
+- Shortcut: **Windows + L** (Windows), **Control + Command + Q** (macOS)
+- Set automatic lock timeout: 5–10 minutes maximum in work environments
+- In high-security environments: lock on every departure, no exceptions
+
+An unlocked unattended workstation is an open door — anyone who walks by has full access as the logged-in user.
+
+### Clean Desk Policy
+
+- No sensitive documents left on desks at end of day
+- Printed materials containing PII or confidential data must be stored in locked drawers or shredded
+- Whiteboards with sensitive content should be erased before leaving a room
+- Passwords must never be written on sticky notes near the workstation
+
+### USB and Removable Media
+
+**Unknown USB drives are a major threat vector:**
+- Baiting attacks: attackers leave infected drives in parking lots
+- USB drives can auto-execute malware when plugged in
+- Never plug in a USB drive you found or received unexpectedly
+
+**Policy:**
+- Only use organization-approved removable media
+- Encrypt data on USB drives used for transporting sensitive data
+- Many organizations disable USB ports via Group Policy to prevent unauthorized use
+
+### BYOD (Bring Your Own Device)
+
+When employees or students use personal devices for school/work:
+- Personal devices may not have the same security controls as company devices
+- **MDM (Mobile Device Management)** software can enforce security policies on personal devices
+- Clear policies needed: what data can sync to personal devices? What happens if the device is wiped?
+
+### Software Installation
+
+- Only install software from official, trusted sources
+- Avoid pirated software — often bundled with malware
+- Verify file hashes/signatures when downloading security tools
+- Report any unexpected software installation to IT
+
+### Key Exam Points
+
+- **AUP** = written policy on appropriate device and network use; all users should sign it
+- **Windows + L** = lock workstation immediately
+- Never plug in an unknown USB drive — baiting attack vector
+- Clean desk policy prevents physical data exposure
+- **BYOD** requires MDM to enforce security policies on personal devices

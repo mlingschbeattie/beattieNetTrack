@@ -1,0 +1,70 @@
+---
+title: Integrity Concerns
+description: Understand data integrity — what it means for data to be trustworthy, how it is attacked, and how hashing and controls protect it. FC0-U71 objective 6.1.
+slug: tech-plus-6-1-2-integrity-concerns
+track: tech-plus
+moduleId: tech-plus.security
+order: 2
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 6.1", "CIA triad", "integrity", "hashing"]
+---
+
+## Integrity Concerns
+
+Integrity means that data has **not been altered** in an unauthorized or unexpected way. It is the "I" in the **CIA Triad**. Integrity is not just about malicious tampering — it also covers accidental corruption and transmission errors.
+
+### Why Integrity Matters
+
+If integrity is compromised, you cannot trust your data. Examples:
+- A patient's medication dosage record is modified by an attacker
+- Financial records are altered to cover fraud
+- A software update file is replaced with malware
+- A file becomes corrupted in transit and the recipient doesn't know
+
+### Threats to Integrity
+
+| Threat | Description |
+|---|---|
+| **Unauthorized modification** | Attacker changes data — files, database records, logs |
+| **Man-in-the-Middle** | Attacker intercepts and modifies data in transit |
+| **Malware** | Ransomware encrypts or corrupts files; viruses inject malicious code |
+| **Insider tampering** | An authorized user modifies records without permission |
+| **Transmission errors** | Bit corruption during transfer (hardware fault, cosmic rays) |
+| **SQL injection** | Attacker manipulates database records via unsanitized input |
+
+### Controls That Protect Integrity
+
+**Hashing**
+A hash function produces a fixed-length "fingerprint" of data. If even one bit in the original data changes, the hash output changes completely. This makes hashing ideal for detecting tampering.
+
+| Algorithm | Output length | Status |
+|---|---|---|
+| MD5 | 128 bits | Broken — do not use for security |
+| SHA-1 | 160 bits | Deprecated — avoid |
+| SHA-256 | 256 bits | Current standard |
+| SHA-3 | Variable | Modern alternative |
+
+**Digital Signatures**
+Combine hashing with asymmetric encryption. A sender hashes their message, encrypts the hash with their private key. The recipient decrypts with the sender's public key and compares hashes. If they match = data is unchanged and sender is verified.
+
+**Checksums**
+Simpler integrity check for transmission errors (not security). CRC (Cyclic Redundancy Check) detects accidental corruption but is not cryptographically strong.
+
+**Access Controls**
+Limiting who can write to files or databases reduces the opportunity for unauthorized modification.
+
+**Version Control / Audit Logs**
+Track every change to data — who changed what and when. Logs themselves must be protected against tampering.
+
+### OWASP Connection
+
+**Software and Data Integrity Failures** (OWASP #8) covers scenarios where code or data is not verified against a known-good state — such as auto-update mechanisms that don't validate signatures.
+
+### Key Exam Points
+
+- Integrity = data has not been altered without authorization
+- **Hashing** is the primary tool for verifying integrity — same input always produces same hash
+- **SHA-256** is the current standard; MD5 is broken
+- A digital signature provides both **integrity** (hash) and **authentication** (private key)
+- Integrity protects against both malicious tampering and accidental corruption

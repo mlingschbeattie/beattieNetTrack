@@ -1,0 +1,71 @@
+---
+title: Availability Concerns
+description: Understand availability as a security pillar — what disrupts it, how redundancy and resilience protect it, and why uptime is a security goal. FC0-U71 objective 6.1.
+slug: tech-plus-6-1-3-availability-concerns
+track: tech-plus
+moduleId: tech-plus.security
+order: 3
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 6.1", "CIA triad", "availability", "DoS", "redundancy"]
+---
+
+## Availability Concerns
+
+Availability means that systems and data are **accessible to authorized users when they need them**. It is the "A" in the **CIA Triad**. A system that is perfectly confidential and perfectly intact is still a security failure if no one can reach it.
+
+### Why Availability Matters
+
+- Emergency services can't reach patient records during an outage
+- An e-commerce site goes down on the busiest shopping day of the year
+- A ransomware attack encrypts all files — data has "integrity" in the encrypted form but is completely unavailable
+- A critical update can't be deployed because the update server is down
+
+### Threats to Availability
+
+| Threat | Description |
+|---|---|
+| **Denial of Service (DoS)** | Attacker floods a system with traffic, overwhelming it |
+| **Distributed DoS (DDoS)** | DoS from thousands of compromised systems (a botnet) |
+| **Ransomware** | Encrypts files; pays for decryption key |
+| **Hardware failure** | Disk crash, PSU failure, NIC failure |
+| **Natural disasters** | Fire, flood, power outage, earthquake |
+| **Misconfiguration** | Admin error takes a service offline |
+| **Software bugs** | Crashes, memory leaks, infinite loops |
+
+### Controls That Protect Availability
+
+**Redundancy** — eliminate single points of failure
+- RAID storage (multiple drives) — survives a single drive failure
+- Redundant power supplies (servers often have two PSUs)
+- Multiple ISP connections
+- Clustered servers with failover
+
+**Backups**
+- Regular, tested backups are the primary defense against ransomware and data loss
+- **3-2-1 rule:** 3 copies, on 2 different media types, with 1 offsite
+- Backups must be **tested** — an untested backup is not a reliable backup
+
+**Disaster Recovery (DR) and Business Continuity Planning (BCP)**
+- DR: technical procedures to restore systems after an outage
+- BCP: broader plan covering operations during and after a disruption
+- **RTO** — Recovery Time Objective: maximum acceptable downtime
+- **RPO** — Recovery Point Objective: maximum acceptable data loss (in time)
+
+**UPS (Uninterruptible Power Supply)**
+Provides battery backup during power outages — keeps systems running long enough for a graceful shutdown or until a generator comes online.
+
+**High Availability (HA)**
+Architecture designed for maximum uptime — load balancers, clustered services, geographic distribution.
+
+### OWASP Connection
+
+Security Logging and Monitoring Failures (OWASP #9) undermine availability by hiding attacks until they cause outages. You can't prevent what you can't see.
+
+### Key Exam Points
+
+- Availability = systems are accessible to authorized users when needed
+- **DoS/DDoS** is the most common direct attack on availability
+- **Redundancy** eliminates single points of failure; **backups** enable recovery
+- **3-2-1 backup rule:** 3 copies, 2 media types, 1 offsite
+- RTO = how fast you recover; RPO = how much data you can afford to lose

@@ -1,0 +1,81 @@
+---
+title: Data Types and Encryption Context
+description: Classify data by state and sensitivity, and understand which encryption controls apply to data at rest, in transit, and in use. FC0-U71 objective 6.4.
+slug: tech-plus-6-4-2-data-types
+track: tech-plus
+moduleId: tech-plus.security
+order: 14
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 6.4", "data classification", "data at rest", "data in transit", "encryption"]
+---
+
+## Data Types and Encryption Context
+
+Encryption is not a single switch you flip — it applies differently depending on **what state the data is in** and **how sensitive the data is**. This lesson maps data classification to the right controls.
+
+### Data States
+
+Data exists in three states, each requiring different protection:
+
+**Data at Rest**
+Stored data — files on a hard drive, database records, backups, archived logs.
+
+- **Threat:** Physical theft of drive; unauthorized local access; improperly secured cloud storage
+- **Control:** Full-disk encryption (BitLocker, FileVault, LUKS); database-level encryption; encrypted backups
+
+**Data in Transit (Data in Motion)**
+Data moving across a network — email, HTTP requests, API calls, file transfers.
+
+- **Threat:** Eavesdropping, man-in-the-middle attacks, packet capture on shared networks
+- **Control:** TLS/HTTPS for web traffic; TLS for email (STARTTLS, S/MIME); VPN for remote access; SSH instead of Telnet/FTP
+
+**Data in Use**
+Data actively being processed — in CPU registers, RAM, or a running application.
+
+- **Threat:** Memory scraping malware; cold boot attacks (RAM contents can be dumped after power-off for a short window)
+- **Control:** Secure enclaves (Intel SGX, AMD SEV); full memory encryption; minimizing the window data is in memory
+
+### Data Classification
+
+Organizations classify data by sensitivity to apply proportionate controls:
+
+| Classification | Description | Examples | Controls |
+|---|---|---|---|
+| **Public** | Safe for public release | Marketing materials, public website | Minimal — integrity only |
+| **Internal / Restricted** | For employees only; not for public | Internal memos, org charts | Access controls, need-to-know |
+| **Confidential** | Sensitive; limited audience | Financial data, contracts, personnel files | Encryption at rest, strict ACLs |
+| **Restricted / Top Secret** | Highest sensitivity; severe harm if exposed | Trade secrets, classified government data, PII databases | Strongest controls, MFA, logging, MAC |
+
+### Matching Controls to Classification
+
+| State | Control |
+|---|---|
+| At rest — confidential or above | Full-disk encryption OR file/database encryption |
+| In transit — any sensitivity | TLS (HTTPS, SMTPS, SFTP, SSH) |
+| In transit — highly sensitive | VPN tunnel in addition to TLS |
+| Backups | Encrypted backups stored offsite |
+| Email with PII | Encrypted email (S/MIME or TLS to mail server) |
+
+### Sensitive Data Categories
+
+Some data types carry specific regulatory obligations regardless of classification label:
+
+| Type | Abbreviation | Examples | Regulation |
+|---|---|---|---|
+| Personally Identifiable Information | PII | SSN, address, biometric | GDPR, CCPA, FERPA |
+| Protected Health Information | PHI | Medical records, diagnoses | HIPAA |
+| Payment Card Information | PCI data | Credit card numbers, CVV | PCI-DSS |
+| Intellectual Property | IP | Source code, patents, designs | Trade secret law |
+
+### OWASP Connection
+
+**Cryptographic Failures** (OWASP #2) specifically calls out the failure to identify and protect sensitive data — not knowing what data is sensitive leads directly to under-protecting it.
+
+### Key Exam Points
+
+- **Three data states:** at rest (stored), in transit (moving), in use (processing)
+- **Data at rest** → full-disk encryption; **data in transit** → TLS/HTTPS/VPN
+- Data classification guides which controls to apply — not all data needs the same protection level
+- **PII, PHI, and PCI data** carry regulatory encryption and handling requirements regardless of internal classification
+- Encrypted backups must also be stored securely — an unencrypted backup of encrypted data defeats the purpose
