@@ -230,10 +230,16 @@ export default function QuizRunner({ quiz, workspaceSlug }: QuizRunnerProps) {
       </div>
 
       {showResults && activeResult && (
-        <div className={`quiz-feedback ${activeResult.correct ? 'quiz-feedback--ok' : 'quiz-feedback--error'}`}>
-          {activeResult.feedback}
-        </div>
-      )}
+  <div className={`quiz-feedback ${activeResult.correct ? 'quiz-feedback--ok' : 'quiz-feedback--error'}`}>
+    {activeResult.feedback}
+    {!activeResult.correct && activeQuestion.type === 'single' && activeQuestion.explanation && (
+      <div className="quiz-feedback__eli5">
+        <span className="quiz-feedback__eli5-label">Here&apos;s why:</span>{' '}
+        {activeQuestion.explanation}
+      </div>
+    )}
+  </div>
+)}
 
       <div className="quiz-actions">
         <button className="btn-secondary" type="button" onClick={() => setCurrent((prev) => Math.max(0, prev - 1))} disabled={current === 0}>
