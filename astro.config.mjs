@@ -9,6 +9,7 @@ import react from '@astrojs/react';
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
+  server: { host: true },
   integrations: [mdx(), react()],
   vite: {
     resolve: {
