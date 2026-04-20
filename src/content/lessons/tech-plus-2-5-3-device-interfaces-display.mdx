@@ -1,0 +1,69 @@
+---
+title: Device Interfaces — Display
+description: Understand monitor types, display technologies, resolution, refresh rate, and multi-monitor configurations. FC0-U71 objective 2.5.
+slug: tech-plus-2-5-3-device-interfaces-display
+track: tech-plus
+moduleId: tech-plus.infrastructure
+order: 9
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 2.5", "display", "monitor", "resolution"]
+---
+
+## Device Interfaces — Display
+
+Displays are the primary output device for most computing. Understanding how they work and how to configure them correctly prevents a large category of help-desk tickets.
+
+### Display Technologies
+
+**LCD (Liquid Crystal Display)**
+- Most common monitor type
+- Requires a backlight (LED in modern monitors)
+- Sub-technologies: IPS (better color/angles), TN (faster response), VA (better contrast)
+
+**OLED (Organic Light Emitting Diode)**
+- Each pixel generates its own light — no backlight needed
+- True blacks (pixel can turn completely off), excellent contrast
+- More expensive; potential burn-in risk with static images
+
+**LED**
+- A marketing term for LCD with LED backlighting — not a distinct panel technology
+- Mini-LED and Micro-LED are newer variants with better local dimming
+
+### Key Display Specs
+
+| Spec | What It Means |
+|---|---|
+| **Resolution** | Pixel count — e.g., 1920×1080 (FHD), 2560×1440 (QHD), 3840×2160 (4K UHD) |
+| **Refresh rate** | Hz — how many frames per second the display updates (60, 144, 240 Hz) |
+| **Response time** | ms — how fast a pixel changes color; lower = less ghosting |
+| **Aspect ratio** | Width:Height ratio — 16:9 (widescreen), 21:9 (ultrawide), 16:10 |
+| **PPI** | Pixels per inch — higher = sharper image |
+| **HDR** | High Dynamic Range — wider color and brightness range |
+
+### Connecting a Monitor
+
+- Plug cable into monitor and PC video output port
+- Windows: **Settings → System → Display** — set resolution to **native resolution** for sharpest image
+- Use **Detect** button if a connected monitor is not shown
+
+### Multi-Monitor Setup
+
+Windows supports up to the number of outputs on the GPU (2–4 typical):
+
+| Mode | Description |
+|---|---|
+| **Extend** | Desktop spreads across both monitors |
+| **Duplicate / Mirror** | Both monitors show the same content |
+| **Second screen only** | Primary display off; only secondary on |
+| **PC screen only** | Only primary; secondary off |
+
+Shortcut: **Windows + P** cycles through display modes.
+
+### Key Exam Points
+
+- Always set resolution to **native** — other settings cause blurry scaling
+- OLED: true blacks and no backlight; LCD: needs a backlight
+- Refresh rate (Hz) affects motion smoothness; response time (ms) affects ghosting
+- **Windows + P** = display mode toggle shortcut
+- DisplayPort supports daisy-chaining; HDMI does not natively

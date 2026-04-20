@@ -1,0 +1,80 @@
+---
+title: Internet Service Types
+description: Compare broadband technologies — cable, DSL, fiber, satellite, cellular, and fixed wireless internet connections. FC0-U71 objective 2.7.
+slug: tech-plus-2-7-1-internet-service-types
+track: tech-plus
+moduleId: tech-plus.infrastructure
+order: 11
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 2.7", "internet", "broadband", "ISP"]
+---
+
+## Internet Service Types
+
+The technology used to deliver internet service to a home or business determines speed, reliability, latency, and availability. As a technician, you'll need to explain these options to users and troubleshoot connectivity issues specific to each type.
+
+### Cable Internet
+
+- Delivered over the same coaxial cable network used for cable TV
+- **DOCSIS** standard (Data Over Cable Service Interface Specification)
+- **Speeds:** 100 Mbps – 1+ Gbps downstream; asymmetric (upload slower than download)
+- **Shared bandwidth** with neighbors on the same cable segment — congestion during peak hours
+- Widely available in urban/suburban areas
+
+### DSL (Digital Subscriber Line)
+
+- Delivered over existing telephone copper wire pairs
+- **ADSL** — Asymmetric DSL (faster download than upload); most residential
+- **VDSL** — Very-high-speed DSL; faster but requires proximity to DSLAM
+- **Speeds:** 1–100 Mbps (ADSL–VDSL2); distance-sensitive (farther from central office = slower)
+- Advantage: Dedicated line per user (not shared like cable)
+
+### Fiber Optic
+
+- Light pulses through glass or plastic fiber — no electrical interference
+- **FTTH/FTTP** — Fiber to the Home/Premises: fiber runs all the way to the building
+- **FTTC** — Fiber to the Curb: fiber to a node; copper for last stretch
+- **Speeds:** 100 Mbps – 10+ Gbps; symmetric (upload = download)
+- Lowest latency; most reliable; limited geographic availability
+
+### Satellite Internet
+
+- Signal bounces from ground to satellite in orbit and back
+- **Traditional (GEO):** 22,236 miles altitude; 600ms+ latency; Hughesnet, Viasat
+- **LEO (Low Earth Orbit):** 340–1,200 miles altitude; 20–40ms latency; Starlink
+- Useful in rural areas with no cable/fiber/DSL infrastructure
+- Weather can degrade signal
+
+### Cellular / Mobile Broadband
+
+- Uses the same cell towers as mobile phones (4G LTE, 5G)
+- **4G LTE:** 10–50+ Mbps typical; ubiquitous
+- **5G:** Sub-6 GHz (50–400 Mbps); mmWave (1+ Gbps but short range)
+- Hot-spots and cellular routers allow sharing mobile data to multiple devices
+- Data caps and throttling common on consumer plans
+
+### Fixed Wireless Access (FWA)
+
+- Antenna at premises receives signal from a tower line-of-sight
+- Avoids digging trenches for cable/fiber — good for rural deployments
+- **Speeds:** 25–1,000+ Mbps depending on technology
+- Requires clear line of sight to tower
+
+### Comparison Summary
+
+| Type | Speed Range | Latency | Availability | Notes |
+|---|---|---|---|---|
+| Cable | 100M–1G | Low | Urban/suburban | Shared segment |
+| DSL | 1–100 Mbps | Low | Anywhere phone lines exist | Distance-sensitive |
+| Fiber | 100M–10G | Very low | Limited | Best option when available |
+| Satellite (GEO) | 25–100 Mbps | Very high | Rural | Weather-sensitive |
+| Satellite (LEO) | 50–200 Mbps | Low | Growing | Starlink |
+| Cellular | 10–400 Mbps | Low–medium | Broad | Data caps apply |
+
+### Key Exam Points
+
+- Fiber has the **lowest latency** and **highest speed** potential
+- DSL speed degrades with **distance** from the central office
+- GEO satellite has very **high latency** (~600ms) — bad for gaming/VoIP
+- Cable uses **DOCSIS** standard; bandwidth is shared on the local segment

@@ -1,0 +1,64 @@
+---
+title: Confidentiality Concerns
+description: Understand confidentiality as a core security principle — what it protects, threats against it, and controls that enforce it. FC0-U71 objective 6.1.
+slug: tech-plus-6-1-1-confidentiality-concerns
+track: tech-plus
+moduleId: tech-plus.security
+order: 1
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 6.1", "CIA triad", "confidentiality", "security"]
+---
+
+## Confidentiality Concerns
+
+Confidentiality means that information is accessible **only to those authorized** to see it. It is the "C" in the **CIA Triad** — the three foundational pillars of information security alongside Integrity and Availability.
+
+### Why Confidentiality Matters
+
+When confidentiality fails, private data is exposed to people who should not have it. Real-world consequences include:
+- Student records viewed by unauthorized staff
+- Medical records leaked to the public
+- Corporate secrets stolen by competitors
+- Login credentials exposed in a data breach
+
+### Common Threats to Confidentiality
+
+| Threat | Description |
+|---|---|
+| **Eavesdropping / Sniffing** | Intercepting network traffic to read unencrypted data |
+| **Man-in-the-Middle (MitM)** | Attacker positions between two parties, relays and reads communications |
+| **Shoulder surfing** | Looking at someone's screen in a public place |
+| **Dumpster diving** | Recovering sensitive documents from trash |
+| **Insider threat** | Authorized user intentionally or accidentally leaks data |
+| **Phishing** | Tricking users into revealing credentials or data |
+| **Improper access controls** | Giving users too much permission to access data they don't need |
+
+### Controls That Protect Confidentiality
+
+**Technical controls:**
+- **Encryption** — scrambles data so only authorized parties can read it (HTTPS, full-disk encryption)
+- **Access controls** — permissions that limit who can open a file or access a system
+- **Authentication** — verifying identity before granting access (passwords, MFA)
+- **Network segmentation** — separate sensitive systems from general-access networks
+
+**Administrative controls:**
+- **Need-to-know principle** — users only get access to data required for their job
+- **Data classification** — labeling data by sensitivity (Public, Internal, Confidential, Restricted)
+- **NDAs and acceptable use policies**
+
+**Physical controls:**
+- Locked server rooms and filing cabinets
+- Privacy screens on monitors in public areas
+- Clean desk policy — no sensitive documents left out
+
+### OWASP Connection
+
+**Broken Access Control** (OWASP #1) and **Cryptographic Failures** (OWASP #2) are the top two web application vulnerabilities — both directly attack confidentiality by exposing data that should be restricted.
+
+### Key Exam Points
+
+- Confidentiality = data is accessible only to authorized users
+- **Encryption** is the primary technical control for data confidentiality
+- **Need-to-know** and **least privilege** are the administrative principles that enforce confidentiality
+- Confidentiality failures lead to data breaches, identity theft, and regulatory violations

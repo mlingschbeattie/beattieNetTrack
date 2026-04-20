@@ -1,0 +1,66 @@
+---
+title: Input/Output Interfaces
+description: Identify and compare port types — USB, HDMI, DisplayPort, Thunderbolt, audio, and legacy interfaces. FC0-U71 objective 2.5.
+slug: tech-plus-2-5-1-input-output-interfaces
+track: tech-plus
+moduleId: tech-plus.infrastructure
+order: 7
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 2.5", "ports", "interfaces", "hardware"]
+---
+
+## Input/Output Interfaces
+
+I/O interfaces are the physical connection points on a computer that allow peripherals to send data in (input) or receive data out (output). Knowing which port does what — and which cable it takes — is a daily skill for any technician.
+
+### USB (Universal Serial Bus)
+
+The most common peripheral interface today.
+
+| Standard | Speed | Connector |
+|---|---|---|
+| USB 2.0 | 480 Mbps | Type-A, Type-B, Mini, Micro |
+| USB 3.0 / 3.1 Gen 1 | 5 Gbps | Type-A (blue), Type-B |
+| USB 3.1 Gen 2 | 10 Gbps | Type-A, Type-C |
+| USB 3.2 Gen 2×2 | 20 Gbps | Type-C |
+| USB4 | 40 Gbps | Type-C |
+
+**USB Type-C** — small, reversible connector used in modern laptops and phones. Can carry USB data, video (DisplayPort alt mode), and power simultaneously.
+
+### Video Interfaces
+
+| Port | Max Resolution | Notes |
+|---|---|---|
+| VGA | 1080p (analog) | Legacy; no audio |
+| DVI | 1080p–2560×1600 | Partial digital transition; no audio |
+| HDMI | 4K–8K (HDMI 2.1) | Audio + video; common on TVs and monitors |
+| DisplayPort | 8K (DP 2.0) | Audio + video; daisy-chain capable |
+| Thunderbolt 3/4 | 4K (via DP alt) | USB-C connector; also PCIe tunneling |
+
+### Audio Interfaces
+
+- **3.5mm TRS (headphone jack)** — analog stereo audio; green = output, pink = microphone
+- **S/PDIF (optical / coaxial)** — digital audio for home theater
+- **HDMI / DisplayPort** — carry digital audio alongside video
+
+### Network Interfaces
+
+- **RJ-45 (Ethernet)** — 8-pin modular connector for wired LAN; speeds from 10 Mbps (cat3) to 10 Gbps (cat6a)
+- **Wi-Fi antenna ports** — internal or external antennas on wireless cards
+
+### Legacy Interfaces (Know for Exams)
+
+| Port | Use | Status |
+|---|---|---|
+| PS/2 | Keyboard/mouse | Legacy; some motherboards retain |
+| Serial (RS-232, DB-9) | Modems, lab equipment | Legacy; USB adapters common |
+| Parallel (DB-25) | Printers | Obsolete |
+| FireWire (IEEE 1394) | Video cameras, early storage | Obsolete |
+
+### Key Exam Points
+
+- USB 3.x ports are **blue** inside; USB 2.0 ports are **black or white**
+- USB Type-C ≠ Thunderbolt — all Thunderbolt uses USB-C, but not all USB-C is Thunderbolt
+- HDMI carries audio; VGA and DVI do not (VGA = analog only)
+- DisplayPort can daisy-chain multiple monitors from one port

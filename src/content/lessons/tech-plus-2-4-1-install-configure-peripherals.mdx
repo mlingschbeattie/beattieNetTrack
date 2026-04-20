@@ -1,0 +1,67 @@
+---
+title: Install and Configure Peripherals
+description: Connect, install drivers for, and troubleshoot common peripherals including printers, monitors, and input devices. FC0-U71 objective 2.4.
+slug: tech-plus-2-4-1-install-configure-peripherals
+track: tech-plus
+moduleId: tech-plus.infrastructure
+order: 6
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 2.4", "peripherals", "drivers"]
+---
+
+## Install and Configure Peripherals
+
+A peripheral is any external device that connects to a computer to extend its capabilities. Installing peripherals correctly — and knowing what to do when they don't work — is a fundamental technician skill.
+
+### Steps to Install a Peripheral
+
+1. **Connect the device** — USB, Bluetooth, or wireless dongle
+2. **Driver installation** — Windows may detect and install automatically (Plug and Play); some devices require a manufacturer driver from their website or included disc
+3. **Configuration** — set default device in OS settings (e.g., default printer), configure resolution for monitors
+4. **Test** — print a test page, verify monitor shows image at native resolution
+
+### Common Peripheral Types
+
+**Printers**
+- Connect via USB (direct), Ethernet (wired network), or Wi-Fi (wireless network)
+- Laser printers use toner (powder); inkjet printers use liquid ink
+- Set default printer in **Settings → Bluetooth & devices → Printers & scanners**
+
+**Monitors**
+- Connect via HDMI, DisplayPort, DVI, or VGA
+- Set resolution to the monitor's **native resolution** for sharpest image
+- Multiple monitors: Windows supports **Extend, Duplicate, or Second Screen Only** display modes
+
+**Keyboards and Mice**
+- Wired USB: Plug and Play, no drivers needed
+- Wireless: USB dongle (2.4 GHz) or Bluetooth pairing
+- Touchpad settings and mouse scroll speed in **Settings → Bluetooth & devices**
+
+**Webcams and Microphones**
+- USB or integrated into laptop bezel
+- Privacy settings in Windows 11: **Settings → Privacy & security → Camera / Microphone**
+
+**Scanners**
+- Often bundled with all-in-one printers; TWAIN or WIA driver required for scanning apps
+
+**External Storage**
+- USB drive: Plug and Play — appears as a drive letter in File Explorer
+- Requires safe removal (**Safely Remove Hardware**) before unplugging to prevent data corruption
+
+### Troubleshooting Peripherals
+
+| Symptom | First Check |
+|---|---|
+| Device not recognized | Different USB port; Device Manager for errors |
+| Driver error (yellow !) | Update or reinstall driver from manufacturer |
+| Printer offline | Check connection; Restart print spooler service |
+| Monitor no signal | Cable seated; correct input source on monitor |
+| Bluetooth device won't pair | Remove and re-pair; check battery level |
+
+### Key Exam Points
+
+- **Plug and Play (PnP)** — OS detects and configures hardware automatically
+- **Driver** — software that lets the OS communicate with a specific hardware device
+- Setting native resolution is critical for LCD/LED monitors — other resolutions look blurry
+- Safe removal prevents data corruption on USB flash drives

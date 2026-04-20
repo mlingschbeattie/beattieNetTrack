@@ -1665,6 +1665,20 @@ html.sidebar-ready .sidebar__progress-slot .sidebar__react {
   background: rgba(244, 63, 94, 0.12);
 }
 
+.quiz-feedback__eli5 {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid rgba(244, 63, 94, 0.25);
+  font-size: 0.875rem;
+  color: var(--text-soft);
+  line-height: 1.5;
+}
+
+.quiz-feedback__eli5-label {
+  font-weight: 600;
+  color: var(--text);
+}
+
 .quiz-card__results {
   margin-top: var(--space-5);
   display: flex;

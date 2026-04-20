@@ -1,0 +1,86 @@
+---
+title: Safe Browsing Practices
+description: Browse safely — identify HTTPS, avoid malicious sites, manage browser security settings, and understand web-based threats. FC0-U71 objective 6.2.
+slug: tech-plus-6-2-4-safe-browsing-practices
+track: tech-plus
+moduleId: tech-plus.security
+order: 11
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 6.2", "browsing", "HTTPS", "phishing", "malware", "XSS"]
+---
+
+## Safe Browsing Practices
+
+The web browser is the most-used application on most computers — and one of the primary attack surfaces. Safe browsing habits dramatically reduce exposure to malware, phishing, and data theft.
+
+### HTTPS vs. HTTP
+
+**HTTP** transmits data in plain text — anyone on the same network can read it (usernames, passwords, form data).
+
+**HTTPS** encrypts traffic using TLS (Transport Layer Security). The padlock icon confirms:
+1. The connection is encrypted
+2. The server's identity has been verified by a Certificate Authority
+
+**What HTTPS does NOT guarantee:**
+- That the site is legitimate — attackers obtain valid TLS certificates for phishing sites
+- That the site has no malware
+- That your data won't be misused after it arrives
+
+Always look for HTTPS, but HTTPS alone is not proof of trustworthiness.
+
+### Identifying Malicious Sites
+
+**URL inspection:**
+- Check the actual domain — `paypa1.com` and `paypal-security-alert.com` are not PayPal
+- Attackers use typosquatting (spelling variations), homograph attacks (lookalike Unicode characters)
+- Hover over links before clicking to see the actual destination URL
+
+**Browser warnings:**
+- "This connection is not private" — certificate problem; do not proceed
+- "Site contains malware" — browser's Safe Browsing blocklist triggered
+- "Deceptive site ahead" — known phishing URL
+
+**Red flags on a site:**
+- Unsolicited pop-ups claiming your computer is infected
+- Requests for payment via gift cards or wire transfer
+- Pages mimicking login screens of real services
+
+### Drive-By Downloads
+
+Visiting a malicious site can trigger automatic malware downloads without any user action — exploiting browser or plugin vulnerabilities. Mitigations:
+- Keep browser and all extensions updated
+- Remove unnecessary browser plugins (each adds attack surface)
+- Enable pop-up blocking
+- Consider script-blocking extensions in high-risk environments
+
+### Browser Security Settings
+
+- **Private/Incognito mode** — does not save local history, cookies, or form data; does NOT make you anonymous on the network
+- **Block third-party cookies** — reduces cross-site tracking
+- **Do Not Track** — advisory only; most sites ignore it
+- **Clear cache and cookies** periodically — removes stale session tokens
+- **Password manager** — built-in or third-party; prevents reuse and enables strong unique passwords
+
+### Web-Based Threats
+
+| Threat | Description |
+|---|---|
+| **Phishing** | Fake login pages harvesting credentials |
+| **Drive-by download** | Malware downloaded on visit, no click needed |
+| **Malvertising** | Malware delivered through legitimate ad networks |
+| **Clickjacking** | Hidden buttons underneath visible content trick users into unintended clicks |
+| **Cross-Site Scripting (XSS)** | Malicious scripts injected into web pages; can steal session cookies |
+| **Man-in-the-Browser** | Malware in the browser intercepts and modifies transactions |
+
+### OWASP Connection
+
+**Injection (XSS)** (OWASP #3) and **Insecure Design** (OWASP #4) are directly related to web browsing safety — well-built sites protect users from script injection; poorly built ones expose them.
+
+### Key Exam Points
+
+- HTTPS = encrypted; HTTP = plain text — always use HTTPS for anything sensitive
+- HTTPS with a padlock does NOT prove a site is safe — only that the connection is encrypted
+- Hover over links to verify the actual URL before clicking
+- **Incognito mode** hides local history; it does NOT anonymize network traffic
+- **Drive-by downloads** exploit browser vulnerabilities without user interaction — keep browsers patched

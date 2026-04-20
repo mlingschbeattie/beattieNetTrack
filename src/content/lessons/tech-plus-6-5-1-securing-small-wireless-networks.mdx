@@ -1,0 +1,95 @@
+---
+title: Securing Small Wireless Networks
+description: Apply security controls to a small Wi-Fi network — WPA3, strong credentials, guest isolation, firmware updates, and disabling risky features. FC0-U71 objective 6.5.
+slug: tech-plus-6-5-1-securing-small-wireless-networks
+track: tech-plus
+moduleId: tech-plus.security
+order: 15
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 6.5", "wireless security", "WPA3", "WPA2", "Wi-Fi", "router"]
+---
+
+## Securing Small Wireless Networks
+
+Wi-Fi broadcasts data through the air — anyone within range can attempt to receive it. Securing a small wireless network means making that access as difficult as possible for attackers while keeping it convenient for authorized users.
+
+### Why Wireless Security Matters
+
+An unsecured or weakly secured wireless network allows:
+- **Unauthorized internet access** — "piggybacking" on your connection
+- **Traffic interception** — reading unencrypted data sent over the network
+- **Network intrusion** — once on the network, attackers can probe internal devices
+- **Rogue device attacks** — injecting traffic or performing ARP poisoning
+
+### Wireless Security Protocols
+
+| Protocol | Status | Notes |
+|---|---|---|
+| **WEP** (Wired Equivalent Privacy) | **Broken — never use** | Cracked in under 2 minutes with standard tools |
+| **WPA** (Wi-Fi Protected Access) | Deprecated — avoid | RC4/TKIP — multiple known weaknesses |
+| **WPA2-Personal (PSK)** | Acceptable | AES-CCMP; use when WPA3 unavailable |
+| **WPA2-Enterprise** | Good | Per-user credentials via RADIUS; used in corporate/school |
+| **WPA3-Personal** | Best — use if supported | SAE handshake; resists offline dictionary attacks |
+| **WPA3-Enterprise** | Best for org | 192-bit security suite |
+
+**WPA3's key improvement over WPA2:** The SAE (Simultaneous Authentication of Equals) handshake protects against offline dictionary attacks. If an attacker captures a WPA2 handshake, they can brute-force the password offline. WPA3 prevents this.
+
+### Hardening Checklist for a Small Wireless Network
+
+**1. Set encryption to WPA3 (or WPA2-AES minimum)**
+Never accept WPA or WEP — if old devices require it, replace those devices.
+
+**2. Use a strong, unique Wi-Fi password**
+- 12+ characters; passphrase format recommended
+- Don't use the router's default password or your address/phone number
+- Different from the router management interface password
+
+**3. Change the router admin credentials immediately**
+- Default credentials (admin/admin, admin/password) are publicly documented
+- Use a strong password unique to the router management interface
+- Enable HTTPS for management; disable HTTP management if possible
+
+**4. Change the default SSID**
+- Default SSIDs reveal the router manufacturer (e.g., "NETGEAR_5G") — attackers know its default credentials
+- Don't use your name, address, or any identifying information in the SSID
+
+**5. Disable WPS (Wi-Fi Protected Setup)**
+- WPS PIN mode has a known brute-force vulnerability (Reaver tool)
+- Convenience vs. security: disable WPS and use the password
+
+**6. Keep firmware updated**
+- Router firmware patches security vulnerabilities
+- Check manufacturer's site or enable automatic firmware updates if available
+- A router running 3-year-old firmware is a vulnerability
+
+**7. Use a guest network for untrusted devices**
+- Guest network is isolated from the main LAN — guests on a guest network cannot see internal devices
+- Use for: IoT devices, visitor devices, smart TVs
+- Set a separate (weaker) guest password that you can change easily
+
+**8. Disable remote management**
+- Management interface should only be accessible from the local network, not from the internet
+- Remote management enabled = a login page exposed to the entire internet
+
+**9. Review connected devices**
+- Router admin panel shows all connected devices
+- Unknown devices may indicate unauthorized access
+- Use MAC address filtering as an additional (not sole) control
+
+**10. Place the router physically securely**
+- A physical reset button restores factory defaults — if accessible, it bypasses all your settings
+- Keep routers out of areas accessible to visitors
+
+### OWASP Connection
+
+**Security Misconfiguration** (OWASP #5) — default credentials, unused features left enabled (WPS, remote management), and weak encryption are all textbook misconfigurations that apply directly to consumer and small business Wi-Fi routers.
+
+### Key Exam Points
+
+- **WEP is completely broken**; **WPA3** is the current best practice
+- **WPS PIN mode** is vulnerable — always disable WPS
+- Default router credentials are **publicly documented** — change them before connecting anything
+- **Guest networks** isolate untrusted devices from the main LAN
+- Firmware updates patch security vulnerabilities in the router itself
+- Disabling **remote management** removes the router's internet-facing login page

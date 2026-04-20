@@ -1,0 +1,64 @@
+---
+title: Virtualization and Cloud Technologies
+description: Understand virtual machines, hypervisors, cloud service models (IaaS/PaaS/SaaS), and deployment models. FC0-U71 objective 2.6.
+slug: tech-plus-2-6-1-virtualization-cloud-technologies
+track: tech-plus
+moduleId: tech-plus.infrastructure
+order: 10
+difficulty: Beginner
+estMinutes: 25
+tags: ["tech+", "FC0-U71 2.6", "virtualization", "cloud", "IaaS", "SaaS"]
+---
+
+## Virtualization and Cloud Technologies
+
+Virtualization and cloud computing have transformed how IT infrastructure is built, managed, and scaled. These concepts are fundamental for any modern IT role.
+
+### Virtualization
+
+Virtualization is the creation of a software-based (virtual) version of hardware resources — a VM looks and acts like a real computer but runs as a process on physical hardware.
+
+**Hypervisor** — software that creates and manages VMs
+
+| Type | Description | Examples |
+|---|---|---|
+| Type 1 (Bare-metal) | Runs directly on hardware; no host OS | VMware ESXi, Microsoft Hyper-V, Xen |
+| Type 2 (Hosted) | Runs as an app on a host OS | VirtualBox, VMware Workstation, Parallels |
+
+**Benefits of Virtualization:**
+- **Resource efficiency** — run many VMs on one physical server
+- **Isolation** — a VM crash doesn't affect the host or other VMs
+- **Snapshots** — save VM state; restore instantly on failure
+- **Portability** — VMs are files; move them between physical hosts
+
+### Cloud Service Models
+
+| Model | What's Managed by Provider | What You Manage | Example |
+|---|---|---|---|
+| **IaaS** — Infrastructure as a Service | Hardware, networking, virtualization | OS, runtime, apps, data | AWS EC2, Azure VMs |
+| **PaaS** — Platform as a Service | + OS, runtime, middleware | Apps, data | Heroku, Google App Engine |
+| **SaaS** — Software as a Service | Everything | Your data only | Microsoft 365, Gmail, Salesforce |
+
+### Cloud Deployment Models
+
+| Model | Description |
+|---|---|
+| **Public cloud** | Shared infrastructure owned by a provider (AWS, Azure, GCP) |
+| **Private cloud** | Dedicated infrastructure; on-premises or hosted for one org |
+| **Hybrid cloud** | Mix of public and private; workloads move between them |
+| **Community cloud** | Shared by organizations with common concerns (government, healthcare) |
+
+### Cloud Characteristics (NIST)
+
+1. **On-demand self-service** — provision resources without human interaction
+2. **Broad network access** — access via standard internet connections
+3. **Resource pooling** — multi-tenant; resources shared and dynamically allocated
+4. **Rapid elasticity** — scale up/down automatically with demand
+5. **Measured service** — pay for what you use (metered billing)
+
+### Key Exam Points
+
+- Type 1 hypervisor = bare-metal (direct on hardware); Type 2 = runs on a host OS
+- IaaS: you manage OS up; PaaS: you manage apps up; SaaS: you manage data only
+- Public cloud ≠ less secure — it depends on configuration
+- Snapshots ≠ backups but are useful for quick rollback

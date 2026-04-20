@@ -1,0 +1,75 @@
+---
+title: AAA — Authorization
+description: Understand authorization — controlling what authenticated users are allowed to do using access control models and the principle of least privilege. FC0-U71 objective 6.1.
+slug: tech-plus-6-1-6-aaa-authorization
+track: tech-plus
+moduleId: tech-plus.security
+order: 6
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 6.1", "AAA", "authorization", "access control", "least privilege"]
+---
+
+## AAA — Authorization
+
+**Authorization** is the second A in AAA. After a user is authenticated (their identity is verified), **authorization** determines **what they are permitted to do**. It answers: "What are you allowed to access?"
+
+### Authentication vs. Authorization
+
+| | Authentication | Authorization |
+|---|---|---|
+| Question | Who are you? | What can you do? |
+| When | Before access | After authentication |
+| Example | Logging in with a password | Whether your account can delete files |
+
+You can authenticate successfully and still be denied authorization — a standard student account can log into a school computer, but cannot install software or access another student's files.
+
+### Access Control Models
+
+**DAC — Discretionary Access Control**
+- The owner of a resource controls who has access (they "discretionarily" grant it)
+- Common in standard OS file permissions (Windows NTFS, Linux `chmod`)
+- Flexible but relies on users making good security decisions
+
+**MAC — Mandatory Access Control**
+- Access is controlled by the system based on security labels/classifications
+- Users cannot override it — even if they own a file
+- Used in high-security environments (government, military)
+- Example: Top Secret data can only be accessed by Top Secret–cleared users
+
+**RBAC — Role-Based Access Control**
+- Access is granted based on **job role**, not individual
+- A "teacher" role gets gradebook access; a "student" role does not
+- Easy to manage: change the role, change all permissions for that role
+- Most common model in enterprise environments
+
+**ABAC — Attribute-Based Access Control**
+- Access based on multiple attributes: user department, time of day, device, location
+- Very flexible; complex to administer
+- Example: "HR staff can access payroll data from corporate devices during business hours"
+
+### Principle of Least Privilege
+
+Users and processes should have only the **minimum permissions** necessary to do their job. No more.
+
+- A student should not have admin rights on a school computer
+- An app should not have write access to files it only needs to read
+- A service account should not have domain admin privileges
+
+Benefits: limits blast radius of a compromised account; reduces insider threat risk.
+
+### Need-to-Know
+
+Related to least privilege — users should only be able to access information they **need for their specific role or task**, even if they are cleared for a higher classification level.
+
+### OWASP Connection
+
+**Broken Access Control** (OWASP #1 — the most common web vulnerability) occurs when authorization is improperly implemented. Examples: a user editing another user's profile, or a non-admin accessing admin-only URLs by guessing the path.
+
+### Key Exam Points
+
+- Authorization = what you are allowed to do (after authentication confirms who you are)
+- **RBAC** is the most common enterprise model — permissions assigned to roles, not individuals
+- **Least privilege** — give only the access needed; no more
+- OWASP #1 (Broken Access Control) = authorization failures in web applications
+- **MAC** is used in high-security classified environments; users cannot override it

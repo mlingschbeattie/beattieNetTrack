@@ -1,0 +1,93 @@
+---
+title: Plain Text vs. Cipher Text
+description: Understand encryption fundamentals — what plain text and cipher text are, symmetric vs. asymmetric encryption, and common algorithms. FC0-U71 objective 6.4.
+slug: tech-plus-6-4-1-plain-text-vs-cipher-text
+track: tech-plus
+moduleId: tech-plus.security
+order: 13
+difficulty: Beginner
+estMinutes: 25
+tags: ["tech+", "FC0-U71 6.4", "encryption", "cryptography", "AES", "RSA", "TLS"]
+---
+
+## Plain Text vs. Cipher Text
+
+Encryption is the process of transforming readable data (**plain text**) into an unreadable format (**cipher text**) that can only be reversed by someone with the correct key.
+
+### Core Terminology
+
+| Term | Definition |
+|---|---|
+| **Plain text** | Original, readable data before encryption |
+| **Cipher text** | Encrypted, unreadable output |
+| **Encryption** | Process of converting plain text → cipher text |
+| **Decryption** | Process of converting cipher text → plain text |
+| **Key** | Secret value used to encrypt and/or decrypt |
+| **Algorithm (cipher)** | Mathematical process that performs the transformation |
+
+### Symmetric Encryption
+
+One key is used for **both** encryption and decryption. The same key must be shared securely between sender and receiver.
+
+**Advantages:** Very fast — used for bulk data encryption
+
+**Key management challenge:** How do you securely share the key in the first place?
+
+| Algorithm | Key Size | Status |
+|---|---|---|
+| **AES** (Advanced Encryption Standard) | 128, 192, 256-bit | Current standard — use AES-256 |
+| DES | 56-bit | Broken — do not use |
+| 3DES | 112/168-bit | Deprecated — transitioning away |
+| RC4 | Variable | Broken — do not use |
+
+### Asymmetric Encryption
+
+**Two keys:** a **public key** (shared with everyone) and a **private key** (kept secret).
+
+- What the **public key encrypts**, only the **private key can decrypt** (confidentiality)
+- What the **private key signs**, the **public key can verify** (authentication/non-repudiation)
+
+**Advantages:** Solves the key distribution problem — public keys can be shared openly
+
+**Disadvantage:** Much slower than symmetric — not suitable for bulk data
+
+| Algorithm | Use |
+|---|---|
+| **RSA** | Key exchange, digital signatures, certificates |
+| **ECC** (Elliptic Curve Cryptography) | Faster RSA alternative; same security with smaller keys |
+| **Diffie-Hellman** | Key exchange only (allows two parties to create a shared secret) |
+
+### Hybrid Encryption (How TLS Works)
+
+Real-world systems combine both:
+1. **Asymmetric** encryption to securely exchange a symmetric key
+2. **Symmetric** (AES) to encrypt the actual data at high speed
+
+This is exactly what HTTPS uses:
+- Server sends its **public key** in its TLS certificate
+- Browser uses the public key to encrypt a session key
+- Server decrypts with its **private key**
+- All further traffic uses AES with the shared session key
+
+### Hashing vs. Encryption
+
+| | Encryption | Hashing |
+|---|---|---|
+| Reversible? | Yes (with the key) | No (one-way) |
+| Output size | Same as or larger than input | Fixed (e.g., SHA-256 = 256 bits always) |
+| Use | Confidentiality | Integrity verification, password storage |
+
+**Passwords should be hashed, not encrypted.** A database stores the hash; at login, the entered password is hashed and compared. If the database is stolen, attackers only get hashes.
+
+### OWASP Connection
+
+**Cryptographic Failures** (OWASP #2) — using weak algorithms (DES, MD5), transmitting data over HTTP, or storing passwords in plain text are among the most common cryptographic mistakes.
+
+### Key Exam Points
+
+- **Plain text** = readable; **cipher text** = encrypted
+- **Symmetric** = one key; fast; AES-256 is the standard
+- **Asymmetric** = key pair (public + private); slower; used for key exchange and signatures
+- **TLS (HTTPS)** uses hybrid encryption — asymmetric to exchange keys, symmetric for bulk data
+- Never use DES or RC4 — both are **broken**
+- Passwords should be **hashed** (SHA-256 or bcrypt), never encrypted and never stored in plain text

@@ -1,0 +1,65 @@
+---
+title: Non-Repudiation
+description: Understand non-repudiation — how digital signatures and audit logs prevent someone from denying an action they took. FC0-U71 objective 6.1.
+slug: tech-plus-6-1-8-non-repudiation
+track: tech-plus
+moduleId: tech-plus.security
+order: 7
+difficulty: Beginner
+estMinutes: 15
+tags: ["tech+", "FC0-U71 6.1", "non-repudiation", "digital signatures", "audit logs"]
+---
+
+## Non-Repudiation
+
+Non-repudiation means that a person **cannot deny** having performed an action. It provides proof that an event occurred and that a specific party was responsible — making it impossible to credibly say "I didn't do that."
+
+### Why Non-Repudiation Matters
+
+Without non-repudiation:
+- An employee can deny sending a threatening email
+- A vendor can claim they never agreed to a digital contract
+- An attacker can deny making unauthorized changes to a database
+- Financial fraud becomes harder to prove and prosecute
+
+Non-repudiation is essential for **legal accountability**, **audit trails**, and **digital commerce**.
+
+### How Non-Repudiation Works
+
+**Digital Signatures**
+The primary technical mechanism. When a user signs a document with their private key:
+1. A hash of the document is computed
+2. The hash is encrypted with the user's **private key** (only they have it)
+3. Anyone can verify the signature using the user's **public key**
+4. The verification confirms the document was signed by the holder of that private key
+
+Since only the signer controls their private key, they cannot credibly deny signing it.
+
+**Certificate Authorities (CA)**
+A CA issues digital certificates that tie a public key to a verified identity. This is the foundation of PKI (Public Key Infrastructure) — the same system that secures HTTPS websites.
+
+**Audit Logs**
+Timestamped records of system events: logins, file accesses, configuration changes. Logs must be:
+- **Tamper-resistant** — stored where they cannot be modified by users they monitor
+- **Time-synchronized** — using NTP so timestamps are accurate and consistent
+- **Retained** for an appropriate period per policy
+
+Logs provide evidence that an event occurred, when, and from what account or IP address.
+
+**Transaction Receipts and Acknowledgments**
+In business systems, automated confirmations (email receipts, delivery acknowledgments) provide written evidence that a transaction occurred and was received.
+
+### Non-Repudiation in the Real World
+
+- **Email signing** — S/MIME or PGP signatures on email prove the sender
+- **Code signing** — software signed with a developer's certificate proves the code is unmodified and came from a specific publisher
+- **Legal e-signatures** — DocuSign and similar platforms timestamp and log every action
+- **Blockchain** — immutable ledger used as non-repudiation mechanism in financial and supply chain contexts
+
+### Key Exam Points
+
+- Non-repudiation = proof of origin that the sender cannot deny
+- **Digital signatures** (private key) are the primary technical mechanism
+- **Audit logs** provide non-repudiation evidence at the system activity level
+- Logs must be protected from tampering to retain evidentiary value
+- Non-repudiation supports **AAA** — it is the "accounting" layer's enforcement tool

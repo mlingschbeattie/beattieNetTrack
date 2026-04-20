@@ -1,0 +1,73 @@
+---
+title: Privacy
+description: Understand privacy as distinct from confidentiality — personal data rights, regulations, and responsible data handling practices. FC0-U71 objective 6.1.
+slug: tech-plus-6-1-4-privacy
+track: tech-plus
+moduleId: tech-plus.security
+order: 4
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 6.1", "privacy", "PII", "FERPA", "HIPAA", "GDPR"]
+---
+
+## Privacy
+
+Privacy is related to confidentiality but focuses on the **rights of individuals** to control how their personal information is collected, used, and shared. Where confidentiality is a security control, privacy is a legal and ethical obligation.
+
+### Privacy vs. Confidentiality
+
+| | Confidentiality | Privacy |
+|---|---|---|
+| Focus | Protecting data from unauthorized access | Controlling use of personal information |
+| Who it protects | An organization's data | Individuals and their personal data |
+| Enforced by | Technical controls | Laws, regulations, policies |
+| Concern | Can attackers see this? | Should we collect this? How do we use it? |
+
+### Personally Identifiable Information (PII)
+
+PII is any data that can be used to identify, contact, or locate a specific individual.
+
+**Direct PII:**
+- Full name combined with SSN, date of birth, or address
+- Passport or driver's license number
+- Financial account numbers
+- Medical record numbers
+- Biometric data (fingerprints, facial recognition)
+
+**Indirect PII (can identify when combined):**
+- IP address + browsing history
+- ZIP code + birth date + gender (combinable to identify most people)
+- Device identifiers
+
+### Privacy Regulations
+
+IT professionals must be aware of applicable laws:
+
+| Regulation | Scope | Covers |
+|---|---|---|
+| **FERPA** | United States — Education | Student educational records; schools must get consent before sharing |
+| **HIPAA** | United States — Healthcare | Protected Health Information (PHI); healthcare providers and partners |
+| **COPPA** | United States — Children | Online data collection from children under 13 |
+| **GDPR** | European Union | Any org handling EU residents' data; right to access, erasure, portability |
+| **CCPA** | California | California residents; right to know, delete, opt-out of data sale |
+
+### Privacy Best Practices for IT Professionals
+
+- **Data minimization** — collect only what is necessary for the purpose
+- **Purpose limitation** — don't use data for purposes beyond what was disclosed
+- **Retention limits** — don't keep personal data longer than needed; have a deletion schedule
+- **Encryption at rest and in transit** — protect PII even from internal exposure
+- **Access controls** — limit who can query systems containing PII
+- **Breach notification** — most regulations require notifying affected individuals within a defined window (72 hours under GDPR)
+
+### OWASP Connection
+
+**Identification and Authentication Failures** (OWASP #7) and **Security Misconfiguration** (OWASP #5) commonly expose PII — weak passwords let attackers in, and misconfigured storage buckets have leaked millions of records publicly.
+
+### Key Exam Points
+
+- Privacy = individual's right to control their personal data; confidentiality = keeping data from unauthorized access
+- **PII** = any data that can identify a specific person
+- **FERPA** protects student records; **HIPAA** protects health information
+- **GDPR** applies to any organization handling EU residents' data, regardless of where the org is located
+- Data minimization: collect only what is needed; retain only as long as necessary
