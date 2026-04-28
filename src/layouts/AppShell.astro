@@ -38,6 +38,7 @@ if (activityNavigation && (activityNavigation as any).trackSlug && (activityNavi
 ---
 
 <BaseLayout title={title} legacySkin={legacySkin}>
+  <div class="binary-bg" id="binary-bg" aria-hidden="true"></div>
   <script id="__SEARCH_INDEX__" type="application/json" is:inline set:html={searchIndexJson}></script>
   <Navbar activePath={activePath} />
   <Breadcrumbs items={breadcrumbs} />
@@ -49,7 +50,7 @@ if (activityNavigation && (activityNavigation as any).trackSlug && (activityNavi
       currentTrack={currentTrack}
       lessonMap={lessonMap}
     />
-    <div class="sidebar-overlay" data-sidebar-close></div>
+    <div class="sidebar-overlay" id="sidebar-backdrop" data-sidebar-close></div>
     <main class="content-pane">
       <div class={`content-wrap container ${showRightPanel ? 'container--workspace' : ''}`}>
         <button class="sidebar-toggle" type="button" data-sidebar-toggle>
@@ -303,5 +304,54 @@ if (activityNavigation && (activityNavigation as any).trackSlug && (activityNavi
     };
     updateModuleProgressAppShell();
     window.addEventListener('progress-updated', updateModuleProgressAppShell);
+  } catch {}
+</script>
+
+<script>
+  const bg = document.getElementById('binary-bg');
+  if (bg) {
+    for (let i = 0; i < 32; i++) {
+      const col = document.createElement('div');
+      col.className = 'binary-column';
+      col.style.left = `${(i / 32) * 100}%`;
+      const dur = 10 + Math.random() * 10;
+      col.style.animationDuration = `${dur}s`;
+      col.style.animationDelay = `${-Math.random() * dur}s`;
+      col.textContent = Array.from({ length: 26 }, () =>
+        Math.random() > 0.5 ? '1' : '0'
+      ).join('\n');
+      bg.appendChild(col);
+    }
+  }
+</script>
+
+<script>
+  // Nav hamburger toggle — syncs with existing body.sidebar-open system
+  try {
+    const navToggle = document.getElementById('sidebar-nav-toggle') as HTMLButtonElement | null;
+    const backdrop = document.getElementById('sidebar-backdrop');
+
+    const openSidebar = () => {
+      document.body.classList.add('sidebar-open');
+      navToggle?.setAttribute('aria-expanded', 'true');
+      if (navToggle) navToggle.textContent = '✕';
+    };
+    const closeSidebarNav = () => {
+      document.body.classList.remove('sidebar-open');
+      navToggle?.setAttribute('aria-expanded', 'false');
+      if (navToggle) navToggle.textContent = '\u2630';
+    };
+
+    navToggle?.addEventListener('click', () => {
+      document.body.classList.contains('sidebar-open') ? closeSidebarNav() : openSidebar();
+    });
+
+    // Keep icon in sync when backdrop or content toggle closes the sidebar
+    backdrop?.addEventListener('click', closeSidebarNav);
+    document.querySelector('[data-sidebar-toggle]')?.addEventListener('click', () => {
+      const isOpen = document.body.classList.contains('sidebar-open');
+      navToggle?.setAttribute('aria-expanded', String(isOpen));
+      if (navToggle) navToggle.textContent = isOpen ? '✕' : '\u2630';
+    });
   } catch {}
 </script>

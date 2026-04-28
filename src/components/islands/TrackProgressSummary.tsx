@@ -5,11 +5,23 @@ type TrackProgressSummaryProps = {
   lessonSlugs: string[];
 };
 
+const PROGRESS_MESSAGES = [
+  "Just getting started — your journey begins here.",
+  "First checkpoint! Keep that momentum.",
+  "Two down. You're building something real.",
+  "Halfway through — nobody quits at the halfway point.",
+  "More than half! The cert is within reach.",
+  "Almost there — don't stop now.",
+  "One more activity and you're done.",
+  "🎉 Track complete! Time to attempt the real exam.",
+];
+
 export default function TrackProgressSummary({ lessonSlugs }: TrackProgressSummaryProps) {
   const [percent, setPercent] = useState(0);
   const [completed, setCompleted] = useState(0);
   const [total, setTotal] = useState(lessonSlugs.length);
   const [earnedXp, setEarnedXp] = useState(0);
+  const [displayPct, setDisplayPct] = useState(0);
 
   useEffect(() => {
     const update = () => {
@@ -25,19 +37,32 @@ export default function TrackProgressSummary({ lessonSlugs }: TrackProgressSumma
     return () => window.removeEventListener('progress-updated', update);
   }, [lessonSlugs]);
 
+  useEffect(() => {
+    const t = setTimeout(() => setDisplayPct(percent), 100);
+    return () => clearTimeout(t);
+  }, [percent]);
+
+  const pct = Math.round((completed / Math.max(total, 1)) * 100);
+  const message = PROGRESS_MESSAGES[Math.min(completed, PROGRESS_MESSAGES.length - 1)];
+
   return (
-    <div className="track-progress">
-      <div className="track-progress__row">
-        <span>
-          <span data-testid="track-completed-count">{completed}/{total}</span> completed
-        </span>
-        <span data-testid="track-xp">{earnedXp} XP</span>
+    <div className="track-progress progress-header">
+      <div className="progress-header__info">
+        <div className="progress-header__title" data-testid="track-completed-count">
+          {completed} / {total} completed
+        </div>
+        <div className="progress-header__subtitle">{message}</div>
       </div>
-      <div className="progress progress--thin" aria-hidden="true">
-        <div className="progress__bar" style={{ width: `${percent}%` }}></div>
+      <div className="progress-header__bar-wrap">
+        <div className="progress-bar-track" aria-hidden="true">
+          <div className="progress-bar-fill" style={{ width: `${displayPct}%` }}></div>
+        </div>
+        <div className="progress-bar-label" data-testid="track-percent">{pct}% complete</div>
       </div>
-      <div className="track-progress__label">
-        <span data-testid="track-percent">{percent}%</span> complete
+      <div className="xp-display">
+        <span className="xp-display__icon">⚡</span>
+        <span className="xp-display__value" data-testid="track-xp">{earnedXp}</span>
+        <span className="xp-display__label">XP</span>
       </div>
     </div>
   );

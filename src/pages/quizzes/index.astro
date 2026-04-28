@@ -5,7 +5,11 @@ import QuizCatalogBadge from '../../components/islands/QuizCatalogBadge.tsx';
 import ActivityCard from '../../components/ActivityCard.astro';
 
 const tracks = await getCollection('tracks');
-const quizzes = await getCollection('quizzes');
+const allQuizzes = await getCollection('quizzes');
+// Hide quizzes with no questions and no JSON path — they appear broken to students
+const quizzes = allQuizzes.filter(
+  (q) => q.data.questions.length > 0 || Boolean(q.data.quizJsonPath)
+);
 
 const breadcrumbs = [
   { label: 'Home', href: '/' },

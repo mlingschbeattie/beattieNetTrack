@@ -9,10 +9,12 @@ const { checkLabel = 'Check', submitLabel = 'Submit' } = Astro.props as Props;
 
 <footer class="workspace-bar" data-workspace-bar>
   <div class="workspace-bar__actions">
-    <button type="button" class="btn-secondary" data-workspace-action="run">Run</button>
-    <button type="button" class="btn-primary" data-workspace-action="check">{checkLabel}</button>
-    <button type="button" class="btn-primary" data-workspace-action="submit">{submitLabel}</button>
-    <button type="button" class="btn-ghost" data-workspace-action="reset">Reset</button>
+    <button type="button" class="btn-secondary workspace-bar__run" data-workspace-action="run">Run</button>
+    <div class="workspace-bar__primary-group">
+      <button type="button" class="btn-primary" data-workspace-action="check">{checkLabel}</button>
+      <button type="button" class="btn-primary" data-workspace-action="submit">{submitLabel}</button>
+    </div>
+    <button type="button" class="btn-ghost workspace-bar__reset" data-workspace-action="reset">Reset</button>
   </div>
   <div class="workspace-bar__status">
     <span class="pill" data-workspace-status>Ready</span>

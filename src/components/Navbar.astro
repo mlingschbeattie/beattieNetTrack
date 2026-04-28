@@ -15,14 +15,8 @@ const { activePath = '/' } = Astro.props as Props;
 const navItems: NavItem[] = [
   { label: 'Home', href: '/' },
   { label: 'Tour', href: '/tour' },
-  { label: 'Study Guides', href: '/study-guides' },
   { label: 'Learning Tracks', href: '/tracks' },
-  { label: 'PC Technician', href: '/tracks/pc-technician' },
-  { label: 'Network Engineer', href: '/tracks/network-engineer' },
-  { label: 'Cybersecurity Engineer', href: '/tracks/cybersecurity-engineer' },
-  { label: 'Legacy (Archived)', href: '/tracks/legacy' },
   { label: 'Study Hub', href: '/quizzes' },
-  { label: 'Cheat Sheets', href: '/legacy/cheat-sheets.html' },
 ];
 
 const isActive = (href: string) => {
@@ -32,19 +26,39 @@ const isActive = (href: string) => {
 ---
 
 <nav class="top-nav">
-  <div class="top-nav__inner container">
-    <div class="top-nav__brand">[ BEATTIE ] <span>TECH</span></div>
-    <div class="top-nav__links">
+  <div class="top-nav-inner container">
+    <button
+      class="sidebar-nav-toggle"
+      id="sidebar-nav-toggle"
+      aria-label="Toggle navigation"
+      aria-expanded="false"
+    >☰</button>
+    <a href="/" class="brand">
+      <div class="brand-icon">BN</div>
+      <div class="brand-text">
+        <span class="brand-title">BeattieNetTrack</span>
+        <span class="brand-subtitle">Build Real Skills. Earn Real Certs.</span>
+      </div>
+    </a>
+
+    <ul class="nav-links">
       {navItems.map((item) => (
-        <a
-          class={`top-nav__link ${isActive(item.href) ? 'top-nav__link--active' : ''}`}
-          href={item.href}
-        >
-          {item.label}
-        </a>
+        <li>
+          <a
+            class={`nav-link${isActive(item.href) ? ' active' : ''}`}
+            href={item.href}
+          >
+            {item.label}
+          </a>
+        </li>
       ))}
-    </div>
-    <div class="top-nav__status">
+    </ul>
+
+    <div class="top-nav__actions">
+      <div class="nav-session-pill" title="Your currently active certification track">
+        <span class="nav-session-dot"></span>
+        Active Track: Network+
+      </div>
       <button
         class="theme-toggle"
         type="button"
@@ -54,35 +68,10 @@ const isActive = (href: string) => {
         title="Toggle theme"
       >
         <span aria-hidden="true" data-theme-icon>🌙</span>
-        <span data-theme-label>Dark</span>
+        <span class="sr-only" data-theme-label>Dark</span>
       </button>
       <div class="top-nav__status-slot" data-progress-slot>
-        <div class="top-nav__status-skeleton">
-          <div class="status-pill">
-            <span class="status-pill__icon">⚡</span>
-            <div>
-              <div class="status-pill__label">Level</div>
-              <div class="status-pill__value">--</div>
-            </div>
-          </div>
-          <div class="status-pill">
-            <span class="status-pill__icon">⭐</span>
-            <div>
-              <div class="status-pill__label">XP</div>
-              <div class="status-pill__value">--</div>
-            </div>
-          </div>
-          <div class="status-pill">
-            <span class="status-pill__icon">🔥</span>
-            <div>
-              <div class="status-pill__label">Streak</div>
-              <div class="status-pill__value">--</div>
-            </div>
-          </div>
-        </div>
-        <div class="top-nav__status-react">
-          <ProgressStatus client:only="react" />
-        </div>
+        <ProgressStatus client:only="react" />
       </div>
     </div>
   </div>

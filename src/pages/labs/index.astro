@@ -4,8 +4,10 @@ import AppShell from '../../layouts/AppShell.astro';
 import Card from '../../components/Card.astro';
 import Section from '../../components/Section.astro';
 
-const [tracks, labs] = await Promise.all([getCollection('tracks'), getCollection('labs')]);
-const sortedLabs = labs.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+const [tracks, allLabs] = await Promise.all([getCollection('tracks'), getCollection('labs')]);
+const sortedLabs = allLabs
+  .filter((lab) => !lab.data.hidden)
+  .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 ---
 
 <AppShell
@@ -26,7 +28,7 @@ const sortedLabs = labs.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0)
       {sortedLabs.map((lab) => {
         const minutes = lab.data.estimatedMinutes ?? lab.data.estMinutes ?? 20;
         return (
-          <Card title={lab.data.title}>
+          <Card title={lab.data.title} className="card--lab">
             <p>{lab.data.description}</p>
             <Fragment slot="meta">
               <span class="badge">{lab.data.difficulty}</span>

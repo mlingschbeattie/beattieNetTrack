@@ -36,7 +36,7 @@ const badgeForType = (type: TrackModuleItem['type']) => {
     {module.description && <p class="track-section__subtitle">{module.description}</p>}
     <div class="card-grid">
       {module.items.map((item) => (
-        <article class="card card--lesson">
+        <article class={`card card--${item.type === 'lab' ? 'lab' : item.type === 'quiz' ? 'quiz' : 'lesson'}`}>
           <h3>{item.title}</h3>
           <p>{item.description}</p>
           <div class="card__meta">

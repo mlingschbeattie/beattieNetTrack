@@ -67,6 +67,7 @@ export default function LabRunner({
   const [isCompleted, setIsCompleted] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [toastMsg, setToastMsg] = useState('');
 
   const totalSteps = steps.length;
   const progressPercent = totalSteps > 0 ? Math.round(((currentStepIndex + 1) / totalSteps) * 100) : 0;
@@ -119,6 +120,8 @@ export default function LabRunner({
     setFeedback({ type: 'success', message: successMessage });
 
     if (allDone) {
+      setToastMsg(`✓ Lab complete! +${xpReward} XP`);
+      setTimeout(() => setToastMsg(''), 1500);
       const completedAt = new Date().toISOString();
       setIsCompleted(true);
       persist({
@@ -137,6 +140,8 @@ export default function LabRunner({
       completed: false,
       completedAt: null,
     });
+    setToastMsg('✓ Step complete!');
+    setTimeout(() => setToastMsg(''), 1500);
   };
 
   const handleNext = () => {
@@ -167,65 +172,91 @@ export default function LabRunner({
   }
 
   return (
-    <div className="card" data-testid="lab-runner">
-      <div className="card__meta">
-        <span className="badge" data-testid="lab-step-count">Step {currentStepIndex + 1} of {totalSteps}</span>
-      </div>
-      <div className="progress progress--thin" aria-hidden="true">
-        <div className="progress__bar" style={{ width: `${progressPercent}%` }}></div>
-      </div>
+    <div className="lab-layout" data-testid="lab-runner">
+      <aside className="lab-steps">
+        <div className="lab-steps__title">Lab Steps</div>
+        {steps.map((step, index) => {
+          const isDone = completedStepIds.includes(step.id);
+          const isActive = index === currentStepIndex;
+          const isLocked = !isDone && !isActive;
+          return (
+            <div
+              key={step.id}
+              className={`lab-step${isActive ? ' lab-step--active' : ''}${isDone ? ' lab-step--complete' : ''}${isLocked ? ' lab-step--locked' : ''}`}
+            >
+              <span className="lab-step__num">{isDone ? '' : index + 1}</span>
+              <span>{step.title}</span>
+            </div>
+          );
+        })}
+      </aside>
 
-      <h3>{currentStep.title}</h3>
-      <p>{currentStep.prompt}</p>
-
-      <label className="u-block u-mb-2" htmlFor={`lab-input-${currentStep.id}`}>
-        {currentStep.inputLabel ?? 'Command'}
-      </label>
-      <input
-        id={`lab-input-${currentStep.id}`}
-        className="input"
-        data-testid="lab-input"
-        type="text"
-        value={currentAnswer}
-        placeholder={currentStep.placeholder ?? 'Type your answer'}
-        onChange={(event) => {
-          const value = event.target.value;
-          setAnswers((prev) => ({ ...prev, [currentStep.id]: value }));
-        }}
-      />
-
-      <div className="card__footer u-mt-3">
-        <button className="btn" type="button" data-testid="lab-submit" onClick={handleSubmit}>Submit</button>
-        <button
-          className="btn-ghost"
-          type="button"
-          data-testid="lab-hint"
-          onClick={() => setShowHint((prev) => !prev)}
-        >
-          {showHint ? 'Hide hint' : 'Show hint'}
-        </button>
-        <button
-          className="btn"
-          type="button"
-          data-testid="lab-next"
-          disabled={!currentStepCompleted}
-          onClick={handleNext}
-        >
-          Next
-        </button>
-      </div>
-
-      {showHint && currentStep.hint && (
-        <div className="callout callout--info u-mt-3">
-          <strong>Hint:</strong> {currentStep.hint}
+      <div>
+        <div className="progress-bar-track" aria-hidden="true">
+          <div className="progress-bar-fill" style={{ width: `${progressPercent}%` }} />
         </div>
-      )}
 
-      {feedback && (
-        <div className={`callout u-mt-3 ${feedback.type === 'success' ? 'callout--success' : 'callout--warn'}`}>
-          {feedback.message}
+        <div className="lab-instruction">
+          <div className="lab-instruction__eyebrow" data-testid="lab-step-count">
+            Step {currentStepIndex + 1} of {totalSteps}
+          </div>
+          <h3 className="lab-instruction__title">{currentStep.title}</h3>
+          <div className="lab-instruction__body">{currentStep.prompt}</div>
         </div>
-      )}
+
+        <label className="u-block u-mb-2" htmlFor={`lab-input-${currentStep.id}`}>
+          {currentStep.inputLabel ?? 'Command'}
+        </label>
+        <input
+          id={`lab-input-${currentStep.id}`}
+          className="input"
+          data-testid="lab-input"
+          type="text"
+          value={currentAnswer}
+          placeholder={currentStep.placeholder ?? 'Type your answer'}
+          onChange={(event) => {
+            const value = event.target.value;
+            setAnswers((prev) => ({ ...prev, [currentStep.id]: value }));
+          }}
+        />
+
+        <div className="quiz-runner__actions">
+          <button className="quiz-btn quiz-btn--primary" type="button" data-testid="lab-submit" onClick={handleSubmit}>
+            Submit
+          </button>
+          <button
+            className="quiz-btn quiz-btn--ghost"
+            type="button"
+            data-testid="lab-hint"
+            onClick={() => setShowHint((prev) => !prev)}
+          >
+            {showHint ? 'Hide hint' : 'Show hint'}
+          </button>
+          <button
+            className="quiz-btn quiz-btn--primary"
+            type="button"
+            data-testid="lab-next"
+            disabled={!currentStepCompleted}
+            onClick={handleNext}
+          >
+            Next
+          </button>
+        </div>
+
+        {showHint && currentStep.hint && (
+          <div className="callout callout--info u-mt-3">
+            <strong>Hint:</strong> {currentStep.hint}
+          </div>
+        )}
+
+        {feedback && (
+          <div className={`callout u-mt-3 ${feedback.type === 'success' ? 'callout--tip' : 'callout--warn'}`}>
+            {feedback.message}
+          </div>
+        )}
+      </div>
+
+      {toastMsg && <div className="step-toast">{toastMsg}</div>}
     </div>
   );
 }

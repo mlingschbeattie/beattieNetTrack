@@ -26,6 +26,7 @@ export default function SidebarTrackProgress({ sections, activeLesson }: Sidebar
     xpEarned: 0,
   });
   const [completedMap, setCompletedMap] = useState<Record<string, boolean>>({});
+  const [displayPct, setDisplayPct] = useState(0);
   const lessonSlugs = useMemo(
     () => sections.flatMap((section) => section.lessons.map((lesson) => lesson.slug)),
     [sections]
@@ -50,14 +51,23 @@ export default function SidebarTrackProgress({ sections, activeLesson }: Sidebar
     return () => window.removeEventListener('progress-updated', update);
   }, [lessonSlugs]);
 
+  useEffect(() => {
+    const t = setTimeout(() => setDisplayPct(progress.percent), 100);
+    return () => clearTimeout(t);
+  }, [progress.percent]);
+
   return (
     <div className="sidebar-progress">
       <div className="sidebar-progress__row">
         <span>{progress.completed}/{progress.total} done</span>
-        <span>{progress.xpEarned} XP</span>
+        <span className="xp-display">
+          <span className="xp-display__icon">⚡</span>
+          <span className="xp-display__value" style={{ fontSize: '13px' }}>{progress.xpEarned}</span>
+          <span className="xp-display__label">XP</span>
+        </span>
       </div>
-      <div className="progress progress--thin" aria-hidden="true">
-        <div className="progress__bar" style={{ width: `${progress.percent}%` }}></div>
+      <div className="progress-bar-track" aria-hidden="true">
+        <div className="progress-bar-fill" style={{ width: `${displayPct}%` }}></div>
       </div>
       {sections.map((section) => (
         <div className="sidebar__group" key={section.title}>

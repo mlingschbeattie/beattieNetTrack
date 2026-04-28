@@ -98,7 +98,7 @@ const getActivityModuleSlug = (data: { module?: string; moduleId?: string }) => 
 
 export const getTracksIndexData = async (): Promise<TrackSummary[]> => {
   const tracks = await getCollection('tracks');
-  return tracks.map(toTrackSummary).sort(compareOrderTitleSlug);
+  return tracks.filter((t) => !t.data.hidden).map(toTrackSummary).sort(compareOrderTitleSlug);
 };
 
 export const getTrackDetailData = async (trackSlug: string): Promise<TrackDetailData | null> => {

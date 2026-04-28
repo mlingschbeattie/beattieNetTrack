@@ -15,6 +15,14 @@ export default function QuizRunner({ quiz, workspaceSlug }: QuizRunnerProps) {
 
   const grade = useMemo(() => gradeQuiz(quiz, answers), [quiz, answers]);
   const activeQuestion = quiz.questions[current];
+  const activeResult = grade.results.find((result) => result.id === activeQuestion?.id);
+  const answerFeedback = showResults && activeResult
+    ? activeResult.correct
+      ? 'Correct'
+      : 'Incorrect'
+    : null;
+  const explanationText = (activeQuestion?.explanation ?? '').trim();
+  const showExplanation = showResults && !!activeResult && explanationText.length > 0;
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -153,44 +161,59 @@ export default function QuizRunner({ quiz, workspaceSlug }: QuizRunnerProps) {
   }, [workspaceSlug, quiz.slug, grade]);
 
   if (!activeQuestion) {
-    return <div className="quiz-card">No questions found.</div>;
+    return <div className="quiz-runner">No questions found.</div>;
   }
 
-  const activeResult = grade.results.find((result) => result.id === activeQuestion.id);
-
   return (
-    <div className="quiz-card" data-testid="quiz-runner">
-      <div className="quiz-card__header">
+    <div className="quiz-runner" data-testid="quiz-runner">
+      <div className="quiz-runner__header">
         <div>
           <h2>{quiz.title}</h2>
-          <div className="quiz-card__meta">
+          <div className="quiz-runner__counter">
             Question {current + 1} of {quiz.questions.length}
           </div>
         </div>
         <div className="pill">Pass {quiz.passThreshold}%</div>
       </div>
 
-      <div className="progress progress--thin" aria-hidden="true">
-        <div className="progress__bar" style={{ width: `${quiz.questions.length ? ((current + 1) / quiz.questions.length) * 100 : 0}%` }}></div>
+      <div className="progress-bar-track" aria-hidden="true">
+        <div
+          className="progress-bar-fill"
+          style={{ width: `${quiz.questions.length ? ((current + 1) / quiz.questions.length) * 100 : 0}%` }}
+        />
       </div>
 
       <div className="quiz-question">
-        <h3>{activeQuestion.prompt}</h3>
+        <p className="quiz-question__prompt">{activeQuestion.prompt}</p>
         <div className="quiz-options">
           {activeQuestion.type === 'single' &&
             activeQuestion.options.map((option, index) => {
               const answer = answers[activeQuestion.id];
               const selected = answer?.type === 'single' ? answer.selectedIndex === index : false;
+              const isCorrect = showResults && index === activeQuestion.correctIndex;
+              const isIncorrect = showResults && selected && index !== activeQuestion.correctIndex;
+              const classes = [
+                'quiz-option',
+                selected ? 'quiz-option--selected' : '',
+                isCorrect ? 'quiz-option--correct' : '',
+                isIncorrect ? 'quiz-option--incorrect' : '',
+                showResults ? 'quiz-option--revealed' : '',
+              ].filter(Boolean).join(' ');
               return (
-                <button
+                <div
                   key={option}
-                  type="button"
-                  className={`quiz-option ${selected ? 'quiz-option--selected' : ''}`}
+                  role="button"
+                  tabIndex={showResults ? -1 : 0}
+                  className={classes}
                   data-testid={`quiz-option-${index}`}
-                  onClick={() => setSingle(activeQuestion.id, index)}
+                  onClick={() => !showResults && setSingle(activeQuestion.id, index)}
+                  onKeyDown={(e) => {
+                    if (!showResults && (e.key === 'Enter' || e.key === ' ')) setSingle(activeQuestion.id, index);
+                  }}
                 >
-                  {option}
-                </button>
+                  <span className="quiz-option__letter">{String.fromCharCode(65 + index)}</span>
+                  <span className="quiz-option__text">{option}</span>
+                </div>
               );
             })}
 
@@ -198,15 +221,29 @@ export default function QuizRunner({ quiz, workspaceSlug }: QuizRunnerProps) {
             activeQuestion.options.map((option, index) => {
               const answer = answers[activeQuestion.id];
               const selected = answer?.type === 'multi' ? answer.selectedIndices.includes(index) : false;
+              const isCorrect = showResults && activeQuestion.correctIndices.includes(index);
+              const isIncorrect = showResults && selected && !activeQuestion.correctIndices.includes(index);
+              const classes = [
+                'quiz-option',
+                selected ? 'quiz-option--selected' : '',
+                isCorrect ? 'quiz-option--correct' : '',
+                isIncorrect ? 'quiz-option--incorrect' : '',
+                showResults ? 'quiz-option--revealed' : '',
+              ].filter(Boolean).join(' ');
               return (
-                <button
+                <div
                   key={option}
-                  type="button"
-                  className={`quiz-option ${selected ? 'quiz-option--selected' : ''}`}
-                  onClick={() => toggleMulti(activeQuestion.id, index)}
+                  role="button"
+                  tabIndex={showResults ? -1 : 0}
+                  className={classes}
+                  onClick={() => !showResults && toggleMulti(activeQuestion.id, index)}
+                  onKeyDown={(e) => {
+                    if (!showResults && (e.key === 'Enter' || e.key === ' ')) toggleMulti(activeQuestion.id, index);
+                  }}
                 >
-                  {option}
-                </button>
+                  <span className="quiz-option__letter">{String.fromCharCode(65 + index)}</span>
+                  <span className="quiz-option__text">{option}</span>
+                </div>
               );
             })}
 
@@ -215,64 +252,93 @@ export default function QuizRunner({ quiz, workspaceSlug }: QuizRunnerProps) {
               const answer = answers[activeQuestion.id];
               const value = answer?.type === 'short' ? answer.value : '';
               return (
-            <input
-              className="quiz-short-input"
-              type="text"
-              value={value}
-              onChange={(event) => setShort(activeQuestion.id, event.target.value)}
-              placeholder="Type your answer"
-              data-testid="quiz-short-input"
-            />
+                <input
+                  className="quiz-short-input"
+                  type="text"
+                  value={value}
+                  onChange={(event) => setShort(activeQuestion.id, event.target.value)}
+                  placeholder="Type your answer"
+                  data-testid="quiz-short-input"
+                />
               );
             })()
           )}
         </div>
       </div>
 
-      {showResults && activeResult && (
-  <div className={`quiz-feedback ${activeResult.correct ? 'quiz-feedback--ok' : 'quiz-feedback--error'}`}>
-    {activeResult.feedback}
-    {!activeResult.correct && activeQuestion.type === 'single' && activeQuestion.explanation && (
-      <div className="quiz-feedback__eli5">
-        <span className="quiz-feedback__eli5-label">Here&apos;s why:</span>{' '}
-        {activeQuestion.explanation}
-      </div>
-    )}
-  </div>
-)}
+      {answerFeedback && (
+        <div
+          className={activeResult?.correct ? 'quiz-answer-feedback quiz-answer-feedback--correct' : 'quiz-answer-feedback quiz-answer-feedback--incorrect'}
+          role="status"
+          aria-live="polite"
+        >
+          {answerFeedback}
+        </div>
+      )}
 
-      <div className="quiz-actions">
-        <button className="btn-secondary" type="button" onClick={() => setCurrent((prev) => Math.max(0, prev - 1))} disabled={current === 0}>
+      {showExplanation && (
+        <div className="quiz-eli5" role="note" aria-label="Explanation">
+          <div className="quiz-eli5__body">
+            <strong>Why?</strong> {explanationText}
+          </div>
+        </div>
+      )}
+
+      <div className="quiz-runner__actions">
+        <button
+          className="quiz-btn quiz-btn--ghost"
+          type="button"
+          onClick={() => setCurrent((prev) => Math.max(0, prev - 1))}
+          disabled={current === 0}
+        >
           Back
         </button>
         {current < quiz.questions.length - 1 ? (
-          <button className="btn-primary" type="button" onClick={() => {
-            setCurrent((prev) => Math.min(quiz.questions.length - 1, prev + 1));
-          }} disabled={!canAdvance()}>
+          <button
+            className="quiz-btn quiz-btn--primary"
+            type="button"
+            onClick={() => {
+              setCurrent((prev) => Math.min(quiz.questions.length - 1, prev + 1));
+            }}
+            disabled={!canAdvance()}
+          >
             Next
           </button>
         ) : (
-          <button className="btn-primary" type="button" data-testid="quiz-submit" onClick={() => {
-            setShowResults(true);
-            emitWorkspaceResult('submit');
-          }} disabled={!canAdvance()}>
+          <button
+            className="quiz-btn quiz-btn--primary"
+            type="button"
+            data-testid="quiz-submit"
+            onClick={() => {
+              setShowResults(true);
+              emitWorkspaceResult('submit');
+            }}
+            disabled={!canAdvance()}
+          >
             Submit
           </button>
         )}
       </div>
 
       {showResults && (
-        <div className="quiz-card__results" data-testid="quiz-results">
-          <strong data-testid="quiz-score">{grade.score}%</strong>
-          <span>
-            {grade.correctCount}/{grade.total} correct · {grade.passed ? 'Passed' : 'Try again'}
-          </span>
-          <button className="btn-ghost" type="button" onClick={() => {
-            setAnswers({});
-            setCurrent(0);
-            setShowResults(false);
-            emitWorkspaceResult('reset');
-          }}>
+        <div className="quiz-results" data-testid="quiz-results">
+          <div className="quiz-results__score" data-testid="quiz-score">{grade.score}%</div>
+          <div className="quiz-results__label">
+            {grade.correctCount}/{grade.total} correct
+          </div>
+          <div className={grade.passed ? 'quiz-results__pass' : 'quiz-results__fail'}>
+            {grade.passed ? '\u2713 Passed' : '\u2717 Try again'}
+          </div>
+          <button
+            className="quiz-btn quiz-btn--ghost"
+            type="button"
+            onClick={() => {
+              setAnswers({});
+              setCurrent(0);
+              setShowResults(false);
+              emitWorkspaceResult('reset');
+            }}
+          >
             Retake
           </button>
         </div>

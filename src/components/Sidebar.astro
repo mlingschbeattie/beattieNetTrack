@@ -22,6 +22,30 @@ const {
   lessonMap = {},
 } = Astro.props as Props;
 
+const TRACK_ORDER = [
+  'tech-plus',
+  'pc-technician',
+  'network-engineer',
+  'cybersecurity-foundations',
+  'python-developer',
+  'cybersecurity-engineer',
+  'web-developer',
+  'ai-ml',
+  'linux',
+  'cyber-literacy',
+];
+
+const visibleTracks = (tracks as TrackEntry[])
+  .filter((t) => !t.data.hidden)
+  .sort((a, b) => {
+    const ai = TRACK_ORDER.indexOf(a.slug);
+    const bi = TRACK_ORDER.indexOf(b.slug);
+    if (ai === -1 && bi === -1) return a.data.title.localeCompare(b.data.title);
+    if (ai === -1) return 1;
+    if (bi === -1) return -1;
+    return ai - bi;
+  });
+
 const normalizeItem = (item: string | { type: 'lesson' | 'lab' | 'quiz'; slug: string }) =>
   typeof item === 'string' ? { type: 'lesson' as const, slug: item } : item;
 
@@ -53,12 +77,12 @@ const sidebarSections = currentTrack?.data.sections?.map((section) => ({
 }));
 ---
 
-<aside class="sidebar">
+<aside class="sidebar" id="app-sidebar">
   <div class="sidebar__brand">Beattie Tech</div>
 
   <div class="sidebar__section">
     <div class="sidebar__title">Tracks</div>
-    {tracks.map((track) => (
+    {visibleTracks.map((track) => (
       <a
         class={`sidebar__link ${activeTrack === track.slug ? 'sidebar__link--active' : ''}`}
         href={`/tracks/${track.slug}`}

@@ -12,9 +12,15 @@ export async function getStaticPaths() {
   return lessons.map((lesson) => ({ params: { slug: lesson.slug }, props: { lesson } }));
 }
 
-const { lesson } = Astro.props;
 const allTracks = await getCollection('tracks');
 const allLessons = await getCollection('lessons');
+const paramSlug = Astro.params.slug;
+const lesson = Astro.props.lesson ?? allLessons.find((entry) => entry.slug === paramSlug);
+
+if (!lesson) {
+  return Astro.redirect('/tracks');
+}
+
 const { Content } = await lesson.render();
 const meta = normalizeLessonMeta(lesson.data);
 const activityNavigation = await getActivityModuleNavigation({ type: 'lesson', slug: lesson.slug });

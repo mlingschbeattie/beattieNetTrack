@@ -22,12 +22,14 @@ export default function TourProgressCard({ tourSlug, firstStepSlug }: TourProgre
     return () => window.removeEventListener('progress-updated', sync);
   }, [tourSlug, firstStepSlug]);
 
+  const isNew = percent === 0;
+
   return (
     <div className="card" data-testid="tour-progress-card">
-      <h3>Continue Tour</h3>
-      <p data-testid="tour-percent">{percent}% complete</p>
+      <h3>{isNew ? 'Start the Tour' : 'Continue Tour'}</h3>
+      <p data-testid="tour-percent">{isNew ? 'Begin your hands-on intro.' : `${percent}% complete`}</p>
       <a className="btn-link" href={`/tour/${continueSlug}`} data-testid="tour-continue-link">
-        Continue →
+        {isNew ? 'Start Tour →' : 'Continue →'}
       </a>
     </div>
   );

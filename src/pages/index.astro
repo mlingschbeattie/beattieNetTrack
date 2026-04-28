@@ -1,108 +1,117 @@
 ---
 import { getCollection } from 'astro:content';
 import AppShell from '../layouts/AppShell.astro';
-import { getTrackContinueHref, getTrackDetailData } from '../lib/content';
+import ContinueLearning from '../components/islands/ContinueLearning.tsx';
+import { getTrackDetailData } from '../lib/content';
 
-const tracks = await getCollection('tracks');
-const sortedTracks = tracks.sort((a, b) => a.data.order - b.data.order);
+const allTracks = await getCollection('tracks');
 
-// build continue href map server-side using content helper to avoid legacy workspace routes
-const continueMap = Object.fromEntries(
-  await Promise.all(sortedTracks.map(async (t) => [t.slug, await getTrackContinueHref(t.slug)]))
+const TRACK_ORDER = [
+  'tech-plus',
+  'pc-technician',
+  'network-engineer',
+  'cybersecurity-foundations',
+  'python-developer',
+  'cybersecurity-engineer',
+  'web-developer',
+  'ai-ml',
+  'linux',
+  'cyber-literacy',
+];
+
+const visibleTracks = allTracks
+  .filter((t) => !t.data.hidden)
+  .sort((a, b) => {
+    const ai = TRACK_ORDER.indexOf(a.slug);
+    const bi = TRACK_ORDER.indexOf(b.slug);
+    if (ai === -1 && bi === -1) return a.data.title.localeCompare(b.data.title);
+    if (ai === -1) return 1;
+    if (bi === -1) return -1;
+    return ai - bi;
+  });
+
+const activityMap = Object.fromEntries(
+  await Promise.all(
+    visibleTracks.map(async (track) => {
+      const detail = await getTrackDetailData(track.slug);
+      const activities = detail
+        ? detail.modules.flatMap((m) => m.activities.map(({ type, slug }) => ({ type, slug })))
+        : [];
+      return [track.slug, activities];
+    })
+  )
 );
 
-const continueActivityMap = Object.fromEntries(
-	await Promise.all(
-		sortedTracks.map(async (track) => {
-			const detail = await getTrackDetailData(track.slug);
-			const activities = detail
-				? detail.modules.flatMap((module) =>
-						module.activities.map((activity) => ({
-							type: activity.type,
-							slug: activity.slug,
-							href: activity.href,
-						}))
-					)
-				: [];
-			return [track.slug, activities];
-		})
-	)
-);
+const tracksMeta = visibleTracks.map((t) => ({
+  slug: t.slug,
+  title: t.data.title,
+  activityCount: activityMap[t.slug]?.length ?? 0,
+}));
 
-const trackItemCountMap = Object.fromEntries(
-	sortedTracks.map((track) => [
-		track.slug,
-		(track.data.sections ?? []).reduce((total, section) => total + (section.lessons?.length ?? 0), 0),
-	])
-);
+const isAvailable = (slug: string) => (activityMap[slug]?.length ?? 0) > 0;
 ---
 
 <AppShell
   title="Beattie Tech • Tracks"
-  tracks={sortedTracks}
+  tracks={visibleTracks}
   breadcrumbs={[{ label: 'Home' }]}
 >
-	<section class="hero">
-		<h1 class="hero__title">Learning Dashboard</h1>
-		<p class="hero__subtitle">Continue your path from dashboard to track to workspace.</p>
-	</section>
-	<p>
-		<a class="sidebar__link" href="/legacy/index.html">Browse legacy content →</a>
-	</p>
+  <section class="hero">
+    <h1 class="hero__title">Learning Dashboard</h1>
+    <p class="hero__subtitle">Continue your path from dashboard to track to workspace.</p>
+  </section>
 
-	<section class="card-grid">
-		{sortedTracks.map((track) => (
-			<article class="card">
-				<h3>{track.data.title}</h3>
-				<p>{track.data.description}</p>
-				<div class="card__meta">
-					<span class="badge">{trackItemCountMap[track.slug] ?? 0} items</span>
-					{track.data.estimatedHours && (
-						<span class="badge badge--muted">~{track.data.estimatedHours} hrs</span>
-					)}
-				</div>
-				<div class="card__footer">
-					<a class="sidebar__link" href={`/tracks/${track.slug}`}>Open track →</a>
-					<a
-						class="sidebar__link"
-						href={continueMap[track.slug] ?? `/tracks/${track.slug}`}
-						data-track-continue-link
-						data-track-slug={track.slug}
-					>
-						Continue →
-					</a>
-				</div>
-			</article>
-		))}
-	</section>
+  <!-- Section A: Continue Learning -->
+  <section class="track-section">
+    <div class="section-head">
+      <h2>Continue Learning</h2>
+      <div class="section-head-line"></div>
+    </div>
+    <ContinueLearning
+      client:only="react"
+      tracks={tracksMeta}
+      activityMap={activityMap}
+    />
+  </section>
+
+  <!-- Section B: Your Tracks -->
+  <section class="track-section">
+    <div class="section-head">
+      <h2>Your Tracks</h2>
+      <div class="section-head-line"></div>
+    </div>
+    <div class="card-grid card-grid--two">
+      {visibleTracks.map((track) => (
+        <article class="card card--track">
+          <span class={`track-badge track-badge--${isAvailable(track.slug) ? 'available' : 'coming-soon'}`}>
+            {isAvailable(track.slug) ? 'Available' : 'Coming Soon'}
+          </span>
+          <h3>{track.data.icon ? `${track.data.icon} ` : ''}{track.data.title}</h3>
+          <p>{track.data.description}</p>
+          <div class="card__meta">
+            <span class="badge">{activityMap[track.slug]?.length ?? 0} activities</span>
+            {track.data.estimatedHours && (
+              <span class="badge badge--muted">~{track.data.estimatedHours} hrs</span>
+            )}
+          </div>
+          <div class="card__footer">
+            <a class="btn-link" href={`/tracks/${track.slug}`}>Open track →</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- Section C: Quick Actions -->
+  <section class="track-section">
+    <div class="section-head">
+      <h2>Quick Actions</h2>
+      <div class="section-head-line"></div>
+    </div>
+    <div class="quick-actions">
+      <a class="quick-action" href="/tracks">Browse All Tracks →</a>
+      <a class="quick-action" href="/quizzes">Open Study Hub →</a>
+      <a class="quick-action" href="/labs">Take a Lab →</a>
+    </div>
+  </section>
 </AppShell>
-
-<script id="__TRACK_CONTINUE_ACTIVITY_MAP__" type="application/json" is:inline set:html={JSON.stringify(continueActivityMap)}></script>
-<script>
-	(() => {
-		try {
-			const mapRaw = document.getElementById('__TRACK_CONTINUE_ACTIVITY_MAP__')?.textContent ?? '{}';
-			const activityMap = JSON.parse(mapRaw);
-			const progressRaw = window.localStorage.getItem('beattie_progress_v1');
-			const progress = progressRaw ? JSON.parse(progressRaw) : null;
-
-			const isCompleted = (item: { type: 'lab' | 'quiz' | 'lesson'; slug: string }) => {
-				if (!progress || typeof progress !== 'object') return false;
-				const collection = item.type === 'lab' ? 'labs' : item.type === 'quiz' ? 'quizzes' : 'lessons';
-				return Boolean(progress?.[collection]?.[item.slug]?.completed);
-			};
-
-			const links = document.querySelectorAll('[data-track-continue-link][data-track-slug]');
-			links.forEach((link) => {
-				if (!(link instanceof HTMLAnchorElement)) return;
-				const trackSlug = link.dataset.trackSlug;
-				if (!trackSlug) return;
-				const activityList = Array.isArray(activityMap[trackSlug]) ? activityMap[trackSlug] : [];
-				const nextActivity = activityList.find((item) => !isCompleted(item));
-				link.href = nextActivity ? nextActivity.href : `/tracks/${trackSlug}`;
-			});
-		} catch {
-			// fall back to server-rendered continue hrefs
-		}
-	})();
-</script>

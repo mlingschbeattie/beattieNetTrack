@@ -13,7 +13,14 @@ export async function getStaticPaths() {
   return quizzes.map((quiz) => ({ params: { slug: quiz.slug }, props: { quiz } }));
 }
 
-const { quiz } = Astro.props;
+const allQuizzes = await getCollection('quizzes');
+const paramSlug = Astro.params.slug;
+const quiz = Astro.props.quiz ?? allQuizzes.find((item) => item.slug === paramSlug);
+
+if (!quiz) {
+  return Astro.redirect('/quizzes');
+}
+
 const tracks = await getCollection('tracks');
 const currentTrack = quiz.data.track
   ? tracks.find((track) => track.slug === quiz.data.track)

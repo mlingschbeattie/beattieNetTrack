@@ -19,6 +19,7 @@ const tracks = defineCollection({
     description: z.string().optional().default('Hands-on lab workspace.'),
     slug: z.string().optional(),
     order: z.number().int().default(0),
+    hidden: z.boolean().optional().default(false),
     level: z.string().optional(),
     icon: z.string().optional(),
     estimatedHours: z.number().int().optional(),
@@ -67,6 +68,7 @@ const labs = defineCollection({
     title: z.string(),
     description: z.string(),
     slug: z.string().optional(),
+    hidden: z.boolean().optional().default(false),
     type: z.literal('lab').optional().default('lab'),
     order: z.number().int().default(0),
     estimatedMinutes: z.preprocess(

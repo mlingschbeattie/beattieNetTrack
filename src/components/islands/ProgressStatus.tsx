@@ -8,6 +8,7 @@ type Status = {
 };
 
 export default function ProgressStatus() {
+  const [isMounted, setIsMounted] = useState(false);
   const [status, setStatus] = useState<Status>({ level: 1, xpTotal: 0, streak: 0 });
 
   useEffect(() => {
@@ -21,9 +22,20 @@ export default function ProgressStatus() {
     };
 
     update();
+    setIsMounted(true);
     window.addEventListener('progress-updated', update);
     return () => window.removeEventListener('progress-updated', update);
   }, []);
+
+  if (!isMounted) {
+    return (
+      <div className="progress-status-skeleton">
+        <div className="progress-status-skeleton__pill" />
+        <div className="progress-status-skeleton__pill" />
+        <div className="progress-status-skeleton__pill" />
+      </div>
+    );
+  }
 
   return (
     <>

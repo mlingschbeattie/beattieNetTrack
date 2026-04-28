@@ -64,11 +64,13 @@ const lessonSlugs = sectionLessonSlugs;
         {module.description && <p class="track-section__subtitle">{module.description}</p>}
         <div class="card-grid">
           {module.activities.map((activity) => (
-            <article class="card card--lesson">
+            <article class={`card card--lesson card--activity-${activity.type ?? 'lesson'}`}>
               <h3>{activity.title}</h3>
               <p>{activity.description}</p>
               <div class="card__meta">
-                <span class="badge">{activity.type === 'lab' ? 'Lab' : activity.type === 'quiz' ? 'Quiz' : 'Lesson'}</span>
+                <span class="badge badge--activity-type">
+                  {activity.type === 'lab' ? '🔬 Lab' : activity.type === 'quiz' ? '🧠 Quiz' : '📖 Lesson'}
+                </span>
               </div>
               <div class="card__footer">
                 <a class="btn-link" href={activity.href}>Open activity →</a>

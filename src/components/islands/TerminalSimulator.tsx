@@ -323,60 +323,87 @@ export default function TerminalSimulator({ labSlug, scenarioSlug }: TerminalSim
     return () => window.removeEventListener('workspace:action', onAction);
   }, [labSlug, state]);
 
+  const lineKind = (line: string): string => {
+    if (line.includes('@lab:') && line.includes('$')) return 'cmd';
+    if (
+      line.includes('command not found') ||
+      line.includes('No such') ||
+      line.includes('cannot access') ||
+      line.includes('missing file argument')
+    ) return 'error';
+    return '';
+  };
+
   return (
-    <div className="terminal-sim" data-testid="terminal-simulator">
-      <div className="terminal-sim__header">
-        <span>{scenario.title}</span>
-        <span className="pill">{checkTerminal().progress}%</span>
+    <div className="terminal-window" data-testid="terminal-simulator">
+      <div className="terminal-titlebar">
+        <div className="terminal-titlebar__dots">
+          <span className="terminal-titlebar__dot terminal-titlebar__dot--red" />
+          <span className="terminal-titlebar__dot terminal-titlebar__dot--yellow" />
+          <span className="terminal-titlebar__dot terminal-titlebar__dot--green" />
+        </div>
+        <span className="terminal-titlebar__label">{scenario.user}@beattie-lab:~</span>
       </div>
-      <div className="terminal-sim__output" ref={outputRef} data-testid="terminal-output">
-        {state.history.map((line, index) => (
-          <div key={`${line}-${index}`} className="terminal-sim__line">
-            {line}
-          </div>
-        ))}
-      </div>
-      <div className="terminal-sim__input-row">
-        <label className="terminal-sim__prompt" htmlFor={`terminal-input-${labSlug}`}>
-          {scenario.user}@lab:{state.cwd}$
-        </label>
-        <input
-          id={`terminal-input-${labSlug}`}
-          className="terminal-sim__input"
-          value={command}
-          onChange={(event) => setCommand(event.target.value)}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') {
+      <div className="terminal-body" ref={outputRef} data-testid="terminal-output">
+        <div className="terminal-output">
+          {state.history.map((line, index) => {
+            const kind = lineKind(line);
+            return (
+              <span
+                key={`${line}-${index}`}
+                className={`terminal-output__line${kind ? ` terminal-output__line--${kind}` : ''}`}
+              >
+                {line || '\u00a0'}
+              </span>
+            );
+          })}
+        </div>
+        <div className="terminal-input-row">
+          <span className="terminal-prompt">{scenario.user}@lab:{state.cwd}$</span>
+          <input
+            id={`terminal-input-${labSlug}`}
+            aria-label="Terminal command input"
+            className="terminal-input"
+            value={command}
+            onChange={(event) => setCommand(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                runCommand(command);
+                setCommand('');
+                historyCursorRef.current = -1;
+              }
+              if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                const prev = historyCursorRef.current;
+                const next = prev < 0 ? state.commandHistory.length - 1 : Math.max(0, prev - 1);
+                historyCursorRef.current = next;
+                setCommand(state.commandHistory[next] ?? '');
+              }
+              if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                const prev = historyCursorRef.current;
+                if (prev < 0) return;
+                const next = Math.min(state.commandHistory.length - 1, prev + 1);
+                historyCursorRef.current = next;
+                setCommand(state.commandHistory[next] ?? '');
+              }
+            }}
+            placeholder="Type a command"
+            data-testid="terminal-input"
+          />
+          <button
+            className="btn-primary"
+            type="button"
+            onClick={() => {
               runCommand(command);
               setCommand('');
               historyCursorRef.current = -1;
-            }
-            if (event.key === 'ArrowUp') {
-              event.preventDefault();
-              const prev = historyCursorRef.current;
-              const next = prev < 0 ? state.commandHistory.length - 1 : Math.max(0, prev - 1);
-              historyCursorRef.current = next;
-              setCommand(state.commandHistory[next] ?? '');
-            }
-            if (event.key === 'ArrowDown') {
-              event.preventDefault();
-              const prev = historyCursorRef.current;
-              if (prev < 0) return;
-              const next = Math.min(state.commandHistory.length - 1, prev + 1);
-              historyCursorRef.current = next;
-              setCommand(state.commandHistory[next] ?? '');
-            }
-          }}
-          placeholder="Type a command"
-          data-testid="terminal-input"
-        />
-        <button className="btn-primary" type="button" onClick={() => {
-          runCommand(command);
-          setCommand('');
-          historyCursorRef.current = -1;
-        }} data-testid="terminal-run">
-          Enter
-        </button>
+            }}
+            data-testid="terminal-run"
+          >
+            Enter
+          </button>
+        </div>
       </div>
     </div>
   );

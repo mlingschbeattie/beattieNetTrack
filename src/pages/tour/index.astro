@@ -22,7 +22,6 @@ const first = steps[0];
           <li><a href={`/tour/${step.slug}`}>{step.data.title}</a></li>
         ))}
       </ol>
-      {first && <a class="btn-link" href={`/tour/${first.slug}`}>Start Tour →</a>}
     </article>
 
     {first && <TourProgressCard client:load tourSlug="hands-on-tour" firstStepSlug={first.slug} />}
