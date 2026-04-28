@@ -11,5 +11,5 @@ services:
       - "4321"
 
 networks:
-  beattie-net:
+  beattie:
     external: true
