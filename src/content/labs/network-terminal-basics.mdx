@@ -45,6 +45,11 @@ steps:
       type: oneOf
       values: ['nslookup beattietech.edu', 'dig +short beattietech.edu']
     successMessage: 'DNS lookup succeeded'
+domains:
+  - domainId: netplus.troubleshooting
+    weight: 0.9
+  - domainId: nocti.networking
+    weight: 0.8
 ---
 
 Use the terminal simulator to practice real network troubleshooting commands.

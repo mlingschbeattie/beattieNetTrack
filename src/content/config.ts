@@ -119,6 +119,10 @@ const labs = defineCollection({
     submitLabel: z.string().optional().default('Submit'),
     hints: z.array(z.string()).default([]),
     checklist: z.array(z.string()).default([]),
+    domains: z
+      .array(z.object({ domainId: z.string(), weight: z.number().min(0).max(1) }))
+      .optional()
+      .default([]),
   }),
 });
 

@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import AppShell from '../../../layouts/AppShell.astro';
+import GradeEntry from '../../../components/GradeEntry.tsx';
+
+const { slug } = Astro.params as { slug: string };
+
+const labs = await getCollection('labs');
+const lab = labs.find((l) => l.slug === slug);
+
+// If lab not found, redirect to lab index
+if (!lab) {
+  return Astro.redirect('/labs');
+}
+
+// Guard: only teachers (Caddy sets Remote-Groups header)
+const remoteGroups = Astro.request.headers.get('Remote-Groups') ?? '';
+const isTeacher = remoteGroups.split(',').map((g) => g.trim()).includes('teachers');
+
+if (!isTeacher) {
+  return Astro.redirect(`/labs/${slug}`);
+}
+
+const tracks = await getCollection('tracks');
+const currentTrack = lab.data.track
+  ? tracks.find((track) => track.slug === lab.data.track)
+  : undefined;
+
+const apiUrl = import.meta.env.PUBLIC_API_URL ?? '';
+---
+
+<AppShell
+  title={`Grade • ${lab.data.title}`}
+  tracks={tracks}
+  activeTrack={currentTrack?.slug}
+  activeLesson={slug}
+  currentTrack={currentTrack}
+  breadcrumbs={[
+    { label: 'Home', href: '/' },
+    { label: 'Labs', href: '/labs' },
+    { label: lab.data.title, href: `/labs/${slug}` },
+    { label: 'Grade' },
+  ]}
+>
+  <section class="hero">
+    <h1 class="hero__title">Grade: {lab.data.title}</h1>
+    <p class="hero__subtitle">Review student submissions and assign scores.</p>
+  </section>
+
+  <GradeEntry
+    client:load
+    labId={slug}
+    labTitle={lab.data.title}
+    apiUrl={apiUrl}
+  />
+</AppShell>

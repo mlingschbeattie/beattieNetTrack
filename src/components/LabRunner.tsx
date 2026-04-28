@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { getLabState, markLabCompleted, saveLabState } from '../lib/progressStore';
+import { startBeaconSession } from '../lib/cis/beacon';
+import type { DomainMapping } from '../types/lab';
 
 type ExactValidator = {
   type: 'exact';
@@ -36,6 +38,8 @@ type LabRunnerProps = {
   steps: readonly LabStep[];
   xpReward: number;
   backToTrackHref?: string;
+  domains?: DomainMapping[];
+  apiUrl?: string;
 };
 
 const validateAnswer = (value: string, validator: StepValidator) => {
@@ -60,6 +64,8 @@ export default function LabRunner({
   steps,
   xpReward,
   backToTrackHref = '/tracks/network-engineer',
+  domains = [],
+  apiUrl = '',
 }: LabRunnerProps) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -79,6 +85,20 @@ export default function LabRunner({
     setCompletedStepIds(state.completedStepIds ?? []);
     setIsCompleted(Boolean(state.completed));
   }, [labSlug, steps.length]);
+
+  // CIS time-beacon: emit active-time pings every 30 s while student is working
+  useEffect(() => {
+    const domainIds = domains.map((d) => d.domainId);
+    if (!apiUrl || domainIds.length === 0) return;
+    const stop = startBeaconSession({
+      domainIds,
+      contentType: 'lab',
+      contentId: labSlug,
+      apiUrl,
+    });
+    return stop;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const currentStep = useMemo(() => {
     if (steps.length === 0) return null;
@@ -131,6 +151,25 @@ export default function LabRunner({
       });
       markLabCompleted(labSlug, xpReward);
       window.dispatchEvent(new CustomEvent('progress-updated'));
+      // CIS lab-completion event (fire-and-forget; beacon loss is acceptable)
+      if (apiUrl) {
+        fetch(`${apiUrl}/api/events`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'lms.lab_completed',
+            payload: {
+              labId: labSlug,
+              domains,
+              contentType: 'lab',
+              contentId: labSlug,
+              score: null,
+              maxScore: 100,
+            },
+          }),
+        }).catch(() => {});
+      }
       return;
     }
 

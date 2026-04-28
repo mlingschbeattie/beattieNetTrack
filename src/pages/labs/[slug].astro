@@ -9,6 +9,7 @@ import Callout from '../../components/Callout.astro';
 import PcAssemblyLab from '../../components/labs/PcAssemblyLab.tsx';
 import ActivityCard from '../../components/ActivityCard.astro';
 import LabRunner from '../../components/LabRunner.tsx';
+import BeaconEmitter from '../../components/BeaconEmitter.tsx';
 import { getActivityModuleNavigation } from '../../lib/content';
 
 export async function getStaticPaths() {
@@ -23,6 +24,7 @@ const tracks = await getCollection('tracks');
 const { Content } = await lab.render();
 const currentTrack = lab.data.track ? tracks.find((track) => track.slug === lab.data.track) : undefined;
 const activityNavigation = await getActivityModuleNavigation({ type: 'lab', slug: lab.slug });
+const apiUrl = import.meta.env.PUBLIC_API_URL ?? '';
 
 type LabStep = {
   id: string;
@@ -113,6 +115,8 @@ if (currentTrack) {
           steps={resolvedSteps}
           xpReward={xpReward}
           backToTrackHref={currentTrack ? `/tracks/${currentTrack.slug}` : '/tracks/network-engineer'}
+          domains={lab.data.domains ?? []}
+          apiUrl={apiUrl}
         />
       </Card>
     </Section>
@@ -157,6 +161,12 @@ if (currentTrack) {
       ) : (
         <LabFrame slug={lab.slug} src={lab.data.labPath} title={lab.data.title} />
       )}
+      <BeaconEmitter
+        client:only="react"
+        domainIds={(lab.data.domains ?? []).map((d) => d.domainId)}
+        contentId={lab.slug}
+        apiUrl={apiUrl}
+      />
     </Fragment>
 
     <Fragment slot="activity-secondary">

@@ -6,7 +6,7 @@ services:
     environment:
       - PUBLIC_API_URL=https://api.beattietech.local
     networks:
-      - beattie-net
+      - beattie
     expose:
       - "4321"
 

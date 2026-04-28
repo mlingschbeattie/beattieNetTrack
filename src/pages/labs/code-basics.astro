@@ -4,6 +4,7 @@ import WorkspaceLayout from '../../layouts/WorkspaceLayout.astro';
 import InstructionSteps from '../../components/workspace/InstructionSteps.astro';
 import CodeRunner from '../../components/islands/CodeRunner.tsx';
 import ActivityCard from '../../components/ActivityCard.astro';
+import BeaconEmitter from '../../components/BeaconEmitter.tsx';
 import { codeExercises } from '../../lib/codeExercises';
 
 const tracks = await getCollection('tracks');
@@ -54,6 +55,12 @@ const exercise = codeExercises['code-basics'];
 
   <Fragment slot="activity-main">
     <CodeRunner client:only="react" labSlug="code-basics" exerciseSlug="code-basics" />
+    <BeaconEmitter
+      client:only="react"
+      domainIds={['aplus2.os']}
+      contentId="code-basics"
+      apiUrl={import.meta.env.PUBLIC_API_URL ?? ''}
+    />
   </Fragment>
 
   <Fragment slot="activity-secondary">
