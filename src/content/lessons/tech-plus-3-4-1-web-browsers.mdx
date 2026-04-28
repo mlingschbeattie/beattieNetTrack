@@ -1,0 +1,97 @@
+---
+title: Web Browsers
+description: Understand how web browsers work, browser components, privacy settings, extensions, and cross-browser compatibility. FC0-U71 objective 3.4.
+slug: tech-plus-3-4-1-web-browsers
+track: tech-plus
+moduleId: tech-plus.applications
+order: 8
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 3.4", "browsers", "Chrome", "Edge", "Firefox", "privacy", "extensions"]
+---
+
+## Web Browsers
+
+The web browser is the most-used application on most computing devices. It is both the gateway to internet resources and a frequent target for attacks. Understanding how browsers work and how to configure them is essential for technicians and security-aware users.
+
+### Major Browsers
+
+| Browser | Developer | Engine | Notes |
+|---|---|---|---|
+| **Google Chrome** | Google | Blink / V8 | Highest market share; heavy RAM usage |
+| **Microsoft Edge** | Microsoft | Blink (Chromium-based) | Windows default since 2020; built-in PDF reader |
+| **Mozilla Firefox** | Mozilla (non-profit) | Gecko | Open source; strong privacy focus |
+| **Safari** | Apple | WebKit | macOS/iOS default; energy-efficient on Apple hardware |
+| **Opera** | Opera Software | Blink (Chromium-based) | Built-in VPN, ad blocker |
+
+### How a Browser Works
+
+1. User enters a URL or clicks a link
+2. Browser performs **DNS resolution** — domain → IP address
+3. Browser opens a **TCP connection** (port 80 for HTTP, port 443 for HTTPS)
+4. **TLS handshake** for HTTPS — verifies certificate, establishes encrypted session
+5. Browser sends an **HTTP GET request**
+6. Server responds with HTML, CSS, JavaScript files
+7. Browser **renders** the page — parses HTML, applies CSS, executes JavaScript
+
+### Browser Components
+
+- **Address bar (Omnibox)** — URL entry + search; shows security padlock for HTTPS
+- **Tabs** — each tab is generally an isolated process (Chrome's multi-process model)
+- **Bookmarks / Favorites** — saved URLs for quick access
+- **History** — record of visited pages (stored locally unless in private mode)
+- **Cookies** — small data files websites store on your device (sessions, preferences, tracking)
+- **Cache** — locally stored copies of web resources (speeds up repeat visits)
+- **Extensions / Add-ons** — third-party plugins that extend browser functionality
+
+### Privacy and Security Settings
+
+**Cookies:**
+- **First-party cookies** — set by the site you're visiting; needed for logins and preferences
+- **Third-party cookies** — set by advertisers on the page; used for cross-site tracking
+- Most browsers now block or phase out third-party cookies
+
+**Private / Incognito Mode:**
+- Does NOT save local history, cookies, or form data after the session ends
+- Does NOT hide your activity from your ISP, employer network, or the websites you visit
+- Useful for: logging into multiple accounts, shared computers, gift purchases
+
+**Browser Extensions — Security Risk:**
+- Extensions have broad access to page content and browsing data
+- Audit extensions regularly; remove any you don't recognize or use
+- Only install from official browser stores; verify publisher
+
+**Do Not Track (DNT):**
+- A header the browser sends asking sites not to track you
+- Compliance is voluntary — most sites ignore it
+
+### Browser Developer Tools (F12)
+
+Built-in developer tools provide:
+- **Inspector** — view and edit HTML/CSS live
+- **Console** — run JavaScript; view errors
+- **Network tab** — see every HTTP request/response; useful for troubleshooting
+- **Storage** — view cookies, localStorage, sessionStorage
+
+### Troubleshooting Common Browser Issues
+
+| Problem | Solution |
+|---|---|
+| Page not loading | Check network; clear cache (Ctrl+Shift+Delete) |
+| SSL certificate error | Do not proceed; check date/time settings; report to admin |
+| Slow performance | Disable extensions; clear cache; check RAM usage |
+| Saved passwords lost | Check sync settings; check if private mode was used |
+| Pop-ups / redirects | Scan for adware; check extension list; reset browser settings |
+
+### OWASP Connection
+
+**Injection / XSS** (OWASP #3) — malicious JavaScript injected into web pages executes in the victim's browser. **Cryptographic Failures** (OWASP #2) — accessing sites over HTTP instead of HTTPS exposes transmitted data to interception.
+
+### Key Exam Points
+
+- Chrome and Edge both use the **Blink** rendering engine (Chromium-based)
+- Firefox uses **Gecko**; Safari uses **WebKit**
+- **Private mode** hides local history — it does NOT anonymize network-level traffic
+- Third-party cookies enable cross-site tracking; most browsers are phasing them out
+- Browser extensions have broad access — keep only what you need and trust
+- **F12** opens developer tools; Network tab shows all HTTP requests

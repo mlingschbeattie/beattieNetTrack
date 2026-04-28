@@ -1,0 +1,115 @@
+---
+title: Troubleshooting Methodology
+description: Apply the CompTIA six-step troubleshooting methodology to diagnose and resolve IT issues systematically. FC0-U71 objective 1.4.
+slug: tech-plus-1-4-1-troubleshooting-methodology
+track: tech-plus
+moduleId: tech-plus.it-concepts
+order: 8
+objective: "FC0-U71 1.4"
+xp: 15
+source: cyber-org
+difficulty: Beginner
+estMinutes: 25
+tags: ["tech+", "FC0-U71 1.4", "troubleshooting", "methodology", "help desk", "problem solving"]
+---
+
+## Troubleshooting Methodology
+
+Effective troubleshooting is not guessing — it is a systematic process. CompTIA's **six-step troubleshooting methodology** provides a repeatable framework for diagnosing and resolving hardware, software, and network problems. Every CompTIA certification (A+, Network+, Security+, Tech+) tests this methodology.
+
+### The Six Steps
+
+#### Step 1: Identify the Problem
+
+Goal: gather enough information to define the problem accurately.
+
+- **Ask questions:** What exactly is happening? When did it start? Has anything changed recently (new hardware, software update, moved equipment)?
+- **Reproduce the problem:** Can you make it happen again? Intermittent problems are harder to diagnose.
+- **Review documentation** and logs: event viewer, error messages, system logs
+- **Identify symptoms vs. causes:** A blue screen is a symptom; the cause might be a failing RAM module or buggy driver.
+- **Notify affected users** of your investigation — don't begin major changes silently.
+
+#### Step 2: Establish a Theory of Probable Cause
+
+Goal: form a hypothesis about what is most likely causing the problem.
+
+- Start with the **simplest, most common** explanation first (Occam's razor)
+- Consider recent changes — most problems follow a change event
+- Question the obvious: Is it plugged in? Is the cable seated properly? Is the service running?
+- If one theory doesn't hold, move to the next
+- Draw on knowledge base, documentation, manufacturer's troubleshooting guides
+
+#### Step 3: Test the Theory to Determine the Cause
+
+Goal: confirm or disprove your hypothesis before making changes.
+
+- Test in a controlled way — change one thing at a time
+- If the theory is **confirmed**: proceed to establish a plan of action
+- If the theory is **not confirmed**: go back to Step 2 and form a new theory
+- If you cannot determine the cause, **escalate** to someone with more expertise
+
+#### Step 4: Establish a Plan of Action to Resolve the Problem and Identify Potential Effects
+
+Goal: design a solution and think through its consequences before implementing.
+
+- What is the fix?
+- Will the fix cause downtime? Affect other users or systems?
+- Do you need to back up data before proceeding?
+- Schedule the change during a maintenance window if possible
+- Get **approval** if required (change control process in enterprise environments)
+- Prepare rollback plan in case the fix makes things worse
+
+#### Step 5: Implement the Solution or Escalate as Necessary
+
+Goal: execute the plan.
+
+- Apply the fix methodically
+- Make changes one at a time when possible
+- **Escalate** if the solution is beyond your scope, access level, or expertise
+- Document every action taken — even failed attempts
+
+#### Step 6: Verify Full System Functionality and (if Applicable) Implement Preventive Measures
+
+Goal: confirm the problem is resolved and prevent recurrence.
+
+- **Verify** the original problem is gone
+- Test that related systems are still working (your fix didn't break something else)
+- **Implement preventive measures:** Apply patches, update firmware, add monitoring, create documentation
+- **Communicate** resolution to affected users
+- **Document the entire process** — what the problem was, what caused it, what fixed it, how long it took
+
+### Memory Aid: I-E-T-P-I-V
+
+**I**dentify → **E**stablish theory → **T**est → **P**lan → **I**mplement → **V**erify
+
+### Applying the Methodology — Example
+
+**Scenario:** A user reports their laptop won't connect to Wi-Fi.
+
+| Step | Action |
+|---|---|
+| 1. Identify | Ask: When did it stop? Any updates last night? Is just the Wi-Fi off, or all networking? Can other devices connect to the same network? |
+| 2. Theory | Most common cause: Wi-Fi has been accidentally disabled (hardware switch or airplane mode) |
+| 3. Test | Check Wi-Fi icon — airplane mode is on. Theory confirmed. |
+| 4. Plan | Turn off airplane mode or toggle the hardware Wi-Fi switch. No risk. |
+| 5. Implement | Disable airplane mode. |
+| 6. Verify | Laptop connects to Wi-Fi. Confirm pages load. No other issues introduced. |
+
+### Escalation
+
+When to escalate:
+- The problem is beyond your skill level or access
+- You've exhausted your theories and the problem persists
+- The fix requires elevated permissions
+- The issue affects critical business systems and you're not authorized to decide
+
+Escalation is not failure — it is part of the methodology. Document what you've tried before escalating.
+
+### Key Exam Points
+
+- Six steps: **Identify → Establish theory → Test → Plan → Implement → Verify**
+- Start with the **simplest, most common** cause (don't assume complex causes first)
+- **Change one thing at a time** when testing — otherwise you can't tell what fixed it
+- Always **verify** after fixing — confirm the original issue is gone and nothing else broke
+- **Document** everything throughout the process — for tickets, knowledge base, future reference
+- **Escalate** when the problem is beyond your scope — document what you've tried first

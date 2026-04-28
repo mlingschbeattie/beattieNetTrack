@@ -1,0 +1,130 @@
+---
+title: Data Backups
+description: Understand backup types, the 3-2-1 backup rule, recovery objectives (RTO/RPO), and best practices for protecting data against loss. FC0-U71 objective 5.4.
+slug: tech-plus-5-4-1-data-backups
+track: tech-plus
+moduleId: tech-plus.databases
+order: 5
+objective: "FC0-U71 5.4"
+xp: 15
+source: cyber-org
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 5.4", "backups", "3-2-1 rule", "RTO", "RPO", "disaster recovery"]
+---
+
+## Data Backups
+
+A backup is a copy of data that can be used to restore the original after data loss. Data loss happens — hardware fails, ransomware encrypts files, users accidentally delete records, natural disasters destroy equipment. A robust backup strategy is fundamental to IT operations.
+
+### Why Backups Fail (and How to Prevent It)
+
+Common reasons backup strategies fail:
+- Backups exist but have never been tested — restores fail when needed
+- Only one backup copy — storage failure destroys both original and backup
+- All backups stored in the same location — fire, flood, or theft wipes everything
+- Backup retention too short — data needed for a restore predates the oldest backup
+- Backup software fails silently — jobs appear successful but data is corrupt
+
+The solution is a **comprehensive, tested backup strategy**.
+
+### Backup Types
+
+**Full Backup**
+- Copies **all selected data** every time
+- Simplest to restore — everything in one backup set
+- Slowest to create; uses the most storage
+- Typically performed weekly or monthly as a baseline
+
+**Incremental Backup**
+- Copies only **data that has changed since the last backup** (full or incremental)
+- Fastest to create; uses least storage per backup
+- Slowest to restore — requires the last full backup + every incremental backup since
+- Example: Full on Sunday → Incremental Monday → Incremental Tuesday → etc.
+
+**Differential Backup**
+- Copies all data **changed since the last full backup**
+- Grows each day until the next full backup
+- Faster to restore than incremental (only need: last full + last differential)
+- Storage use: between full and incremental
+
+| Type | Backup speed | Restore speed | Storage | Uses |
+|---|---|---|---|---|
+| Full | Slowest | Fastest | Most | Baseline; weekly |
+| Incremental | Fastest | Slowest | Least | Daily between fulls |
+| Differential | Medium | Medium | Medium | When recovery speed matters more than storage |
+
+### The 3-2-1 Backup Rule
+
+The industry standard rule for backup architecture:
+
+- **3** copies of data (original + 2 backups)
+- **2** different storage media (e.g., local disk + NAS + tape)
+- **1** copy off-site (physical location or cloud)
+
+This ensures:
+- Local failure (drive crash) → restore from local backup
+- Site disaster (fire, flood, theft) → restore from off-site copy
+- Multiple media types protect against media-specific failure
+
+**Cloud backup** satisfies the off-site requirement cost-effectively for most organizations:
+- Services: Backblaze, Azure Backup, AWS S3 + Glacier, Google Cloud Storage
+- Immutable cloud backup (write-once, cannot be deleted or encrypted by ransomware) is a best practice
+
+### Recovery Objectives
+
+**RTO — Recovery Time Objective**
+How long can the organization tolerate systems being down?
+- "We must restore service within 4 hours"
+- Drives backup/restore technology choices — tape has high RTO; hot standby server has near-zero RTO
+
+**RPO — Recovery Point Objective**
+How much data loss is acceptable?
+- "We can tolerate losing up to 1 hour of data"
+- Drives backup frequency — if RPO = 1 hour, backups must run at least hourly
+
+| RPO | Backup frequency needed |
+|---|---|
+| 24 hours | Daily backups sufficient |
+| 1 hour | Hourly incremental or continuous replication |
+| Near zero | Real-time replication / database transaction log backup |
+
+### Backup Storage Media
+
+| Media | Notes |
+|---|---|
+| **Local disk (internal/external HDD/SSD)** | Fast; convenient; at risk from fire/theft if on-site |
+| **NAS (Network-Attached Storage)** | On-site; accessible over network; good for LAN backups |
+| **Tape** | Slow; durable; inexpensive per GB; common for archives and large-scale off-site |
+| **Cloud** | Off-site by default; scalable; ongoing cost; internet-dependent for restores |
+| **Optical (Blu-ray)** | Long lifespan; read-only after writing; niche use for archival |
+
+### Ransomware and Backup Immutability
+
+Ransomware encrypts all files it can access — including network-connected backup drives. Modern backup defense:
+
+- **Isolated backups** — not accessible over the same network as production systems
+- **Immutable backups** — write-once; cannot be modified or deleted by ransomware (cloud or tape)
+- **3-2-1-1-0 rule extension:** 3 copies, 2 media, 1 off-site, **1 offline/immutable**, **0 errors** (verified restore)
+
+### Backup Testing
+
+A backup that has never been restored is an untested promise. Requirements:
+- Perform **test restores** regularly — quarterly at minimum
+- Verify data integrity of restored files
+- Document restore time as part of RTO verification
+- Automate backup verification where possible
+
+### OWASP Connection
+
+**Software and Data Integrity Failures** (OWASP #8) — loss of backup integrity (unverified, corrupt, or ransomware-encrypted backups) is a catastrophic integrity failure. Regular restoration testing is the only way to verify backup integrity.
+
+### Key Exam Points
+
+- **Full** backup: all data, slowest, simplest restore
+- **Incremental**: changes since last backup (any type); fastest to create, slowest to restore
+- **Differential**: changes since last full; medium speed both ways
+- **3-2-1 rule**: 3 copies, 2 media types, 1 off-site — essential for any tested environment
+- **RTO** = maximum acceptable downtime; **RPO** = maximum acceptable data loss (time)
+- Ransomware threat requires **offline/immutable backups** — connected backup drives can be encrypted
+- Never assume backups work — **test restores** regularly are the only proof

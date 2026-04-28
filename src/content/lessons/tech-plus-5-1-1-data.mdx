@@ -1,0 +1,106 @@
+---
+title: Data
+description: Understand what data is — types, lifecycle, the difference between data and information, and how data quality affects decision-making. FC0-U71 objective 5.1.
+slug: tech-plus-5-1-1-data
+track: tech-plus
+moduleId: tech-plus.databases
+order: 1
+objective: "FC0-U71 5.1"
+xp: 15
+source: cyber-org
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 5.1", "data", "structured data", "unstructured data", "metadata", "data quality"]
+---
+
+## Data
+
+**Data** is the raw material of computing and the foundation of modern business. Understanding what data is, how it's categorized, and how it turns into useful information is essential for every IT role.
+
+### Data vs. Information vs. Knowledge
+
+| Term | Definition | Example |
+|---|---|---|
+| **Data** | Raw, unprocessed facts | `87`, `2026-03-20`, `alice@example.com` |
+| **Information** | Data processed into meaningful context | "Alice scored 87% on the March 20 quiz" |
+| **Knowledge** | Information applied with understanding | "Alice is performing above average and ready for the next module" |
+
+Computers store and process **data**. Humans (and AI) interpret data to create **information**, then apply **knowledge** to make decisions.
+
+### Types of Data
+
+**Quantitative Data** — measured numerically
+- Counted or calculated; can be operated on mathematically
+- Examples: temperature (72°F), test score (87), download speed (150 Mbps), quantity ordered (5)
+
+**Qualitative Data** — descriptive, categorical
+- Not inherently numerical; describes quality or characteristics
+- Examples: color, product name, user feedback text, job title
+
+**Structured Data** — organized into a predefined format:
+- Rows and columns; easy to store in a relational database
+- Examples: spreadsheets, database tables, CSV files
+- Most analysis tools work natively with structured data
+
+**Unstructured Data** — no predefined format:
+- The majority of data in the world (~80%)
+- Examples: emails, social media posts, images, videos, audio, Word documents, PDFs
+- Requires AI/ML tools or significant processing to analyze
+
+**Semi-structured Data** — partial structure:
+- Has tags or markers but not rigid row/column format
+- Examples: JSON, XML, HTML, email headers
+
+### Data Lifecycle
+
+Data doesn't last forever. The **data lifecycle** describes stages data passes through:
+
+1. **Creation / Collection** — data is generated (form submission, sensor reading, transaction)
+2. **Storage** — data is saved to a database, file system, or cloud
+3. **Processing** — data is transformed, cleaned, or aggregated
+4. **Analysis** — data is queried or visualized to extract information
+5. **Archiving** — infrequently accessed data moved to longer-term, cheaper storage
+6. **Destruction / Deletion** — data is securely removed when no longer needed or required
+
+### Metadata
+
+**Metadata** is data about data — it describes the content without being the content itself.
+
+| Data | Metadata |
+|---|---|
+| A photo | File size, resolution, date taken, GPS coordinates, camera model |
+| An email | Sender, recipient, timestamp, subject, mail server path |
+| A database record | Creation date, last modified, owner, table name |
+
+Metadata is often more sensitive than the data itself — email metadata reveals communication patterns even when the content is encrypted.
+
+### Data Quality
+
+Bad data leads to bad decisions. Data quality dimensions:
+
+| Dimension | Description |
+|---|---|
+| **Accuracy** | Does it correctly represent reality? |
+| **Completeness** | Are all required fields present? |
+| **Consistency** | Is the same data the same across systems? |
+| **Timeliness** | Is it current, or stale? |
+| **Validity** | Does it conform to expected format and range? |
+| **Uniqueness** | Are there duplicates? |
+
+**"Garbage in, garbage out" (GIGO)** — systems are only as reliable as the quality of their input data.
+
+### Data Privacy and Compliance
+
+- **PII (Personally Identifiable Information)** — data that can identify an individual: name, SSN, email, address, biometrics
+- **PHI (Protected Health Information)** — medical/health data (HIPAA in the US)
+- **GDPR, HIPAA, FERPA** — laws governing how data must be collected, stored, and deleted
+- Students' school records are protected under **FERPA** — a fact relevant to every educational environment
+
+### Key Exam Points
+
+- **Data** = raw facts; **Information** = processed data with context; **Knowledge** = information applied
+- **Structured** data fits rows/columns (databases, spreadsheets); **unstructured** data (images, text) does not
+- **Metadata** = data about data — often as sensitive as the data itself
+- **PII** = personally identifiable information — must be handled with appropriate security and legal compliance
+- **GIGO** — data quality determines output quality; systems are only as good as their input data
+- Data lifecycle: Create → Store → Process → Analyze → Archive → Destroy

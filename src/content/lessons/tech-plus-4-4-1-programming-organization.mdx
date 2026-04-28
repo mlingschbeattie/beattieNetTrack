@@ -1,0 +1,149 @@
+---
+title: Programming Organization
+description: Understand how programs are structured — modules, libraries, version control, pseudocode, flowcharts, and the software development lifecycle. FC0-U71 objective 4.4.
+slug: tech-plus-4-4-1-programming-organization
+track: tech-plus
+moduleId: tech-plus.software-dev
+order: 7
+objective: "FC0-U71 4.4"
+xp: 15
+source: cyber-org
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 4.4", "programming organization", "modules", "version control", "SDLC", "pseudocode"]
+---
+
+## Programming Organization
+
+Professional software is not a single file with thousands of lines of code. It is organized into logical units — modules, packages, libraries — and managed through structured processes for development, collaboration, and deployment. Understanding these concepts helps IT professionals communicate with developers and support software teams.
+
+### Code Organization Units
+
+**Statement** — a single instruction in the program:
+```python
+total = price * quantity
+```
+
+**Block** — a group of statements treated as a unit (usually indented):
+```python
+if total > 1000:
+    discount = total * 0.10
+    total = total - discount
+```
+
+**Function / Method** — a reusable named block (covered in the Functions lesson)
+
+**Module** — a single file of code that groups related functions/classes. You import a module to use its contents:
+```python
+import math
+result = math.sqrt(144)   # 12.0
+```
+
+**Package** — a directory of related modules. Example: `datetime`, `os`, `json` are Python standard library packages.
+
+**Library** — a collection of pre-written code (often many packages) that solves a specific problem domain:
+- `NumPy` — scientific computing in Python
+- `React` — user interface development in JavaScript
+- `Spring` — enterprise web application framework for Java
+- `OpenSSL` — cryptography library used by many applications
+
+### Comments and Documentation
+
+Comments explain what code does and why — they are ignored by the compiler/interpreter:
+
+```python
+# This is a single-line comment
+
+"""
+This is a multi-line comment (docstring).
+Used to document functions, classes, modules.
+"""
+
+def calculate_tax(price, rate=0.08):
+    """
+    Calculate tax on a price.
+    Returns: price * rate as a float.
+    """
+    return price * rate
+```
+
+Good comments explain **why** code does something unusual, not just **what** it does (the code itself shows what).
+
+### Pseudocode
+
+**Pseudocode** is an informal, plain-language description of an algorithm — not valid code in any language, but structured enough to convert to code. It's used for planning and communicating logic.
+
+```
+BEGIN
+  PROMPT user for username and password
+  IF username AND password match database record
+    GRANT access
+    LOG successful login with timestamp
+  ELSE
+    INCREMENT failed_attempts counter
+    IF failed_attempts > 3
+      LOCK account
+    END IF
+    DISPLAY "Invalid credentials"
+  END IF
+END
+```
+
+### Flowcharts
+
+Visual diagrams that represent program flow using standardized symbols:
+
+| Symbol | Shape | Meaning |
+|---|---|---|
+| **Oval** | Rounded rectangle | Start / End (Terminator) |
+| **Rectangle** | Square-ish box | Process / Action step |
+| **Diamond** | ◇ | Decision (yes/no, true/false) |
+| **Parallelogram** | Slanted rectangle | Input / Output |
+| **Arrow** | → | Flow of execution |
+
+Flowcharts are useful for: planning logic before coding, documenting existing processes, explaining flow to non-programmers.
+
+### Version Control (Git)
+
+**Version control** tracks every change made to code files over time, enabling collaboration, rollback, and history.
+
+**Git** is the dominant version control system. Key concepts:
+
+| Concept | Meaning |
+|---|---|
+| **Repository (repo)** | A project's tracked folder containing code + change history |
+| **Commit** | A saved snapshot of changes with a descriptive message |
+| **Branch** | A parallel line of development (feature branch, bugfix branch) |
+| **Merge** | Combining one branch's changes into another |
+| **Clone** | Downloading a copy of a remote repository |
+| **Pull** | Fetch and merge remote changes to your local copy |
+| **Push** | Upload your local commits to a remote repository |
+
+**GitHub**, **GitLab**, and **Bitbucket** are cloud hosting services for Git repositories.
+
+### Software Development Lifecycle (SDLC)
+
+A structured process for building software:
+
+| Phase | Description |
+|---|---|
+| **Planning** | Define scope, resources, timeline, feasibility |
+| **Requirements** | Gather and document what the software must do |
+| **Design** | Architecture, data models, UI wireframes |
+| **Development** | Writing code |
+| **Testing** | QA, unit tests, integration tests, user acceptance testing |
+| **Deployment** | Release to production |
+| **Maintenance** | Bug fixes, updates, enhancements |
+
+Common SDLC models:
+- **Waterfall** — sequential phases; each phase completes before the next begins
+- **Agile** — iterative sprints (2-week cycles); working software delivered frequently
+
+### Key Exam Points
+
+- **Module** = single code file; **package** = directory of related modules; **library** = collection of packages/modules solving a domain
+- Comments explain **why**; pseudocode plans logic in plain language
+- **Flowchart symbols:** oval = start/end, diamond = decision, rectangle = process
+- **Git** tracks code changes; commit = saved snapshot; branch = parallel work; merge = combine branches
+- **SDLC phases:** Planning → Requirements → Design → Development → Testing → Deployment → Maintenance
+- **Agile** = iterative sprints; **Waterfall** = sequential phases

@@ -1,0 +1,118 @@
+---
+title: Hexadecimal
+description: Understand the hexadecimal number system — digits, conversions to/from decimal and binary, and real-world uses in IT. FC0-U71 objective 1.2.
+slug: tech-plus-1-2-2-hexadecimal
+track: tech-plus
+moduleId: tech-plus.it-concepts
+order: 3
+objective: "FC0-U71 1.2"
+xp: 15
+source: cyber-org
+difficulty: Beginner
+estMinutes: 25
+tags: ["tech+", "FC0-U71 1.2", "hexadecimal", "number systems", "binary", "MAC address"]
+---
+
+## Hexadecimal
+
+**Hexadecimal (hex)** is a base-16 number system. It uses 16 symbols: the digits 0–9 plus the letters A–F. Hex is widely used in computing because it provides a compact, human-readable representation of binary data — four binary digits map perfectly to one hex digit.
+
+### Hexadecimal Digits
+
+| Hex | Decimal | Binary (4-bit) |
+|---|---|---|
+| 0 | 0 | 0000 |
+| 1 | 1 | 0001 |
+| 2 | 2 | 0010 |
+| 3 | 3 | 0011 |
+| 4 | 4 | 0100 |
+| 5 | 5 | 0101 |
+| 6 | 6 | 0110 |
+| 7 | 7 | 0111 |
+| 8 | 8 | 1000 |
+| 9 | 9 | 1001 |
+| A | 10 | 1010 |
+| B | 11 | 1011 |
+| C | 12 | 1100 |
+| D | 13 | 1101 |
+| E | 14 | 1110 |
+| F | 15 | 1111 |
+
+Hex values are often prefixed with `0x` (e.g., `0xFF`) or `#` (e.g., `#FF0000` for web colors) to identify them as hexadecimal.
+
+### Hex → Decimal
+
+Each hex position represents a power of 16:
+
+| 16³ | 16² | 16¹ | 16⁰ |
+|---|---|---|---|
+| 4096 | 256 | 16 | 1 |
+
+**Example: 0x2A**
+- 2 × 16 + A(10) × 1 = 32 + 10 = **42**
+
+**Example: 0xFF**
+- F(15) × 16 + F(15) × 1 = 240 + 15 = **255**
+
+**Example: 0x1B4**
+- 1 × 256 + B(11) × 16 + 4 × 1 = 256 + 176 + 4 = **436**
+
+### Decimal → Hex
+
+Divide repeatedly by 16; record remainders (convert values 10–15 to A–F); read bottom-to-top.
+
+**Convert 254 to hex:**
+- 254 ÷ 16 = 15 remainder **14 → E**
+- 15 ÷ 16 = 0 remainder **15 → F**
+
+Result: **0xFE**
+
+Verify: (15 × 16) + 14 = 240 + 14 = 254 ✓
+
+### Binary ↔ Hex (The Key Power of Hex)
+
+Every group of **4 binary bits** maps to exactly one hex digit. This makes conversion between binary and hex trivial — no arithmetic required.
+
+**Binary → Hex: Group bits in sets of 4 from the right**
+
+`10111101` → `1011 | 1101` → `B | D` → **0xBD**
+
+**Verify:** 11 × 16 + 13 = 176 + 13 = 189 ✓
+
+**Hex → Binary: Expand each hex digit to 4 bits**
+
+`0xA3` → `A=1010`, `3=0011` → **10100011**
+
+### Real-World Uses of Hex
+
+**MAC Addresses**
+- 48-bit hardware address assigned to network adapters
+- Written as 6 hex pairs: `00:1A:2B:3C:4D:5E`
+- First 3 pairs = OUI (manufacturer identifier)
+
+**IPv6 Addresses**
+- 128-bit address written as 8 groups of 4 hex digits
+- `2001:0db8:85a3:0000:0000:8a2e:0370:7334`
+
+**Web Colors (CSS/HTML)**
+- `#RRGGBB` format: each color channel 0–255 expressed in 2 hex digits
+- `#FF0000` = red (R=255, G=0, B=0)
+- `#00FF00` = green, `#0000FF` = blue, `#FFFFFF` = white, `#000000` = black
+
+**Memory Addresses**
+- Memory locations written in hex: `0x7FFF5FBFF8E8`
+- Processor registers, pointers, and offsets all use hex
+
+**Checksums and Hash Values**
+- MD5: 32 hex characters — `5d41402abc4b2a76b9719d911017c592`
+- SHA-256: 64 hex characters
+- File integrity verification, password storage (hashed)
+
+### Key Exam Points
+
+- Hex is base-16: digits 0–9 then A–F (A=10, B=11, C=12, D=13, E=14, F=15)
+- **1 hex digit = 4 bits = 1 nibble**
+- **2 hex digits = 8 bits = 1 byte**
+- `0xFF` = 255 decimal (maximum value of one byte)
+- MAC addresses use hex (6 pairs): `00:1A:2B:3C:4D:5E`
+- Web colors use hex `#RRGGBB`; `#FF0000` = red

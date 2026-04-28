@@ -1,0 +1,123 @@
+---
+title: Binary
+description: Understand the binary number system — counting, place values, converting between binary and decimal, and why computers use binary. FC0-U71 objective 1.2.
+slug: tech-plus-1-2-1-binary
+track: tech-plus
+moduleId: tech-plus.it-concepts
+order: 2
+objective: "FC0-U71 1.2"
+xp: 15
+source: cyber-org
+difficulty: Beginner
+estMinutes: 25
+tags: ["tech+", "FC0-U71 1.2", "binary", "number systems", "decimal", "conversion"]
+---
+
+## Binary
+
+Computers store and process all data as **binary** — a base-2 number system using only the digits **0** and **1**. Understanding binary is foundational for IT: it underlies IP addressing, storage calculations, permissions, and encryption.
+
+### Why Binary?
+
+Electronic circuits have two reliable states:
+- **Off** (no voltage) = **0**
+- **On** (has voltage) = **1**
+
+Using just two states makes hardware simple, fast, and resistant to electrical noise. All data — text, images, video, programs — is ultimately stored as sequences of 0s and 1s.
+
+### The Decimal System (Base-10) Review
+
+Decimal uses **10 digits** (0–9). Each position represents a power of 10:
+
+| Position | 10³ | 10² | 10¹ | 10⁰ |
+|---|---|---|---|---|
+| Place value | 1000 | 100 | 10 | 1 |
+
+Example: 4,352 = (4 × 1000) + (3 × 100) + (5 × 10) + (2 × 1)
+
+### Binary Place Values (Base-2)
+
+Each binary position represents a power of 2:
+
+| Position | 2⁷ | 2⁶ | 2⁵ | 2⁴ | 2³ | 2² | 2¹ | 2⁰ |
+|---|---|---|---|---|---|---|---|---|
+| Place value | 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 |
+
+### Binary → Decimal Conversion
+
+Add up the place values for every position that has a **1**:
+
+**Example: 10110101**
+
+| 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 |
+|---|---|---|---|---|---|---|---|
+| 1 | 0 | 1 | 1 | 0 | 1 | 0 | 1 |
+
+Result: 128 + 32 + 16 + 4 + 1 = **181**
+
+**Example: 11001010**
+
+128 + 64 + 0 + 0 + 8 + 0 + 2 + 0 = **202**
+
+### Decimal → Binary Conversion
+
+**Divide by 2 method:** Repeatedly divide by 2, record remainders, read bottom-to-top.
+
+Convert **45** to binary:
+- 45 ÷ 2 = 22 remainder **1**
+- 22 ÷ 2 = 11 remainder **0**
+- 11 ÷ 2 = 5 remainder **1**
+- 5 ÷ 2 = 2 remainder **1**
+- 2 ÷ 2 = 1 remainder **0**
+- 1 ÷ 2 = 0 remainder **1**
+
+Reading remainders bottom-to-top: **101101**
+
+Verify: 32 + 8 + 4 + 1 = 45 ✓
+
+### Bits, Nibbles, Bytes
+
+| Term | Size | Notes |
+|---|---|---|
+| **Bit** | 1 binary digit | Smallest unit of data |
+| **Nibble** | 4 bits | Half a byte; one hex digit |
+| **Byte** | 8 bits | Fundamental unit of storage |
+
+A byte can represent 2⁸ = **256** unique values (0–255).
+
+### Quick Reference: Binary Counting 0–15
+
+| Decimal | Binary |
+|---|---|
+| 0 | 0000 |
+| 1 | 0001 |
+| 2 | 0010 |
+| 3 | 0011 |
+| 4 | 0100 |
+| 5 | 0101 |
+| 6 | 0110 |
+| 7 | 0111 |
+| 8 | 1000 |
+| 9 | 1001 |
+| 10 | 1010 |
+| 11 | 1011 |
+| 12 | 1100 |
+| 13 | 1101 |
+| 14 | 1110 |
+| 15 | 1111 |
+
+### Binary in IT Context
+
+- **IPv4 addresses** each octet is an 8-bit binary number (192.168.1.1 = four bytes)
+- **Subnet masks** are binary (255.255.255.0 = 11111111.11111111.11111111.00000000)
+- **Permissions** in Linux are represented as 3-bit groups (`rwx` = 111 = 7)
+- **Colors** in RGB: each channel is 0–255 (one byte per channel)
+
+### Key Exam Points
+
+- Binary is base-2: only digits 0 and 1
+- **8 bits = 1 byte** — this is the most important conversion to memorize
+- Binary place values: 128, 64, 32, 16, 8, 4, 2, 1 (right to left)
+- Convert decimal → binary using repeated division by 2
+- Convert binary → decimal by summing place values where bit = 1
+- Decimal (base-10) is our everyday number system; binary (base-2) is a computer's native language

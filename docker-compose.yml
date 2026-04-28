@@ -1,0 +1,15 @@
+services:
+  beattie-lms:
+    build: .
+    container_name: beattie-lms
+    restart: unless-stopped
+    environment:
+      - PUBLIC_API_URL=https://api.beattietech.local
+    networks:
+      - beattie-net
+    expose:
+      - "4321"
+
+networks:
+  beattie-net:
+    external: true

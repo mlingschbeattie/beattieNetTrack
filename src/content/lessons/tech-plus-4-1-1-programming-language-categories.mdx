@@ -1,0 +1,104 @@
+---
+title: Programming Language Categories
+description: Compare categories of programming languages — low-level, high-level, compiled, interpreted, scripting, markup, and query languages, with examples. FC0-U71 objective 4.1.
+slug: tech-plus-4-1-1-programming-language-categories
+track: tech-plus
+moduleId: tech-plus.software-dev
+order: 1
+objective: "FC0-U71 4.1"
+xp: 15
+source: cyber-org
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 4.1", "programming languages", "compiled", "interpreted", "scripting"]
+---
+
+## Programming Language Categories
+
+There are thousands of programming languages, but they fall into recognizable categories based on how they work and what they're designed to do. Understanding these categories helps IT professionals choose the right tool for the job and communicate effectively with developers.
+
+### Low-Level Languages
+
+Closest to the hardware — the programmer must think in machine terms.
+
+**Machine Code**
+- Pure binary instructions executed directly by the CPU
+- No human-readable syntax
+- Specific to a CPU architecture (x86, ARM, etc.)
+- Extremely fast; used only in embedded firmware
+
+**Assembly Language**
+- One step above machine code; uses mnemonics (`MOV`, `ADD`, `JMP`)
+- Each instruction maps directly to a machine code operation
+- Assembled (converted) to machine code by an assembler
+- Used in: OS kernels, device drivers, performance-critical routines, malware analysis
+
+### High-Level Languages
+
+Abstract away hardware details — the programmer thinks in logic, not registers and memory addresses.
+
+**Compiled Languages**
+- Source code → compiler → native machine code → executable
+- Fast at runtime; must be compiled for each target architecture
+- Examples: **C**, **C++**, **Rust**, **Go**, **Swift**
+- Use cases: operating systems, game engines, system utilities, embedded systems
+
+**Interpreted Languages**
+- Source code → interpreter reads and executes line-by-line at runtime
+- Generally slower than compiled; but portable — same code runs anywhere with the interpreter
+- Examples: **Python**, **Ruby**, **PHP**, **Bash scripts**
+- Common in: automation, scripting, data science, web backends
+
+**Just-In-Time (JIT) Compiled**
+- A hybrid: code is compiled to intermediate bytecode, then JIT-compiled to machine code at runtime
+- Examples: **Java** (JVM), **C#** (.NET), **JavaScript** (V8 engine)
+- Balances portability and performance
+
+### Scripting Languages
+
+Scripts automate tasks — typically interpreted; often used to glue applications together.
+
+| Language | Primary Use |
+|---|---|
+| **Python** | Automation, data science, security, scripting |
+| **PowerShell** | Windows system administration, automation |
+| **Bash** | Linux/macOS system scripting |
+| **JavaScript** | Web interactivity (browser and Node.js) |
+| **VBScript / batch** | Legacy Windows scripting |
+
+### Markup and Styling Languages
+
+Not programming languages — they describe structure and presentation, not logic.
+
+| Language | Purpose |
+|---|---|
+| **HTML** | Structure of web pages (HyperText Markup Language) |
+| **CSS** | Visual styling of web pages |
+| **XML** | Data storage and transport (eXtensible Markup Language) |
+| **JSON** | Data interchange format (JavaScript Object Notation) |
+| **Markdown** | Lightweight text formatting |
+
+### Query Languages
+
+Retrieve and manipulate data in databases.
+
+- **SQL (Structured Query Language)** — relational databases (MySQL, PostgreSQL, SQL Server)
+- **NoSQL queries** — MongoDB (document store), Neo4j (graph), Redis (key-value)
+
+### Programming Paradigms
+
+| Paradigm | Description | Examples |
+|---|---|---|
+| **Procedural** | Code executes top-to-bottom as a series of instructions | C, Pascal, early BASIC |
+| **Object-Oriented (OOP)** | Code organized around objects (data + behavior) | Java, Python, C++, C# |
+| **Functional** | Functions as first-class values; immutable data | Haskell, Erlang, Clojure; also Python, JavaScript |
+| **Event-driven** | Code responds to events (clicks, messages) | JavaScript, Node.js, GUI apps |
+
+### Key Exam Points
+
+- **Machine code** = binary; **Assembly** = human-readable mnemonics that compile to machine code
+- **Compiled** (C, C++) = fast, must be recompiled per platform; **Interpreted** (Python, Bash) = portable, slower
+- **JIT** (Java, C#, JavaScript) = hybrid: bytecode compiled on-the-fly at runtime
+- **HTML/CSS** are markup/styling — not programming languages
+- **SQL** is used to query relational databases (SELECT, INSERT, UPDATE, DELETE)
+- **PowerShell** (Windows) and **Bash** (Linux/macOS) are scripting languages used for IT automation

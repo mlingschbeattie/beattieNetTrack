@@ -1,0 +1,121 @@
+---
+title: Octal
+description: Understand the octal number system — digits, conversions to/from decimal and binary, and practical use in Linux file permissions. FC0-U71 objective 1.2.
+slug: tech-plus-1-2-3-octal
+track: tech-plus
+moduleId: tech-plus.it-concepts
+order: 4
+objective: "FC0-U71 1.2"
+xp: 15
+source: cyber-org
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 1.2", "octal", "number systems", "binary", "file permissions"]
+---
+
+## Octal
+
+**Octal** is a base-8 number system using digits 0 through 7. Like hexadecimal, octal provides a shorthand for binary — each octal digit maps to exactly **3 binary bits**. While octal appears less often than hex in modern IT, it remains essential for understanding Linux/Unix file permissions.
+
+### Octal Digits and Binary
+
+| Octal | Decimal | Binary (3-bit) |
+|---|---|---|
+| 0 | 0 | 000 |
+| 1 | 1 | 001 |
+| 2 | 2 | 010 |
+| 3 | 3 | 011 |
+| 4 | 4 | 100 |
+| 5 | 5 | 101 |
+| 6 | 6 | 110 |
+| 7 | 7 | 111 |
+
+Note: digits 8 and 9 do not exist in octal — if you see an 8 or 9, it is not a valid octal number.
+
+Octal numbers are sometimes written with a leading `0`: `0755` in C/Python means octal 755.
+
+### Octal → Decimal
+
+Each octal position is a power of 8:
+
+| 8³ | 8² | 8¹ | 8⁰ |
+|---|---|---|---|
+| 512 | 64 | 8 | 1 |
+
+**Example: 7 5 5**
+- 7 × 64 + 5 × 8 + 5 × 1 = 448 + 40 + 5 = **493**
+
+**Example: 1 7 7**
+- 1 × 64 + 7 × 8 + 7 × 1 = 64 + 56 + 7 = **127**
+
+### Decimal → Octal
+
+Divide repeatedly by 8; record remainders; read bottom-to-top.
+
+**Convert 100 to octal:**
+- 100 ÷ 8 = 12 remainder **4**
+- 12 ÷ 8 = 1 remainder **4**
+- 1 ÷ 8 = 0 remainder **1**
+
+Result: **144** (octal)
+
+Verify: 1 × 64 + 4 × 8 + 4 = 64 + 32 + 4 = 100 ✓
+
+### Binary ↔ Octal
+
+Group binary digits in sets of **3** from the right; each group maps to one octal digit.
+
+**Binary → Octal:**
+
+`101 110 011` → `5 | 6 | 3` → **563** (octal)
+
+**Octal → Binary:**
+
+`7 4 2` → `111 | 100 | 010` → **111100010** (binary)
+
+### Linux File Permissions — Octal in Practice
+
+This is the most important real-world use of octal in IT. Linux permissions use three 3-bit groups:
+
+**Permission bits:**
+- `r` (read) = **4** (binary 100)
+- `w` (write) = **2** (binary 010)
+- `x` (execute) = **1** (binary 001)
+- No permission = **0** (binary 000)
+
+**Three groups:** owner | group | others
+
+| Octal | Binary | Permissions |
+|---|---|---|
+| 7 | 111 | rwx (read + write + execute) |
+| 6 | 110 | rw- (read + write) |
+| 5 | 101 | r-x (read + execute) |
+| 4 | 100 | r-- (read only) |
+| 0 | 000 | --- (no permissions) |
+
+**chmod 755:**
+- Owner: 7 = rwx (full access)
+- Group: 5 = r-x (read and execute)
+- Others: 5 = r-x (read and execute)
+- Common for public executable programs
+
+**chmod 644:**
+- Owner: 6 = rw- (read and write)
+- Group: 4 = r-- (read only)
+- Others: 4 = r-- (read only)
+- Common for non-executable files (config files, documents)
+
+**chmod 600:**
+- Owner: 6 = rw- (read and write)
+- Group: 0 = --- (no access)
+- Others: 0 = --- (no access)
+- Used for private key files (SSH keys, credentials)
+
+### Key Exam Points
+
+- Octal is base-8: digits **0–7** only (no 8s or 9s)
+- **1 octal digit = 3 binary bits**
+- File permission octal: r=4, w=2, x=1 — add them up for each group
+- `chmod 755` = `rwxr-xr-x` (owner full, group and others read+execute)
+- `chmod 644` = `rw-r--r--` (owner read+write, others read-only)
+- `chmod 600` = `rw-------` (owner read+write only — private files)

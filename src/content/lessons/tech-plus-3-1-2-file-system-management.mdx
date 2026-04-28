@@ -1,0 +1,90 @@
+---
+title: File System Management
+description: Manage files and directories — create, move, copy, delete, search, and organize using OS tools and the command line. FC0-U71 objective 3.1.
+slug: tech-plus-3-1-2-file-system-management
+track: tech-plus
+moduleId: tech-plus.applications
+order: 2
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 3.1", "file management", "directories", "permissions", "CLI"]
+---
+
+## File System Management
+
+File system management is the day-to-day work of organizing and maintaining files and directories — whether through a graphical file explorer or the command line. It is a fundamental skill for any IT role.
+
+### File System Hierarchy
+
+**Windows:**
+- Drive letters: `C:\`, `D:\`, etc.
+- System files: `C:\Windows\`
+- User data: `C:\Users\[username]\`
+- Programs: `C:\Program Files\` (64-bit), `C:\Program Files (x86)\` (32-bit)
+
+**Linux/macOS (POSIX hierarchy):**
+- Root: `/`
+- User home directories: `/home/[username]/` (Linux) or `/Users/[username]/` (macOS)
+- System binaries: `/bin/`, `/usr/bin/`
+- Configuration: `/etc/`
+- Temporary files: `/tmp/`
+
+### Core File Operations
+
+| Operation | Windows GUI | Windows CLI | Linux/macOS CLI |
+|---|---|---|---|
+| List directory | File Explorer | `dir` | `ls` |
+| Change directory | Click folder | `cd foldername` | `cd foldername` |
+| Create folder | Right-click → New | `mkdir foldername` | `mkdir foldername` |
+| Copy file | Ctrl+C, Ctrl+V | `copy src dst` | `cp src dst` |
+| Move/rename | Drag or F2 | `move src dst` | `mv src dst` |
+| Delete file | Delete key | `del filename` | `rm filename` |
+| Delete folder | Delete key | `rmdir /s folder` | `rm -r folder` |
+
+### File Naming and Extensions
+
+- Extensions identify file type: `.txt` (text), `.docx` (Word), `.exe` (executable), `.pdf`, `.jpg`
+- Windows hides extensions by default — enable in View → Show → File name extensions
+- Linux/macOS: extensions are conventions, not enforced by the OS (a file without .txt can still be a text file)
+- **Hidden files:** Windows — names starting with nothing special; Linux/macOS — names starting with `.` (dot files)
+
+### File Permissions
+
+**Windows NTFS permissions** (set in Properties → Security):
+- Full Control, Modify, Read & Execute, List Folder Contents, Read, Write
+- Each permission can be Allowed or Denied per user or group
+
+**Linux/macOS permissions** (`rwx` model):
+- Three sets: **owner**, **group**, **others**
+- `r` = read (4), `w` = write (2), `x` = execute (1)
+- `chmod 755 file` = owner: rwx (7), group: r-x (5), others: r-x (5)
+
+### Searching for Files
+
+**Windows:**
+- Search bar in File Explorer
+- `where filename` (CMD) — finds executables in PATH
+- `Get-ChildItem -Recurse -Filter "*.log"` (PowerShell)
+
+**Linux/macOS:**
+- `find /path -name "filename"` — search by name
+- `grep -r "searchterm" /path` — search inside file contents
+
+### Disk Management Tasks
+
+- **Format** — erase and apply a file system (destructive)
+- **Partition** — divide a physical disk into logical sections
+- **Defragment** — reorganize fragmented data on HDDs (not needed/harmful on SSDs)
+- **Check disk** — `chkdsk` (Windows), `fsck` (Linux) — scans for and repairs file system errors
+
+### OWASP Connection
+
+**Broken Access Control** (OWASP #1) and **Security Misconfiguration** (OWASP #5) apply at the file system level: overly permissive file permissions are one of the most common misconfigurations on servers, allowing unauthorized users to read or modify files they shouldn't.
+
+### Key Exam Points
+
+- FAT32 max file: **4 GB**; NTFS supports large files with journaling and ACLs
+- Linux hidden files start with `.` (dot)
+- Linux permissions: `rwx` = 7, `rw-` = 6, `r-x` = 5, `r--` = 4
+- `chmod 755` = owner full access; group and others read + execute
+- `chkdsk` (Windows) / `fsck` (Linux) repair file system errors

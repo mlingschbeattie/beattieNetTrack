@@ -1,0 +1,122 @@
+---
+title: Identifiers
+description: Understand identifiers — variables, constants, naming rules, naming conventions, and variable scope in programming. FC0-U71 objective 4.3.
+slug: tech-plus-4-3-1-identifiers
+track: tech-plus
+moduleId: tech-plus.software-dev
+order: 3
+objective: "FC0-U71 4.3"
+xp: 15
+source: cyber-org
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 4.3", "identifiers", "variables", "constants", "naming conventions", "scope"]
+---
+
+## Identifiers
+
+An **identifier** is a name given to a programming element — a variable, constant, function, class, or module. Identifiers must follow specific rules and conventions to make code readable, maintainable, and bug-free.
+
+### Variables
+
+A **variable** is a named container that holds a value that can change during program execution.
+
+```python
+# Variable declaration and assignment
+username = "alice"      # string variable
+age = 17                # integer variable
+gpa = 3.75              # float variable
+is_enrolled = True      # boolean variable
+```
+
+Variables store temporary data that the program needs to work with. The value stored can be updated (hence "variable").
+
+### Constants
+
+A **constant** is a named container whose value does not change after it is set. Constants are used for values that are fixed throughout the program's lifetime.
+
+```python
+MAX_ATTEMPTS = 5        # Maximum login attempts
+PI = 3.14159            # Mathematical constant
+SCHOOL_NAME = "Beattie" # Fixed application data
+```
+
+By convention, constants are named in UPPER_SNAKE_CASE in most languages. Some languages enforce immutability (`const` in JavaScript/C++, `final` in Java); Python uses convention only.
+
+### Naming Rules (Syntax)
+
+Rules enforced by the programming language — violating these causes errors:
+
+| Rule | Valid | Invalid |
+|---|---|---|
+| Must start with a letter or underscore | `count`, `_hidden` | `1count`, `3rd_place` |
+| Can contain letters, digits, underscores | `user_name2` | `user name`, `user-name` |
+| No spaces allowed | `first_name` | `first name` |
+| No reserved keywords | `total` | `if`, `class`, `return`, `for` |
+| Case-sensitive | `Count` ≠ `count` | — |
+
+**Reserved keywords** — words the language already uses and that cannot be used as identifiers:
+- Python: `if`, `else`, `for`, `while`, `def`, `class`, `import`, `return`, `True`, `False`, `None`
+- JavaScript: `var`, `let`, `const`, `function`, `this`, `new`, `typeof`, `null`
+
+### Naming Conventions (Style)
+
+Conventions are not enforced by the compiler — they are team agreements that improve readability:
+
+| Convention | Style | Used In |
+|---|---|---|
+| **camelCase** | `firstName`, `userAge` | Java, JavaScript variables |
+| **PascalCase** | `FirstName`, `UserAge` | Java/C# classes, Python classes |
+| **snake_case** | `first_name`, `user_age` | Python variables and functions |
+| **UPPER_SNAKE_CASE** | `MAX_VALUE`, `PI` | Constants (all languages) |
+| **kebab-case** | `first-name`, `user-age` | HTML attributes, CSS, URLs (NOT valid in most programming languages) |
+
+### Variable Scope
+
+**Scope** defines where in the program a variable is accessible:
+
+**Global scope** — the variable is declared outside all functions and is accessible anywhere in the program.
+
+```python
+username = "alice"      # global variable
+
+def greet():
+    print(username)     # accessible inside function
+```
+
+**Local scope** — the variable is declared inside a function and is only accessible within that function.
+
+```python
+def calculate_tax(price):
+    tax_rate = 0.08     # local variable — only exists inside this function
+    return price * tax_rate
+
+# tax_rate does not exist here — it's local to calculate_tax
+```
+
+**Why scope matters:**
+- Prevents accidental modification of variables from unrelated parts of code
+- Reduces bugs caused by two different functions using the same variable name
+- Local variables are created when a function runs and destroyed when it returns (memory efficiency)
+
+### Descriptive Naming
+
+Good identifiers describe what the data represents:
+
+| Bad | Good |
+|---|---|
+| `x` | `total_price` |
+| `tmp` | `current_username` |
+| `data` | `student_gpa_list` |
+| `flag` | `is_authenticated` |
+
+Exception: short names like `i`, `j`, `k` are conventional for loop counters and are widely understood.
+
+### Key Exam Points
+
+- **Variable** = named storage for a value that can change; **Constant** = named value that doesn't change
+- Three naming rules: no spaces, must start with letter or underscore, no reserved keywords
+- **camelCase** (JavaScript/Java), **snake_case** (Python), **PascalCase** (classes)
+- Constants: **UPPER_SNAKE_CASE**
+- **Scope**: global = accessible everywhere; local = accessible only inside the function where it's declared
+- Case-sensitive: `Username` and `username` are two different identifiers

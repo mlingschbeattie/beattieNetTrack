@@ -1,0 +1,69 @@
+---
+title: Purposes of Operating Systems
+description: Understand what operating systems do — resource management, process isolation, security, and the bridge between hardware and applications. FC0-U71 objective 3.2.
+slug: tech-plus-3-2-1-purposes-of-operating-systems
+track: tech-plus
+moduleId: tech-plus.applications
+order: 4
+difficulty: Beginner
+estMinutes: 15
+tags: ["tech+", "FC0-U71 3.2", "operating system", "resource management", "abstraction"]
+---
+
+## Purposes of Operating Systems
+
+An operating system serves as the **foundation of all computing** — the layer between hardware and every application that runs on a device. Without an OS, software developers would have to write code that directly controls every piece of hardware, and each program would need to reimplement network stacks, display output, and file storage from scratch.
+
+### Core Purposes
+
+**1. Hardware Abstraction**
+The OS presents hardware to applications through standardized interfaces. A developer writing a text editor doesn't need to know whether the user has an NVIDIA or AMD GPU, or whether storage is an NVMe SSD or HDD — the OS handles those details. This is why the same application (.exe) runs on millions of different hardware configurations.
+
+**2. Resource Management**
+The OS manages shared hardware resources — CPU time, RAM, storage, network bandwidth — and allocates them fairly between running programs:
+- **CPU scheduling** — decides which process runs next and for how long
+- **Memory allocation** — gives each application its own protected memory space
+- **I/O management** — queues and coordinates read/write requests to disks and devices
+
+**3. Process Isolation and Security**
+The OS ensures processes cannot interfere with each other:
+- Each process runs in its own **protected memory space**
+- A crash in one application doesn't crash others (usually)
+- **User accounts** and permissions determine what each person and program can access
+
+**4. File Management**
+The OS provides a unified way to create, read, write, and organize files regardless of the underlying storage hardware. Applications call the same file API whether data is on a local HDD, a network share, or an SSD.
+
+**5. User Interface**
+The OS provides either a GUI (graphical) or CLI (command-line) interface so humans can interact with the system and applications.
+
+**6. Application Services**
+The OS provides libraries and APIs that applications build on:
+- Networking stack (TCP/IP)
+- Window manager (draw and manage application windows)
+- Security services (authentication, cryptography)
+- Background services (scheduled tasks, print queue)
+
+### Why Operating Systems Matter for Security
+
+The OS is the **root of trust** for the device:
+- If the OS is compromised, every application on it is compromised
+- OS-level vulnerabilities (privilege escalation, kernel exploits) are the most severe
+- Patching the OS is the highest-priority security maintenance task
+- Access control, authentication, and logging all depend on OS integrity
+
+### The Boot Process (High Level)
+
+1. **Power on** → BIOS/UEFI initializes hardware (POST)
+2. Boot loader (GRUB, Windows Boot Manager) loads the OS kernel
+3. Kernel initializes drivers and mounts the file system
+4. Init system (Windows SCM, Linux systemd) starts services
+5. Login screen presented to user
+
+### Key Exam Points
+
+- The OS sits between **hardware** (below) and **applications** (above)
+- Primary purposes: hardware abstraction, resource management, security/isolation, file management, user interface
+- The OS is the most security-critical layer of software — OS compromise means everything on the device is at risk
+- **Patching the OS** is the highest-priority security maintenance item
+- Without an OS, software would need to control hardware directly — impractical for general-purpose computing

@@ -1,0 +1,81 @@
+---
+title: OS File Systems
+description: Understand file systems — how operating systems organize, store, and retrieve data on storage devices. FC0-U71 objective 3.1.
+slug: tech-plus-3-1-1-os-file-systems
+track: tech-plus
+moduleId: tech-plus.applications
+order: 1
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 3.1", "file systems", "NTFS", "FAT32", "exFAT", "ext4"]
+---
+
+## OS File Systems
+
+A **file system** is the method an operating system uses to organize, store, name, and retrieve data on a storage device. Without a file system, a drive is just a block of unstructured binary data — the OS wouldn't know where one file ends and another begins.
+
+### What a File System Does
+
+- Organizes data into **files** and **directories (folders)**
+- Tracks the physical location of each file on the storage medium
+- Manages **metadata** — file name, size, creation/modification dates, permissions
+- Handles **free space** management (knows which sectors are available)
+- Enforces **access permissions** (who can read, write, execute)
+
+### Common File Systems
+
+**NTFS (New Technology File System)**
+- Default for Windows (Vista through current)
+- Supports files larger than 4 GB
+- Per-file permissions (ACLs), encryption (EFS), compression, journaling
+- Journaling: logs intended changes before writing — allows recovery after a crash
+
+**FAT32 (File Allocation Table 32)**
+- Legacy Microsoft format; compatible with almost every OS and device
+- Maximum single file size: **4 GB** — cannot store a file larger than this
+- No built-in permissions or journaling
+- Common on USB drives for cross-platform compatibility
+
+**exFAT (Extended FAT)**
+- Microsoft's replacement for FAT32 on flash media
+- Supports files larger than 4 GB — no practical file size limit
+- No permissions or journaling (simpler than NTFS)
+- Standard for SDXC cards; good for large USB drives shared across Windows and macOS
+
+**APFS (Apple File System)**
+- Default on macOS (High Sierra+) and iOS/iPadOS
+- Optimized for SSDs: clones, snapshots, strong encryption built-in
+- Copy-on-write design prevents data corruption
+
+**HFS+ (Mac OS Extended)**
+- Legacy Apple format; being replaced by APFS
+- Still used on older Macs and some external drives
+
+**ext4 (Fourth Extended File System)**
+- Default on most Linux distributions (Ubuntu, Debian, CentOS)
+- Journaling, large file support, good performance
+- Windows cannot natively read ext4 without third-party tools
+
+**Comparison Table**
+
+| File System | OS | Max File Size | Journaling | Permissions |
+|---|---|---|---|---|
+| NTFS | Windows | 16 TB (practical) | Yes | Yes (ACLs) |
+| FAT32 | Cross-platform | **4 GB** | No | No |
+| exFAT | Cross-platform | 16 EB | No | No |
+| APFS | macOS/iOS | 8 EB | Yes (CoW) | Yes |
+| ext4 | Linux | 16 TB | Yes | Yes |
+
+### Why It Matters
+
+- Formatting a drive erases data and applies a new file system
+- Wrong file system = incompatibility: a Linux ext4 drive won't be readable on Windows
+- FAT32's 4 GB limit causes errors when trying to copy large video files to a FAT32 USB drive
+
+### Key Exam Points
+
+- **FAT32** max single file size = **4 GB** — most common exam gotcha
+- **NTFS** is Windows default; supports permissions, journaling, large files
+- **exFAT** solves FAT32's size limit while staying cross-platform
+- **ext4** is Linux default; not natively readable by Windows
+- **Journaling** protects against file system corruption when a write is interrupted

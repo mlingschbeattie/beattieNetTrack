@@ -1,0 +1,89 @@
+---
+title: OS Components
+description: Identify the core components of an operating system — kernel, shell, drivers, file system, and user interface. FC0-U71 objective 3.1.
+slug: tech-plus-3-1-3-os-components
+track: tech-plus
+moduleId: tech-plus.applications
+order: 3
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 3.1", "operating system", "kernel", "drivers", "shell", "GUI"]
+---
+
+## OS Components
+
+An operating system (OS) is not a single program — it is a collection of components that together manage hardware resources and provide services to applications. Understanding these layers helps technicians troubleshoot problems at the right level.
+
+### The Kernel
+
+The **kernel** is the core of the OS — the component that directly manages hardware.
+
+Responsibilities:
+- **Process management** — creates, schedules, and terminates processes
+- **Memory management** — allocates RAM to processes; manages virtual memory (page file/swap)
+- **Device management** — communicates with hardware through drivers
+- **File system management** — provides read/write access to storage
+- **System calls** — the interface applications use to request kernel services
+
+The kernel runs in **privileged (kernel) mode** — it has direct hardware access. Applications run in **user mode** — they must request services from the kernel; they cannot directly touch hardware.
+
+### Hardware Abstraction Layer (HAL)
+
+A software layer between the kernel and physical hardware. It standardizes how the kernel communicates with hardware, making the OS more portable across different hardware platforms.
+
+### Device Drivers
+
+**Drivers** are software that allow the OS to communicate with specific hardware devices:
+- Graphics card driver → enables GPU features and proper display
+- Network adapter driver → enables network connectivity
+- Printer driver → enables printing
+- Without the correct driver, hardware is unrecognized or non-functional
+
+Drivers run in kernel mode — a buggy driver can crash the entire OS (Blue Screen of Death on Windows is often a driver failure).
+
+### Shell
+
+The **shell** is the interface between the user and the kernel. It accepts commands and passes them to the OS.
+
+| Type | Examples |
+|---|---|
+| **CLI (Command-Line Interface)** | Windows CMD, PowerShell, Bash (Linux/macOS), Zsh |
+| **GUI (Graphical User Interface)** | Windows Explorer, macOS Finder, GNOME, KDE |
+
+CLI: typed commands; powerful, scriptable, efficient for technicians
+GUI: visual; clicks and windows; accessible; more intuitive for end users
+
+### User Interface Components (Windows)
+
+- **Desktop** — primary work area
+- **Taskbar** — running apps, system tray, Start button
+- **Start Menu** — application launcher
+- **File Explorer** — graphical file manager
+- **Control Panel / Settings** — system configuration
+- **Task Manager** — view and manage processes, performance, services
+- **System Tray (Notification Area)** — background apps and status icons
+
+### Process Manager / Scheduler
+
+Manages which processes get CPU time and when. Modern CPUs run many processes concurrently via time-slicing — the scheduler switches between processes so fast it appears simultaneous.
+
+### Memory Manager
+
+- Tracks which RAM regions are in use by which process
+- **Virtual memory / paging** — uses disk space (page file) as an overflow when RAM is full; slower than real RAM
+- Protects processes from reading/writing each other's memory (prevents crashes and security issues)
+
+### System Services and Daemons
+
+Background processes that run without user interaction:
+- Windows: **Services** (viewed in services.msc)
+- Linux/macOS: **Daemons** (e.g., `sshd`, `httpd`, `cron`)
+- Examples: print spooler, Windows Update, antivirus, network discovery
+
+### Key Exam Points
+
+- The **kernel** runs in privileged mode and directly manages hardware
+- **Drivers** are kernel-mode code that talk to specific hardware — bad drivers cause BSODs
+- **Shell** = user interface to the OS; CLI (CMD/Bash) or GUI (Explorer/Finder)
+- **Virtual memory (page file)** = disk used as overflow RAM — much slower than actual RAM
+- **Task Manager** (Windows) shows processes, CPU/RAM usage, running services

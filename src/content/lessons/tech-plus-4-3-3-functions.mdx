@@ -1,0 +1,162 @@
+---
+title: Functions
+description: Understand functions — defining, calling, parameters, return values, and why reusable code blocks are essential in programming. FC0-U71 objective 4.3.
+slug: tech-plus-4-3-3-functions
+track: tech-plus
+moduleId: tech-plus.software-dev
+order: 5
+objective: "FC0-U71 4.3"
+xp: 15
+source: cyber-org
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 4.3", "functions", "parameters", "return values", "DRY", "scope"]
+---
+
+## Functions
+
+A **function** is a named, reusable block of code designed to perform a specific task. Functions are the primary tool for organizing code and eliminating repetition.
+
+### Why Functions?
+
+Without functions, code repeats:
+```python
+# Calculating area three times — repetition
+area1 = 5 * 8
+area2 = 3 * 12
+area3 = 7 * 6
+```
+
+With a function:
+```python
+def calculate_area(width, height):
+    return width * height
+
+area1 = calculate_area(5, 8)   # 40
+area2 = calculate_area(3, 12)  # 36
+area3 = calculate_area(7, 6)   # 42
+```
+
+This is the **DRY principle: Don't Repeat Yourself**. Write logic once; reuse it anywhere.
+
+### Defining a Function
+
+```python
+# Python function definition
+def greet(name):
+    message = "Hello, " + name + "!"
+    return message
+```
+
+Components:
+- `def` — keyword that begins a function definition
+- `greet` — the function's name (an identifier)
+- `(name)` — the parameter list (inputs the function accepts)
+- Indented body — the code that runs when the function is called
+- `return` — sends a value back to the caller
+
+### Calling a Function
+
+```python
+result = greet("Alice")
+print(result)    # Output: Hello, Alice!
+```
+
+Calling a function: use its name followed by parentheses, passing **arguments** (the actual values).
+
+**Parameters vs. Arguments:**
+- **Parameter** — the variable name in the function definition: `name`
+- **Argument** — the actual value passed when calling: `"Alice"`
+
+### Return Values
+
+Functions can send data back to the caller with `return`:
+
+```python
+def add(a, b):
+    return a + b
+
+result = add(10, 5)   # result = 15
+```
+
+**Void functions** (no return value) — perform an action without returning data:
+
+```python
+def print_header():
+    print("=== Grade Report ===")
+    print("Student Performance Summary")
+    # No return statement — returns None implicitly
+
+print_header()   # Calls the function; prints the header
+```
+
+### Multiple Parameters
+
+```python
+def calculate_grade(points_earned, points_possible):
+    percentage = (points_earned / points_possible) * 100
+    if percentage >= 90:
+        return "A"
+    elif percentage >= 80:
+        return "B"
+    elif percentage >= 70:
+        return "C"
+    else:
+        return "F"
+
+grade = calculate_grade(88, 100)   # "B"
+```
+
+### Default Parameter Values
+
+Parameters can have defaults, making them optional when calling:
+
+```python
+def greet(name, greeting="Hello"):
+    return greeting + ", " + name + "!"
+
+greet("Bob")              # "Hello, Bob!"
+greet("Carol", "Hi")      # "Hi, Carol!"
+```
+
+### Scope in Functions
+
+Variables declared inside a function are **local** — they don't exist outside:
+
+```python
+def calculate():
+    temp = 42          # Local variable
+    return temp
+
+print(temp)   # NameError: 'temp' is not defined (outside the function)
+```
+
+This is intentional — it prevents functions from accidentally corrupting data used elsewhere.
+
+### Built-In Functions
+
+Most languages include pre-built functions:
+
+| Python Built-in | Action |
+|---|---|
+| `print(x)` | Display output |
+| `len(x)` | Length of string/list |
+| `int(x)` | Convert to integer |
+| `str(x)` | Convert to string |
+| `input(prompt)` | Get user input |
+| `range(n)` | Generate sequence 0 to n-1 |
+| `max(iterable)` | Largest value |
+| `min(iterable)` | Smallest value |
+
+### Functions and Security
+
+Well-designed functions enforce **input validation** at a single point — making it easier to ensure that bad data never reaches sensitive operations. A function that validates input once is safer than validation scattered throughout code.
+
+### Key Exam Points
+
+- Functions are reusable named code blocks — **DRY: Don't Repeat Yourself**
+- **Define** with `def name(params):` → **call** with `name(args)`
+- **Parameter** = variable in the definition; **argument** = actual value in the call
+- `return` sends data back; functions without `return` return `None`
+- Variables inside functions are **local** — they don't exist outside
+- Default parameters make arguments optional when calling

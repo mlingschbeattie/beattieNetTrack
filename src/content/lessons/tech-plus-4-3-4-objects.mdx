@@ -1,0 +1,117 @@
+---
+title: Objects
+description: Understand object-oriented programming (OOP) — classes, objects, attributes, methods, instantiation, encapsulation, and inheritance. FC0-U71 objective 4.3.
+slug: tech-plus-4-3-4-objects
+track: tech-plus
+moduleId: tech-plus.software-dev
+order: 6
+objective: "FC0-U71 4.3"
+xp: 15
+source: cyber-org
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 4.3", "objects", "OOP", "classes", "encapsulation", "inheritance"]
+---
+
+## Objects
+
+**Object-Oriented Programming (OOP)** is a programming paradigm that organizes code around **objects** — bundles of data and the functions that operate on that data. OOP is the dominant programming paradigm in enterprise software (Java, Python, C#, C++, Swift) and is important for IT professionals to understand at a conceptual level.
+
+### What Is an Object?
+
+An **object** is a self-contained unit that contains:
+- **Attributes (properties)** — data describing the object's state
+- **Methods** — functions that define what the object can do
+
+Real-world analogy: a **car** object might have attributes (color, make, speed) and methods (accelerate, brake, turn).
+
+### Classes vs. Objects
+
+A **class** is a blueprint or template. An **object** is a specific instance created from that blueprint.
+
+```python
+# Class definition — the blueprint
+class Student:
+    def __init__(self, name, grade_level):
+        self.name = name              # attribute
+        self.grade_level = grade_level  # attribute
+
+    def greet(self):                  # method
+        return f"Hi, I'm {self.name}, a grade {self.grade_level} student."
+
+# Creating objects (instances) from the class
+student1 = Student("Alice", 11)
+student2 = Student("Bob", 10)
+
+print(student1.greet())   # Hi, I'm Alice, a grade 11 student.
+print(student2.name)      # Bob
+```
+
+- `Student` is the **class** (blueprint)
+- `student1` and `student2` are **objects** (instances)
+- `__init__` is the **constructor** — runs automatically when an object is created
+
+### Dot Notation
+
+Access an object's attributes and methods using a dot `.`:
+
+```python
+student1.name          # Attribute: "Alice"
+student1.grade_level   # Attribute: 11
+student1.greet()       # Method call: returns greeting string
+```
+
+### The Four Pillars of OOP
+
+**1. Encapsulation**
+Bundling data and methods together inside a class, and hiding internal implementation details from the outside world.
+
+- External code interacts with the object through its **public interface** (defined methods)
+- Internal data is protected from direct external modification
+- Reduces bugs: if internal implementation changes, external code still works the same way
+
+**2. Inheritance**
+A new class (child/subclass) can inherit attributes and methods from an existing class (parent/superclass) and extend or override them.
+
+```python
+class Person:
+    def __init__(self, name):
+        self.name = name
+    
+    def introduce(self):
+        return f"I am {self.name}."
+
+class Student(Person):           # Student inherits from Person
+    def __init__(self, name, grade):
+        super().__init__(name)   # call parent constructor
+        self.grade = grade
+    
+    def study(self):
+        return f"{self.name} is studying."
+
+s = Student("Alice", 11)
+s.introduce()   # Inherited from Person: "I am Alice."
+s.study()       # Student's own method: "Alice is studying."
+```
+
+**3. Polymorphism**
+Different classes can define the same method name, but each class implements it differently. Code can call the method on any object without knowing which specific class it is.
+
+**4. Abstraction**
+Hiding complex implementation details and exposing only what is needed. The user of a class or API doesn't need to know how it works internally — just what it does.
+
+### Why OOP Matters for IT
+
+- OS APIs (Windows, iOS, Android) expose device features as objects
+- Web frameworks (Django, Rails, ASP.NET) model database records as objects
+- Security tools model threats, vulnerabilities, and events as objects
+- Reading error messages in OOP code requires knowing: what class, which method, which line
+
+### Key Exam Points
+
+- **Class** = blueprint; **Object** = instance (a specific thing created from the blueprint)
+- **Attributes** = data stored in an object; **Methods** = functions belonging to an object
+- **Constructor** (`__init__` in Python, `new` in Java) — runs when an object is created
+- **Dot notation** to access attributes and methods: `object.attribute`, `object.method()`
+- Four pillars: **Encapsulation** (hide internals), **Inheritance** (reuse parent code), **Polymorphism** (same method, different behavior), **Abstraction** (expose only what's needed)
+- OOP is used in Java, Python, C#, C++, Swift — the dominant enterprise languages

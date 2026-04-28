@@ -1,0 +1,102 @@
+---
+title: Types of Operating Systems
+description: Compare desktop, server, mobile, embedded, and real-time operating systems — use cases, examples, and key differences. FC0-U71 objective 3.2.
+slug: tech-plus-3-2-2-types-of-operating-systems
+track: tech-plus
+moduleId: tech-plus.applications
+order: 5
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 3.2", "operating systems", "Windows", "Linux", "iOS", "Android", "RTOS"]
+---
+
+## Types of Operating Systems
+
+Not every computing device runs Windows — and even among devices that run similar OSes, the variant matters. Choosing the right OS type for a task is a core infrastructure decision.
+
+### Desktop / Workstation Operating Systems
+
+Designed for individual productivity use by one person at a time.
+
+**Microsoft Windows**
+- Dominant in enterprise and consumer desktop (70%+ market share)
+- Versions: Windows 10, Windows 11
+- Strong application ecosystem; hardware compatibility; Active Directory integration
+- Most targeted by malware due to prevalence
+
+**macOS**
+- Apple's Unix-based desktop OS; runs on Mac hardware only
+- Preferred in creative fields (video, audio, design)
+- Unix foundation enables terminal/shell scripting similar to Linux
+- Generally less targeted by malware than Windows
+
+**Linux (Desktop)**
+- Open source; many distributions (Ubuntu, Fedora, Mint, Arch)
+- Highly customizable; dominant in developer workstations and education
+- Lower hardware requirements than Windows or macOS
+- Less commercial software support (though web apps reduce this gap)
+- Common in cybersecurity labs and Raspberry Pi projects
+
+### Server Operating Systems
+
+Optimized for stability, multi-user access, and running services — not for interactive use.
+
+**Windows Server** (2019, 2022)
+- Integrates with Active Directory, Group Policy, WSUS
+- Common in enterprise environments with mixed Windows clients
+- Hyper-V hypervisor built in
+
+**Linux Server** (Ubuntu Server, CentOS/RHEL, Debian)
+- Powers ~70% of public web servers
+- Stable, secure, low overhead (many run headless — no GUI)
+- Apache, Nginx, MySQL, Docker all native
+
+### Mobile Operating Systems
+
+Designed for touchscreen devices with limited battery and compute.
+
+**iOS / iPadOS** (Apple)
+- Closed ecosystem — apps only from App Store (enforced)
+- Strong security model: app sandboxing, mandatory encryption
+- Runs on iPhone, iPad only
+
+**Android** (Google / open source)
+- Open source base; many manufacturers (Samsung, Pixel, OnePlus)
+- Google Play Store primary; sideloading possible (security risk)
+- More fragmented: manufacturer + carrier delays in OS updates
+
+### Embedded Operating Systems
+
+Stripped-down OSes for dedicated-function devices.
+
+- **Purpose:** Run one specific application efficiently
+- **Examples:** Smart TVs, ATMs, medical devices, industrial controllers, routers
+- Often based on Linux (stripped) or proprietary systems
+- Minimal user interface; rarely updated — creates long-term vulnerability exposure
+
+### Real-Time Operating Systems (RTOS)
+
+Designed for tasks that must respond within strict, predictable time windows.
+
+- **Hard RTOS:** Response must meet deadline with no tolerance (industrial robotics, flight control, pacemakers)
+- **Soft RTOS:** Best-effort; slight delays acceptable (audio processing, video playback)
+- Examples: FreeRTOS, VxWorks, QNX
+- IoT devices frequently run RTOS or bare-metal microcontroller firmware
+
+### Comparison
+
+| OS Type | Examples | Key Characteristic |
+|---|---|---|
+| Desktop | Windows 11, macOS, Ubuntu | Interactive single-user |
+| Server | Windows Server, Ubuntu Server | Multi-user, services, headless |
+| Mobile | iOS, Android | Touch-first, battery-optimized |
+| Embedded | Router firmware, smart TV OS | Single-purpose, minimal UI |
+| RTOS | FreeRTOS, VxWorks | Deterministic, time-critical |
+
+### Key Exam Points
+
+- Windows = most targeted by malware due to market share
+- Linux servers power the majority of the public internet
+- **Embedded OSes** rarely receive updates — long-term vulnerability exposure
+- **RTOS** is for time-critical deterministic tasks (industrial, medical); not general-purpose
+- iOS: closed, mandatory App Store enforcement; Android: open, sideloading possible

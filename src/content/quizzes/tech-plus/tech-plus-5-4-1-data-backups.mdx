@@ -1,0 +1,85 @@
+---
+title: "Data Backups"
+slug: "tech-plus-5-4-1-data-backups"
+track: tech-plus
+moduleId: tech-plus.databases
+order: 1
+difficulty: Beginner
+passThreshold: 70
+tags: ["Tech+", "FC0-U71", "CompTIA"]
+questions:
+  - id: q1
+    type: single
+    prompt: "What does the 3-2-1 backup rule specify?"
+    options:
+      - "A. Keep 3 full backups on 2 drives with 1 encryption key"
+      - "B. Keep 3 copies of data on 2 different media types with 1 copy offsite"
+      - "C. Backup 3 times daily using 2 applications with 1 cloud provider"
+      - "D. Retain data for 3 years on 2 servers with 1 annual test"
+    correctIndex: 1
+  - id: q2
+    type: single
+    prompt: "A full backup copies which data?"
+    options:
+      - "A. Only files changed since the last backup"
+      - "B. Only files changed since the last full backup"
+      - "C. All selected data every time"
+      - "D. Only system files and the operating system"
+    correctIndex: 2
+  - id: q3
+    type: single
+    prompt: "What is an incremental backup?"
+    options:
+      - "A. A backup of all data regardless of whether it changed"
+      - "B. A backup of only the data changed since the last backup of any type"
+      - "C. A backup stored on cloud systems only"
+      - "D. A backup that compresses all files before writing"
+    correctIndex: 1
+  - id: q4
+    type: single
+    prompt: "What does RTO stand for in disaster recovery planning?"
+    options:
+      - "A. Restore and Test Operations"
+      - "B. Record Transfer Output"
+      - "C. Recovery Time Objective"
+      - "D. Redundant Transfer Order"
+    correctIndex: 2
+  - id: q5
+    type: single
+    prompt: "What does RPO (Recovery Point Objective) define?"
+    options:
+      - "A. The maximum time allowed to restore a system after failure"
+      - "B. The maximum acceptable amount of data loss measured in time"
+      - "C. The required number of backup copies to maintain"
+      - "D. The type of media used for offsite backup storage"
+    correctIndex: 1
+  - id: q6
+    type: single
+    prompt: "How does a differential backup differ from an incremental backup?"
+    options:
+      - "A. A differential backup copies only files changed since the last full backup; an incremental backup copies files changed since the last backup of any type"
+      - "B. A differential backup copies all data; an incremental backup copies only system files"
+      - "C. They are identical in every way"
+      - "D. A differential backup is stored in the cloud; incremental backups are stored locally"
+    correctIndex: 0
+  - id: q7
+    type: single
+    prompt: "Why does the 3-2-1 rule require at least one offsite copy?"
+    options:
+      - "A. Cloud storage is faster than local storage"
+      - "B. To protect against local disasters such as fire or flood that could destroy all local copies"
+      - "C. Government regulations require one cloud copy of all data"
+      - "D. Offsite copies are easier to encrypt"
+    correctIndex: 1
+  - id: q8
+    type: single
+    prompt: "A small business runs a full backup every Sunday and incremental backups every weekday. On Thursday, the server fails. Which backup sets are needed to fully restore Thursday morning data?"
+    options:
+      - "A. Only the Sunday full backup"
+      - "B. The Sunday full backup plus all incremental backups from Monday through Wednesday"
+      - "C. Only the Wednesday incremental backup"
+      - "D. The Sunday full backup plus the Wednesday incremental backup only"
+    correctIndex: 1
+---
+
+Quiz covering Data Backups — Tech+ unit tech-plus-5-4-1-data-backups.

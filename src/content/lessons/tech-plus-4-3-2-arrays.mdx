@@ -1,0 +1,135 @@
+---
+title: Arrays
+description: Understand arrays — ordered collections of elements, indexing, common operations, and iteration in programming. FC0-U71 objective 4.3.
+slug: tech-plus-4-3-2-arrays
+track: tech-plus
+moduleId: tech-plus.software-dev
+order: 4
+objective: "FC0-U71 4.3"
+xp: 15
+source: cyber-org
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 4.3", "arrays", "lists", "indexing", "iteration", "data structures"]
+---
+
+## Arrays
+
+An **array** is an ordered collection of multiple values stored under a single variable name. Instead of declaring 30 separate variables for 30 student names, you store them all in one array and access each element by its position number (index).
+
+### Why Arrays?
+
+Without arrays:
+```python
+student1 = "Alice"
+student2 = "Bob"
+student3 = "Carlos"
+# ...30 variables for 30 students — unmanageable
+```
+
+With an array (list in Python):
+```python
+students = ["Alice", "Bob", "Carlos", "Diana", "Ethan"]
+# All 5 names in one variable — scalable to any size
+```
+
+### Zero-Based Indexing
+
+Arrays begin at index **0**, not 1. This is one of the most common sources of beginner errors.
+
+```
+students = ["Alice", "Bob", "Carlos", "Diana", "Ethan"]
+Index:         0       1        2         3        4
+```
+
+Accessing elements:
+```python
+students[0]   # "Alice"
+students[2]   # "Carlos"
+students[4]   # "Ethan"
+students[-1]  # "Ethan" (Python: negative index counts from end)
+```
+
+Trying to access `students[5]` when there are only 5 elements (indices 0–4) causes an **IndexError (out-of-bounds error)** — one of the most common programming bugs.
+
+### Array Length
+
+```python
+len(students)   # Returns 5
+# Valid indices are 0 through len(students) - 1
+```
+
+The last valid index is always **length − 1**.
+
+### Common Array Operations
+
+| Operation | Python Example | Result |
+|---|---|---|
+| Create | `nums = [10, 20, 30]` | New array |
+| Read element | `nums[1]` | `20` |
+| Update element | `nums[0] = 99` | `[99, 20, 30]` |
+| Append | `nums.append(40)` | `[99, 20, 30, 40]` |
+| Insert | `nums.insert(1, 15)` | `[99, 15, 20, 30, 40]` |
+| Remove | `nums.remove(20)` | Removes first occurrence of 20 |
+| Length | `len(nums)` | Count of elements |
+| Sort | `nums.sort()` | Sorts in place (ascending) |
+| Search | `20 in nums` | `True` or `False` |
+
+### Iterating Over an Array
+
+A `for` loop processes every element in sequence:
+
+```python
+scores = [85, 92, 78, 95, 88]
+
+for score in scores:
+    print(score)            # Prints each score
+
+# Sum all scores
+total = 0
+for score in scores:
+    total += score
+average = total / len(scores)  # 87.6
+```
+
+### Fixed vs. Dynamic Arrays
+
+**Fixed-size arrays** (C, Java arrays):
+- Size declared at creation and cannot change
+- Memory allocated upfront
+- Fast access; must know size in advance
+
+**Dynamic arrays** (Python lists, Java ArrayList, JavaScript arrays):
+- Can grow and shrink as elements are added or removed
+- More flexible; slight performance overhead for resizing
+
+### Multi-Dimensional Arrays (2D Arrays)
+
+An array of arrays — useful for grids, tables, matrices:
+
+```python
+# 3x3 grid
+grid = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+]
+
+grid[0][0]   # 1 (row 0, column 0)
+grid[1][2]   # 6 (row 1, column 2)
+grid[2][1]   # 8 (row 2, column 1)
+```
+
+### Arrays in Security Context
+
+- **Buffer overflow** — a classic vulnerability: writing data beyond the end of a fixed array in C/C++ overwrites adjacent memory, potentially overwriting return addresses and enabling code execution. Modern languages (Python, Java) prevent this with bounds checking — C/C++ do not by default.
+
+### Key Exam Points
+
+- Arrays store multiple values under one variable name
+- **Indexing starts at 0** — first element is index 0, last is `length − 1`
+- Accessing index ≥ length causes an **out-of-bounds error**
+- `len(array)` returns the number of elements
+- `for` loops naturally iterate through all elements
+- 2D arrays are arrays of arrays — useful for grids and tables
+- **Buffer overflow** exploits writing past the end of an array in languages without bounds checking

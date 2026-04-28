@@ -1,0 +1,103 @@
+---
+title: Transfer Rates
+description: Understand data transfer rates — bits vs bytes per second, connection types and their speeds, and how to calculate real-world download times. FC0-U71 objective 1.3.
+slug: tech-plus-1-3-2-transfer-rates
+track: tech-plus
+moduleId: tech-plus.it-concepts
+order: 6
+objective: "FC0-U71 1.3"
+xp: 15
+source: cyber-org
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 1.3", "transfer rates", "bandwidth", "Mbps", "USB", "Ethernet"]
+---
+
+## Transfer Rates
+
+Data transfer rate is the speed at which data moves from one location to another — over a network, between a CPU and RAM, or from a drive to memory. Understanding transfer rates is essential for performance planning and troubleshooting slow data operations.
+
+### Units of Transfer Rate
+
+Transfer rates are expressed in **bits per second** or **bytes per second**:
+
+| Unit | Abbreviation | Equivalent |
+|---|---|---|
+| Bits per second | bps | Base unit |
+| Kilobits per second | Kbps | 1,000 bps |
+| Megabits per second | Mbps | 1,000,000 bps |
+| Gigabits per second | Gbps | 1,000,000,000 bps |
+| Kilobytes per second | KBps | 8,000 bps |
+| Megabytes per second | MBps | 8,000,000 bps |
+| Gigabytes per second | GBps | 8,000,000,000 bps |
+
+**To convert Mbps to MB/s: divide by 8**
+
+Example: 100 Mbps ÷ 8 = **12.5 MB/s** maximum download speed
+
+### Download Time Calculation
+
+Formula: **Time (seconds) = File size (MB) ÷ Speed (MB/s)**
+
+| File Size | 10 Mbps connection | 100 Mbps connection | 1 Gbps connection |
+|---|---|---|---|
+| 100 MB | 80 seconds | 8 seconds | 0.8 seconds |
+| 1 GB (1,000 MB) | ~13 minutes | ~80 seconds | ~8 seconds |
+| 50 GB game | ~11 hours | ~67 minutes | ~7 minutes |
+
+### Network Interface Speeds (Ethernet)
+
+| Standard | Speed | Common Use |
+|---|---|---|
+| Fast Ethernet | 100 Mbps | Legacy office; acceptable for most web traffic |
+| Gigabit Ethernet | 1 Gbps | Current standard for desktops/servers |
+| 2.5G / 5G Ethernet | 2.5 / 5 Gbps | High-performance workstations, NAS |
+| 10 Gigabit Ethernet | 10 Gbps | Data center, server backbone |
+
+### Wi-Fi Standards and Speeds
+
+| Standard | Name | Max Speed | Notes |
+|---|---|---|---|
+| 802.11n | Wi-Fi 4 | 600 Mbps | 2.4 GHz and 5 GHz; still common |
+| 802.11ac | Wi-Fi 5 | 3.5 Gbps | 5 GHz; widespread consumer standard |
+| 802.11ax | Wi-Fi 6/6E | 9.6 Gbps | 2.4/5/6 GHz; current high-performance standard |
+| 802.11be | Wi-Fi 7 | 46 Gbps | Emerging; multi-link operation |
+
+Real-world speeds are always lower than max due to interference, distance, and protocol overhead.
+
+### USB Standards
+
+| Standard | Name | Speed |
+|---|---|---|
+| USB 2.0 | Hi-Speed USB | 480 Mbps |
+| USB 3.0 / 3.1 Gen 1 | SuperSpeed USB | 5 Gbps |
+| USB 3.1 Gen 2 | SuperSpeed USB 10G | 10 Gbps |
+| USB 3.2 Gen 2x2 | SuperSpeed USB 20G | 20 Gbps |
+| USB4 (Thunderbolt 4) | USB4 40G | 40 Gbps |
+
+Practical note: **USB 2.0** ports are blue or silver; **USB 3.x** ports are typically **blue** (standard) or **teal/red** (charging). USB-C connectors can carry USB 3.x, USB4, or Thunderbolt.
+
+### Storage Interface Speeds
+
+| Interface | Typical Speed | Notes |
+|---|---|---|
+| SATA III (HDD) | ~150 MB/s | Rotating drives; bottlenecked by mechanism |
+| SATA III (SSD) | ~550 MB/s | Near the interface limit |
+| M.2 NVMe PCIe 3.0 | ~3,500 MB/s | Current standard consumer SSD |
+| M.2 NVMe PCIe 4.0 | ~7,000 MB/s | High-performance SSD |
+| M.2 NVMe PCIe 5.0 | ~14,000 MB/s | Enterprise/gaming flagship SSD |
+
+### Latency vs. Throughput
+
+- **Throughput** (bandwidth) — how much data per second (Mbps, GBps)
+- **Latency** — the delay before data starts moving (measured in milliseconds, ms)
+- A high-throughput, high-latency link (e.g., satellite: 100 Mbps, 600 ms) feels slow for interactive use despite adequate bandwidth
+- Fiber: low latency (~1–5 ms); satellite: high latency (500–700 ms)
+
+### Key Exam Points
+
+- Transfer rates use **bits** per second (lowercase b): Mbps, Gbps
+- To find MB/s from Mbps, **divide by 8**
+- USB 3.0 = 5 Gbps; USB 2.0 = 480 Mbps; USB 3.1 Gen 2 = 10 Gbps
+- NVMe SSDs are dramatically faster than SATA SSDs (3,500 MB/s vs 550 MB/s)
+- **Latency** ≠ throughput — a fast pipe with high latency still feels slow for real-time use

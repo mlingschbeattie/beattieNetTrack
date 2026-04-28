@@ -1,0 +1,88 @@
+---
+title: Collaboration Software
+description: Understand tools for team communication, project management, video conferencing, and shared workspaces. FC0-U71 objective 3.3.
+slug: tech-plus-3-3-2-collaboration-software
+track: tech-plus
+moduleId: tech-plus.applications
+order: 7
+difficulty: Beginner
+estMinutes: 15
+tags: ["tech+", "FC0-U71 3.3", "collaboration", "Teams", "Slack", "video conferencing", "project management"]
+---
+
+## Collaboration Software
+
+Modern work is distributed — teammates work across different rooms, buildings, cities, and time zones. Collaboration software bridges that gap, replacing (or supplementing) physical meetings and paper workflows with digital tools.
+
+### Communication Platforms
+
+**Microsoft Teams**
+- Chat, video, voice, and file sharing in one platform
+- Deep integration with Microsoft 365 — open Word/Excel directly in Teams
+- Organized into **Teams** (groups) → **Channels** (topics within a team)
+- Dominant in enterprise environments, especially those using Microsoft 365
+
+**Slack**
+- Channel-based messaging; popular in tech and startup environments
+- Organized into **workspaces** → **channels** (public or private)
+- Rich app integration ecosystem (GitHub, Jira, Google Drive)
+- Free tier available; paid tiers unlock message history and more integrations
+
+**Discord**
+- Originally gaming-focused; now used by developer communities, educational servers
+- Servers → Channels (text and voice)
+- Free; supported by Nitro subscriptions
+
+### Video Conferencing
+
+| Platform | Notes |
+|---|---|
+| **Microsoft Teams** | Integrated with M365 calendar; enterprise standard |
+| **Zoom** | Easy joining; popular for external meetings and webinars |
+| **Google Meet** | Integrated with Google Calendar; runs in browser, no install |
+| **Webex** (Cisco) | Enterprise video; strong security features |
+| **FaceTime** | Apple-only; consumer; end-to-end encrypted |
+
+### Document Collaboration
+
+Modern productivity suites enable **real-time co-authoring**:
+- Google Docs/Sheets/Slides — multiple users edit simultaneously; changes visible in real time
+- Microsoft 365 (OneDrive/SharePoint) — co-authoring in Word, Excel, PowerPoint in browser or desktop app
+- **Version history** — every edit tracked; roll back to any prior version
+
+### Project Management Tools
+
+| Tool | Use Case |
+|---|---|
+| **Trello** | Kanban boards; visual task management |
+| **Asana** | Task tracking, timelines, team workflows |
+| **Jira** | Software development; bug tracking; agile sprints |
+| **Monday.com** | Highly customizable project/workflow tracking |
+| **Microsoft Planner** | Lightweight Kanban; integrated with Teams/M365 |
+| **GitHub Projects** | Code-linked project boards; native to GitHub |
+
+### Shared Storage / Cloud Drives
+
+- **OneDrive** — Microsoft; integrates with Windows and M365
+- **Google Drive** — Google; integrates with Workspace
+- **Dropbox** — third-party; cross-platform; simple sync
+- **SharePoint** — Microsoft; enterprise document management and intranet
+
+### Security Considerations
+
+- Collaboration tools often grant **external sharing by default** — users can accidentally share sensitive files with anyone via a link
+- Guest access should be reviewed and limited by admins
+- Video meetings should use **waiting rooms** and **meeting passwords** to prevent uninvited participants
+- **End-to-end encryption (E2EE)** availability varies by platform — Zoom and Teams do not use E2EE for all meeting types by default
+
+### OWASP Connection
+
+**Broken Access Control** (OWASP #1) — collaboration platforms frequently expose files and channels with overly permissive sharing settings, effectively becoming data leak vectors when users share "anyone with the link" access to sensitive documents.
+
+### Key Exam Points
+
+- **Teams** = Microsoft's integrated platform; **Slack** = third-party channel chat
+- Google Docs enables **real-time simultaneous editing** with version history
+- Project management tools (Trello, Asana, Jira) track tasks and timelines, not just communication
+- Review and restrict **external sharing settings** in collaboration platforms — default is often too permissive
+- Video meetings: use **waiting rooms** and **passwords** to control access

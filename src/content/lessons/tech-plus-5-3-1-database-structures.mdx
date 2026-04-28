@@ -1,0 +1,133 @@
+---
+title: Database Structures
+description: Understand relational database structures — entity-relationship diagrams, normalization, indexes, and NoSQL alternatives. FC0-U71 objective 5.3.
+slug: tech-plus-5-3-1-database-structures
+track: tech-plus
+moduleId: tech-plus.databases
+order: 4
+objective: "FC0-U71 5.3"
+xp: 15
+source: cyber-org
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 5.3", "database structures", "ER diagram", "normalization", "indexes", "NoSQL"]
+---
+
+## Database Structures
+
+Database structure is how a database is organized internally — the design of tables, relationships between them, and optimization features. A well-designed structure is critical for performance, accuracy, and maintainability.
+
+### Entity-Relationship (ER) Diagrams
+
+An **ER diagram** is a visual map of a database's structure — what entities (tables) exist and how they relate to each other.
+
+**Key components:**
+- **Entity** — a table; represented as a rectangle: `[Students]`, `[Courses]`
+- **Attribute** — a column within the entity: `student_id`, `first_name`
+- **Relationship** — how entities connect, shown with a line and cardinality notation
+
+ER diagrams are used during **database design** (before implementation) to verify the structure is correct.
+
+### Relationships: Cardinality
+
+**1:1 (One-to-One)** — each record in Table A is related to exactly one record in Table B
+- Example: One person has one passport; one passport belongs to one person
+
+**1:Many (One-to-Many)** — one record in Table A is related to many records in Table B
+- Example: One teacher has many students; one student has one homeroom teacher
+- Most common relationship type in relational databases
+
+**Many:Many (Many-to-Many)** — many records in A relate to many in B
+- Example: Many students enroll in many courses
+- Implemented with a **junction table** (bridge table): `StudentCourses(student_id, course_id)`
+
+### Foreign Keys and Referential Integrity
+
+A **foreign key** enforces the relationship between tables:
+
+```sql
+-- The enrollments table links students to courses
+CREATE TABLE enrollments (
+    enrollment_id INT PRIMARY KEY,
+    student_id INT,
+    course_id INT,
+    FOREIGN KEY (student_id) REFERENCES students(student_id),
+    FOREIGN KEY (course_id) REFERENCES courses(course_id)
+);
+```
+
+**Referential integrity** — the database enforces that foreign key values always point to a real record. You cannot add an enrollment for a student_id that doesn't exist in the students table.
+
+### Normalization
+
+**Database normalization** is the process of structuring tables to reduce data redundancy and improve data integrity.
+
+**Why normalize?**
+- Prevents the same data from being stored in multiple places (reducing update anomalies)
+- Reduces storage waste
+- Makes updates simpler and more accurate
+
+**Normal Forms (simplified):**
+
+**1NF (First Normal Form):**
+- All column values are atomic (indivisible) — no lists in a cell
+- Each row is unique (has a primary key)
+- Bad: storing `"Alice, Bob, Carol"` in a single "students" cell
+- Good: one student per row
+
+**2NF (Second Normal Form):**
+- Meets 1NF
+- All non-key columns depend on the entire primary key (not just part of it)
+- Eliminates partial dependencies
+
+**3NF (Third Normal Form):**
+- Meets 2NF
+- No column depends on another non-key column (no transitive dependencies)
+- If `zip_code` determines `city`, `city` should be in its own table, not in the orders table
+
+### Indexes
+
+An **index** is a data structure that speeds up data retrieval — similar to the index at the back of a book.
+
+- Without an index: the database scans every row to find matches (full table scan) — slow for large tables
+- With an index: the database uses the index to jump directly to matching rows
+
+```sql
+-- Create an index on last_name for faster lookups
+CREATE INDEX idx_last_name ON students(last_name);
+```
+
+**Trade-offs:**
+- Indexes speed up **reads** (SELECT)
+- Indexes slow down **writes** (INSERT, UPDATE, DELETE) because the index must be updated
+- Too many indexes waste storage and hurt write performance
+
+Primary keys are automatically indexed.
+
+### NoSQL Database Types
+
+Not all databases use the relational model:
+
+| Type | Structure | Examples | Best For |
+|---|---|---|---|
+| **Document** | JSON/BSON documents | MongoDB, CouchDB | User profiles, content management |
+| **Key-Value** | Key → value pairs | Redis, DynamoDB | Caching, session storage, shopping carts |
+| **Column** | Columns grouped by query | Cassandra, HBase | Time-series, analytics at scale |
+| **Graph** | Nodes and edges | Neo4j, Amazon Neptune | Social networks, fraud detection, relationships |
+
+### Choosing the Right Structure
+
+- Well-defined, consistent data → **relational (SQL)**
+- Flexible, document-style data → **document (MongoDB)**
+- Ultra-fast cache access → **key-value (Redis)**
+- Heavily connected data → **graph (Neo4j)**
+- Time-series sensor data → **column (Cassandra)**
+
+### Key Exam Points
+
+- **ER diagram** = visual map of tables and their relationships
+- **1:1, 1:Many, Many:Many** — understand each; Many:Many requires a junction table
+- **Foreign key** enforces referential integrity — links rows across tables
+- **Normalization** reduces redundancy; **1NF** (atomic values), **2NF**, **3NF** are the main forms
+- **Index** = speeds up reads, slows writes; primary keys are auto-indexed
+- **NoSQL types:** document (MongoDB), key-value (Redis), column (Cassandra), graph (Neo4j)

@@ -1,0 +1,92 @@
+---
+title: Storage Units
+description: Understand digital storage units from bits to petabytes, SI vs binary prefixes, and why advertised vs actual storage capacity differs. FC0-U71 objective 1.3.
+slug: tech-plus-1-3-1-storage-units
+track: tech-plus
+moduleId: tech-plus.it-concepts
+order: 5
+objective: "FC0-U71 1.3"
+xp: 15
+source: cyber-org
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 1.3", "storage units", "bytes", "gigabyte", "terabyte", "binary prefix"]
+---
+
+## Storage Units
+
+Every file, photo, video, and program on a computer is measured in digital storage units. Understanding the hierarchy from bits to terabytes — and why manufacturer-listed capacities don't match OS-reported capacities — prevents confusion and supports accurate capacity planning.
+
+### The Storage Hierarchy
+
+| Unit | Abbreviation | Size |
+|---|---|---|
+| **Bit** | b | 1 binary digit (0 or 1) |
+| **Nibble** | — | 4 bits |
+| **Byte** | B | 8 bits |
+| **Kilobyte** | KB | 1,000 bytes (SI) or 1,024 bytes (binary) |
+| **Megabyte** | MB | 1,000,000 bytes (SI) or 1,048,576 bytes (binary) |
+| **Gigabyte** | GB | 1,000,000,000 bytes (SI) or 1,073,741,824 bytes (binary) |
+| **Terabyte** | TB | 1,000,000,000,000 bytes (SI) or ~1.1 trillion bytes (binary) |
+| **Petabyte** | PB | 1,000 terabytes (SI) |
+| **Exabyte** | EB | 1,000 petabytes (SI) |
+
+### SI (Decimal) vs. Binary Prefixes
+
+This is a common source of confusion:
+
+**SI (metric) — used by hard drive manufacturers and storage vendors:**
+- 1 KB = 1,000 bytes (10³)
+- 1 MB = 1,000,000 bytes (10⁶)
+- 1 GB = 1,000,000,000 bytes (10⁹)
+- 1 TB = 1,000,000,000,000 bytes (10¹²)
+
+**Binary (IEC) — used by operating systems internally:**
+- 1 KiB (kibibyte) = **1,024** bytes (2¹⁰)
+- 1 MiB (mebibyte) = **1,048,576** bytes (2²⁰)
+- 1 GiB (gibibyte) = **1,073,741,824** bytes (2³⁰)
+- 1 TiB (tebibyte) = **1,099,511,627,776** bytes (2⁴⁰)
+
+**Why does my 1TB drive show as ~931 GB?**
+- The manufacturer uses SI: 1 TB = 1,000,000,000,000 bytes
+- Windows reports in binary: 1,000,000,000,000 ÷ 1,073,741,824 ≈ **931 GiB**
+- The bytes are all there — the units are just different
+
+### Quick Reference: Powers of 2
+
+| Power | Value | Binary unit |
+|---|---|---|
+| 2¹⁰ | 1,024 | 1 KiB |
+| 2²⁰ | 1,048,576 | 1 MiB |
+| 2³⁰ | 1,073,741,824 | 1 GiB |
+| 2⁴⁰ | 1,099,511,627,776 | 1 TiB |
+
+### Typical Storage Sizes (Reference)
+
+| Item | Approximate Size |
+|---|---|
+| Plain text document (1 page) | ~3 KB |
+| High-res photo (JPEG) | 3–8 MB |
+| MP3 song (4 min) | ~4 MB |
+| Standard definition video (1 hr) | ~700 MB |
+| HD video (1 hr) | 5–8 GB |
+| 4K video (1 hr) | 15–50 GB |
+| Modern AAA video game | 50–100+ GB |
+| VM disk image | 20–100+ GB |
+
+### Bits vs. Bytes — The ISP Trap
+
+**Critical distinction:** lowercase **b** = bits, uppercase **B** = bytes
+
+- Internet speeds are measured in **bits per second** (Mbps)
+- File sizes are measured in **bytes** (MB, GB)
+- A 100 **Mbps** connection can download at ~12.5 **MB/s** (divide by 8)
+- This is why downloading a 1 GB file on a "100 Mbps" connection takes ~80 seconds, not 10
+
+### Key Exam Points
+
+- **8 bits = 1 byte** — most important relationship in computing
+- **1 KB ≈ 1,000 bytes** (SI) vs **1 KiB = 1,024 bytes** (binary)
+- Drive manufacturers use SI; operating systems report in binary → drives appear "smaller" than advertised
+- A 1 TB drive shows as ~**931 GB** in Windows — this is normal, not missing space
+- **b** (lowercase) = bits; **B** (uppercase) = bytes; ISP speeds use bits (Mbps)

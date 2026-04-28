@@ -1,0 +1,105 @@
+---
+title: Fundamental Data Types
+description: Identify and work with fundamental data types — integers, floats, strings, booleans, and characters — used in programming. FC0-U71 objective 4.2.
+slug: tech-plus-4-2-1-fundamental-data-types
+track: tech-plus
+moduleId: tech-plus.software-dev
+order: 2
+objective: "FC0-U71 4.2"
+xp: 15
+source: cyber-org
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 4.2", "data types", "integer", "string", "boolean", "float"]
+---
+
+## Fundamental Data Types
+
+Every value in a computer program has a **data type** — a classification that defines what kind of data it is and what operations can be performed on it. Understanding data types is foundational to reading code, diagnosing bugs, and designing systems.
+
+### Core Data Types
+
+**Integer (int)**
+- Whole numbers — no decimal point
+- Can be positive, negative, or zero
+- Examples: `0`, `42`, `-7`, `1000`
+- Storage: typically 16, 32, or 64 bits
+  - 32-bit integer: range approximately −2 billion to +2 billion
+  - 64-bit integer: range approximately −9.2 × 10¹⁸ to +9.2 × 10¹⁸
+- Use case: counting, indexing, loop counters, whole quantities (number of users)
+
+**Floating-Point (float / double)**
+- Numbers with decimal points — approximations of real numbers
+- `float`: 32-bit (single precision); less precise; smaller range
+- `double`: 64-bit (double precision); more precise; used by default in most languages
+- Examples: `3.14`, `-0.001`, `9.99`, `2.0`
+- **Important:** floats are approximations — `0.1 + 0.2` in binary floating-point = `0.30000000000000004`, not exactly `0.3`
+- Use case: prices (with care), scientific measurements, graphics coordinates
+
+**String (str)**
+- A sequence of characters — text data
+- Enclosed in quotes: `"Hello, World!"`, `'Tech+'`
+- Can contain letters, digits, spaces, symbols
+- Examples: `"user@example.com"`, `"192.168.1.1"`, `"FC0-U71"`
+- Operations: concatenation, slicing, length, search, replace, upper/lowercase
+- Use case: names, addresses, usernames, file paths, messages
+
+**Boolean (bool)**
+- Only two possible values: **True** or **False** (1 or 0)
+- The result of comparisons and logical operations
+- Examples: `is_logged_in = True`, `file_exists = False`
+- Use case: conditions, flags, control flow (`if`, `while`)
+
+**Character (char)**
+- A single character — one letter, digit, symbol, or whitespace
+- Examples: `'A'`, `'9'`, `'!'`, `' '`
+- In many languages (Java, C), `char` is a distinct type; in Python, a "character" is just a 1-character string
+- Encoded as a number: ASCII or Unicode (UTF-8, UTF-16)
+  - `'A'` = ASCII 65 = binary 01000001
+
+**Null / None / Void**
+- Represents the absence of a value
+- `null` (Java, JavaScript, C#), `None` (Python), `nil` (Ruby, Swift)
+- Different from `0` or `""` — it means "no value exists at all"
+- A variable declared but not assigned yet is often `null`
+
+### Type Conversion
+
+Moving data from one type to another:
+
+**Implicit (automatic) conversion:**
+```python
+x = 5 + 2.0   # int + float → float automatically: 7.0
+```
+
+**Explicit (casting) conversion:**
+```python
+x = int("42")    # string → integer: 42
+y = str(100)     # integer → string: "100"
+z = float("3.14") # string → float: 3.14
+```
+
+**Type mismatch errors** are common bugs:
+- Can't add a string to an integer in strictly-typed languages without explicit conversion
+- `"5" + 3` may produce `"53"` (concatenation) or an error depending on the language
+
+### Data Type Size and Memory
+
+| Type | Typical Size | Range / Notes |
+|---|---|---|
+| bool | 1 byte | True or False |
+| char | 1 byte (ASCII) or 4 bytes (Unicode) | Single character |
+| int (32-bit) | 4 bytes | ±2,147,483,647 |
+| int (64-bit) | 8 bytes | ±9.2 × 10¹⁸ |
+| float | 4 bytes | ~7 significant digits |
+| double | 8 bytes | ~15 significant digits |
+
+### Key Exam Points
+
+- **Integer (int)** — whole numbers; no decimal
+- **Float/double** — decimal numbers; approximations; `double` is more precise than `float`
+- **String** — text; sequence of characters
+- **Boolean** — True/False; used in conditions
+- **Char** — single character; encoded as ASCII or Unicode
+- **Null/None** — absence of a value; not the same as `0` or `""`
+- Float arithmetic can be imprecise — **avoid using floats for exact currency calculations** (use integer cents or a `Decimal` type instead)

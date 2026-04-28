@@ -1,0 +1,99 @@
+---
+title: Processing Speed
+description: Understand CPU processing speed — clock cycles, GHz, cores, threads, and the factors that determine real-world performance. FC0-U71 objective 1.3.
+slug: tech-plus-1-3-3-processing-speed
+track: tech-plus
+moduleId: tech-plus.it-concepts
+order: 7
+objective: "FC0-U71 1.3"
+xp: 15
+source: cyber-org
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 1.3", "processing speed", "CPU", "GHz", "cores", "clock speed"]
+---
+
+## Processing Speed
+
+The CPU (Central Processing Unit) is the "brain" of a computer. Its performance is measured in several ways — clock speed, core count, thread count, and cache — and understanding these measurements helps technicians select appropriate hardware and diagnose performance bottlenecks.
+
+### Clock Speed
+
+A CPU operates on a **clock** — an oscillator that produces a fixed number of electrical pulses per second. Each pulse is an opportunity to execute an operation.
+
+- Measured in **hertz (Hz)**
+- Modern CPUs operate at **gigahertz (GHz)** — billions of cycles per second
+- 1 GHz = **1,000,000,000 cycles per second**
+
+**Common examples:**
+- Budget laptop CPU: 2.0 – 3.0 GHz
+- Mainstream desktop CPU: 3.5 – 5.0 GHz
+- High-performance CPU: 5.0 – 6.0+ GHz (with boost)
+
+**Higher clock speed ≠ always faster** — the architecture (how many operations per cycle) also matters.
+
+### IPC — Instructions Per Clock
+
+**IPC (Instructions Per Clock)** is the number of instructions a CPU can complete per clock cycle. A modern CPU with fewer GHz but higher IPC can outperform an older CPU with higher GHz.
+
+This is why you can't directly compare GHz across different CPU generations (e.g., an Intel 12th gen at 5 GHz often performs better than an Intel 8th gen at 4 GHz).
+
+### Cores and Threads
+
+**Core** — an independent processing unit within the CPU. A quad-core CPU has 4 separate execution engines, each able to run instructions simultaneously.
+
+**Thread** — a virtual CPU created through **Simultaneous Multi-Threading (SMT)** (Intel calls this Hyper-Threading). Each physical core can run 2 threads concurrently.
+
+| CPU Type | Physical Cores | Threads |
+|---|---|---|
+| Single-core (legacy) | 1 | 1 |
+| Dual-core | 2 | 2–4 |
+| Quad-core | 4 | 4–8 |
+| Octa-core | 8 | 8–16 |
+| 24-core (modern high-end) | 24 | 24–48 |
+
+**Single-threaded performance** — one core working as fast as possible. Matters for: gaming, most legacy software, tasks that can't be parallelized.
+
+**Multi-threaded performance** — many cores working in parallel. Matters for: video rendering, scientific computation, virtualization, server workloads.
+
+### CPU Cache
+
+Cache is extremely fast memory built into the CPU itself — much faster than RAM.
+
+| Level | Size (typical) | Speed | Purpose |
+|---|---|---|---|
+| **L1 cache** | 32–128 KB per core | Fastest | Most frequently used data |
+| **L2 cache** | 256 KB – 2 MB per core | Fast | Overflow from L1 |
+| **L3 cache** | 6–64 MB (shared) | Still faster than RAM | Shared between cores |
+
+When data isn't in cache, the CPU stalls waiting for it from RAM — a **cache miss**. More cache = fewer stalls = better performance.
+
+### Understanding the Hz Scale
+
+| Unit | Value |
+|---|---|
+| **Hz** | 1 cycle/second |
+| **KHz** | 1,000 cycles/second |
+| **MHz** | 1,000,000 cycles/second |
+| **GHz** | 1,000,000,000 cycles/second |
+
+Historical context: the IBM PC (1981) ran at **4.77 MHz**. A modern CPU at 5 GHz is over **1,000× faster in clock speed alone** — and enormously more capable per clock due to IPC improvements.
+
+### Factors That Affect Effective Processing Speed
+
+1. **Clock speed (GHz)** — raw cycles per second
+2. **IPC** — instructions completed per cycle
+3. **Core count** — parallelism
+4. **Cache size** — reduces RAM bottleneck
+5. **Thermal throttling** — CPU slows itself if it overheats; poor cooling = reduced performance
+6. **RAM speed** — if CPU runs faster than RAM can supply data, the CPU waits
+7. **Power limits** — laptops cap CPU power to preserve battery; same CPU runs faster in a desktop
+
+### Key Exam Points
+
+- Clock speed measured in **GHz** (gigahertz = billions of cycles per second)
+- Higher GHz does not always mean faster if comparing different architectures — IPC matters
+- **Cores** = physical execution units; **threads** = virtual cores via SMT/Hyper-Threading
+- More cores benefit **parallelizable** tasks; single-threaded tasks depend on clock speed and IPC
+- **Thermal throttling** reduces CPU speed to prevent overheating — poor cooling directly reduces performance
+- Cache hierarchy: L1 (fastest, smallest) → L2 → L3 (slowest cache, but still faster than RAM)
