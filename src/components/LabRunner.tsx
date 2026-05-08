@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { getLabState, markLabCompleted, saveLabState } from '../lib/progressStore';
 import { startBeaconSession } from '../lib/cis/beacon';
+import { emitLabStarted, emitLabCompleted, type CISDomainTag } from '../lib/events';
 import type { DomainMapping } from '../types/lab';
 
 type ExactValidator = {
@@ -100,6 +101,17 @@ export default function LabRunner({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // CIS events: emit lab_started once per day on mount
+  useEffect(() => {
+    if (!apiUrl || domains.length === 0) return;
+    const cisDomains: CISDomainTag[] = domains.map((d) => ({
+      domainId: d.domainId,
+      weight: d.weight ?? 1.0,
+    }));
+    emitLabStarted(labSlug, title, cisDomains, apiUrl);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const currentStep = useMemo(() => {
     if (steps.length === 0) return null;
     return steps[Math.max(0, Math.min(currentStepIndex, steps.length - 1))];
@@ -151,22 +163,23 @@ export default function LabRunner({
       });
       markLabCompleted(labSlug, xpReward);
       window.dispatchEvent(new CustomEvent('progress-updated'));
-      // CIS lab-completion event (fire-and-forget; beacon loss is acceptable)
+      // CIS event: emit lab_completed once (guarded by localStorage flag inside emitLabCompleted)
+      if (apiUrl && domains.length > 0) {
+        const cisDomains: CISDomainTag[] = domains.map((d) => ({
+          domainId: d.domainId,
+          weight: d.weight ?? 1.0,
+        }));
+        emitLabCompleted(labSlug, Object.keys(answers).length, cisDomains, apiUrl);
+      }
+      // Submit lab to server: saves answers + records initial mastery placeholder
       if (apiUrl) {
-        fetch(`${apiUrl}/api/events`, {
+        fetch(`${apiUrl}/api/lms/labs/${labSlug}/submit`, {
           method: 'POST',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            type: 'lms.lab_completed',
-            payload: {
-              labId: labSlug,
-              domains,
-              contentType: 'lab',
-              contentId: labSlug,
-              score: null,
-              maxScore: 100,
-            },
+            answers,
+            completedAt: completedAt,
           }),
         }).catch(() => {});
       }

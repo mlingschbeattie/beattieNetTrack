@@ -35,17 +35,13 @@ export function startBeaconSession(params: {
 
     // Student is active — send beacon
     try {
-      await fetch(`${params.apiUrl}/api/cis/beacon`, {
+      await fetch(`${params.apiUrl}/api/competency/beacon`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          domainIds: params.domainIds,
           contentType: params.contentType,
           contentId: params.contentId,
-          sessionId,
-          idleSecondsTotal,
-          idleCount,
         }),
       });
     } catch {

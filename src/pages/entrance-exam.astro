@@ -1,0 +1,287 @@
+---
+import AppShell from '../layouts/AppShell.astro';
+import { getCollection } from 'astro:content';
+import EntranceExamIsland from '../components/EntranceExam';
+
+const tracks = await getCollection('tracks');
+const apiUrl = import.meta.env.PUBLIC_API_URL ?? '';
+---
+
+<AppShell
+  title="Placement Exam — Beattie Tech"
+  tracks={tracks}
+  breadcrumbs={[{ label: 'Placement Exam' }]}
+>
+  <div class="entrance-exam-page">
+    <header class="entrance-exam-page__header">
+      <h1>CIS Placement Exam</h1>
+      <p class="entrance-exam-page__subtitle">
+        This 40-question assessment determines your starting point in the CIS curriculum.
+        Take your time — there is no time limit. You may only submit once.
+      </p>
+      <div class="entrance-exam-page__meta">
+        <span class="pill">40 Questions</span>
+        <span class="pill">One attempt</span>
+        <span class="pill">~15 minutes</span>
+      </div>
+    </header>
+
+    <EntranceExamIsland apiUrl={apiUrl} client:load />
+  </div>
+</AppShell>
+
+<style>
+  .entrance-exam-page {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-4);
+  }
+
+  .entrance-exam-page__header {
+    margin-bottom: var(--space-10);
+    text-align: center;
+  }
+
+  .entrance-exam-page__header h1 {
+    font-size: var(--text-3xl);
+    font-weight: 700;
+    margin: 0 0 var(--space-3);
+  }
+
+  .entrance-exam-page__subtitle {
+    color: var(--color-text-muted);
+    font-size: var(--text-base);
+    max-width: 600px;
+    margin: 0 auto var(--space-4);
+    line-height: var(--leading-relaxed);
+  }
+
+  .entrance-exam-page__meta {
+    display: flex;
+    gap: var(--space-2);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* ── EntranceExam component styles ── */
+  :global(.entrance-exam) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+  }
+
+  :global(.entrance-exam__progress-bar) {
+    height: 4px;
+    background: var(--color-border);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  :global(.entrance-exam__progress-fill) {
+    height: 100%;
+    background: var(--color-accent, #38bdf8);
+    transition: width 0.3s ease;
+    border-radius: var(--radius-full);
+  }
+
+  :global(.entrance-exam__progress-label) {
+    text-align: right;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin: calc(-1 * var(--space-8)) 0 0;
+  }
+
+  :global(.entrance-exam__section) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  :global(.entrance-exam__section-title) {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-3);
+    margin: 0;
+  }
+
+  :global(.entrance-exam__question) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  :global(.entrance-exam__question-prompt) {
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  :global(.entrance-exam__question-num) {
+    color: var(--color-text-muted);
+    font-weight: 600;
+  }
+
+  :global(.entrance-exam__options) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  :global(.entrance-exam__option) {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    background: var(--color-surface);
+  }
+
+  :global(.entrance-exam__option:hover) {
+    border-color: var(--color-accent, #38bdf8);
+    background: var(--color-surface-2);
+  }
+
+  :global(.entrance-exam__option--selected) {
+    border-color: var(--color-accent, #38bdf8);
+    background: rgba(56, 189, 248, 0.1);
+  }
+
+  :global(.entrance-exam__option-letter) {
+    font-weight: 700;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    min-width: 1.25rem;
+    padding-top: 1px;
+  }
+
+  :global(.entrance-exam__option--selected .entrance-exam__option-letter) {
+    color: var(--color-accent, #38bdf8);
+  }
+
+  :global(.entrance-exam__option-text) {
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text);
+  }
+
+  :global(.entrance-exam__error) {
+    color: #E24B4A;
+    font-size: var(--text-sm);
+    background: rgba(226, 75, 74, 0.1);
+    border: 1px solid rgba(226, 75, 74, 0.4);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  :global(.entrance-exam__submit-row) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
+  }
+
+  :global(.entrance-exam__submit-hint) {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  /* ── Results screen styles ── */
+  :global(.entrance-exam__done),
+  :global(.entrance-exam__results) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-6);
+    padding: var(--space-12) var(--space-4);
+    text-align: center;
+  }
+
+  :global(.entrance-exam__done-icon) {
+    font-size: 3rem;
+    color: #00FF41;
+  }
+
+  :global(.entrance-exam__results-header h2) {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    margin: 0 0 var(--space-2);
+  }
+
+  :global(.entrance-exam__results-sub) {
+    color: var(--color-text-muted);
+    font-size: var(--text-base);
+    margin: 0;
+  }
+
+  :global(.entrance-exam__score-card) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-8);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    min-width: 240px;
+  }
+
+  :global(.entrance-exam__score-number) {
+    font-size: var(--text-5xl);
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  :global(.entrance-exam__tier-badge) {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: var(--space-1) var(--space-4);
+    border: 2px solid;
+    border-radius: var(--radius-full);
+  }
+
+  :global(.entrance-exam__placement-info) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    width: 100%;
+    max-width: 400px;
+  }
+
+  :global(.entrance-exam__placement-row) {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-4);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border);
+    font-size: var(--text-sm);
+  }
+
+  :global(.entrance-exam__placement-label) {
+    color: var(--color-text-muted);
+  }
+
+  :global(.entrance-exam__placement-value) {
+    font-weight: 600;
+    color: var(--color-text);
+    text-align: right;
+  }
+
+  :global(.entrance-exam__cta) {
+    margin-top: var(--space-4);
+  }
+</style>

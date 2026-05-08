@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 
 interface StudentAnswer {
-  studentId: string;
-  studentName: string;
+  id: number;
+  studentUsername: string;
   answers: Record<string, string>;
   submittedAt: string | null;
+  score: number | null;
+  gradedBy: string | null;
 }
 
 interface GradeEntryProps {
@@ -54,7 +56,7 @@ export default function GradeEntry({ labId, labTitle, apiUrl }: GradeEntryProps)
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ studentId, score }),
+        body: JSON.stringify({ studentUsername: studentId, score }),
       });
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
       setGradeStates((prev) => ({ ...prev, [studentId]: 'saved' }));
@@ -102,10 +104,10 @@ export default function GradeEntry({ labId, labTitle, apiUrl }: GradeEntryProps)
         </thead>
         <tbody>
           {students.map((student) => {
-            const state = gradeStates[student.studentId] ?? 'idle';
+            const state = gradeStates[student.studentUsername] ?? 'idle';
             return (
-              <tr key={student.studentId}>
-                <td>{student.studentName || student.studentId}</td>
+              <tr key={student.studentUsername}>
+                <td>{student.studentUsername}</td>
                 <td>{student.submittedAt ? new Date(student.submittedAt).toLocaleDateString() : '—'}</td>
                 <td>
                   <details>
@@ -125,12 +127,12 @@ export default function GradeEntry({ labId, labTitle, apiUrl }: GradeEntryProps)
                     type="number"
                     min={0}
                     max={100}
-                    value={scores[student.studentId] ?? ''}
+                    value={scores[student.studentUsername] ?? (student.score !== null ? String(student.score) : '')}
                     onChange={(e) =>
-                      setScores((prev) => ({ ...prev, [student.studentId]: e.target.value }))
+                      setScores((prev) => ({ ...prev, [student.studentUsername]: e.target.value }))
                     }
                     disabled={state === 'saving' || state === 'saved'}
-                    aria-label={`Score for ${student.studentName || student.studentId}`}
+                    aria-label={`Score for ${student.studentUsername}`}
                   />
                 </td>
                 <td>
@@ -140,7 +142,7 @@ export default function GradeEntry({ labId, labTitle, apiUrl }: GradeEntryProps)
                     <button
                       className="quiz-btn quiz-btn--primary"
                       type="button"
-                      onClick={() => handleGrade(student.studentId)}
+                      onClick={() => handleGrade(student.studentUsername)}
                       disabled={state === 'saving'}
                     >
                       {state === 'saving' ? 'Saving…' : 'Save grade'}

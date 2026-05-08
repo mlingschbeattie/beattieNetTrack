@@ -1,0 +1,283 @@
+---
+import AppShell from '../layouts/AppShell.astro';
+import { getCollection } from 'astro:content';
+import CompetencyDashboard from '../components/student/CompetencyDashboard';
+
+const tracks = await getCollection('tracks');
+const apiUrl = import.meta.env.PUBLIC_API_URL ?? '';
+
+// Remote-User is set by Caddy/Authelia — safe to read server-side in SSR
+const username = Astro.request.headers.get('Remote-User') ?? '';
+
+if (!username) {
+  // Authelia should have blocked this, but guard anyway
+  return Astro.redirect('/');
+}
+---
+
+<AppShell
+  title="My Competency Profile — Beattie Tech"
+  tracks={tracks}
+  breadcrumbs={[{ label: 'My Competency' }]}
+>
+  <div class="competency-page">
+    <header class="competency-page__header">
+      <h1>Competency Profile</h1>
+      <p class="competency-page__sub">
+        Track your mastery, time on task, and certification readiness.
+      </p>
+    </header>
+
+    <CompetencyDashboard username={username} apiUrl={apiUrl} client:load />
+  </div>
+</AppShell>
+
+<style>
+  .competency-page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .competency-page__header h1 {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    margin: 0 0 var(--space-2);
+  }
+
+  .competency-page__sub {
+    color: var(--color-text-muted);
+    font-size: var(--text-base);
+    margin: 0;
+  }
+
+  /* ── CompetencyDashboard component styles ── */
+  :global(.competency-dash) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+  }
+
+  :global(.competency-dash__loading) {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  :global(.competency-dash__stats) {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  :global(.competency-dash__stat-card) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-5) var(--space-8);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    min-width: 140px;
+    gap: var(--space-1);
+  }
+
+  :global(.competency-dash__stat-num) {
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  :global(.competency-dash__stat-label) {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+  }
+
+  :global(.competency-dash__exam-cta) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-6);
+    background: rgba(239,159,39,0.08);
+    border: 1px solid rgba(239,159,39,0.3);
+    border-radius: var(--radius-lg);
+    font-size: var(--text-sm);
+  }
+
+  :global(.competency-dash__exam-cta p) {
+    margin: 0;
+    color: #EF9F27;
+  }
+
+  :global(.competency-dash__certs) {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: var(--space-6);
+  }
+
+  :global(.competency-dash__cert-card) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    padding: var(--space-6);
+    border: 1px solid;
+    border-radius: var(--radius-lg);
+  }
+
+  :global(.competency-dash__cert-top) {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+
+  :global(.competency-dash__cert-name) {
+    font-size: var(--text-base);
+    font-weight: 700;
+    margin: 0 0 var(--space-1);
+  }
+
+  :global(.competency-dash__cert-id) {
+    font-size: var(--text-xs);
+    font-family: var(--font-mono);
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  :global(.radial-gauge) {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  :global(.radial-gauge__center) {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+  }
+
+  :global(.radial-gauge__pct) {
+    font-size: var(--text-lg);
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  :global(.radial-gauge__tier) {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+
+  :global(.competency-dash__domains) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  :global(.competency-dash__domain-row) {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: default;
+  }
+
+  :global(.competency-dash__domain-code) {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    min-width: 32px;
+  }
+
+  :global(.competency-dash__domain-bar-track) {
+    flex: 1;
+    height: 6px;
+    background: rgba(148,163,184,0.2);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+  }
+
+  :global(.competency-dash__domain-bar-fill) {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 0.4s ease;
+  }
+
+  :global(.competency-dash__domain-pct) {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    min-width: 32px;
+    text-align: right;
+  }
+
+  /* Recommendations */
+  :global(.competency-dash__recs-title) {
+    font-size: var(--text-xl);
+    font-weight: 600;
+    margin: 0 0 var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-3);
+  }
+
+  :global(.competency-dash__recs-list) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  :global(.competency-dash__rec-card) {
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  :global(.competency-dash__rec-header) {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  :global(.competency-dash__rec-priority) {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  :global(.competency-dash__rec-domain) {
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+
+  :global(.competency-dash__rec-action) {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: var(--leading-relaxed);
+  }
+
+  :global(.competency-dash__rec-link) {
+    font-size: var(--text-sm);
+    color: var(--color-accent, #38bdf8);
+    text-decoration: none;
+  }
+
+  :global(.competency-dash__rec-link:hover) {
+    text-decoration: underline;
+  }
+</style>

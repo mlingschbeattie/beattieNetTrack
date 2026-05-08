@@ -1,0 +1,205 @@
+---
+import AppShell from '../../layouts/AppShell.astro';
+import { getCollection } from 'astro:content';
+import CompetencyMapView from '../../components/teacher/CompetencyMapView';
+
+const tracks = await getCollection('tracks');
+const apiUrl = import.meta.env.PUBLIC_API_URL ?? '';
+---
+
+<AppShell
+  title="Competency Map — Beattie Tech"
+  tracks={tracks}
+  breadcrumbs={[
+    { label: 'Admin', href: '/admin' },
+    { label: 'Competency Map' },
+  ]}
+>
+  <div class="admin-page">
+    <header class="admin-page__header">
+      <div>
+        <h1>Competency Map</h1>
+        <p class="admin-page__subtitle">
+          All content items and their cert domain mappings for the active curriculum.
+        </p>
+      </div>
+      <nav class="admin-page__nav">
+        <a href="/admin" class="btn btn--secondary btn--sm">Roster</a>
+        <a href="/admin/competency-map" class="btn btn--secondary btn--sm btn--active">Competency Map</a>
+      </nav>
+    </header>
+
+    <CompetencyMapView apiUrl={apiUrl} client:load />
+  </div>
+</AppShell>
+
+<style>
+  .admin-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .admin-page__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+  }
+
+  .admin-page__header h1 {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    margin: 0 0 var(--space-1);
+  }
+
+  .admin-page__subtitle {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    margin: 0;
+  }
+
+  .admin-page__nav {
+    display: flex;
+    gap: var(--space-2);
+    flex-shrink: 0;
+  }
+
+  /* ── CompetencyMapView styles ── */
+  :global(.comp-map) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  :global(.comp-map__loading),
+  :global(.comp-map__empty) {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    text-align: center;
+    padding: var(--space-12);
+  }
+
+  :global(.comp-map__toolbar) {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  :global(.comp-map__toolbar .input) {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  :global(.comp-map__count) {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  :global(.comp-map__cert) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  :global(.comp-map__cert-id) {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    font-family: var(--font-mono);
+    margin: 0;
+    padding-bottom: var(--space-3);
+    border-bottom: 2px solid var(--color-border);
+  }
+
+  :global(.comp-map__domain) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding-left: var(--space-4);
+    border-left: 2px solid var(--color-border);
+  }
+
+  :global(.comp-map__domain-header) {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+  }
+
+  :global(.comp-map__domain-code) {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--color-accent, #38bdf8);
+  }
+
+  :global(.comp-map__domain-name) {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  :global(.comp-map__domain-count) {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    margin-left: auto;
+  }
+
+  :global(.comp-map__table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  :global(.comp-map__table th) {
+    text-align: left;
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  :global(.comp-map__table td) {
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: top;
+  }
+
+  :global(.comp-map__table tr:last-child td) {
+    border-bottom: none;
+  }
+
+  :global(.comp-map__content-title) {
+    font-weight: 500;
+  }
+
+  :global(.comp-map__content-id) {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    margin-top: 2px;
+  }
+
+  :global(.comp-map__added-by) {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  :global(.pill--sm) {
+    font-size: var(--text-xs);
+    padding: 2px var(--space-2);
+  }
+</style>

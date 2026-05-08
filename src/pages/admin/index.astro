@@ -1,0 +1,244 @@
+---
+import AppShell from '../../layouts/AppShell.astro';
+import { getCollection } from 'astro:content';
+import ClassRoster from '../../components/teacher/ClassRoster';
+
+const tracks = await getCollection('tracks');
+const apiUrl = import.meta.env.PUBLIC_API_URL ?? '';
+
+// This page is behind Caddy forward auth — Authelia enforces the `teachers` group.
+// The Remote-Groups header is set by Caddy on all authenticated requests.
+---
+
+<AppShell
+  title="Teacher Dashboard — Beattie Tech"
+  tracks={tracks}
+  breadcrumbs={[{ label: 'Admin', href: '/admin' }, { label: 'Dashboard' }]}
+>
+  <div class="admin-page">
+    <header class="admin-page__header">
+      <div>
+        <h1>Teacher Dashboard</h1>
+        <p class="admin-page__subtitle">Class competency overview for the active academic year.</p>
+      </div>
+      <nav class="admin-page__nav">
+        <a href="/admin" class="btn btn--secondary btn--sm btn--active">Roster</a>
+        <a href="/admin/competency-map" class="btn btn--secondary btn--sm">Competency Map</a>
+      </nav>
+    </header>
+
+    <ClassRoster apiUrl={apiUrl} client:load />
+  </div>
+</AppShell>
+
+<style>
+  .admin-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .admin-page__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+  }
+
+  .admin-page__header h1 {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    margin: 0 0 var(--space-1);
+  }
+
+  .admin-page__subtitle {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    margin: 0;
+  }
+
+  .admin-page__nav {
+    display: flex;
+    gap: var(--space-2);
+    flex-shrink: 0;
+  }
+
+  /* ── ClassRoster component styles ── */
+  :global(.class-roster) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  :global(.class-roster__loading) {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  :global(.class-roster__summary) {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    padding: var(--space-4) var(--space-6);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    flex-wrap: wrap;
+  }
+
+  :global(.class-roster__stat) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  :global(.class-roster__stat-num) {
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  :global(.class-roster__stat-label) {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  :global(.class-roster__actions) {
+    margin-left: auto;
+  }
+
+  :global(.class-roster__tabs) {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--color-border);
+  }
+
+  :global(.class-roster__tab) {
+    padding: var(--space-2) var(--space-5);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    transition: color 0.15s;
+  }
+
+  :global(.class-roster__tab:hover) {
+    color: var(--color-text);
+  }
+
+  :global(.class-roster__tab--active) {
+    color: var(--color-text);
+    border-bottom-color: var(--color-accent, #38bdf8);
+  }
+
+  :global(.class-roster__badge) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: #E24B4A;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: var(--radius-full);
+    line-height: 1;
+  }
+
+  :global(.class-roster__filters) {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  :global(.class-roster__filter-label) {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  :global(.class-roster__table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+  }
+
+  :global(.class-roster__table th) {
+    text-align: left;
+    padding: var(--space-2) var(--space-3);
+    color: var(--color-text-muted);
+    font-weight: 600;
+    border-bottom: 1px solid var(--color-border);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  :global(.class-roster__table td) {
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+  }
+
+  :global(.class-roster__table tr:hover td) {
+    background: var(--color-surface);
+  }
+
+  :global(.class-roster__student-link) {
+    color: var(--color-text);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  :global(.class-roster__student-link:hover) {
+    color: var(--color-accent, #38bdf8);
+  }
+
+  :global(.class-roster__no-gaps) {
+    color: var(--color-text-muted);
+    text-align: center;
+    padding: var(--space-12);
+  }
+
+  :global(.readiness-gauge) {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-width: 100px;
+  }
+
+  :global(.readiness-gauge__bar) {
+    flex: 1;
+    height: 6px;
+    background: var(--color-border);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+  }
+
+  :global(.readiness-gauge__fill) {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 0.4s ease;
+  }
+
+  :global(.readiness-gauge__label) {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    min-width: 32px;
+    text-align: right;
+  }
+</style>
