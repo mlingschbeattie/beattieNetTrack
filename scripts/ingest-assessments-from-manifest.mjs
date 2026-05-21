@@ -10,8 +10,8 @@ const manifestPath = process.argv[2]
   ? path.resolve(process.argv[2])
   : path.join(projectRoot, 'scripts', 'assessment-manifest.techplus.json');
 
-const outputQuizJsonDir = path.join(projectRoot, 'public', 'quizzes', 'tech-plus');
-const outputQuizMdxDir = path.join(projectRoot, 'src', 'content', 'quizzes', 'tech-plus');
+const outputQuizJsonDir = path.join(projectRoot, 'public', 'quizzes', 'pc-technician');
+const outputQuizMdxDir = path.join(projectRoot, 'src', 'content', 'quizzes', 'pc-technician');
 
 const ensureDir = async (dirPath) => {
   await fs.mkdir(dirPath, { recursive: true });
@@ -33,7 +33,7 @@ const run = async () => {
 
   for (const entry of manifest) {
     const jsonFileName = toJsonFileName(entry.assessmentCode);
-    const jsonPublicPath = `/quizzes/tech-plus/${jsonFileName}`;
+    const jsonPublicPath = `/quizzes/pc-technician/${jsonFileName}`;
     const jsonDiskPath = path.join(outputQuizJsonDir, jsonFileName);
     const mdxDiskPath = path.join(outputQuizMdxDir, `${entry.slug}.mdx`);
 

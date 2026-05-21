@@ -15,7 +15,7 @@ import { getActivityModuleNavigation } from '../../lib/content';
 export async function getStaticPaths() {
   const labs = await getCollection('labs');
   return labs
-    .filter((lab) => !lab.data.hidden)
+    .filter((lab) => !lab.data.hidden && lab.slug !== 'code-basics')
     .map((lab) => ({ params: { slug: lab.slug }, props: { lab } }));
 }
 

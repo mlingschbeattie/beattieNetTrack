@@ -218,7 +218,16 @@ export default function CodeRunner({ labSlug, exerciseSlug }: CodeRunnerProps) {
       />
       <div className="code-runner__output" data-testid="code-output">
         <h4>Output</h4>
-        <pre>{error ? `${output}\n${error}`.trim() : output || '(no output yet)'}</pre>
+        <pre className="code-runner__output-content">
+          {error ? (
+            <>
+              {output ? <span className="code-runner__stdout">{output}{'\n'}</span> : null}
+              <span className="code-runner__stderr">{error}</span>
+            </>
+          ) : (
+            output || <span className="code-runner__placeholder">(no output yet)</span>
+          )}
+        </pre>
       </div>
     </div>
   );

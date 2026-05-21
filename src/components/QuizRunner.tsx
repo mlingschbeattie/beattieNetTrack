@@ -22,7 +22,7 @@ export default function QuizRunner({ quiz, workspaceSlug }: QuizRunnerProps) {
       : 'Incorrect'
     : null;
   const explanationText = (activeQuestion?.explanation ?? '').trim();
-  const showExplanation = showResults && !!activeResult && explanationText.length > 0;
+  const showExplanation = showResults && !!activeResult && !activeResult.correct && explanationText.length > 0;
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -279,7 +279,7 @@ export default function QuizRunner({ quiz, workspaceSlug }: QuizRunnerProps) {
       {showExplanation && (
         <div className="quiz-eli5" role="note" aria-label="Explanation">
           <div className="quiz-eli5__body">
-            <strong>Why?</strong> {explanationText}
+            <strong>Here's why:</strong> {explanationText}
           </div>
         </div>
       )}
