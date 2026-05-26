@@ -148,6 +148,7 @@ const outlineSections = authoredSections.length
         const buttons = root.querySelectorAll('.lvt-btn');
         const panes = document.querySelectorAll('[data-view-pane]');
         const completedEl = root.querySelector('[data-outline-completed]');
+        const totalEl = root.querySelector('[data-outline-total]');
 
         const setView = (view) => {
           buttons.forEach((btn) => {
@@ -187,6 +188,9 @@ const outlineSections = authoredSections.length
           const detail = event.detail;
           if (!detail || !completedEl) return;
           completedEl.textContent = String(detail.completed);
+          if (totalEl && Number.isFinite(detail.total)) {
+            totalEl.textContent = String(detail.total);
+          }
         });
       })();
     </script>

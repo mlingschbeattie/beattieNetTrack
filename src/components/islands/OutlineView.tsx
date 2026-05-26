@@ -143,57 +143,90 @@ export default function OutlineView({ lessonSlug, sections }: OutlineViewProps) 
   const [feedbackMap, setFeedbackMap] = useState<Record<string, FeedbackState>>({});
 
   useEffect(() => {
+    let cancelled = false;
+    let retryTimer: number | null = null;
+    let attempts = 0;
+
     const sectionLookup = new Map<string, LessonSection>();
     for (const section of sections) {
       sectionLookup.set(normalize(section.title), section);
     }
 
-    const root = document.querySelector('[data-reading-content]');
-    if (!root) {
-      setDisplaySections(sections);
-      return;
-    }
+    const hydrateFromReading = (): boolean => {
+      const root = document.querySelector('[data-reading-content]');
+      if (!root) return false;
 
-    const headings = Array.from(root.querySelectorAll('h2')) as HTMLHeadingElement[];
-    if (!headings.length) {
-      setDisplaySections(sections);
-      return;
-    }
+      const h2Headings = Array.from(root.querySelectorAll('h2')) as HTMLHeadingElement[];
+      const h3Headings = Array.from(root.querySelectorAll('h3')) as HTMLHeadingElement[];
+      const headings = h2Headings.length ? h2Headings : h3Headings;
+      if (!headings.length) return false;
 
-    const enrichedSections = headings.map((heading, index) => {
-      const title = cleanText(heading.textContent ?? '') || `Section ${index + 1}`;
-      const authored = sectionLookup.get(normalize(title));
+      const enrichedSections = headings.map((heading, index) => {
+        const title = cleanText(heading.textContent ?? '') || `Section ${index + 1}`;
+        const authored = sectionLookup.get(normalize(title));
 
-      const nodes: Element[] = [];
-      let cursor = heading.nextElementSibling;
-      while (cursor && cursor.tagName.toLowerCase() !== 'h2') {
-        const tag = cursor.tagName.toLowerCase();
-        if (['p', 'ul', 'ol', 'h3', 'h4'].includes(tag)) {
-          nodes.push(cursor);
+        const nodes: Element[] = [];
+        let cursor = heading.nextElementSibling;
+        while (
+          cursor
+          && cursor.tagName.toLowerCase() !== 'h2'
+          && (!h3Headings.length || cursor.tagName.toLowerCase() !== 'h3')
+        ) {
+          const tag = cursor.tagName.toLowerCase();
+          if (['p', 'ul', 'ol', 'h3', 'h4'].includes(tag)) {
+            nodes.push(cursor);
+          }
+          cursor = cursor.nextElementSibling;
         }
-        cursor = cursor.nextElementSibling;
+
+        const generatedKeyPoints = extractKeyPointsFromNodes(nodes);
+        const keyPoints = generatedKeyPoints.length
+          ? generatedKeyPoints
+          : authored?.keyPoints?.length
+          ? authored.keyPoints
+          : fallbackKeyPoints(title);
+
+        const check = authored?.check?.length === 2
+          ? authored.check
+          : fallbackCheck(title, keyPoints);
+
+        return {
+          id: authored?.id ?? `outline-${lessonSlug}-${index + 1}`,
+          title,
+          keyPoints,
+          check,
+        } satisfies LessonSection;
+      });
+
+      setDisplaySections(enrichedSections.length ? enrichedSections : sections);
+      return true;
+    };
+
+    const attemptHydrate = () => {
+      if (cancelled) return;
+      const ok = hydrateFromReading();
+      if (ok) return;
+      attempts += 1;
+      if (attempts > 20) {
+        setDisplaySections(sections);
+        return;
       }
+      retryTimer = window.setTimeout(attemptHydrate, 120);
+    };
 
-      const generatedKeyPoints = extractKeyPointsFromNodes(nodes);
-      const keyPoints = generatedKeyPoints.length
-        ? generatedKeyPoints
-        : authored?.keyPoints?.length
-        ? authored.keyPoints
-        : fallbackKeyPoints(title);
+    attemptHydrate();
 
-      const check = authored?.check?.length === 2
-        ? authored.check
-        : fallbackCheck(title, keyPoints);
-
-      return {
-        id: authored?.id ?? `outline-${lessonSlug}-${index + 1}`,
-        title,
-        keyPoints,
-        check,
-      } satisfies LessonSection;
+    const observer = new MutationObserver(() => {
+      if (cancelled) return;
+      hydrateFromReading();
     });
+    observer.observe(document.body, { childList: true, subtree: true });
 
-    setDisplaySections(enrichedSections.length ? enrichedSections : sections);
+    return () => {
+      cancelled = true;
+      if (retryTimer !== null) window.clearTimeout(retryTimer);
+      observer.disconnect();
+    };
   }, [lessonSlug, sections]);
 
   const syncProgress = () => {
