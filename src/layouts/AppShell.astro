@@ -40,7 +40,7 @@ if (activityNavigation && (activityNavigation as any).trackSlug && (activityNavi
 <BaseLayout title={title} legacySkin={legacySkin}>
   <div class="binary-bg" id="binary-bg" aria-hidden="true"></div>
   <script id="__SEARCH_INDEX__" type="application/json" is:inline set:html={searchIndexJson}></script>
-  <Navbar activePath={activePath} />
+  <Navbar activePath={activePath} activeTrackLabel={currentTrack?.data.title ?? 'None'} />
   <Breadcrumbs items={breadcrumbs} />
   <div class="app-shell">
     <Sidebar

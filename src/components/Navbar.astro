@@ -3,6 +3,7 @@ import ProgressStatus from './islands/ProgressStatus.tsx';
 
 interface Props {
   activePath?: string;
+  activeTrackLabel?: string;
 }
 
 type NavItem = {
@@ -10,7 +11,7 @@ type NavItem = {
   href: string;
 };
 
-const { activePath = '/' } = Astro.props as Props;
+const { activePath = '/', activeTrackLabel = 'None' } = Astro.props as Props;
 
 const navItems: NavItem[] = [
   { label: 'Home', href: '/' },
@@ -57,7 +58,7 @@ const isActive = (href: string) => {
     <div class="top-nav__actions">
       <div class="nav-session-pill" title="Your currently active certification track">
         <span class="nav-session-dot"></span>
-        Active Track: Network+
+        Active Track: {activeTrackLabel}
       </div>
       <button
         class="theme-toggle"
