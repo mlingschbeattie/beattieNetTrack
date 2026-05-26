@@ -41,6 +41,33 @@ const trackFromActivityNavigation = activityNavigation
 const currentTrack = trackFromParam ?? trackFromFrontmatter ?? trackFromActivityNavigation ?? null;
 // Enable legacy skin only for the single page '/lessons/cryptography' for visual testing.
 const enableLegacy = lesson.slug === 'cryptography';
+
+const authoredSections = lesson.data.sections ?? [];
+const outlineSections = authoredSections.length
+  ? authoredSections
+  : [
+      {
+        id: 'lesson-overview',
+        title: 'Lesson Overview',
+        keyPoints: [
+          `Main topic: ${lesson.data.title}`,
+          'Use Reading view for full lesson details and examples.',
+          'Use this quick check to confirm understanding before moving on.',
+        ],
+        check: [
+          {
+            prompt: `This lesson is titled "${lesson.data.title}".`,
+            options: ['True', 'False', 'Only in labs', 'Only in quizzes'],
+            correct: 0,
+          },
+          {
+            prompt: 'Which view contains the full lesson text and walkthrough?',
+            options: ['Outline view', 'Reading view', 'Track sidebar', 'Module badge'],
+            correct: 1,
+          },
+        ],
+      },
+    ];
 ---
 
 <AppShell
@@ -68,8 +95,7 @@ const enableLegacy = lesson.slug === 'cryptography';
     lessonSlug={lesson.slug}
   />
 
-  {lesson.data.sections && lesson.data.sections.length > 0 ? (
-    <div class="lesson-view-toggle" data-lesson-toggle>
+  <div class="lesson-view-toggle" data-lesson-toggle>
       <div class="lesson-view-toggle__buttons" role="tablist" aria-label="Lesson view">
         <button type="button" class="lvt-btn is-active" data-view="reading" role="tab" aria-selected="true">
           <span aria-hidden="true">≡</span> Reading
@@ -79,27 +105,23 @@ const enableLegacy = lesson.slug === 'cryptography';
         </button>
       </div>
       <div class="lesson-view-toggle__progress" data-outline-indicator>
-        <span data-outline-completed>0</span> of <span data-outline-total={lesson.data.sections.length}>{lesson.data.sections.length}</span> sections complete
+        <span data-outline-completed>0</span> of <span data-outline-total={outlineSections.length}>{outlineSections.length}</span> sections complete
       </div>
     </div>
-  ) : null}
 
   <section class="lesson-body" data-view-pane="reading">
     <Content components={{ Callout, CodeBlock }} />
   </section>
 
-  {lesson.data.sections && lesson.data.sections.length > 0 ? (
-    <section class="lesson-outline" data-view-pane="outline" hidden>
-      <OutlineView
-        client:only="react"
-        lessonSlug={lesson.slug}
-        sections={lesson.data.sections}
-      />
-    </section>
-  ) : null}
+  <section class="lesson-outline" data-view-pane="outline" hidden>
+    <OutlineView
+      client:only="react"
+      lessonSlug={lesson.slug}
+      sections={outlineSections}
+    />
+  </section>
 
-  {lesson.data.sections && lesson.data.sections.length > 0 ? (
-    <script is:inline>
+  <script is:inline>
       (() => {
         const root = document.querySelector('[data-lesson-toggle]');
         if (!root) return;
@@ -135,7 +157,7 @@ const enableLegacy = lesson.slug === 'cryptography';
       })();
     </script>
 
-    <style>
+  <style>
       .lesson-view-toggle {
         display: flex;
         align-items: center;
@@ -183,6 +205,5 @@ const enableLegacy = lesson.slug === 'cryptography';
       .lesson-outline {
         margin-top: var(--space-4);
       }
-    </style>
-  ) : null}
+  </style>
 </AppShell>
