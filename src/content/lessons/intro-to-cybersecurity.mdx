@@ -8,6 +8,49 @@ order: 1
 difficulty: Beginner
 estMinutes: 20
 tags: ["CIA triad", "threats", "baseline"]
+sections:
+  - id: why-layers-exist
+    title: "Why layers exist"
+    keyPoints:
+      - "Each layer has one job, isolation makes troubleshooting possible"
+      - "Layers build on each other, they do not replace each other"
+      - "When something breaks, you can pin the failure to a specific layer"
+    check:
+      - prompt: "A switch operates at which OSI layer?"
+        options:
+          - "Layer 1 - Physical"
+          - "Layer 2 - Data Link"
+          - "Layer 3 - Network"
+          - "Layer 7 - Application"
+        correct: 1
+      - prompt: "What is the primary benefit of the OSI model's layered design?"
+        options:
+          - "It makes networks faster"
+          - "It isolates problems to a specific layer"
+          - "It reduces the number of cables needed"
+          - "It replaces TCP/IP"
+        correct: 1
+  - id: lower-layers
+    title: "The lower layers (1-3)"
+    keyPoints:
+      - "L1: raw bits only, hubs, cables, NICs, no addressing"
+      - "L2: MAC addresses let switches deliver frames locally"
+      - "L3: IP addresses let routers move packets across networks"
+    check:
+      - prompt: "Which device operates at Layer 2 and uses MAC addresses to forward traffic?"
+        options:
+          - "Hub"
+          - "Router"
+          - "Switch"
+          - "Firewall"
+        correct: 2
+      - prompt: "What type of address does a router use to make forwarding decisions?"
+        options:
+          - "MAC address"
+          - "IP address"
+          - "Port number"
+          - "Serial number"
+        correct: 1
 ---
 
 import Callout from '../../components/Callout.astro';
