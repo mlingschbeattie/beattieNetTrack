@@ -23,13 +23,76 @@ interface GuidedReadingSection {
   id: string;
   title: string;
   sectionId: string;
-  blocks: string[];
-  check: SectionCheck;
+  focusPoints: string[];
+  excerpt: string;
 }
 
-type FeedbackState = { kind: 'correct' | 'incorrect'; index: number } | null;
-
 const normalize = (value: string) => value.trim().toLowerCase();
+
+const cleanText = (value: string) => value.replace(/\s+/g, ' ').trim();
+
+const truncate = (value: string, max = 170) => {
+  if (value.length <= max) return value;
+  return `${value.slice(0, max - 1).trimEnd()}...`;
+};
+
+const fallbackSectionId = (lessonSlug: string, index: number) => `guided-${lessonSlug}-${index + 1}`;
+
+const fallbackFocusPoints = (title: string): string[] => [
+  `Identify the main purpose of ${title}.`,
+  'Connect the concept to a real troubleshooting decision.',
+  'Use this as a checkpoint before moving to the next section.',
+];
+
+const extractFocusPoints = (nodes: Element[]): string[] => {
+  const items: string[] = [];
+
+  for (const node of nodes) {
+    const tag = node.tagName.toLowerCase();
+
+    if ((tag === 'ul' || tag === 'ol') && items.length < 3) {
+      const listItems = Array.from(node.querySelectorAll('li'));
+      for (const li of listItems) {
+        const text = cleanText(li.textContent ?? '');
+        if (text.length >= 24) items.push(text);
+        if (items.length >= 3) break;
+      }
+    }
+
+    if (items.length >= 3) break;
+
+    if (tag === 'p') {
+      const paragraph = cleanText(node.textContent ?? '');
+      if (!paragraph) continue;
+      const sentence = paragraph.split(/(?<=[.!?])\s+/)[0] ?? paragraph;
+      if (sentence.length >= 24) items.push(sentence);
+      if (items.length >= 3) break;
+    }
+  }
+
+  const seen = new Set<string>();
+  return items
+    .map((text) => truncate(text, 145))
+    .filter((text) => {
+      const key = normalize(text.replace(/[.,;:!?]+$/g, ''));
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, 3);
+};
+
+const extractExcerpt = (nodes: Element[], title: string) => {
+  const paragraphNode = nodes.find((node) => node.tagName.toLowerCase() === 'p');
+  if (!paragraphNode) {
+    return `Use Reading mode for the full details in "${title}".`;
+  }
+  const paragraph = cleanText(paragraphNode.textContent ?? '');
+  if (!paragraph) {
+    return `Use Reading mode for the full details in "${title}".`;
+  }
+  return truncate(paragraph, 240);
+};
 
 const dispatchProgress = (lessonSlug: string, completed: number, total: number) => {
   if (typeof window === 'undefined') return;
@@ -49,22 +112,10 @@ const dispatchSectionSync = (lessonSlug: string) => {
   );
 };
 
-const fallbackCheck = (title: string): SectionCheck => ({
-  prompt: `Checkpoint: did you understand the main idea of "${title}"?`,
-  options: ['Yes - I can explain it', 'Not yet', 'Need one more example', 'I skipped this section'],
-  correct: 0,
-});
-
-const fallbackSectionId = (lessonSlug: string, index: number) => `reading-${lessonSlug}-${index + 1}`;
-
 export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
   const [readingSections, setReadingSections] = useState<GuidedReadingSection[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [revealedCount, setRevealedCount] = useState<Record<string, number>>({});
-  const [autoPlay, setAutoPlay] = useState(false);
-  const [autoSeconds, setAutoSeconds] = useState(5);
   const [completedMap, setCompletedMap] = useState<Record<string, boolean>>({});
-  const [feedbackMap, setFeedbackMap] = useState<Record<string, FeedbackState>>({});
 
   const activeSection = readingSections[activeIndex] ?? null;
 
@@ -84,72 +135,91 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
   };
 
   useEffect(() => {
-    const root = document.querySelector('[data-reading-content]');
-    if (!root) {
-      setReadingSections([]);
-      return;
-    }
+    let cancelled = false;
+    let retryTimer: number | null = null;
+    let attempts = 0;
 
-    const h2s = Array.from(root.querySelectorAll('h2')) as HTMLHeadingElement[];
+    const hydrateFromReading = (): boolean => {
+      const root = document.querySelector('[data-reading-content]');
+      if (!root) return false;
 
-    const nextReadingSections: GuidedReadingSection[] = h2s.map((heading, index) => {
-      const title = heading.textContent?.trim() || `Section ${index + 1}`;
-      const matched = sectionLookup.get(normalize(title));
-      const sectionId = matched?.id ?? fallbackSectionId(lessonSlug, index);
+      const h2Headings = Array.from(root.querySelectorAll('h2')) as HTMLHeadingElement[];
+      const h3Headings = Array.from(root.querySelectorAll('h3')) as HTMLHeadingElement[];
+      const headings = h2Headings.length ? h2Headings : h3Headings;
+      if (!headings.length) return false;
 
-      if (!heading.id) heading.id = `guided-heading-${lessonSlug}-${index + 1}`;
+      const nextSections: GuidedReadingSection[] = headings.map((heading, index) => {
+        const title = cleanText(heading.textContent ?? '') || `Section ${index + 1}`;
+        const matched = sectionLookup.get(normalize(title));
+        const sectionId = matched?.id ?? fallbackSectionId(lessonSlug, index);
 
-      const blocks: string[] = [];
-      let node = heading.nextElementSibling;
-      while (node && node.tagName.toLowerCase() !== 'h2') {
-        const tag = node.tagName.toLowerCase();
-        if (['p', 'ul', 'ol', 'pre', 'table', 'blockquote', 'div', 'h3', 'h4'].includes(tag)) {
-          blocks.push(node.outerHTML);
+        if (!heading.id) {
+          heading.id = `guided-heading-${lessonSlug}-${index + 1}`;
         }
-        node = node.nextElementSibling;
-      }
 
-      return {
-        id: `${heading.id}-guided`,
-        title,
-        sectionId,
-        blocks: blocks.length ? blocks : [`<p>No section content blocks were detected for <strong>${title}</strong>.</p>`],
-        check: matched?.check?.[0] ?? fallbackCheck(title),
-      };
-    });
+        const nodes: Element[] = [];
+        let cursor = heading.nextElementSibling;
+        while (
+          cursor
+          && cursor.tagName.toLowerCase() !== 'h2'
+          && (!h3Headings.length || cursor.tagName.toLowerCase() !== 'h3')
+        ) {
+          const tag = cursor.tagName.toLowerCase();
+          if (['p', 'ul', 'ol', 'h3', 'h4'].includes(tag)) {
+            nodes.push(cursor);
+          }
+          cursor = cursor.nextElementSibling;
+        }
 
-    if (!nextReadingSections.length) {
-      const bodyBlocks = Array.from(root.querySelectorAll('p')).slice(0, 6).map((p) => p.outerHTML);
-      nextReadingSections.push({
-        id: `guided-fallback-${lessonSlug}`,
-        title: 'Lesson Walkthrough',
-        sectionId: fallbackSectionId(lessonSlug, 0),
-        blocks: bodyBlocks.length ? bodyBlocks : ['<p>Use Reading mode to view the full lesson content.</p>'],
-        check: fallbackCheck('Lesson Walkthrough'),
+        const focusPoints = matched?.keyPoints?.length
+          ? matched.keyPoints.slice(0, 3)
+          : extractFocusPoints(nodes).length
+          ? extractFocusPoints(nodes)
+          : fallbackFocusPoints(title);
+
+        return {
+          id: `${heading.id}-guided`,
+          title,
+          sectionId,
+          focusPoints,
+          excerpt: extractExcerpt(nodes, title),
+        };
       });
-    }
 
-    const initialReveal = Object.fromEntries(nextReadingSections.map((s) => [s.id, 1]));
-    setReadingSections(nextReadingSections);
-    setRevealedCount(initialReveal);
-    setActiveIndex(0);
-    syncProgress(nextReadingSections);
+      if (!nextSections.length) return false;
+
+      setReadingSections(nextSections);
+      setActiveIndex((prev) => Math.min(prev, Math.max(0, nextSections.length - 1)));
+      syncProgress(nextSections);
+      return true;
+    };
+
+    const attemptHydrate = () => {
+      if (cancelled) return;
+      const ok = hydrateFromReading();
+      if (ok) return;
+      attempts += 1;
+      if (attempts > 20) {
+        setReadingSections([]);
+        return;
+      }
+      retryTimer = window.setTimeout(attemptHydrate, 120);
+    };
+
+    attemptHydrate();
+
+    const observer = new MutationObserver(() => {
+      if (cancelled) return;
+      hydrateFromReading();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      cancelled = true;
+      if (retryTimer !== null) window.clearTimeout(retryTimer);
+      observer.disconnect();
+    };
   }, [lessonSlug, sectionLookup]);
-
-  useEffect(() => {
-    if (!autoPlay || !activeSection) return;
-    const currentReveal = revealedCount[activeSection.id] ?? 1;
-    if (currentReveal >= activeSection.blocks.length) return;
-
-    const timeout = window.setTimeout(() => {
-      setRevealedCount((prev) => ({
-        ...prev,
-        [activeSection.id]: Math.min(activeSection.blocks.length, (prev[activeSection.id] ?? 1) + 1),
-      }));
-    }, Math.max(2, autoSeconds) * 1000);
-
-    return () => window.clearTimeout(timeout);
-  }, [autoPlay, autoSeconds, activeSection, revealedCount]);
 
   useEffect(() => {
     const handler = (event: Event) => {
@@ -167,35 +237,6 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
     [readingSections, completedMap]
   );
 
-  const moveSection = (delta: number) => {
-    setActiveIndex((idx) => Math.min(readingSections.length - 1, Math.max(0, idx + delta)));
-    setFeedbackMap({});
-  };
-
-  const revealNext = () => {
-    if (!activeSection) return;
-    setRevealedCount((prev) => ({
-      ...prev,
-      [activeSection.id]: Math.min(activeSection.blocks.length, (prev[activeSection.id] ?? 1) + 1),
-    }));
-  };
-
-  const revealPrev = () => {
-    if (!activeSection) return;
-    setRevealedCount((prev) => ({
-      ...prev,
-      [activeSection.id]: Math.max(1, (prev[activeSection.id] ?? 1) - 1),
-    }));
-  };
-
-  const revealAll = () => {
-    if (!activeSection) return;
-    setRevealedCount((prev) => ({
-      ...prev,
-      [activeSection.id]: activeSection.blocks.length,
-    }));
-  };
-
   const goToReading = (title: string) => {
     window.dispatchEvent(
       new CustomEvent('lesson:jump-reading', {
@@ -204,40 +245,23 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
     );
   };
 
-  const answerCheckpoint = (optionIndex: number) => {
+  const moveSection = (delta: number) => {
+    setActiveIndex((idx) => Math.min(readingSections.length - 1, Math.max(0, idx + delta)));
+  };
+
+  const markDone = () => {
     if (!activeSection) return;
-    const isCorrect = optionIndex === activeSection.check.correct;
-
-    if (!isCorrect) {
-      setFeedbackMap((prev) => ({
-        ...prev,
-        [activeSection.id]: { kind: 'incorrect', index: optionIndex },
-      }));
-      return;
+    markSectionComplete(lessonSlug, activeSection.sectionId);
+    setCompletedMap((prev) => ({ ...prev, [activeSection.sectionId]: true }));
+    dispatchSectionSync(lessonSlug);
+    if (activeIndex < readingSections.length - 1) {
+      setActiveIndex((idx) => idx + 1);
     }
-
-    setFeedbackMap((prev) => ({
-      ...prev,
-      [activeSection.id]: { kind: 'correct', index: optionIndex },
-    }));
-
-    window.setTimeout(() => {
-      markSectionComplete(lessonSlug, activeSection.sectionId);
-      dispatchSectionSync(lessonSlug);
-      syncProgress();
-      setFeedbackMap((prev) => ({
-        ...prev,
-        [activeSection.id]: null,
-      }));
-    }, 450);
   };
 
   if (!activeSection) return null;
 
-  const revealed = Math.max(1, revealedCount[activeSection.id] ?? 1);
-  const visibleBlocks = activeSection.blocks.slice(0, revealed);
   const isDone = Boolean(completedMap[activeSection.sectionId]);
-  const feedback = feedbackMap[activeSection.id] ?? null;
 
   return (
     <div className="guided-root" data-completed={completedCount} data-total={readingSections.length}>
@@ -245,105 +269,59 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
         <div>
           <p className="guided-eyebrow">Guided Walkthrough</p>
           <h3>{activeSection.title}</h3>
+          <p className="guided-subhead">Step {activeIndex + 1} of {readingSections.length}</p>
         </div>
-        <div className="guided-progress">{activeIndex + 1} / {readingSections.length}</div>
+        <div className="guided-state">
+          {completedCount} / {readingSections.length} complete
+        </div>
       </div>
 
-      <div className="guided-controls">
-        <button type="button" className="guided-btn" onClick={() => moveSection(-1)} disabled={activeIndex === 0}>Previous Section</button>
-        <button type="button" className="guided-btn" onClick={() => moveSection(1)} disabled={activeIndex === readingSections.length - 1}>Next Section</button>
-        <button type="button" className="guided-btn guided-btn--ghost" onClick={() => goToReading(activeSection.title)}>
-          Jump To Reading
+      <section className="guided-focus">
+        <h4>Focus Points</h4>
+        <ul>
+          {activeSection.focusPoints.map((point, idx) => (
+            <li key={idx}>{point}</li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="guided-excerpt">
+        <h4>Quick Read</h4>
+        <p>{activeSection.excerpt}</p>
+      </section>
+
+      <div className="guided-actions">
+        <button type="button" className="guided-btn" onClick={() => moveSection(-1)} disabled={activeIndex === 0}>
+          Previous
+        </button>
+        <button type="button" className="guided-btn" onClick={() => moveSection(1)} disabled={activeIndex === readingSections.length - 1}>
+          Next
+        </button>
+        <button type="button" className="guided-btn is-ghost" onClick={() => goToReading(activeSection.title)}>
+          Open reading section
+        </button>
+        <button type="button" className="guided-btn is-primary" onClick={markDone} disabled={isDone}>
+          {isDone ? 'Completed' : 'Mark complete'}
         </button>
       </div>
 
-      <div className="guided-pacing">
-        <label className="guided-toggle">
-          <input
-            type="checkbox"
-            checked={autoPlay}
-            onChange={(event) => setAutoPlay(event.target.checked)}
-          />
-          Auto reveal
-        </label>
-        <label className="guided-speed">
-          Pace
-          <select
-            value={autoSeconds}
-            onChange={(event) => setAutoSeconds(Number(event.target.value))}
-            disabled={!autoPlay}
-          >
-            <option value={3}>Fast</option>
-            <option value={5}>Normal</option>
-            <option value={7}>Slow</option>
-          </select>
-        </label>
-      </div>
-
-      <article className="guided-reading-blocks">
-        {visibleBlocks.map((html, index) => (
-          <section
-            key={`${activeSection.id}-block-${index}`}
-            className="guided-reading-block"
-            dangerouslySetInnerHTML={{ __html: html }}
-          />
-        ))}
-      </article>
-
-      <div className="guided-reveal-controls">
-        <button type="button" className="guided-btn" onClick={revealPrev} disabled={revealed <= 1}>Reveal Less</button>
-        <button type="button" className="guided-btn" onClick={revealNext} disabled={revealed >= activeSection.blocks.length}>Reveal Next</button>
-        <button type="button" className="guided-btn" onClick={revealAll} disabled={revealed >= activeSection.blocks.length}>Reveal Full Section</button>
-      </div>
-
-      {isDone ? (
-        <div className="guided-chip is-done">Section complete</div>
-      ) : (
-        <div className="guided-check">
-          <p className="guided-check__prompt">{activeSection.check.prompt}</p>
-          <div className="guided-check__options">
-            {activeSection.check.options.map((option, index) => {
-              const isSelected = feedback?.index === index;
-              const stateClass =
-                isSelected && feedback?.kind === 'correct'
-                  ? 'is-correct'
-                  : isSelected && feedback?.kind === 'incorrect'
-                    ? 'is-incorrect'
-                    : '';
-              return (
-                <button
-                  key={index}
-                  type="button"
-                  className={`guided-option ${stateClass}`}
-                  onClick={() => answerCheckpoint(index)}
-                  disabled={feedback?.kind === 'correct'}
-                >
-                  {option}
-                </button>
-              );
-            })}
-          </div>
-          {feedback?.kind === 'incorrect' ? (
-            <p className="guided-feedback is-warn">Not quite - try again.</p>
-          ) : feedback?.kind === 'correct' ? (
-            <p className="guided-feedback is-ok">Nice. Section marked complete.</p>
-          ) : null}
-        </div>
-      )}
-
-      <ol className="guided-index">
-        {readingSections.map((section, index) => (
-          <li key={section.id}>
-            <button
-              type="button"
-              className={`guided-index__item ${index === activeIndex ? 'is-active' : ''} ${completedMap[section.sectionId] ? 'is-done' : ''}`}
-              onClick={() => setActiveIndex(index)}
-            >
-              <span>{String(index + 1).padStart(2, '0')}</span>
-              <span>{section.title}</span>
-            </button>
-          </li>
-        ))}
+      <ol className="guided-index" aria-label="Guided section list">
+        {readingSections.map((section, index) => {
+          const active = index === activeIndex;
+          const done = Boolean(completedMap[section.sectionId]);
+          return (
+            <li key={section.id}>
+              <button
+                type="button"
+                className={`guided-index__item ${active ? 'is-active' : ''} ${done ? 'is-done' : ''}`}
+                onClick={() => setActiveIndex(index)}
+              >
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <span>{section.title}</span>
+              </button>
+            </li>
+          );
+        })}
       </ol>
 
       <style>{`
@@ -358,159 +336,85 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
         .guided-head {
           display: flex;
           justify-content: space-between;
+          align-items: flex-start;
           gap: var(--space-3);
-          align-items: baseline;
-        }
-        .guided-head h3 {
-          margin: 0;
-          font-size: var(--text-xl);
+          flex-wrap: wrap;
         }
         .guided-eyebrow {
           margin: 0 0 var(--space-1);
           text-transform: uppercase;
-          letter-spacing: 0.08em;
-          color: var(--color-text-muted);
+          letter-spacing: 0.06em;
           font-size: var(--text-xs);
+          color: var(--color-text-muted);
         }
-        .guided-progress {
-          font-family: var(--font-mono);
-          color: var(--color-primary);
+        .guided-head h3 {
+          margin: 0;
+          font-size: var(--text-xl);
+          color: var(--color-text);
+        }
+        .guided-subhead {
+          margin: var(--space-1) 0 0;
+          color: var(--color-text-muted);
           font-size: var(--text-sm);
         }
-        .guided-controls,
-        .guided-reveal-controls {
-          display: flex;
-          flex-wrap: wrap;
+        .guided-state {
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-pill);
+          padding: var(--space-1) var(--space-3);
+          color: var(--color-text-muted);
+          font-size: var(--text-sm);
+          background: var(--color-surface-2);
+        }
+        .guided-focus,
+        .guided-excerpt {
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-md);
+          background: var(--color-surface-2);
+          padding: var(--space-3);
+        }
+        .guided-focus h4,
+        .guided-excerpt h4 {
+          margin: 0 0 var(--space-2);
+          color: var(--color-text);
+          font-size: var(--text-base);
+        }
+        .guided-focus ul {
+          margin: 0;
+          padding-left: 1.2rem;
+          display: grid;
           gap: var(--space-2);
+          color: var(--color-text-soft);
+        }
+        .guided-excerpt p {
+          margin: 0;
+          color: var(--color-text-soft);
+          line-height: var(--leading-normal);
+        }
+        .guided-actions {
+          display: flex;
+          gap: var(--space-2);
+          flex-wrap: wrap;
         }
         .guided-btn {
           border: 1px solid var(--color-border);
+          border-radius: var(--radius-sm);
           background: var(--color-surface-2);
           color: var(--color-text);
-          border-radius: var(--radius-sm);
-          padding: var(--space-2) var(--space-3);
           font: inherit;
           font-size: var(--text-sm);
+          padding: var(--space-2) var(--space-3);
           cursor: pointer;
         }
-        .guided-btn:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
-        .guided-btn:hover:not(:disabled) {
+        .guided-btn.is-primary {
+          color: var(--color-primary);
           border-color: var(--color-primary);
         }
-        .guided-btn--ghost {
+        .guided-btn.is-ghost {
           color: var(--color-primary);
         }
-        .guided-pacing {
-          display: flex;
-          gap: var(--space-3);
-          align-items: center;
-          flex-wrap: wrap;
-        }
-        .guided-toggle,
-        .guided-speed {
-          display: inline-flex;
-          gap: var(--space-2);
-          align-items: center;
-          color: var(--color-text-muted);
-          font-size: var(--text-sm);
-        }
-        .guided-speed select {
-          border: 1px solid var(--color-border);
-          background: var(--color-surface-2);
-          color: var(--color-text);
-          border-radius: var(--radius-sm);
-          padding: var(--space-1) var(--space-2);
-        }
-        .guided-reading-blocks {
-          display: grid;
-          gap: var(--space-3);
-          border: 1px solid var(--color-border);
-          border-radius: var(--radius-md);
-          padding: var(--space-4);
-          background: linear-gradient(180deg, var(--color-surface-2), var(--color-surface));
-        }
-        .guided-reading-block {
-          color: var(--color-text-soft);
-          line-height: var(--leading-normal);
-          animation: guided-fade 220ms ease-out both;
-        }
-        .guided-reading-block :global(p) {
-          margin: 0;
-        }
-        .guided-reading-block :global(p + p) {
-          margin-top: var(--space-3);
-        }
-        .guided-reading-block :global(ul),
-        .guided-reading-block :global(ol) {
-          margin: 0;
-          padding-left: 1.2rem;
-        }
-        .guided-reading-block :global(li + li) {
-          margin-top: var(--space-2);
-        }
-        .guided-reading-block :global(strong) {
-          color: var(--color-text);
-        }
-        .guided-chip {
-          border: 1px solid var(--color-border);
-          border-radius: var(--radius-pill);
-          padding: var(--space-2) var(--space-3);
-          width: max-content;
-          font-size: var(--text-sm);
-        }
-        .guided-chip.is-done {
-          color: var(--color-accent);
-          border-color: var(--color-accent);
-        }
-        .guided-check {
-          border: 1px solid var(--color-border);
-          border-radius: var(--radius-md);
-          padding: var(--space-3);
-          background: var(--color-surface-2);
-          display: grid;
-          gap: var(--space-3);
-        }
-        .guided-check__prompt {
-          margin: 0;
-          color: var(--color-text);
-        }
-        .guided-check__options {
-          display: grid;
-          gap: var(--space-2);
-        }
-        .guided-option {
-          text-align: left;
-          border: 1px solid var(--color-border);
-          background: var(--color-surface);
-          color: var(--color-text);
-          border-radius: var(--radius-sm);
-          padding: var(--space-2) var(--space-3);
-          cursor: pointer;
-          font: inherit;
-        }
-        .guided-option:hover:not(:disabled) {
-          border-color: var(--color-primary);
-        }
-        .guided-option.is-correct {
-          border-color: var(--color-accent);
-          color: var(--color-accent);
-        }
-        .guided-option.is-incorrect {
-          border-color: var(--color-warning);
-          color: var(--color-warning);
-        }
-        .guided-feedback {
-          margin: 0;
-          font-size: var(--text-sm);
-        }
-        .guided-feedback.is-ok {
-          color: var(--color-accent);
-        }
-        .guided-feedback.is-warn {
-          color: var(--color-warning);
+        .guided-btn:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
         }
         .guided-index {
           list-style: none;
@@ -522,16 +426,16 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
         .guided-index__item {
           width: 100%;
           border: 1px solid var(--color-border);
+          border-radius: var(--radius-sm);
           background: transparent;
           color: var(--color-text-soft);
-          border-radius: var(--radius-sm);
+          font: inherit;
           padding: var(--space-2) var(--space-3);
           text-align: left;
           display: grid;
           grid-template-columns: auto 1fr;
           gap: var(--space-3);
           cursor: pointer;
-          font: inherit;
         }
         .guided-index__item.is-active {
           border-color: var(--color-primary);
@@ -539,16 +443,6 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
         }
         .guided-index__item.is-done {
           border-color: var(--color-accent);
-        }
-        @keyframes guided-fade {
-          from {
-            opacity: 0;
-            transform: translateY(6px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
         }
       `}</style>
     </div>
