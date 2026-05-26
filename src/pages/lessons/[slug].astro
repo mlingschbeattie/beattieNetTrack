@@ -5,6 +5,8 @@ import LessonHeader from '../../components/LessonHeader.astro';
 import Callout from '../../components/Callout.astro';
 import CodeBlock from '../../components/CodeBlock.astro';
 import OutlineView from '../../components/islands/OutlineView.tsx';
+import GuidedView from '../../components/islands/GuidedView.tsx';
+import ReadingProgressRail from '../../components/islands/ReadingProgressRail.tsx';
 import { normalizeLessonMeta } from '../../lib/lessonMeta';
 import { getActivityModuleNavigation } from '../../lib/content';
 
@@ -103,18 +105,36 @@ const outlineSections = authoredSections.length
         <button type="button" class="lvt-btn" data-view="outline" role="tab" aria-selected="false">
           <span aria-hidden="true">▤</span> Outline
         </button>
+        <button type="button" class="lvt-btn" data-view="guided" role="tab" aria-selected="false">
+          <span aria-hidden="true">▶</span> Guided
+        </button>
       </div>
       <div class="lesson-view-toggle__progress" data-outline-indicator>
         <span data-outline-completed>0</span> of <span data-outline-total={outlineSections.length}>{outlineSections.length}</span> sections complete
       </div>
     </div>
 
-  <section class="lesson-body" data-view-pane="reading">
-    <Content components={{ Callout, CodeBlock }} />
+  <section class="lesson-body lesson-body--reading" data-view-pane="reading">
+    <div class="lesson-reading-layout">
+      <div class="lesson-reading-main" data-reading-content>
+        <Content components={{ Callout, CodeBlock }} />
+      </div>
+      <aside class="lesson-reading-rail">
+        <ReadingProgressRail client:only="react" lessonSlug={lesson.slug} sections={outlineSections} />
+      </aside>
+    </div>
   </section>
 
   <section class="lesson-outline" data-view-pane="outline" hidden>
     <OutlineView
+      client:only="react"
+      lessonSlug={lesson.slug}
+      sections={outlineSections}
+    />
+  </section>
+
+  <section class="lesson-guided" data-view-pane="guided" hidden>
+    <GuidedView
       client:only="react"
       lessonSlug={lesson.slug}
       sections={outlineSections}
@@ -147,6 +167,20 @@ const outlineSections = authoredSections.length
 
         buttons.forEach((btn) => {
           btn.addEventListener('click', () => setView(btn.getAttribute('data-view')));
+        });
+
+        window.addEventListener('lesson:jump-reading', (event) => {
+          const detail = event.detail;
+          if (!detail || typeof detail.title !== 'string') return;
+          setView('reading');
+          const headings = Array.from(document.querySelectorAll('[data-reading-content] h2'));
+          const target = headings.find((heading) => heading.textContent?.trim() === detail.title);
+          if (target instanceof HTMLElement) {
+            if (!target.id) {
+              target.id = `lesson-heading-${Math.random().toString(36).slice(2, 8)}`;
+            }
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
         });
 
         window.addEventListener('outline-progress', (event) => {
@@ -204,6 +238,29 @@ const outlineSections = authoredSections.length
       }
       .lesson-outline {
         margin-top: var(--space-4);
+      }
+      .lesson-guided {
+        margin-top: var(--space-4);
+      }
+      .lesson-reading-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
+        gap: var(--space-5);
+        align-items: start;
+      }
+      .lesson-reading-main {
+        min-width: 0;
+      }
+      .lesson-reading-rail {
+        min-width: 0;
+      }
+      @media (max-width: 1100px) {
+        .lesson-reading-layout {
+          grid-template-columns: 1fr;
+        }
+        .lesson-reading-rail {
+          order: -1;
+        }
       }
   </style>
 </AppShell>

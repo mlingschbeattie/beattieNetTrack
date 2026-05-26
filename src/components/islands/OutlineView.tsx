@@ -41,11 +41,25 @@ export default function OutlineView({ lessonSlug, sections }: OutlineViewProps) 
   const [phaseMap, setPhaseMap] = useState<Record<string, CheckPhase>>({});
   const [feedbackMap, setFeedbackMap] = useState<Record<string, FeedbackState>>({});
 
-  useEffect(() => {
+  const syncProgress = () => {
     const progress = getSectionProgress(lessonSlug);
     setCompletedMap(progress);
     const completedCount = sections.filter((s) => progress[s.id]).length;
     dispatchProgress(lessonSlug, completedCount, total);
+  };
+
+  useEffect(() => {
+    syncProgress();
+  }, [lessonSlug, sections, total]);
+
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const detail = (event as CustomEvent<{ lessonSlug?: string }>).detail;
+      if (!detail || detail.lessonSlug !== lessonSlug) return;
+      syncProgress();
+    };
+    window.addEventListener('outline-progress', handler);
+    return () => window.removeEventListener('outline-progress', handler);
   }, [lessonSlug, sections, total]);
 
   const completedCount = useMemo(
@@ -98,6 +112,14 @@ export default function OutlineView({ lessonSlug, sections }: OutlineViewProps) 
     }, 600);
   };
 
+  const jumpToReading = (title: string) => {
+    window.dispatchEvent(
+      new CustomEvent('lesson:jump-reading', {
+        detail: { title },
+      })
+    );
+  };
+
   return (
     <div className="outline-root" data-completed={completedCount} data-total={total}>
       <ol className="outline-list">
@@ -142,17 +164,28 @@ export default function OutlineView({ lessonSlug, sections }: OutlineViewProps) 
                     ))}
                   </ul>
 
-                  {isDone ? (
-                    <div className="outline-chip is-done">Check passed</div>
-                  ) : phase === 'idle' ? (
+                  <div className="outline-actions">
+                    {isDone ? (
+                      <div className="outline-chip is-done">Check passed</div>
+                    ) : phase === 'idle' ? (
+                      <button
+                        type="button"
+                        className="outline-chip is-action"
+                        onClick={() => startCheck(section.id)}
+                      >
+                        Take quick check
+                      </button>
+                    ) : null}
                     <button
                       type="button"
-                      className="outline-chip is-action"
-                      onClick={() => startCheck(section.id)}
+                      className="outline-chip is-ghost"
+                      onClick={() => jumpToReading(section.title)}
                     >
-                      Take quick check
+                      Jump to reading
                     </button>
-                  ) : activeQuestion ? (
+                  </div>
+
+                  {phase !== 'idle' && !isDone && activeQuestion ? (
                     <div className="outline-check-panel">
                       <div className="outline-check-meta">
                         Question {qIndex + 1} of 2
@@ -334,6 +367,19 @@ export default function OutlineView({ lessonSlug, sections }: OutlineViewProps) 
         }
         .outline-chip.is-action:hover {
           background: var(--color-highlight);
+        }
+        .outline-chip.is-ghost {
+          color: var(--color-text-muted);
+        }
+        .outline-chip.is-ghost:hover {
+          border-color: var(--color-primary);
+          color: var(--color-primary);
+        }
+        .outline-actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: var(--space-2);
+          align-items: center;
         }
         .outline-check-panel {
           display: grid;
