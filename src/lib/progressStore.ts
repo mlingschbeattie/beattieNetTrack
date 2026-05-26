@@ -24,6 +24,8 @@ export type TourProgress = {
   updatedAt: string | null;
 };
 
+export type SectionProgress = Record<string, boolean>;
+
 export type ProgressState = {
   version: 1;
   xpTotal: number;
@@ -44,6 +46,7 @@ export type ProgressState = {
       lastXpAwardDate: string | null;
     }
   >;
+  lessonSections: Record<string, SectionProgress>;
 };
 
 type LessonMeta = {
@@ -64,6 +67,7 @@ const defaultState = (): ProgressState => ({
   labs: {},
   tour: {},
   quizzes: {},
+  lessonSections: {},
 });
 
 const defaultLabProgress = (): LabProgress => ({
@@ -118,6 +122,7 @@ const safeParse = (raw: string | null): ProgressState => {
       labs: normalizedLabs,
       tour: parsed.tour ?? {},
       quizzes: parsed.quizzes ?? {},
+      lessonSections: parsed.lessonSections ?? {},
     };
   } catch {
     return defaultState();
@@ -502,3 +507,40 @@ export const getTourPercent = (tourSlug: string, storage: StorageLike | null = g
   if (!progress.totalSteps) return 0;
   return Math.round((progress.completedSteps.length / progress.totalSteps) * 100);
 };
+
+export const getSectionProgress = (
+  lessonSlug: string,
+  storage: StorageLike | null = getStorage()
+): SectionProgress => {
+  const state = getProgress(storage);
+  return state.lessonSections[lessonSlug] ?? {};
+};
+
+export const isSectionComplete = (
+  lessonSlug: string,
+  sectionId: string,
+  storage: StorageLike | null = getStorage()
+): boolean => {
+  const sections = getSectionProgress(lessonSlug, storage);
+  return Boolean(sections[sectionId]);
+};
+
+export const markSectionComplete = (
+  lessonSlug: string,
+  sectionId: string,
+  storage: StorageLike | null = getStorage()
+) =>
+  setProgress((state) => {
+    const existing = state.lessonSections[lessonSlug] ?? {};
+    if (existing[sectionId]) return state;
+    return {
+      ...state,
+      lessonSections: {
+        ...state.lessonSections,
+        [lessonSlug]: {
+          ...existing,
+          [sectionId]: true,
+        },
+      },
+    };
+  }, storage);

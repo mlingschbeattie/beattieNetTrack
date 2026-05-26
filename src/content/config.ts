@@ -193,6 +193,19 @@ const activities = defineCollection({
   }),
 });
 
+const sectionCheck = z.object({
+  prompt: z.string(),
+  options: z.array(z.string()).length(4),
+  correct: z.number().int().min(0).max(3),
+});
+
+const lessonSection = z.object({
+  id: z.string(),
+  title: z.string(),
+  keyPoints: z.array(z.string()).min(2).max(4),
+  check: z.array(sectionCheck).length(2),
+});
+
 const lessons = defineCollection({
   type: 'content',
   schema: z
@@ -209,6 +222,7 @@ const lessons = defineCollection({
       estimatedMinutes: z.number().int().optional(),
       tags: z.array(z.string()).default([]),
       legacyUrl: z.string().optional(),
+      sections: z.array(lessonSection).optional(),
     })
     .superRefine((data, ctx) => {
       const track = (data.track ?? '').trim();

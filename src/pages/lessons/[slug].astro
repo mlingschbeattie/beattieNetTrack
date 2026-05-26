@@ -4,6 +4,7 @@ import AppShell from '../../layouts/AppShell.astro';
 import LessonHeader from '../../components/LessonHeader.astro';
 import Callout from '../../components/Callout.astro';
 import CodeBlock from '../../components/CodeBlock.astro';
+import OutlineView from '../../components/islands/OutlineView.tsx';
 import { normalizeLessonMeta } from '../../lib/lessonMeta';
 import { getActivityModuleNavigation } from '../../lib/content';
 
@@ -67,7 +68,121 @@ const enableLegacy = lesson.slug === 'cryptography';
     lessonSlug={lesson.slug}
   />
 
-  <section class="lesson-body">
+  {lesson.data.sections && lesson.data.sections.length > 0 ? (
+    <div class="lesson-view-toggle" data-lesson-toggle>
+      <div class="lesson-view-toggle__buttons" role="tablist" aria-label="Lesson view">
+        <button type="button" class="lvt-btn is-active" data-view="reading" role="tab" aria-selected="true">
+          <span aria-hidden="true">≡</span> Reading
+        </button>
+        <button type="button" class="lvt-btn" data-view="outline" role="tab" aria-selected="false">
+          <span aria-hidden="true">▤</span> Outline
+        </button>
+      </div>
+      <div class="lesson-view-toggle__progress" data-outline-indicator>
+        <span data-outline-completed>0</span> of <span data-outline-total={lesson.data.sections.length}>{lesson.data.sections.length}</span> sections complete
+      </div>
+    </div>
+  ) : null}
+
+  <section class="lesson-body" data-view-pane="reading">
     <Content components={{ Callout, CodeBlock }} />
   </section>
+
+  {lesson.data.sections && lesson.data.sections.length > 0 ? (
+    <section class="lesson-outline" data-view-pane="outline" hidden>
+      <OutlineView
+        client:only="react"
+        lessonSlug={lesson.slug}
+        sections={lesson.data.sections}
+      />
+    </section>
+  ) : null}
+
+  {lesson.data.sections && lesson.data.sections.length > 0 ? (
+    <script is:inline>
+      (() => {
+        const root = document.querySelector('[data-lesson-toggle]');
+        if (!root) return;
+        const buttons = root.querySelectorAll('.lvt-btn');
+        const panes = document.querySelectorAll('[data-view-pane]');
+        const completedEl = root.querySelector('[data-outline-completed]');
+
+        const setView = (view) => {
+          buttons.forEach((btn) => {
+            const active = btn.getAttribute('data-view') === view;
+            btn.classList.toggle('is-active', active);
+            btn.setAttribute('aria-selected', active ? 'true' : 'false');
+          });
+          panes.forEach((pane) => {
+            const match = pane.getAttribute('data-view-pane') === view;
+            if (match) {
+              pane.removeAttribute('hidden');
+            } else {
+              pane.setAttribute('hidden', '');
+            }
+          });
+        };
+
+        buttons.forEach((btn) => {
+          btn.addEventListener('click', () => setView(btn.getAttribute('data-view')));
+        });
+
+        window.addEventListener('outline-progress', (event) => {
+          const detail = event.detail;
+          if (!detail || !completedEl) return;
+          completedEl.textContent = String(detail.completed);
+        });
+      })();
+    </script>
+
+    <style>
+      .lesson-view-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-4);
+        margin: var(--space-6) 0 var(--space-4);
+        padding: var(--space-2);
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        flex-wrap: wrap;
+      }
+      .lesson-view-toggle__buttons {
+        display: inline-flex;
+        gap: var(--space-1);
+      }
+      .lvt-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-2) var(--space-4);
+        background: transparent;
+        color: var(--color-text-muted);
+        border: 1px solid transparent;
+        border-radius: var(--radius-sm);
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+      }
+      .lvt-btn:hover {
+        color: var(--color-text);
+        background: var(--color-surface-2);
+      }
+      .lvt-btn.is-active {
+        color: var(--color-primary);
+        background: var(--color-highlight);
+        border-color: var(--color-primary);
+      }
+      .lesson-view-toggle__progress {
+        font-size: var(--text-sm);
+        color: var(--color-text-muted);
+        padding-right: var(--space-3);
+      }
+      .lesson-outline {
+        margin-top: var(--space-4);
+      }
+    </style>
+  ) : null}
 </AppShell>
