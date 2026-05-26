@@ -1,0 +1,86 @@
+---
+title: Security Baseline Lab
+description: Build a practical security baseline by mapping incidents to controls and prioritizing remediation.
+slug: cfs-security-baseline-lab
+track: cybersecurity-foundations
+moduleId: cfs.fundamentals.security-concepts
+order: 4
+difficulty: Beginner
+estimatedMinutes: 15
+xp: 50
+tags: ["cybersecurity", "baseline", "cia", "risk", "defense in depth"]
+steps:
+  - id: cia-map
+    title: Classify impact
+    prompt: A public file share exposes student data. Enter the primary CIA category.
+    inputLabel: Primary CIA category
+    placeholder: "ex: confidentiality"
+    validator:
+      type: oneOf
+      values: ["confidentiality"]
+    successMessage: Correct. Exposure is a confidentiality failure.
+  - id: risk-priority
+    title: Prioritize risk
+    prompt: Enter the highest-priority risk level for exposed PII with active internet access.
+    inputLabel: Risk level
+    placeholder: "ex: critical"
+    validator:
+      type: oneOf
+      values: ["critical", "high"]
+    successMessage: Correct. This should be treated as high urgency.
+  - id: first-control
+    title: First control action
+    prompt: Enter one immediate control to reduce blast radius before deep remediation.
+    inputLabel: Immediate control
+    placeholder: "ex: disable public access"
+    validator:
+      type: oneOf
+      values:
+        - "disable public access"
+        - "remove public access"
+        - "restrict access"
+    successMessage: Correct. Containment controls come first.
+  - id: layered-defense
+    title: Defense-in-depth check
+    prompt: Enter one additional layer that should exist even after access is fixed.
+    inputLabel: Additional layer
+    placeholder: "ex: mfa"
+    validator:
+      type: oneOf
+      values:
+        - "mfa"
+        - "multi-factor authentication"
+        - "logging and monitoring"
+        - "audit logging"
+    successMessage: Correct. Layered controls reduce repeat failures.
+  - id: closure-note
+    title: Analyst closure note
+    prompt: Write one line containing both words "contained" and "monitored".
+    inputLabel: Closure note
+    placeholder: "ex: Contained public exposure and monitored for repeat access attempts."
+    validator:
+      type: regex
+      pattern: "(?i)^(?=.*\\bcontained\\b)(?=.*\\bmonitored\\b).+$"
+    successMessage: Excellent. Your closure note reflects both action and follow-through.
+checklist:
+  - Incident mapped to correct CIA category
+  - Risk level prioritized before mitigation
+  - Immediate containment control selected
+  - Additional defense layer identified
+  - Closure note documents containment and monitoring
+hints:
+  - Choose controls that can be executed immediately.
+  - Treat high-impact data exposure as urgent.
+  - Always pair a fix with monitoring.
+domains:
+  - domainId: cyber.foundations
+    weight: 0.9
+  - domainId: secops.basics
+    weight: 0.8
+---
+
+This lab turns CIA triad theory into a repeatable incident prioritization workflow.
+
+## Completion Standard
+
+Pass all checks and submit a closure note that proves the incident was contained and monitored.

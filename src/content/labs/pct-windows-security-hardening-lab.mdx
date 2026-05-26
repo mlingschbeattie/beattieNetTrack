@@ -1,0 +1,89 @@
+---
+title: Windows Security Hardening Lab
+description: Complete a practical hardening checklist for a compromised Windows endpoint and validate each decision.
+slug: pct-windows-security-hardening-lab
+track: pc-technician
+moduleId: pct.os.windows-basics
+order: 4
+difficulty: Beginner
+estimatedMinutes: 15
+xp: 50
+tags: ["A+", "CompTIA", "windows", "security", "hardening"]
+steps:
+  - id: isolate-host
+    title: Contain first
+    prompt: Enter the first containment action for a suspected active malware incident.
+    inputLabel: First action
+    placeholder: "ex: isolate from network"
+    hint: Stop command-and-control traffic before cleanup.
+    validator:
+      type: oneOf
+      values:
+        - "isolate from network"
+        - "disconnect from network"
+        - "remove from network"
+    successMessage: Correct. Containment prevents spread and data exfiltration.
+  - id: defender-status
+    title: Re-enable baseline protection
+    prompt: Enter the built-in Windows protection that must be verified as active.
+    inputLabel: Protection control
+    placeholder: "ex: windows defender real-time protection"
+    validator:
+      type: oneOf
+      values:
+        - "windows defender real-time protection"
+        - "defender real-time protection"
+        - "real-time protection"
+    successMessage: Correct. Real-time endpoint protection must be active.
+  - id: startup-triage
+    title: Startup persistence check
+    prompt: Enter one tool to inspect suspicious startup entries.
+    inputLabel: Startup tool
+    placeholder: "ex: task manager startup"
+    validator:
+      type: oneOf
+      values:
+        - "task manager startup"
+        - "task manager"
+        - "autoruns"
+    successMessage: Correct. Startup persistence should be audited early.
+  - id: encryption-policy
+    title: Data protection control
+    prompt: Enter the Windows feature that protects data at rest on stolen devices.
+    inputLabel: Data-at-rest control
+    placeholder: "ex: bitlocker"
+    validator:
+      type: oneOf
+      values: ["bitlocker", "bitlocker drive encryption"]
+    successMessage: Correct. BitLocker reduces breach impact after theft.
+  - id: closure
+    title: Ticket closure standard
+    prompt: Write one line that includes both words "verified" and "hardened".
+    inputLabel: Closure note
+    placeholder: "ex: Verified endpoint clean and hardened baseline controls restored."
+    validator:
+      type: regex
+      pattern: "(?i)^(?=.*\\bverified\\b)(?=.*\\bhardened\\b).+$"
+    successMessage: Strong closeout. You documented both verification and hardening.
+checklist:
+  - Host containment performed before remediation
+  - Real-time protection restored
+  - Persistence checks completed
+  - Data-at-rest control identified
+  - Closure note confirms verified hardening
+hints:
+  - If you cannot explain the order of your actions, your triage plan is not ready.
+  - Keep user communication and approval in scope for disruptive steps.
+  - Documentation quality is part of technical quality.
+domains:
+  - domainId: aplus2.security
+    weight: 0.9
+  - domainId: nocti.security
+    weight: 0.8
+---
+
+This lab reinforces a technician-grade hardening workflow for Windows incident response.
+
+## Completion Standard
+
+Pass every validation step and submit a closure note that proves the endpoint was verified and hardened.

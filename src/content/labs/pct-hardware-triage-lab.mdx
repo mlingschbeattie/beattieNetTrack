@@ -1,0 +1,88 @@
+---
+title: Hardware Triage Lab
+description: Work a realistic support ticket and validate each troubleshooting decision with step-by-step checks.
+slug: pct-hardware-triage-lab
+track: pc-technician
+moduleId: pct.troubleshooting.common-issues
+order: 2
+difficulty: Beginner
+estimatedMinutes: 15
+xp: 50
+tags: ["A+", "CompTIA", "hardware", "troubleshooting", "triage"]
+steps:
+  - id: classify-symptom
+    title: Classify the symptom
+    prompt: Ticket says "fans spin, no image on monitor." Enter the category that best fits first-pass triage.
+    inputLabel: Symptom category
+    placeholder: "ex: no display"
+    hint: Focus on the visible symptom before naming a root cause.
+    validator:
+      type: oneOf
+      values: ["no display", "display", "video"]
+    successMessage: Correct. You identified the symptom bucket before jumping to conclusions.
+  - id: first-check
+    title: Choose the first check
+    prompt: Enter the best first action.
+    inputLabel: First check
+    placeholder: "ex: verify cable and input"
+    hint: Start with the fastest external validation.
+    validator:
+      type: oneOf
+      values:
+        - "verify monitor cable and input"
+        - "check monitor cable and input"
+        - "check cable and input"
+    successMessage: Good. You validated external display path first.
+  - id: likely-component
+    title: Identify likely component
+    prompt: If cable/input are correct and integrated output works but discrete output fails, what component is most likely at fault?
+    inputLabel: Likely failing component
+    placeholder: "ex: gpu"
+    validator:
+      type: oneOf
+      values: ["gpu", "graphics card", "video card"]
+    successMessage: Exactly. That symptom pattern points to the discrete GPU path.
+  - id: thermal-verification
+    title: Verify a thermal theory
+    prompt: Enter one monitoring tool you would use to confirm overheating under load.
+    inputLabel: Monitoring tool
+    placeholder: "ex: hwinfo"
+    validator:
+      type: oneOf
+      values: ["hwinfo", "hwinfo64", "hwmonitor", "core temp"]
+    successMessage: Correct. A temperature monitor validates thermal behavior with evidence.
+  - id: closure-note
+    title: Close the ticket professionally
+    prompt: Write a one-line closure note that includes both words "verified" and "resolved".
+    inputLabel: Ticket closure note
+    placeholder: "ex: Verified issue under load, resolved by replacing failed fan."
+    validator:
+      type: regex
+      pattern: "(?i)^(?=.*\\bverified\\b)(?=.*\\bresolved\\b).+$"
+    successMessage: Strong closeout language. You documented outcome and verification.
+checklist:
+  - Symptom classified before theory
+  - First diagnostic action is low risk and high signal
+  - Root-cause theory aligned to observed behavior
+  - Verification method selected before closure
+  - Closure note confirms verified resolution
+hints:
+  - Diagnose from evidence first, then test likely causes.
+  - Keep each action reversible until root cause is confirmed.
+  - Ticket notes should be clear enough for the next technician to continue.
+domains:
+  - domainId: aplus1.hardware
+    weight: 0.9
+  - domainId: nocti.hardware
+    weight: 0.8
+---
+
+This lab simulates a real bench ticket and grades your troubleshooting process, not guesswork.
+
+## Lab Goal
+
+Demonstrate that you can move from symptom to verified resolution using a repeatable triage sequence.
+
+## Completion Standard
+
+Pass every step and submit a closure note that proves the issue was verified and resolved.

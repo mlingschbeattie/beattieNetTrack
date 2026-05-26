@@ -18,6 +18,15 @@ You run Windows Defender. It finds three items. You quarantine them. New tabs st
 
 Malware removal is twenty percent running a scanner and eighty percent knowing what to look for, where to look, and what belongs there versus what doesn't. This lesson covers the security concepts that make that work possible.
 
+## Demo Sequence (Run This Live)
+
+If you're presenting this as a full workflow demo, run these in order:
+
+1. Lesson: /lessons/pct-windows-security
+2. Activity: /workspace/activity/pct-windows-incident-triage
+3. Lab: /labs/pct-windows-security-hardening-lab
+4. Review quiz: /quizzes/pct-windows-security
+
 ## Authentication — Proving You Are Who You Claim to Be
 
 Authentication is the process of verifying identity before granting access. Every access control decision depends on authentication working correctly. The three factors of authentication:
@@ -116,3 +125,9 @@ In domain environments, Group Policy Objects (GPOs) set these policies centrally
 A client's machine with malware is a trust problem. They trusted the machine with passwords, financial information, and personal files. Something violated that trust. Your job isn't just to remove the malware — it's to restore the machine to a state the client can trust, explain what happened in terms they understand, and help them avoid it happening again.
 
 Removing adware without explaining that accepting every "free" software bundle is how adware gets installed means it'll be back in three months. Encrypting a business laptop with BitLocker and then failing to save the recovery key means a firmware update or hardware failure turns a recoverable situation into a data loss event. Understanding these tools at the level this lesson covers — not just "run the scanner" but knowing what the scanner looks for, what it misses, and what the backup safety net looks like — is what makes the difference.
+
+## Demo Wrap and Next Action
+
+Close this lesson by having students explain one hardening action they would enforce first in a real classroom lab: MFA, patching cadence, or BitLocker key escrow.
+
+Then move immediately into /workspace/activity/pct-windows-incident-triage so they apply those choices under ticket pressure.

@@ -60,7 +60,7 @@ const {
 } = Astro.props as Props;
 
 let moduleProgress = null;
-if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson') {
+if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson' || itemType === 'activity') {
   try {
     const nav = await getActivityModuleNavigation({ slug: itemSlug, type: itemType });
     if (nav) {

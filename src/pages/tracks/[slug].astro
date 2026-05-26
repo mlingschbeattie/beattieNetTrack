@@ -69,7 +69,15 @@ const lessonSlugs = sectionLessonSlugs;
               <p>{activity.description}</p>
               <div class="card__meta">
                 <span class="badge badge--activity-type">
-                  {activity.type === 'lab' ? '🔬 Lab' : activity.type === 'quiz' ? '🧠 Quiz' : '📖 Lesson'}
+                  {
+                    activity.type === 'lab'
+                      ? '🔬 Lab'
+                      : activity.type === 'quiz'
+                        ? '🧠 Quiz'
+                        : activity.type === 'activity'
+                          ? '🧩 Activity'
+                          : '📖 Lesson'
+                  }
                 </span>
               </div>
               <div class="card__footer">

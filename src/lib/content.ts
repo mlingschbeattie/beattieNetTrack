@@ -1,7 +1,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { normalizeLessonMeta } from './lessonMeta';
 
-export type TrackActivityType = 'lab' | 'quiz' | 'lesson';
+export type TrackActivityType = 'lab' | 'quiz' | 'lesson' | 'activity';
 
 export interface TrackSummary {
   slug: string;
@@ -102,12 +102,13 @@ export const getTracksIndexData = async (): Promise<TrackSummary[]> => {
 };
 
 export const getTrackDetailData = async (trackSlug: string): Promise<TrackDetailData | null> => {
-  const [tracks, modules, labs, quizzes, lessons] = await Promise.all([
+  const [tracks, modules, labs, quizzes, lessons, activities] = await Promise.all([
     getCollection('tracks'),
     getCollection('modules'),
     getCollection('labs'),
     getCollection('quizzes'),
     getCollection('lessons'),
+    getCollection('activities'),
   ]);
 
   const trackEntry = tracks.find((entry) => entry.slug === trackSlug);
@@ -174,6 +175,21 @@ export const getTrackDetailData = async (trackSlug: string): Promise<TrackDetail
       description: entry.data.description ?? 'Lesson',
       order: entry.data.order,
       href: `/lessons/${entry.slug}`,
+      module: moduleSlug,
+    });
+  }
+
+  for (const entry of activities) {
+    if (entry.data.track !== trackSlug) continue;
+    const moduleSlug = getActivityModuleSlug(entry.data);
+    if (!moduleSlug) continue;
+    pushActivity({
+      slug: entry.slug,
+      type: 'activity',
+      title: entry.data.title,
+      description: entry.data.description ?? 'Workspace activity',
+      order: entry.data.order ?? 0,
+      href: `/workspace/activity/${entry.slug}`,
       module: moduleSlug,
     });
   }
@@ -261,7 +277,8 @@ export const getTrackContinueHref = async (trackSlug: string, progress: Progress
   for (const module of detail.modules) {
     for (const activity of module.activities) {
       if (progress) {
-        const collectionKey = activity.type === 'lab' ? 'labs' : activity.type === 'quiz' ? 'quizzes' : 'lessons';
+        const collectionKey =
+          activity.type === 'lab' ? 'labs' : activity.type === 'quiz' ? 'quizzes' : 'lessons';
         const completed = Boolean((progress as any)[collectionKey]?.[activity.slug]?.completed);
         if (!completed) return activity.href;
       } else {

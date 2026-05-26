@@ -3,7 +3,7 @@ title: Intro to Cybersecurity
 description: Understand the security mindset, core terms, and the CIA triad.
 slug: intro-to-cybersecurity
 track: cybersecurity-foundations
-moduleId: sec.fundamentals.security-concepts
+moduleId: cfs.fundamentals.security-concepts
 order: 1
 difficulty: Beginner
 estMinutes: 20
@@ -13,6 +13,15 @@ tags: ["CIA triad", "threats", "baseline"]
 import Callout from '../../components/Callout.astro';
 
 Cybersecurity is not about buying the most expensive firewall or memorizing a list of attacks. It is about developing a mental model for how things break -- and using that model to make attackers' jobs harder than defenders'. This lesson gives you that foundation.
+
+## Demo Sequence (Run This Live)
+
+To demonstrate the full learning loop for this module, run these in order:
+
+1. Lesson: /lessons/intro-to-cybersecurity
+2. Activity: /workspace/activity/cfs-cia-triad-classifier
+3. Lab: /labs/cfs-security-baseline-lab
+4. Review quiz: /quizzes/cfs-intro-cybersecurity-review
 
 ## The CIA Triad
 
@@ -102,3 +111,9 @@ Most organizations are not targeted by nation-states. Most attacks are opportuni
 - Reducing your **attack surface** (disabling unused services and access) is one of the highest-leverage actions you can take
 - **Defense in depth** means layering controls so that multiple failures are required before an attacker wins
 - Most attacks are **opportunistic** -- solid fundamentals (patching, MFA, least privilege) stop the majority of real-world threats
+
+## Demo Wrap and Next Action
+
+Before students leave this lesson, ask them to classify one incident as confidentiality, integrity, or availability first -- and defend their answer.
+
+Then open /workspace/activity/cfs-cia-triad-classifier and make them commit to classification decisions under a short timer.

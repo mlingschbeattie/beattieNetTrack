@@ -10,7 +10,7 @@ import LabActivity from '../../../components/workspace/LabActivity.astro';
 import QuizActivity from '../../../components/workspace/QuizActivity.astro';
 import QuizRunner from '../../../components/QuizRunner.tsx';
 import type { QuizDefinition } from '../../../lib/quizEngine';
-import { inferLegacyTrackSlug, mapLessonToLegacyActivity, toLegacyLabPath } from '../../../lib/content';
+import { getActivityModuleNavigation, inferLegacyTrackSlug, mapLessonToLegacyActivity, toLegacyLabPath } from '../../../lib/content';
 
 export async function getStaticPaths() {
   const [labs, quizzes, activities, lessons] = await Promise.all([
@@ -181,6 +181,10 @@ if (!currentTrack && type === 'activity') {
 }
 
 const Content = instructionsContent?.Content;
+const activityNavigation =
+  type === 'lab' || type === 'quiz' || type === 'lesson' || type === 'activity'
+    ? await getActivityModuleNavigation({ type, slug })
+    : null;
 
 const breadcrumbs: Array<{ label: string; href?: string }> = [
   { label: 'Home', href: '/' },
@@ -223,6 +227,7 @@ if (currentTrack) {
   submitLabel={submitLabel}
   panelHints={panelHints}
   panelChecklist={panelChecklist}
+  activityNavigation={activityNavigation}
   activityTabs={type === 'lab' ? [{ id: 'activity', label: 'Lab' }, { id: 'secondary', label: 'Notes' }] : [{ id: 'activity', label: 'Activity' }]}
 >
   <Fragment slot="instructions">
