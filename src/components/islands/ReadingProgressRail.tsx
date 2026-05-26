@@ -99,14 +99,19 @@ export default function ReadingProgressRail({ lessonSlug, sections }: ReadingPro
       if (!detail || detail.lessonSlug !== lessonSlug) return;
       syncProgress();
     };
-    window.addEventListener('outline-progress', handler);
-    return () => window.removeEventListener('outline-progress', handler);
+    window.addEventListener('section-progress-updated', handler);
+    return () => window.removeEventListener('section-progress-updated', handler);
   }, [lessonSlug, sections]);
 
   const markUnderstood = (item: HeadingItem) => {
     if (!item.sectionId) return;
     markSectionComplete(lessonSlug, item.sectionId);
     syncProgress();
+    window.dispatchEvent(
+      new CustomEvent('section-progress-updated', {
+        detail: { lessonSlug },
+      })
+    );
   };
 
   const scrollToHeading = (id: string) => {

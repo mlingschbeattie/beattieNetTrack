@@ -30,6 +30,15 @@ const dispatchProgress = (lessonSlug: string, completed: number, total: number) 
   );
 };
 
+const dispatchSectionSync = (lessonSlug: string) => {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(
+    new CustomEvent('section-progress-updated', {
+      detail: { lessonSlug },
+    })
+  );
+};
+
 export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
   const total = sections.length;
   const [activeIndex, setActiveIndex] = useState(0);
@@ -64,8 +73,8 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
       if (!detail || detail.lessonSlug !== lessonSlug) return;
       syncProgress();
     };
-    window.addEventListener('outline-progress', handler);
-    return () => window.removeEventListener('outline-progress', handler);
+    window.addEventListener('section-progress-updated', handler);
+    return () => window.removeEventListener('section-progress-updated', handler);
   }, [lessonSlug, sections, total]);
 
   useEffect(() => {
@@ -137,6 +146,7 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
     window.setTimeout(() => {
       markSectionComplete(lessonSlug, activeSection.id);
       syncProgress();
+      dispatchSectionSync(lessonSlug);
       setFeedbackMap((prev) => ({
         ...prev,
         [activeSection.id]: null,
