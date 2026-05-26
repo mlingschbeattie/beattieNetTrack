@@ -99,14 +99,14 @@ const outlineSections = authoredSections.length
 
   <div class="lesson-view-toggle" data-lesson-toggle>
       <div class="lesson-view-toggle__buttons" role="tablist" aria-label="Lesson view">
-        <button type="button" class="lvt-btn is-active" data-view="reading" role="tab" aria-selected="true">
-          <span aria-hidden="true">≡</span> Reading
+        <button type="button" class="lvt-btn is-active" data-view="guided" role="tab" aria-selected="true">
+          <span aria-hidden="true">▶</span> Guided
         </button>
         <button type="button" class="lvt-btn" data-view="outline" role="tab" aria-selected="false">
           <span aria-hidden="true">▤</span> Outline
         </button>
-        <button type="button" class="lvt-btn" data-view="guided" role="tab" aria-selected="false">
-          <span aria-hidden="true">▶</span> Guided
+        <button type="button" class="lvt-btn" data-view="reading" role="tab" aria-selected="false">
+          <span aria-hidden="true">≡</span> Reading
         </button>
       </div>
       <div class="lesson-view-toggle__progress" data-outline-indicator>
@@ -114,15 +114,12 @@ const outlineSections = authoredSections.length
       </div>
     </div>
 
-  <section class="lesson-body lesson-body--reading" data-view-pane="reading">
-    <div class="lesson-reading-layout">
-      <div class="lesson-reading-main" data-reading-content>
-        <Content components={{ Callout, CodeBlock }} />
-      </div>
-      <aside class="lesson-reading-rail">
-        <ReadingProgressRail client:only="react" lessonSlug={lesson.slug} sections={outlineSections} />
-      </aside>
-    </div>
+  <section class="lesson-guided" data-view-pane="guided">
+    <GuidedView
+      client:only="react"
+      lessonSlug={lesson.slug}
+      sections={outlineSections}
+    />
   </section>
 
   <section class="lesson-outline" data-view-pane="outline" hidden>
@@ -133,12 +130,15 @@ const outlineSections = authoredSections.length
     />
   </section>
 
-  <section class="lesson-guided" data-view-pane="guided" hidden>
-    <GuidedView
-      client:only="react"
-      lessonSlug={lesson.slug}
-      sections={outlineSections}
-    />
+  <section class="lesson-body lesson-body--reading" data-view-pane="reading" hidden>
+    <div class="lesson-reading-layout">
+      <div class="lesson-reading-main" data-reading-content>
+        <Content components={{ Callout, CodeBlock }} />
+      </div>
+      <aside class="lesson-reading-rail">
+        <ReadingProgressRail client:only="react" lessonSlug={lesson.slug} sections={outlineSections} />
+      </aside>
+    </div>
   </section>
 
   <script is:inline>
