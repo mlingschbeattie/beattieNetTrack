@@ -25,6 +25,97 @@ interface OutlineViewProps {
 type CheckPhase = 'idle' | 'q1' | 'q2';
 type FeedbackState = { kind: 'correct' | 'incorrect'; index: number } | null;
 
+const normalize = (value: string) => value.trim().toLowerCase();
+
+const cleanText = (value: string) => value.replace(/\s+/g, ' ').trim();
+
+const truncatePoint = (value: string, max = 130) => {
+  if (value.length <= max) return value;
+  return `${value.slice(0, max - 1).trimEnd()}...`;
+};
+
+const fallbackKeyPoints = (title: string): string[] => [
+  `${title}: identify the main concept and where it applies in real hardware work.`,
+  'Pay attention to component labels, connector locations, and role in the system.',
+  'Use this section as a visual recognition and troubleshooting reference.',
+];
+
+const fallbackCheck = (title: string, keyPoints: string[]): SectionCheck[] => {
+  const [first = title, second = 'this section'] = keyPoints;
+  return [
+    {
+      prompt: `What is the main focus of "${title}"?`,
+      options: [first, second, 'Only software updates', 'Only BIOS shortcuts'],
+      correct: 0,
+    },
+    {
+      prompt: `What should you be able to do after "${title}"?`,
+      options: [
+        'Recognize components and apply the concept during troubleshooting',
+        'Skip directly to replacement without diagnosis',
+        'Ignore connector and layout details',
+        'Rely on guesswork to identify parts',
+      ],
+      correct: 0,
+    },
+  ];
+};
+
+const extractKeyPointsFromNodes = (nodes: Element[]): string[] => {
+  const candidates: Array<{ text: string; score: number; index: number }> = [];
+  let order = 0;
+
+  const pushCandidate = (text: string, score: number) => {
+    const cleaned = cleanText(text);
+    if (cleaned.length < 28) return;
+    candidates.push({ text: cleaned, score, index: order++ });
+  };
+
+  for (const node of nodes) {
+    const tag = node.tagName.toLowerCase();
+
+    if (tag === 'ul' || tag === 'ol') {
+      const items = Array.from(node.querySelectorAll('li'));
+      for (const item of items.slice(0, 4)) {
+        pushCandidate(item.textContent ?? '', 3);
+      }
+      continue;
+    }
+
+    if (tag === 'h3' || tag === 'h4') {
+      pushCandidate(node.textContent ?? '', 2);
+      continue;
+    }
+
+    if (tag !== 'p') continue;
+
+    const paragraph = cleanText(node.textContent ?? '');
+    if (!paragraph) continue;
+
+    const definitionMatch = paragraph.match(/^([^.!?]{3,80})(?:\s+[\u2014\-:]\s+)(.+)$/);
+    if (definitionMatch) {
+      pushCandidate(paragraph, 4);
+      continue;
+    }
+
+    const firstSentence = paragraph.split(/(?<=[.!?])\s+/)[0] ?? paragraph;
+    pushCandidate(firstSentence, 1);
+  }
+
+  const seen = new Set<string>();
+  return candidates
+    .sort((a, b) => (b.score - a.score) || (a.index - b.index))
+    .map((item) => item.text)
+    .filter((text) => {
+      const key = normalize(text.replace(/[.,;:!?]+$/g, ''));
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, 3)
+    .map((text) => truncatePoint(text));
+};
+
 const dispatchProgress = (lessonSlug: string, completed: number, total: number) => {
   if (typeof window === 'undefined') return;
   window.dispatchEvent(
@@ -44,22 +135,77 @@ const dispatchSectionSync = (lessonSlug: string) => {
 };
 
 export default function OutlineView({ lessonSlug, sections }: OutlineViewProps) {
-  const total = sections.length;
+  const [displaySections, setDisplaySections] = useState<LessonSection[]>(sections);
+  const total = displaySections.length;
   const [completedMap, setCompletedMap] = useState<Record<string, boolean>>({});
   const [openMap, setOpenMap] = useState<Record<string, boolean>>({});
   const [phaseMap, setPhaseMap] = useState<Record<string, CheckPhase>>({});
   const [feedbackMap, setFeedbackMap] = useState<Record<string, FeedbackState>>({});
 
+  useEffect(() => {
+    const sectionLookup = new Map<string, LessonSection>();
+    for (const section of sections) {
+      sectionLookup.set(normalize(section.title), section);
+    }
+
+    const root = document.querySelector('[data-reading-content]');
+    if (!root) {
+      setDisplaySections(sections);
+      return;
+    }
+
+    const headings = Array.from(root.querySelectorAll('h2')) as HTMLHeadingElement[];
+    if (!headings.length) {
+      setDisplaySections(sections);
+      return;
+    }
+
+    const enrichedSections = headings.map((heading, index) => {
+      const title = cleanText(heading.textContent ?? '') || `Section ${index + 1}`;
+      const authored = sectionLookup.get(normalize(title));
+
+      const nodes: Element[] = [];
+      let cursor = heading.nextElementSibling;
+      while (cursor && cursor.tagName.toLowerCase() !== 'h2') {
+        const tag = cursor.tagName.toLowerCase();
+        if (['p', 'ul', 'ol', 'h3', 'h4'].includes(tag)) {
+          nodes.push(cursor);
+        }
+        cursor = cursor.nextElementSibling;
+      }
+
+      const generatedKeyPoints = extractKeyPointsFromNodes(nodes);
+      const keyPoints = generatedKeyPoints.length
+        ? generatedKeyPoints
+        : authored?.keyPoints?.length
+        ? authored.keyPoints
+        : fallbackKeyPoints(title);
+
+      const check = authored?.check?.length === 2
+        ? authored.check
+        : fallbackCheck(title, keyPoints);
+
+      return {
+        id: authored?.id ?? `outline-${lessonSlug}-${index + 1}`,
+        title,
+        keyPoints,
+        check,
+      } satisfies LessonSection;
+    });
+
+    setDisplaySections(enrichedSections.length ? enrichedSections : sections);
+  }, [lessonSlug, sections]);
+
   const syncProgress = () => {
     const progress = getSectionProgress(lessonSlug);
     setCompletedMap(progress);
-    const completedCount = sections.filter((s) => progress[s.id]).length;
+    const completedCount = displaySections.filter((s) => progress[s.id]).length;
     dispatchProgress(lessonSlug, completedCount, total);
   };
 
   useEffect(() => {
     syncProgress();
-  }, [lessonSlug, sections, total]);
+  }, [lessonSlug, displaySections, total]);
 
   useEffect(() => {
     const handler = (event: Event) => {
@@ -69,11 +215,11 @@ export default function OutlineView({ lessonSlug, sections }: OutlineViewProps) 
     };
     window.addEventListener('section-progress-updated', handler);
     return () => window.removeEventListener('section-progress-updated', handler);
-  }, [lessonSlug, sections, total]);
+  }, [lessonSlug, displaySections, total]);
 
   const completedCount = useMemo(
-    () => sections.filter((s) => completedMap[s.id]).length,
-    [sections, completedMap]
+    () => displaySections.filter((s) => completedMap[s.id]).length,
+    [displaySections, completedMap]
   );
 
   useEffect(() => {
@@ -133,7 +279,7 @@ export default function OutlineView({ lessonSlug, sections }: OutlineViewProps) 
   return (
     <div className="outline-root" data-completed={completedCount} data-total={total}>
       <ol className="outline-list">
-        {sections.map((section, index) => {
+        {displaySections.map((section, index) => {
           const isOpen = Boolean(openMap[section.id]);
           const isDone = Boolean(completedMap[section.id]);
           const phase = phaseMap[section.id] ?? 'idle';
