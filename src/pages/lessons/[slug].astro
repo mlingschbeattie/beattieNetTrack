@@ -76,59 +76,6 @@ const outlineSections = authoredSections.length
   legacySkin={enableLegacy}
   title={`Lesson • ${lesson.data.title}`}
   tracks={allTracks}
-  activeTrack={currentTrack?.slug ?? lesson.data.track}
-  activeLesson={lesson.slug}
-  currentTrack={currentTrack}
-  lessonMap={lessonMap}
-  activityNavigation={activityNavigation}
-  breadcrumbs={[
-    { label: 'Home', href: '/' },
-    { label: 'Learning Tracks', href: '/tracks' },
-    currentTrack ? { label: currentTrack.data.title, href: `/tracks/${currentTrack.slug}` } : null,
-    { label: lesson.data.title },
-  ].filter(Boolean)}
->
-  <LessonHeader
-    title={lesson.data.title}
-    description={meta.description}
-    difficulty={meta.difficulty}
-    estMinutes={meta.estMinutes}
-    tags={lesson.data.tags}
-    lessonSlug={lesson.slug}
-  />
-
-  <div class="lesson-view-toggle" data-lesson-toggle>
-      <div class="lesson-view-toggle__buttons" role="tablist" aria-label="Lesson view">
-        <button type="button" class="lvt-btn is-active" data-view="guided" role="tab" aria-selected="true">
-          <span aria-hidden="true">▶</span> Guided
-        </button>
-        <button type="button" class="lvt-btn" data-view="outline" role="tab" aria-selected="false">
-          <span aria-hidden="true">▤</span> Outline
-        </button>
-        <button type="button" class="lvt-btn" data-view="reading" role="tab" aria-selected="false">
-          <span aria-hidden="true">≡</span> Reading
-        </button>
-      </div>
-      <div class="lesson-view-toggle__progress" data-outline-indicator>
-        <span data-outline-completed>0</span> of <span data-outline-total={outlineSections.length}>{outlineSections.length}</span> sections complete
-      </div>
-    </div>
-
-  <section class="lesson-guided" data-view-pane="guided">
-    <GuidedView
-      client:only="react"
-      lessonSlug={lesson.slug}
-      sections={outlineSections}
-    />
-  </section>
-
-  <section class="lesson-outline" data-view-pane="outline" hidden>
-    <OutlineView
-      client:only="react"
-      lessonSlug={lesson.slug}
-      sections={outlineSections}
-    />
-  </section>
 
   <section class="lesson-body lesson-body--reading" data-view-pane="reading" hidden>
     <div class="lesson-reading-layout">
