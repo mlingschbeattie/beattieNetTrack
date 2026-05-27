@@ -160,6 +160,25 @@ const outlineSections = authoredSections.length
             wrapper.className = 'lesson-table-wrap';
             table.parentNode?.insertBefore(wrapper, table);
             wrapper.appendChild(table);
+
+            const headerRow = table.querySelector('thead tr') ?? table.querySelector('tr');
+            if (!(headerRow instanceof HTMLTableRowElement)) return;
+
+            const labels = Array.from(headerRow.querySelectorAll('th, td'))
+              .map((cell) => cell.textContent?.trim() || '')
+              .filter(Boolean);
+            if (!labels.length) return;
+
+            table.classList.add('lesson-table--stack');
+            const rows = Array.from(table.querySelectorAll('tbody tr'));
+            rows.forEach((row) => {
+              const cells = Array.from(row.querySelectorAll('th, td'));
+              cells.forEach((cell, index) => {
+                if (!(cell instanceof HTMLElement)) return;
+                if (cell.dataset.label) return;
+                cell.dataset.label = labels[index] ?? `Column ${index + 1}`;
+              });
+            });
           });
         };
 
@@ -294,13 +313,64 @@ const outlineSections = authoredSections.length
         hyphens: none;
         vertical-align: top;
       }
+      .lesson-reading-main table th:first-child,
+      .lesson-reading-main table td:first-child {
+        white-space: nowrap;
+      }
       .lesson-reading-rail {
         min-width: 0;
       }
       @media (max-width: 768px) {
-        .lesson-reading-main th,
-        .lesson-reading-main td {
-          min-width: 9rem;
+        .lesson-reading-main table.lesson-table--stack {
+          display: block;
+          width: 100%;
+          min-width: 0;
+        }
+        .lesson-reading-main table.lesson-table--stack thead {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          margin: -1px;
+          padding: 0;
+          border: 0;
+          overflow: hidden;
+          clip: rect(0 0 0 0);
+        }
+        .lesson-reading-main table.lesson-table--stack tbody,
+        .lesson-reading-main table.lesson-table--stack tr,
+        .lesson-reading-main table.lesson-table--stack th,
+        .lesson-reading-main table.lesson-table--stack td {
+          display: block;
+          width: 100%;
+        }
+        .lesson-reading-main table.lesson-table--stack tr {
+          margin: 0 0 var(--space-3);
+          padding: var(--space-2);
+          border: 1px solid var(--border-subtle);
+          border-radius: var(--radius-sm);
+          background: var(--color-surface);
+        }
+        .lesson-reading-main table.lesson-table--stack th,
+        .lesson-reading-main table.lesson-table--stack td {
+          border: 0;
+          white-space: normal;
+          padding: var(--space-2) var(--space-2);
+          display: grid;
+          grid-template-columns: minmax(7.5rem, 40%) 1fr;
+          gap: var(--space-2);
+          align-items: start;
+        }
+        .lesson-reading-main table.lesson-table--stack th::before,
+        .lesson-reading-main table.lesson-table--stack td::before {
+          content: attr(data-label) ':';
+          font-weight: 700;
+          color: var(--color-text);
+          text-transform: uppercase;
+          font-size: var(--text-xs);
+          letter-spacing: 0.03em;
+        }
+        .lesson-reading-main table.lesson-table--stack tbody tr:last-child {
+          margin-bottom: 0;
         }
       }
       @media (max-width: 1100px) {
