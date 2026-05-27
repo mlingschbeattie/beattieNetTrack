@@ -1446,6 +1446,28 @@ html.light-mode .quiz-option:hover:not(.quiz-option--revealed) {
   margin-bottom: var(--space-2);
 }
 
+/* Keep lesson tables readable instead of squeezing columns into broken words. */
+.lesson-body table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-collapse: collapse;
+}
+
+.lesson-body table th,
+.lesson-body table td {
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+
+.lesson-body table th:first-child,
+.lesson-body table td:first-child {
+  white-space: nowrap;
+}
+
 .callout {
   border-radius: var(--radius-md);
   padding: var(--space-4);
