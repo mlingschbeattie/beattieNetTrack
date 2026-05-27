@@ -150,6 +150,21 @@ const outlineSections = authoredSections.length
         const completedEl = root.querySelector('[data-outline-completed]');
         const totalEl = root.querySelector('[data-outline-total]');
 
+        const wrapReadingTables = () => {
+          const readingRoot = document.querySelector('[data-reading-content]');
+          if (!readingRoot) return;
+          const tables = Array.from(readingRoot.querySelectorAll('table'));
+          tables.forEach((table) => {
+            if (table.parentElement?.classList.contains('lesson-table-wrap')) return;
+            const wrapper = document.createElement('div');
+            wrapper.className = 'lesson-table-wrap';
+            table.parentNode?.insertBefore(wrapper, table);
+            wrapper.appendChild(table);
+          });
+        };
+
+        wrapReadingTables();
+
         const setView = (view) => {
           buttons.forEach((btn) => {
             const active = btn.getAttribute('data-view') === view;
@@ -164,6 +179,9 @@ const outlineSections = authoredSections.length
               pane.setAttribute('hidden', '');
             }
           });
+          if (view === 'reading') {
+            wrapReadingTables();
+          }
         };
 
         buttons.forEach((btn) => {
@@ -174,6 +192,7 @@ const outlineSections = authoredSections.length
           const detail = event.detail;
           if (!detail || typeof detail.title !== 'string') return;
           setView('reading');
+          wrapReadingTables();
           const headings = Array.from(document.querySelectorAll('[data-reading-content] h2'));
           const target = headings.find((heading) => heading.textContent?.trim() === detail.title);
           if (target instanceof HTMLElement) {
@@ -255,8 +274,34 @@ const outlineSections = authoredSections.length
       .lesson-reading-main {
         min-width: 0;
       }
+      .lesson-table-wrap {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: var(--space-4) 0;
+      }
+      .lesson-reading-main table {
+        border-collapse: collapse;
+        width: max-content;
+        min-width: 100%;
+        margin: 0;
+      }
+      .lesson-reading-main th,
+      .lesson-reading-main td {
+        white-space: normal;
+        overflow-wrap: normal;
+        word-break: normal;
+        hyphens: none;
+        vertical-align: top;
+      }
       .lesson-reading-rail {
         min-width: 0;
+      }
+      @media (max-width: 768px) {
+        .lesson-reading-main th,
+        .lesson-reading-main td {
+          min-width: 9rem;
+        }
       }
       @media (max-width: 1100px) {
         .lesson-reading-layout {
