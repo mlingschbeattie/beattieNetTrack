@@ -71,9 +71,10 @@ const isActive = (href: string) => {
         <span aria-hidden="true" data-theme-icon>🌙</span>
         <span class="sr-only" data-theme-label>Dark</span>
       </button>
-      <div class="top-nav__status-slot" data-progress-slot>
-        <ProgressStatus client:only="react" />
-      </div>
+    </div>
+
+    <div class="top-nav__status-slot" data-progress-slot>
+      <ProgressStatus client:only="react" />
     </div>
   </div>
 </nav>

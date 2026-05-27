@@ -260,7 +260,8 @@ img {
 
 .top-nav-inner {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto auto minmax(0, 1fr) auto auto;
+  grid-template-areas: "toggle brand links actions status";
   align-items: center;
   gap: 20px;
   padding: 12px 24px;
@@ -268,11 +269,17 @@ img {
 
 /* Brand mark */
 .brand {
+  grid-area: brand;
   display: flex;
   align-items: center;
   gap: 10px;
   text-decoration: none;
   flex-shrink: 0;
+  min-width: 0;
+}
+
+.brand-text {
+  min-width: 0;
 }
 
 .brand-icon {
@@ -299,16 +306,23 @@ img {
   text-transform: uppercase;
   color: var(--accent-green);
   text-shadow: 0 0 10px rgba(0, 255, 179, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .brand-subtitle {
   display: block;
   font-size: 10px;
   color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Nav links */
 .nav-links {
+  grid-area: links;
   display: flex;
   align-items: center;
   gap: 18px;
@@ -368,6 +382,7 @@ img {
 
 /* Right-side nav actions */
 .top-nav__actions {
+  grid-area: actions;
   display: flex;
   align-items: center;
   gap: var(--space-3);
@@ -427,11 +442,14 @@ img {
 }
 
 .top-nav__status-slot {
+  grid-area: status;
   display: flex;
   align-items: center;
   gap: var(--space-3);
   min-height: 52px;
   min-width: 240px;
+  justify-self: end;
+  position: relative;
 }
 
 .top-nav__status-skeleton {
@@ -1716,6 +1734,7 @@ html.light-mode .quiz-option:hover:not(.quiz-option--revealed) {
 
 /* Nav hamburger — hidden on desktop, shown on mobile */
 .sidebar-nav-toggle {
+  grid-area: toggle;
   display: none;
   align-items: center;
   justify-content: center;
@@ -3174,15 +3193,36 @@ html.light-mode .quiz-eli5__toggle {
 @media (max-width: 768px) {
   .top-nav-inner {
     grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "toggle brand actions"
+      "status status status";
     padding: 10px 14px;
+    row-gap: var(--space-2);
   }
 
   .brand-subtitle {
     display: none;
   }
 
+   .brand-title {
+    max-width: 100%;
+   }
+
   .top-nav__status-slot {
     min-width: 0;
+    width: 100%;
+    justify-self: stretch;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+
+  .top-nav__status-slot::-webkit-scrollbar {
+    display: none;
+  }
+
+  .top-nav__status-slot .status-pill {
+    flex: 0 0 auto;
   }
 
   .nav-links {
