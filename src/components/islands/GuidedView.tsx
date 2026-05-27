@@ -208,16 +208,9 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
 
     attemptHydrate();
 
-    const observer = new MutationObserver(() => {
-      if (cancelled) return;
-      hydrateFromReading();
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-
     return () => {
       cancelled = true;
       if (retryTimer !== null) window.clearTimeout(retryTimer);
-      observer.disconnect();
     };
   }, [lessonSlug, sectionLookup]);
 

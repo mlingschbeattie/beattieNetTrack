@@ -184,16 +184,9 @@ export default function OutlineView({ lessonSlug, sections }: OutlineViewProps) 
 
     attemptHydrate();
 
-    const observer = new MutationObserver(() => {
-      if (cancelled) return;
-      hydrateFromReading();
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-
     return () => {
       cancelled = true;
       if (retryTimer !== null) window.clearTimeout(retryTimer);
-      observer.disconnect();
     };
   }, [lessonSlug, sections]);
 
