@@ -26,6 +26,12 @@ export type TourProgress = {
 
 export type SectionProgress = Record<string, boolean>;
 
+export type GuidedPreferences = {
+  autoReveal: boolean;
+  autoSeconds: number;
+  narrationRate: number;
+};
+
 export type ProgressState = {
   version: 1;
   xpTotal: number;
@@ -47,6 +53,7 @@ export type ProgressState = {
     }
   >;
   lessonSections: Record<string, SectionProgress>;
+  guided: GuidedPreferences;
 };
 
 type LessonMeta = {
@@ -68,6 +75,11 @@ const defaultState = (): ProgressState => ({
   tour: {},
   quizzes: {},
   lessonSections: {},
+  guided: {
+    autoReveal: false,
+    autoSeconds: 5,
+    narrationRate: 1,
+  },
 });
 
 const defaultLabProgress = (): LabProgress => ({
@@ -123,6 +135,19 @@ const safeParse = (raw: string | null): ProgressState => {
       tour: parsed.tour ?? {},
       quizzes: parsed.quizzes ?? {},
       lessonSections: parsed.lessonSections ?? {},
+      guided: {
+        autoReveal: Boolean(parsed.guided?.autoReveal),
+        autoSeconds:
+          typeof parsed.guided?.autoSeconds === 'number'
+          && Number.isFinite(parsed.guided.autoSeconds)
+          ? Math.min(10, Math.max(2, parsed.guided.autoSeconds))
+          : 5,
+        narrationRate:
+          typeof parsed.guided?.narrationRate === 'number'
+          && Number.isFinite(parsed.guided.narrationRate)
+          ? Math.min(2, Math.max(0.75, parsed.guided.narrationRate))
+          : 1,
+      },
     };
   } catch {
     return defaultState();
@@ -515,6 +540,33 @@ export const getSectionProgress = (
   const state = getProgress(storage);
   return state.lessonSections[lessonSlug] ?? {};
 };
+
+export const getGuidedPreferences = (storage: StorageLike | null = getStorage()): GuidedPreferences => {
+  const state = getProgress(storage);
+  return state.guided;
+};
+
+export const setGuidedPreferences = (
+  partial: Partial<GuidedPreferences>,
+  storage: StorageLike | null = getStorage()
+) =>
+  setProgress((state) => ({
+    ...state,
+    guided: {
+      autoReveal:
+        typeof partial.autoReveal === 'boolean'
+          ? partial.autoReveal
+          : state.guided.autoReveal,
+      autoSeconds:
+        typeof partial.autoSeconds === 'number' && Number.isFinite(partial.autoSeconds)
+          ? Math.min(10, Math.max(2, partial.autoSeconds))
+          : state.guided.autoSeconds,
+      narrationRate:
+        typeof partial.narrationRate === 'number' && Number.isFinite(partial.narrationRate)
+          ? Math.min(2, Math.max(0.75, partial.narrationRate))
+          : state.guided.narrationRate,
+    },
+  }), storage);
 
 export const isSectionComplete = (
   lessonSlug: string,

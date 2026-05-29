@@ -38,6 +38,7 @@ if (activityNavigation && (activityNavigation as any).trackSlug && (activityNavi
 ---
 
 <BaseLayout title={title} legacySkin={legacySkin}>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
   <div class="binary-bg" id="binary-bg" aria-hidden="true"></div>
   <script id="__SEARCH_INDEX__" type="application/json" is:inline set:html={searchIndexJson}></script>
   <Navbar activePath={activePath} activeTrackLabel={currentTrack?.data.title ?? 'None'} />
@@ -51,7 +52,7 @@ if (activityNavigation && (activityNavigation as any).trackSlug && (activityNavi
       lessonMap={lessonMap}
     />
     <div class="sidebar-overlay" id="sidebar-backdrop" data-sidebar-close></div>
-    <main class="content-pane">
+    <main id="main-content" class="content-pane" tabindex="-1">
       <div class={`content-wrap container ${showRightPanel ? 'container--workspace' : ''}`}>
         <button class="sidebar-toggle" type="button" data-sidebar-toggle>
           ☰ Menu
