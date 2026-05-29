@@ -125,11 +125,13 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
   const [revealedCount, setRevealedCount] = useState<Record<string, number>>({});
   const [autoReveal, setAutoReveal] = useState(false);
   const [autoSeconds, setAutoSeconds] = useState(5);
+  const [syncWithReading, setSyncWithReading] = useState(true);
   const [narrationRate, setNarrationRate] = useState(1);
   const [narrationState, setNarrationState] = useState<NarrationState>('idle');
   const [liveMessage, setLiveMessage] = useState('');
   const [completedMap, setCompletedMap] = useState<Record<string, boolean>>({});
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const lastManualChangeAtRef = useRef(0);
 
   const activeSection = readingSections[activeIndex] ?? null;
 
@@ -152,6 +154,7 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
     const prefs = getGuidedPreferences();
     setAutoReveal(prefs.autoReveal);
     setAutoSeconds(prefs.autoSeconds);
+    setSyncWithReading(prefs.syncWithReading);
     setNarrationRate(prefs.narrationRate);
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
       setNarrationState('unsupported');
@@ -290,6 +293,10 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
   }, [autoSeconds]);
 
   useEffect(() => {
+    setGuidedPreferences({ syncWithReading });
+  }, [syncWithReading]);
+
+  useEffect(() => {
     setGuidedPreferences({ narrationRate });
   }, [narrationRate]);
 
@@ -336,6 +343,47 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [narrationState, activeSection, narrationRate]);
+
+  useEffect(() => {
+    const handler = (
+      event: Event
+    ) => {
+      if (!syncWithReading) return;
+      const detail = (event as CustomEvent<{
+        lessonSlug?: string;
+        headingId?: string;
+        title?: string;
+        sectionId?: string | null;
+      }>).detail;
+      if (!detail || detail.lessonSlug !== lessonSlug) return;
+
+      const now = Date.now();
+      if (now - lastManualChangeAtRef.current < 1500) return;
+
+      let nextIndex = -1;
+      if (typeof detail.sectionId === 'string' && detail.sectionId) {
+        nextIndex = readingSections.findIndex((section) => section.sectionId === detail.sectionId);
+      }
+
+      if (nextIndex < 0 && typeof detail.headingId === 'string' && detail.headingId) {
+        nextIndex = readingSections.findIndex(
+          (section) => section.id === `${detail.headingId}-guided`
+        );
+      }
+
+      if (nextIndex < 0 && typeof detail.title === 'string' && detail.title) {
+        const normalizedTitle = normalize(detail.title);
+        nextIndex = readingSections.findIndex((section) => normalize(section.title) === normalizedTitle);
+      }
+
+      if (nextIndex >= 0 && nextIndex !== activeIndex) {
+        setActiveIndex(nextIndex);
+      }
+    };
+
+    window.addEventListener('reading-active-section', handler);
+    return () => window.removeEventListener('reading-active-section', handler);
+  }, [lessonSlug, readingSections, activeIndex, syncWithReading]);
 
   const completedCount = useMemo(
     () => readingSections.filter((section) => completedMap[section.sectionId]).length,
@@ -421,6 +469,7 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
 
   const goToReading = (title: string) => {
     stopNarration();
+    lastManualChangeAtRef.current = Date.now();
     window.dispatchEvent(
       new CustomEvent('lesson:jump-reading', {
         detail: { title },
@@ -430,6 +479,7 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
 
   const moveSection = (delta: number) => {
     stopNarration();
+    lastManualChangeAtRef.current = Date.now();
     setActiveIndex((idx) => Math.min(readingSections.length - 1, Math.max(0, idx + delta)));
   };
 
@@ -459,6 +509,7 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
 
   const markDone = () => {
     if (!activeSection) return;
+    lastManualChangeAtRef.current = Date.now();
     markSectionComplete(lessonSlug, activeSection.sectionId);
     setCompletedMap((prev) => ({ ...prev, [activeSection.sectionId]: true }));
     dispatchSectionSync(lessonSlug);
@@ -508,6 +559,14 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
             <option value={7}>Slow</option>
           </select>
         </label>
+        <label className="guided-control">
+          <input
+            type="checkbox"
+            checked={syncWithReading}
+            onChange={(event) => setSyncWithReading(event.target.checked)}
+          />
+          <span>Sync with reading scroll</span>
+        </label>
         <div className="guided-reveal-progress" aria-live="polite">
           Reveal {revealedBlocks} / {totalRevealBlocks}
         </div>
@@ -519,6 +578,8 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
           className="guided-btn"
           onClick={toggleNarration}
           disabled={narrationState === 'unsupported'}
+          aria-keyshortcuts="Alt+P"
+          aria-pressed={narrationState === 'playing' || narrationState === 'paused'}
           aria-label={
             narrationState === 'playing'
               ? 'Pause narration'
@@ -594,7 +655,7 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
         </button>
       </div>
 
-      <p className="sr-only" aria-live="polite" aria-atomic="true">{liveMessage}</p>
+      <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{liveMessage}</p>
 
       <ol className="guided-index" aria-label="Guided section list">
         {readingSections.map((section, index) => {
@@ -605,7 +666,10 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
               <button
                 type="button"
                 className={`guided-index__item ${active ? 'is-active' : ''} ${done ? 'is-done' : ''}`}
-                onClick={() => setActiveIndex(index)}
+                onClick={() => {
+                  lastManualChangeAtRef.current = Date.now();
+                  setActiveIndex(index);
+                }}
               >
                 <span>{String(index + 1).padStart(2, '0')}</span>
                 <span>{section.title}</span>
@@ -736,6 +800,13 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
         .guided-btn:disabled {
           opacity: 0.6;
           cursor: not-allowed;
+        }
+        .guided-btn:focus-visible,
+        .guided-select:focus-visible,
+        .guided-index__item:focus-visible,
+        .guided-control input:focus-visible {
+          outline: 2px solid rgba(56, 189, 248, 0.55);
+          outline-offset: 2px;
         }
         .guided-index {
           list-style: none;

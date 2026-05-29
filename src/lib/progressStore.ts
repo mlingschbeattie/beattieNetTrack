@@ -30,6 +30,7 @@ export type GuidedPreferences = {
   autoReveal: boolean;
   autoSeconds: number;
   narrationRate: number;
+  syncWithReading: boolean;
 };
 
 export type ProgressState = {
@@ -79,6 +80,7 @@ const defaultState = (): ProgressState => ({
     autoReveal: false,
     autoSeconds: 5,
     narrationRate: 1,
+    syncWithReading: true,
   },
 });
 
@@ -147,6 +149,10 @@ const safeParse = (raw: string | null): ProgressState => {
           && Number.isFinite(parsed.guided.narrationRate)
           ? Math.min(2, Math.max(0.75, parsed.guided.narrationRate))
           : 1,
+        syncWithReading:
+          typeof parsed.guided?.syncWithReading === 'boolean'
+            ? parsed.guided.syncWithReading
+            : true,
       },
     };
   } catch {
@@ -565,6 +571,10 @@ export const setGuidedPreferences = (
         typeof partial.narrationRate === 'number' && Number.isFinite(partial.narrationRate)
           ? Math.min(2, Math.max(0.75, partial.narrationRate))
           : state.guided.narrationRate,
+      syncWithReading:
+        typeof partial.syncWithReading === 'boolean'
+          ? partial.syncWithReading
+          : state.guided.syncWithReading,
     },
   }), storage);
 

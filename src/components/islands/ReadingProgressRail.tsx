@@ -28,6 +28,20 @@ const dispatchProgress = (lessonSlug: string, completed: number, total: number) 
   );
 };
 
+const dispatchReadingActiveSection = (lessonSlug: string, item: HeadingItem) => {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(
+    new CustomEvent('reading-active-section', {
+      detail: {
+        lessonSlug,
+        headingId: item.id,
+        title: item.title,
+        sectionId: item.sectionId,
+      },
+    })
+  );
+};
+
 const normalize = (value: string) => value.trim().toLowerCase();
 
 export default function ReadingProgressRail({ lessonSlug, sections }: ReadingProgressRailProps) {
@@ -69,7 +83,10 @@ export default function ReadingProgressRail({ lessonSlug, sections }: ReadingPro
     });
 
     setHeadings(parsed);
-    if (parsed[0]) setActiveId(parsed[0].id);
+    if (parsed[0]) {
+      setActiveId(parsed[0].id);
+      dispatchReadingActiveSection(lessonSlug, parsed[0]);
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -77,7 +94,12 @@ export default function ReadingProgressRail({ lessonSlug, sections }: ReadingPro
           .filter((entry) => entry.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
         if (visible[0]?.target instanceof HTMLHeadingElement) {
-          setActiveId(visible[0].target.id);
+          const nextId = visible[0].target.id;
+          setActiveId(nextId);
+          const nextItem = parsed.find((item) => item.id === nextId);
+          if (nextItem) {
+            dispatchReadingActiveSection(lessonSlug, nextItem);
+          }
         }
       },
       {
