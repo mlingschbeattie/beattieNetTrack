@@ -6,11 +6,20 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
+      - name: Checkout (internal Gitea API)
+        run: |
+          wget -q \
+            --header="Authorization: token ${{ gitea.token }}" \
+            "http://beattie-gitea:3000/api/v1/repos/mbeattie/newnettrack/archive/master.tar.gz" \
+            -O repo.tar.gz
+          tar xzf repo.tar.gz --strip-components=1
+          rm repo.tar.gz
+
+      - name: Verify Node toolchain
+        run: |
+          node --version
+          npm --version
       - run: npm ci
       - run: npm run test:ci
