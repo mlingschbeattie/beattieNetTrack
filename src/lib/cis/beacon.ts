@@ -1,8 +1,10 @@
+import { emitEvent, type CISDomainTag } from '../events';
+
 const BEACON_INTERVAL_MS = 30_000;
 const IDLE_THRESHOLD_MS = 3 * 60 * 1000; // 3 minutes
 
 export function startBeaconSession(params: {
-  domainIds: string[];
+  domains: CISDomainTag[];
   contentType: string;
   contentId: string;
   apiUrl: string;
@@ -34,19 +36,21 @@ export function startBeaconSession(params: {
     }
 
     // Student is active — send beacon
-    try {
-      await fetch(`${params.apiUrl}/api/competency/beacon`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+    emitEvent(
+      {
+        appId: 'lms',
+        eventType: 'lms.lab_beacon',
+        payload: {
+          domains: params.domains,
           contentType: params.contentType,
           contentId: params.contentId,
-        }),
-      });
-    } catch {
-      // Silent fail — beacon loss is acceptable
-    }
+          sessionId,
+          idleSecondsTotal,
+          idleCount,
+        },
+      },
+      params.apiUrl
+    );
 
     lastBeaconTime = now;
   }, BEACON_INTERVAL_MS);

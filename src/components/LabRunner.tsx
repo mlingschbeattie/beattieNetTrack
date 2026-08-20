@@ -89,10 +89,13 @@ export default function LabRunner({
 
   // CIS time-beacon: emit active-time pings every 30 s while student is working
   useEffect(() => {
-    const domainIds = domains.map((d) => d.domainId);
-    if (!apiUrl || domainIds.length === 0) return;
+    if (!apiUrl || domains.length === 0) return;
+    const cisDomains: CISDomainTag[] = domains.map((d) => ({
+      domainId: d.domainId,
+      weight: d.weight ?? 1.0,
+    }));
     const stop = startBeaconSession({
-      domainIds,
+      domains: cisDomains,
       contentType: 'lab',
       contentId: labSlug,
       apiUrl,
