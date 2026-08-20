@@ -24,7 +24,7 @@ type GroupedEntry = {
 };
 
 type Props = {
-  apiUrl: string;
+  apiUrl?: string;
 };
 
 const CONTENT_TYPE_LABELS: Record<string, string> = {
@@ -37,7 +37,7 @@ const CONTENT_TYPE_LABELS: Record<string, string> = {
 };
 
 export default function CompetencyMapView({ apiUrl }: Props) {
-  const baseApiUrl = apiUrl || 'https://api.beattietech.local';
+  const baseApiUrl = apiUrl && apiUrl !== 'https://api.beattietech.local' ? apiUrl : '';
   const [entries, setEntries] = useState<MapEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

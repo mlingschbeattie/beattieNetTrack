@@ -114,28 +114,65 @@ function RadialGauge({ value, tier, size = 120 }: { value: number; tier: PATier;
 
 type Props = {
   username: string;
-  apiUrl: string;
+  apiUrl?: string;
 };
 
 export default function CompetencyDashboard({ username, apiUrl }: Props) {
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const baseApiUrl = apiUrl && apiUrl !== 'https://api.beattietech.local' ? apiUrl : '';
+  const [profile, setProfile] = useState<any>(null);
   const [recs, setRecs] = useState<GapItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     Promise.all([
-      fetch(`${apiUrl}/api/competency/profile/${username}`, { credentials: 'include' }).then((r) => {
+      fetch(`${baseApiUrl}/api/cis/students/${username}`, { credentials: 'include' }).then((r) => {
         if (!r.ok) throw new Error(`Profile API ${r.status}`);
-        return r.json() as Promise<Profile>;
+        return r.json();
       }),
-      fetch(`${apiUrl}/api/competency/recommendations/${username}`, { credentials: 'include' }).then(
-        (r) => (r.ok ? (r.json() as Promise<GapItem[]>) : Promise.resolve([]))
+      fetch(`${baseApiUrl}/api/cis/me/recommendations`, { credentials: 'include' }).then(
+        (r) => (r.ok ? r.json() : Promise.resolve([]))
       ),
     ])
-      .then(([profileData, recData]) => {
-        setProfile(profileData);
-        setRecs(recData);
+      .then(([raw, recData]) => {
+        // Map raw profile just like StudentProfile
+        const rawCerts = raw?.certTracks || raw?.certs || [];
+        const certs = rawCerts.map((ct: any) => {
+          const doms = ct?.domains || [];
+          const avgScore = doms.length
+            ? Math.round(doms.reduce((a: number, b: any) => a + (Number(b.effectiveScore ?? b.combinedScore ?? 0)), 0) / doms.length)
+            : 0;
+          return {
+            certId: ct?.certTrackId || ct?.certId || 'cert',
+            certName: ct?.title || ct?.certName || ct?.certTrackId || 'Certification',
+            readiness: avgScore,
+            paTier: (doms[0]?.readinessBucket || 'NOT_STARTED').toUpperCase() as PATier,
+            domains: doms.map((d: any) => ({
+              domainCode: d.domainId,
+              domainName: d.domainName || d.domainId,
+              weightPct: d.weightPct ?? 20,
+              masteryScore: Number(d.masteryScore ?? 0),
+              timeCoverageScore: Number(d.timeCoverage ?? 0),
+              activeMinutes: Number(d.timeMinutes ?? d.activeMinutes ?? 0),
+              expectedMinutes: Number(d.expectedMinutes ?? 120),
+              readiness: Number(d.effectiveScore ?? d.combinedScore ?? 0),
+              paTier: String(d.readinessBucket || 'NOT_STARTED').toUpperCase() as PATier,
+              attemptCount: Number(d.attemptCount ?? 0),
+            })),
+          };
+        });
+
+        setProfile({
+          student: raw?.student || { username, displayName: username, currentYear: raw?.academicYear || '2025-2026' },
+          certs,
+          allTimeMinutes: raw?.allTimeMinutes ?? 0,
+          currentYearMinutes: raw?.currentYearMinutes ?? 0,
+          entranceExam: raw?.entranceExam || null,
+        });
+
+        // Map recData properly if needed, fallback to array if wrapped
+        const rawRecs = recData?.data || recData?.recommendations || recData;
+        setRecs(Array.isArray(rawRecs) ? rawRecs : []);
         setLoading(false);
       })
       .catch((err: unknown) => {
@@ -143,6 +180,7 @@ export default function CompetencyDashboard({ username, apiUrl }: Props) {
         setLoading(false);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [username]);
 
   if (loading) return <div className="competency-dash__loading">Loading your profile…</div>;

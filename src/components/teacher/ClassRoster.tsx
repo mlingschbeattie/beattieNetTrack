@@ -71,11 +71,11 @@ function ReadinessGauge({ value, tier }: { value?: number; tier?: string }) {
 }
 
 type Props = {
-  apiUrl: string;
+  apiUrl?: string;
 };
 
 export default function ClassRoster({ apiUrl }: Props) {
-  const baseApiUrl = apiUrl || 'https://api.beattietech.local';
+  const baseApiUrl = apiUrl && apiUrl !== 'https://api.beattietech.local' ? apiUrl : '';
   const [data, setData] = useState<unknown>(null);
   const [gaps, setGaps] = useState<unknown>([]);
   const [loading, setLoading] = useState(true);
