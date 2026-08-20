@@ -46,13 +46,21 @@ export interface HubEvent {
  */
 export function emitEvent(event: HubEvent, apiUrl: string): void {
   if (!isBrowser() || !apiUrl) return;
+  const body = {
+    app_id: event.appId,
+    event_type: event.eventType,
+    appId: event.appId,
+    eventType: event.eventType,
+    payload: event.payload,
+  };
   fetch(`${apiUrl}/api/events`, {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(event),
+    body: JSON.stringify(body),
   }).catch(() => {}); // silent — beacon loss is acceptable
 }
+
 
 // ─── Convenience helpers for LMS events ──────────────────────────────────────
 

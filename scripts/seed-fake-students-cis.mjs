@@ -161,8 +161,15 @@ async function dispatchEvents() {
               'Remote-Groups': 'students',
               'x-student-username': student.username,
             },
-            body: JSON.stringify({ appId: 'lms', eventType, payload }),
+            body: JSON.stringify({
+              app_id: 'lms',
+              event_type: eventType,
+              appId: 'lms',
+              eventType,
+              payload,
+            }),
           });
+
           const text = await res.text().catch(() => '');
           console.log(`    ↳ Sent ${eventType} -> HTTP ${res.status} ${res.statusText} ${text ? `(${text})` : ''}`);
         } catch (err) {
