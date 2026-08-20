@@ -6,6 +6,11 @@
  * lesson reading beacons, quiz submissions, and lab completions.
  */
 
+if (process.env.PUBLIC_API_URL?.includes('.local') || !process.env.PUBLIC_API_URL) {
+  // Allow internal self-signed or internal CA certs for .local domains
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+}
+
 const API_URL = process.env.PUBLIC_API_URL || 'https://api.beattietech.local';
 
 const FAKE_STUDENTS = {
@@ -151,9 +156,11 @@ async function dispatchEvents() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ appId: 'lms', eventType, payload }),
           });
-          console.log(`    ↳ Sent ${eventType} -> HTTP ${res.status}`);
+          const text = await res.text().catch(() => '');
+          console.log(`    ↳ Sent ${eventType} -> HTTP ${res.status} ${res.statusText} ${text ? `(${text})` : ''}`);
         } catch (err) {
-          console.log(`    ↳ Notice: Could not reach ${API_URL} directly: ${err.message}`);
+          const detail = err.cause ? `${err.message} (${err.cause.message || err.cause.code || err.cause})` : err.message;
+          console.log(`    ↳ Notice: Could not reach ${API_URL}: ${detail}`);
         }
       }
     }
@@ -165,4 +172,5 @@ async function dispatchEvents() {
 }
 
 dispatchEvents();
+
 
