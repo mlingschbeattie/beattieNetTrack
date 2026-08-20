@@ -5,6 +5,7 @@ import path from 'node:path';
 import WorkspaceLayout from '../../layouts/WorkspaceLayout.astro';
 import QuizRunner from '../../components/QuizRunner.tsx';
 import ActivityCard from '../../components/ActivityCard.astro';
+import BeaconEmitter from '../../components/BeaconEmitter.tsx';
 import type { QuizDefinition } from '../../lib/quizEngine';
 import { getActivityModuleNavigation } from '../../lib/content';
 
@@ -13,6 +14,7 @@ export async function getStaticPaths() {
   return quizzes.map((quiz) => ({ params: { slug: quiz.slug }, props: { quiz } }));
 }
 
+const apiUrl = import.meta.env.PUBLIC_API_URL ?? '';
 const allQuizzes = await getCollection('quizzes');
 const paramSlug = Astro.params.slug;
 const quiz = Astro.props.quiz ?? allQuizzes.find((item) => item.slug === paramSlug);
@@ -102,6 +104,23 @@ if (currentTrack) {
   </Fragment>
 
   <Fragment slot="activity-main">
-    <QuizRunner client:only="react" quiz={quizDefinition} workspaceSlug={quiz.slug} />
+    {quiz.data.domains && quiz.data.domains.length > 0 && apiUrl && (
+      <BeaconEmitter
+        client:load
+        domains={quiz.data.domains}
+        contentId={quiz.slug}
+        contentType="quiz"
+        contentTitle={quiz.data.title}
+        apiUrl={apiUrl}
+      />
+    )}
+    <QuizRunner
+      client:only="react"
+      quiz={quizDefinition}
+      workspaceSlug={quiz.slug}
+      domains={quiz.data.domains ?? []}
+      apiUrl={apiUrl}
+    />
   </Fragment>
 </WorkspaceLayout>
+

@@ -8,7 +8,7 @@ const repoRoot = path.resolve(__dirname, '..');
 const contentRoot = path.join(repoRoot, 'src', 'content');
 const legacyRoot = path.join(repoRoot, 'public', 'legacy');
 
-const requiredCollectionDirs = ['labs', 'quizzes', 'activities'];
+const requiredCollectionDirs = ['labs', 'quizzes', 'activities', 'lessons'];
 const optionalCollectionDirs = ['terminal', 'code', 'tour', 'tours', 'assessments'];
 
 const stripQuotes = (value) => value.replace(/^['"]|['"]$/g, '').trim();
@@ -103,7 +103,7 @@ export const validateTrackModuleMappings = () => {
       }
 
       const track = fm.track;
-      const moduleId = fm.moduleId;
+      const moduleId = fm.moduleId || fm.module;
       const orderRaw = fm.order;
 
       if (!track) {
@@ -122,11 +122,17 @@ export const validateTrackModuleMappings = () => {
         );
       }
 
-      if (typeof orderRaw === 'undefined' || orderRaw === '') {
-        errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} missing required order.`);
-      } else if (!/^-?\d+$/.test(String(orderRaw))) {
+      // Order is required for activities/quizzes/labs; optional for lessons
+      if (collection.name !== 'lessons') {
+        if (typeof orderRaw === 'undefined' || orderRaw === '') {
+          errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} missing required order.`);
+        } else if (!/^-?\d+$/.test(String(orderRaw))) {
+          errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} order '${orderRaw}' is not an integer.`);
+        }
+      } else if (typeof orderRaw !== 'undefined' && orderRaw !== '' && !/^-?\d+$/.test(String(orderRaw))) {
         errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} order '${orderRaw}' is not an integer.`);
       }
+
 
       const labPath = fm.labPath;
       if (labPath && /^\/legacy\//.test(labPath)) {

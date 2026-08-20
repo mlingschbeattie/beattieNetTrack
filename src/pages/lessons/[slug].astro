@@ -9,12 +9,14 @@ import GuidedView from '../../components/islands/GuidedView.tsx';
 import ReadingProgressRail from '../../components/islands/ReadingProgressRail.tsx';
 import { normalizeLessonMeta } from '../../lib/lessonMeta';
 import { getActivityModuleNavigation } from '../../lib/content';
+import BeaconEmitter from '../../components/BeaconEmitter.tsx';
 
 export async function getStaticPaths() {
   const lessons = await getCollection('lessons');
   return lessons.map((lesson) => ({ params: { slug: lesson.slug }, props: { lesson } }));
 }
 
+const apiUrl = import.meta.env.PUBLIC_API_URL ?? '';
 const allTracks = await getCollection('tracks');
 const allLessons = await getCollection('lessons');
 const paramSlug = Astro.params.slug;
@@ -88,6 +90,17 @@ const outlineSections = authoredSections.length
     { label: lesson.data.title },
   ].filter(Boolean)}
 >
+  {lesson.data.domains && lesson.data.domains.length > 0 && apiUrl && (
+    <BeaconEmitter
+      client:load
+      domains={lesson.data.domains}
+      contentId={lesson.slug}
+      contentType="lesson"
+      contentTitle={lesson.data.title}
+      apiUrl={apiUrl}
+    />
+  )}
+
   <LessonHeader
     title={lesson.data.title}
     description={meta.description}

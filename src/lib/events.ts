@@ -58,6 +58,9 @@ export function emitEvent(event: HubEvent, apiUrl: string): void {
 
 const LS_STARTED_PREFIX = 'lms_started_date_';
 const LS_COMPLETED_PREFIX = 'lms_completed_';
+const LS_QUIZ_COMPLETED_PREFIX = 'lms_quiz_completed_';
+const LS_LESSON_STARTED_PREFIX = 'lms_lesson_started_';
+const LS_LESSON_COMPLETED_PREFIX = 'lms_lesson_completed_';
 
 /**
  * Emit `lms.lab_started` — gated to fire at most once per calendar day per lab.
@@ -124,3 +127,96 @@ export function emitLabCompleted(
     apiUrl,
   );
 }
+
+/**
+ * Emit `lms.quiz_completed` — fires when a quiz is submitted.
+ */
+export function emitQuizCompleted(
+  quizId: string,
+  score: number,
+  maxScore: number = 100,
+  domains: CISDomainTag[],
+  apiUrl: string,
+): void {
+  if (!isBrowser() || !apiUrl || domains.length === 0) return;
+
+  emitEvent(
+    {
+      appId: 'lms',
+      eventType: 'lms.quiz_completed',
+      payload: {
+        domains,
+        contentType: 'quiz',
+        contentId: quizId,
+        score,
+        maxScore,
+        submittedAt: new Date().toISOString(),
+      },
+    },
+    apiUrl,
+  );
+}
+
+/**
+ * Emit `lms.lesson_started` — fires at most once per calendar day per lesson.
+ */
+export function emitLessonStarted(
+  lessonId: string,
+  lessonTitle: string,
+  domains: CISDomainTag[],
+  apiUrl: string,
+): void {
+  if (!isBrowser() || !apiUrl || domains.length === 0) return;
+
+  const storageKey = `${LS_LESSON_STARTED_PREFIX}${lessonId}`;
+  const today = new Date().toISOString().slice(0, 10);
+  const lastDate = window.localStorage.getItem(storageKey);
+  if (lastDate === today) return;
+
+  window.localStorage.setItem(storageKey, today);
+  emitEvent(
+    {
+      appId: 'lms',
+      eventType: 'lms.lesson_started',
+      payload: {
+        domains,
+        contentType: 'lesson',
+        contentId: lessonId,
+        sessionId: crypto.randomUUID(),
+        lessonTitle,
+      },
+    },
+    apiUrl,
+  );
+}
+
+/**
+ * Emit `lms.lesson_completed` — fires once when a lesson reading is completed.
+ */
+export function emitLessonCompleted(
+  lessonId: string,
+  domains: CISDomainTag[],
+  apiUrl: string,
+): void {
+  if (!isBrowser() || !apiUrl || domains.length === 0) return;
+
+  const storageKey = `${LS_LESSON_COMPLETED_PREFIX}${lessonId}`;
+  if (window.localStorage.getItem(storageKey)) return;
+
+  window.localStorage.setItem(storageKey, '1');
+  emitEvent(
+    {
+      appId: 'lms',
+      eventType: 'lms.lesson_completed',
+      payload: {
+        domains,
+        contentType: 'lesson',
+        contentId: lessonId,
+        score: 100,
+        maxScore: 100,
+      },
+    },
+    apiUrl,
+  );
+}
+

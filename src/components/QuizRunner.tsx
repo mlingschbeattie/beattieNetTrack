@@ -1,14 +1,18 @@
 import { useEffect, useMemo, useState } from 'react';
 import { gradeQuiz, type QuizAnswer, type QuizDefinition } from '../lib/quizEngine';
+import { emitQuizCompleted, type CISDomainTag } from '../lib/events';
+import type { DomainMapping } from '../types/lab';
 
 type QuizRunnerProps = {
   quiz: QuizDefinition;
   workspaceSlug?: string;
+  domains?: DomainMapping[];
+  apiUrl?: string;
 };
 
 const storageKey = (slug: string) => `quiz-runner:${slug}`;
 
-export default function QuizRunner({ quiz, workspaceSlug }: QuizRunnerProps) {
+export default function QuizRunner({ quiz, workspaceSlug, domains = [], apiUrl }: QuizRunnerProps) {
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<Record<string, QuizAnswer>>({});
   const [showResults, setShowResults] = useState(false);
@@ -104,6 +108,14 @@ export default function QuizRunner({ quiz, workspaceSlug }: QuizRunnerProps) {
       return;
     }
 
+    if (action === 'submit' && apiUrl && domains.length > 0) {
+      const cisDomains: CISDomainTag[] = domains.map((d) => ({
+        domainId: d.domainId,
+        weight: d.weight ?? 1.0,
+      }));
+      emitQuizCompleted(quiz.slug, grade.score, 100, cisDomains, apiUrl);
+    }
+
     const missed = grade.results.filter((result) => !result.correct);
 
     window.dispatchEvent(
@@ -159,6 +171,7 @@ export default function QuizRunner({ quiz, workspaceSlug }: QuizRunnerProps) {
     window.addEventListener('workspace:action', onAction);
     return () => window.removeEventListener('workspace:action', onAction);
   }, [workspaceSlug, quiz.slug, grade]);
+
 
   if (!activeQuestion) {
     return <div className="quiz-runner">No questions found.</div>;

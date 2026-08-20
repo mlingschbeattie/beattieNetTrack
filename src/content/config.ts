@@ -62,6 +62,11 @@ const modules = defineCollection({
   }),
 });
 
+const domainMappingSchema = z
+  .array(z.object({ domainId: z.string(), weight: z.number().min(0).max(1) }))
+  .optional()
+  .default([]);
+
 const labs = defineCollection({
   type: 'content',
   schema: z.object({
@@ -119,10 +124,7 @@ const labs = defineCollection({
     submitLabel: z.string().optional().default('Submit'),
     hints: z.array(z.string()).default([]),
     checklist: z.array(z.string()).default([]),
-    domains: z
-      .array(z.object({ domainId: z.string(), weight: z.number().min(0).max(1) }))
-      .optional()
-      .default([]),
+    domains: domainMappingSchema,
   }),
 });
 
@@ -144,6 +146,7 @@ const quizzes = defineCollection({
     quizJsonPath: z.string().optional(),
     hints: z.array(z.string()).default([]),
     checklist: z.array(z.string()).default([]),
+    domains: domainMappingSchema,
     questions: z
       .array(
         z.discriminatedUnion('type', [
@@ -190,6 +193,7 @@ const activities = defineCollection({
     estMinutes: z.number().int().optional().default(15),
     labPath: z.string().optional(),
     labUrl: z.string().optional(),
+    domains: domainMappingSchema,
   }),
 });
 
@@ -222,6 +226,7 @@ const lessons = defineCollection({
       estimatedMinutes: z.number().int().optional(),
       tags: z.array(z.string()).default([]),
       legacyUrl: z.string().optional(),
+      domains: domainMappingSchema,
       sections: z.array(lessonSection).optional(),
     })
     .superRefine((data, ctx) => {
