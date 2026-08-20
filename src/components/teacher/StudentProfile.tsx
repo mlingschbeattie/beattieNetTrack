@@ -190,27 +190,27 @@ export default function StudentProfile({ username, apiUrl, isTeacher = false }: 
       {/* Header */}
       <div className="student-profile__header">
         <div>
-          <h2 className="student-profile__name">{profile.student.displayName}</h2>
+          <h2 className="student-profile__name">{profile?.student?.displayName || username}</h2>
           <p className="student-profile__meta">
-            {profile.student.currentYear} · {profile.currentYearMinutes}m this year
-            · {profile.allTimeMinutes}m all-time
+            {profile?.student?.currentYear || 'Academic Year'} · {profile?.currentYearMinutes ?? 0}m this year
+            · {profile?.allTimeMinutes ?? 0}m all-time
           </p>
         </div>
-        {profile.entranceExam && (
+        {profile?.entranceExam && (
           <div className="student-profile__exam-badge">
             <span>Placement: </span>
-            <strong>{profile.entranceExam.placementTier}</strong>
-            <span> ({Math.round(profile.entranceExam.totalScore)}%)</span>
+            <strong>{profile.entranceExam.placementTier || 'Assigned'}</strong>
+            <span> ({Math.round(profile.entranceExam.totalScore ?? 0)}%)</span>
           </div>
         )}
       </div>
 
       {/* Cert cards */}
-      {profile.certs.map((cert) => (
+      {(profile?.certs || []).map((cert) => (
         <div key={cert.certId} className="student-profile__cert">
           <div className="student-profile__cert-header">
-            <h3 className="student-profile__cert-name">{cert.certName}</h3>
-            <MasteryBar value={cert.readiness} tier={cert.paTier} />
+            <h3 className="student-profile__cert-name">{cert.certName || cert.certId}</h3>
+            <MasteryBar value={cert.readiness ?? 0} tier={cert.paTier ?? 'NOT_STARTED'} />
           </div>
 
           <table className="student-profile__domains">
@@ -225,20 +225,20 @@ export default function StudentProfile({ username, apiUrl, isTeacher = false }: 
               </tr>
             </thead>
             <tbody>
-              {cert.domains.map((d) => (
+              {(cert?.domains || []).map((d) => (
                 <tr key={d.domainCode}>
                   <td>
                     <span className="student-profile__domain-code">{d.domainCode}</span>{' '}
-                    {d.domainName}
+                    {d.domainName || d.domainCode}
                   </td>
-                  <td>{d.weightPct}%</td>
+                  <td>{d.weightPct ?? 0}%</td>
                   <td>
-                    <MasteryBar value={d.masteryScore} tier={d.paTier} />
+                    <MasteryBar value={d.masteryScore ?? 0} tier={d.paTier ?? 'NOT_STARTED'} />
                   </td>
                   <td>
-                    {d.activeMinutes}m / {d.expectedMinutes}m
+                    {d.activeMinutes ?? 0}m / {d.expectedMinutes ?? 0}m
                   </td>
-                  <td>{d.attemptCount}</td>
+                  <td>{d.attemptCount ?? 0}</td>
                   {isTeacher && (
                     <td>
                       <button
@@ -258,6 +258,7 @@ export default function StudentProfile({ username, apiUrl, isTeacher = false }: 
           </table>
         </div>
       ))}
+
 
       {override && (
         <OverrideModal

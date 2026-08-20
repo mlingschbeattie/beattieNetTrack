@@ -111,14 +111,43 @@ export default function ClassRoster({ apiUrl }: Props) {
     return <p className="callout callout--warn">{error}</p>;
   }
 
-  const students = data?.students ?? [];
-  const allCerts = [...new Set(students.flatMap((s) => s.certs.map((c) => c.certId)))];
-  const filtered = certFilter
-    ? students.map((s) => ({ ...s, certs: s.certs.filter((c) => c.certId === certFilter) }))
-    : students;
+  const students: Student[] = useMemo(() => {
+    if (!data) return [];
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data.students)) return data.students;
+    return [];
+  }, [data]);
 
-  const criticalCount = gaps.filter((g) => g.priority === 'CRITICAL').length;
-  const needsWorkCount = gaps.filter((g) => g.priority === 'NEEDS_WORK').length;
+  const safeGaps: GapItem[] = useMemo(() => {
+    if (!gaps) return [];
+    if (Array.isArray(gaps)) return gaps;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (Array.isArray((gaps as any).gaps)) return (gaps as any).gaps;
+    return [];
+  }, [gaps]);
+
+  const allCerts = useMemo(() => {
+    const certIds = new Set<string>();
+    for (const s of students) {
+      if (Array.isArray(s?.certs)) {
+        for (const c of s.certs) {
+          if (c?.certId) certIds.add(c.certId);
+        }
+      }
+    }
+    return Array.from(certIds);
+  }, [students]);
+
+  const filtered = useMemo(() => {
+    if (!certFilter) return students;
+    return students.map((s) => ({
+      ...s,
+      certs: Array.isArray(s?.certs) ? s.certs.filter((c) => c?.certId === certFilter) : [],
+    }));
+  }, [students, certFilter]);
+
+  const criticalCount = safeGaps.filter((g) => g?.priority === 'CRITICAL').length;
+  const needsWorkCount = safeGaps.filter((g) => g?.priority === 'NEEDS_WORK').length;
 
   return (
     <div className="class-roster">
@@ -190,48 +219,64 @@ export default function ClassRoster({ apiUrl }: Props) {
             </div>
           )}
 
-          <table className="class-roster__table">
-            <thead>
-              <tr>
-                <th>Student</th>
-                <th>Period</th>
-                {filtered[0]?.certs.map((c) => (
-                  <th key={c.certId}>{c.certName}</th>
-                ))}
-                <th>Active (7d)</th>
-                <th>Last Active</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((student) => (
-                <tr key={student.username}>
-                  <td>
-                    <a href={`/admin/student/${student.username}`} className="class-roster__student-link">
-                      {student.displayName}
-                    </a>
-                  </td>
-                  <td>{student.period}</td>
-                  {student.certs.map((c) => (
-                    <td key={c.certId}>
-                      <ReadinessGauge value={c.readiness} tier={c.paTier} />
-                    </td>
+          {students.length === 0 ? (
+            <p className="class-roster__no-gaps">No students found in class data.</p>
+          ) : (
+            <table className="class-roster__table">
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Period</th>
+                  {allCerts.map((certId) => (
+                    <th key={certId}>{certId}</th>
                   ))}
-                  <td>{student.totalActiveMinutes}m</td>
-                  <td>
-                    {student.lastActive
-                      ? new Date(student.lastActive).toLocaleDateString()
-                      : '—'}
-                  </td>
+                  <th>Active (7d)</th>
+                  <th>Last Active</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filtered.map((student) => {
+                  const studentCerts = Array.isArray(student?.certs) ? student.certs : [];
+                  const certMap = new Map(studentCerts.map((c) => [c.certId, c]));
+
+                  return (
+                    <tr key={student.username || Math.random()}>
+                      <td>
+                        <a href={`/admin/student/${student.username}`} className="class-roster__student-link">
+                          {student.displayName || student.username}
+                        </a>
+                      </td>
+                      <td>{student.period || '—'}</td>
+                      {allCerts.map((certId) => {
+                        const c = certMap.get(certId);
+                        return (
+                          <td key={certId}>
+                            {c ? (
+                              <ReadinessGauge value={c.readiness ?? 0} tier={c.paTier ?? 'NOT_STARTED'} />
+                            ) : (
+                              <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--text-xs)' }}>—</span>
+                            )}
+                          </td>
+                        );
+                      })}
+                      <td>{student.totalActiveMinutes ?? 0}m</td>
+                      <td>
+                        {student.lastActive
+                          ? new Date(student.lastActive).toLocaleDateString()
+                          : '—'}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
         </>
       )}
 
       {activeTab === 'gaps' && (
         <div className="class-roster__gaps">
-          {gaps.length === 0 ? (
+          {safeGaps.length === 0 ? (
             <p className="class-roster__no-gaps">No critical gaps detected. Great work!</p>
           ) : (
             <table className="class-roster__table">
@@ -246,18 +291,18 @@ export default function ClassRoster({ apiUrl }: Props) {
                 </tr>
               </thead>
               <tbody>
-                {gaps.map((gap, i) => (
+                {safeGaps.map((gap, i) => (
                   <tr key={i}>
                     <td>
                       <a href={`/admin/student/${gap.studentUsername}`} className="class-roster__student-link">
-                        {gap.displayName}
+                        {gap.displayName || gap.studentUsername}
                       </a>
                     </td>
                     <td>{gap.certId}</td>
                     <td>{gap.domainName}</td>
                     <td>
                       <ReadinessGauge
-                        value={gap.readiness}
+                        value={gap.readiness ?? 0}
                         tier={gap.priority === 'CRITICAL' ? 'CRITICAL' : 'NEEDS_WORK'}
                       />
                     </td>
@@ -273,7 +318,7 @@ export default function ClassRoster({ apiUrl }: Props) {
                         {gap.priority === 'CRITICAL' ? 'Critical' : 'Needs Work'}
                       </span>
                     </td>
-                    <td>{gap.deficitMinutes}m</td>
+                    <td>{gap.deficitMinutes ?? 0}m</td>
                   </tr>
                 ))}
               </tbody>
@@ -283,4 +328,5 @@ export default function ClassRoster({ apiUrl }: Props) {
       )}
     </div>
   );
+
 }

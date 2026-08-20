@@ -149,7 +149,12 @@ export default function CompetencyDashboard({ username, apiUrl }: Props) {
   if (error) return <p className="callout callout--warn">{error}</p>;
   if (!profile) return null;
 
-  const { student, certs, allTimeMinutes, currentYearMinutes, entranceExam } = profile;
+  const student = profile?.student;
+  const certs = Array.isArray(profile?.certs) ? profile.certs : [];
+  const allTimeMinutes = profile?.allTimeMinutes ?? 0;
+  const currentYearMinutes = profile?.currentYearMinutes ?? 0;
+  const entranceExam = profile?.entranceExam;
+  const safeRecs = Array.isArray(recs) ? recs : [];
 
   return (
     <div className="competency-dash">
@@ -165,7 +170,7 @@ export default function CompetencyDashboard({ username, apiUrl }: Props) {
         </div>
         {entranceExam && (
           <div className="competency-dash__stat-card">
-            <span className="competency-dash__stat-num">{Math.round(entranceExam.totalScore)}%</span>
+            <span className="competency-dash__stat-num">{Math.round(entranceExam.totalScore ?? 0)}%</span>
             <span className="competency-dash__stat-label">Placement score</span>
           </div>
         )}
@@ -185,38 +190,38 @@ export default function CompetencyDashboard({ username, apiUrl }: Props) {
           <div
             key={cert.certId}
             className="competency-dash__cert-card"
-            style={{ background: TIER_BG[cert.paTier], borderColor: TIER_COLOR[cert.paTier] }}
+            style={{ background: TIER_BG[cert.paTier ?? 'NOT_STARTED'], borderColor: TIER_COLOR[cert.paTier ?? 'NOT_STARTED'] }}
           >
             <div className="competency-dash__cert-top">
               <div>
-                <h3 className="competency-dash__cert-name">{cert.certName}</h3>
+                <h3 className="competency-dash__cert-name">{cert.certName || cert.certId}</h3>
                 <p className="competency-dash__cert-id">{cert.certId}</p>
               </div>
-              <RadialGauge value={cert.readiness} tier={cert.paTier} size={96} />
+              <RadialGauge value={cert.readiness ?? 0} tier={cert.paTier ?? 'NOT_STARTED'} size={96} />
             </div>
 
             <div className="competency-dash__domains">
-              {cert.domains.map((d) => (
+              {(cert?.domains || []).map((d) => (
                 <div
                   key={d.domainCode}
                   className="competency-dash__domain-row"
-                  title={`${d.domainName}: ${Math.round(d.masteryScore)}% mastery, ${d.activeMinutes}/${d.expectedMinutes}m time`}
+                  title={`${d.domainName}: ${Math.round(d.masteryScore ?? 0)}% mastery, ${d.activeMinutes ?? 0}/${d.expectedMinutes ?? 0}m time`}
                 >
                   <span className="competency-dash__domain-code">{d.domainCode}</span>
                   <div className="competency-dash__domain-bar-track">
                     <div
                       className="competency-dash__domain-bar-fill"
                       style={{
-                        width: `${d.readiness}%`,
-                        background: TIER_COLOR[d.paTier],
+                        width: `${d.readiness ?? 0}%`,
+                        background: TIER_COLOR[d.paTier ?? 'NOT_STARTED'],
                       }}
                     />
                   </div>
                   <span
                     className="competency-dash__domain-pct"
-                    style={{ color: TIER_COLOR[d.paTier] }}
+                    style={{ color: TIER_COLOR[d.paTier ?? 'NOT_STARTED'] }}
                   >
-                    {Math.round(d.readiness)}%
+                    {Math.round(d.readiness ?? 0)}%
                   </span>
                 </div>
               ))}
@@ -226,12 +231,13 @@ export default function CompetencyDashboard({ username, apiUrl }: Props) {
       </div>
 
       {/* Recommendations */}
-      {recs.length > 0 && (
+      {safeRecs.length > 0 && (
         <section className="competency-dash__recs">
           <h2 className="competency-dash__recs-title">Recommended Next Steps</h2>
           <div className="competency-dash__recs-list">
-            {recs.map((rec, i) => (
+            {safeRecs.map((rec, i) => (
               <div key={i} className="competency-dash__rec-card">
+
                 <div className="competency-dash__rec-header">
                   <span
                     className="competency-dash__rec-priority"
