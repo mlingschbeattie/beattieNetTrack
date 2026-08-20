@@ -37,7 +37,7 @@ const CONTENT_TYPE_LABELS: Record<string, string> = {
 };
 
 export default function CompetencyMapView({ apiUrl }: Props) {
-  const baseApiUrl = apiUrl || 'https://api.beattietech.local';
+  const baseApiUrl = 'https://api.beattietech.local';
   const [entries, setEntries] = useState<MapEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

@@ -165,7 +165,7 @@ type Props = {
 };
 
 export default function StudentProfile({ username, apiUrl, isTeacher = false }: Props) {
-  const baseApiUrl = apiUrl || 'https://api.beattietech.local';
+  const baseApiUrl = 'https://api.beattietech.local';
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);

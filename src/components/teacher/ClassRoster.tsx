@@ -75,7 +75,7 @@ type Props = {
 };
 
 export default function ClassRoster({ apiUrl }: Props) {
-  const baseApiUrl = apiUrl || 'https://api.beattietech.local';
+  const baseApiUrl = 'https://api.beattietech.local';
   const [data, setData] = useState<unknown>(null);
   const [gaps, setGaps] = useState<unknown>([]);
   const [loading, setLoading] = useState(true);
