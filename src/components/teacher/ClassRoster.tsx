@@ -80,27 +80,29 @@ export default function ClassRoster({ apiUrl }: Props) {
   const [activeTab, setActiveTab] = useState<'roster' | 'gaps'>('roster');
 
   useEffect(() => {
-    Promise.all([
-      fetch(`${apiUrl}/api/teacher/competency/class`, { credentials: 'include' }).then((r) => {
+    // 1. Load class roster (primary data)
+    fetch(`${apiUrl}/api/teacher/competency/class`, { credentials: 'include' })
+      .then((r) => {
         if (!r.ok) throw new Error(`Class API ${r.status}`);
         return r.json() as Promise<ClassData>;
-      }),
-      fetch(`${apiUrl}/api/teacher/competency/gaps`, { credentials: 'include' }).then((r) => {
-        if (!r.ok) throw new Error(`Gaps API ${r.status}`);
-        return r.json() as Promise<GapItem[]>;
-      }),
-    ])
-      .then(([classData, gapData]) => {
+      })
+      .then((classData) => {
         setData(classData);
-        setGaps(gapData);
         setLoading(false);
       })
       .catch((err: unknown) => {
         setError(err instanceof Error ? err.message : 'Failed to load class data');
         setLoading(false);
       });
+
+    // 2. Load gaps non-blockingly (fallback gracefully if not yet implemented on API)
+    fetch(`${apiUrl}/api/teacher/competency/gaps`, { credentials: 'include' })
+      .then((r) => (r.ok ? (r.json() as Promise<GapItem[]>) : Promise.resolve([])))
+      .then((gapData) => setGaps(gapData || []))
+      .catch(() => setGaps([]));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
 
   if (loading) {
     return <div className="class-roster__loading">Loading class data…</div>;
