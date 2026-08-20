@@ -33,7 +33,7 @@ type ClassData = {
   students: Student[];
 };
 
-const TIER_COLOR: Record<PATier, string> = {
+const TIER_COLOR: Record<string, string> = {
   NOT_STARTED: '#3D3D3D',
   CRITICAL:    '#E24B4A',
   NEEDS_WORK:  '#EF9F27',
@@ -41,7 +41,7 @@ const TIER_COLOR: Record<PATier, string> = {
   MASTERED:    '#00FF41',
 };
 
-const TIER_LABEL: Record<PATier, string> = {
+const TIER_LABEL: Record<string, string> = {
   NOT_STARTED: 'Not Started',
   CRITICAL:    'Critical',
   NEEDS_WORK:  'Needs Work',
@@ -49,11 +49,14 @@ const TIER_LABEL: Record<PATier, string> = {
   MASTERED:    'Mastered',
 };
 
-function ReadinessGauge({ value, tier }: { value: number; tier: PATier }) {
-  const color = TIER_COLOR[tier];
-  const pct = Math.round(value);
+function ReadinessGauge({ value, tier }: { value?: number; tier?: string }) {
+  const normTier = (tier?.toUpperCase?.() || 'NOT_STARTED');
+  const color = TIER_COLOR[normTier] || '#3D3D3D';
+  const label = TIER_LABEL[normTier] || 'Not Started';
+  const pct = Math.min(100, Math.max(0, Math.round(Number(value) || 0)));
+
   return (
-    <div className="readiness-gauge" title={`${pct}% — ${TIER_LABEL[tier]}`}>
+    <div className="readiness-gauge" title={`${pct}% — ${label}`}>
       <div className="readiness-gauge__bar">
         <div
           className="readiness-gauge__fill"
@@ -72,8 +75,8 @@ type Props = {
 };
 
 export default function ClassRoster({ apiUrl }: Props) {
-  const [data, setData] = useState<ClassData | null>(null);
-  const [gaps, setGaps] = useState<GapItem[]>([]);
+  const [data, setData] = useState<unknown>(null);
+  const [gaps, setGaps] = useState<unknown>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [certFilter, setCertFilter] = useState('');
@@ -84,7 +87,7 @@ export default function ClassRoster({ apiUrl }: Props) {
     fetch(`${apiUrl}/api/teacher/competency/class`, { credentials: 'include' })
       .then((r) => {
         if (!r.ok) throw new Error(`Class API ${r.status}`);
-        return r.json() as Promise<ClassData>;
+        return r.json();
       })
       .then((classData) => {
         setData(classData);
@@ -97,12 +100,11 @@ export default function ClassRoster({ apiUrl }: Props) {
 
     // 2. Load gaps non-blockingly (fallback gracefully if not yet implemented on API)
     fetch(`${apiUrl}/api/teacher/competency/gaps`, { credentials: 'include' })
-      .then((r) => (r.ok ? (r.json() as Promise<GapItem[]>) : Promise.resolve([])))
+      .then((r) => (r.ok ? r.json() : []))
       .then((gapData) => setGaps(gapData || []))
       .catch(() => setGaps([]));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
 
   if (loading) {
     return <div className="class-roster__loading">Loading class data…</div>;
@@ -111,20 +113,45 @@ export default function ClassRoster({ apiUrl }: Props) {
     return <p className="callout callout--warn">{error}</p>;
   }
 
-  const students: Student[] = useMemo(() => {
-    if (!data) return [];
-    if (Array.isArray(data)) return data;
-    if (Array.isArray(data.students)) return data.students;
-    return [];
-  }, [data]);
-
-  const safeGaps: GapItem[] = useMemo(() => {
-    if (!gaps) return [];
-    if (Array.isArray(gaps)) return gaps;
+  // Universal student adapter: normalizes snake_case, camelCase, wrapper objects
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const rawData: any = data;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const rawList = rawData?.data?.students || rawData?.data || rawData?.students || rawData?.result || (Array.isArray(rawData) ? rawData : []);
+  
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const students: Student[] = (Array.isArray(rawList) ? rawList : []).map((s: any) => ({
+    username: s?.username || s?.student_username || s?.studentId || s?.id || 'unknown',
+    displayName: s?.displayName || s?.display_name || s?.name || s?.username || 'Student',
+    period: s?.period || '—',
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (Array.isArray((gaps as any).gaps)) return (gaps as any).gaps;
-    return [];
-  }, [gaps]);
+    certs: (s?.certs || s?.certifications || []).map((c: any) => ({
+      certId: c?.certId || c?.cert_id || c?.id || 'unknown',
+      certName: c?.certName || c?.cert_name || c?.name || c?.certId || 'Certification',
+      readiness: Number(c?.readiness ?? c?.score ?? 0),
+      paTier: String(c?.paTier || c?.pa_tier || c?.tier || 'NOT_STARTED').toUpperCase() as PATier,
+    })),
+    totalActiveMinutes: Number(s?.totalActiveMinutes ?? s?.total_active_minutes ?? s?.activeMinutes ?? 0),
+    lastActive: s?.lastActive || s?.last_active || null,
+  }));
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const rawGaps: any = gaps;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const rawGapList = rawGaps?.data?.gaps || rawGaps?.data || rawGaps?.gaps || (Array.isArray(rawGaps) ? rawGaps : []);
+  
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const safeGaps: GapItem[] = (Array.isArray(rawGapList) ? rawGapList : []).map((g: any) => ({
+    studentUsername: g?.studentUsername || g?.student_username || g?.username || '',
+    displayName: g?.displayName || g?.display_name || g?.name || g?.studentUsername || 'Student',
+    certId: g?.certId || g?.cert_id || '',
+    domainCode: g?.domainCode || g?.domain_code || '',
+    domainName: g?.domainName || g?.domain_name || '',
+    readiness: Number(g?.readiness ?? 0),
+    deficitMinutes: Number(g?.deficitMinutes ?? g?.deficit_minutes ?? 0),
+    priority: String(g?.priority || 'NEEDS_WORK').toUpperCase() as 'CRITICAL' | 'NEEDS_WORK',
+  }));
+
 
   const allCerts = useMemo(() => {
     const certIds = new Set<string>();
