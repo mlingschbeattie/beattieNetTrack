@@ -163,7 +163,7 @@ if (currentTrack) {
       )}
       <BeaconEmitter
         client:only="react"
-        domainIds={(lab.data.domains ?? []).map((d) => d.domainId)}
+        domains={lab.data.domains ?? []}
         contentId={lab.slug}
         apiUrl={apiUrl}
       />

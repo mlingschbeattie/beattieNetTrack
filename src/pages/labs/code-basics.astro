@@ -57,7 +57,7 @@ const exercise = codeExercises['code-basics'];
     <CodeRunner client:only="react" labSlug="code-basics" exerciseSlug="code-basics" />
     <BeaconEmitter
       client:only="react"
-      domainIds={['aplus2.os']}
+      domains={[{ domainId: 'aplus2.os', weight: 1.0 }]}
       contentId="code-basics"
       apiUrl={import.meta.env.PUBLIC_API_URL ?? ''}
     />

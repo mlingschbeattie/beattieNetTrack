@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
 import { startBeaconSession } from '../lib/cis/beacon';
+import type { CISDomainTag } from '../lib/events';
+import type { DomainMapping } from '../types/lab';
 
 interface BeaconEmitterProps {
-  domainIds: string[];
+  domains: DomainMapping[];
   contentId: string;
   apiUrl: string;
 }
@@ -11,11 +13,15 @@ interface BeaconEmitterProps {
  * Null-rendering React island that starts a CIS time-beacon session for the
  * current lab. Mount once when a student opens any lab workspace.
  */
-export default function BeaconEmitter({ domainIds, contentId, apiUrl }: BeaconEmitterProps) {
+export default function BeaconEmitter({ domains, contentId, apiUrl }: BeaconEmitterProps) {
   useEffect(() => {
-    if (!apiUrl || domainIds.length === 0) return;
+    if (!apiUrl || domains.length === 0) return;
+    const cisDomains: CISDomainTag[] = domains.map((d) => ({
+      domainId: d.domainId,
+      weight: d.weight ?? 1.0,
+    }));
     const stop = startBeaconSession({
-      domainIds,
+      domains: cisDomains,
       contentType: 'lab',
       contentId,
       apiUrl,

@@ -508,14 +508,6 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
     }));
   };
 
-  const revealLess = () => {
-    if (!activeSection) return;
-    setRevealedCount((prev) => ({
-      ...prev,
-      [activeSection.id]: Math.max(1, (prev[activeSection.id] ?? 1) - 1),
-    }));
-  };
-
   const revealFull = () => {
     if (!activeSection) return;
     setRevealedCount((prev) => ({
