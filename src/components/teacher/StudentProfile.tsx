@@ -93,7 +93,7 @@ function OverrideModal({
     if (isNaN(num) || num < 0 || num > 100) return;
     setStatus('saving');
     try {
-      const res = await fetch(`/api/cis/scores/override`, {
+      const res = await fetch(`${apiUrl}/api/cis/scores/override`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -165,6 +165,7 @@ type Props = {
 };
 
 export default function StudentProfile({ username, apiUrl, isTeacher = false }: Props) {
+  const baseApiUrl = apiUrl && apiUrl !== 'https://api.beattietech.local' ? apiUrl : '';
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -175,7 +176,7 @@ export default function StudentProfile({ username, apiUrl, isTeacher = false }: 
 
   const loadProfile = () => {
     setLoading(true);
-    fetch(`/api/cis/students/${username}`, { credentials: 'include' })
+    fetch(`${baseApiUrl}/api/cis/students/${username}`, { credentials: 'include' })
       .then((r) => {
         if (!r.ok) throw new Error(`API ${r.status}`);
         return r.json();
@@ -225,7 +226,7 @@ export default function StudentProfile({ username, apiUrl, isTeacher = false }: 
       });
   };
 
-  useEffect(() => { loadProfile(); }, [username]);
+  useEffect(() => { loadProfile(); }, [username, baseApiUrl]);
 
   if (loading) return <div className="student-profile__loading">Loading profile…</div>;
   if (error) return <p className="callout callout--warn">{error}</p>;

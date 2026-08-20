@@ -118,6 +118,7 @@ type Props = {
 };
 
 export default function CompetencyDashboard({ username, apiUrl }: Props) {
+  const baseApiUrl = apiUrl && apiUrl !== 'https://api.beattietech.local' ? apiUrl : '';
   const [profile, setProfile] = useState<any>(null);
   const [recs, setRecs] = useState<GapItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -125,11 +126,11 @@ export default function CompetencyDashboard({ username, apiUrl }: Props) {
 
   useEffect(() => {
     Promise.all([
-      fetch(`/api/cis/students/${username}`, { credentials: 'include' }).then((r) => {
+      fetch(`${baseApiUrl}/api/cis/students/${username}`, { credentials: 'include' }).then((r) => {
         if (!r.ok) throw new Error(`Profile API ${r.status}`);
         return r.json();
       }),
-      fetch(`/api/cis/me/recommendations`, { credentials: 'include' }).then(
+      fetch(`${baseApiUrl}/api/cis/me/recommendations`, { credentials: 'include' }).then(
         (r) => (r.ok ? r.json() : Promise.resolve([]))
       ),
     ])
