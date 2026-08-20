@@ -20,6 +20,16 @@
 
 ## OPEN ITEMS
 
+### FEAT — Neurodivergent UX Contract Program
+**Logged:** 2026-06-01
+**Priority:** High
+**Description:** Execute the repo-wide student UX compliance program for Constitution section 16 with phased delivery, acceptance criteria, and regression coverage.
+**Backlog:** `docs/NEURODIVERGENT_UX_BACKLOG.md`
+**Initial scope:** NUX-001 (Continue Learning), NUX-002 (Calm Defaults), NUX-003 design decision for single workspace support model.
+**Dependencies:** Must comply with static-first, determinism, and no-new-dependency contracts.
+
+---
+
 ### FEAT — Quiz ELI5 Explanations
 **Logged:** 2026-03-25
 **Priority:** High
@@ -146,6 +156,12 @@ Instructor reviews and approves before going live.
 ---
 
 ## DONE ITEMS
+
+### DONE — Neurodivergent UX Wave 1 Baseline
+**Resolved:** 2026-06-01
+**Description:** Implemented the Continue Learning resume card and removed the default decorative binary background from the student shell.
+**Scope:** NUX-001, NUX-002
+**Validation:** `npm run lint`
 
 ### DONE — Network Engineer Track Complete
 **Resolved:** 2026-03-25

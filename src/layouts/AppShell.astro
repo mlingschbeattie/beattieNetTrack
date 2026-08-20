@@ -39,7 +39,6 @@ if (activityNavigation && (activityNavigation as any).trackSlug && (activityNavi
 
 <BaseLayout title={title} legacySkin={legacySkin}>
   <a class="skip-link" href="#main-content">Skip to main content</a>
-  <div class="binary-bg" id="binary-bg" aria-hidden="true"></div>
   <script id="__SEARCH_INDEX__" type="application/json" is:inline set:html={searchIndexJson}></script>
   <Navbar activePath={activePath} activeTrackLabel={currentTrack?.data.title ?? 'None'} />
   <Breadcrumbs items={breadcrumbs} />
@@ -306,24 +305,6 @@ if (activityNavigation && (activityNavigation as any).trackSlug && (activityNavi
     updateModuleProgressAppShell();
     window.addEventListener('progress-updated', updateModuleProgressAppShell);
   } catch {}
-</script>
-
-<script>
-  const bg = document.getElementById('binary-bg');
-  if (bg) {
-    for (let i = 0; i < 32; i++) {
-      const col = document.createElement('div');
-      col.className = 'binary-column';
-      col.style.left = `${(i / 32) * 100}%`;
-      const dur = 10 + Math.random() * 10;
-      col.style.animationDuration = `${dur}s`;
-      col.style.animationDelay = `${-Math.random() * dur}s`;
-      col.textContent = Array.from({ length: 26 }, () =>
-        Math.random() > 0.5 ? '1' : '0'
-      ).join('\n');
-      bg.appendChild(col);
-    }
-  }
 </script>
 
 <script>

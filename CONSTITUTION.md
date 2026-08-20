@@ -216,3 +216,20 @@ AI-generated content is permitted under strict quality controls.
 - The generation prompt version must be stored with every generated question to enable quality auditing over time.
 
 AI accelerates content creation. Humans own content quality. 
+
+---
+
+## 16) Neurodivergent UX Contract
+
+The primary audience includes autistic and ADHD learners. The interface must be built for sustained attention, low friction, and easy re-entry.
+
+- Optimize for one primary action at a time. Do not crowd the screen with competing controls, panels, or status signals.
+- Use progressive disclosure for advanced controls. Keep the default view calm, legible, and task-focused.
+- Preserve context at all times. Users must always know where they are, what just changed, and what to do next.
+- Make progress visible in small, deterministic steps. Prefer immediate confirmation over delayed or ambiguous feedback.
+- Make motion, audio, auto-advance, and sync behaviors opt-in and persistent. Defaults must be low-sensory and interruption-safe.
+- Use concrete, direct, low-ambiguity language. Avoid vague labels, layered metaphors, and unnecessary novelty in controls.
+- Design for recovery from interruption. A user should be able to leave, return, and resume without losing place or momentum.
+- Differentiate the product through intentional interaction rhythm and clear instructional structure, not through clutter or generic AI-style UI density.
+
+When in doubt, reduce decision count, reduce sensory load, and make the next step obvious.
