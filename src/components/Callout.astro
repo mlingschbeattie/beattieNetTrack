@@ -1,5 +1,5 @@
 ---
-type CalloutType = 'info' | 'tip' | 'warn';
+type CalloutType = 'info' | 'tip' | 'warn' | 'exam';
 
 interface Props {
   type?: CalloutType;
@@ -10,6 +10,7 @@ const labels = {
   info: 'Info',
   tip: 'Tip',
   warn: 'Warning',
+  exam: 'Exam Tip',
 } as const;
 const label = labels[type] ?? 'Note';
 ---

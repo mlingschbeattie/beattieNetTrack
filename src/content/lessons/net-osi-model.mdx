@@ -8,7 +8,94 @@ order: 1
 difficulty: Beginner
 estMinutes: 20
 tags: ["network+", "osi", "N10-009 1.1", "N10-008 1.1"]
+sections:
+  - id: the-call-that-teaches-you-the-model
+    title: "The Call That Teaches You the Model"
+    keyPoints:
+      - "The same symptom — 'internet is down' — can be caused by completely different layers"
+      - "The OSI model is a structured checklist for isolating failures"
+      - "Seven layers, bottom to top: Physical, Data Link, Network, Transport, Session, Presentation, Application"
+    check:
+      - prompt: "A teacher reports 'the internet is down' and the Ethernet cable is unplugged. Which OSI layer is the problem?"
+        options:
+          - "Layer 1 — Physical"
+          - "Layer 3 — Network"
+          - "Layer 4 — Transport"
+          - "Layer 7 — Application"
+        correct: 0
+      - prompt: "The mnemonic 'Please Do Not Throw Sausage Pizza Away' maps layers in which direction?"
+        options:
+          - "Top to bottom (Application → Physical)"
+          - "Bottom to top (Physical → Application)"
+          - "Left to right by protocol"
+          - "Alphabetical by layer name"
+        correct: 1
+  - id: layer-2-data-link
+    title: "Layer 2 — Data Link"
+    keyPoints:
+      - "Layer 2 uses MAC addresses to deliver frames on a local network"
+      - "Switches operate at Layer 2 — they forward frames to the correct port, not everywhere"
+      - "The word 'frame' always means Layer 2"
+    check:
+      - prompt: "Which device operates at Layer 2 and forwards frames based on MAC addresses?"
+        options:
+          - "Router"
+          - "Hub"
+          - "Switch"
+          - "Firewall"
+        correct: 2
+      - prompt: "What type of address gets data across a single local network segment?"
+        options:
+          - "IP address"
+          - "MAC address"
+          - "Port number"
+          - "SSID"
+        correct: 1
+  - id: layer-4-transport
+    title: "Layer 4 — Transport"
+    keyPoints:
+      - "TCP is reliable (handshake, acknowledgment); UDP is fast (fire and forget)"
+      - "Port numbers at Layer 4 distinguish services sharing the same IP address"
+      - "The word 'segment' always means Layer 4"
+    check:
+      - prompt: "A video call uses a protocol that prioritizes speed over guaranteed delivery. Which protocol?"
+        options:
+          - "TCP"
+          - "UDP"
+          - "ICMP"
+          - "ARP"
+        correct: 1
+      - prompt: "A server runs HTTP (port 80) and SSH (port 22) on the same IP. Port numbers operate at which layer?"
+        options:
+          - "Layer 2 — Data Link"
+          - "Layer 3 — Network"
+          - "Layer 4 — Transport"
+          - "Layer 7 — Application"
+        correct: 2
+  - id: when-it-breaks
+    title: "When It Breaks — Using the Model to Troubleshoot"
+    keyPoints:
+      - "Bottom-up starts at Layer 1 and climbs — use when you have no idea where the problem is"
+      - "Top-down starts at Layer 7 and works backward — use when the symptom is specific"
+      - "The model gives every technician a shared vocabulary for describing problems"
+    check:
+      - prompt: "A user says 'nothing works — no connection at all.' Which troubleshooting approach fits?"
+        options:
+          - "Top-down from Layer 7"
+          - "Bottom-up from Layer 1"
+          - "Start at Layer 4"
+          - "Skip to DNS"
+        correct: 1
+      - prompt: "A user can ping 8.8.8.8 but nslookup fails. This points to a problem at which layer?"
+        options:
+          - "Layer 1 — Physical"
+          - "Layer 3 — Network"
+          - "Layer 4 — Transport"
+          - "Layer 7 — Application"
+        correct: 3
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## The Call That Teaches You the Model
 
@@ -28,13 +115,25 @@ This is the layer you can grab with your hands. Copper cables, fiber strands, RJ
 
 Layer 2 is where MAC addresses matter. Every network adapter ships with a unique hardware address burned into its firmware, and this layer uses those addresses to deliver frames between devices on the same local network. Switches operate here: they read the destination MAC on each incoming frame, check their MAC address table, and forward the frame only to the correct port instead of flooding it everywhere the way a hub would. You've seen MAC addresses before — they're the twelve-character hex strings in `ipconfig /all`. Layer 2 is also where error detection happens; the frame includes a checksum so the receiving end knows if bits got scrambled in transit. If two devices on the same switch can't talk to each other but the cables are fine, you're looking at a Layer 2 issue.
 
+<Callout type="exam">
+CompTIA loves asking which device operates at which layer. Switches = Layer 2. Routers = Layer 3. If the question mentions MAC addresses or frames, the answer is Layer 2. If it mentions IP addresses or packets, Layer 3. Know this cold.
+</Callout>
+
 ## Layer 3 — Network
 
 This is IP address territory. Layer 3 handles logical addressing and routing — moving packets not just across a single switch, but from one network to an entirely different one on the other side of the building, the city, or the planet. Routers live at this layer. Every time you configured a static IP address, set a subnet mask, typed a default gateway, or ran `ping` to see if a remote host was reachable, you were working at Layer 3. IPv4 and IPv6 are both Layer 3 protocols. The key distinction from Layer 2: MAC addresses get you across one local segment, but IP addresses get you across the internet.
 
+<Callout type="warn">
+Students consistently confuse Layers 2 and 3. Here's the rule: the word "frame" is always Layer 2. The word "packet" is always Layer 3. A switch thinks in frames and MAC addresses. A router thinks in packets and IP addresses. If you remember nothing else, remember the vocabulary.
+</Callout>
+
 ## Layer 4 — Transport
 
 Layer 4 decides *how* data gets delivered, and it gives you two options. TCP (Transmission Control Protocol) is the reliable one — it sets up a formal three-way handshake, numbers every segment, confirms receipt, and retransmits anything that goes missing. UDP (User Datagram Protocol) just fires packets and moves on, with no guarantee they arrive and no mechanism to ask again. That sounds reckless, but it's exactly what you want for real-time traffic like video calls, live game data, or DNS lookups where speed matters more than perfection. Port numbers live at Layer 4 too. A server running a web service, an SSH daemon, and a file share all use the same IP address — it's the port number (80, 22, 445) that tells the operating system which service should handle each incoming segment.
+
+<Callout type="info">
+DNS queries use UDP (port 53) for speed, but DNS zone transfers between servers use TCP. This dual-protocol behavior is a common exam question — know when DNS switches from UDP to TCP.
+</Callout>
 
 ## Layer 5 — Session
 
@@ -48,12 +147,24 @@ Layer 6 translates data into a format both sides can understand. Encryption, com
 
 This is where humans live. HTTP, DNS, SMTP, FTP, SSH — all Layer 7 protocols. Your web browser, email client, and file transfer tools all operate here. When a user says "the internet is broken," they're almost always describing a Layer 7 symptom: a page won't load, a download stalls, email won't send. Layer 7 is also where most social engineering and phishing attacks land — they target the human sitting at the application. Everything below Layer 7 exists to serve this layer, and everything you troubleshoot either starts here (the user's complaint) or ends here (the service works again).
 
+<Callout type="exam">
+Layers 5, 6, and 7 are sometimes grouped as "the upper layers" on the exam. You won't get many questions isolating Session vs. Presentation. But you will get questions that test whether you know HTTP and DNS are Layer 7, and that TLS/SSL encryption is Layer 6.
+</Callout>
+
 ## When It Breaks — Using the Model to Troubleshoot
 
-The OSI model isn't just something you memorize for a certification exam and forget. It's a live troubleshooting checklist. Two approaches:
+The OSI model isn't something you memorize for a certification exam and forget. It's a live troubleshooting checklist. Two approaches:
 
 **Bottom-up** starts at Layer 1 and climbs. Is the cable plugged in? Link light on? Good — move to Layer 2. Is the switch seeing the MAC address? Is the correct VLAN assigned? Fine — Layer 3. Can you ping the default gateway? Can you ping an external IP? Yes — Layer 4. Are the right ports open? Is the firewall blocking traffic? And so on, up through DNS resolution and application behavior at the top. Bottom-up is methodical. It misses nothing. It's the approach you use when you have no idea where the problem is, and it's the approach CompTIA expects you to know.
+
+<Callout type="tip">
+When you have no idea where the problem is, start at Layer 1. Check the cable. Check the link light. Most network problems live at the bottom of the stack, and a two-second visual check saves you twenty minutes of CLI diagnostics.
+</Callout>
 
 **Top-down** starts with the user's symptom at Layer 7 and works backward. The browser won't load a site — can you resolve the domain name? Yes — can you reach the server's IP directly? Yes — is the service responding on the expected port? Each answer either narrows the problem or drops you to the layer below. Top-down is faster when the user gives you a specific, useful symptom, because you skip the physical checks you'd otherwise do first.
 
 Real technicians switch between both instinctively. If the user says "nothing works at all," you start at the bottom — that's a cable or a NIC. If the user says "I can reach Google but not our internal wiki," you start at the top — that's DNS or application config. The model gives you a shared vocabulary with every other tech you'll work with. When someone says "this is a Layer 3 issue," every person on the team knows what that means and where to look. That's why it matters beyond the exam.
+
+## Key Terms
+
+OSI model · Physical layer · Data Link layer · Network layer · Transport layer · Session layer · Presentation layer · Application layer · MAC address · IP address · frame · packet · segment · TCP · UDP · port number · NIC · switch · router · hub · bottom-up troubleshooting · top-down troubleshooting · ICMP · TLS · DNS

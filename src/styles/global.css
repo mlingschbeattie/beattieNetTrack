@@ -33,34 +33,6 @@ html[data-theme='light'] body {
   color: #0f172a;
 }
 
-/* Binary rain background layer */
-.binary-bg {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
-  opacity: 0.35;
-  mix-blend-mode: screen;
-}
-
-.binary-column {
-  position: absolute;
-  top: -120vh;
-  width: 40px;
-  color: rgba(0, 255, 179, 0.55);
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
-  font-size: 14px;
-  line-height: 1.2;
-  white-space: pre;
-  text-shadow: 0 0 8px rgba(0, 255, 179, 0.7);
-  animation: binary-fall linear infinite;
-}
-
-@keyframes binary-fall {
-  to { transform: translateY(220vh); }
-}
-
 a {
   color: inherit;
   text-decoration: none;
@@ -1528,6 +1500,11 @@ html.light-mode .quiz-option:hover:not(.quiz-option--revealed) {
 .callout--warn {
   background: rgba(249, 115, 22, 0.12);
   border-color: rgba(249, 115, 22, 0.4);
+}
+
+.callout--exam {
+  background: rgba(168, 85, 247, 0.12);
+  border-color: rgba(168, 85, 247, 0.4);
 }
 
 .code-block {

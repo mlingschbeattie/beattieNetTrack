@@ -124,11 +124,13 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [revealedCount, setRevealedCount] = useState<Record<string, number>>({});
   const [autoReveal, setAutoReveal] = useState(false);
+  const [autoRevealPaused, setAutoRevealPaused] = useState(false);
   const [autoSeconds, setAutoSeconds] = useState(5);
   const [syncWithReading, setSyncWithReading] = useState(true);
   const [narrationRate, setNarrationRate] = useState(1);
   const [narrationState, setNarrationState] = useState<NarrationState>('idle');
   const [liveMessage, setLiveMessage] = useState('');
+  const [showSettings, setShowSettings] = useState(false);
   const [completedMap, setCompletedMap] = useState<Record<string, boolean>>({});
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const lastManualChangeAtRef = useRef(0);
@@ -269,7 +271,7 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
   }, [activeIndex, activeSection, readingSections.length]);
 
   useEffect(() => {
-    if (!activeSection || !autoReveal) return;
+    if (!activeSection || !autoReveal || autoRevealPaused) return;
     const totalBlocks = Math.max(1, activeSection.focusPoints.length + 1);
     const currentReveal = Math.max(1, revealedCount[activeSection.id] ?? 1);
     if (currentReveal >= totalBlocks) return;
@@ -282,7 +284,22 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
     }, autoSeconds * 1000);
 
     return () => window.clearTimeout(timer);
-  }, [autoReveal, autoSeconds, activeSection, revealedCount]);
+  }, [autoReveal, autoRevealPaused, autoSeconds, activeSection, revealedCount]);
+
+  useEffect(() => {
+    if (!activeSection || !autoReveal || autoRevealPaused) return;
+    const totalBlocks = Math.max(1, activeSection.focusPoints.length + 1);
+    const currentReveal = Math.max(1, revealedCount[activeSection.id] ?? 1);
+    if (currentReveal < totalBlocks) return;
+    if (activeIndex >= readingSections.length - 1) return;
+
+    const advanceTimer = window.setTimeout(() => {
+      lastManualChangeAtRef.current = Date.now();
+      setActiveIndex((idx) => Math.min(readingSections.length - 1, idx + 1));
+    }, autoSeconds * 1000);
+
+    return () => window.clearTimeout(advanceTimer);
+  }, [autoReveal, autoRevealPaused, autoSeconds, activeSection, revealedCount, activeIndex, readingSections.length]);
 
   useEffect(() => {
     setGuidedPreferences({ autoReveal });
@@ -531,88 +548,121 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
           <h3>{activeSection.title}</h3>
           <p className="guided-subhead">Step {activeIndex + 1} of {readingSections.length}</p>
         </div>
-        <div className="guided-state">
-          {completedCount} / {readingSections.length} complete
+        <div className="guided-head-right">
+          <button
+            type="button"
+            className={`guided-settings-toggle ${showSettings ? 'is-open' : ''}`}
+            onClick={() => setShowSettings((s) => !s)}
+            aria-expanded={showSettings}
+            aria-controls="guided-settings-panel"
+            aria-label="Settings"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M6.5 1L7 3l-1.3.8L4 2.5 2.5 4l1.3 1.7L3 7l-2 .5v2L3 10l.8 1.3L2.5 13 4 14.5l1.7-1.3L7 14l.5 2h2l.5-2 1.3-.8 1.7 1.3L14.5 13l-1.3-1.7L14 10l2-.5v-2L14 7l-.8-1.3L14.5 4 13 2.5l-1.7 1.3L10 3l-.5-2h-2zM8 5.5a2.5 2.5 0 110 5 2.5 2.5 0 010-5z"
+                stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
+            </svg>
+          </button>
+          <div className="guided-state">
+            {completedCount} / {readingSections.length}
+          </div>
         </div>
       </div>
 
-      <div className="guided-pacing" aria-label="Guided pacing controls">
-        <label className="guided-control">
-          <input
-            type="checkbox"
-            checked={autoReveal}
-            onChange={(event) => setAutoReveal(event.target.checked)}
-          />
-          <span>Auto reveal</span>
-        </label>
-        <label className="guided-control">
-          Pace
+      {showSettings && (
+        <div className="guided-settings" id="guided-settings-panel" role="group" aria-label="Guided view settings">
+          <fieldset className="guided-settings-group">
+            <legend>Pacing</legend>
+            <label className="guided-control">
+              <input
+                type="checkbox"
+                checked={autoReveal}
+                onChange={(event) => {
+                  setAutoReveal(event.target.checked);
+                  setAutoRevealPaused(false);
+                }}
+              />
+              <span>Auto reveal & advance</span>
+            </label>
+            <label className="guided-control">
+              <input
+                type="checkbox"
+                checked={syncWithReading}
+                onChange={(event) => setSyncWithReading(event.target.checked)}
+              />
+              <span>Sync with reading</span>
+            </label>
+          </fieldset>
+          <fieldset className="guided-settings-group">
+            <legend>Narration</legend>
+            <button
+              type="button"
+              className="guided-btn guided-btn--sm"
+              onClick={toggleNarration}
+              disabled={narrationState === 'unsupported'}
+              aria-keyshortcuts="Alt+P"
+              aria-pressed={narrationState === 'playing' || narrationState === 'paused'}
+              aria-label={
+                narrationState === 'playing'
+                  ? 'Pause narration'
+                  : narrationState === 'paused'
+                  ? 'Resume narration'
+                  : 'Play narration'
+              }
+            >
+              {narrationState === 'playing' ? 'Pause' : narrationState === 'paused' ? 'Resume' : 'Play'}
+            </button>
+            {(narrationState === 'playing' || narrationState === 'paused') && (
+              <button type="button" className="guided-btn guided-btn--sm" onClick={stopNarration}>
+                Stop
+              </button>
+            )}
+            <label className="guided-control">
+              Speed
+              <select
+                className="guided-select"
+                value={String(narrationRate)}
+                onChange={(event) => setNarrationRate(Number(event.target.value))}
+                aria-label="Narration speed"
+              >
+                <option value="0.9">0.9x</option>
+                <option value="1">1.0x</option>
+                <option value="1.15">1.15x</option>
+                <option value="1.3">1.3x</option>
+              </select>
+            </label>
+          </fieldset>
+        </div>
+      )}
+
+      {autoReveal && (
+        <div className="guided-transport" aria-label="Auto-reveal controls">
+          <button
+            type="button"
+            className="guided-transport__btn"
+            onClick={() => setAutoRevealPaused((p) => !p)}
+            aria-label={autoRevealPaused ? 'Resume auto-reveal' : 'Pause auto-reveal'}
+          >
+            {autoRevealPaused ? '▶' : '⏸'}
+          </button>
           <select
             className="guided-select"
             value={autoSeconds}
             onChange={(event) => setAutoSeconds(Number(event.target.value))}
-            disabled={!autoReveal}
             aria-label="Auto reveal pace"
           >
             <option value={3}>Fast</option>
             <option value={5}>Normal</option>
             <option value={7}>Slow</option>
           </select>
-        </label>
-        <label className="guided-control">
-          <input
-            type="checkbox"
-            checked={syncWithReading}
-            onChange={(event) => setSyncWithReading(event.target.checked)}
-          />
-          <span>Sync with reading scroll</span>
-        </label>
-        <div className="guided-reveal-progress" aria-live="polite">
-          Reveal {revealedBlocks} / {totalRevealBlocks}
+          <div className="guided-transport__track">
+            <div
+              className="guided-transport__fill"
+              style={{ width: `${(revealedBlocks / totalRevealBlocks) * 100}%` }}
+            />
+          </div>
+          <span className="guided-transport__count">{revealedBlocks}/{totalRevealBlocks}</span>
         </div>
-      </div>
-
-      <div className="guided-pacing" aria-label="Narration controls">
-        <button
-          type="button"
-          className="guided-btn"
-          onClick={toggleNarration}
-          disabled={narrationState === 'unsupported'}
-          aria-keyshortcuts="Alt+P"
-          aria-pressed={narrationState === 'playing' || narrationState === 'paused'}
-          aria-label={
-            narrationState === 'playing'
-              ? 'Pause narration'
-              : narrationState === 'paused'
-              ? 'Resume narration'
-              : 'Play narration'
-          }
-        >
-          {narrationState === 'playing' ? 'Pause audio' : narrationState === 'paused' ? 'Resume audio' : 'Play audio'}
-        </button>
-        <button
-          type="button"
-          className="guided-btn"
-          onClick={stopNarration}
-          disabled={narrationState !== 'playing' && narrationState !== 'paused'}
-        >
-          Stop audio
-        </button>
-        <label className="guided-control">
-          Speed
-          <select
-            className="guided-select"
-            value={String(narrationRate)}
-            onChange={(event) => setNarrationRate(Number(event.target.value))}
-            aria-label="Narration speed"
-          >
-            <option value="0.9">0.9x</option>
-            <option value="1">1.0x</option>
-            <option value="1.15">1.15x</option>
-            <option value="1.3">1.3x</option>
-          </select>
-        </label>
-      </div>
+      )}
 
       <section className="guided-focus">
         <h4>Focus Points</h4>
@@ -635,23 +685,21 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
         <button type="button" className="guided-btn" onClick={() => moveSection(1)} disabled={activeIndex === readingSections.length - 1}>
           Next
         </button>
+        {!autoReveal && revealedBlocks < totalRevealBlocks && (
+          <button type="button" className="guided-btn" onClick={revealNext}>
+            Reveal next
+          </button>
+        )}
+        {!autoReveal && revealedBlocks < totalRevealBlocks && (
+          <button type="button" className="guided-btn" onClick={revealFull}>
+            Reveal all
+          </button>
+        )}
         <button type="button" className="guided-btn is-ghost" onClick={() => goToReading(activeSection.title)}>
-          Open reading section
+          Open in reading
         </button>
         <button type="button" className="guided-btn is-primary" onClick={markDone} disabled={isDone}>
           {isDone ? 'Completed' : 'Mark complete'}
-        </button>
-      </div>
-
-      <div className="guided-actions" aria-label="Reveal controls">
-        <button type="button" className="guided-btn" onClick={revealLess} disabled={revealedBlocks <= 1}>
-          Reveal less
-        </button>
-        <button type="button" className="guided-btn" onClick={revealNext} disabled={revealedBlocks >= totalRevealBlocks}>
-          Reveal next
-        </button>
-        <button type="button" className="guided-btn" onClick={revealFull} disabled={revealedBlocks >= totalRevealBlocks}>
-          Reveal full section
         </button>
       </div>
 
@@ -686,7 +734,7 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
           background: var(--color-surface);
           padding: var(--space-4);
           display: grid;
-          gap: var(--space-4);
+          gap: var(--space-3);
         }
         .guided-head {
           display: flex;
@@ -712,6 +760,29 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
           color: var(--color-text-muted);
           font-size: var(--text-sm);
         }
+        .guided-head-right {
+          display: flex;
+          align-items: center;
+          gap: var(--space-2);
+        }
+        .guided-settings-toggle {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 32px;
+          height: 32px;
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-sm);
+          background: var(--color-surface-2);
+          color: var(--color-text-muted);
+          cursor: pointer;
+          transition: color 0.15s, border-color 0.15s;
+        }
+        .guided-settings-toggle:hover,
+        .guided-settings-toggle.is-open {
+          color: var(--color-primary);
+          border-color: var(--color-primary);
+        }
         .guided-state {
           border: 1px solid var(--color-border);
           border-radius: var(--radius-pill);
@@ -719,6 +790,78 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
           color: var(--color-text-muted);
           font-size: var(--text-sm);
           background: var(--color-surface-2);
+          white-space: nowrap;
+        }
+        .guided-settings {
+          display: flex;
+          gap: var(--space-3);
+          flex-wrap: wrap;
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-sm);
+          background: var(--color-surface-2);
+          padding: var(--space-3);
+        }
+        .guided-settings-group {
+          display: flex;
+          align-items: center;
+          gap: var(--space-3);
+          flex-wrap: wrap;
+          border: none;
+          margin: 0;
+          padding: 0;
+        }
+        .guided-settings-group legend {
+          font-size: var(--text-xs);
+          text-transform: uppercase;
+          letter-spacing: 0.06em;
+          color: var(--color-text-muted);
+          margin-bottom: var(--space-1);
+        }
+        .guided-transport {
+          display: flex;
+          align-items: center;
+          gap: var(--space-2);
+        }
+        .guided-transport__btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 28px;
+          height: 28px;
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-sm);
+          background: var(--color-surface-2);
+          color: var(--color-text);
+          font-size: var(--text-sm);
+          cursor: pointer;
+          flex-shrink: 0;
+        }
+        .guided-transport__btn:hover {
+          border-color: var(--color-primary);
+          color: var(--color-primary);
+        }
+        .guided-transport__track {
+          flex: 1;
+          height: 6px;
+          border-radius: 3px;
+          background: var(--color-surface-2);
+          overflow: hidden;
+          position: relative;
+          min-width: 60px;
+        }
+        .guided-transport__fill {
+          position: absolute;
+          inset: 0;
+          width: 0;
+          background: var(--color-primary);
+          border-radius: 3px;
+          transition: width 0.4s ease;
+        }
+        .guided-transport__count {
+          color: var(--color-text-muted);
+          font-size: var(--text-xs);
+          white-space: nowrap;
+          flex-shrink: 0;
         }
         .guided-focus,
         .guided-excerpt {
@@ -750,16 +893,6 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
           gap: var(--space-2);
           flex-wrap: wrap;
         }
-        .guided-pacing {
-          display: flex;
-          align-items: center;
-          gap: var(--space-3);
-          flex-wrap: wrap;
-          border: 1px solid var(--color-border);
-          border-radius: var(--radius-sm);
-          background: var(--color-surface-2);
-          padding: var(--space-2) var(--space-3);
-        }
         .guided-control {
           display: inline-flex;
           align-items: center;
@@ -776,10 +909,6 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
           font-size: var(--text-sm);
           padding: var(--space-1) var(--space-2);
         }
-        .guided-reveal-progress {
-          color: var(--color-text-muted);
-          font-size: var(--text-sm);
-        }
         .guided-btn {
           border: 1px solid var(--color-border);
           border-radius: var(--radius-sm);
@@ -789,6 +918,10 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
           font-size: var(--text-sm);
           padding: var(--space-2) var(--space-3);
           cursor: pointer;
+        }
+        .guided-btn--sm {
+          padding: var(--space-1) var(--space-2);
+          font-size: var(--text-xs);
         }
         .guided-btn.is-primary {
           color: var(--color-primary);
@@ -804,6 +937,7 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
         .guided-btn:focus-visible,
         .guided-select:focus-visible,
         .guided-index__item:focus-visible,
+        .guided-settings-toggle:focus-visible,
         .guided-control input:focus-visible {
           outline: 2px solid rgba(56, 189, 248, 0.55);
           outline-offset: 2px;
