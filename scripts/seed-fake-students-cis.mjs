@@ -153,7 +153,14 @@ async function dispatchEvents() {
         try {
           const res = await fetch(`${API_URL}/api/events`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              'Remote-User': student.username,
+              'Remote-Name': student.displayName,
+              'Remote-Email': `${student.username}@beattietech.local`,
+              'Remote-Groups': 'students',
+              'x-student-username': student.username,
+            },
             body: JSON.stringify({ appId: 'lms', eventType, payload }),
           });
           const text = await res.text().catch(() => '');
@@ -163,6 +170,7 @@ async function dispatchEvents() {
           console.log(`    ↳ Notice: Could not reach ${API_URL}: ${detail}`);
         }
       }
+
     }
   }
 
