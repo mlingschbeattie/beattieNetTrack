@@ -3,13 +3,13 @@
   "configurations": [
     {
       "name": "Astro Dev Server",
-      "runtimeExecutable": "npm",
+      "runtimeExecutable": "pnpm",
       "runtimeArgs": ["run", "dev"],
       "port": 4321
     },
     {
       "name": "Astro Preview (post-build)",
-      "runtimeExecutable": "npm",
+      "runtimeExecutable": "pnpm",
       "runtimeArgs": ["run", "preview"],
       "port": 4321
     }
