@@ -160,12 +160,12 @@ function OverrideModal({
 
 type Props = {
   username: string;
-  apiUrl?: string;
+  apiUrl: string;
   isTeacher?: boolean;
 };
 
 export default function StudentProfile({ username, apiUrl, isTeacher = false }: Props) {
-  const baseApiUrl = apiUrl && apiUrl !== 'https://api.beattietech.local' ? apiUrl : '';
+  const baseApiUrl = apiUrl || 'https://api.beattietech.local';
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
