@@ -75,6 +75,7 @@ type Props = {
 };
 
 export default function ClassRoster({ apiUrl }: Props) {
+  const baseApiUrl = apiUrl || 'https://api.beattietech.local';
   const [data, setData] = useState<unknown>(null);
   const [gaps, setGaps] = useState<unknown>([]);
   const [loading, setLoading] = useState(true);
@@ -84,7 +85,7 @@ export default function ClassRoster({ apiUrl }: Props) {
 
   useEffect(() => {
     // 1. Load class roster (primary data)
-    fetch(`${apiUrl}/api/teacher/competency/class`, { credentials: 'include' })
+    fetch(`${baseApiUrl}/api/teacher/competency/class`, { credentials: 'include' })
       .then((r) => {
         if (!r.ok) throw new Error(`Class API ${r.status}`);
         return r.json();
@@ -99,12 +100,13 @@ export default function ClassRoster({ apiUrl }: Props) {
       });
 
     // 2. Load gaps non-blockingly (fallback gracefully if not yet implemented on API)
-    fetch(`${apiUrl}/api/teacher/competency/gaps`, { credentials: 'include' })
+    fetch(`${baseApiUrl}/api/teacher/competency/gaps`, { credentials: 'include' })
       .then((r) => (r.ok ? r.json() : []))
       .then((gapData) => setGaps(gapData || []))
       .catch(() => setGaps([]));
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [baseApiUrl]);
+
 
   if (loading) {
     return <div className="class-roster__loading">Loading class data…</div>;

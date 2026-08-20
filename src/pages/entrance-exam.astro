@@ -4,7 +4,8 @@ import { getCollection } from 'astro:content';
 import EntranceExamIsland from '../components/EntranceExam';
 
 const tracks = await getCollection('tracks');
-const apiUrl = import.meta.env.PUBLIC_API_URL ?? '';
+const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://api.beattietech.local';
+
 ---
 
 <AppShell

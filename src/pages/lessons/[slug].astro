@@ -16,7 +16,7 @@ export async function getStaticPaths() {
   return lessons.map((lesson) => ({ params: { slug: lesson.slug }, props: { lesson } }));
 }
 
-const apiUrl = import.meta.env.PUBLIC_API_URL ?? '';
+const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://api.beattietech.local';
 const allTracks = await getCollection('tracks');
 const allLessons = await getCollection('lessons');
 const paramSlug = Astro.params.slug;

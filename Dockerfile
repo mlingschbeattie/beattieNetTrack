@@ -10,9 +10,12 @@ RUN pnpm install --frozen-lockfile
 
 FROM base AS build
 WORKDIR /app
+ARG PUBLIC_API_URL=https://api.beattietech.local
+ENV PUBLIC_API_URL=$PUBLIC_API_URL
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN pnpm build
+
 
 FROM node:20-alpine AS runtime
 ENV PNPM_HOME="/pnpm"

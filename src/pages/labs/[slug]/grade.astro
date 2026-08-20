@@ -26,7 +26,7 @@ const currentTrack = lab.data.track
   ? tracks.find((track) => track.slug === lab.data.track)
   : undefined;
 
-const apiUrl = import.meta.env.PUBLIC_API_URL ?? '';
+const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://api.beattietech.local';
 ---
 
 <AppShell

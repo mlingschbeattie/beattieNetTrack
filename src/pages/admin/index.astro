@@ -4,7 +4,8 @@ import { getCollection } from 'astro:content';
 import ClassRoster from '../../components/teacher/ClassRoster';
 
 const tracks = await getCollection('tracks');
-const apiUrl = import.meta.env.PUBLIC_API_URL ?? '';
+const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://api.beattietech.local';
+
 
 // This page is behind Caddy forward auth — Authelia enforces the `teachers` group.
 // The Remote-Groups header is set by Caddy on all authenticated requests.

@@ -4,7 +4,8 @@ import { getCollection } from 'astro:content';
 import CompetencyDashboard from '../components/student/CompetencyDashboard';
 
 const tracks = await getCollection('tracks');
-const apiUrl = import.meta.env.PUBLIC_API_URL ?? '';
+const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://api.beattietech.local';
+
 
 // Remote-User is set by Caddy/Authelia — safe to read server-side in SSR
 const username = Astro.request.headers.get('Remote-User') ?? '';
