@@ -37,6 +37,7 @@ const CONTENT_TYPE_LABELS: Record<string, string> = {
 };
 
 export default function CompetencyMapView({ apiUrl }: Props) {
+  const baseApiUrl = apiUrl || 'https://api.beattietech.local';
   const [entries, setEntries] = useState<MapEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -45,18 +46,38 @@ export default function CompetencyMapView({ apiUrl }: Props) {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    fetch(`${apiUrl}/api/competency/map`, { credentials: 'include' })
+    fetch(`${baseApiUrl}/api/cis/domains`, { credentials: 'include' })
       .then((r) => {
         if (!r.ok) throw new Error(`API ${r.status}`);
-        return r.json() as Promise<MapEntry[]>;
+        return r.json();
       })
-      .then((data) => { setEntries(data); setLoading(false); })
+      .then((raw) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const rawList = raw?.domains || (Array.isArray(raw) ? raw : []);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const mapped: MapEntry[] = rawList.map((d: any, idx: number) => ({
+          id: d.id || idx,
+          contentType: d.contentType || 'lab',
+          contentId: d.contentId || d.id || '',
+          contentTitle: d.contentTitle || d.name || d.id || '',
+          certId: d.certTrackId || d.certId || '',
+          domainCode: d.id || d.domainCode || '',
+          domainName: d.name || d.domainName || '',
+          weightPct: Number(d.weightPct ?? 20),
+          expectedMinutes: Number(d.expectedMinutes ?? 120),
+          active: Boolean(d.active ?? true),
+          addedBy: d.addedBy || 'system',
+        }));
+        setEntries(mapped);
+        setLoading(false);
+      })
       .catch((err: unknown) => {
         setError(err instanceof Error ? err.message : 'Failed to load map');
         setLoading(false);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [baseApiUrl]);
+
 
   const allCerts = useMemo(() => [...new Set(entries.map((e) => e.certId))].sort(), [entries]);
   const allTypes = useMemo(() => [...new Set(entries.map((e) => e.contentType))].sort(), [entries]);

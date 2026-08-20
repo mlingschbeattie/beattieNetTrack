@@ -72,6 +72,7 @@ function MasteryBar({ value, tier }: { value: number; tier: PATier }) {
 }
 
 type OverrideModalProps = {
+  studentId: string;
   studentUsername: string;
   certId: string;
   domainCode: string;
@@ -81,24 +82,30 @@ type OverrideModalProps = {
 };
 
 function OverrideModal({
-  studentUsername, certId, domainCode, apiUrl, onClose, onSaved,
+  studentId, studentUsername, certId, domainCode, apiUrl, onClose, onSaved,
 }: OverrideModalProps) {
   const [score, setScore] = useState('');
   const [reason, setReason] = useState('');
   const [status, setStatus] = useState<'idle' | 'saving' | 'error'>('idle');
 
   const handleSave = async () => {
-    const val = Number(score);
-    if (!Number.isFinite(val) || val < 0 || val > 100) return;
+    const num = Number.parseFloat(score);
+    if (isNaN(num) || num < 0 || num > 100) return;
     setStatus('saving');
     try {
-      const res = await fetch(`${apiUrl}/api/teacher/competency/override`, {
+      const res = await fetch(`${apiUrl}/api/cis/scores/override`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ studentUsername, certId, domainCode, overrideScore: val, reason }),
+        body: JSON.stringify({
+          studentId: studentId || studentUsername,
+          domainId: domainCode,
+          score: num,
+          reason: reason.trim() || undefined,
+        }),
       });
-      if (!res.ok) throw new Error(`${res.status}`);
+      if (!res.ok) throw new Error(`Override failed: ${res.status}`);
+      setStatus('idle');
       onSaved();
     } catch {
       setStatus('error');
@@ -108,12 +115,12 @@ function OverrideModal({
   return (
     <div className="override-modal-backdrop" onClick={onClose}>
       <div className="override-modal" onClick={(e) => e.stopPropagation()}>
-        <h3>Override Mastery Score</h3>
+        <h3>Manual Score Override</h3>
         <p className="override-modal__meta">
-          {certId} — {domainCode} — {studentUsername}
+          {studentUsername} · {certId} · {domainCode}
         </p>
         <label className="override-modal__label">
-          New score (0–100)
+          Override Score (0–100)
           <input
             className="input"
             type="number"
@@ -158,7 +165,9 @@ type Props = {
 };
 
 export default function StudentProfile({ username, apiUrl, isTeacher = false }: Props) {
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const baseApiUrl = apiUrl || 'https://api.beattietech.local';
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [override, setOverride] = useState<{
@@ -167,19 +176,57 @@ export default function StudentProfile({ username, apiUrl, isTeacher = false }: 
 
   const loadProfile = () => {
     setLoading(true);
-    fetch(`${apiUrl}/api/competency/profile/${username}`, { credentials: 'include' })
+    fetch(`${baseApiUrl}/api/cis/students/${username}`, { credentials: 'include' })
       .then((r) => {
         if (!r.ok) throw new Error(`API ${r.status}`);
-        return r.json() as Promise<Profile>;
+        return r.json();
       })
-      .then((data) => { setProfile(data); setLoading(false); })
+      .then((raw) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const rawCerts = raw?.certTracks || raw?.certs || [];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const certs = rawCerts.map((ct: any) => {
+          const doms = ct?.domains || [];
+          const avgScore = doms.length
+            ? Math.round(doms.reduce((a: number, b: any) => a + (Number(b.effectiveScore ?? b.combinedScore ?? 0)), 0) / doms.length)
+            : 0;
+          return {
+            certId: ct?.certTrackId || ct?.certId || 'cert',
+            certName: ct?.title || ct?.certName || ct?.certTrackId || 'Certification',
+            readiness: avgScore,
+            paTier: (doms[0]?.readinessBucket || 'NOT_STARTED').toUpperCase() as PATier,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            domains: doms.map((d: any) => ({
+              domainCode: d.domainId,
+              domainName: d.domainName || d.domainId,
+              weightPct: d.weightPct ?? 20,
+              masteryScore: Number(d.masteryScore ?? 0),
+              timeCoverageScore: Number(d.timeCoverage ?? 0),
+              activeMinutes: Number(d.timeMinutes ?? d.activeMinutes ?? 0),
+              expectedMinutes: Number(d.expectedMinutes ?? 120),
+              readiness: Number(d.effectiveScore ?? d.combinedScore ?? 0),
+              paTier: String(d.readinessBucket || 'NOT_STARTED').toUpperCase() as PATier,
+              attemptCount: Number(d.attemptCount ?? 0),
+            })),
+          };
+        });
+
+        setProfile({
+          student: raw?.student || { username, displayName: username, currentYear: raw?.academicYear || '2025-2026' },
+          certs,
+          allTimeMinutes: raw?.allTimeMinutes ?? 0,
+          currentYearMinutes: raw?.currentYearMinutes ?? 0,
+          entranceExam: raw?.entranceExam || null,
+        });
+        setLoading(false);
+      })
       .catch((err: unknown) => {
         setError(err instanceof Error ? err.message : 'Failed to load profile');
         setLoading(false);
       });
   };
 
-  useEffect(() => { loadProfile(); }, [username]);
+  useEffect(() => { loadProfile(); }, [username, baseApiUrl]);
 
   if (loading) return <div className="student-profile__loading">Loading profile…</div>;
   if (error) return <p className="callout callout--warn">{error}</p>;
