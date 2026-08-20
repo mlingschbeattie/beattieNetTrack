@@ -37,7 +37,6 @@ const CONTENT_TYPE_LABELS: Record<string, string> = {
 };
 
 export default function CompetencyMapView({ apiUrl }: Props) {
-  const baseApiUrl = apiUrl && apiUrl !== 'https://api.beattietech.local' ? apiUrl : '';
   const [entries, setEntries] = useState<MapEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -46,7 +45,7 @@ export default function CompetencyMapView({ apiUrl }: Props) {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    fetch(`${baseApiUrl}/api/cis/domains`, { credentials: 'include' })
+    fetch(`/api/cis/domains`, { credentials: 'include' })
       .then((r) => {
         if (!r.ok) throw new Error(`API ${r.status}`);
         return r.json();
@@ -76,7 +75,7 @@ export default function CompetencyMapView({ apiUrl }: Props) {
         setLoading(false);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [baseApiUrl]);
+  }, []);
 
 
   const allCerts = useMemo(() => [...new Set(entries.map((e) => e.certId))].sort(), [entries]);
