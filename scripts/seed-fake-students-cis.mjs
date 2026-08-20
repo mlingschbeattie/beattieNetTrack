@@ -15,7 +15,7 @@ const API_URL = process.env.PUBLIC_API_URL || 'https://api.beattietech.local';
 
 const FAKE_STUDENTS = {
   mason: {
-    username: 'fake_mason',
+    username: 'fake.mason',
     displayName: 'Fake Mason',
     track: 'network-engineer',
     targetCert: 'CompTIA Network+ (N10-009)',
@@ -56,7 +56,7 @@ const FAKE_STUDENTS = {
     ],
   },
   jacob: {
-    username: 'fake_jacob',
+    username: 'fake.jacob',
     displayName: 'Fake Jacob',
     track: 'pc-technician',
     targetCert: 'CompTIA A+ (220-1101 & 220-1102)',
