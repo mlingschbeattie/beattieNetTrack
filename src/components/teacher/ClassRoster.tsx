@@ -180,7 +180,8 @@ export default function ClassRoster({ apiUrl }: Props) {
 
 
   const allCerts = useMemo(() => {
-    const certIds = new Set<string>();
+    const defaultTracks = ['aplus1', 'aplus2', 'netplus', 'secplus', 'nocti'];
+    const certIds = new Set<string>(defaultTracks);
     for (const s of students) {
       if (Array.isArray(s?.certs)) {
         for (const c of s.certs) {
@@ -280,9 +281,16 @@ export default function ClassRoster({ apiUrl }: Props) {
                 <tr>
                   <th>Student</th>
                   <th>Period</th>
-                  {allCerts.map((certId) => (
-                    <th key={certId}>{certId}</th>
-                  ))}
+                  {allCerts.map((certId) => {
+                    const certNames: Record<string, string> = {
+                      aplus1: 'A+ Core 1',
+                      aplus2: 'A+ Core 2',
+                      netplus: 'Network+',
+                      secplus: 'Security+',
+                      nocti: 'NOCTI / OCA',
+                    };
+                    return <th key={certId}>{certNames[certId] || certId}</th>;
+                  })}
                   <th>Active (7d)</th>
                   <th>Last Active</th>
                 </tr>
