@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 
-type PATier = 'NOT_STARTED' | 'CRITICAL' | 'NEEDS_WORK' | 'ON_TRACK' | 'MASTERED';
+type PATier = 'NOT_STARTED' | 'CRITICAL' | 'NEEDS_WORK' | 'DEVELOPING' | 'ON_TRACK' | 'STRONG' | 'MASTERED';
 
 type CertReadiness = {
   certId: string;
@@ -37,7 +37,9 @@ const TIER_COLOR: Record<string, string> = {
   NOT_STARTED: '#3D3D3D',
   CRITICAL:    '#E24B4A',
   NEEDS_WORK:  '#EF9F27',
+  DEVELOPING:  '#378ADD',
   ON_TRACK:    '#378ADD',
+  STRONG:      '#00FF41',
   MASTERED:    '#00FF41',
 };
 
@@ -45,7 +47,9 @@ const TIER_LABEL: Record<string, string> = {
   NOT_STARTED: 'Not Started',
   CRITICAL:    'Critical',
   NEEDS_WORK:  'Needs Work',
+  DEVELOPING:  'Developing',
   ON_TRACK:    'On Track',
+  STRONG:      'Strong',
   MASTERED:    'Mastered',
 };
 
