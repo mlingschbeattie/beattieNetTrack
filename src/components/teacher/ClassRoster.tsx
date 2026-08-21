@@ -148,19 +148,35 @@ export default function ClassRoster({ apiUrl }: Props) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const rawGaps: any = gaps;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const rawGapList = rawGaps?.data?.gaps || rawGaps?.data || rawGaps?.gaps || (Array.isArray(rawGaps) ? rawGaps : []);
+  const rawGapList = rawGaps?.students || rawGaps?.data?.students || rawGaps?.data?.gaps || rawGaps?.data || rawGaps?.gaps || (Array.isArray(rawGaps) ? rawGaps : []);
   
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const safeGaps: GapItem[] = (Array.isArray(rawGapList) ? rawGapList : []).map((g: any) => ({
-    studentUsername: g?.studentUsername || g?.student_username || g?.username || '',
-    displayName: g?.displayName || g?.display_name || g?.name || g?.studentUsername || 'Student',
-    certId: g?.certId || g?.cert_id || '',
-    domainCode: g?.domainCode || g?.domain_code || '',
-    domainName: g?.domainName || g?.domain_name || '',
-    readiness: Number(g?.readiness ?? 0),
-    deficitMinutes: Number(g?.deficitMinutes ?? g?.deficit_minutes ?? 0),
-    priority: String(g?.priority || 'NEEDS_WORK').toUpperCase() as 'CRITICAL' | 'NEEDS_WORK',
-  }));
+  const safeGaps: GapItem[] = (Array.isArray(rawGapList) ? rawGapList : []).flatMap((g: any) => {
+    if (g?.certTracks && Array.isArray(g.certTracks)) {
+      return g.certTracks
+        .filter((t: any) => t?.readinessBucket === 'CRITICAL' || t?.criticalDomains > 0)
+        .map((t: any) => ({
+          studentUsername: g?.username || '',
+          displayName: g?.displayName || g?.username || 'Student',
+          certId: t?.certTrackId || '',
+          domainCode: t?.certTrackId || '',
+          domainName: t?.certTrackId || 'Certification',
+          readiness: Number(t?.averageCombinedScore ?? 0),
+          deficitMinutes: 0,
+          priority: 'CRITICAL' as const,
+        }));
+    }
+    return [{
+      studentUsername: g?.studentUsername || g?.student_username || g?.username || '',
+      displayName: g?.displayName || g?.display_name || g?.name || g?.studentUsername || 'Student',
+      certId: g?.certId || g?.cert_id || '',
+      domainCode: g?.domainCode || g?.domain_code || '',
+      domainName: g?.domainName || g?.domain_name || '',
+      readiness: Number(g?.readiness ?? 0),
+      deficitMinutes: Number(g?.deficitMinutes ?? g?.deficit_minutes ?? 0),
+      priority: String(g?.priority || 'NEEDS_WORK').toUpperCase() as 'CRITICAL' | 'NEEDS_WORK',
+    }];
+  });
 
 
   const allCerts = useMemo(() => {
