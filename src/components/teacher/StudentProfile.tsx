@@ -47,7 +47,7 @@ type EntranceExam = {
 };
 
 type Profile = {
-  student: { username: string; displayName: string; currentYear: string };
+  student: { id?: string; username: string; displayName: string; currentYear: string };
   certs: CertData[];
   allTimeMinutes: number;
   currentYearMinutes: number;
@@ -72,7 +72,7 @@ function MasteryBar({ value, tier }: { value: number; tier: PATier }) {
 }
 
 type OverrideModalProps = {
-  studentId: string;
+  studentId?: string;
   studentUsername: string;
   certId: string;
   domainCode: string;
@@ -166,8 +166,7 @@ type Props = {
 
 export default function StudentProfile({ username, apiUrl, isTeacher = false }: Props) {
   const baseApiUrl = 'https://api.beattietech.local';
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [override, setOverride] = useState<{
@@ -185,7 +184,7 @@ export default function StudentProfile({ username, apiUrl, isTeacher = false }: 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const rawCerts = raw?.certTracks || raw?.certs || [];
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const certs = rawCerts.map((ct: any) => {
+        const certs: CertData[] = rawCerts.map((ct: any) => {
           const doms = ct?.domains || [];
           const avgScore = doms.length
             ? Math.round(doms.reduce((a: number, b: any) => a + (Number(b.effectiveScore ?? b.combinedScore ?? 0)), 0) / doms.length)
@@ -253,7 +252,7 @@ export default function StudentProfile({ username, apiUrl, isTeacher = false }: 
       </div>
 
       {/* Cert cards */}
-      {(profile?.certs || []).map((cert) => (
+      {(profile?.certs || []).map((cert: CertData) => (
         <div key={cert.certId} className="student-profile__cert">
           <div className="student-profile__cert-header">
             <h3 className="student-profile__cert-name">{cert.certName || cert.certId}</h3>
@@ -272,7 +271,7 @@ export default function StudentProfile({ username, apiUrl, isTeacher = false }: 
               </tr>
             </thead>
             <tbody>
-              {(cert?.domains || []).map((d) => (
+              {(cert?.domains || []).map((d: DomainData) => (
                 <tr key={d.domainCode}>
                   <td>
                     <span className="student-profile__domain-code">{d.domainCode}</span>{' '}
@@ -309,6 +308,7 @@ export default function StudentProfile({ username, apiUrl, isTeacher = false }: 
 
       {override && (
         <OverrideModal
+          studentId={profile?.student?.id || username}
           studentUsername={username}
           certId={override.certId}
           domainCode={override.domainCode}
