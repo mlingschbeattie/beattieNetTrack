@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { getTrackProgress } from '../../lib/progressStore';
 
 type TrackProgressSummaryProps = {
-  lessonSlugs: string[];
+  activitySlugs?: string[];
+  lessonSlugs?: string[];
 };
 
 const PROGRESS_MESSAGES = [
@@ -16,16 +17,17 @@ const PROGRESS_MESSAGES = [
   "🎉 Track complete! Time to attempt the real exam.",
 ];
 
-export default function TrackProgressSummary({ lessonSlugs }: TrackProgressSummaryProps) {
+export default function TrackProgressSummary({ activitySlugs, lessonSlugs }: TrackProgressSummaryProps) {
+  const items = activitySlugs ?? lessonSlugs ?? [];
   const [percent, setPercent] = useState(0);
   const [completed, setCompleted] = useState(0);
-  const [total, setTotal] = useState(lessonSlugs.length);
+  const [total, setTotal] = useState(items.length);
   const [earnedXp, setEarnedXp] = useState(0);
   const [displayPct, setDisplayPct] = useState(0);
 
   useEffect(() => {
     const update = () => {
-      const stats = getTrackProgress(lessonSlugs);
+      const stats = getTrackProgress(items);
       setPercent(stats.percent);
       setCompleted(stats.completed);
       setTotal(stats.total);
@@ -35,7 +37,7 @@ export default function TrackProgressSummary({ lessonSlugs }: TrackProgressSumma
     update();
     window.addEventListener('progress-updated', update);
     return () => window.removeEventListener('progress-updated', update);
-  }, [lessonSlugs]);
+  }, [items]);
 
   useEffect(() => {
     const t = setTimeout(() => setDisplayPct(percent), 100);
