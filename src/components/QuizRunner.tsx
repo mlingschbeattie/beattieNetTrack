@@ -180,13 +180,10 @@ export default function QuizRunner({ quiz, workspaceSlug, domains = [], apiUrl }
   return (
     <div className="quiz-runner" data-testid="quiz-runner">
       <div className="quiz-runner__header">
-        <div>
-          <h2>{quiz.title}</h2>
-          <div className="quiz-runner__counter">
-            Question {current + 1} of {quiz.questions.length}
-          </div>
+        <div className="quiz-runner__counter">
+          QUESTION {current + 1} OF {quiz.questions.length}
         </div>
-        <div className="pill">Pass {quiz.passThreshold}%</div>
+        <div className="pill pill--pass">PASS ≥ {quiz.passThreshold}%</div>
       </div>
 
       <div className="progress-bar-track" aria-hidden="true">

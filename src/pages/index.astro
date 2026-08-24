@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import AppShell from '../layouts/AppShell.astro';
 import ContinueLearning from '../components/islands/ContinueLearning.tsx';
+import ProgressStatus from '../components/islands/ProgressStatus.tsx';
 import { getTrackDetailData } from '../lib/content';
 
 const allTracks = await getCollection('tracks');
@@ -73,6 +74,9 @@ const isAvailable = (slug: string) => (activityMap[slug]?.length ?? 0) > 0;
   <section class="hero">
     <h1 class="hero__title">Learning Dashboard</h1>
     <p class="hero__subtitle">Your structured pathway from foundational IT to advanced cyber operations.</p>
+    <div class="hero__stats" style="margin-top: var(--space-6);">
+      <ProgressStatus client:only="react" />
+    </div>
   </section>
 
   <!-- Section A: Continue Learning -->

@@ -1109,7 +1109,8 @@ html[data-theme='light'] .card:hover {
 }
 
 /* Light mode */
-html.light-mode .quiz-question {
+html.light-mode .quiz-question,
+html[data-theme='light'] .quiz-question {
   background: rgba(255, 255, 255, 0.95);
   border-color: rgba(0, 135, 90, 0.18);
 }
@@ -1211,12 +1212,14 @@ html.light-mode .quiz-question {
 .quiz-option--incorrect .quiz-option__text { color: var(--danger); }
 
 /* Light mode */
-html.light-mode .quiz-option {
+html.light-mode .quiz-option,
+html[data-theme='light'] .quiz-option {
   background: rgba(255, 255, 255, 0.8);
   border-color: rgba(0, 0, 0, 0.10);
 }
 
-html.light-mode .quiz-option:hover:not(.quiz-option--revealed) {
+html.light-mode .quiz-option:hover:not(.quiz-option--revealed),
+html[data-theme='light'] .quiz-option:hover:not(.quiz-option--revealed) {
   background: rgba(3, 105, 161, 0.05);
 }
 
@@ -2577,7 +2580,8 @@ html.light-mode .terminal-window {
   border-color: rgba(0, 135, 90, 0.3);
 }
 
-html.light-mode .terminal-titlebar {
+html.light-mode .terminal-titlebar,
+html[data-theme='light'] .terminal-titlebar {
   background: rgba(0, 0, 0, 0.7);
 }
 
@@ -2669,12 +2673,14 @@ html.light-mode .terminal-titlebar {
 }
 
 /* Light mode */
-html.light-mode .lab-steps {
+html.light-mode .lab-steps,
+html[data-theme='light'] .lab-steps {
   background: rgba(255, 255, 255, 0.9);
   border-color: rgba(0, 135, 90, 0.15);
 }
 
-html.light-mode .lab-step--active {
+html.light-mode .lab-step--active,
+html[data-theme='light'] .lab-step--active {
   background: rgba(0, 135, 90, 0.08);
   border-color: rgba(0, 135, 90, 0.25);
   color: #006b48;
@@ -2751,7 +2757,8 @@ html.light-mode .lab-step--active {
 }
 
 /* Light mode */
-html.light-mode .lab-instruction {
+html.light-mode .lab-instruction,
+html[data-theme='light'] .lab-instruction {
   background: rgba(255, 255, 255, 0.95);
   border-color: rgba(0, 135, 90, 0.18);
 }
@@ -2832,12 +2839,14 @@ html.light-mode .lab-instruction {
 }
 
 /* Light mode */
-html.light-mode .quiz-eli5 {
+html.light-mode .quiz-eli5,
+html[data-theme='light'] .quiz-eli5 {
   background: color-mix(in oklab, var(--color-primary) 7%, transparent);
   border-color: color-mix(in oklab, var(--color-primary) 26%, transparent);
 }
 
-html.light-mode .quiz-eli5__toggle {
+html.light-mode .quiz-eli5__toggle,
+html[data-theme='light'] .quiz-eli5__toggle {
   color: var(--color-primary-strong);
   text-shadow: none;
 }
@@ -3321,4 +3330,37 @@ html.light-mode .quiz-eli5__toggle {
     grid-template-columns: minmax(0, 1fr);
     min-height: auto;
   }
+}
+/* -- Shared Dashboard Stat Cards -- */
+.competency-dash__stats {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.competency-dash__stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-5) var(--space-8);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  min-width: 140px;
+  gap: var(--space-1);
+}
+
+.competency-dash__stat-num {
+  font-size: var(--text-3xl);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.competency-dash__stat-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
 }

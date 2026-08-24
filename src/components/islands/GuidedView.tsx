@@ -667,7 +667,7 @@ export default function GuidedView({ lessonSlug, sections }: GuidedViewProps) {
 
       <section className="guided-excerpt">
         <h4>Quick Read</h4>
-        <p>{showExcerpt ? activeSection.excerpt : 'Reveal more to unlock this quick read section.'}</p>
+        <p>{showExcerpt ? activeSection.excerpt : 'Show more to read this section.'}</p>
       </section>
 
       <div className="guided-actions">

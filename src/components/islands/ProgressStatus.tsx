@@ -38,30 +38,21 @@ export default function ProgressStatus() {
   }
 
   return (
-    <>
-      <div className="status-pill">
-        <span className="status-pill__icon">⚡</span>
-        <div>
-          <div className="status-pill__label">Level</div>
-          <div className="status-pill__value" data-testid="status-level">{status.level}</div>
-        </div>
+    <div className="competency-dash__stats">
+      <div className="competency-dash__stat-card">
+        <span className="competency-dash__stat-num" data-testid="status-level">{status.level}</span>
+        <span className="competency-dash__stat-label">Level</span>
       </div>
-      <div className="status-pill">
-        <span className="status-pill__icon">⭐</span>
-        <div>
-          <div className="status-pill__label">XP</div>
-          <div className="status-pill__value" data-testid="status-xp">{status.xpTotal}</div>
-        </div>
+      <div className="competency-dash__stat-card">
+        <span className="competency-dash__stat-num" data-testid="status-xp">{status.xpTotal}</span>
+        <span className="competency-dash__stat-label">XP</span>
       </div>
-      <div className="status-pill">
-        <span className="status-pill__icon">🔥</span>
-        <div>
-          <div className="status-pill__label">Streak</div>
-          <div className="status-pill__value" data-testid="status-streak">
-            {status.streak} {status.streak === 1 ? 'day' : 'days'}
-          </div>
-        </div>
+      <div className="competency-dash__stat-card">
+        <span className="competency-dash__stat-num" data-testid="status-streak">
+          {status.streak}
+        </span>
+        <span className="competency-dash__stat-label">Day Streak</span>
       </div>
-    </>
+    </div>
   );
 }

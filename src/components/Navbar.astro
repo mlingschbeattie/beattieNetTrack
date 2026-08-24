@@ -1,5 +1,5 @@
 ---
-import ProgressStatus from './islands/ProgressStatus.tsx';
+
 
 interface Props {
   activePath?: string;
@@ -73,8 +73,6 @@ const isActive = (href: string) => {
       </button>
     </div>
 
-    <div class="top-nav__status-slot" data-progress-slot>
-      <ProgressStatus client:only="react" />
-    </div>
+
   </div>
 </nav>

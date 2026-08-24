@@ -104,7 +104,25 @@ if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson' || itemTy
   >
     {layoutMode === 'stacked' ? (
       <div class="workspace-shell">
-        <ActivityCard class="workspace-top-card" title="Workspace" subtitle="Instructions, checks, and notes" fullHeight={false}>
+        {itemType === 'quiz' ? (
+          <div class="mode-connector">
+            <span class="mode-connector__text">Practice Mode: Active Checkpoint Quiz</span>
+            <a href={`/lessons/${itemSlug}`} class="mode-connector__link">
+              <span>Read Full Lesson Guide</span>
+              <span class="icon-directional">→</span>
+            </a>
+          </div>
+        ) : itemType === 'lesson' ? (
+          <div class="mode-connector">
+            <span class="mode-connector__text">Guided Reading: Core Lesson Content</span>
+            <a href={`/quizzes/${itemSlug}`} class="mode-connector__link">
+              <span>Practice This Quiz</span>
+              <span class="icon-directional">→</span>
+            </a>
+          </div>
+        ) : null}
+
+        <ActivityCard class="workspace-top-card" terminalChrome="GUIDE.exe" fullHeight={false}>
           <Fragment slot="actions">
             <div class="workspace-tabs workspace-tabs--drawer" role="tablist" aria-label="Workspace drawer tabs">
               <button
@@ -114,7 +132,8 @@ if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson' || itemTy
                 aria-selected="true"
                 data-workspace-drawer-tab-button="instructions"
               >
-                Instructions
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                <span>Instructions</span>
               </button>
               <button
                 type="button"
@@ -123,7 +142,8 @@ if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson' || itemTy
                 aria-selected="false"
                 data-workspace-drawer-tab-button="checks"
               >
-                Checks
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Checks</span>
               </button>
               <button
                 type="button"
@@ -132,10 +152,11 @@ if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson' || itemTy
                 aria-selected="false"
                 data-workspace-drawer-tab-button="notes"
               >
-                Notes
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                <span>Notes</span>
               </button>
             </div>
-            <button type="button" class="btn-ghost" data-workspace-drawer-toggle aria-expanded="true">Collapse</button>
+            <button type="button" class="btn-ghost btn-collapse" data-workspace-drawer-toggle aria-expanded="true">Collapse</button>
           </Fragment>
 
           <div class="workspace-drawer workspace-drawer--open" data-workspace-drawer>
@@ -159,20 +180,11 @@ if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson' || itemTy
         </ActivityCard>
 
         <div class="workspace-main" data-workspace-activity>
-          <ActivityCard class="workspace-activity-card" title="Activity" fullHeight={true}>
-            {moduleProgress ? (
-              <div style="margin-bottom:8px">
-                <span
-                  class="pill pill--muted"
-                  data-module-progress
-                  data-total={String(moduleProgress.total)}
-                  data-completed={String(moduleProgress.completed)}
-                  data-activities={JSON.stringify(moduleProgress.activities)}
-                >
-                  Module Progress: <span class="mp-completed">0</span> / <span class="mp-total">{String(moduleProgress.total)}</span> (<span class="mp-percent">0%</span>)
-                </span>
-              </div>
-            ) : null}
+          <ActivityCard
+            class="workspace-activity-card"
+            terminalChrome={itemType === 'quiz' ? `INFOX.exe` : 'WORKSPACE.exe'}
+            fullHeight={true}
+          >
             <slot name="activity-main" />
           </ActivityCard>
         </div>

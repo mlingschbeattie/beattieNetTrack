@@ -118,31 +118,44 @@ type Props = {
 };
 
 export default function CompetencyDashboard({ username, apiUrl }: Props) {
-  const baseApiUrl = 'https://api.beattietech.local';
   const [profile, setProfile] = useState<Profile | null>(null);
   const [recs, setRecs] = useState<GapItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+
     Promise.all([
-      fetch(`${baseApiUrl}/api/competency/profile/${username}`, { credentials: 'include' }).then((r) => {
+      fetch(`${apiUrl}/api/competency/profile/${username}`, {
+        credentials: 'include',
+        signal: controller.signal,
+      }).then((r) => {
         if (!r.ok) throw new Error(`Profile API ${r.status}`);
         return r.json() as Promise<Profile>;
       }),
-      fetch(`${baseApiUrl}/api/competency/recommendations/${username}`, { credentials: 'include' }).then(
-        (r) => (r.ok ? (r.json() as Promise<GapItem[]>) : Promise.resolve([]))
-      ),
+      fetch(`${apiUrl}/api/competency/recommendations/${username}`, {
+        credentials: 'include',
+        signal: controller.signal,
+      }).then((r) => (r.ok ? (r.json() as Promise<GapItem[]>) : Promise.resolve([]))),
     ])
       .then(([profileData, recData]) => {
+        clearTimeout(timeoutId);
         setProfile(profileData);
         setRecs(recData);
         setLoading(false);
       })
-      .catch((err: unknown) => {
-        setError(err instanceof Error ? err.message : 'Failed to load profile');
+      .catch(() => {
+        clearTimeout(timeoutId);
+        setError("Your competency profile isn't available yet — check back soon");
         setLoading(false);
       });
+
+    return () => {
+      clearTimeout(timeoutId);
+      controller.abort();
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username]);
 
