@@ -15,6 +15,19 @@ const activityCounts = Object.fromEntries(
     })
   )
 );
+const TRACK_ICONS: Record<string, string> = {
+  'tech-plus': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>',
+  'pc-technician': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+  'network-engineer': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>',
+  'cybersecurity-foundations': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+  'python-developer': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
+  'cybersecurity-engineer': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+  'web-developer': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+  'ai-ml': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>',
+  'linux': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>',
+  'cyber-literacy': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>'
+};
+const DEFAULT_ICON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/></svg>';
 ---
 
 <AppShell
@@ -27,24 +40,33 @@ const activityCounts = Object.fromEntries(
 >
   <section class="hero">
     <h1 class="hero__title">Learning Tracks</h1>
-    <p class="hero__subtitle">Choose a track to view modules and activities.</p>
+    <p class="hero__subtitle">Choose a certification track to view curriculum modules, checkpoints, and labs.</p>
   </section>
 
-  <section class="card-grid">
-    {trackCards.map((track) => (
-      <article class="card card--track">
-        <span class={`track-badge track-badge--${activityCounts[track.slug] > 0 ? 'available' : 'coming-soon'}`}>
-          {activityCounts[track.slug] > 0 ? 'Available' : 'Coming Soon'}
-        </span>
-        <h3>{track.title}</h3>
-        <p>{track.description}</p>
-        <div class="card__meta">
-          <span class="badge">{activityCounts[track.slug] ?? 0} activities</span>
-        </div>
-        <div class="card__footer">
-          <a class="btn-link" href={`/tracks/${track.slug}`}>Open track →</a>
-        </div>
-      </article>
-    ))}
+  <section class="card-grid card-grid--two">
+    {trackCards.map((track) => {
+      const svgIcon = TRACK_ICONS[track.slug] || DEFAULT_ICON;
+      return (
+        <article class="card card--track">
+          <div class="card__header-row">
+            <div class="card__icon-badge" set:html={svgIcon}></div>
+            <span class={`track-badge track-badge--${activityCounts[track.slug] > 0 ? 'available' : 'coming-soon'}`}>
+              {activityCounts[track.slug] > 0 ? 'Curriculum Ready' : 'Coming Soon'}
+            </span>
+          </div>
+          <h3>{track.title}</h3>
+          <p>{track.description}</p>
+          <div class="card__meta">
+            <span class="badge">{activityCounts[track.slug] ?? 0} activities</span>
+          </div>
+          <div class="card__footer">
+            <a class="btn-link" href={`/tracks/${track.slug}`}>
+              <span>Explore Track</span>
+              <span class="icon-directional">→</span>
+            </a>
+          </div>
+        </article>
+      );
+    })}
   </section>
 </AppShell>

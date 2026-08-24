@@ -60,28 +60,34 @@ const lessonSlugs = sectionLessonSlugs;
   {modules.length > 0 ? (
     modules.map((module) => (
       <section class="track-section">
-        <h2 class="track-section__title">{module.title}</h2>
+        <div class="section-head">
+          <h2>{module.title}</h2>
+          <div class="section-head-line"></div>
+        </div>
         {module.description && <p class="track-section__subtitle">{module.description}</p>}
-        <div class="card-grid">
+        <div class="card-grid card-grid--two">
           {module.activities.map((activity) => (
-            <article class={`card card--lesson card--activity-${activity.type ?? 'lesson'}`}>
-              <h3>{activity.title}</h3>
-              <p>{activity.description}</p>
-              <div class="card__meta">
-                <span class="badge badge--activity-type">
+            <article class={`card card--activity-${activity.type ?? 'lesson'}`}>
+              <div class="card__header-row">
+                <span class={`badge badge--activity-${activity.type ?? 'lesson'}`}>
                   {
                     activity.type === 'lab'
-                      ? '🔬 Lab'
+                      ? 'Lab Sandbox'
                       : activity.type === 'quiz'
-                        ? '🧠 Quiz'
+                        ? 'Checkpoint Quiz'
                         : activity.type === 'activity'
-                          ? '🧩 Activity'
-                          : '📖 Lesson'
+                          ? 'Hands-on Activity'
+                          : 'Core Lesson'
                   }
                 </span>
               </div>
+              <h3>{activity.title}</h3>
+              <p>{activity.description || 'Complete this learning activity to progress your certification track.'}</p>
               <div class="card__footer">
-                <a class="btn-link" href={activity.href}>Open activity →</a>
+                <a class="btn-link" href={activity.href}>
+                  <span>Open Activity</span>
+                  <span class="icon-directional">→</span>
+                </a>
               </div>
             </article>
           ))}
@@ -90,7 +96,10 @@ const lessonSlugs = sectionLessonSlugs;
     ))
   ) : (
     <section class="track-section">
-      <h2 class="track-section__title">Modules</h2>
+      <div class="section-head">
+        <h2>Modules</h2>
+        <div class="section-head-line"></div>
+      </div>
       <article class="card">
         <h3>No modules published yet</h3>
         <p>This track is configured, but no module activities are available right now.</p>

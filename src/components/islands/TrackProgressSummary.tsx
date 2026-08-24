@@ -49,7 +49,7 @@ export default function TrackProgressSummary({ lessonSlugs }: TrackProgressSumma
     <div className="track-progress progress-header">
       <div className="progress-header__info">
         <div className="progress-header__title" data-testid="track-completed-count">
-          {completed} / {total} completed
+          {completed} of {total} Activities Completed
         </div>
         <div className="progress-header__subtitle">{message}</div>
       </div>
@@ -60,8 +60,7 @@ export default function TrackProgressSummary({ lessonSlugs }: TrackProgressSumma
         <div className="progress-bar-label" data-testid="track-percent">{pct}% complete</div>
       </div>
       <div className="xp-display">
-        <span className="xp-display__icon">⚡</span>
-        <span className="xp-display__value" data-testid="track-xp">{earnedXp}</span>
+        <span className="xp-display__value" data-testid="track-xp">+{earnedXp}</span>
         <span className="xp-display__label">XP</span>
       </div>
     </div>
