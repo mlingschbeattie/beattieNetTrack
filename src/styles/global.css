@@ -16,12 +16,8 @@ body {
   margin: 0;
   font-family: var(--font-sans);
   font-size: var(--text-base);
-  background:
-    radial-gradient(ellipse at top left,  rgba(0, 255, 179, 0.18), transparent 50%),
-    radial-gradient(ellipse at top right, rgba(56, 217, 255, 0.18), transparent 50%),
-    radial-gradient(ellipse at bottom center, rgba(192, 132, 252, 0.22), transparent 55%),
-    var(--bg-main);
-  color: var(--text-main);
+  background-color: var(--beattie-bg);
+  color: var(--beattie-text);
   line-height: var(--leading-normal);
   letter-spacing: -0.01em;
   overflow-x: hidden;
