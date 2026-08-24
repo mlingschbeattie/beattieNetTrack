@@ -17,6 +17,11 @@
   --font-sans: "Plus Jakarta Sans", "Inter", "Noto Sans Arabic", "Segoe UI Arabic", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
+  --beattie-text: #f3f4f6;
+  --beattie-text-muted: #94a3b8;
+  --beattie-text-dim: #64748b;
+  --beattie-text-inverse: #07090e;
+
   --text-xs: 0.75rem;     /* 12px */
   --text-sm: 0.875rem;    /* 14px */
   --text-base: 1rem;      /* 16px */
@@ -25,6 +30,7 @@
   --text-2xl: 1.5rem;     /* 24px */
   --text-3xl: 1.875rem;   /* 30px */
   --text-4xl: 2.25rem;    /* 36px */
+  --text-5xl: 2.75rem;    /* 44px */
 
   --leading-tight: 1.2;
   --leading-normal: 1.55;
@@ -76,6 +82,7 @@
   --color-danger: var(--beattie-danger);
   --color-highlight: var(--beattie-primary-subtle);
 
+  --accent: var(--beattie-primary);
   --accent-green: var(--beattie-success);
   --accent-blue: var(--beattie-primary);
   --accent-purple: var(--beattie-ai);
@@ -85,14 +92,28 @@
   --text-main: #f3f4f6;
   --text-muted: #94a3b8;
   --text-accent: var(--beattie-primary);
+  --text-dark: var(--beattie-text-inverse);
+  --text-primary: var(--beattie-text);
+  --text-secondary: var(--beattie-text-muted);
 
+  --surface-1: var(--beattie-surface);
+  --surface-2: var(--beattie-surface-elevated);
+  --border: var(--beattie-border);
   --border-subtle: var(--beattie-border);
   --border-neon: var(--beattie-border-subtle);
   --border-blue: rgba(59, 130, 246, 0.25);
 
+  --card-bg: var(--beattie-surface);
+  --muted-bg: var(--beattie-surface-subtle);
+  --muted-text: var(--beattie-text-muted);
+  --code-bg: var(--beattie-surface-subtle);
+
+  --gradient-primary: linear-gradient(135deg, rgba(59, 130, 246, 0.22), rgba(37, 99, 235, 0.05));
+
   --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-neon-green: 0 2px 8px rgba(16, 185, 129, 0.15);
   --shadow-neon-blue: 0 2px 8px rgba(59, 130, 246, 0.15);
+  --shadow-glow-pink: 0 0 16px rgba(239, 68, 68, 0.2);
 
   /* Spacing & Sizing */
   --space-1: 0.25rem;

@@ -1,13 +1,13 @@
 ---
-title: Storage Devices — HDDs, SSDs, and Everything In Between
-description: Hard drives, solid state drives, NVMe, optical drives, RAID configurations, file systems, and the practical knowledge technicians need to select, install, and troubleshoot storage in any system.
-slug: pct-storage-devices
+title: Power and Cooling — PSUs, Thermal Management, and Airflow
+description: Power supply unit (PSU) specifications, voltage rails, 80 PLUS efficiency, modular cabling, thermal paste application, air vs liquid cooling, and case airflow dynamics.
+slug: pct-power-cooling
 track: pc-technician
 moduleId: pct.hardware.components-identification
-order: 3
+order: 4
 difficulty: Beginner
 estMinutes: 30
-tags: ["storage", "HDD", "SSD", "NVMe", "RAID", "file system", "A+", "Core 1", "CompTIA"]
+tags: ["PSU", "power supply", "cooling", "thermal paste", "airflow", "80 PLUS", "A+", "Core 1", "CompTIA"]
 domains:
   - domainId: aplus1.hardware
     weight: 0.8
@@ -15,164 +15,142 @@ domains:
     weight: 0.2
 ---
 
-## Storage Is Where Everything Lives
+## Power and Heat: The Two Realities of Every Computer
 
-The operating system, every application, every file, every photo — all of it lives on storage. When storage fails, clients lose everything. When storage is slow, every operation the computer performs is slower. When storage is misconfigured, systems fail to boot or lose data silently.
+Every calculation performed by a CPU or GPU requires electricity, and every watt of electricity consumed is ultimately converted into heat. If a computer does not receive clean, stable power, it crashes, corrupts data, or fails to boot. If a computer cannot dissipate the heat it generates, it throttles performance or shuts down automatically to prevent physical destruction.
 
-Storage is also the component technicians replace most often. HDDs fail mechanically. SSDs fill up. Systems slow down when the OS drive gets old. Understanding storage thoroughly means faster diagnoses and better upgrade recommendations.
+As a PC technician, you will spend significant time sizing power supplies, diagnosing failing power rails, replacing thermal paste, configuring fan curves, and designing airflow paths. Understanding power and cooling separates technicians who guess from technicians who fix problems permanently.
 
-## Hard Disk Drives (HDDs)
+---
 
-HDDs store data magnetically on spinning platters. A read/write head moves across the platter surface to read and write data — this mechanical action is what makes HDDs slower and more fragile than SSDs.
+## Power Supply Units (PSUs)
 
-### HDD Specifications
+The Power Supply Unit (PSU) converts alternating current (AC) high-voltage wall power (120V in North America, 230V in Europe) into low-voltage direct current (DC) that sensitive silicon components require.
 
-**RPM (Revolutions Per Minute)** — how fast the platters spin. Common speeds:
-- 5400 RPM — laptop drives, external drives, low-power NAS
-- 7200 RPM — standard desktop drives, best performance for HDDs
-- 10,000–15,000 RPM — enterprise drives (rare in consumer systems)
+### The Voltage Rails
 
-Higher RPM = faster data access, more noise, more heat, more power.
+Modern ATX power supplies supply three primary DC voltage rails to the motherboard and internal components:
 
-**Cache** — a small amount of fast flash memory on the drive (8MB–256MB) that buffers reads and writes. Larger cache improves performance for sequential operations.
+- **+12V Rail (The Heavy Lifter):** Supplies the vast majority of total system power. Powers high-draw components including the CPU (via EPS connector), dedicated graphics card (via PCIe power connectors), cooling pumps, and case fans.
+- **+5V Rail:** Supplies power to SATA storage drives, legacy optical drives, USB ports, and onboard motherboard circuitry.
+- **+3.3V Rail:** Supplies low-voltage power directly to system RAM (DDR4/DDR5), M.2 NVMe SSD slots, and PCI Express expansion slots.
+- **+5VSB (Standby):** Provides a continuous 5V current even when the computer is powered down, enabling features like Wake-on-LAN, power button sensing, and USB charging while sleeping.
+- **-12V Rail:** Legacy rail used by older serial ports and specialized audio circuits; carries minimal current.
 
-**Form factors:**
-- 3.5" — standard desktop, mounts in drive bays with screws
-- 2.5" — laptop, slim desktop, external drives
+> [!WARNING]
+> **Technician Safety Rule:** Never open a power supply case. Power supplies contain large electrolytic capacitors that can store lethal electrical charges for days or weeks after being disconnected from wall power. If a power supply fails or its internal fan seizes, replace the entire unit.
 
-**Interface:** Modern HDDs use SATA III (6 Gb/s). Older drives used PATA (IDE) — wide ribbon cables, now obsolete.
+### PSU Form Factors and Cabling
 
-### HDD Failure Signs
+- **Non-Modular:** All power cables are permanently soldered to the internal PCB. Unused cables must be tucked away inside the case, obstructing airflow and creating clutter.
+- **Semi-Modular:** Essential cables (24-pin ATX main motherboard and 8-pin CPU EPS) are fixed; auxiliary SATA, Molex, and PCIe cables are detachable.
+- **Fully Modular:** Every single cable is detachable. Technicians only plug in the cables strictly needed for the build, maximizing internal airflow and simplifying cable routing.
 
-HDDs are mechanical — they wear out. Warning signs:
-- Clicking or grinding noise (head crash or mechanical failure)
-- Slow response, long load times (bad sectors)
-- Frequent freezing
-- S.M.A.R.T. errors reported by the OS or diagnostic tools
-- Files becoming corrupted or unreadable
+### Key Power Connectors
 
-**S.M.A.R.T.** (Self-Monitoring, Analysis and Reporting Technology) — built-in diagnostic data the drive reports about its own health. Tools like CrystalDiskInfo read S.M.A.R.T. data and flag failing drives before they completely die.
+| Connector | Pins | Voltage Delivered | Primary Target |
+|---|---|---|---|
+| **ATX 24-Pin Main** | 20+4 pin | +3.3V, +5V, +12V, -12V | Motherboard chipset, PCIe slots, RAM |
+| **EPS / ATX12V** | 4-pin or 8-pin (4+4) | +12V | Dedicated CPU Voltage Regulator Module (VRM) |
+| **PCIe Power** | 6-pin or 8-pin (6+2) | +12V | Dedicated Graphics Cards (GPUs) |
+| **12VHPWR (PCIe 5.0)** | 16-pin (12+4) | +12V (up to 600W) | Modern high-end GPUs |
+| **SATA Power** | 15-pin | +3.3V, +5V, +12V | 2.5"/3.5" HDDs, SSDs, optical drives |
+| **Molex (4-Pin Peripheral)** | 4-pin | +5V, +12V | Legacy drives, fan hubs, pump controllers |
 
-A clicking HDD is an emergency. Back up immediately — it may have hours or days of life left.
+### Sizing a Power Supply
 
-## Solid State Drives (SSDs)
+When selecting a PSU for a build or upgrade, calculate the Thermal Design Power (TDP) of all components (especially CPU and GPU) and add a **20% to 30% headroom buffer**. 
 
-SSDs store data in NAND flash memory — no moving parts. This makes them dramatically faster, more durable, silent, and more power-efficient than HDDs.
+For example:
+- CPU Draw: 125W
+- GPU Draw: 250W
+- Motherboard, RAM, Storage, Fans: 75W
+- **Total Estimated Draw:** 450W
+- **Headroom Buffer (30%):** 135W
+- **Recommended PSU Rating:** 600W to 650W
 
-### SSD Types by Interface
+Why not match wattage exactly? Power supplies achieve their highest electrical efficiency and lowest operating temperatures when running between **50% and 80% of their rated capacity**. Running a PSU near 100% capacity produces excessive heat, increases fan noise, and shortens component lifespan.
 
-**SATA SSD (2.5")** — uses the same SATA interface as HDDs. Looks like a thin HDD. Maximum speed is limited by the SATA III interface: ~550 MB/s sequential read. Excellent upgrade for older systems — plug-in replacement for a 2.5" HDD.
+### 80 PLUS Efficiency Certification
 
-**M.2 SATA SSD** — M.2 form factor but uses SATA protocol. Same speed limitation as 2.5" SATA (~550 MB/s). Less common than M.2 NVMe.
+The 80 PLUS standard certifies that a power supply converts at least 80% of AC wall power into usable DC power across various load levels (20%, 50%, 100%), with the remainder lost as waste heat.
 
-**M.2 NVMe SSD** — M.2 form factor, NVMe protocol over PCIe. Dramatically faster: 3,000–7,000 MB/s for PCIe 4.0 drives. The standard for new builds. Requires an M.2 slot that supports NVMe (not all M.2 slots do — check specs).
+The certification tiers from lowest to highest efficiency:
+1. **80 PLUS (White / Standard)** — 80% efficiency
+2. **80 PLUS Bronze** — 82% to 85% efficiency
+3. **80 PLUS Silver** — 85% to 88% efficiency
+4. **80 PLUS Gold** — 87% to 90% efficiency
+5. **80 PLUS Platinum** — 89% to 92% efficiency
+6. **80 PLUS Titanium** — 90% to 94% efficiency
 
-**PCIe Add-In Card SSD** — NVMe SSD on a PCIe expansion card. Used in older systems without M.2 slots, or for enterprise/workstation use requiring maximum performance.
+Higher efficiency means less electricity wasted as heat, lower operating temperatures, quieter fan operation, and reduced long-term power bills.
 
-### M.2 Form Factors
+---
 
-M.2 drives are named by their width and length:
+## Thermal Management and Cooling
 
-| Size | Width × Length | Common Use |
-|------|---------------|-----------|
-| 2230 | 22 × 30mm | Small laptops, Steam Deck |
-| 2242 | 22 × 42mm | Some laptops |
-| 2260 | 22 × 60mm | Less common |
-| 2280 | 22 × 80mm | Standard desktop/laptop |
+Silicon semiconductors generate intense heat in microscopic spaces. If that heat is not transferred away immediately, transistors degrade or permanently fuse.
 
-The motherboard has a standoff screw at a specific position to support the drive length. Most boards support multiple lengths.
+### Heat Transfer Basics
 
-### M.2 Key Types
+Heat moves in three ways inside a computer:
+1. **Conduction:** Heat transfers directly through physical contact from the CPU die/IHS (Integrated Heat Spreader) to the copper/aluminum base of the cooler.
+2. **Convection:** Air or liquid carries heat away from hot heatsink fins or radiator tubes into the surrounding environment.
+3. **Thermal Interface Material (TIM / Thermal Paste):** Metal surfaces on the CPU IHS and cooler base look smooth to the human eye, but contain microscopic grooves and pits. Air trapped in these pits acts as an insulator. Thermal paste fills these microscopic voids to provide a continuous conductive bridge.
 
-M.2 connectors have different notch positions (keys):
-- **M key** — supports both SATA and NVMe (PCIe)
-- **B key** — supports SATA and PCIe x2 (not x4)
-- **B+M key** — fits both B and M keyed slots, used for SATA M.2 drives
+### Applying Thermal Paste
 
-Most NVMe SSDs use M key. Most M.2 slots on consumer motherboards are M key. Check before buying.
+- **Clean First:** Always clean old thermal paste off the CPU and cooler using 90%+ Isopropyl Alcohol (IPA) and a lint-free microfiber cloth.
+- **Amount:** Apply a **pea-sized or rice grain-sized dot** directly in the center of the CPU IHS.
+- **Even Pressure:** When mounting the heatsink, tighten screws in an alternating diagonal "X" pattern to spread the paste evenly across the surface.
+- **Avoid Excess:** Applying too much thermal paste causes it to squeeze out over the sides of the CPU socket, creating mess and potential short circuits if the paste is electrically conductive.
 
-### SSD Endurance — TBW
+### Air Cooling vs. Liquid Cooling
 
-SSDs have a finite number of write cycles per cell. Manufacturers rate drives by **TBW (Terabytes Written)** — the total amount of data that can be written before the drive is expected to wear out. A consumer drive rated at 300 TBW can have 300 terabytes of data written to it over its life.
+| Feature | Air Cooling (Heatsink & Fan) | Liquid Cooling (AIO Closed Loop) |
+|---|---|---|
+| **Mechanism** | Copper heat pipes transfer heat to aluminum fin stacks; fan blows air through fins. | Liquid absorbs heat at the CPU water block/pump, travels through tubes to a radiator. |
+| **Reliability** | Extremely high (only moving part is the fan). | Moderate (pump can fail, fluid can permeate over years). |
+| **Noise Profile** | Quiet at idle; fan ramps up under heavy load. | Constant subtle pump hum; radiator fans manage sustained high loads quietly. |
+| **Space Constraints** | Tall tower coolers require wide cases and clearance over RAM modules. | Radiator requires dedicated fan mounting slots (120mm, 240mm, 280mm, 360mm). |
+| **Best For** | Standard workstations, budget builds, servers requiring maximum uptime. | High-TDP processors, compact cases with restricted vertical clearance, overclocking. |
 
-For typical consumer use (a few gigabytes written per day), TBW rarely limits lifespan. Enterprise use (servers writing constantly) requires enterprise-grade drives with higher TBW ratings.
+---
 
-## Optical Drives
+## Case Airflow Dynamics
 
-DVD and Blu-ray drives read and write optical discs. Now rare in new builds but still found in:
-- Older systems
-- Systems that need to read media (legacy software, movies)
-- Some enterprise environments
+A powerful CPU cooler is useless if trapped inside a sealed box of hot air. Technicians must design a coherent airflow path through the chassis.
 
-**Interface:** SATA (modern) or PATA/IDE (legacy)
-**Form factor:** 5.25" for desktop, slim 9.5mm for laptops
+### Fan Direction and Orientation
 
-For the exam: know that optical drives exist and use SATA, but don't expect heavy coverage — they're a declining technology.
+Case fans almost always blow air **toward the side with the plastic frame and motor label**.
+- Open front face with blades exposed = **Intake side** (air enters here).
+- Plastic crossbars and manufacturer sticker = **Exhaust side** (air exits here).
+- Most modern fans also feature small direction arrows molded into the side of the plastic housing.
 
-## Flash Storage — USB and Memory Cards
+### Standard Airflow Design
 
-**USB flash drives** — use NAND flash, connect via USB. Speeds vary enormously: cheap drives run USB 2.0 speeds (~25 MB/s); quality drives run USB 3.0+ (~150 MB/s+). Used for portable storage, OS installation media, and file transfer.
+1. **Front and Bottom Fans:** Configured as **Intake** (pulling cool ambient room air into the case).
+2. **Rear and Top Fans:** Configured as **Exhaust** (expelling hot air rising from the GPU and CPU).
 
-**SD cards** — used in cameras, some laptops, Raspberry Pi. Rated by speed class (Class 10, UHS-I, UHS-II, V30, V60, V90). Full-size SD and microSD are the common formats.
+### Pressure Models
 
-**CompactFlash / CFexpress** — professional camera storage formats, much faster than SD.
+- **Positive Pressure (Recommended):** Intake CFM > Exhaust CFM. More air is pushed into the chassis than is pulled out. Air naturally vents out through unsealed seams and vents. When intake fans are covered by dust filters, positive pressure keeps the inside of the case completely free of dust buildup.
+- **Negative Pressure:** Exhaust CFM > Intake CFM. Air is sucked into the case through every unfiltered crevice, gap, and port, accelerating dust accumulation inside components.
+- **Neutral / Balanced Pressure:** Intake CFM = Exhaust CFM. Optimal thermal throughput, but difficult to balance precisely in practice.
 
-## RAID — Redundant Array of Independent Disks
+---
 
-RAID combines multiple drives to provide redundancy, performance, or both. Common RAID levels for the A+ exam:
+## Thermal Throttling and Diagnostics
 
-| RAID Level | Drives Required | What It Does | Use Case |
-|------------|----------------|--------------|----------|
-| RAID 0 | 2+ | Stripes data across drives for speed. No redundancy — one drive fails, all data lost. | Speed, no data protection |
-| RAID 1 | 2 | Mirrors data — identical copy on each drive. One drive fails, no data loss. Half the total capacity used. | Data protection, simple |
-| RAID 5 | 3+ | Stripes data with parity across all drives. One drive can fail without data loss. Requires rebuild after failure. | Balance of speed, capacity, redundancy |
-| RAID 10 | 4+ | Mirrors then stripes (RAID 1+0). Two drives can fail if they're from different mirrors. | High performance + redundancy |
+Modern CPUs and GPUs incorporate internal thermal sensors that continuously monitor junction temperatures.
 
-**Software RAID vs Hardware RAID:**
-- Software RAID is managed by the OS (Windows Storage Spaces, Linux mdadm) — uses CPU resources, no special hardware
-- Hardware RAID uses a dedicated RAID controller card — offloads processing, better performance, battery-backed cache on enterprise cards
-
-**RAID is not a backup.** RAID 1 protects against a drive failure. It does not protect against accidental deletion, ransomware, fire, or theft. Clients who think RAID replaces backups need to be corrected.
-
-## File Systems
-
-A file system defines how data is organized and stored on a drive. The OS must support the file system to read the drive.
-
-| File System | OS | Notes |
-|-------------|-----|-------|
-| NTFS | Windows | Default for Windows. Supports large files, permissions, encryption, journaling. |
-| FAT32 | Universal | Compatible with everything. Max file size 4GB, max volume 2TB. Used for USB drives. |
-| exFAT | Windows/Mac/Linux | Like FAT32 but without size limits. Best for large USB drives and SD cards. |
-| ext4 | Linux | Default Linux file system. Not natively readable by Windows. |
-| APFS | macOS | Apple's modern file system. Not readable by Windows natively. |
-| HFS+ | macOS (older) | Older Mac file system, used before APFS. |
-
-**For technicians:** Windows drives are NTFS. USB drives for cross-platform use should be exFAT. A Mac-formatted drive won't be readable in Windows without third-party software.
-
-## Partitioning — MBR vs GPT
-
-Before a file system is created, a drive must be partitioned. Two partitioning schemes:
-
-**MBR (Master Boot Record)** — legacy scheme. Maximum 4 primary partitions, maximum 2TB volume size. Required for legacy BIOS boot.
-
-**GPT (GUID Partition Table)** — modern scheme. Up to 128 partitions, supports drives larger than 2TB. Required for UEFI boot and Windows 11.
-
-When installing Windows on a new drive, use GPT. The only reason to use MBR is compatibility with very old hardware.
-
-## Storage Performance — What the Numbers Mean
-
-When evaluating storage, three metrics matter:
-
-**Sequential read/write** — speed reading/writing large contiguous files. What manufacturers advertise. Relevant for video editing, large file transfers.
-
-**Random read/write (IOPS)** — speed accessing small chunks of data scattered across the drive. What matters most for OS performance, loading applications, database operations. HDDs are terrible at random I/O; SSDs excel.
-
-**Latency** — time from requesting data to receiving it. HDDs: 5–15ms. SSDs: 0.1ms or less. This is why an SSD makes a system feel dramatically faster even when sequential speeds are similar.
-
-## Why This Matters in the Field
-
-A client's computer takes 3 minutes to boot and applications take forever to open. You check — it's a 5400 RPM HDD from 2014. S.M.A.R.T. shows no errors. The drive isn't failing, it's just slow. A $60 SATA SSD transforms this machine. You clone the old drive to the new one with free software, swap the drives, and the client thinks they have a new computer.
-
-Another scenario: a client reports that their server "lost a drive" and they're worried. You check — it's RAID 5 with one failed drive. The array is degraded but still running. You replace the dead drive and the RAID rebuilds. No data lost. Then you explain that they still need a backup, because if a second drive fails during the rebuild, they lose everything.
-
-Storage knowledge is directly tied to data safety. Get it right.
+- **Thermal Throttling (Dynamic Frequency Scaling):** When a processor reaches its thermal ceiling (typically 90°C to 100°C), it automatically downclocks its frequency and reduces core voltage to prevent damage. Users experience this as sudden frame drops, sluggish UI responsiveness, or stuttering during intensive tasks.
+- **Thermal Shutdown:** If temperatures exceed critical safety limits (typically 105°C+), the motherboard triggers an immediate hard power cut to prevent permanent silicon death.
+- **Common Overheating Causes:**
+  1. Dried or improperly applied thermal paste.
+  2. Plastic protective peel left on cooler base during assembly.
+  3. Cooler mounting bracket loose or unevenly tensioned.
+  4. Dust accumulation blocking heatsink fins or radiator mesh.
+  5. AIO pump failure (detected by checking pump RPM in BIOS or listening for pump rattle/silence).
+  6. Fans spinning backwards against the case airflow direction.

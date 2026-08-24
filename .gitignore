@@ -26,3 +26,5 @@ pnpm-debug.log*
 # local artifacts
 src.zip
 test-results/
+__pycache__/
+*.pyc
