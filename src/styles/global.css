@@ -486,6 +486,7 @@ html.light-mode .nav-session-pill {
 html[data-theme='light'] .breadcrumb__current,
 html[data-theme='light'] .page-title,
 html[data-theme='light'] .hero__title,
+html[data-theme='light'] .card__title,
 html[data-theme='light'] h1,
 html[data-theme='light'] h2,
 html[data-theme='light'] h3,
@@ -497,6 +498,8 @@ html[data-theme='light'] h6 {
 
 html[data-theme='light'] .theme-toggle,
 html.light-mode .theme-toggle,
+html[data-theme='light'] .sidebar-toggle,
+html[data-theme='light'] .sidebar-nav-toggle,
 html[data-theme='light'] .status-pill,
 html[data-theme='light'] .pill {
   background: rgba(255, 255, 255, 0.9);
@@ -508,6 +511,9 @@ html[data-theme='light'] .status-pill__label,
 html[data-theme='light'] .breadcrumb-row__inner,
 html[data-theme='light'] .breadcrumb__sep,
 html[data-theme='light'] .lesson-header__description,
+html[data-theme='light'] .competency-dash__stat-label,
+html[data-theme='light'] .card__desc,
+html[data-theme='light'] .lesson-nav__label,
 html[data-theme='light'] .pc-lab__muted {
   color: #64748b;
 }
@@ -517,6 +523,17 @@ html[data-theme='light'] .sidebar,
 html[data-theme='light'] .workspace-bar,
 html[data-theme='light'] .workspace-pane,
 html[data-theme='light'] .card,
+html[data-theme='light'] .competency-dash__stat-card,
+html[data-theme='light'] .competency-dash__rec-card,
+html[data-theme='light'] .entrance-exam__option,
+html[data-theme='light'] .entrance-exam__score-card,
+html[data-theme='light'] .student-profile__cert,
+html[data-theme='light'] .student-profile__exam-badge,
+html[data-theme='light'] .class-roster__summary,
+html[data-theme='light'] .comp-map__table,
+html[data-theme='light'] .lesson-body,
+html[data-theme='light'] .lesson-nav__link,
+html[data-theme='light'] .quick-action,
 html[data-theme='light'] .quiz-runner,
 html[data-theme='light'] .code-runner,
 html[data-theme='light'] .right-panel__drawer {
@@ -537,13 +554,34 @@ html[data-theme='light'] .workspace-steps {
 
 html[data-theme='light'] .btn-secondary,
 html[data-theme='light'] .btn-ghost,
+html[data-theme='light'] .btn-link,
+html[data-theme='light'] .quiz-btn--ghost,
 html[data-theme='light'] .workspace-tab,
+html[data-theme='light'] .lesson-view-toggle,
 html[data-theme='light'] .pc-lab__select,
 html[data-theme='light'] .quiz-short-input,
 html[data-theme='light'] .right-panel__notes {
   background: rgba(255, 255, 255, 0.95);
   color: #0f172a;
   border-color: rgba(148, 163, 184, 0.4);
+}
+
+html[data-theme='light'] .badge--tag {
+  background: rgba(241, 245, 249, 0.9);
+  color: #334155;
+  border-color: rgba(148, 163, 184, 0.35);
+}
+
+html[data-theme='light'] .quick-action:hover {
+  background: rgba(248, 250, 252, 0.98);
+  border-color: rgba(14, 165, 233, 0.45);
+  color: #0284c7;
+}
+
+html[data-theme='light'] .btn-link:hover {
+  background: rgba(56, 189, 248, 0.25);
+  border-color: rgba(14, 165, 233, 0.5);
+  color: #0369a1;
 }
 
 html[data-theme='light'] .pc-lab__select:hover {
