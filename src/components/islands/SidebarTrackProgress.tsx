@@ -4,7 +4,7 @@ import { getProgress, getTrackProgress } from '../../lib/progressStore';
 type SidebarItem = {
   slug: string;
   title: string;
-  type?: 'lesson' | 'lab' | 'quiz';
+  type?: 'lesson' | 'lab' | 'quiz' | 'activity';
   href?: string;
 };
 
@@ -50,17 +50,27 @@ export default function SidebarTrackProgress({ sections, activeLesson }: Sidebar
         if (entry.completed) {
           const sectionChecks = state.lessonSections?.[slug];
           if (sectionChecks && Object.keys(sectionChecks).length > 0) {
-            map[slug] = Object.values(sectionChecks).every(Boolean);
+            const isComplete = Object.values(sectionChecks).every(Boolean);
+            map[`lesson:${slug}`] = isComplete;
+            map[slug] = isComplete;
           } else {
+            map[`lesson:${slug}`] = true;
             map[slug] = true;
           }
         }
       }
       for (const [slug, entry] of Object.entries(state.labs ?? {})) {
-        if (entry.completed) map[slug] = true;
+        if (entry.completed) {
+          map[`lab:${slug}`] = true;
+          map[`activity:${slug}`] = true;
+          map[slug] = true;
+        }
       }
       for (const [slug, entry] of Object.entries(state.quizzes ?? {})) {
-        if ((entry.bestScore ?? 0) >= 70) map[slug] = true;
+        if ((entry.bestScore ?? 0) >= 70) {
+          map[`quiz:${slug}`] = true;
+          map[slug] = true;
+        }
       }
       setCompletedMap(map);
     };
@@ -79,7 +89,10 @@ export default function SidebarTrackProgress({ sections, activeLesson }: Sidebar
   const sectionStats = sections.map((sec) => {
     const items = sec.lessons || [];
     const total = items.length;
-    const completed = items.filter((item) => completedMap[item.slug]).length;
+    const completed = items.filter((item) => {
+      const key = `${item.type ?? 'lesson'}:${item.slug}`;
+      return Boolean(completedMap[key] || completedMap[item.slug]);
+    }).length;
     const isPassing = total === 0 || (completed / total) >= 0.8;
     return { total, completed, isPassing };
   });
@@ -123,7 +136,8 @@ export default function SidebarTrackProgress({ sections, activeLesson }: Sidebar
             ) : (
               section.lessons.map((item) => {
                 const isActive = activeLesson === item.slug;
-                const isCompleted = Boolean(completedMap[item.slug]);
+                const key = `${item.type ?? 'lesson'}:${item.slug}`;
+                const isCompleted = Boolean(completedMap[key] || completedMap[item.slug]);
                 const href = item.href || (item.type === 'lab' ? `/labs/${item.slug}` : item.type === 'quiz' ? `/quizzes/${item.slug}` : `/lessons/${item.slug}`);
 
                 if (!isUnlocked) {

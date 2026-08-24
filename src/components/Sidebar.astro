@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import SidebarTrackProgress from './islands/SidebarTrackProgress.tsx';
 import SidebarTourProgress from './islands/SidebarTourProgress.tsx';
+import { getTrackDetailData } from '../lib/content';
 
 type LessonEntry = CollectionEntry<'lessons'>;
 type TrackEntry = CollectionEntry<'tracks'>;
@@ -60,22 +61,48 @@ const displayTitle = (item: { type: 'lesson' | 'lab' | 'quiz'; slug: string }) =
   return item.slug;
 };
 
-const trackSections = currentTrack?.data.sections?.map((section) => ({
-  title: section.title,
-  lessons: section.lessons
-    .map((entry) => normalizeItem(entry as string | { type: 'lesson' | 'lab' | 'quiz'; slug: string }))
-    .map((entry) => ({
-      slug: entry.slug,
-      title: displayTitle(entry),
-      type: entry.type,
-      href: hrefForItem(entry),
-    })),
-}));
+const trackDetail = currentTrack ? await getTrackDetailData(currentTrack.slug) : null;
+const hasModules = Boolean(trackDetail?.modules && trackDetail.modules.length > 0);
 
-const sidebarSections = currentTrack?.data.sections?.map((section) => ({
-  title: section.title,
-  items: section.lessons.map((entry) => normalizeItem(entry as string | { type: 'lesson' | 'lab' | 'quiz'; slug: string })),
-}));
+const trackSections = hasModules
+  ? trackDetail!.modules.map((m) => ({
+      title: m.title,
+      lessons: m.activities.map((act) => ({
+        slug: act.slug,
+        title: act.title,
+        type: act.type,
+        href: act.href,
+      })),
+    }))
+  : currentTrack?.data.sections?.map((section) => ({
+      title: section.title,
+      lessons: section.lessons
+        .map((entry) => normalizeItem(entry as string | { type: 'lesson' | 'lab' | 'quiz'; slug: string }))
+        .map((entry) => ({
+          slug: entry.slug,
+          title: displayTitle(entry),
+          type: entry.type,
+          href: hrefForItem(entry),
+        })),
+    })) ?? [];
+
+const sidebarSections = hasModules
+  ? trackDetail!.modules.map((m) => ({
+      title: m.title,
+      items: m.activities.map((act) => ({
+        type: act.type,
+        slug: act.slug,
+        title: act.title,
+        href: act.href,
+      })),
+    }))
+  : currentTrack?.data.sections?.map((section) => ({
+      title: section.title,
+      items: section.lessons.map((entry) => normalizeItem(entry as string | { type: 'lesson' | 'lab' | 'quiz'; slug: string })),
+    })) ?? [];
+
+const hasSidebarItems = trackSections.length > 0 && trackSections.some((s) => s.lessons.length > 0);
+
 const TRACK_SVGS: Record<string, string> = {
   'tech-plus': '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>',
   'pc-technician': '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
@@ -113,7 +140,7 @@ const DEFAULT_TRACK_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" fill=
     })}
   </div>
 
-  {currentTrack && currentTrack.data.sections?.length > 0 && (
+  {hasSidebarItems && (
     <div class="sidebar__section">
       <div class="sidebar__title">Lessons</div>
       <div class="sidebar__progress-slot" data-sidebar-progress-slot>
@@ -124,9 +151,9 @@ const DEFAULT_TRACK_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" fill=
               {section.items.map((item) => (
                 <a
                   class={`sidebar__lesson-link ${activeLesson === item.slug ? 'sidebar__lesson-link--active' : ''}`}
-                  href={hrefForItem(item)}
+                  href={item.href || hrefForItem(item)}
                 >
-                  <span class="sidebar__lesson-title">{displayTitle(item)}</span>
+                  <span class="sidebar__lesson-title">{item.title || displayTitle(item)}</span>
                 </a>
               ))}
             </div>
