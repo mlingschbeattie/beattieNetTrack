@@ -411,8 +411,17 @@ export const getTrackProgress = (
 ) => {
   const state = getProgress(storage);
   const total = lessonSlugs.length;
-  const completed = lessonSlugs.filter((slug) => state.lessons[slug]?.completed).length;
-  const xpEarned = lessonSlugs.reduce((sum, slug) => sum + (state.lessons[slug]?.xpEarned ?? 0), 0);
+  const completed = lessonSlugs.filter((slug) => {
+    if (state.lessons[slug]?.completed) return true;
+    if (state.labs[slug]?.completed) return true;
+    if ((state.quizzes[slug]?.bestScore ?? 0) >= 70) return true;
+    return false;
+  }).length;
+  const xpEarned = lessonSlugs.reduce((sum, slug) => {
+    const lessonXp = state.lessons[slug]?.xpEarned ?? 0;
+    const labXp = state.labs[slug]?.xpEarned ?? 0;
+    return sum + lessonXp + labXp;
+  }, 0);
   const percent = total ? Math.round((completed / total) * 100) : 0;
   return { total, completed, xpEarned, percent };
 };

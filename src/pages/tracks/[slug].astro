@@ -27,14 +27,16 @@ const lessonMap = Object.fromEntries(allLessons.map((entry) => [entry.slug, entr
 const track = detail.track;
 const modules = detail.modules;
 const currentTrack = allTracks.find((entry) => entry.slug === slug);
-const sectionLessonSlugs =
-  currentTrack?.data.sections?.flatMap((section) =>
-    (section.lessons ?? [])
-      .map((item) => (typeof item === 'string' ? { type: 'lesson', slug: item } : item))
-      .filter((item) => item.type === 'lesson')
-      .map((item) => item.slug)
-  ) ?? [];
-const lessonSlugs = sectionLessonSlugs;
+
+const hasModules = Boolean(modules && modules.length > 0);
+const allActivitySlugs = hasModules
+  ? modules.flatMap((m) => m.activities.map((act) => act.slug))
+  : currentTrack?.data.sections?.flatMap((section) =>
+      (section.lessons ?? [])
+        .map((item) => (typeof item === 'string' ? { type: 'lesson', slug: item } : item))
+        .map((item) => item.slug)
+    ) ?? [];
+const lessonSlugs = allActivitySlugs;
 ---
 
 <AppShell
