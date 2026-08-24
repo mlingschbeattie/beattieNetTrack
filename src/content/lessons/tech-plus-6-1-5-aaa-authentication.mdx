@@ -1,74 +1,189 @@
 ---
-title: AAA — Authentication
-description: Understand authentication — verifying identity using passwords, MFA, biometrics, and certificate-based methods. FC0-U71 objective 6.1.
+title: AAA Framework — Authentication and Multi-Factor Security
+description: Master identity verification in modern IT. Explore the AAA security triad (Authentication, Authorization, Accounting), the three core authentication factors (Know, Have, Are), Time-Based One-Time Passwords (TOTP), Biometrics, and Single Sign-On (SSO).
 slug: tech-plus-6-1-5-aaa-authentication
 track: tech-plus
 moduleId: tech-plus.security
 order: 5
+objective: "FC0-U71 6.1"
+xp: 15
+source: cyber-org
 difficulty: Beginner
 estMinutes: 20
-tags: ["tech+", "FC0-U71 6.1", "AAA", "authentication", "MFA", "passwords"]
+tags: ["tech+", "FC0-U71 6.1", "AAA", "authentication", "MFA", "passwords", "TOTP", "biometrics", "SSO"]
+sections:
+  - id: what-is-aaa-authentication
+    title: "The AAA Security Model: Who Are You? (Authentication)"
+    keyPoints:
+      - "The AAA Model: Authentication (Verifying Identity) $\\rightarrow$ Authorization (Checking Permissions) $\\rightarrow$ Accounting (Logging Actions)"
+      - "Authentication is the initial gateway process proving that a user or device is genuinely who they claim to be"
+      - "Single-Factor Authentication (passwords alone) is highly vulnerable to phishing, credential stuffing, and brute-force cracking"
+    check:
+      - prompt: "In the AAA cybersecurity framework, what specific question does Authentication answer?"
+        options:
+          - "'Are you really who you claim to be?' (Identity Verification)"
+          - "'What files are you allowed to delete?'"
+          - "'How much bandwidth did you use today?'"
+          - "'What time does the building close?'"
+        correct: 0
+      - prompt: "What are the three components that make up the AAA enterprise security framework?"
+        options:
+          - "Authentication, Authorization, Accounting"
+          - "Apple, Android, Amazon"
+          - "Algorithm, Array, Application"
+          - "Access, Allocation, Action"
+        correct: 0
+  - id: the-three-authentication-factors
+    title: "The Three Core Factors of Authentication and True MFA"
+    keyPoints:
+      - "Factor 1: Something You Know (Knowledge) — Passwords, PINs, Passphrases, Security Questions"
+      - "Factor 2: Something You Have (Possession) — Hardware Security Keys (YubiKey), Smart Cards, Authenticator Apps (TOTP)"
+      - "Factor 3: Something You Are (Inherence) — Biometrics (Fingerprints, Facial Recognition, Iris Scans)"
+      - "True Multi-Factor Authentication (MFA) requires combining at least TWO DIFFERENT factor categories (e.g. Password + TOTP App)"
+    check:
+      - prompt: "A bank requires customers to enter a password (Knowledge) and tap a physical USB security key (Possession) to log in. What is this authentication scheme called?"
+        options:
+          - "Multi-Factor Authentication (MFA)"
+          - "Single Sign-On (SSO)"
+          - "Discretionary Access Control"
+          - "Unstructured Querying"
+        correct: 0
+      - prompt: "A user is prompted to enter a password AND their mother's maiden name. Why is this NOT considered true Multi-Factor Authentication (MFA)?"
+        options:
+          - "Both items belong to the exact same factor category: 'Something You Know' (Knowledge)"
+          - "Passwords cannot be used in MFA"
+          - "MFA requires an eye scanner"
+          - "MFA is only for mobile phones"
+        correct: 0
+  - id: modern-auth-totp-sso-biometrics
+    title: "Modern Authentication Technologies: TOTP, Biometrics, and SSO"
+    keyPoints:
+      - "TOTP (Time-Based One-Time Password): Authenticator apps generate cryptographic 6-digit rolling codes that expire every 30 seconds"
+      - "SMS 2FA Vulnerability: Text message verification codes are vulnerable to SIM Swapping and interception; app-based TOTP or FIDO2 keys are strongly preferred"
+      - "Single Sign-On (SSO): Authenticate once with a central Identity Provider (Okta, Microsoft Entra ID) to access dozens of cloud applications"
+    check:
+      - prompt: "Why is an authenticator app generating a 30-second rolling code (TOTP) significantly more secure than receiving a 6-digit SMS text code?"
+        options:
+          - "SMS text messages can be intercepted via cellular network eavesdropping or SIM Swapping attacks, while TOTP is generated locally on the device"
+          - "SMS codes only work on Android"
+          - "TOTP codes never expire"
+          - "SMS codes require a credit card"
+        correct: 0
+      - prompt: "What enterprise identity architecture allows an employee to log in once at the start of the day and automatically access email, CRM, and cloud storage without re-entering passwords?"
+        options:
+          - "Single Sign-On (SSO)"
+          - "RAID 5"
+          - "Subnet Masking"
+          - "DNS Forwarding"
+        correct: 0
 domains:
   - domainId: techplus.security
     weight: 1
 ---
 
-## AAA — Authentication
+import Callout from '../../components/Callout.astro';
 
-**AAA** stands for **Authentication, Authorization, and Accounting** — the three-part framework that controls who gets into a system, what they can do, and what they did. This lesson covers the first A: **Authentication**.
+## Proving Who You Are
 
-### What Is Authentication?
+When you walk into a secure government facility, the security guard does three things:
+1. They ask for your photo ID to verify you are really John Doe (**Authentication**).
+2. They check their visitor log to see if John Doe is allowed into the 4th-floor server room (**Authorization**).
+3. They record the exact timestamp you entered the building in the audit ledger (**Accounting**).
 
-Authentication is the process of **verifying that someone is who they claim to be** before granting access. It answers the question: "Are you really you?"
+This is the **AAA Security Framework**: the universal gold standard for access management across corporate networks, firewalls, cloud platforms, and operating systems.
 
-### Authentication Factors
+The first and most critical gate in this framework is **Authentication**: proving your identity beyond a reasonable doubt before a computer grants you entry.
 
-Authentication is categorized by three factor types — strong systems use **more than one** (Multi-Factor Authentication):
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                         THE AAA SECURITY FRAMEWORK                     │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│   [ 1. AUTHENTICATION ] ──> "Who are you?"                             │
+│                             (Verify Identity: Password + MFA Token)    │
+│            │                                                           │
+│            ▼                                                           │
+│   [ 2. AUTHORIZATION ]  ──> "What are you allowed to do?"              │
+│                             (Check Permissions: Read/Write/Delete)     │
+│            │                                                           │
+│            ▼                                                           │
+│   [ 3. ACCOUNTING ]     ──> "What did you actually do?"                │
+│                             (Audit Logs: Timestamped Event Trail)      │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
 
-| Factor | Type | Examples |
-|---|---|---|
-| **Something you know** | Knowledge | Password, PIN, security question |
-| **Something you have** | Possession | Smart card, hardware token, phone (TOTP app) |
-| **Something you are** | Inherence (biometric) | Fingerprint, iris scan, facial recognition, voice |
+---
 
-**Multi-Factor Authentication (MFA)** combines two or more *different* factor types. A password + TOTP code = two factors (know + have). A password + another password = still one factor type (knowledge only) — not true MFA.
+## 1. The Three Core Factors of Authentication
 
-### Authentication Methods
+Security engineers classify all authentication mechanisms into three distinct factor types:
 
-**Passwords**
-- Most common; weakest when used alone
-- Strength: length > complexity; passphrases are strong and memorable
-- Threats: brute force, dictionary attack, credential stuffing, phishing
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                     THE THREE AUTHENTICATION FACTORS                   │
+├────────────────────┬────────────────────┬──────────────────────────────┤
+│ Factor Category    │ Core Definition    │ Real-World Examples          │
+├────────────────────┼────────────────────┼──────────────────────────────┤
+│ **1. Something**   │ Secret knowledge   │ Passwords, PIN numbers,      │
+│ **You KNOW**       │ stored in memory   │ security question answers    │
+├────────────────────┼────────────────────┼──────────────────────────────┤
+│ **2. Something**   │ Physical possession│ Hardware tokens (YubiKey),   │
+│ **You HAVE**       │ of a unique device │ Smart cards, TOTP apps       │
+├────────────────────┼────────────────────┼──────────────────────────────┤
+│ **3. Something**   │ Inherent biological│ Fingerprint scans, FaceID,   │
+│ **You ARE**        │ characteristics    │ Retina / Iris vascular scans │
+└────────────────────┴────────────────────┴──────────────────────────────┘
+```
 
-**Tokens and OTPs**
-- **TOTP** (Time-Based One-Time Password) — 6-digit code from an app (Google Authenticator, Authy) that changes every 30 seconds
-- **Hardware token** — physical device (YubiKey, RSA SecurID) generates codes or uses FIDO2/WebAuthn
-- **SMS OTP** — code sent via text; weaker than app-based (SIM swapping attacks)
+---
 
-**Biometrics**
-- Fingerprint, face ID, iris scan
-- Convenient; can't be forgotten or easily shared
-- Cannot be changed if compromised (unlike a password)
-- Privacy implications — biometric data is sensitive PII
+## 2. Multi-Factor Authentication (MFA): The Golden Rule
 
-**Certificate-Based Authentication**
-- Uses a digital certificate (X.509) issued by a Certificate Authority (CA)
-- Common in enterprise environments (smart cards, PKI infrastructure)
-- More secure than passwords; resistant to phishing
+Single-factor authentication (using a password alone) is dead. Hackers steal billions of credentials every year using automated phishing campaigns, credential stuffing, and malware keyloggers.
 
-**Single Sign-On (SSO)**
-- Authenticate once; access multiple systems without re-logging in
-- Examples: Google, Microsoft, Okta as identity providers
-- Convenient but creates a single point of failure — if SSO is compromised, all linked apps are exposed
+**Multi-Factor Authentication (MFA)** requires a user to provide credentials from **at least two DIFFERENT factor categories**:
+- ✔ **Password (Know) + Authenticator App Code (Have) = TRUE MFA!**
+- ✔ **PIN (Know) + Fingerprint Scan (Are) = TRUE MFA!**
+- ❌ **Password (Know) + Security Question (Know) = NOT MFA!** (Using two items from the same factor category is still single-factor security!)
 
-### OWASP Connection
+```
+┌────────────────────────────────────────────────────────┐
+│             THE MULTI-FACTOR AUTHENTICATION RULE       │
+│                                                        │
+│   ✔ Password (Know) + YubiKey (Have)  ──> MFA PASSED!  │
+│   ✔ PIN (Know) + Face ID (Are)        ──> MFA PASSED!  │
+│                                                        │
+│   ❌ Password (Know) + PIN (Know)      ──> NOT MFA!    │
+│   (Two knowledge factors is just 2 passwords!)         │
+└────────────────────────────────────────────────────────┘
+```
 
-**Identification and Authentication Failures** (OWASP #7) directly targets weak authentication: default credentials, weak passwords, missing MFA, and broken session management are all authentication failures.
+<Callout type="warn">
+**The SMS Text Verification Hazard:** Many consumer websites still send 6-digit codes via SMS text messages. However, cybercriminals frequently execute **SIM Swapping Attacks**—tricking mobile phone carrier support into porting the victim's phone number to a hacker's SIM card. **Always recommend app-based TOTP (Google Authenticator) or physical FIDO2 hardware keys over SMS text verification.**
+</Callout>
 
-### Key Exam Points
+---
 
-- Authentication = verifying identity (who are you?)
-- Three factors: **know**, **have**, **are** — MFA requires two *different* factor types
-- **TOTP** apps are stronger than SMS OTP
-- Biometrics cannot be reset — protect biometric databases with extreme care
-- SSO is convenient but creates a high-value single target for attackers
+## 3. Single Sign-On (SSO): Convenience vs. Risk
+
+In large enterprises, employees use 40 different cloud tools: Microsoft 365, Salesforce, Slack, Jira, and Workday.
+
+**Single Sign-On (SSO)** uses centralized Identity Providers (IdPs) like **Microsoft Entra ID (Azure AD)** or **Okta**:
+- The user logs in once in the morning with a strong password and MFA token.
+- Secure cryptographic tokens (SAML 2.0 / OpenID Connect) authenticate the user across all 40 cloud apps automatically.
+- **The Security Trade-off:** SSO eliminates password fatigue and weak duplicate passwords, but it creates a high-value single target. If an attacker breaches the user's central SSO account, they gain access to every corporate tool simultaneously!
+
+---
+
+## Why This Matters in the Field
+
+As an IT technician, you will reset user passwords, enroll new employees in MFA authenticator apps, and configure Single Sign-On integrations.
+
+Understanding the AAA model and enforcing strong multi-factor authentication prevents over 99% of automated account takeover attacks.
+
+---
+
+## Key Terms
+
+AAA Framework · Authentication · Authorization · Accounting · Something You Know (Knowledge) · Something You Have (Possession) · Something You Are (Inherence / Biometrics) · Multi-Factor Authentication (MFA) · Passphrase · TOTP (Time-Based One-Time Password) · Hardware Token (YubiKey / FIDO2) · Smart Card · SIM Swapping · Single Sign-On (SSO) · Identity Provider (IdP)

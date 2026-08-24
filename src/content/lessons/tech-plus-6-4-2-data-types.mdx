@@ -1,84 +1,179 @@
 ---
-title: Data Types and Encryption Context
-description: Classify data by state and sensitivity, and understand which encryption controls apply to data at rest, in transit, and in use. FC0-U71 objective 6.4.
+title: Data States and Encryption Context — At Rest, In Transit, and In Use
+description: Master the three physical states of digital information and their cryptographic controls. Explore Data at Rest (BitLocker/LUKS), Data in Transit (TLS/IPsec), and Data in Use (Secure Enclaves/RAM), alongside regulatory data classifications (PII, PHI, PCI-DSS).
 slug: tech-plus-6-4-2-data-types
 track: tech-plus
 moduleId: tech-plus.security
 order: 14
+objective: "FC0-U71 6.4"
+xp: 15
+source: cyber-org
 difficulty: Beginner
 estMinutes: 20
-tags: ["tech+", "FC0-U71 6.4", "data classification", "data at rest", "data in transit", "encryption"]
+tags: ["tech+", "FC0-U71 6.4", "data classification", "data at rest", "data in transit", "data in use", "encryption", "BitLocker", "TLS", "PCI-DSS", "HIPAA"]
+sections:
+  - id: the-three-data-states
+    title: "The Three Physical States of Digital Data"
+    keyPoints:
+      - "Data at Rest: Inactive data stored persistently on non-volatile media (SSDs, magnetic hard drives, NAS arrays, backup tapes)"
+      - "Data in Transit (Data in Motion): Data traveling across wired, wireless, or public internet networks (HTTP packets, emails, VPN tunnels)"
+      - "Data in Use (Data in Processing): Unencrypted data actively residing in volatile system RAM, CPU L1/L2/L3 caches, and processor registers"
+    check:
+      - prompt: "What data state describes an archived database backup file stored on an encrypted server NVMe SSD drive?"
+        options:
+          - "Data at Rest"
+          - "Data in Transit"
+          - "Data in Use"
+          - "Data in Volatility"
+        correct: 0
+      - prompt: "What data state is represented when a student submits an online quiz and their answers travel across the Wi-Fi network to the cloud LMS?"
+        options:
+          - "Data in Transit (Data in Motion)"
+          - "Data at Rest"
+          - "Data in Use"
+          - "Data in Cold Storage"
+        correct: 0
+  - id: cryptographic-controls-by-state
+    title: "Matching Cryptographic Controls to Data States"
+    keyPoints:
+      - "Controls for Data at Rest: Full Disk Encryption (BitLocker, FileVault, LUKS), Database Transparent Data Encryption (TDE), Encrypted Cloud S3 Buckets"
+      - "Controls for Data in Transit: Transport Layer Security (TLS 1.3), Secure Shell (SSH), IPsec Virtual Private Networks (VPNs), WPA3"
+      - "Controls for Data in Use: Hardware-based Secure Enclaves (Intel SGX, AMD SEV), Memory Encryption, and Minimizing RAM dwell time"
+    check:
+      - prompt: "Which security technology provides the primary protection for Data at Rest on an enterprise Windows laptop?"
+        options:
+          - "BitLocker Full Disk Encryption (FDE)"
+          - "Transport Layer Security (TLS)"
+          - "An IPsec VPN"
+          - "A Network Hub"
+        correct: 0
+      - prompt: "What protocol suite creates an encrypted tunnel across the public internet to protect corporate Data in Transit for remote workers?"
+        options:
+          - "IPsec Virtual Private Network (VPN)"
+          - "RAID 1 Array"
+          - "FAT32 File System"
+          - "Dynamic DNS"
+        correct: 0
+  - id: regulatory-data-categories-pci-phi
+    title: "Regulatory Data Classifications: PCI-DSS, PHI, and PII"
+    keyPoints:
+      - "PCI-DSS (Payment Card Industry Data Security Standard): Strict cryptographic rules governing credit card numbers, CVVs, and magnetic stripe data"
+      - "Protected Health Information (PHI): Regulated by HIPAA; requires encryption at rest and in transit for all medical records"
+      - "Personally Identifiable Information (PII): Regulated by GDPR, FERPA, CCPA; mandates access controls and data minimization"
+    check:
+      - prompt: "A retail store processes customer credit card payments. What industry cybersecurity compliance standard mandates strict encryption of credit card data at rest and in transit?"
+        options:
+          - "PCI-DSS (Payment Card Industry Data Security Standard)"
+          - "FERPA"
+          - "IEEE 802.11be"
+          - "DOCSIS 3.1"
+        correct: 0
+      - prompt: "What happens if a healthcare clinic stores unencrypted patient medical diagnoses (PHI) on an unencrypted thumb drive that is lost in public?"
+        options:
+          - "The clinic faces severe federal regulatory HIPAA violation fines, mandatory breach disclosure notices, and legal liability"
+          - "The USB drive formats automatically"
+          - "The patient's health improves"
+          - "Nothing occurs"
+        correct: 0
 domains:
   - domainId: techplus.security
     weight: 1
 ---
 
-## Data Types and Encryption Context
+import Callout from '../../components/Callout.astro';
 
-Encryption is not a single switch you flip — it applies differently depending on **what state the data is in** and **how sensitive the data is**. This lesson maps data classification to the right controls.
+## Where Does Your Data Live Right Now?
 
-### Data States
+When non-technical users hear the word "encryption," they assume it is a single magic button you turn on once.
 
-Data exists in three states, each requiring different protection:
+In reality, digital data is constantly moving and changing form. 
 
-**Data at Rest**
-Stored data — files on a hard drive, database records, backups, archived logs.
+A customer's credit card number might sit stored in a database on an NVMe SSD for six months, travel across an international fiber optic cable in 20 milliseconds, and sit in a CPU register for 4 nanoseconds while an invoice is calculated.
 
-- **Threat:** Physical theft of drive; unauthorized local access; improperly secured cloud storage
-- **Control:** Full-disk encryption (BitLocker, FileVault, LUKS); database-level encryption; encrypted backups
+To protect sensitive records, security architects evaluate **Data States**—applying specific cryptographic controls to protect data **At Rest**, **In Transit**, and **In Use**.
 
-**Data in Transit (Data in Motion)**
-Data moving across a network — email, HTTP requests, API calls, file transfers.
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        THE THREE STATES OF DATA                        │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│   [ 1. DATA AT REST ] ───────────────────────────────────────────      │
+│   • Stored on physical media: SSDs, HDDs, Backup Tapes, USBs           │
+│   • Threat: Stolen physical drives, unauthorized local access          │
+│   • Defense: **BitLocker, FileVault, LUKS, Database TDE**              │
+│                                                                        │
+│   [ 2. DATA IN TRANSIT / IN MOTION ] ────────────────────────────      │
+│   • Moving across networks: Ethernet cables, Wi-Fi, Internet           │
+│   • Threat: Eavesdropping, packet sniffing, Man-in-the-Middle (MitM)   │
+│   • Defense: **HTTPS (TLS 1.3), IPsec VPNs, SSH, WPA3**                │
+│                                                                        │
+│   [ 3. DATA IN USE ] ────────────────────────────────────────────      │
+│   • Actively processed in memory: RAM, CPU Caches, Registers           │
+│   • Threat: Memory scraping malware, Cold Boot RAM dumps               │
+│   • Defense: **Hardware Secure Enclaves (Intel SGX), RAM Encryption**  │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
 
-- **Threat:** Eavesdropping, man-in-the-middle attacks, packet capture on shared networks
-- **Control:** TLS/HTTPS for web traffic; TLS for email (STARTTLS, S/MIME); VPN for remote access; SSH instead of Telnet/FTP
+---
 
-**Data in Use**
-Data actively being processed — in CPU registers, RAM, or a running application.
+## 1. Data at Rest vs. Data in Transit vs. Data in Use
 
-- **Threat:** Memory scraping malware; cold boot attacks (RAM contents can be dumped after power-off for a short window)
-- **Control:** Secure enclaves (Intel SGX, AMD SEV); full memory encryption; minimizing the window data is in memory
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        DATA STATES AND CONTROLS                        │
+├────────────────────┬────────────────────┬──────────────────────────────┤
+│ State of Data      │ Physical Location  │ Primary Cryptographic Control│
+├────────────────────┼────────────────────┼──────────────────────────────┤
+│ **Data at Rest**   │ Non-volatile SSDs, │ **Full Disk Encryption (FDE)**│
+│                    │ HDDs, Cloud S3     │ BitLocker, FileVault, LUKS   │
+├────────────────────┼────────────────────┼──────────────────────────────┤
+│ **Data in Transit**│ Network packets    │ **Transport Encryption**     │
+│ *(In Motion)*      │ across WAN / LAN   │ TLS 1.3, IPsec VPN, SSH, WPA3│
+├────────────────────┼────────────────────┼──────────────────────────────┤
+│ **Data in Use**    │ Volatile RAM,      │ **Memory Hardening**         │
+│                    │ CPU registers      │ Hardware Enclaves, Clear RAM │
+└────────────────────┴────────────────────┴──────────────────────────────┘
+```
 
-### Data Classification
+<Callout type="exam">
+**The Backup Trap:** Many companies encrypt their live database on their main server, but save the daily database backup to an **unencrypted external USB drive** stored in a desk drawer. If an attacker steals that USB drive, the server's encryption is completely meaningless! **Data at Rest encryption must apply to all backups, archives, and offline storage media.**
+</Callout>
 
-Organizations classify data by sensitivity to apply proportionate controls:
+---
 
-| Classification | Description | Examples | Controls |
-|---|---|---|---|
-| **Public** | Safe for public release | Marketing materials, public website | Minimal — integrity only |
-| **Internal / Restricted** | For employees only; not for public | Internal memos, org charts | Access controls, need-to-know |
-| **Confidential** | Sensitive; limited audience | Financial data, contracts, personnel files | Encryption at rest, strict ACLs |
-| **Restricted / Top Secret** | Highest sensitivity; severe harm if exposed | Trade secrets, classified government data, PII databases | Strongest controls, MFA, logging, MAC |
+## 2. Regulatory Compliance: PCI-DSS, HIPAA, and PII
 
-### Matching Controls to Classification
+Certain types of data carry strict legal mandates requiring encryption across all three states:
 
-| State | Control |
-|---|---|
-| At rest — confidential or above | Full-disk encryption OR file/database encryption |
-| In transit — any sensitivity | TLS (HTTPS, SMTPS, SFTP, SSH) |
-| In transit — highly sensitive | VPN tunnel in addition to TLS |
-| Backups | Encrypted backups stored offsite |
-| Email with PII | Encrypted email (S/MIME or TLS to mail server) |
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        REGULATORY COMPLIANCE TIERS                     │
+├──────────────┬──────────────────┬──────────────────────────────────────┤
+│ Regulation   │ Protected Data   │ Mandatory Security Requirements      │
+├──────────────┼──────────────────┼──────────────────────────────────────┤
+│ **PCI-DSS**  │ Payment Card     │ **Never store CVV security codes.**  │
+│              │ Data (Credit)    │ Encrypt card numbers at rest and in  │
+│              │                  │ transit with AES-256 / TLS 1.3.      │
+├──────────────┼──────────────────┼──────────────────────────────────────┤
+│ **HIPAA**    │ Protected Health │ Strict access controls, audit logs,  │
+│              │ Information (PHI)│ and encryption for medical records.  │
+├──────────────┼──────────────────┼──────────────────────────────────────┤
+│ **FERPA**    │ Student Academic │ Protects student grades, discipline, │
+│              │ Records          │ and IEPs from unauthorized disclosure│
+└──────────────┴──────────────────┴──────────────────────────────────────┘
+```
 
-### Sensitive Data Categories
+---
 
-Some data types carry specific regulatory obligations regardless of classification label:
+## Why This Matters in the Field
 
-| Type | Abbreviation | Examples | Regulation |
-|---|---|---|---|
-| Personally Identifiable Information | PII | SSN, address, biometric | GDPR, CCPA, FERPA |
-| Protected Health Information | PHI | Medical records, diagnoses | HIPAA |
-| Payment Card Information | PCI data | Credit card numbers, CVV | PCI-DSS |
-| Intellectual Property | IP | Source code, patents, designs | Trade secret law |
+When you audit a corporate network or configure a cloud application, you must evaluate where sensitive data travels at every step of its lifecycle.
 
-### OWASP Connection
+Ensuring that data is encrypted while resting on disk, encrypted while flying across Wi-Fi, and isolated while executing in memory guarantees end-to-end cybersecurity.
 
-**Cryptographic Failures** (OWASP #2) specifically calls out the failure to identify and protect sensitive data — not knowing what data is sensitive leads directly to under-protecting it.
+---
 
-### Key Exam Points
+## Key Terms
 
-- **Three data states:** at rest (stored), in transit (moving), in use (processing)
-- **Data at rest** → full-disk encryption; **data in transit** → TLS/HTTPS/VPN
-- Data classification guides which controls to apply — not all data needs the same protection level
-- **PII, PHI, and PCI data** carry regulatory encryption and handling requirements regardless of internal classification
-- Encrypted backups must also be stored securely — an unencrypted backup of encrypted data defeats the purpose
+Data States · Data at Rest · Non-Volatile Storage · Full Disk Encryption (FDE) · BitLocker · FileVault · LUKS · Transparent Data Encryption (TDE) · Data in Transit (Data in Motion) · Transport Layer Security (TLS 1.3) · IPsec Virtual Private Network (VPN) · Secure Shell (SSH) · Data in Use · Volatile Memory (RAM) · CPU Registers · Secure Enclaves (Intel SGX) · PCI-DSS · HIPAA · PHI · FERPA · PII

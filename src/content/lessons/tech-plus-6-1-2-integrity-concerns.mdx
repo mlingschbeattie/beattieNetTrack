@@ -1,73 +1,186 @@
 ---
-title: Integrity Concerns
-description: Understand data integrity — what it means for data to be trustworthy, how it is attacked, and how hashing and controls protect it. FC0-U71 objective 6.1.
+title: Integrity Concerns — Detecting Tampering and Ensuring Data Trust
+description: Master the second pillar of the CIA Triad. Explore Data Integrity, unauthorized modifications, Cryptographic Hashing (SHA-256 vs broken MD5), Digital Signatures, Checksums, and audit log immutability.
 slug: tech-plus-6-1-2-integrity-concerns
 track: tech-plus
 moduleId: tech-plus.security
 order: 2
+objective: "FC0-U71 6.1"
+xp: 15
+source: cyber-org
 difficulty: Beginner
 estMinutes: 20
-tags: ["tech+", "FC0-U71 6.1", "CIA triad", "integrity", "hashing"]
+tags: ["tech+", "FC0-U71 6.1", "CIA triad", "integrity", "hashing", "SHA-256", "MD5", "digital signatures", "tampering", "checksums"]
+sections:
+  - id: what-is-integrity
+    title: "What is Integrity? The 'I' in the CIA Triad"
+    keyPoints:
+      - "Integrity guarantees that data remains accurate, complete, and completely unaltered by unauthorized tampering or accidental corruption"
+      - "Integrity protects against both malicious hacker manipulation (tampered balances) and physical errors (bit rot, transmission noise)"
+      - "If integrity is lost, a computer system cannot be trusted, even if confidentiality and availability are 100% intact"
+    check:
+      - prompt: "A rogue insider alters an employee's salary in the payroll database from $50,000 to $95,000. Which pillar of the CIA Triad was compromised?"
+        options:
+          - "Integrity"
+          - "Availability"
+          - "Confidentiality"
+          - "Elasticity"
+        correct: 0
+      - prompt: "Why is maintaining data integrity essential in an automated hospital medication dispensing system?"
+        options:
+          - "If dosage numbers are altered or corrupted, patients could receive fatal overdoses of medication"
+          - "It makes the hospital Wi-Fi faster"
+          - "It lowers the hospital's electric bill"
+          - "It eliminates the need for doctors"
+        correct: 0
+  - id: cryptographic-hashing-mechanics
+    title: "Cryptographic Hashing: The Digital Fingerprint"
+    keyPoints:
+      - "A Hash Function converts any size data into a fixed-length string of hex characters (a mathematical one-way checksum)"
+      - "The Avalanche Effect: Changing even a single bit in the input file changes the resulting hash output completely and unpredictably"
+      - "Algorithm Standards: SHA-256 and SHA-3 are secure modern standards; MD5 and SHA-1 are cryptographically broken (collision vulnerabilities)"
+    check:
+      - prompt: "What mathematical tool generates a unique, fixed-length string of characters from a file to prove that the file has not been modified since creation?"
+        options:
+          - "A Cryptographic Hash Function (e.g. SHA-256)"
+          - "A Subnet Mask"
+          - "A Virtual Memory Swap File"
+          - "A CPU Overclocking Utility"
+        correct: 0
+      - prompt: "Which legacy hashing algorithm is considered cryptographically broken due to collision vulnerabilities and must never be used for security verification?"
+        options:
+          - "MD5"
+          - "SHA-256"
+          - "SHA-512"
+          - "SHA-3"
+        correct: 0
+  - id: digital-signatures-and-audit-logs
+    title: "Digital Signatures and Immutable Audit Logging"
+    keyPoints:
+      - "A Digital Signature combines a cryptographic hash with asymmetric private-key encryption, proving both Integrity and Origin Authenticity"
+      - "Checksums (CRC32): Detect accidental bit flips during file transmission, but do not protect against intentional malicious tampering"
+      - "Audit Logging & Version History: Records every file change (who, what, when); log files must be append-only to prevent attacker tampering"
+    check:
+      - prompt: "What security technology proves that a downloaded software update was created by Apple and has not been infected with malware by an attacker?"
+        options:
+          - "A Cryptographic Digital Signature"
+          - "An HDMI Cable"
+          - "A RAID 1 Mirror"
+          - "A DHCP Lease"
+        correct: 0
+      - prompt: "When an attacker hacks into a server, what is typically their first action to cover their tracks and destroy proof of their unauthorized activity?"
+        options:
+          - "Deleting or tampering with the system security audit logs"
+          - "Formatting the monitor"
+          - "Upgrading the RAM"
+          - "Changing the mouse cursor"
+        correct: 0
 domains:
   - domainId: techplus.security
     weight: 1
 ---
 
-## Integrity Concerns
+import Callout from '../../components/Callout.astro';
 
-Integrity means that data has **not been altered** in an unauthorized or unexpected way. It is the "I" in the **CIA Triad**. Integrity is not just about malicious tampering — it also covers accidental corruption and transmission errors.
+## Trusting What the Screen Says
 
-### Why Integrity Matters
+Imagine logging into your bank account. You see your balance is $5,000. 
 
-If integrity is compromised, you cannot trust your data. Examples:
-- A patient's medication dosage record is modified by an attacker
-- Financial records are altered to cover fraud
-- A software update file is replaced with malware
-- A file becomes corrupted in transit and the recipient doesn't know
+Now imagine that an attacker has infiltrated the bank's database server. They don't steal the money—they just change a few lines of code so that every time you transfer $50 to pay your electric bill, the bank transfers $500 instead.
 
-### Threats to Integrity
+The data is 100% confidential (nobody leaked your balance) and 100% available (the website is online). But the system is completely broken because you **cannot trust the accuracy of the data**.
 
-| Threat | Description |
-|---|---|
-| **Unauthorized modification** | Attacker changes data — files, database records, logs |
-| **Man-in-the-Middle** | Attacker intercepts and modifies data in transit |
-| **Malware** | Ransomware encrypts or corrupts files; viruses inject malicious code |
-| **Insider tampering** | An authorized user modifies records without permission |
-| **Transmission errors** | Bit corruption during transfer (hardware fault, cosmic rays) |
-| **SQL injection** | Attacker manipulates database records via unsanitized input |
+**Integrity** is the "I" in the **CIA Triad**. It is the absolute guarantee that data has not been altered, deleted, injected, or corrupted—whether by a malicious hacker, a rogue employee, a software bug, or a physical hard drive error.
 
-### Controls That Protect Integrity
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        HOW CRYPTOGRAPHIC HASHING WORKS                 │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│   ORIGINAL FILE:                                                       │
+│   "Transfer $100 to Alice" ──[ SHA-256 HASH ]──> `7f83b1657ff1fc53...` │
+│                                                                        │
+│   TAMPERED FILE (Single Character Change):                             │
+│   "Transfer $900 to Alice" ──[ SHA-256 HASH ]──> `4d1b82a39f60bc91...` │
+│                                                                        │
+│   ✔ The hash output changes completely (The Avalanche Effect)!         │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
 
-**Hashing**
-A hash function produces a fixed-length "fingerprint" of data. If even one bit in the original data changes, the hash output changes completely. This makes hashing ideal for detecting tampering.
+---
 
-| Algorithm | Output length | Status |
-|---|---|---|
-| MD5 | 128 bits | Broken — do not use for security |
-| SHA-1 | 160 bits | Deprecated — avoid |
-| SHA-256 | 256 bits | Current standard |
-| SHA-3 | Variable | Modern alternative |
+## 1. Threats to Data Integrity
 
-**Digital Signatures**
-Combine hashing with asymmetric encryption. A sender hashes their message, encrypts the hash with their private key. The recipient decrypts with the sender's public key and compares hashes. If they match = data is unchanged and sender is verified.
+Integrity failures happen through both deliberate cyberattacks and routine physical system faults:
 
-**Checksums**
-Simpler integrity check for transmission errors (not security). CRC (Cyclic Redundancy Check) detects accidental corruption but is not cryptographically strong.
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                         INTEGRITY THREAT MATRIX                        │
+├────────────────────┬───────────────────────────────────────────────────┤
+│ **SQL Injection**  │ Attacker injects malicious database commands via  │
+│                    │ a web form to modify or wipe financial records.   │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Man-in-the-Middle**│ Attacker intercepts a downloaded `.exe` file on │
+│                    │ an unencrypted Wi-Fi and replaces it with malware.│
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Ransomware**     │ Encrypts system files, destroying their original  │
+│                    │ readable state until an extortion fee is paid.    │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Bit Rot / Noise**│ Electromagnetic interference or failing SSD cells │
+│                    │ flip binary 0s to 1s, corrupting stored data.     │
+└────────────────────┴───────────────────────────────────────────────────┘
+```
 
-**Access Controls**
-Limiting who can write to files or databases reduces the opportunity for unauthorized modification.
+---
 
-**Version Control / Audit Logs**
-Track every change to data — who changed what and when. Logs themselves must be protected against tampering.
+## 2. Cryptographic Hashing: The Ultimate Tamper Evident Seal
 
-### OWASP Connection
+A **Cryptographic Hash Function** is a one-way mathematical algorithm that takes any file (a 1-sentence text file or a 50 GB video game) and computes a fixed-length string of hex characters called a **Hash Value (or Message Digest)**:
 
-**Software and Data Integrity Failures** (OWASP #8) covers scenarios where code or data is not verified against a known-good state — such as auto-update mechanisms that don't validate signatures.
+1. **One-Way (Irreversible):** You can easily calculate a hash from a file, but it is mathematically impossible to reconstruct the original file from the hash.
+2. **Deterministic:** The exact same file will ALWAYS produce the exact same hash value on every computer on Earth.
+3. **The Avalanche Effect:** If you change a single letter or a single binary bit in a 10 GB file, the resulting hash value changes completely and unpredictably!
 
-### Key Exam Points
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                      HASH ALGORITHM COMPARISON                         │
+├──────────────┬───────────────┬─────────────────────────────────────────┤
+│ Algorithm    │ Digest Length │ Cryptographic Security Status           │
+├──────────────┼───────────────┼─────────────────────────────────────────┤
+│ **MD5**      │ 128 Bits      │ ❌ **BROKEN** (Collision vulnerabilities)│
+│ **SHA-1**    │ 160 Bits      │ ❌ **DEPRECATED** (Do not use for certs) │
+│ **SHA-256**  │ 256 Bits      │ 🏆 **CURRENT INDUSTRY GOLD STANDARD**   │
+│ **SHA-3**    │ 256–512 Bits  │ 🏆 Modern sponge-construction standard  │
+└──────────────┴───────────────┴─────────────────────────────────────────┘
+```
 
-- Integrity = data has not been altered without authorization
-- **Hashing** is the primary tool for verifying integrity — same input always produces same hash
-- **SHA-256** is the current standard; MD5 is broken
-- A digital signature provides both **integrity** (hash) and **authentication** (private key)
-- Integrity protects against both malicious tampering and accidental corruption
+<Callout type="exam">
+**The Hash Comparison Rule:** When you download an ISO installer for an operating system (e.g. `ubuntu-24.04.iso`), the website publishes its known SHA-256 hash. After downloading, you run `Get-FileHash ubuntu-24.04.iso` in PowerShell. If the hashes match 100%, you know with mathematical certainty that the file was not corrupted during download and was not modified by an attacker!
+</Callout>
+
+---
+
+## 3. Digital Signatures: Integrity + Non-Repudiation
+
+A hash proves that a file was not altered, but it doesn't prove *who created it*.
+
+A **Digital Signature** combines cryptographic hashing with **Asymmetric Public-Key Cryptography**:
+1. The author calculates a hash of the software update.
+2. The author encrypts that hash using their **Private Key**.
+3. Your computer downloads the software, decrypts the signature using the author's public key, and recalculates the hash.
+4. If the hashes match, your computer verifies two things simultaneously:
+   - **Integrity:** The software was not modified in transit.
+   - **Authentication:** The software came genuinely from the verified vendor.
+
+---
+
+## Why This Matters in the Field
+
+When troubleshooting corrupt database files, validating downloaded system firmware updates, or defending server audit logs against malicious tampering, verifying cryptographic hashes and digital signatures is the technician's primary tool for guaranteeing data trust.
+
+---
+
+## Key Terms
+
+CIA Triad · Integrity · Tampering · Bit Rot · Cryptographic Hash Function · Message Digest · Deterministic · One-Way Function · Avalanche Effect · MD5 (Broken) · SHA-1 (Deprecated) · SHA-256 (Gold Standard) · SHA-3 · Collision Attack · Checksum (CRC32) · Digital Signature · Asymmetric Cryptography · Audit Logging · Immutable Logs

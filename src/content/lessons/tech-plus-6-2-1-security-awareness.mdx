@@ -1,69 +1,193 @@
 ---
-title: Security Awareness
-description: Understand why security awareness training matters and how social engineering attacks exploit the human element. FC0-U71 objective 6.2.
+title: Security Awareness — Social Engineering, Phishing, and the Human Element
+description: Master human-layer cybersecurity defense. Explore Social Engineering attack psychology, Phishing vs Spear Phishing vs Whaling vs Vishing vs Smishing, physical Tailgating and Baiting, and security awareness training.
 slug: tech-plus-6-2-1-security-awareness
 track: tech-plus
 moduleId: tech-plus.security
 order: 8
+objective: "FC0-U71 6.2"
+xp: 15
+source: cyber-org
 difficulty: Beginner
 estMinutes: 20
-tags: ["tech+", "FC0-U71 6.2", "security awareness", "social engineering", "phishing"]
+tags: ["tech+", "FC0-U71 6.2", "security awareness", "social engineering", "phishing", "spear phishing", "whaling", "vishing", "smishing", "tailgating", "baiting"]
+sections:
+  - id: psychology-of-social-engineering
+    title: "The Human Element: Psychology Behind Social Engineering"
+    keyPoints:
+      - "Social Engineering: Manipulating human psychology (trust, urgency, fear, authority, curiosity) to bypass technical security controls"
+      - "The Human Factor: A multi-million dollar firewall is useless if an employee voluntarily hands their password to a phone scammer"
+      - "Core Triggers: Urgency ('Account suspended in 1 hour!'), Fear ('IRS audit pending'), Authority ('Message from the CEO')"
+    check:
+      - prompt: "What type of cybersecurity attack targets human psychological manipulation rather than exploiting software code vulnerabilities?"
+        options:
+          - "Social Engineering"
+          - "SQL Injection"
+          - "Buffer Overflow"
+          - "Port Scanning"
+        correct: 0
+      - prompt: "Why do attackers create an artificial sense of extreme urgency in phishing emails (e.g. 'Act within 15 minutes or be fired')?"
+        options:
+          - "To cause panic so the victim clicks without stopping to analyze the sender address or verify the request"
+          - "To save email bandwidth"
+          - "To make the email load faster"
+          - "Because email expires after 15 minutes"
+        correct: 0
+  - id: phishing-variants-and-taxonomy
+    title: "Phishing Taxonomy: Phishing vs. Spear Phishing vs. Whaling vs. Vishing"
+    keyPoints:
+      - "Phishing: Mass, untargeted fraudulent emails attempting to steal credentials with fake login links"
+      - "Spear Phishing: Highly customized, targeted phishing directed at specific individuals using researched personal details"
+      - "Whaling: Spear phishing targeting high-level corporate executives (CEOs, CFOs, Board Members)"
+      - "Vishing (Voice) & Smishing (SMS): Phishing executed over phone calls or mobile text messages"
+    check:
+      - prompt: "An attacker crafts a personalized email to a company CFO containing authentic project names, requesting an urgent wire transfer to a fake supplier. What attack is this?"
+        options:
+          - "Whaling (Executive Spear Phishing)"
+          - "Generic Spam"
+          - "DDOS Flood"
+          - "Tailgating"
+        correct: 0
+      - prompt: "A mobile phone user receives a text message: 'USPS: Package cannot be delivered, click here to update address.' What attack vector is this?"
+        options:
+          - "Smishing (SMS Phishing)"
+          - "Vishing"
+          - "Baiting"
+          - "Dumpster Diving"
+        correct: 0
+  - id: physical-social-engineering
+    title: "Physical Social Engineering: Baiting, Tailgating, and Pretexting"
+    keyPoints:
+      - "Baiting: Leaving infected USB flash drives in parking lots or lobbies labeled 'Executive Bonuses', hoping curious employees plug them in"
+      - "Tailgating (Piggybacking): Following closely behind an authorized employee through a secure badge door without scanning a credential"
+      - "Pretexting: Creating a fabricated persona (e.g. wearing a fake pest control uniform) to gain unauthorized physical access to server rooms"
+    check:
+      - prompt: "An attacker drops a USB drive labeled 'Confidential Salaries' in the school parking lot. A student picks it up and plugs it into a lab PC. What attack was executed?"
+        options:
+          - "Baiting"
+          - "Tailgating"
+          - "Shoulder Surfing"
+          - "Whaling"
+        correct: 0
+      - prompt: "What physical security measure stops strangers from 'tailgating' behind employees through secure facility doors?"
+        options:
+          - "Security Turnstiles / Mantrap Doors and mandatory individual badge-swipe policies"
+          - "Antivirus software"
+          - "A strong Wi-Fi password"
+          - "A KVM switch"
+        correct: 0
 domains:
   - domainId: techplus.security
     weight: 1
 ---
 
-## Security Awareness
+import Callout from '../../components/Callout.astro';
 
-The most sophisticated firewall in the world can be bypassed by a user who clicks the wrong link. **Security awareness** is the recognition that people are often the weakest link in a security system — and that training and culture are the controls that address it.
+## The Weakest Link in Every Security System
 
-### The Human Element
+You can spend $500,000 installing enterprise next-generation firewalls, deploying AI-powered endpoint detection, and configuring 256-bit encryption.
 
-**Social engineering** is the manipulation of people (rather than technical systems) into performing actions or revealing information. Social engineers exploit:
-- **Trust** — impersonating authority figures (IT support, executives)
-- **Urgency** — "Your account will be suspended in 24 hours!"
-- **Fear** — "We detected suspicious activity on your account"
-- **Curiosity** — "See who viewed your profile"
-- **Helpfulness** — people naturally want to assist
+None of that matters if an attacker picks up the telephone, calls the front desk, pretends to be the IT Help Desk manager, and says: *"Hey, our email server crashed. I need your username and password right now to restore your mailbox."*
 
-### Common Social Engineering Attacks
+In cybersecurity, human beings are the primary attack surface. **Social Engineering** is the art of manipulating human psychological flaws—trust, fear, urgency, curiosity, and helpfulness—to trick people into handing over credentials or granting physical access.
 
-| Attack | Description |
-|---|---|
-| **Phishing** | Fraudulent emails that appear legitimate; trick users into clicking links or entering credentials |
-| **Spear phishing** | Targeted phishing using personal details to increase credibility |
-| **Whaling** | Phishing targeting executives (CEO, CFO) |
-| **Vishing** | Voice phishing — phone calls impersonating banks, IRS, IT support |
-| **Smishing** | SMS phishing — malicious text messages |
-| **Pretexting** | Creating a fabricated scenario to gain trust (e.g., pretending to be HR) |
-| **Baiting** | Leaving infected USB drives in parking lots hoping someone picks them up |
-| **Tailgating / Piggybacking** | Following an authorized person through a secure door |
-| **Quid pro quo** | Offering something (fake tech support) in exchange for credentials |
+Understanding how social engineers operate transforms employees from the biggest security vulnerability into the strongest line of human defense.
 
-### Security Awareness Training Topics
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        SOCIAL ENGINEERING ATTACK TAXONOMY              │
+├────────────────────┬───────────────────────────────────────────────────┤
+│ **Phishing**       │ Mass spray-and-pray emails with fake login links. │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Spear Phishing** │ Custom targeted emails tailored with victim data. │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Whaling**        │ Spear phishing targeting High-Value C-Suite execs.│
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Vishing**        │ Voice Phishing phone calls (e.g. fake IRS/Bank).  │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Smishing**       │ SMS Text Phishing messages with malicious links.  │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Baiting**        │ Leaving malware-infected USB flash drives around. │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Tailgating**     │ Slipping through secure doors behind an employee. │
+└────────────────────┴───────────────────────────────────────────────────┘
+```
 
-Effective security awareness programs cover:
-- How to identify phishing emails (check sender address, hover over links, look for urgency)
-- Password hygiene and the importance of MFA
-- Physical security (clean desk, screen locking, not letting strangers into secure areas)
-- Incident reporting procedures ("if you see something, say something")
-- Acceptable use of company devices and networks
-- Data handling — what can be emailed, printed, or stored in cloud services
+---
 
-### Red Flags for Phishing
+## 1. The Psychology of the Con
 
-- Sender address doesn't match the organization's domain
-- Unexpected urgency or threats
-- Links that hover to a different domain than displayed
-- Requests for credentials, payment, or sensitive information via email
-- Generic greetings ("Dear Customer") instead of your name
-- Poor grammar or spelling (though AI has made phishing more convincing)
+Social engineering does not exploit bugs in software code—it exploits **bugs in the human brain**:
 
-### Key Exam Points
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        PSYCHOLOGICAL ATTACK TRIGGERS                   │
+├────────────────────┬───────────────────────────────────────────────────┤
+│ **Urgency**        │ "Click this link within 10 minutes or your account│
+│                    │ will be permanently deleted!" (Panic stops logic).│
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Authority**      │ "This is Special Agent Smith from the FBI / IRS." │
+│                    │ (People are conditioned to obey authority).       │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Curiosity**      │ A USB drive labeled "Executive Layoff List 2026". │
+│                    │ (Temptation overrides security caution).          │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Helpfulness**    │ A polite technician carrying heavy boxes asking   │
+│                    │ you to hold the badge-locked door open.           │
+└────────────────────┴───────────────────────────────────────────────────┘
+```
 
-- Security awareness training addresses the **human element** of security
-- **Social engineering** exploits psychology, not technology
-- **Phishing** is the most common social engineering attack
-- **Spear phishing** is targeted; **whaling** targets executives
-- **Tailgating** = following someone through a secure door without credential verification
-- Reporting suspicious activity is a key training outcome
+---
+
+## 2. Phishing Red Flags: How to Spot the Scam
+
+When reviewing suspicious emails or messages, look for these telltale indicators:
+
+```
+┌────────────────────────────────────────────────────────┐
+│               THE 5 PHISHING RED FLAGS                 │
+│                                                        │
+│   1. Mismatched Senders:                               │
+│      Display name says "Microsoft Support", but the    │
+│      actual email header is `support@micros0ft-us.xyz`.│
+│                                                        │
+│   2. Suspicious Hyperlink Destinations:                │
+│      Hovering over a "Click Here to Reset Password"    │
+│      link reveals destination: `http://login-hack.ru`. │
+│                                                        │
+│   3. Generic Greetings:                                │
+│      "Dear Valued Customer" instead of your name.      │
+│                                                        │
+│   4. High-Pressure Threats:                            │
+│      Demanding immediate action under threat of arrest.│
+│                                                        │
+│   5. Unsolicited Attachments:                          │
+│      Opening `Invoice_8492.pdf.exe` executes malware.   │
+└────────────────────────────────────────────────────────┘
+```
+
+<Callout type="warn">
+**The Parking Lot USB Trap (Baiting):** Never plug an unknown USB flash drive into a computer. Attackers intentionally drop cheap USB drives in corporate parking lots, coffee shops, and school hallways. When plugged into a laptop, the USB drive executes an automated keyboard injection payload (Rubber Ducky) that installs ransomware in under 3 seconds!
+</Callout>
+
+---
+
+## 3. Physical Security: Stopping Tailgaters
+
+Technical building badge readers only work if employees enforce physical access discipline:
+- **Tailgating (Piggybacking):** When an unauthorized visitor slips through an open door right behind an authorized employee who just swiped their badge.
+- **The Solution:** Install **Mantraps (Access Portals)** where Door B will not unlock until Door A closes, and enforce strict company culture: *"Everyone must swipe their own badge—no exceptions, even for the CEO."*
+
+---
+
+## Why This Matters in the Field
+
+Over 90% of all successful enterprise ransomware attacks start with a single **Phishing Email**.
+
+Conducting regular security awareness training, running simulated phishing drills, and empowering users to report suspicious activity is the most effective security investment an organization can make.
+
+---
+
+## Key Terms
+
+Security Awareness · Social Engineering · The Human Element · Phishing · Spear Phishing · Whaling · Vishing (Voice Phishing) · Smishing (SMS Phishing) · Baiting · USB Drops · Pretexting · Tailgating / Piggybacking · Mantrap · Red Flags · URL Hovering · Simulated Phishing Campaigns

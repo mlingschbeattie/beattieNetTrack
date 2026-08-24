@@ -1,68 +1,169 @@
 ---
-title: Non-Repudiation
-description: Understand non-repudiation — how digital signatures and audit logs prevent someone from denying an action they took. FC0-U71 objective 6.1.
+title: Non-Repudiation — Proving Identity and Irrefutable Action
+description: Master non-repudiation in cybersecurity. Explore how Digital Signatures (PKI), asymmetric private-key encryption, tamper-evident audit trails, and NTP synchronized logging prevent users from denying their digital actions.
 slug: tech-plus-6-1-8-non-repudiation
 track: tech-plus
 moduleId: tech-plus.security
 order: 7
+objective: "FC0-U71 6.1"
+xp: 15
+source: cyber-org
 difficulty: Beginner
 estMinutes: 15
-tags: ["tech+", "FC0-U71 6.1", "non-repudiation", "digital signatures", "audit logs"]
+tags: ["tech+", "FC0-U71 6.1", "non-repudiation", "digital signatures", "audit logs", "PKI", "private key", "NTP", "accounting"]
+sections:
+  - id: what-is-non-repudiation
+    title: "What is Non-Repudiation? 'You Can't Deny You Did It'"
+    keyPoints:
+      - "Non-Repudiation guarantees that an individual cannot credibly deny the authenticity of their signature on a document or the sending of a message"
+      - "Provides indisputable legal and forensic proof that an event occurred and that a specific unique identity was responsible"
+      - "Combines Identity Authentication with Data Integrity to enforce total personal and organizational accountability"
+    check:
+      - prompt: "What cybersecurity concept ensures that a vendor cannot falsely claim: 'I never signed that contract or authorized that payment' after digitally signing a document?"
+        options:
+          - "Non-Repudiation"
+          - "High Availability"
+          - "Dynamic IP Leasing"
+          - "Disk Defragmentation"
+        correct: 0
+      - prompt: "Why is non-repudiation critical in enterprise digital banking and e-commerce transactions?"
+        options:
+          - "It provides irrefutable mathematical and legal proof of who initiated a financial wire transfer"
+          - "It makes credit cards run without electricity"
+          - "It eliminates network latency"
+          - "It replaces computer monitors"
+        correct: 0
+  - id: how-digital-signatures-enforce-non-repudiation
+    title: "Enforcing Non-Repudiation: Digital Signatures and PKI"
+    keyPoints:
+      - "Public Key Infrastructure (PKI): A trusted Certificate Authority (CA) binds a verified human identity to a cryptographic public/private key pair"
+      - "Digital Signing Mechanics: The sender hashes the file and encrypts the hash using their strictly confidential Private Key"
+      - "Because only the sender holds the private key, anyone decrypting the signature with the sender's Public Key proves origin beyond denial"
+    check:
+      - prompt: "In asymmetric Public Key Infrastructure (PKI), which key does an author use to digitally sign a contract to ensure non-repudiation?"
+        options:
+          - "Their strictly confidential Private Key"
+          - "Their public key"
+          - "The recipient's public key"
+          - "A shared Wi-Fi password"
+        correct: 0
+      - prompt: "What role does a Certificate Authority (CA) play in Public Key Infrastructure?"
+        options:
+          - "It acts as a trusted third-party validator, issuing digital certificates that bind public keys to verified human or corporate identities"
+          - "It sells computer motherboards"
+          - "It manufactures fiber optic cables"
+          - "It cleans server room floors"
+        correct: 0
+  - id: audit-logging-and-time-sync
+    title: "Audit Trails and Time Synchronization (NTP)"
+    keyPoints:
+      - "Accounting / Auditing: Operating systems log every login, file modification, and privilege change with user ID and IP address"
+      - "Tamper-Resistant Logging: Audit logs must be forwarded to a centralized, write-once SIEM server so rogue admins cannot erase their footprints"
+      - "Network Time Protocol (NTP): Synchronizes system clocks across all servers so audit timestamps align perfectly during forensic timelines"
+    check:
+      - prompt: "Why must all enterprise servers synchronize their internal system clocks to an NTP (Network Time Protocol) server for legal audit compliance?"
+        options:
+          - "To ensure that log timestamps match across all firewalls, servers, and databases to reconstruct an irrefutable forensic attack timeline"
+          - "To speed up CPU processing speed"
+          - "To save battery power"
+          - "To prevent hard drive wear"
+        correct: 0
+      - prompt: "To prevent an attacker from modifying or deleting local security audit logs after breaching a server, where should logs be immediately forwarded?"
+        options:
+          - "To a centralized, append-only Security Information and Event Management (SIEM) log server"
+          - "To the local Recycle Bin"
+          - "To an unencrypted USB flash drive"
+          - "To the monitor's display memory"
+        correct: 0
 domains:
   - domainId: techplus.security
     weight: 1
 ---
 
-## Non-Repudiation
+import Callout from '../../components/Callout.astro';
 
-Non-repudiation means that a person **cannot deny** having performed an action. It provides proof that an event occurred and that a specific party was responsible — making it impossible to credibly say "I didn't do that."
+## The "I Didn't Do It!" Defense
 
-### Why Non-Repudiation Matters
+Imagine an employee in the finance department logs into a wire transfer portal at 3:00 PM and transfers $250,000 to an offshore bank account.
 
-Without non-repudiation:
-- An employee can deny sending a threatening email
-- A vendor can claim they never agreed to a digital contract
-- An attacker can deny making unauthorized changes to a database
-- Financial fraud becomes harder to prove and prosecute
+When detectives question the employee the next morning, the employee says: *"I never sent that money! Someone else must have used my computer while I was in the restroom, or a hacker forged that request!"*
 
-Non-repudiation is essential for **legal accountability**, **audit trails**, and **digital commerce**.
+In cybersecurity and contract law, how do you mathematically prove that a specific person performed a specific digital transaction, eliminating any credible denial?
 
-### How Non-Repudiation Works
+The answer is **Non-Repudiation**: the technical and cryptographic guarantee that a person cannot deny having taken an action.
 
-**Digital Signatures**
-The primary technical mechanism. When a user signs a document with their private key:
-1. A hash of the document is computed
-2. The hash is encrypted with the user's **private key** (only they have it)
-3. Anyone can verify the signature using the user's **public key**
-4. The verification confirms the document was signed by the holder of that private key
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        HOW NON-REPUDIATION WORKS                       │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│   1. SENDER: Alice creates contract: "Approve $50,000 Purchase"        │
+│      ├── Computes SHA-256 Hash: `e3b0c442...`                          │
+│      └── Encrypts Hash with **Alice's Strictly Private Key**           │
+│                                                                        │
+│          ▼                                                             │
+│   2. TRANSMISSION: Document + Digital Signature sent to Bob            │
+│                                                                        │
+│          ▼                                                             │
+│   3. RECIPIENT: Bob verifies signature with **Alice's Public Key**     │
+│      ├── Decrypts hash successfully!                                   │
+│      └── ✔ **Proof of Origin:** Because ONLY Alice has her private key,│
+│          Alice cannot claim: *"I never signed that document!"*         │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
 
-Since only the signer controls their private key, they cannot credibly deny signing it.
+---
 
-**Certificate Authorities (CA)**
-A CA issues digital certificates that tie a public key to a verified identity. This is the foundation of PKI (Public Key Infrastructure) — the same system that secures HTTPS websites.
+## 1. Digital Signatures: The Cryptographic Seal
 
-**Audit Logs**
-Timestamped records of system events: logins, file accesses, configuration changes. Logs must be:
-- **Tamper-resistant** — stored where they cannot be modified by users they monitor
-- **Time-synchronized** — using NTP so timestamps are accurate and consistent
-- **Retained** for an appropriate period per policy
+The primary technical pillar of non-repudiation is the **Digital Signature**, powered by **Public Key Infrastructure (PKI)**:
 
-Logs provide evidence that an event occurred, when, and from what account or IP address.
+- Every user has a mathematical key pair:
+  - **Public Key:** Freely published to the world on certificate servers.
+  - **Private Key:** Stored strictly on the user's password-protected smart card or hardware security module (HSM).
+- When a document is digitally signed, the author signs it using their **Private Key**.
+- Anyone can verify the signature using the author's **Public Key**.
+- Because no other human or machine has access to that private key, the signature serves as **irrefutable mathematical proof of authorship**.
 
-**Transaction Receipts and Acknowledgments**
-In business systems, automated confirmations (email receipts, delivery acknowledgments) provide written evidence that a transaction occurred and was received.
+<Callout type="exam">
+**The Difference Between Electronic vs. Digital Signatures:** An *Electronic Signature* can be a typed name or a low-resolution drawing of your signature on an iPad (easy to forge). A **Digital Signature** is a cryptographic hash encrypted with a private key verified by a Certificate Authority (mathematically unforgeable).
+</Callout>
 
-### Non-Repudiation in the Real World
+---
 
-- **Email signing** — S/MIME or PGP signatures on email prove the sender
-- **Code signing** — software signed with a developer's certificate proves the code is unmodified and came from a specific publisher
-- **Legal e-signatures** — DocuSign and similar platforms timestamp and log every action
-- **Blockchain** — immutable ledger used as non-repudiation mechanism in financial and supply chain contexts
+## 2. Centralized Audit Trails and Accounting
 
-### Key Exam Points
+Non-repudiation also applies to daily IT operations and server security:
 
-- Non-repudiation = proof of origin that the sender cannot deny
-- **Digital signatures** (private key) are the primary technical mechanism
-- **Audit logs** provide non-repudiation evidence at the system activity level
-- Logs must be protected from tampering to retain evidentiary value
-- Non-repudiation supports **AAA** — it is the "accounting" layer's enforcement tool
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        CENTRALIZED AUDIT LOGGING                       │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│   [ Local Server 1 ] ──(Syslog)──┐                                     │
+│   [ Local Switch 2 ] ──(Syslog)──┼──> [ CENTRALIZED SIEM LOG SERVER ]  │
+│   [ Domain Firewall] ──(Syslog)──┘    ├── Write-Once Storage           │
+│                                       └── Synchronized by **NTP**      │
+│                                                                        │
+│   ✔ Rogue admin cannot delete local logs to hide unauthorized changes! │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+1. **Centralized Log Streaming (SIEM):** When a user logs in, changes a firewall rule, or opens a confidential file, the event is immediately streamed over the network to a central **Security Information and Event Management (SIEM)** server. Even if a hacker gains local administrator rights, they cannot alter logs already safely stored in the SIEM!
+2. **Network Time Protocol (NTP) Synchronization:** System clocks across all domain controllers, switches, and firewalls must be synchronized to within milliseconds. If clocks drift, lawyers and forensic investigators cannot correlate logs to prove when an attack occurred.
+
+---
+
+## Why This Matters in the Field
+
+In legal disputes, regulatory compliance audits, and criminal forensic investigations, digital signatures and NTP-synchronized audit logs are the evidence that stands up in a court of law.
+
+Understanding non-repudiation ensures that your systems maintain indisputable accountability.
+
+---
+
+## Key Terms
+
+Non-Repudiation · Public Key Infrastructure (PKI) · Asymmetric Cryptography · Private Key · Public Key · Digital Signature · Electronic Signature vs Digital Signature · Certificate Authority (CA) · Digital Certificate (X.509) · Accounting · Audit Trail · SIEM (Security Information and Event Management) · Network Time Protocol (NTP) · Forensic Evidence · Chain of Custody

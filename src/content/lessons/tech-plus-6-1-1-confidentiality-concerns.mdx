@@ -1,67 +1,178 @@
 ---
-title: Confidentiality Concerns
-description: Understand confidentiality as a core security principle — what it protects, threats against it, and controls that enforce it. FC0-U71 objective 6.1.
+title: Confidentiality Concerns — Protecting Data from Unauthorized Eyes
+description: Master the first pillar of the CIA Triad. Explore Confidentiality controls, encryption at rest and in transit, Access Control Lists (ACLs), eavesdropping and Man-in-the-Middle (MitM) attacks, shoulder surfing, and data classification schemas.
 slug: tech-plus-6-1-1-confidentiality-concerns
 track: tech-plus
 moduleId: tech-plus.security
 order: 1
+objective: "FC0-U71 6.1"
+xp: 15
+source: cyber-org
 difficulty: Beginner
 estMinutes: 20
-tags: ["tech+", "FC0-U71 6.1", "CIA triad", "confidentiality", "security"]
+tags: ["tech+", "FC0-U71 6.1", "CIA triad", "confidentiality", "security", "encryption", "MitM", "snooping", "access control"]
+sections:
+  - id: what-is-confidentiality
+    title: "What is Confidentiality? The 'C' in the CIA Triad"
+    keyPoints:
+      - "Confidentiality guarantees that data is accessible strictly and exclusively to authorized individuals, processes, and devices"
+      - "A confidentiality breach occurs when unauthorized parties view sensitive data (e.g. data leak, credential dumping, shoulder surfing)"
+      - "Core Technical Controls: Cryptographic Encryption (AES-256), Multi-Factor Authentication (MFA), and Principle of Least Privilege"
+    check:
+      - prompt: "Which pillar of the CIA Triad is directly violated when an attacker steals a database of unencrypted user passwords and publishes them online?"
+        options:
+          - "Confidentiality"
+          - "Availability"
+          - "Integrity"
+          - "Scalability"
+        correct: 0
+      - prompt: "What primary cryptographic technology renders files unreadable to anyone who does not possess the correct decryption key?"
+        options:
+          - "Encryption (e.g. AES-256)"
+          - "Disk Defragmentation"
+          - "RAID 0 Striping"
+          - "Subnetting"
+        correct: 0
+  - id: threats-to-confidentiality
+    title: "Threats to Confidentiality: Eavesdropping, MitM, and Physical Snooping"
+    keyPoints:
+      - "Eavesdropping / Sniffing: Intercepting unencrypted network packets across unencrypted Wi-Fi or Ethernet taps (Wireshark)"
+      - "Man-in-the-Middle (MitM): An attacker intercepts and relays communications between two parties without their knowledge"
+      - "Physical Threats: Shoulder Surfing (spying on someone typing a password) and Dumpster Diving (recovering paper records or un-wiped hard drives)"
+    check:
+      - prompt: "A coffee shop attacker runs packet sniffing software on an open public Wi-Fi network to intercept unencrypted HTTP traffic from other patrons. What type of attack is this?"
+        options:
+          - "Eavesdropping / Network Sniffing"
+          - "Denial of Service"
+          - "Ransomware"
+          - "Buffer Overflow"
+        correct: 0
+      - prompt: "What physical privacy accessory should an employee install on their laptop monitor when working in airports or public cafes to prevent shoulder surfing?"
+        options:
+          - "A Privacy Screen Filter"
+          - "A KVM Switch"
+          - "A USB Dongle"
+          - "An Anti-Static Wrist Strap"
+        correct: 0
+  - id: confidentiality-controls-and-classification
+    title: "Enforcing Confidentiality: Least Privilege and Data Classification"
+    keyPoints:
+      - "Principle of Least Privilege: Users are granted only the bare minimum permissions required to perform their daily job duties"
+      - "Need-to-Know: Access to specific sensitive documents requires a legitimate business justification, even for high-ranking managers"
+      - "Data Classification Tiers: Public $\\rightarrow$ Internal $\\rightarrow$ Confidential $\\rightarrow$ Restricted / Top Secret"
+    check:
+      - prompt: "An entry-level marketing intern is given full administrator read/write access to the company's confidential payroll database. What security principle was violated?"
+        options:
+          - "The Principle of Least Privilege"
+          - "The 3-2-1 Backup Rule"
+          - "The DRY Principle"
+          - "The Spanning Tree Protocol"
+        correct: 0
+      - prompt: "Under standard enterprise data classification, how should customer credit card numbers and executive acquisition strategies be categorized?"
+        options:
+          - "Confidential / Restricted"
+          - "Public"
+          - "Marketing Material"
+          - "Unclassified"
+        correct: 0
 domains:
   - domainId: techplus.security
     weight: 1
 ---
 
-## Confidentiality Concerns
+import Callout from '../../components/Callout.astro';
 
-Confidentiality means that information is accessible **only to those authorized** to see it. It is the "C" in the **CIA Triad** — the three foundational pillars of information security alongside Integrity and Availability.
+## Keeping Secrets in a Connected World
 
-### Why Confidentiality Matters
+Every computer system handles sensitive information: medical diagnoses, student grade transcripts, corporate intellectual property, credit card numbers, and employee passwords.
 
-When confidentiality fails, private data is exposed to people who should not have it. Real-world consequences include:
-- Student records viewed by unauthorized staff
-- Medical records leaked to the public
-- Corporate secrets stolen by competitors
-- Login credentials exposed in a data breach
+If that data is exposed to unauthorized individuals, the consequences are devastating: identity theft, massive corporate fines, destroyed reputations, and national security breaches.
 
-### Common Threats to Confidentiality
+**Confidentiality** is the foundational "C" in cybersecurity's **CIA Triad** (Confidentiality, Integrity, Availability). It is the assurance that information is shielded from unauthorized observation at all times—whether resting on an NVMe SSD, traveling across a fiber optic cable, or displayed on an office monitor.
 
-| Threat | Description |
-|---|---|
-| **Eavesdropping / Sniffing** | Intercepting network traffic to read unencrypted data |
-| **Man-in-the-Middle (MitM)** | Attacker positions between two parties, relays and reads communications |
-| **Shoulder surfing** | Looking at someone's screen in a public place |
-| **Dumpster diving** | Recovering sensitive documents from trash |
-| **Insider threat** | Authorized user intentionally or accidentally leaks data |
-| **Phishing** | Tricking users into revealing credentials or data |
-| **Improper access controls** | Giving users too much permission to access data they don't need |
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                          THE CIA TRIAD OF SECURITY                     │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│                      [ CONFIDENTIALITY ]                               │
+│                     (Shield Data from Snoops)                          │
+│                            /        \                                  │
+│                           /          \                                 │
+│                          /   THE CIA  \                                │
+│                         /     TRIAD    \                               │
+│                        /                \                              │
+│              [ INTEGRITY ] ────────── [ AVAILABILITY ]                 │
+│         (Prevent Tampering)        (Keep Systems Online)               │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
 
-### Controls That Protect Confidentiality
+---
 
-**Technical controls:**
-- **Encryption** — scrambles data so only authorized parties can read it (HTTPS, full-disk encryption)
-- **Access controls** — permissions that limit who can open a file or access a system
-- **Authentication** — verifying identity before granting access (passwords, MFA)
-- **Network segmentation** — separate sensitive systems from general-access networks
+## 1. Threats Against Confidentiality
 
-**Administrative controls:**
-- **Need-to-know principle** — users only get access to data required for their job
-- **Data classification** — labeling data by sensitivity (Public, Internal, Confidential, Restricted)
-- **NDAs and acceptable use policies**
+Attackers use both high-tech network exploits and low-tech physical social engineering to bypass confidentiality:
 
-**Physical controls:**
-- Locked server rooms and filing cabinets
-- Privacy screens on monitors in public areas
-- Clean desk policy — no sensitive documents left out
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                      CONFIDENTIALITY THREAT TAXONOMY                   │
+├────────────────────┬───────────────────────────────────────────────────┤
+│ **Network Sniffing**│ Capturing unencrypted network packets (HTTP, FTP, │
+│                    │ Telnet) using packet analyzers (Wireshark).       │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Man-in-the-Middle**│ Attacker silently sits between a laptop and router│
+│ **(MitM)**         │ intercepting and reading session tokens.          │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Shoulder Surfing**│ Physically watching an employee type their password│
+│                    │ or reading sensitive records over their shoulder. │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Dumpster Diving**│ Searching company trash bins for discarded paper  │
+│                    │ invoices, customer forms, or discarded SSDs.      │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Credential Leaks**│ Breaching a weak database and dumping unhashed    │
+│                    │ passwords to public hacker forums.                │
+└────────────────────┴───────────────────────────────────────────────────┘
+```
 
-### OWASP Connection
+---
 
-**Broken Access Control** (OWASP #1) and **Cryptographic Failures** (OWASP #2) are the top two web application vulnerabilities — both directly attack confidentiality by exposing data that should be restricted.
+## 2. Technical Controls: Locking Down Data
 
-### Key Exam Points
+To defend confidentiality, IT teams implement layered defense-in-depth:
 
-- Confidentiality = data is accessible only to authorized users
-- **Encryption** is the primary technical control for data confidentiality
-- **Need-to-know** and **least privilege** are the administrative principles that enforce confidentiality
-- Confidentiality failures lead to data breaches, identity theft, and regulatory violations
+1. **Encryption at Rest:** Scrambling data on physical drives using **Full Disk Encryption (BitLocker, FileVault)**. If a laptop is stolen from an employee's car, the thief cannot read the files without the cryptographic decryption key.
+2. **Encryption in Transit:** Scrambling data traveling over networks using **HTTPS (TLS 1.3), SSH, and IPsec VPNs**. Packet sniffers only see unreadable ciphertext garbage.
+3. **Multi-Factor Authentication (MFA):** Requiring a password PLUS a physical hardware token or biometric scan, ensuring a stolen password alone is useless to an attacker.
+
+<Callout type="warn">
+**The Plaintext Transmission Trap:** Never transmit passwords, medical data, or financial records over legacy plaintext protocols like **HTTP (Port 80), Telnet (Port 23), or FTP (Port 21)**. Anyone on the local Wi-Fi can capture your plaintext password in 2 seconds!
+</Callout>
+
+---
+
+## 3. Administrative Policies: Least Privilege and Need-to-Know
+
+Technical encryption tools are only half the battle. Administrative policies ensure internal employees don't snoop on data they shouldn't see:
+
+- **Principle of Least Privilege:** Every user and application is granted the **bare minimum permissions necessary** to perform their job duties. A warehouse packer needs access to shipping labels, not executive salary records.
+- **Need-to-Know:** Even if an employee holds a high-level security clearance, they are denied access to a sensitive project unless their current assignment specifically requires it.
+- **Data Classification:** Labeling corporate documents so employees know how to handle them:
+  - **Public:** Marketing brochures, public website text.
+  - **Internal:** Company phone directories, cafeteria menus.
+  - **Confidential:** Quarterly financial drafts, client contact lists.
+  - **Restricted / Top Secret:** Encryption keys, proprietary source code, classified military intelligence.
+
+---
+
+## Why This Matters in the Field
+
+When you deploy a new file share or configure permissions on a cloud folder, a single misconfigured checkbox can expose an entire company's confidential customer database to the public internet.
+
+Practicing the Principle of Least Privilege and enforcing encryption ensures that sensitive data stays in authorized hands.
+
+---
+
+## Key Terms
+
+CIA Triad · Confidentiality · Encryption at Rest · Encryption in Transit · BitLocker · FileVault · TLS / HTTPS · Eavesdropping · Packet Sniffing · Man-in-the-Middle (MitM) · Shoulder Surfing · Privacy Filter · Dumpster Diving · Principle of Least Privilege · Need-to-Know · Data Classification (Public, Internal, Confidential, Restricted) · Access Control Lists (ACL)

@@ -1,79 +1,174 @@
 ---
-title: Device Use Best Practices
-description: Apply responsible device use habits — acceptable use, clean desk, screen locking, USB safety, and personal vs. work device boundaries. FC0-U71 objective 6.2.
+title: Device Use Best Practices — Acceptable Use, Clean Desk, and Physical Hygiene
+description: Master physical security hygiene and operational discipline. Explore Acceptable Use Policies (AUP), instant screen locking shortcuts (Win+L), Clean Desk and Clean Screen rules, USB removable media hazards, and BYOD security governance.
 slug: tech-plus-6-2-3-device-use-best-practices
 track: tech-plus
 moduleId: tech-plus.security
 order: 10
+objective: "FC0-U71 6.2"
+xp: 15
+source: cyber-org
 difficulty: Beginner
 estMinutes: 15
-tags: ["tech+", "FC0-U71 6.2", "device use", "AUP", "BYOD", "physical security"]
+tags: ["tech+", "FC0-U71 6.2", "device use", "AUP", "BYOD", "physical security", "screen lock", "clean desk", "USB safety"]
+sections:
+  - id: acceptable-use-and-screen-locking
+    title: "Acceptable Use Policies (AUP) and Screen Locking Habits"
+    keyPoints:
+      - "Acceptable Use Policy (AUP): A legally binding agreement defining permitted and prohibited actions on company hardware and networks"
+      - "Screen Locking: Instant lock shortcut (Windows Key + L / Command + Control + Q) must be executed whenever stepping away from a desk"
+      - "An unlocked, unattended workstation allows anyone walking by to impersonate your account, delete records, or send emails in your name"
+    check:
+      - prompt: "What keyboard shortcut should a technician instantly press to lock their Windows workstation before walking to the break room?"
+        options:
+          - "Windows Key + L"
+          - "Ctrl + Alt + Delete"
+          - "Alt + F4"
+          - "Windows Key + D"
+        correct: 0
+      - prompt: "What written agreement must all employees sign during onboarding that establishes the rules for using company-owned computers and internet?"
+        options:
+          - "Acceptable Use Policy (AUP)"
+          - "Service Level Agreement (SLA)"
+          - "Non-Disclosure Agreement (NDA)"
+          - "End User License Agreement (EULA)"
+        correct: 0
+  - id: clean-desk-and-physical-hygiene
+    title: "Clean Desk Policies and Physical Information Security"
+    keyPoints:
+      - "Clean Desk Policy: Sensitive paper documents, printed customer PII, and financial reports must be locked in drawers or shredded at end of day"
+      - "Password Sticky Notes: Writing passwords on monitor sticky notes or under keyboards completely nullifies technical authentication"
+      - "Clean Whiteboard Rule: Conference room whiteboards containing network topologies or source code must be erased immediately after meetings"
+    check:
+      - prompt: "During an after-hours physical security audit, a technician finds an employee's computer password written on a sticky note under their keyboard. What policy does this violate?"
+        options:
+          - "Clean Desk and Password Security Policy"
+          - "Disaster Recovery Policy"
+          - "Software Development Lifecycle"
+          - "Wi-Fi 6 Standard"
+        correct: 0
+      - prompt: "What should be done with physical paper records containing student Social Security Numbers before discarding them in the trash?"
+        options:
+          - "Cross-cut shredding or placing them in a locked secure document destruction bin"
+          - "Recycling them in an open blue bin"
+          - "Crumpling them into a ball"
+          - "Stacking them near the doorway"
+        correct: 0
+  - id: usb-safety-and-byod
+    title: "Removable Media Hazards and BYOD Governance"
+    keyPoints:
+      - "USB Removable Media Risks: Rogue flash drives can carry auto-executing malicious payloads or leak confidential files outside the network"
+      - "Enterprise USB Blocking: System administrators frequently disable external USB mass storage ports via Active Directory Group Policy"
+      - "BYOD (Bring Your Own Device): Employees using personal smartphones for work must agree to Mobile Device Management (MDM) security containerization"
+    check:
+      - prompt: "Why do many high-security enterprise environments disable USB mass storage ports across all desktop computers via Group Policy?"
+        options:
+          - "To prevent malware infections from rogue USB drives and stop data exfiltration of sensitive corporate records"
+          - "To speed up mouse movement"
+          - "To lower the computer's electric bill"
+          - "To force employees to use floppy disks"
+        correct: 0
+      - prompt: "When an organization adopts a 'Bring Your Own Device' (BYOD) policy, what technology allows IT to separate corporate emails from personal photos on an employee's phone?"
+        options:
+          - "Mobile Device Management (MDM) Containerization"
+          - "A KVM switch"
+          - "A CPU heatsink"
+          - "A RAID 0 array"
+        correct: 0
 domains:
   - domainId: techplus.security
     weight: 1
 ---
 
-## Device Use Best Practices
+import Callout from '../../components/Callout.astro';
 
-Technical controls are only part of the security equation. How people **use** devices every day determines whether those controls actually work. These are the habits that prevent the most overlooked exposures.
+## Security is a Daily Muscle Memory
 
-### Acceptable Use Policies (AUP)
+You can install biometric retina scanners on the front doors and spend millions on cybersecurity firewalls.
 
-An **Acceptable Use Policy** is a written agreement specifying how company-owned devices and networks may be used. Key provisions typically include:
-- Devices are for business purposes; personal use may be monitored
-- No installation of unauthorized software
-- No accessing illegal content
-- No circumventing security controls (VPN, content filters)
-- Expected behavior when a device is lost or stolen (report immediately)
+Yet, every single day, massive data breaches occur because:
+- An accountant stepped away to get a cup of coffee and left their computer unlocked (**Windows + L** ignored).
+- A manager wrote their administrative password on a yellow sticky note stuck to the bottom of their monitor.
+- An employee found a random USB flash drive in the elevator and plugged it in to see who it belonged to.
 
-All employees or students should acknowledge the AUP in writing. Unknowing violations still cause breaches — awareness matters.
+**Physical and Operational Security Hygiene** is not about software code—it is about daily, disciplined human habits that prevent the most common security mistakes in the workplace.
 
-### Screen Locking
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        THE DAILY SECURITY HYGIENE TRIAD                │
+├────────────────────┬───────────────────────────────────────────────────┤
+│ **1. Screen Lock** │ Instantly lock your screen (`Win + L`) every time │
+│                    │ you stand up from your chair. No exceptions.      │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **2. Clean Desk**  │ Lock printed PII and medical charts in drawers.   │
+│                    │ Never leave passwords on sticky notes!            │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **3. USB Caution** │ Never plug an unknown USB drive into any machine. │
+│                    │ Encrypt all approved external storage drives.     │
+└────────────────────┴───────────────────────────────────────────────────┘
+```
 
-- **Always lock your screen** when stepping away, even for a moment
-- Shortcut: **Windows + L** (Windows), **Control + Command + Q** (macOS)
-- Set automatic lock timeout: 5–10 minutes maximum in work environments
-- In high-security environments: lock on every departure, no exceptions
+---
 
-An unlocked unattended workstation is an open door — anyone who walks by has full access as the logged-in user.
+## 1. The Acceptable Use Policy (AUP)
 
-### Clean Desk Policy
+When you join a school, hospital, or corporation, the first document IT hands you is the **Acceptable Use Policy (AUP)**:
+- **Corporate Property Notice:** All computers, monitors, networks, and emails belong to the organization. Users have no expectation of personal privacy on corporate equipment.
+- **Prohibited Actions:** No installing pirated software, no attempting to bypass network web filters (e.g. using unauthorized VPNs), and no storing illegal or copyright-infringing media.
+- **Incident Reporting:** Mandatory obligation to immediately notify IT if a laptop is lost, stolen, or exhibits signs of malware infection.
 
-- No sensitive documents left on desks at end of day
-- Printed materials containing PII or confidential data must be stored in locked drawers or shredded
-- Whiteboards with sensitive content should be erased before leaving a room
-- Passwords must never be written on sticky notes near the workstation
+---
 
-### USB and Removable Media
+## 2. Screen Locking: The 1-Second Habit
 
-**Unknown USB drives are a major threat vector:**
-- Baiting attacks: attackers leave infected drives in parking lots
-- USB drives can auto-execute malware when plugged in
-- Never plug in a USB drive you found or received unexpectedly
+Leaving an unattended workstation logged in is the equivalent of leaving your front door wide open with the keys in the lock.
 
-**Policy:**
-- Only use organization-approved removable media
-- Encrypt data on USB drives used for transporting sensitive data
-- Many organizations disable USB ports via Group Policy to prevent unauthorized use
+Any passerby—a disgruntled coworker, a rogue cleaning contractor, or an unauthorized visitor—can sit at your desk and:
+- Read your confidential emails.
+- Delete database tables under your username.
+- Send offensive or fraudulent messages from your corporate Slack account.
 
-### BYOD (Bring Your Own Device)
+```
+┌────────────────────────────────────────────────────────┐
+│            THE INSTANT SCREEN LOCK SHORTCUTS           │
+│                                                        │
+│   🪟 Windows PCs:   **Windows Key + L**                │
+│   🍎 Apple Mac:     **Control + Command + Q**          │
+│   🐧 Linux (GNOME): **Super Key + L**                  │
+└────────────────────────────────────────────────────────┘
+```
 
-When employees or students use personal devices for school/work:
-- Personal devices may not have the same security controls as company devices
-- **MDM (Mobile Device Management)** software can enforce security policies on personal devices
-- Clear policies needed: what data can sync to personal devices? What happens if the device is wiped?
+<Callout type="exam">
+**The Screen Timeout Standard:** In addition to manual locking, enterprise Group Policies enforce an **Automated Inactivity Screen Lock** set to **5 to 10 minutes**. If a user forgets to lock their machine, the screen automatically blacks out and requires their password/MFA to resume.
+</Callout>
 
-### Software Installation
+---
 
-- Only install software from official, trusted sources
-- Avoid pirated software — often bundled with malware
-- Verify file hashes/signatures when downloading security tools
-- Report any unexpected software installation to IT
+## 3. Clean Desk and Clean Screen Policies
 
-### Key Exam Points
+- **Clean Desk Policy:** At the end of the workday, all paper documents containing **Personally Identifiable Information (PII)**, employee salaries, student records, or customer credit card details must be locked inside a filing cabinet or shredded.
+- **The Sticky Note Hazard:** Writing a password on a sticky note glued to a monitor completely destroys password complexity policies. An attacker walking through the office with a smartphone camera can steal 10 administrative passwords in 30 seconds.
+- **Clean Whiteboard Rule:** When a team finishes a brainstorming session in a conference room involving sensitive software architecture or customer data, the whiteboard must be erased before leaving the room.
 
-- **AUP** = written policy on appropriate device and network use; all users should sign it
-- **Windows + L** = lock workstation immediately
-- Never plug in an unknown USB drive — baiting attack vector
-- Clean desk policy prevents physical data exposure
-- **BYOD** requires MDM to enforce security policies on personal devices
+---
+
+## 4. BYOD (Bring Your Own Device) and USB Safety
+
+When companies allow employees to use personal iPhones or Android devices for work (**BYOD**), it creates a boundary challenge:
+- IT deploys **MDM (Mobile Device Management)** software that creates a secure, encrypted **Corporate Container** on the phone.
+- Corporate emails and customer contacts live inside the encrypted container, isolated from personal games, TikTok, and personal photos.
+- If the employee resigns, IT executes an **Enterprise Selective Wipe**—deleting only the corporate container while leaving the employee's personal family photos untouched.
+
+---
+
+## Why This Matters in the Field
+
+Physical and operational hygiene separates amateur computer users from professional IT technicians.
+
+Developing the instinctive habit of locking your workstation, shredding sensitive printouts, and enforcing the Acceptable Use Policy protects both your organization and your professional reputation.
+
+---
+
+## Key Terms
+
+Acceptable Use Policy (AUP) · Screen Locking · `Windows + L` · Auto-Lock Inactivity Timeout · Clean Desk Policy · Clean Whiteboard Policy · Password Sticky Notes · Cross-Cut Shredder · Removable Media Hazards · USB Port Disabling · Group Policy · Bring Your Own Device (BYOD) · Mobile Device Management (MDM) · Containerization · Enterprise Selective Wipe

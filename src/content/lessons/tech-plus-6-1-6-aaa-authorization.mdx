@@ -1,78 +1,195 @@
 ---
-title: AAA — Authorization
-description: Understand authorization — controlling what authenticated users are allowed to do using access control models and the principle of least privilege. FC0-U71 objective 6.1.
+title: AAA Framework — Authorization and Access Control Models
+description: Master permission management and access control models. Explore the difference between Authentication and Authorization, Role-Based Access Control (RBAC), Discretionary Access Control (DAC), Mandatory Access Control (MAC), Attribute-Based Access Control (ABAC), and Least Privilege.
 slug: tech-plus-6-1-6-aaa-authorization
 track: tech-plus
 moduleId: tech-plus.security
 order: 6
+objective: "FC0-U71 6.1"
+xp: 15
+source: cyber-org
 difficulty: Beginner
 estMinutes: 20
-tags: ["tech+", "FC0-U71 6.1", "AAA", "authorization", "access control", "least privilege"]
+tags: ["tech+", "FC0-U71 6.1", "AAA", "authorization", "access control", "RBAC", "DAC", "MAC", "ABAC", "least privilege"]
+sections:
+  - id: auth-vs-authorization
+    title: "Authentication vs. Authorization: Who You Are vs. What You Can Do"
+    keyPoints:
+      - "Authentication verifies identity ('Who are you?'); Authorization determines permissions ('What resources are you allowed to touch?')"
+      - "Successful authentication does not grant blanket permissions: a student can log into a lab computer, but cannot view other students' home directories"
+      - "Broken Access Control (OWASP #1) occurs when web applications fail to enforce authorization checks on sensitive backend functions"
+    check:
+      - prompt: "A technician successfully enters their password and MFA code to log into the domain. When they try to open the HR payroll folder, they see 'Access Denied'. Which security process blocked their action?"
+        options:
+          - "Authorization"
+          - "Authentication"
+          - "Encryption"
+          - "Accounting"
+        correct: 0
+      - prompt: "What is the key difference between Authentication and Authorization in IT security?"
+        options:
+          - "Authentication verifies who a user is, while Authorization determines what permissions and resources that user is permitted to access"
+          - "Authentication is for hardware, Authorization is for software"
+          - "Authentication requires internet, Authorization works offline"
+          - "They are identical concepts"
+        correct: 0
+  - id: access-control-models-rbac-dac-mac
+    title: "Access Control Models: RBAC vs. DAC vs. MAC vs. ABAC"
+    keyPoints:
+      - "Role-Based Access Control (RBAC): Enterprise standard where permissions are assigned to Job Roles (e.g. 'Accountant', 'Help Desk Tech') rather than individual people"
+      - "Discretionary Access Control (DAC): The file creator/owner personally decides who gets read/write permissions (standard Windows NTFS / Linux chmod)"
+      - "Mandatory Access Control (MAC): The operating system enforces access using rigid security clearance labels (Top Secret, Secret); users cannot override it"
+      - "Attribute-Based Access Control (ABAC): Dynamic policies evaluating context (e.g. 'HR staff accessing payroll from corporate laptops during business hours only')"
+    check:
+      - prompt: "Which access control model assigns permissions to job roles (such as 'Network Administrator' or 'Billing Specialist') so that new employees inherit permissions automatically upon joining the department?"
+        options:
+          - "Role-Based Access Control (RBAC)"
+          - "Discretionary Access Control (DAC)"
+          - "Mandatory Access Control (MAC)"
+          - "Rule-Based Access"
+        correct: 0
+      - prompt: "In a high-security military intelligence facility, access to classified documents is governed strictly by the operating system based on Top Secret clearance labels that individual file owners cannot change. Which model is this?"
+        options:
+          - "Mandatory Access Control (MAC)"
+          - "Discretionary Access Control (DAC)"
+          - "Role-Based Access Control (RBAC)"
+          - "Open Access"
+        correct: 0
+  - id: least-privilege-and-separation
+    title: "Enforcing Least Privilege and Separation of Duties"
+    keyPoints:
+      - "Principle of Least Privilege: Every user account, service, and script is assigned the bare minimum permissions required to perform its daily duties"
+      - "Separation of Duties: Splitting critical business tasks across multiple people so no single individual can commit fraud or sabotage undetected"
+      - "Privilege Escalation: An attack where a standard unprivileged user exploits a software bug to gain Domain Administrator / Root permissions"
+    check:
+      - prompt: "Why should system administrators have two separate user accounts—a standard unprivileged account for daily email and a separate admin account used only for server configuration?"
+        options:
+          - "To practice Least Privilege: if their daily email client is compromised by a malicious phishing link, the malware cannot inherit full administrator rights"
+          - "To receive two paychecks"
+          - "To speed up internet downloads"
+          - "To save hard drive space"
+        correct: 0
+      - prompt: "What internal control prevents a single accountant from creating a fake vendor, approving the invoice, and signing the check without anyone else reviewing it?"
+        options:
+          - "Separation of Duties"
+          - "Full Disk Encryption"
+          - "Wi-Fi Protected Setup"
+          - "RAID 0 Striping"
+        correct: 0
 domains:
   - domainId: techplus.security
     weight: 1
 ---
 
-## AAA — Authorization
+import Callout from '../../components/Callout.astro';
 
-**Authorization** is the second A in AAA. After a user is authenticated (their identity is verified), **authorization** determines **what they are permitted to do**. It answers: "What are you allowed to access?"
+## What Are You Allowed to Touch?
 
-### Authentication vs. Authorization
+You present your driver's license at airport security. The TSA officer scans your barcode and verifies that you are genuinely John Doe (**Authentication**).
 
-| | Authentication | Authorization |
-|---|---|---|
-| Question | Who are you? | What can you do? |
-| When | Before access | After authentication |
-| Example | Logging in with a password | Whether your account can delete files |
+*Does that mean you can open the door to the cockpit and fly the Boeing 777?* **Of course not.**
 
-You can authenticate successfully and still be denied authorization — a standard student account can log into a school computer, but cannot install software or access another student's files.
+Once an identity is verified, the system must consult an access policy to determine what actions, directories, files, and commands that specific identity is permitted to execute.
 
-### Access Control Models
+This is **Authorization**: the second "A" in the **AAA Framework**.
 
-**DAC — Discretionary Access Control**
-- The owner of a resource controls who has access (they "discretionarily" grant it)
-- Common in standard OS file permissions (Windows NTFS, Linux `chmod`)
-- Flexible but relies on users making good security decisions
+Understanding access control models like **RBAC**, **DAC**, and **MAC**, and enforcing the **Principle of Least Privilege** is what prevents rogue insiders and compromised accounts from destroying corporate infrastructure.
 
-**MAC — Mandatory Access Control**
-- Access is controlled by the system based on security labels/classifications
-- Users cannot override it — even if they own a file
-- Used in high-security environments (government, military)
-- Example: Top Secret data can only be accessed by Top Secret–cleared users
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        AUTHENTICATION VS. AUTHORIZATION                │
+├──────────────────────────────────┬─────────────────────────────────────┤
+│ **Authentication (The Badge)**   │ **Authorization (The Keys)**        │
+├──────────────────────────────────┼─────────────────────────────────────┤
+│ 🔑 Question: **"Who are you?"**  │ 🚪 Question: **"What can you do?"** │
+│ • Validates identity credentials │ • Checks permissions and rights     │
+│ • Passwords, MFA Tokens, FaceID  │ • Read, Write, Execute, Delete ACLs │
+│ • Answers: *"You are Alice."*    │ • Answers: *"Alice can read files,  │
+│                                  │   but CANNOT delete databases."*    │
+└──────────────────────────────────┴─────────────────────────────────────┘
+```
 
-**RBAC — Role-Based Access Control**
-- Access is granted based on **job role**, not individual
-- A "teacher" role gets gradebook access; a "student" role does not
-- Easy to manage: change the role, change all permissions for that role
-- Most common model in enterprise environments
+---
 
-**ABAC — Attribute-Based Access Control**
-- Access based on multiple attributes: user department, time of day, device, location
-- Very flexible; complex to administer
-- Example: "HR staff can access payroll data from corporate devices during business hours"
+## 1. Access Control Models: How Permissions Are Assigned
 
-### Principle of Least Privilege
+Computer operating systems and enterprise applications use different architectural models to manage who gets access to what:
 
-Users and processes should have only the **minimum permissions** necessary to do their job. No more.
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        ACCESS CONTROL MODEL TAXONOMY                   │
+├──────────────┬─────────────────────────────────────────────────────────┤
+│ **RBAC**     │ **Role-Based Access Control:** Permissions belong to    │
+│ (Enterprise) │ **Roles** (e.g. "Nurse", "Manager"). Users are placed in│
+│              │ roles. Simplest to manage in large organizations.       │
+├──────────────┼─────────────────────────────────────────────────────────┤
+│ **DAC**      │ **Discretionary Access Control:** The **Owner** of the  │
+│ (Desktop OS) │ file decides who has access (Windows NTFS, Linux chmod).│
+├──────────────┼─────────────────────────────────────────────────────────┤
+│ **MAC**      │ **Mandatory Access Control:** The **System/OS** enforces│
+│ (Military)   │ access using security labels (Top Secret / Secret).     │
+│              │ Users cannot modify or override labels.                 │
+├──────────────┼─────────────────────────────────────────────────────────┤
+│ **ABAC**     │ **Attribute-Based Access Control:** Contextual policies │
+│ (Next-Gen)   │ evaluating attributes (User Role + Device + Time + IP). │
+└──────────────┴─────────────────────────────────────────────────────────┘
+```
 
-- A student should not have admin rights on a school computer
-- An app should not have write access to files it only needs to read
-- A service account should not have domain admin privileges
+### Role-Based Access Control (RBAC): The Corporate Standard
+In a company with 5,000 employees, you cannot manually assign 200 file permissions to individual user names.
+- You create an Active Directory group called `Finance_Dept`.
+- You assign read/write permissions for the accounting software to `Finance_Dept`.
+- When an employee is hired into accounting, you simply add them to that group—they instantly inherit all necessary permissions!
 
-Benefits: limits blast radius of a compromised account; reduces insider threat risk.
+---
 
-### Need-to-Know
+## 2. The Principle of Least Privilege in Action
 
-Related to least privilege — users should only be able to access information they **need for their specific role or task**, even if they are cleared for a higher classification level.
+The **Principle of Least Privilege (PoLP)** dictates that users, processes, and service accounts should receive **only the absolute minimum permissions required** to perform their assigned job duties.
 
-### OWASP Connection
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                    THE BLAST RADIUS OF COMPROMISED ACCOUNTS            │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│   ❌ BAD PRACTICE (Over-Privileged User):                              │
+│   Accountant logs in with full Domain Admin rights.                    │
+│   └── Clicks malicious phishing link $\rightarrow$ Malware infects     │
+│       entire corporate network, deletes domain backups!                │
+│                                                                        │
+│   ✔ BEST PRACTICE (Least Privilege):                                   │
+│   Accountant logs in with Standard Restricted User permissions.        │
+│   └── Clicks malicious phishing link $\rightarrow$ Malware is blocked  │
+│       from installing system drivers and cannot spread!                │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
 
-**Broken Access Control** (OWASP #1 — the most common web vulnerability) occurs when authorization is improperly implemented. Examples: a user editing another user's profile, or a non-admin accessing admin-only URLs by guessing the path.
+<Callout type="exam">
+**The Dual Account Standard:** System administrators should never check daily email or browse the web while logged in as `Domain Admin` or `root`. Administrators should have two accounts: a standard `user` account for daily tasks, and a separate `admin_user` account used only when executing elevated configuration changes.
+</Callout>
 
-### Key Exam Points
+---
 
-- Authorization = what you are allowed to do (after authentication confirms who you are)
-- **RBAC** is the most common enterprise model — permissions assigned to roles, not individuals
-- **Least privilege** — give only the access needed; no more
-- OWASP #1 (Broken Access Control) = authorization failures in web applications
-- **MAC** is used in high-security classified environments; users cannot override it
+## 3. Separation of Duties
+
+In cybersecurity and financial compliance, **Separation of Duties** prevents fraud and accidental sabotage by requiring **two or more distinct people** to complete a critical business transaction:
+- Person A creates a new vendor profile in the database.
+- Person B approves the purchase order.
+- Person C releases the wire transfer payment.
+
+If one person had permissions to perform all three actions, they could easily steal millions of dollars with no oversight.
+
+---
+
+## Why This Matters in the Field
+
+When you manage user onboarding tickets or configure folder permissions on a network share, setting proper authorization protects your organization.
+
+Implementing RBAC and enforcing least privilege ensures that an employee opening a malicious email attachment does not bring down the entire company.
+
+---
+
+## Key Terms
+
+AAA Framework · Authorization · Authentication vs Authorization · Access Control Lists (ACL) · Role-Based Access Control (RBAC) · Discretionary Access Control (DAC) · Mandatory Access Control (MAC) · Security Clearance Labels · Attribute-Based Access Control (ABAC) · Principle of Least Privilege (PoLP) · Separation of Duties · Privilege Escalation · Blast Radius · Dual Account Policy

@@ -1,98 +1,180 @@
 ---
-title: Securing Small Wireless Networks
-description: Apply security controls to a small Wi-Fi network — WPA3, strong credentials, guest isolation, firmware updates, and disabling risky features. FC0-U71 objective 6.5.
+title: Securing Small Wireless Networks — WPA3, Router Hardening, and Guest Isolation
+description: Master small office and home wireless network defense. Explore WPA3-SAE vs WPA2-AES, disabling dangerous WPS PIN backdoors, changing factory admin credentials, disabling WAN remote management, and segmenting untrusted IoT devices onto isolated Guest VLANs.
 slug: tech-plus-6-5-1-securing-small-wireless-networks
 track: tech-plus
 moduleId: tech-plus.security
 order: 15
+objective: "FC0-U71 6.5"
+xp: 15
+source: cyber-org
 difficulty: Beginner
 estMinutes: 20
-tags: ["tech+", "FC0-U71 6.5", "wireless security", "WPA3", "WPA2", "Wi-Fi", "router"]
+tags: ["tech+", "FC0-U71 6.5", "wireless security", "WPA3", "WPA2", "Wi-Fi", "router", "WPS", "guest network", "firmware", "SSID"]
+sections:
+  - id: wireless-security-protocols-sae
+    title: "Wireless Encryption Protocols: WPA3-SAE vs. Legacy Standards"
+    keyPoints:
+      - "WPA3-Personal (SAE): Uses Simultaneous Authentication of Equals (Dragonfly handshake) to completely block offline dictionary password cracking"
+      - "WPA2-Personal (AES-CCMP): Standard legacy encryption; vulnerable to 4-way handshake capture and offline GPU dictionary attacks"
+      - "WEP & WPA-TKIP: Cryptographically broken protocols that can be cracked in under 60 seconds with free automated attack tools"
+    check:
+      - prompt: "What critical security enhancement does WPA3-Personal introduce over legacy WPA2 to prevent attackers from cracking Wi-Fi passwords offline?"
+        options:
+          - "The SAE (Simultaneous Authentication of Equals) handshake that prevents offline dictionary brute-force attacks"
+          - "It eliminates the need for passwords completely"
+          - "It makes radio waves invisible"
+          - "It increases radio transmit power by 500%"
+        correct: 0
+      - prompt: "A small business has an old barcode scanner that only connects using broken WEP encryption. What should the IT technician recommend?"
+        options:
+          - "Replace the obsolete barcode scanner or isolate it on a dedicated legacy network, and NEVER downgrade the main corporate Wi-Fi to WEP"
+          - "Disable all passwords on the router"
+          - "Change the router's IP address to 8.8.8.8"
+          - "Unplug the internet cable"
+        correct: 0
+  - id: router-firmware-and-admin-credentials
+    title: "Router Hardening: Factory Credentials, WPS Risks, and Remote Management"
+    keyPoints:
+      - "Change Default Admin Credentials: Factory logins (`admin/admin`, `admin/password`) are published online in public hacker databases"
+      - "Disable WPS (Wi-Fi Protected Setup): The 8-digit WPS PIN feature contains fatal design flaws allowing brute-force cracking in a few hours"
+      - "Disable Remote Management: Prevents the router's administrative login page from being accessible over the public WAN internet"
+    check:
+      - prompt: "Why is leaving the default administrative login credentials on a newly unboxed wireless router a critical security risk?"
+        options:
+          - "Default manufacturer username/password pairs are publicly documented online and used by automated botnets to compromise routers"
+          - "It causes the router to overheat"
+          - "It disables the Wi-Fi antennas"
+          - "It prevents computers from booting"
+        correct: 0
+      - prompt: "Why must an IT technician immediately disable Wi-Fi Protected Setup (WPS) on a small business wireless router?"
+        options:
+          - "The 8-digit WPS PIN architecture has a fatal design vulnerability that allows free attack tools (like Reaver) to extract the Wi-Fi password"
+          - "WPS slows down Ethernet ports"
+          - "WPS prevents smartphones from charging"
+          - "WPS consumes excessive electricity"
+        correct: 0
+  - id: guest-isolation-and-iot-segmentation
+    title: "Network Segmentation: Guest Networks and IoT Device Isolation"
+    keyPoints:
+      - "Guest Network Isolation: Creates a segregated Wi-Fi network that gives visitors internet access while blocking all communication with local office PCs, servers, and printers"
+      - "IoT Containment: Smart TVs, smart thermostats, and IP cameras should be isolated on the guest/IoT VLAN to prevent smart device botnet pivots"
+      - "Firmware Updates: Flashing vendor firmware patches closes severe zero-day vulnerabilities in the router's Linux kernel"
+    check:
+      - prompt: "What network configuration allows visitors and smart office TVs to access the internet while strictly preventing them from seeing or accessing corporate file servers?"
+        options:
+          - "An Isolated Guest Network (Guest VLAN Isolation)"
+          - "Port Forwarding"
+          - "A KVM Switch"
+          - "A Static Default Gateway"
+        correct: 0
+      - prompt: "An attacker exploits a known vulnerability in an unpatched smart thermostat connected to an office Wi-Fi. If Guest/IoT isolation was NOT configured, what can the attacker do?"
+        options:
+          - "Pivot across the local LAN subnet to scan, attack, and compromise corporate workstations and accounting servers"
+          - "Change the weather outside"
+          - "Format the internet"
+          - "Increase the building's rent"
+        correct: 0
 domains:
   - domainId: techplus.security
     weight: 1
 ---
 
-## Securing Small Wireless Networks
+import Callout from '../../components/Callout.astro';
 
-Wi-Fi broadcasts data through the air — anyone within range can attempt to receive it. Securing a small wireless network means making that access as difficult as possible for attackers while keeping it convenient for authorized users.
+## Securing the Invisible Airwaves
 
-### Why Wireless Security Matters
+When you deploy a wired Ethernet network, an attacker must physically enter your building, plug a cable into a wall jack, or tap a copper wire to capture packets.
 
-An unsecured or weakly secured wireless network allows:
-- **Unauthorized internet access** — "piggybacking" on your connection
-- **Traffic interception** — reading unencrypted data sent over the network
-- **Network intrusion** — once on the network, attackers can probe internal devices
-- **Rogue device attacks** — injecting traffic or performing ARP poisoning
+When you turn on a **Wireless Router**, radio waves pass effortlessly through drywall, glass windows, brick exterior walls, and out into the public parking lot.
 
-### Wireless Security Protocols
+An attacker sitting in a car 100 feet away with a high-gain antenna can attempt to intercept corporate emails, brute-force administrative passwords, and pivot onto your internal servers.
 
-| Protocol | Status | Notes |
-|---|---|---|
-| **WEP** (Wired Equivalent Privacy) | **Broken — never use** | Cracked in under 2 minutes with standard tools |
-| **WPA** (Wi-Fi Protected Access) | Deprecated — avoid | RC4/TKIP — multiple known weaknesses |
-| **WPA2-Personal (PSK)** | Acceptable | AES-CCMP; use when WPA3 unavailable |
-| **WPA2-Enterprise** | Good | Per-user credentials via RADIUS; used in corporate/school |
-| **WPA3-Personal** | Best — use if supported | SAE handshake; resists offline dictionary attacks |
-| **WPA3-Enterprise** | Best for org | 192-bit security suite |
+Understanding **Wireless Network Hardening** transforms an open, vulnerable radio bubble into an impenetrable enterprise boundary.
 
-**WPA3's key improvement over WPA2:** The SAE (Simultaneous Authentication of Equals) handshake protects against offline dictionary attacks. If an attacker captures a WPA2 handshake, they can brute-force the password offline. WPA3 prevents this.
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   WIRELESS ROUTER HARDENING CHECKLIST                  │
+├────────────────────┬───────────────────────────────────────────────────┤
+│ **1. Encryption**  │ Set to **WPA3-Personal (or WPA2-AES minimum)**.   │
+│                    │ Never deploy WEP or unencrypted open Wi-Fi!       │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **2. Credentials** │ Immediately change the default admin password.    │
+│                    │ Set a unique 16+ character Wi-Fi passphrase.      │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **3. Disable WPS** │ Turn off Wi-Fi Protected Setup (WPS PIN backdoor).│
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **4. Disable WAN** │ Turn off **Remote Management** to block internet- │
+│    **Management**  │ facing login attacks.                             │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **5. Guest VLAN**  │ Put smart TVs, IoT cameras, and visitors on an    │
+│                    │ **Isolated Guest Network** away from internal PCs.│
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **6. Firmware**    │ Flash the latest security firmware from vendor.   │
+└────────────────────┴───────────────────────────────────────────────────┘
+```
 
-### Hardening Checklist for a Small Wireless Network
+---
 
-**1. Set encryption to WPA3 (or WPA2-AES minimum)**
-Never accept WPA or WEP — if old devices require it, replace those devices.
+## 1. WPA3-SAE: The End of Offline Password Cracking
 
-**2. Use a strong, unique Wi-Fi password**
-- 12+ characters; passphrase format recommended
-- Don't use the router's default password or your address/phone number
-- Different from the router management interface password
+Why is **WPA3** so much stronger than legacy WPA2?
 
-**3. Change the router admin credentials immediately**
-- Default credentials (admin/admin, admin/password) are publicly documented
-- Use a strong password unique to the router management interface
-- Enable HTTPS for management; disable HTTP management if possible
+- **The Legacy WPA2 Flaw:** In WPA2, when a laptop connects to a router, it exchanges a 4-way authentication handshake. An attacker in the parking lot running *Wireshark* can capture that handshake packet, take it home to a powerful 8-GPU cracking rig, and run billions of password guesses per second offline without the router ever knowing!
+- **The WPA3-SAE Revolution:** WPA3 uses **Simultaneous Authentication of Equals (SAE)** (also known as the *Dragonfly Handshake*). It uses zero-knowledge proof cryptography:
+  - The password is never transmitted across the air.
+  - An attacker cannot test passwords offline.
+  - An attacker must guess passwords live against the router, where they will be instantly blocked after 5 failed attempts!
 
-**4. Change the default SSID**
-- Default SSIDs reveal the router manufacturer (e.g., "NETGEAR_5G") — attackers know its default credentials
-- Don't use your name, address, or any identifying information in the SSID
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                      WIRELESS ENCRYPTION STANDARDS                     │
+├──────────────┬───────────────┬─────────────────────────────────────────┤
+│ Standard     │ Status        │ Cryptographic Reality                   │
+├──────────────┼───────────────┼─────────────────────────────────────────┤
+│ **WEP**      │ ❌ **DEAD**   │ Broken 64/128-bit RC4; cracked in 60 sec│
+│ **WPA**      │ ❌ Deprecated │ Temporary patch; TKIP flaws             │
+│ **WPA2**     │ ✔ Legacy Gold │ AES-CCMP; vulnerable to handshake capture│
+│ **WPA3**     │ 🏆 **BEST**   │ SAE Dragonfly; immune to offline GPU    │
+│              │               │ dictionary cracking                     │
+└──────────────┴───────────────┴─────────────────────────────────────────┘
+```
 
-**5. Disable WPS (Wi-Fi Protected Setup)**
-- WPS PIN mode has a known brute-force vulnerability (Reaver tool)
-- Convenience vs. security: disable WPS and use the password
+<Callout type="warn">
+**The Deadly WPS PIN Backdoor:** **Wi-Fi Protected Setup (WPS)** was created to help non-technical users connect printers by entering an 8-digit PIN found on the router sticker. However, the WPS protocol validates the first 4 digits separately from the last 4 digits! This architectural flaw allows free tools (*Reaver*) to brute-force the PIN in less than 4 hours, displaying the plain-text Wi-Fi password. **Always disable WPS in router settings.**
+</Callout>
 
-**6. Keep firmware updated**
-- Router firmware patches security vulnerabilities
-- Check manufacturer's site or enable automatic firmware updates if available
-- A router running 3-year-old firmware is a vulnerability
+---
 
-**7. Use a guest network for untrusted devices**
-- Guest network is isolated from the main LAN — guests on a guest network cannot see internal devices
-- Use for: IoT devices, visitor devices, smart TVs
-- Set a separate (weaker) guest password that you can change easily
+## 2. Router Hardening: Locking the Admin Panel
 
-**8. Disable remote management**
-- Management interface should only be accessible from the local network, not from the internet
-- Remote management enabled = a login page exposed to the entire internet
+1. **Change Default Credentials:** Attackers have automated scripts that scan IP addresses across the internet testing `admin/admin`, `admin/password`, and `root/toor`. Change the management password immediately upon unboxing.
+2. **Disable Remote Management (WAN Access):** By default, management consoles should **only be accessible from internal LAN Ethernet ports**. Enabling remote management exposes the router's login page to every hacker on Earth.
+3. **Keep Firmware Updated:** Router manufacturers release regular firmware updates to patch critical Linux kernel vulnerabilities and buffer overflows.
 
-**9. Review connected devices**
-- Router admin panel shows all connected devices
-- Unknown devices may indicate unauthorized access
-- Use MAC address filtering as an additional (not sole) control
+---
 
-**10. Place the router physically securely**
-- A physical reset button restores factory defaults — if accessible, it bypasses all your settings
-- Keep routers out of areas accessible to visitors
+## 3. Network Segmentation: The Power of the Guest Network
 
-### OWASP Connection
+Every modern home and office has smart IoT devices: smart lightbulbs, video doorbells, smart TVs, and networked coffee makers. 
 
-**Security Misconfiguration** (OWASP #5) — default credentials, unused features left enabled (WPS, remote management), and weak encryption are all textbook misconfigurations that apply directly to consumer and small business Wi-Fi routers.
+Almost all IoT devices run cheap, unpatched software that is easily compromised by botnets.
 
-### Key Exam Points
+**The Solution is Guest Isolation (VLAN Segmentation):**
+- **Main Wi-Fi Subnet (`192.168.1.0/24`):** Corporate workstations, file servers, accounting databases, network printers.
+- **Isolated Guest / IoT Subnet (`192.168.2.0/24`):** Visitors, smart TVs, IoT cameras, smartphones.
+- Devices on the Guest network can reach the public internet, but **cannot see, ping, or communicate with devices on the Main subnet**.
 
-- **WEP is completely broken**; **WPA3** is the current best practice
-- **WPS PIN mode** is vulnerable — always disable WPS
-- Default router credentials are **publicly documented** — change them before connecting anything
-- **Guest networks** isolate untrusted devices from the main LAN
-- Firmware updates patch security vulnerabilities in the router itself
-- Disabling **remote management** removes the router's internet-facing login page
+---
+
+## Why This Matters in the Field
+
+When you set up a network for a small business, a medical clinic, or a home office, configuring wireless security properly protects your clients from devastating network breaches.
+
+Enabling WPA3, disabling WPS, locking admin credentials, and segregating IoT devices on a guest network turns a basic router into a hardened security perimeter.
+
+---
+
+## Key Terms
+
+Wireless Network Security · WEP (Broken) · WPA2-Personal (AES-CCMP) · WPA3-Personal (SAE / Dragonfly) · Offline Dictionary Attack · 4-Way Handshake · Wi-Fi Protected Setup (WPS) · Reaver Tool · Default Admin Credentials · Remote Management (WAN) · Firmware Update · Service Set Identifier (SSID) · Network Segmentation · Guest Network Isolation · IoT Containment · VLAN

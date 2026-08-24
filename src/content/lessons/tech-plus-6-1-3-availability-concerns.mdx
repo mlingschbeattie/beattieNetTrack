@@ -1,74 +1,191 @@
 ---
-title: Availability Concerns
-description: Understand availability as a security pillar — what disrupts it, how redundancy and resilience protect it, and why uptime is a security goal. FC0-U71 objective 6.1.
+title: Availability Concerns — DoS, Redundancy, and Disaster Recovery
+description: Master the third pillar of the CIA Triad. Explore Availability controls, Denial of Service (DoS) and Distributed DoS (DDoS) botnet floods, hardware redundancy (RAID, dual PSUs), Uninterruptible Power Supplies (UPS), and Disaster Recovery planning.
 slug: tech-plus-6-1-3-availability-concerns
 track: tech-plus
 moduleId: tech-plus.security
 order: 3
+objective: "FC0-U71 6.1"
+xp: 15
+source: cyber-org
 difficulty: Beginner
 estMinutes: 20
-tags: ["tech+", "FC0-U71 6.1", "CIA triad", "availability", "DoS", "redundancy"]
+tags: ["tech+", "FC0-U71 6.1", "CIA triad", "availability", "DoS", "DDoS", "redundancy", "RAID", "UPS", "disaster recovery"]
+sections:
+  - id: what-is-availability
+    title: "What is Availability? The 'A' in the CIA Triad"
+    keyPoints:
+      - "Availability guarantees that systems, networks, and data are consistently accessible to authorized users whenever needed"
+      - "An availability failure halts business operations: emergency dispatch offline, ecommerce store down, hospital records unreachable"
+      - "Ransomware represents a severe availability attack by locking files behind encryption until extortion ransoms are paid"
+    check:
+      - prompt: "An e-commerce website crashes on Black Friday due to overwhelming traffic and hardware failure, preventing customers from purchasing items. Which pillar of the CIA Triad is impacted?"
+        options:
+          - "Availability"
+          - "Confidentiality"
+          - "Integrity"
+          - "Non-repudiation"
+        correct: 0
+      - prompt: "Why is a ransomware infection classified as an attack on data Availability?"
+        options:
+          - "The encrypted files still physically exist on the hard drive, but legitimate authorized users are completely blocked from accessing and using them"
+          - "The files are translated to Spanish"
+          - "The monitor power cable is disconnected"
+          - "The Wi-Fi password is deleted"
+        correct: 0
+  - id: threats-dos-ddos-hardware
+    title: "Threats to Availability: DoS, DDoS Botnets, and Physical Outages"
+    keyPoints:
+      - "Denial of Service (DoS): A single machine floods a target server with bogus packets to consume 100% CPU/bandwidth"
+      - "Distributed Denial of Service (DDoS): Thousands of compromised IoT devices (a Botnet) attack a target simultaneously, overwhelming perimeter firewalls"
+      - "Physical & Environmental Threats: Datacenter power blackouts, fiber line trench cuts, air conditioning failure causing thermal shutdowns"
+    check:
+      - prompt: "What cyberattack utilizes a network of thousands of infected 'zombie' computers (a Botnet) to flood a target server with massive traffic volumes?"
+        options:
+          - "A Distributed Denial of Service (DDoS) Attack"
+          - "Shoulder Surfing"
+          - "SQL Injection"
+          - "Phishing"
+        correct: 0
+      - prompt: "What happens to a server processor when datacenter air conditioning fails and temperatures exceed safe thermal limits?"
+        options:
+          - "The CPU engages Thermal Throttling and will eventually emergency shut down to prevent permanent physical silicon damage, causing an availability outage"
+          - "The CPU speeds up"
+          - "The CPU formats the hard drive"
+          - "The RAM capacity doubles"
+        correct: 0
+  - id: availability-controls-redundancy-ups
+    title: "Defending Availability: Redundancy, UPS, and High Availability (HA)"
+    keyPoints:
+      - "Single Point of Failure (SPOF): Any individual hardware component whose failure brings down the entire system (eliminated via redundancy)"
+      - "Hardware Redundancy: RAID disk arrays, dual redundant Power Supply Units (PSUs), and dual multi-homed ISP fiber lines"
+      - "Uninterruptible Power Supply (UPS): Battery backup bridging power during brief blackouts and brownouts to prevent sudden server crashes"
+    check:
+      - prompt: "What hardware component provides immediate battery backup power to server racks when municipal electrical utility power fails?"
+        options:
+          - "An Uninterruptible Power Supply (UPS)"
+          - "A KVM Switch"
+          - "A Patch Panel"
+          - "A Thermal Heatsink"
+        correct: 0
+      - prompt: "An enterprise database server contains two physical power supply units (PSUs) plugged into two separate electrical circuits. What design goal does this achieve?"
+        options:
+          - "Hardware Redundancy (eliminating the power supply as a Single Point of Failure)"
+          - "Faster CPU clock speed"
+          - "Increased RAM bandwidth"
+          - "Automated software testing"
+        correct: 0
 domains:
   - domainId: techplus.security
     weight: 1
 ---
 
-## Availability Concerns
+import Callout from '../../components/Callout.astro';
 
-Availability means that systems and data are **accessible to authorized users when they need them**. It is the "A" in the **CIA Triad**. A system that is perfectly confidential and perfectly intact is still a security failure if no one can reach it.
+## If You Can't Access It, It Doesn't Work
 
-### Why Availability Matters
+Imagine the most secure computer in the world: it is encrypted with uncrackable 4096-bit keys, locked in a subterranean titanium vault, encased in 10 feet of solid concrete, and physically disconnected from all networks and power lines.
 
-- Emergency services can't reach patient records during an outage
-- An e-commerce site goes down on the busiest shopping day of the year
-- A ransomware attack encrypts all files — data has "integrity" in the encrypted form but is completely unavailable
-- A critical update can't be deployed because the update server is down
+The data inside that computer has **100% Confidentiality** (no one can see it) and **100% Integrity** (no one can change it).
 
-### Threats to Availability
+*Is it a good computer?* **No—it is completely useless.**
 
-| Threat | Description |
-|---|---|
-| **Denial of Service (DoS)** | Attacker floods a system with traffic, overwhelming it |
-| **Distributed DoS (DDoS)** | DoS from thousands of compromised systems (a botnet) |
-| **Ransomware** | Encrypts files; pays for decryption key |
-| **Hardware failure** | Disk crash, PSU failure, NIC failure |
-| **Natural disasters** | Fire, flood, power outage, earthquake |
-| **Misconfiguration** | Admin error takes a service offline |
-| **Software bugs** | Crashes, memory leaks, infinite loops |
+**Availability** is the essential third pillar ("A") of the **CIA Triad**. It is the guarantee that computing systems, network pipes, database servers, and applications are responsive, operational, and accessible to authorized users whenever they need them.
 
-### Controls That Protect Availability
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        THE AVAILABILITY SPECTRUM                       │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│   THREATS TO AVAILABILITY:                                             │
+│   ├── DDoS Botnet Floods (Bandwidth Exhaustion)                        │
+│   ├── Ransomware Encrypting Operational Files                          │
+│   ├── Municipal Power Grid Blackouts & Brownouts                       │
+│   └── Single Point of Failure (SPOF) Hardware Blowouts (PSU / SSD)    │
+│                                                                        │
+│          ▼                                                             │
+│   AVAILABILITY DEFENSES:                                               │
+│   ├── High Availability (HA) Server Clustering & Load Balancing        │
+│   ├── Redundant Hardware: RAID Arrays + Dual Hot-Swap PSUs             │
+│   ├── Battery Backup: Uninterruptible Power Supplies (UPS) + Generator │
+│   └── Multi-Homed Redundant ISP Fiber Internet Connections             │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
 
-**Redundancy** — eliminate single points of failure
-- RAID storage (multiple drives) — survives a single drive failure
-- Redundant power supplies (servers often have two PSUs)
-- Multiple ISP connections
-- Clustered servers with failover
+---
 
-**Backups**
-- Regular, tested backups are the primary defense against ransomware and data loss
-- **3-2-1 rule:** 3 copies, on 2 different media types, with 1 offsite
-- Backups must be **tested** — an untested backup is not a reliable backup
+## 1. Threats to System Availability
 
-**Disaster Recovery (DR) and Business Continuity Planning (BCP)**
-- DR: technical procedures to restore systems after an outage
-- BCP: broader plan covering operations during and after a disruption
-- **RTO** — Recovery Time Objective: maximum acceptable downtime
-- **RPO** — Recovery Point Objective: maximum acceptable data loss (in time)
+Availability outages stem from deliberate cyberattacks, mechanical breakdowns, and environmental disasters:
 
-**UPS (Uninterruptible Power Supply)**
-Provides battery backup during power outages — keeps systems running long enough for a graceful shutdown or until a generator comes online.
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                         AVAILABILITY THREAT MATRIX                     │
+├────────────────────┬───────────────────────────────────────────────────┤
+│ **DoS / DDoS**     │ Flooding web servers with gigabits of fake traffic│
+│                    │ until the network card drops legitimate users.    │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Ransomware**     │ Encrypts customer records with military ciphers,  │
+│                    │ making databases completely inaccessible.         │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Power Loss**     │ A lightning storm cuts utility power, causing     │
+│                    │ sudden server crashes and unwritten file loss.    │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Single Point of**│ A critical router with only one power supply      │
+│ **Failure (SPOF)** │ blows a capacitor, taking down the whole company. │
+└────────────────────┴───────────────────────────────────────────────────┘
+```
 
-**High Availability (HA)**
-Architecture designed for maximum uptime — load balancers, clustered services, geographic distribution.
+---
 
-### OWASP Connection
+## 2. Denial of Service (DoS) vs. Distributed DoS (DDoS)
 
-Security Logging and Monitoring Failures (OWASP #9) undermine availability by hiding attacks until they cause outages. You can't prevent what you can't see.
+- **DoS (Denial of Service):** A single rogue computer sends 100,000 requests per second to a web server, exhausting its CPU thread pool. The administrator can easily block the single attacker's IP address in the firewall.
+- **DDoS (Distributed Denial of Service):** An attacker infects 500,000 smart IoT security cameras, home routers, and compromised PCs across 80 countries, turning them into a **Botnet** controlled by a **Command-and-Control (C2)** server. 
+  - The botnet floods the target with hundreds of gigabits of traffic simultaneously.
+  - Because traffic originates from half a million unique residential IPs, standard firewall IP bans are completely ineffective, requiring cloud traffic scrubbing services (Cloudflare, AWS Shield).
 
-### Key Exam Points
+---
 
-- Availability = systems are accessible to authorized users when needed
-- **DoS/DDoS** is the most common direct attack on availability
-- **Redundancy** eliminates single points of failure; **backups** enable recovery
-- **3-2-1 backup rule:** 3 copies, 2 media types, 1 offsite
-- RTO = how fast you recover; RPO = how much data you can afford to lose
+## 3. Engineering for Uptime: Redundancy and Power Protection
+
+In enterprise IT, technicians design systems so that **no single hardware failure can cause downtime**:
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                    ELIMINATING SINGLE POINTS OF FAILURE                │
+├────────────────────┬───────────────────────────────────────────────────┤
+│ Redundancy Layer   │ Real-World Engineering Implementation             │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Storage**        │ **RAID 1 / RAID 5 Arrays:** If one hard drive     │
+│                    │ dies, the server keeps running without data loss. │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Power Supplies** │ **Dual Hot-Swap PSUs:** If PSU 1 blows, PSU 2     │
+│                    │ instantly takes the entire electrical load.       │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Power Source**   │ **UPS Battery Systems:** Bridges power during a   │
+│                    │ blackout until diesel generators start up.        │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **WAN Internet**   │ **Dual ISPs:** Primary Fiber + Secondary 5G/Cable │
+│                    │ backup with automated router failover.            │
+└────────────────────┴───────────────────────────────────────────────────┘
+```
+
+<Callout type="warn">
+**The UPS Shutdown Rule:** An Uninterruptible Power Supply (UPS) is not designed to run a server room for 3 days. A standard rackmount UPS provides **15 to 30 minutes of emergency battery power**—just enough time for an automated script to safely flush database caches and execute a **graceful system shutdown** before battery exhaustion.
+</Callout>
+
+---
+
+## Why This Matters in the Field
+
+When a core switch dies or a power transformer explodes, every second of downtime costs businesses thousands of dollars in lost productivity and revenue.
+
+Designing fault-tolerant architectures with redundant power, RAID storage, and tested UPS batteries ensures your infrastructure remains resilient when hardware fails.
+
+---
+
+## Key Terms
+
+CIA Triad · Availability · Uptime · High Availability (HA) · Denial of Service (DoS) · Distributed Denial of Service (DDoS) · Botnet · Zombie · Command and Control (C2) · Single Point of Failure (SPOF) · Hardware Redundancy · Hot-Swappable Components · RAID · Dual Power Supplies · Uninterruptible Power Supply (UPS) · Surge Protector · Brownout · Blackout · Graceful Shutdown

@@ -1,89 +1,180 @@
 ---
-title: Safe Browsing Practices
-description: Browse safely — identify HTTPS, avoid malicious sites, manage browser security settings, and understand web-based threats. FC0-U71 objective 6.2.
+title: Safe Browsing Practices — HTTPS Padlocks, Malicious URLs, and Web Threats
+description: Master web security and safe browsing architecture. Explore HTTP vs HTTPS encryption, TLS certificates and the padlock myth, URL inspection (Typosquatting and Homograph attacks), Drive-By Downloads, Browser Extensions, and Cross-Site Scripting (XSS).
 slug: tech-plus-6-2-4-safe-browsing-practices
 track: tech-plus
 moduleId: tech-plus.security
 order: 11
+objective: "FC0-U71 6.2"
+xp: 15
+source: cyber-org
 difficulty: Beginner
 estMinutes: 20
-tags: ["tech+", "FC0-U71 6.2", "browsing", "HTTPS", "phishing", "malware", "XSS"]
+tags: ["tech+", "FC0-U71 6.2", "browsing", "HTTPS", "TLS", "certificates", "phishing", "typosquatting", "drive-by download", "malvertising", "XSS"]
+sections:
+  - id: https-and-padlock-myth
+    title: "HTTPS vs. HTTP and the Great Padlock Myth"
+    keyPoints:
+      - "HTTP (Port 80) transmits all passwords and data in unencrypted plaintext; HTTPS (Port 443) encrypts traffic with Transport Layer Security (TLS)"
+      - "The Padlock Myth: The HTTPS padlock guarantees that the connection is ENCRYPTED, but it does NOT prove the website is honest or safe"
+      - "Cybercriminals easily obtain valid, free TLS certificates (Let's Encrypt) for fraudulent phishing domains"
+    check:
+      - prompt: "What does the padlock icon next to a website URL in a modern web browser guarantee?"
+        options:
+          - "The network traffic between your browser and that specific web server is encrypted via TLS"
+          - "The website is 100% legally legitimate, honest, and completely free of malware"
+          - "The website is owned by the government"
+          - "Your computer is immune to viruses"
+        correct: 0
+      - prompt: "Why should users never enter credit card numbers or passwords on a website running plain unencrypted HTTP?"
+        options:
+          - "Anyone on the same local Wi-Fi or internet path can intercept and read the plaintext data using packet sniffing software"
+          - "The web browser will physically crash the computer"
+          - "The computer will run out of hard drive space"
+          - "HTTP only works on desktop PCs"
+        correct: 0
+  - id: malicious-url-inspection
+    title: "Inspecting Malicious URLs: Typosquatting and Homoglyphs"
+    keyPoints:
+      - "Typosquatting (URL Hijacking): Registering misspelled domain names of popular sites (e.g. `paypa1.com` or `amzon.com`) to trick users"
+      - "Homograph / Homoglyph Attacks: Using lookalike foreign Unicode characters (e.g. Cyrillic 'a' vs Latin 'a') to mimic authentic domains"
+      - "Link Hovering Discipline: Always hover your mouse over hyperlinks to verify the true underlying destination URL before clicking"
+    check:
+      - prompt: "An attacker registers the fraudulent domain `netflix-billing-update.com` hoping users will believe it is the real Netflix website. What attack technique is this?"
+        options:
+          - "Typosquatting / Fake Domain Masquerading"
+          - "SQL Injection"
+          - "Denial of Service"
+          - "MAC Address Spoofing"
+        correct: 0
+      - prompt: "Before clicking a link in an email that reads 'Click here to claim your refund', what should a cautious user do first?"
+        options:
+          - "Hover the mouse over the hyperlink to inspect the true destination domain in the browser status bar"
+          - "Click the link immediately"
+          - "Forward the email to all contacts"
+          - "Reboot the computer"
+        correct: 0
+  - id: web-threats-drive-by-extensions
+    title: "Web-Based Threat Vectors: Drive-By Downloads, Malvertising, and Extensions"
+    keyPoints:
+      - "Drive-By Download: Malware silently downloads and executes just by visiting an infected website, exploiting unpatched browser/plugin bugs"
+      - "Malvertising: Malicious code injected into legitimate online advertising networks, displaying malicious popups on trusted news sites"
+      - "Rogue Browser Extensions: Third-party extensions can read everything you type (keystrokes, passwords, credit cards) across all websites"
+    check:
+      - prompt: "What type of web attack infects a victim's computer with malware simply by having the user visit a compromised web page without clicking any download buttons?"
+        options:
+          - "A Drive-By Download"
+          - "Shoulder Surfing"
+          - "Tailgating"
+          - "Dumpster Diving"
+        correct: 0
+      - prompt: "Why should corporate IT departments strictly restrict what third-party Browser Extensions and Plugins employees are allowed to install?"
+        options:
+          - "Malicious or compromised extensions have permissions to intercept keystrokes, steal session cookies, and read sensitive web form data"
+          - "Extensions use too much paper"
+          - "Extensions break Wi-Fi antennas"
+          - "Extensions disable the keyboard"
+        correct: 0
 domains:
   - domainId: techplus.security
     weight: 1
 ---
 
-## Safe Browsing Practices
+import Callout from '../../components/Callout.astro';
 
-The web browser is the most-used application on most computers — and one of the primary attack surfaces. Safe browsing habits dramatically reduce exposure to malware, phishing, and data theft.
+## Navigating the Wild Web
 
-### HTTPS vs. HTTP
+For most computer users, the **Web Browser** is the operating system: it is where they check email, perform online banking, manage cloud databases, and stream entertainment.
 
-**HTTP** transmits data in plain text — anyone on the same network can read it (usernames, passwords, form data).
+Because users spend 90% of their digital time inside a browser, it is also the primary attack vector for cybercriminals.
 
-**HTTPS** encrypts traffic using TLS (Transport Layer Security). The padlock icon confirms:
-1. The connection is encrypted
-2. The server's identity has been verified by a Certificate Authority
+From fraudulent phishing domains disguised with lookalike characters to unpatched browser exploits that execute code without a single click, understanding **Safe Browsing Practices** is a vital defensive skill for every technician.
 
-**What HTTPS does NOT guarantee:**
-- That the site is legitimate — attackers obtain valid TLS certificates for phishing sites
-- That the site has no malware
-- That your data won't be misused after it arrives
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        WEB BROWSER SECURITY LAYERS                     │
+├────────────────────┬───────────────────────────────────────────────────┤
+│ **1. Transport**   │ **HTTPS (TLS 1.3):** Encrypts data in transit     │
+│                    │ across the public internet.                       │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **2. Destination** │ **URL Domain Inspection:** Spotting fake domains  │
+│                    │ and avoiding malicious typosquatted links.        │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **3. Execution**   │ **Browser Sandbox & Patching:** Blocking drive-by │
+│                    │ zero-day downloads and disabling rogue extensions.│
+└────────────────────┴───────────────────────────────────────────────────┘
+```
 
-Always look for HTTPS, but HTTPS alone is not proof of trustworthiness.
+---
 
-### Identifying Malicious Sites
+## 1. The Great HTTPS Padlock Myth
 
-**URL inspection:**
-- Check the actual domain — `paypa1.com` and `paypal-security-alert.com` are not PayPal
-- Attackers use typosquatting (spelling variations), homograph attacks (lookalike Unicode characters)
-- Hover over links before clicking to see the actual destination URL
+In the early days of the web, cybersecurity experts taught users a simple rule: *"Look for the green padlock in the address bar! If you see the padlock, the website is completely safe!"*
 
-**Browser warnings:**
-- "This connection is not private" — certificate problem; do not proceed
-- "Site contains malware" — browser's Safe Browsing blocklist triggered
-- "Deceptive site ahead" — known phishing URL
+**That rule is now dangerously obsolete.**
 
-**Red flags on a site:**
-- Unsolicited pop-ups claiming your computer is infected
-- Requests for payment via gift cards or wire transfer
-- Pages mimicking login screens of real services
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                      WHAT THE HTTPS PADLOCK ACTUALLY MEANS             │
+├──────────────────────────────────┬─────────────────────────────────────┤
+│ ✔ **WHAT HTTPS GUARANTEES:**     │ ❌ **WHAT HTTPS DOES NOT GUARANTEE:**│
+├──────────────────────────────────┼─────────────────────────────────────┤
+│ • Traffic between your browser   │ • Does NOT prove the owner is honest│
+│   and that web server is         │ • Does NOT prove the site is not a  │
+│   **encrypted with TLS**.        │   phishing scam!                    │
+│ • Snoops on Wi-Fi cannot read    │ • 80%+ of active phishing websites  │
+│   passwords in transit.          │   have valid HTTPS padlocks!        │
+└──────────────────────────────────┴─────────────────────────────────────┘
+```
 
-### Drive-By Downloads
+<Callout type="warn">
+**The Padlock Reality Check:** Today, anyone can obtain a 100% legitimate, free TLS certificate in 10 seconds from automated Certificate Authorities like *Let's Encrypt*. A criminal running `wellsfarg0-secure-login.com` will have a valid HTTPS padlock. **The padlock means the pipe is encrypted—it does not mean the person on the other end of the pipe isn't a thief!**
+</Callout>
 
-Visiting a malicious site can trigger automatic malware downloads without any user action — exploiting browser or plugin vulnerabilities. Mitigations:
-- Keep browser and all extensions updated
-- Remove unnecessary browser plugins (each adds attack surface)
-- Enable pop-up blocking
-- Consider script-blocking extensions in high-risk environments
+---
 
-### Browser Security Settings
+## 2. Inspecting URLs: Typosquatting and Homoglyphs
 
-- **Private/Incognito mode** — does not save local history, cookies, or form data; does NOT make you anonymous on the network
-- **Block third-party cookies** — reduces cross-site tracking
-- **Do Not Track** — advisory only; most sites ignore it
-- **Clear cache and cookies** periodically — removes stale session tokens
-- **Password manager** — built-in or third-party; prevents reuse and enables strong unique passwords
+Attackers rely on the fact that humans read quickly and rarely inspect address bars character-by-character:
 
-### Web-Based Threats
+- **Typosquatting (URL Hijacking):** Registering common spelling typos of popular websites:
+  - `g00gle.com` instead of `google.com`
+  - `amazn.com` instead of `amazon.com`
+  - `microsoft-security-verification.com` instead of `microsoft.com`
+- **Homograph / Homoglyph Attacks:** Substituting lookalike characters from international alphabets (e.g., using the Cyrillic letter `а` (U+0430) which looks 100% identical to the Latin letter `a` (U+0061) on a monitor).
 
-| Threat | Description |
-|---|---|
-| **Phishing** | Fake login pages harvesting credentials |
-| **Drive-by download** | Malware downloaded on visit, no click needed |
-| **Malvertising** | Malware delivered through legitimate ad networks |
-| **Clickjacking** | Hidden buttons underneath visible content trick users into unintended clicks |
-| **Cross-Site Scripting (XSS)** | Malicious scripts injected into web pages; can steal session cookies |
-| **Man-in-the-Browser** | Malware in the browser intercepts and modifies transactions |
+```
+┌────────────────────────────────────────────────────────┐
+│              THE LINK HOVERING DISCIPLINE              │
+│                                                        │
+│   Displayed Link Text: "Update Your Apple ID Password" │
+│                                                        │
+│   🖱️ Mouse Hover Reveal:                               │
+│   Destination: `http://194.26.29.11/apple/login.php`   │
+│                                                        │
+│   ❌ REVEALED AS A PHISHING ATTACK!                     │
+└────────────────────────────────────────────────────────┘
+```
 
-### OWASP Connection
+---
 
-**Injection (XSS)** (OWASP #3) and **Insecure Design** (OWASP #4) are directly related to web browsing safety — well-built sites protect users from script injection; poorly built ones expose them.
+## 3. Web Threat Vectors: Drive-Bys, Malvertising, and Rogue Extensions
 
-### Key Exam Points
+- **Drive-By Downloads:** Visiting a compromised website that exploits an unpatched vulnerability in your browser engine (Chromium, WebKit) or PDF plugin to silently install malware in the background without asking for permission.
+  - **Defense:** Keep your browser updated to the latest version and enable the browser's **Sandbox Isolation** mode.
+- **Malvertising:** Hackers pay for legitimate advertising slots on major news websites, but embed malicious redirection scripts inside the ad banner.
+- **Rogue Browser Extensions:** Free "PDF converter" or "coupon finder" extensions frequently contain spyware that logs every password typed into your browser.
 
-- HTTPS = encrypted; HTTP = plain text — always use HTTPS for anything sensitive
-- HTTPS with a padlock does NOT prove a site is safe — only that the connection is encrypted
-- Hover over links to verify the actual URL before clicking
-- **Incognito mode** hides local history; it does NOT anonymize network traffic
-- **Drive-by downloads** exploit browser vulnerabilities without user interaction — keep browsers patched
+---
+
+## Why This Matters in the Field
+
+When helping users troubleshoot infected computers, you will find that over 80% of infections occur through web browsing traps.
+
+Teaching users the link hovering discipline, demystifying the HTTPS padlock, and locking down browser extensions protects your organization from web-based intrusions.
+
+---
+
+## Key Terms
+
+Safe Browsing · HTTP vs HTTPS · Transport Layer Security (TLS) · Padlock Icon Myth · Certificate Authority (CA) · Phishing · Typosquatting · Homograph / Homoglyph Attack · URL Inspection · Link Hovering · Drive-By Download · Malvertising · Browser Extensions · Extension Permissions · Browser Sandbox · Content Filtering · Cookie Security

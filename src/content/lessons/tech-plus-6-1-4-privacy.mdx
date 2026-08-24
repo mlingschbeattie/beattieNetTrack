@@ -1,76 +1,179 @@
 ---
-title: Privacy
-description: Understand privacy as distinct from confidentiality — personal data rights, regulations, and responsible data handling practices. FC0-U71 objective 6.1.
+title: Data Privacy — PII Rights, Regulatory Compliance, and Governance
+description: Master the legal and ethical boundaries of data handling. Explore Privacy vs Confidentiality, direct vs indirect Personally Identifiable Information (PII), compliance frameworks (FERPA, HIPAA, GDPR, CCPA), and the Data Minimization principle.
 slug: tech-plus-6-1-4-privacy
 track: tech-plus
 moduleId: tech-plus.security
 order: 4
+objective: "FC0-U71 6.1"
+xp: 15
+source: cyber-org
 difficulty: Beginner
 estMinutes: 20
-tags: ["tech+", "FC0-U71 6.1", "privacy", "PII", "FERPA", "HIPAA", "GDPR"]
+tags: ["tech+", "FC0-U71 6.1", "privacy", "PII", "FERPA", "HIPAA", "GDPR", "CCPA", "data minimization", "compliance"]
+sections:
+  - id: privacy-vs-confidentiality
+    title: "Privacy vs. Confidentiality: The Individual's Rights"
+    keyPoints:
+      - "Confidentiality is a technical security control protecting organizational data from unauthorized eyes ('Can hackers see this?')"
+      - "Privacy is a legal and ethical framework governing an individual's right to control how their personal data is collected, stored, and shared"
+      - "An organization can have perfect technical confidentiality but still violate user privacy if it secretly sells personal data without consent"
+    check:
+      - prompt: "What is the key distinction between Confidentiality and Data Privacy?"
+        options:
+          - "Confidentiality is the technical protection of data from unauthorized access, whereas Privacy is the individual's legal right to control how their personal data is collected and used"
+          - "Confidentiality applies only to hardware; privacy applies only to software"
+          - "Privacy only exists in Linux"
+          - "There is no difference"
+        correct: 0
+      - prompt: "A social media app encrypts user chat messages with AES-256 (strong confidentiality), but secretly sells users' real-time GPS locations to advertisers without consent. What principle was violated?"
+        options:
+          - "User Data Privacy"
+          - "The 3-2-1 Backup Rule"
+          - "Clock Frequency"
+          - "RAID Striping"
+        correct: 0
+  - id: direct-vs-indirect-pii
+    title: "Personally Identifiable Information: Direct vs. Indirect PII"
+    keyPoints:
+      - "Direct PII: Data that identifies an individual by itself (Social Security Number, Full Legal Name, Biometric Face Scan, Driver's License)"
+      - "Indirect / Quasi-Identifiers: Data points that identify a specific person when combined (ZIP Code + Birth Date + Gender can uniquely identify ~87% of the US population)"
+      - "Protected Health Information (PHI): Medical diagnoses, prescription histories, and psychiatric records protected under HIPAA"
+    check:
+      - prompt: "Which of the following items represents Direct Personally Identifiable Information (PII) that uniquely identifies a citizen?"
+        options:
+          - "A Social Security Number (SSN)"
+          - "The current weather temperature"
+          - "The brand of printer paper"
+          - "A computer's MAC address vendor code"
+        correct: 0
+      - prompt: "Why are seemingly innocent data points like 'Birth Date + 5-Digit ZIP Code + Gender' considered sensitive indirect PII?"
+        options:
+          - "When cross-referenced, these three data points can uniquely identify up to 87% of individuals in the United States"
+          - "They cause hard drive fragmentation"
+          - "They disable Wi-Fi encryption"
+          - "They drain laptop batteries"
+        correct: 0
+  - id: global-privacy-regulations
+    title: "Privacy Regulations and Data Minimization"
+    keyPoints:
+      - "FERPA: Protects student education records, grades, and disciplinary files in US schools"
+      - "HIPAA: Protects patient medical records (PHI) across hospitals and healthcare IT systems"
+      - "GDPR (EU) & CCPA (California): Enforce the 'Right to be Forgotten' (data erasure) and require strict 72-hour breach notification"
+      - "Data Minimization: Collect only the absolute minimum data required to deliver a service, and delete it immediately once the purpose expires"
+    check:
+      - prompt: "What European data privacy regulation grants consumers the 'Right to Erasure' (Right to be Forgotten), requiring companies to permanently delete their personal data upon request?"
+        options:
+          - "GDPR (General Data Protection Regulation)"
+          - "FERPA"
+          - "DMCA"
+          - "NIST 800-53"
+        correct: 0
+      - prompt: "An online store asks customers for their mother's maiden name and Social Security Number just to purchase a $10 phone case. What security best practice is being violated?"
+        options:
+          - "The Principle of Data Minimization"
+          - "The DRY Principle"
+          - "The OSI Model"
+          - "Overclocking"
+        correct: 0
 domains:
   - domainId: techplus.security
     weight: 1
 ---
 
-## Privacy
+import Callout from '../../components/Callout.astro';
 
-Privacy is related to confidentiality but focuses on the **rights of individuals** to control how their personal information is collected, used, and shared. Where confidentiality is a security control, privacy is a legal and ethical obligation.
+## Who Owns Your Digital Identity?
 
-### Privacy vs. Confidentiality
+Every time you browse the web, register for an online class, download a mobile app, or swipe a loyalty card at a grocery store, you leave a trail of digital breadcrumbs.
 
-| | Confidentiality | Privacy |
-|---|---|---|
-| Focus | Protecting data from unauthorized access | Controlling use of personal information |
-| Who it protects | An organization's data | Individuals and their personal data |
-| Enforced by | Technical controls | Laws, regulations, policies |
-| Concern | Can attackers see this? | Should we collect this? How do we use it? |
+Companies track your search history, log your GPS locations, catalog your purchase habits, and record your biometric face scans.
 
-### Personally Identifiable Information (PII)
+While cybersecurity focuses on keeping hackers out of servers, **Data Privacy** focuses on a fundamental human question: **What rights do individuals have over their own personal information?**
 
-PII is any data that can be used to identify, contact, or locate a specific individual.
+Understanding data privacy laws, data classification, and responsible data governance is essential for every IT technician.
 
-**Direct PII:**
-- Full name combined with SSN, date of birth, or address
-- Passport or driver's license number
-- Financial account numbers
-- Medical record numbers
-- Biometric data (fingerprints, facial recognition)
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        PRIVACY VS. CONFIDENTIALITY                     │
+├──────────────────────────────────┬─────────────────────────────────────┤
+│ **Confidentiality (The Lock)**   │ **Data Privacy (The Permission)**   │
+├──────────────────────────────────┼─────────────────────────────────────┤
+│ 🔒 Technical security mechanisms:│ ⚖️ Legal & ethical human rights:    │
+│ "Is our database encrypted?"     │ "Do we have legitimate consent to   │
+│ "Can unauthorized hackers steal  │  collect this person's home address?"│
+│  our customer files?"            │ "How long are we permitted to keep  │
+│                                  │  this user's browsing history?"     │
+└──────────────────────────────────┴─────────────────────────────────────┘
+```
 
-**Indirect PII (can identify when combined):**
-- IP address + browsing history
-- ZIP code + birth date + gender (combinable to identify most people)
-- Device identifiers
+---
 
-### Privacy Regulations
+## 1. Personally Identifiable Information (PII)
 
-IT professionals must be aware of applicable laws:
+In IT, any data that can trace, identify, or contact a specific human being is classified as **PII (Personally Identifiable Information)**:
 
-| Regulation | Scope | Covers |
-|---|---|---|
-| **FERPA** | United States — Education | Student educational records; schools must get consent before sharing |
-| **HIPAA** | United States — Healthcare | Protected Health Information (PHI); healthcare providers and partners |
-| **COPPA** | United States — Children | Online data collection from children under 13 |
-| **GDPR** | European Union | Any org handling EU residents' data; right to access, erasure, portability |
-| **CCPA** | California | California residents; right to know, delete, opt-out of data sale |
+### Direct PII (Instantly Identifies a Person)
+- Full Legal Name
+- Social Security Number (SSN) / Passport Number
+- Biometric Data (Fingerprint hashes, Retina scans, Facial geometry)
+- Financial Account / Credit Card Numbers
 
-### Privacy Best Practices for IT Professionals
+### Indirect PII (Identifies When Combined)
+A single data point like a ZIP code (`15237`) does not identify a specific person. But research by computer scientists proved that combining just **three data points—5-digit ZIP code, Date of Birth, and Gender—uniquely identifies 87% of the entire United States population!**
 
-- **Data minimization** — collect only what is necessary for the purpose
-- **Purpose limitation** — don't use data for purposes beyond what was disclosed
-- **Retention limits** — don't keep personal data longer than needed; have a deletion schedule
-- **Encryption at rest and in transit** — protect PII even from internal exposure
-- **Access controls** — limit who can query systems containing PII
-- **Breach notification** — most regulations require notifying affected individuals within a defined window (72 hours under GDPR)
+---
 
-### OWASP Connection
+## 2. Regulatory Compliance: The Law and Your Systems
 
-**Identification and Authentication Failures** (OWASP #7) and **Security Misconfiguration** (OWASP #5) commonly expose PII — weak passwords let attackers in, and misconfigured storage buckets have leaked millions of records publicly.
+Handling personal data comes with strict legal responsibilities. Violating these regulations can result in multi-million dollar fines and criminal liability for executives:
 
-### Key Exam Points
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        MAJOR PRIVACY REGULATIONS                       │
+├──────────────┬──────────────────┬──────────────────────────────────────┤
+│ Regulation   │ Jurisdiction     │ Protected Scope                      │
+├──────────────┼──────────────────┼──────────────────────────────────────┤
+│ **FERPA**    │ United States    │ **Student Educational Records:**     │
+│              │ (Schools/K-12/HE)│ Grades, transcripts, IEPs, discipline│
+├──────────────┼──────────────────┼──────────────────────────────────────┤
+│ **HIPAA**    │ United States    │ **Protected Health Information (PHI)│
+│              │ (Healthcare)     │ Diagnoses, medical charts, billing   │
+├──────────────┼──────────────────┼──────────────────────────────────────┤
+│ **COPPA**    │ United States    │ Online data collection from children │
+│              │ (Online/Web)     │ under 13 years of age                │
+├──────────────┼──────────────────┼──────────────────────────────────────┤
+│ **GDPR**     │ European Union   │ Strict global standard; enforces     │
+│              │ (Global Impact)  │ "Right to be Forgotten" + 72hr breach│
+├──────────────┼──────────────────┼──────────────────────────────────────┤
+│ **CCPA**     │ California       │ Consumer right to opt out of data    │
+│              │ (US State)       │ sale and request data deletion       │
+└──────────────┴──────────────────┴──────────────────────────────────────┘
+```
 
-- Privacy = individual's right to control their personal data; confidentiality = keeping data from unauthorized access
-- **PII** = any data that can identify a specific person
-- **FERPA** protects student records; **HIPAA** protects health information
-- **GDPR** applies to any organization handling EU residents' data, regardless of where the org is located
-- Data minimization: collect only what is needed; retain only as long as necessary
+<Callout type="exam">
+**The FERPA Mandate for Educational IT:** Under the **Family Educational Rights and Privacy Act (FERPA)**, educational institutions cannot disclose student grades, test performance, or behavioral records to unauthorized third parties without written parental/student consent. Posting student exam grades on a public hallway bulletin board with student names is a direct federal FERPA violation!
+</Callout>
+
+---
+
+## 3. Best Practices: The Data Minimization Principle
+
+The most secure data in the world is the data you **never collected in the first place**:
+- **Data Minimization:** Collect only the exact fields necessary to deliver a service. If a mobile flashlight app requests access to your contacts, camera, and GPS location, it is violating data minimization.
+- **Purpose Limitation:** If a customer gives you their email address to receive an invoice receipt, you cannot secretly add them to a marketing ad campaign or sell their email to a data broker.
+- **Retention Limits & Secure Destruction:** When a student graduates or a customer closes their account, company policies must automatically purge and overwrite their records from active databases and backup tapes.
+
+---
+
+## Why This Matters in the Field
+
+When you deploy a new help-desk system, configure cloud storage buckets, or manage student accounts at Beattie, you are the custodian of human privacy.
+
+Configuring proper access permissions and encrypting PII at rest ensures you protect your users' fundamental digital rights.
+
+---
+
+## Key Terms
+
+Data Privacy · Confidentiality vs Privacy · Personally Identifiable Information (PII) · Direct PII · Indirect PII / Quasi-Identifiers · Protected Health Information (PHI) · FERPA · HIPAA · COPPA · GDPR (General Data Protection Regulation) · CCPA · Right to be Forgotten (Data Erasure) · Data Minimization · Purpose Limitation · Retention Limits · Secure Data Destruction
