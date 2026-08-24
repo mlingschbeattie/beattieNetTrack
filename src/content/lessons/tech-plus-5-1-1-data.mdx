@@ -1,6 +1,6 @@
 ---
-title: Data
-description: Understand what data is — types, lifecycle, the difference between data and information, and how data quality affects decision-making. FC0-U71 objective 5.1.
+title: Data Concepts — Structured vs. Unstructured Data, Metadata, and Privacy
+description: Master the foundational asset of the digital economy. Explore the Data vs Information vs Knowledge hierarchy, Structured vs Unstructured vs Semi-Structured formats, Metadata, Data Quality (GIGO), and privacy compliance (PII, PHI, FERPA, GDPR).
 slug: tech-plus-5-1-1-data
 track: tech-plus
 moduleId: tech-plus.databases
@@ -10,100 +10,220 @@ xp: 15
 source: cyber-org
 difficulty: Beginner
 estMinutes: 20
-tags: ["tech+", "FC0-U71 5.1", "data", "structured data", "unstructured data", "metadata", "data quality"]
+tags: ["tech+", "FC0-U71 5.1", "data", "structured data", "unstructured data", "metadata", "data quality", "PII", "PHI", "FERPA", "GDPR"]
+sections:
+  - id: data-vs-information-knowledge
+    title: "The Hierarchy: Raw Data vs. Information vs. Knowledge"
+    keyPoints:
+      - "Raw Data: Unprocessed objective facts, numbers, and symbols without context (e.g. `98.6`, `2026-08-24`)"
+      - "Information: Data processed, organized, and structured to convey contextual meaning (e.g. 'Patient body temperature was 98.6°F on August 24')"
+      - "Knowledge: Information combined with human experience and understanding to make informed decisions ('Patient has no fever and is discharged')"
+    check:
+      - prompt: "What is the key difference between raw Data and Information in computer science?"
+        options:
+          - "Data consists of uncontextualized raw facts and numbers, whereas Information is processed data organized into meaningful context"
+          - "Data requires batteries, information does not"
+          - "Information only exists on paper"
+          - "Data can only be written in Python"
+        correct: 0
+      - prompt: "A cybersecurity log displays: `192.168.1.50, Port 22, 1000 Attempts, Failed`. When an analyst concludes 'A brute-force attack is targeting the SSH server', what level of the hierarchy was applied?"
+        options:
+          - "Knowledge / Intelligence"
+          - "Raw Data only"
+          - "Physical Layer signaling"
+          - "Binary transistor voltage"
+        correct: 0
+  - id: structured-semi-unstructured
+    title: "Data Formats: Structured vs. Semi-Structured vs. Unstructured"
+    keyPoints:
+      - "Structured Data: Organized into rigid rows and columns with fixed schemas (Relational SQL databases, CSV files, Excel spreadsheets)"
+      - "Unstructured Data: Freeform media without a predefined schema (~80% of world data: audio files, photos, 4K videos, PDFs, email body text)"
+      - "Semi-Structured Data: Contains structural tags or key-value markers without strict relational tables (JSON, XML, YAML)"
+    check:
+      - prompt: "Which of the following files is classified as Unstructured Data?"
+        options:
+          - "A 10-minute MP4 video recording of a classroom lecture"
+          - "A relational database table of student test scores"
+          - "A comma-separated values (CSV) spreadsheet"
+          - "An SQL database catalog"
+        correct: 0
+      - prompt: "What data format stores information using self-describing key-value tags (e.g. `{\"name\": \"Alice\", \"grade\": 11}`) representing Semi-Structured data?"
+        options:
+          - "JSON (JavaScript Object Notation)"
+          - "An uncompressed WAV audio file"
+          - "A physical magnetic tape"
+          - "A relational SQL table"
+        correct: 0
+  - id: metadata-and-data-quality
+    title: "Metadata and Data Quality (The GIGO Principle)"
+    keyPoints:
+      - "Metadata is 'Data about Data' (file size, EXIF camera GPS location, email headers, database creation timestamps)"
+      - "Metadata is frequently more privacy-sensitive than the content itself, revealing communication networks and physical locations"
+      - "Data Quality Dimensions: Accuracy, Completeness, Consistency, Timeliness, and Validity"
+      - "GIGO (Garbage In, Garbage Out): Flawed or corrupt input data guarantees incorrect analytics and bad business decisions"
+    check:
+      - prompt: "When you take a smartphone photo, the embedded EXIF data records the date, camera shutter speed, and exact GPS latitude/longitude. What is this secondary data called?"
+        options:
+          - "Metadata"
+          - "A Virtual Machine"
+          - "A Device Driver"
+          - "A Kernel Panic"
+        correct: 0
+      - prompt: "What computer science axiom describes the principle that if bad, inaccurate data is entered into an information system, the resulting reports will be useless?"
+        options:
+          - "GIGO (Garbage In, Garbage Out)"
+          - "The DRY Principle"
+          - "The OSI Model"
+          - "Moore's Law"
+        correct: 0
+  - id: data-privacy-compliance
+    title: "Data Privacy and Regulatory Compliance: PII, PHI, FERPA, and GDPR"
+    keyPoints:
+      - "Personally Identifiable Information (PII): Data that can uniquely identify a person (Full Name, Social Security Number, Biometrics, Home Address)"
+      - "Protected Health Information (PHI): Medical diagnoses and health records protected under HIPAA regulations"
+      - "FERPA: Protects student educational records in schools; GDPR: Strict European data protection and privacy regulation"
+    check:
+      - prompt: "Which of the following items represents Personally Identifiable Information (PII) that requires strict encryption and access control?"
+        options:
+          - "A student's Social Security Number and date of birth"
+          - "The speed of the school's internet connection"
+          - "The model number of a computer monitor"
+          - "The color of the classroom wall"
+        correct: 0
+      - prompt: "What federal law protects the privacy of student educational records (grades, attendance, disciplinary history) in United States educational institutions?"
+        options:
+          - "FERPA (Family Educational Rights and Privacy Act)"
+          - "HIPAA"
+          - "PCI-DSS"
+          - "DMCA"
+        correct: 0
 domains:
   - domainId: techplus.databases
     weight: 1
 ---
 
-## Data
+import Callout from '../../components/Callout.astro';
 
-**Data** is the raw material of computing and the foundation of modern business. Understanding what data is, how it's categorized, and how it turns into useful information is essential for every IT role.
+## The Currency of the Modern World
 
-### Data vs. Information vs. Knowledge
+Oil fueled the industrial economy of the 20th century. **Data fuels the digital economy of the 21st century.**
 
-| Term | Definition | Example |
-|---|---|---|
-| **Data** | Raw, unprocessed facts | `87`, `2026-03-20`, `alice@example.com` |
-| **Information** | Data processed into meaningful context | "Alice scored 87% on the March 20 quiz" |
-| **Knowledge** | Information applied with understanding | "Alice is performing above average and ready for the next module" |
+Every interaction you have with technology—swiping a credit card at a gas station, sending a message on Discord, taking a photo on your smartphone, or submitting an assignment in school—generates a digital trail of data.
 
-Computers store and process **data**. Humans (and AI) interpret data to create **information**, then apply **knowledge** to make decisions.
+Organizations that collect, organize, secure, and analyze data make faster decisions, build better products, and detect cybersecurity threats before disaster strikes. Organizations that mismanage data face catastrophic database breaches, regulatory fines, and operational failure.
 
-### Types of Data
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   THE DATA TO KNOWLEDGE PYRAMID                        │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│   [ KNOWLEDGE ]   Applied understanding:                               │
+│                   "Server CPU temp is 98°C and rising $\rightarrow$    │
+│                    Thermal paste has failed; dispatch tech to fix."    │
+│         ▲                                                              │
+│   [ INFORMATION ] Processed context:                                   │
+│                   "CPU Temperature Sensor 1 = 98°C at 11:00 AM."       │
+│         ▲                                                              │
+│   [ RAW DATA ]    Unprocessed objective facts:                         │
+│                   `98`, `1100`, `TEMP_01`                              │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
 
-**Quantitative Data** — measured numerically
-- Counted or calculated; can be operated on mathematically
-- Examples: temperature (72°F), test score (87), download speed (150 Mbps), quantity ordered (5)
+---
 
-**Qualitative Data** — descriptive, categorical
-- Not inherently numerical; describes quality or characteristics
-- Examples: color, product name, user feedback text, job title
+## 1. Structured vs. Semi-Structured vs. Unstructured Data
 
-**Structured Data** — organized into a predefined format:
-- Rows and columns; easy to store in a relational database
-- Examples: spreadsheets, database tables, CSV files
-- Most analysis tools work natively with structured data
+Not all data looks like a neat Microsoft Excel spreadsheet:
 
-**Unstructured Data** — no predefined format:
-- The majority of data in the world (~80%)
-- Examples: emails, social media posts, images, videos, audio, Word documents, PDFs
-- Requires AI/ML tools or significant processing to analyze
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        DATA FORMAT TAXONOMY                            │
+├────────────────────┬───────────────────────────────────────────────────┤
+│ **Structured**     │ Rigid rows and columns. Relational SQL databases, │
+│ (~15% of data)     │ CSV files, bank transaction ledgers.              │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Semi-Structured**│ Tagged key-value pairs without rigid tables.      │
+│ (~5% of data)      │ JSON, XML, YAML, email server MIME headers.       │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Unstructured**   │ Freeform formats with no predefined data schema.  │
+│ (~80% of data)     │ 4K videos, MP3 audio, Word docs, photos, PDFs.    │
+└────────────────────┴───────────────────────────────────────────────────┘
+```
 
-**Semi-structured Data** — partial structure:
-- Has tags or markers but not rigid row/column format
-- Examples: JSON, XML, HTML, email headers
+- **Structured Data:** The gold standard for financial ledgers, inventory databases, and student grading systems. It is queried instantly using **SQL**.
+- **Unstructured Data:** The overwhelming majority of data generated across the internet. It cannot be stored in standard database tables and requires machine learning, computer vision, and NLP algorithms to analyze.
 
-### Data Lifecycle
+---
 
-Data doesn't last forever. The **data lifecycle** describes stages data passes through:
+## 2. Metadata: Data About Data
 
-1. **Creation / Collection** — data is generated (form submission, sensor reading, transaction)
-2. **Storage** — data is saved to a database, file system, or cloud
-3. **Processing** — data is transformed, cleaned, or aggregated
-4. **Analysis** — data is queried or visualized to extract information
-5. **Archiving** — infrequently accessed data moved to longer-term, cheaper storage
-6. **Destruction / Deletion** — data is securely removed when no longer needed or required
+When you take a digital photo with your smartphone, the image pixels represent the **Data**. But hidden inside the `.jpg` file header is the **Metadata (EXIF Data)**:
 
-### Metadata
+```
+┌────────────────────────────────────────────────────────┐
+│              EXIF METADATA EMBEDDED IN A PHOTO         │
+│                                                        │
+│   📸 Image Content (Data): A picture of a laptop       │
+│                                                        │
+│   🏷️ Embedded Metadata:                                │
+│   ├── Date & Time:    2026-08-24 11:05:12 EST          │
+│   ├── Camera Device:  Apple iPhone 15 Pro              │
+│   ├── GPS Location:   40.5421° N, 80.0245° W (Pittsburgh)│
+│   └── Camera Settings: ISO 100, f/1.78, 1/120s         │
+└────────────────────────────────────────────────────────┘
+```
 
-**Metadata** is data about data — it describes the content without being the content itself.
+<Callout type="warn">
+**The Privacy Threat of Metadata:** Even if a user encrypts the body text of an email, the **Metadata** (sender address, recipient address, IP address, exact time, and message size) is visible to network sniffers. In cybersecurity, metadata analysis reveals organizational hierarchies and personal routines.
+</Callout>
 
-| Data | Metadata |
-|---|---|
-| A photo | File size, resolution, date taken, GPS coordinates, camera model |
-| An email | Sender, recipient, timestamp, subject, mail server path |
-| A database record | Creation date, last modified, owner, table name |
+---
 
-Metadata is often more sensitive than the data itself — email metadata reveals communication patterns even when the content is encrypted.
+## 3. Data Quality and the GIGO Principle
 
-### Data Quality
+The most advanced artificial intelligence model or financial forecasting system is completely useless if the underlying data is flawed.
 
-Bad data leads to bad decisions. Data quality dimensions:
+This fundamental rule is known as **GIGO: Garbage In, Garbage Out**:
+- **Accuracy:** Is the data factually correct?
+- **Completeness:** Are required fields missing (e.g. customer phone number left blank)?
+- **Consistency:** Does the customer's address in the shipping database match their address in the billing database?
+- **Timeliness:** Is the data current, or is it a stale 5-year-old phone number?
 
-| Dimension | Description |
-|---|---|
-| **Accuracy** | Does it correctly represent reality? |
-| **Completeness** | Are all required fields present? |
-| **Consistency** | Is the same data the same across systems? |
-| **Timeliness** | Is it current, or stale? |
-| **Validity** | Does it conform to expected format and range? |
-| **Uniqueness** | Are there duplicates? |
+---
 
-**"Garbage in, garbage out" (GIGO)** — systems are only as reliable as the quality of their input data.
+## 4. Data Privacy, Compliance, and Protected Information
 
-### Data Privacy and Compliance
+In enterprise IT, handling data comes with strict legal responsibilities:
 
-- **PII (Personally Identifiable Information)** — data that can identify an individual: name, SSN, email, address, biometrics
-- **PHI (Protected Health Information)** — medical/health data (HIPAA in the US)
-- **GDPR, HIPAA, FERPA** — laws governing how data must be collected, stored, and deleted
-- Students' school records are protected under **FERPA** — a fact relevant to every educational environment
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                      DATA COMPLIANCE CLASSIFICATIONS                   │
+├────────────────────┬───────────────────────────────────────────────────┤
+│ **PII**            │ Personally Identifiable Information: Name, SSN,   │
+│                    │ Driver's License, Biometrics, Home Address.       │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **PHI**            │ Protected Health Information: Medical histories,  │
+│                    │ prescriptions, diagnoses (Regulated by HIPAA).    │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **FERPA**          │ Family Educational Rights and Privacy Act:        │
+│                    │ Protects student grades, records, and transcripts.│
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **GDPR**           │ General Data Protection Regulation: Strict EU law │
+│                    │ giving users the "Right to be Forgotten".         │
+└────────────────────┴───────────────────────────────────────────────────┘
+```
 
-### Key Exam Points
+---
 
-- **Data** = raw facts; **Information** = processed data with context; **Knowledge** = information applied
-- **Structured** data fits rows/columns (databases, spreadsheets); **unstructured** data (images, text) does not
-- **Metadata** = data about data — often as sensitive as the data itself
-- **PII** = personally identifiable information — must be handled with appropriate security and legal compliance
-- **GIGO** — data quality determines output quality; systems are only as good as their input data
-- Data lifecycle: Create → Store → Process → Analyze → Archive → Destroy
+## Why This Matters in the Field
+
+As an IT technician, you will manage file permissions, configure database backup jobs, and sanitize retired hard drives.
+
+Recognizing the distinction between PII, PHI, and educational records under **FERPA** ensures you protect your organization against multi-million dollar data breach lawsuits and regulatory penalties.
+
+---
+
+## Key Terms
+
+Data · Information · Knowledge · Structured Data · Unstructured Data · Semi-Structured Data · JSON · XML · Metadata · EXIF Data · Data Quality · GIGO (Garbage In, Garbage Out) · PII (Personally Identifiable Information) · PHI (Protected Health Information) · HIPAA · FERPA · GDPR

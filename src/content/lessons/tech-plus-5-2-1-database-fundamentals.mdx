@@ -1,6 +1,6 @@
 ---
-title: Database Fundamentals
-description: Understand what a database is, the role of a DBMS, CRUD operations, SQL basics, and the difference between relational and non-relational databases. FC0-U71 objective 5.2.
+title: Database Fundamentals — DBMS, Relational Tables, and SQL CRUD Operations
+description: Master relational database architecture and query mechanics. Explore Database Management Systems (DBMS), tables, rows (records), columns (fields), Primary Keys vs Foreign Keys, and the four foundational SQL CRUD commands (INSERT, SELECT, UPDATE, DELETE).
 slug: tech-plus-5-2-1-database-fundamentals
 track: tech-plus
 moduleId: tech-plus.databases
@@ -10,129 +10,196 @@ xp: 15
 source: cyber-org
 difficulty: Beginner
 estMinutes: 20
-tags: ["tech+", "FC0-U71 5.2", "database", "SQL", "DBMS", "CRUD", "relational database"]
+tags: ["tech+", "FC0-U71 5.2", "database", "SQL", "DBMS", "CRUD", "relational database", "primary key", "foreign key", "SELECT", "INSERT", "UPDATE", "DELETE"]
+sections:
+  - id: why-databases-and-dbms
+    title: "Why Databases Exist: The Role of the DBMS"
+    keyPoints:
+      - "A Database is an organized, persistent collection of structured records optimized for high-speed concurrent access and querying"
+      - "A Database Management System (DBMS) is the software engine that controls data storage, user permissions, transactions, and multi-user concurrency"
+      - "Major RDBMS Platforms: MySQL, PostgreSQL, Microsoft SQL Server, Oracle Database, and SQLite"
+    check:
+      - prompt: "What software application manages data storage, enforces referential integrity, and handles multi-user database queries?"
+        options:
+          - "A Database Management System (DBMS / RDBMS)"
+          - "A BIOS Firmware Setup"
+          - "A Display Driver"
+          - "A Network Patch Cable"
+        correct: 0
+      - prompt: "Which lightweight, file-based relational database engine is commonly embedded directly inside smartphone mobile apps and web browsers?"
+        options:
+          - "SQLite"
+          - "Oracle Enterprise RAC"
+          - "Microsoft Exchange"
+          - "Apache Kafka"
+        correct: 0
+  - id: relational-tables-and-keys
+    title: "Relational Structure: Tables, Records, Fields, and Primary Keys"
+    keyPoints:
+      - "Table (Relation): Stores records in two-dimensional rows (tuples) and columns (attributes)"
+      - "Primary Key: A column (e.g. `student_id`) containing strictly unique, non-null values that permanently identifies each row"
+      - "Foreign Key: A column in Table A that references the Primary Key of Table B, establishing a relational link"
+      - "Referential Integrity: Guarantees child foreign keys always point to valid, existing parent primary keys"
+    check:
+      - prompt: "In a relational database table, what is the mandatory requirement for a column designated as a Primary Key?"
+        options:
+          - "Every row must contain a strictly unique, non-null value to uniquely identify that record"
+          - "It must contain floating-point numbers only"
+          - "It must be encrypted with WPA3"
+          - "It must change every 24 hours"
+        correct: 0
+      - prompt: "What database construct links an `orders` table record back to a specific customer in the `customers` table?"
+        options:
+          - "A Foreign Key referencing the customer's Primary Key"
+          - "A Local Loopback Address"
+          - "A DNS Record"
+          - "A SATA Cable"
+        correct: 0
+  - id: sql-crud-operations
+    title: "SQL and the Four Fundamental CRUD Operations"
+    keyPoints:
+      - "Structured Query Language (SQL) is the universal ANSI standard language for relational databases"
+      - "CREATE / READ: `INSERT INTO table VALUES (...)` and `SELECT ... FROM ... WHERE ...`"
+      - "UPDATE / DELETE: `UPDATE table SET ... WHERE ...` and `DELETE FROM table WHERE ...`"
+      - "The WHERE clause is critical on UPDATE and DELETE to prevent accidentally altering or wiping all rows"
+    check:
+      - prompt: "Which SQL command is used to retrieve specific columns of data from a database table based on filtering criteria?"
+        options:
+          - "SELECT ... FROM ... WHERE"
+          - "INSERT INTO"
+          - "UPDATE ... SET"
+          - "DROP TABLE"
+        correct: 0
+      - prompt: "What catastrophic outcome occurs if a database administrator executes: `DELETE FROM users;` without a `WHERE` clause?"
+        options:
+          - "Every single user record in the entire database table is permanently wiped out"
+          - "Only the first user is deleted"
+          - "The computer restarts in safe mode"
+          - "A backup is automatically created"
+        correct: 0
 domains:
   - domainId: techplus.databases
     weight: 1
 ---
 
-## Database Fundamentals
+import Callout from '../../components/Callout.astro';
 
-A **database** is an organized collection of structured data. A **Database Management System (DBMS)** is the software that creates, maintains, and provides access to a database. Together, they replace manual file management with a reliable, searchable, multi-user system.
+## The Engine Behind Every Application
 
-### Why Databases?
+When you log into an online banking app, check your grades on a school portal, or place an order on Amazon, you are not reading static files from a hard drive.
 
-Without a database, storing thousands of student records in text files would be:
-- Slow to search
-- Error-prone when updating
-- Inaccessible to multiple users at once
-- Difficult to secure
+You are interacting with a **Relational Database** powered by a **Database Management System (DBMS)**.
 
-A database solves all of these problems.
+Before relational databases existed, companies stored customer data in flat text files and spreadsheets. When two employees tried to edit the same file simultaneously, data was corrupted. Finding a single customer out of 500,000 required scanning every line from start to finish.
 
-### Relational Database Concepts
+Understanding relational table structures, primary keys, foreign key links, and the four SQL CRUD commands is a fundamental skill for all IT and cybersecurity professionals.
 
-**Relational databases** store data in **tables** (also called relations). Every table consists of:
-
-- **Column (field)** — defines a data attribute: name, date, score
-- **Row (record)** — a single entry in the table
-
-**Example: Students table**
-
-| student_id | first_name | last_name | grade_level | gpa |
-|---|---|---|---|---|
-| 1 | Alice | Johnson | 11 | 3.85 |
-| 2 | Bob | Martinez | 10 | 3.42 |
-| 3 | Carol | Lee | 12 | 3.91 |
-
-**Primary Key** — a column (or combination) that uniquely identifies each row. In the example above, `student_id` is the primary key. No two rows can have the same primary key value.
-
-**Foreign Key** — a column in one table that references the primary key in another table, linking the two tables.
-
-### DBMS Examples
-
-| DBMS | Type | Notes |
-|---|---|---|
-| **MySQL** | Relational (open source) | Most popular web database; used by WordPress, many web apps |
-| **PostgreSQL** | Relational (open source) | Advanced features; preferred for complex applications |
-| **Microsoft SQL Server** | Relational (commercial) | Common in enterprise Windows environments |
-| **SQLite** | Relational (embedded) | Single-file database; used in mobile apps, browsers |
-| **Oracle Database** | Relational (commercial) | Enterprise; banking, government, ERP systems |
-| **MongoDB** | Non-relational (document) | JSON documents; popular for web/mobile backends |
-
-### SQL — Structured Query Language
-
-**SQL** is the standard language for interacting with relational databases. Four fundamental operations (CRUD):
-
-**CREATE — Insert new data:**
-```sql
-INSERT INTO students (first_name, last_name, grade_level, gpa)
-VALUES ('Diana', 'Smith', 11, 3.70);
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        RELATIONAL DATABASE ANATOMY                     │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│   TABLE: `Students`                                                    │
+│                                                                        │
+│   [ Columns / Fields ]                                                 │
+│   ┌────────────┬──────────────┬─────────────┬─────────────┬────────┐   │
+│   │ student_id │ first_name   │ last_name   │ grade_level │ gpa    │   │
+│   │ (PK)       │ (VARCHAR)    │ (VARCHAR)   │ (INT)       │(FLOAT) │   │
+│   ├────────────┼──────────────┼─────────────┼─────────────┼────────┤   │
+│   │ 101        │ Marcus       │ Vance       │ 11          │ 3.85   │<──│
+│   │ 102        │ Elena        │ Rostova     │ 12          │ 3.92   │ [Row /
+│   │ 103        │ Jamal        │ Washington  │ 10          │ 3.40   │Record]
+│   └────────────┴──────────────┴─────────────┴─────────────┴────────┘   │
+│                                                                        │
+│   ✔ Primary Key (`student_id`): Guarantees unique identification.       │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
-**READ — Query/retrieve data:**
-```sql
-SELECT first_name, last_name, gpa
-FROM students
-WHERE grade_level = 11
-ORDER BY gpa DESC;
+---
+
+## 1. Relational Terminology: Tables, Rows, and Columns
+
+Relational databases organize information into mathematical tables (also called *relations*):
+- **Table (Relation):** A structured grid containing a collection of related records (e.g. `Employees`, `Products`, `Invoices`).
+- **Column (Field / Attribute):** A vertical category defining a specific property and data type (e.g. `email VARCHAR(100)`, `hourly_rate DECIMAL(6,2)`).
+- **Row (Record / Tuple):** A single horizontal entry representing one individual instance (e.g. Student #101, Marcus Vance).
+
+---
+
+## 2. Keys: Primary Keys vs. Foreign Keys
+
+In a database containing 10,000 students, you might have three students named "John Smith." How does the database know which John Smith earned an "A" on today's networking exam?
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        PRIMARY VS. FOREIGN KEYS                        │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│   TABLE: `Students` (Parent Table)                                     │
+│   ┌────────────────┬──────────────┬───────────────┐                    │
+│   │ **student_id** │ first_name   │ last_name     │                    │
+│   │ (PRIMARY KEY)  │              │               │                    │
+│   ├────────────────┼──────────────┼───────────────┤                    │
+│   │ 101            │ Marcus       │ Vance         │                    │
+│   └───────┬────────┴──────────────┴───────────────┘                    │
+│           │                                                            │
+│           │ (Foreign Key Link)                                         │
+│           ▼                                                            │
+│   TABLE: `ExamScores` (Child Table)                                    │
+│   ┌────────────┬────────────────┬──────────────┬────────┐              │
+│   │ score_id   │ **student_id** │ course_name  │ score  │              │
+│   │ (PK)       │ (FOREIGN KEY)  │              │        │              │
+│   ├────────────┼────────────────┼──────────────┼────────┤              │
+│   │ 5001       │ **101**        │ Tech Plus    │ 96     │              │
+│   └────────────┴────────────────┴──────────────┴────────┘              │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
-**UPDATE — Modify existing data:**
-```sql
-UPDATE students
-SET gpa = 3.95
-WHERE student_id = 1;
+- **Primary Key (PK):** A column (or set of columns) that **uniquely identifies every row**. It cannot be empty (`NOT NULL`) and duplicates are strictly prohibited.
+- **Foreign Key (FK):** A column in a child table that points to the Primary Key of a parent table, creating a relational bridge between the two tables.
+
+---
+
+## 3. SQL: The Four CRUD Operations
+
+**SQL (Structured Query Language)** is the universal language used to communicate with relational database engines:
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        THE FOUR SQL CRUD COMMANDS                      │
+├──────────────┬──────────────┬──────────────────────────────────────────┤
+│ CRUD Action  │ SQL Keyword  │ Example SQL Query Syntax                 │
+├──────────────┼──────────────┼──────────────────────────────────────────┤
+│ **Create**   │ `INSERT`     │ `INSERT INTO students (id, name)         │
+│              │              │ VALUES (104, 'Sarah Connor');`           │
+├──────────────┼──────────────┼──────────────────────────────────────────┤
+│ **Read**     │ `SELECT`     │ `SELECT first_name, gpa FROM students    │
+│              │              │ WHERE grade_level = 11 ORDER BY gpa DESC;`│
+├──────────────┼──────────────┼──────────────────────────────────────────┤
+│ **Update**   │ `UPDATE`     │ `UPDATE students SET gpa = 3.95          │
+│              │              │ WHERE student_id = 101;`                 │
+├──────────────┼──────────────┼──────────────────────────────────────────┤
+│ **Delete**   │ `DELETE`     │ `DELETE FROM students                    │
+│              │              │ WHERE student_id = 103;`                 │
+└──────────────┴──────────────┴──────────────────────────────────────────┘
 ```
 
-**DELETE — Remove data:**
-```sql
-DELETE FROM students
-WHERE student_id = 3;
-```
+<Callout type="warn">
+**The Deadly WHERE Clause Rule:** When writing `UPDATE` or `DELETE` queries, **ALWAYS specify a `WHERE` clause!** If you execute `UPDATE students SET gpa = 4.0;` without `WHERE student_id = 101;`, the database will overwrite the GPA of every single student in the entire school to 4.0!
+</Callout>
 
-### CRUD Operations Summary
+---
 
-| Operation | SQL Command | Description |
-|---|---|---|
-| **Create** | `INSERT INTO` | Add new records |
-| **Read** | `SELECT ... FROM` | Query/retrieve records |
-| **Update** | `UPDATE ... SET` | Modify existing records |
-| **Delete** | `DELETE FROM` | Remove records |
+## Why This Matters in the Field
 
-### Relational vs. Non-Relational (NoSQL)
+Almost every corporate IT system runs on an RDBMS. 
 
-| Feature | Relational | Non-Relational (NoSQL) |
-|---|---|---|
-| Structure | Tables with fixed columns | Documents, key-value, graph, column |
-| Schema | Fixed, predefined | Flexible / schema-less |
-| Query language | SQL | Varies (MongoDB Query Language, etc.) |
-| Best for | Structured, consistent data | Unstructured, rapidly changing, large-scale |
-| Examples | MySQL, PostgreSQL, SQL Server | MongoDB, Redis, Cassandra, DynamoDB |
+Whether you are pulling audit logs to investigate a ransomware attack, checking Active Directory database health, or troubleshooting why a web app cannot save customer orders, knowing how to write basic `SELECT` queries and understand foreign keys makes you an indispensable technician.
 
-### SQL Injection — Security Alert
+---
 
-**SQL injection** (OWASP #3 — Injection) is the most common database attack. Malicious SQL code is inserted through an input field and executed by the database.
+## Key Terms
 
-Example of vulnerable code query:
-```
-"SELECT * FROM users WHERE username='" + userInput + "';"
-```
-
-If `userInput = "' OR '1'='1"`, the query becomes:
-```sql
-SELECT * FROM users WHERE username='' OR '1'='1';
-```
-
-This returns all users — authentication bypassed.
-
-**Defense:** Always use **parameterized queries** (prepared statements) — never build SQL strings by concatenating user input.
-
-### Key Exam Points
-
-- A **database** stores organized data; a **DBMS** manages access to it
-- **Table** = rows (records) + columns (fields)
-- **Primary key** = uniquely identifies each row; **foreign key** = links to another table's primary key
-- CRUD: **Create** (INSERT), **Read** (SELECT), **Update** (UPDATE), **Delete** (DELETE)
-- **SQL injection** is OWASP #3 — use parameterized queries, never concatenate user input into SQL
-- **NoSQL** databases store data in documents/key-value pairs instead of tables — flexible schema
+Database · Database Management System (DBMS / RDBMS) · MySQL · PostgreSQL · Microsoft SQL Server · SQLite · Table (Relation) · Row (Record / Tuple) · Column (Field / Attribute) · Primary Key (PK) · Foreign Key (FK) · Referential Integrity · SQL (Structured Query Language) · CRUD (Create, Read, Update, Delete) · `INSERT INTO` · `SELECT` · `UPDATE` · `DELETE` · `WHERE` Clause
