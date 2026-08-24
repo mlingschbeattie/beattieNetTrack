@@ -52,10 +52,8 @@ export default function SidebarTrackProgress({ sections, activeLesson }: Sidebar
           if (sectionChecks && Object.keys(sectionChecks).length > 0) {
             const isComplete = Object.values(sectionChecks).every(Boolean);
             map[`lesson:${slug}`] = isComplete;
-            map[slug] = isComplete;
           } else {
             map[`lesson:${slug}`] = true;
-            map[slug] = true;
           }
         }
       }
@@ -63,13 +61,11 @@ export default function SidebarTrackProgress({ sections, activeLesson }: Sidebar
         if (entry.completed) {
           map[`lab:${slug}`] = true;
           map[`activity:${slug}`] = true;
-          map[slug] = true;
         }
       }
       for (const [slug, entry] of Object.entries(state.quizzes ?? {})) {
         if ((entry.bestScore ?? 0) >= 70) {
           map[`quiz:${slug}`] = true;
-          map[slug] = true;
         }
       }
       setCompletedMap(map);
@@ -91,7 +87,7 @@ export default function SidebarTrackProgress({ sections, activeLesson }: Sidebar
     const total = items.length;
     const completed = items.filter((item) => {
       const key = `${item.type ?? 'lesson'}:${item.slug}`;
-      return Boolean(completedMap[key] || completedMap[item.slug]);
+      return Boolean(completedMap[key]);
     }).length;
     const isPassing = total === 0 || (completed / total) >= 0.8;
     return { total, completed, isPassing };
@@ -137,7 +133,7 @@ export default function SidebarTrackProgress({ sections, activeLesson }: Sidebar
               section.lessons.map((item) => {
                 const isActive = activeLesson === item.slug;
                 const key = `${item.type ?? 'lesson'}:${item.slug}`;
-                const isCompleted = Boolean(completedMap[key] || completedMap[item.slug]);
+                const isCompleted = Boolean(completedMap[key]);
                 const href = item.href || (item.type === 'lab' ? `/labs/${item.slug}` : item.type === 'quiz' ? `/quizzes/${item.slug}` : `/lessons/${item.slug}`);
 
                 if (!isUnlocked) {
