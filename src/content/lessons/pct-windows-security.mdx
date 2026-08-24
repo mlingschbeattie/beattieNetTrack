@@ -1,13 +1,80 @@
 ---
-title: Windows Security — Protecting the System You're Responsible For
-description: Authentication methods, malware types and removal, Windows Defender, BitLocker, UAC, local security policy, data sanitization, and the security practices that keep client machines safe and your professional reputation intact.
+title: Windows Security — Endpoint Hardening, Defender, and Malware Remediation
+description: Master Windows security engineering and incident triage. Explore Windows Hello, TPM-backed authentication, the complete Malware Field Guide, CompTIA's official 7-Step Malware Remediation Process, BitLocker Full Disk Encryption, and UAC defense.
 slug: pct-windows-security
 track: pc-technician
 moduleId: pct.os.windows-basics
 order: 2
+objective: "CompTIA A+ 220-1102 (Core 2) 2.1, 2.2, 2.4"
+xp: 20
+source: cyber-org
 difficulty: Beginner
 estMinutes: 30
-tags: ["security", "malware", "BitLocker", "Windows Defender", "UAC", "A+", "Core 2", "CompTIA"]
+tags: ["security", "malware", "BitLocker", "Windows Defender", "UAC", "A+", "Core 2", "CompTIA", "7-Step Malware Remediation", "TPM"]
+sections:
+  - id: authentication-and-windows-hello
+    title: "Authentication Architecture: 3 Factors, TPM, and Windows Hello"
+    keyPoints:
+      - "Authentication Factors: Something You Know (Password/PIN), Have (Smart Card/Hardware Token), Are (Biometrics)"
+      - "Windows Hello: Hardware-bound authentication using local PINs or biometrics sealed inside the motherboard TPM 2.0 chip"
+      - "Why Windows Hello PINs Beat Passwords: PINs never cross the network and cannot be used from another computer even if observed"
+    check:
+      - prompt: "Why is a Windows Hello PIN more secure against remote credential stuffing attacks than a standard domain password?"
+        options:
+          - "The PIN is tied directly to the physical TPM hardware of that specific machine and cannot be used remotely over the network"
+          - "The PIN is stored in plaintext on Microsoft servers"
+          - "The PIN only works during business hours"
+          - "The PIN requires a mechanical key"
+        correct: 0
+      - prompt: "An employee logs into a secure server room using a smart card badge AND a fingerprint scan. What authentication factors were used?"
+        options:
+          - "Something You Have (Smart Card) and Something You Are (Biometric Fingerprint)"
+          - "Something You Know and Something You Have"
+          - "Two instances of Something You Know"
+          - "Single-Factor Authentication"
+        correct: 0
+  - id: malware-field-guide
+    title: "The Malware Field Guide: Recognizing Infection Signatures"
+    keyPoints:
+      - "Worms vs. Viruses: Viruses require human file execution to propagate; Worms self-replicate across network ports without user interaction"
+      - "Ransomware & Cryptominers: Ransomware encrypts user files with AES/RSA ciphers; Cryptominers hijack CPU/GPU cycles causing severe thermal throttling"
+      - "Rootkits: Stealth kernel-level malware modifying OS components to hide itself from Task Manager, requiring offline WinRE boot scans"
+    check:
+      - prompt: "What type of malware self-replicates and spreads across corporate networks by exploiting unpatched service vulnerabilities without any user action?"
+        options:
+          - "A Worm"
+          - "A Trojan Horse"
+          - "Spyware"
+          - "Adware"
+        correct: 0
+      - prompt: "A technician notices an idle computer's fans running at maximum speed while the GPU sits at 98% utilization in Task Manager. What malware is likely present?"
+        options:
+          - "A Cryptominer"
+          - "A Keylogger"
+          - "A Rootkit"
+          - "A Macro Virus"
+        correct: 0
+  - id: comptia-7-step-malware-remediation
+    title: "CompTIA 7-Step Malware Remediation Process"
+    keyPoints:
+      - "Step 1 & 2: Identify symptoms, then IMMEDIATELY QUARANTINE the infected system (unplug Ethernet / disconnect Wi-Fi)"
+      - "Step 3 & 4: Disable System Restore (to stop reinfection snapshots), then remediate via Safe Mode scans"
+      - "Step 5, 6 & 7: Schedule scans/updates, re-enable System Restore with a fresh restore point, and educate the end user"
+    check:
+      - prompt: "What is the very first action a technician must take immediately upon identifying an active malware or ransomware infection on a networked PC?"
+        options:
+          - "Quarantine the system (disconnect Ethernet cable and turn off Wi-Fi) to stop malware spread"
+          - "Run Windows Update"
+          - "Reformat the hard drive immediately"
+          - "Reboot the PC three times"
+        correct: 0
+      - prompt: "Why does the CompTIA 7-Step Malware Remediation process mandate disabling System Restore before running antivirus cleanup tools?"
+        options:
+          - "To prevent Windows from saving malware-infected snapshots in restore points that could reinfect the system later"
+          - "To save internet bandwidth"
+          - "To increase monitor refresh rates"
+          - "Because System Restore deletes user files"
+        correct: 0
 domains:
   - domainId: aplus2.os
     weight: 0.8
@@ -15,124 +82,140 @@ domains:
     weight: 0.2
 ---
 
+import Callout from '../../components/Callout.astro';
+
 ## The Machine That Was "Fine Yesterday"
 
-A teacher brings in their laptop. It was "working fine yesterday." Today, the browser won't open without redirecting to random sites, new toolbar applications appeared that they didn't install, and the machine is running significantly slower than usual. They want you to "run a scan and fix it."
+A teacher brings a laptop to your IT workbench first thing in the morning. 
 
-You run Windows Defender. It finds three items. You quarantine them. New tabs still auto-open. You look in the browser extensions — six unfamiliar names. You remove them. You check running processes in Task Manager — two processes in the Startup tab that belong to nothing you recognize. You dig into Add/Remove Programs. Two applications installed last Wednesday. The teacher was out Wednesday. Someone else used the machine.
+*"It was working fine yesterday,"* they say. *"Now every time I open Chrome, five browser tabs pop up advertising casino games, my desktop background turned black, and the mouse keeps stuttering."*
 
-Malware removal is twenty percent running a scanner and eighty percent knowing what to look for, where to look, and what belongs there versus what doesn't. This lesson covers the security concepts that make that work possible.
+You look at the machine. A junior technician's first instinct is to double-click an antivirus icon, click "Quick Scan," and hand the laptop back when the progress bar hits 100%.
 
-## Demo Sequence (Run This Live)
+Three days later, the teacher returns because the malware reinfected the computer from a saved System Restore point.
 
-If you're presenting this as a full workflow demo, run these in order:
+Remediating malware is 20% running scanning software and 80% understanding **the strict operational workflow** required to eradicate infections and harden Windows.
 
-1. Lesson: /lessons/pct-windows-security
-2. Activity: /workspace/activity/pct-windows-incident-triage
-3. Lab: /labs/pct-windows-security-hardening-lab
-4. Review quiz: /quizzes/pct-windows-security
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│               COMPTIA 7-STEP MALWARE REMEDIATION WORKFLOW              │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│   1. **IDENTIFY** and research malware symptoms.                       │
+│            │                                                           │
+│   2. **QUARANTINE** infected systems (PULL ETHERNET / CUT WI-FI).      │
+│            │                                                           │
+│   3. **DISABLE SYSTEM RESTORE** (prevent infected snapshot backups).   │
+│            │                                                           │
+│   4. **REMEDIATE** infected systems (Safe Mode scans / WinRE).         │
+│            │                                                           │
+│   5. **SCHEDULE SCANS** and run OS / Antivirus signature updates.      │
+│            │                                                           │
+│   6. **ENABLE SYSTEM RESTORE** and create a fresh, clean checkpoint.   │
+│            │                                                           │
+│   7. **EDUCATE** the end user to prevent future social engineering.    │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
 
-## Authentication — Proving You Are Who You Claim to Be
+---
 
-Authentication is the process of verifying identity before granting access. Every access control decision depends on authentication working correctly. The three factors of authentication:
+## 1. Authentication Architecture: TPM 2.0 and Windows Hello
 
-**Something you know** — a password, PIN, or security question answer. Passwords are the most common authentication factor and the most frequently compromised. A good password is long (12+ characters), uses mixed character types, doesn't appear in breach databases, and isn't reused across sites. Windows local accounts can be protected by Windows Hello PIN (which is different from a password in that it binds to the specific device and doesn't traverse the network).
+Every security boundary in Windows starts with proving user identity:
 
-**Something you have** — a physical token, a smart card, an authenticator app generating a time-based code. The key principle: even if an attacker steals the password, they still need the physical object. This is why multi-factor authentication (MFA) — combining two or more factors — is so much stronger than a password alone. Microsoft Authenticator, Google Authenticator, and hardware tokens like YubiKeys are common implementations.
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                       THE 3 AUTHENTICATION FACTORS                     │
+├────────────────────────┬───────────────────────────────────────────────┤
+│ **1. Something You Know**│ Passwords, PINs, Security Questions.         │
+├────────────────────────┼───────────────────────────────────────────────┤
+│ **2. Something You Have**│ Smart Cards, USB Security Keys (YubiKey),    │
+│                        │ Authenticator Apps (TOTP codes).              │
+├────────────────────────┼───────────────────────────────────────────────┤
+│ **3. Something You Are** │ Biometrics: Fingerprint, Facial Recognition, │
+│                        │ Retina Scans.                                 │
+└────────────────────────┴───────────────────────────────────────────────┘
+```
 
-**Something you are** — biometric identifiers: fingerprint, face, iris scan. Windows Hello Facial Recognition and Fingerprint Sign-in are the most common Windows biometrics. Biometrics are convenient but have specific weaknesses: they can't be changed if compromised, and quality varies significantly across hardware.
+### Why Windows Hello PINs Outperform Passwords
+Many users ask: *"Why is a 6-digit PIN safer than a 14-character password?"*
+- **Passwords:** Sent over the network to domain controllers or cloud servers. If an attacker intercepts the traffic or breaches the server database, they can use your password from Russia.
+- **Windows Hello PIN:** **Never leaves the local computer.** It is bound to the motherboard's **TPM 2.0 (Trusted Platform Module)** chip. An attacker who steals your PIN cannot log into your account on any other machine!
 
-**Windows Hello** is Microsoft's modern authentication framework that supports PINs, biometrics, and security keys as alternatives to passwords. A Windows Hello PIN looks like a password but is fundamentally different: it's stored locally on the device (not on Microsoft's servers), it's bound to that specific hardware, and it's protected by the device's TPM (Trusted Platform Module — a chip that stores cryptographic keys). A Windows Hello PIN stolen from a database doesn't work anywhere except the specific machine it belongs to.
+---
 
-**Single Sign-On (SSO)** allows one authentication to access multiple services. In an Active Directory domain, a Windows login authenticates the user to the domain, which then grants access to file shares, printers, and web applications without additional logins. Students experience this when logging into a school Chromebook — the same Google credentials work for Drive, Classroom, and web apps.
+## 2. The Field Guide to Windows Malware
 
-## Malware — The Field Guide
+Recognizing malware taxonomy allows technicians to choose the correct diagnostic remediation tool:
 
-Every technician needs to recognize malware types not because the CompTIA exam categorizes them, but because understanding the category tells you what to look for and where.
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        MALWARE TAXONOMY & SIGNATURES                   │
+├────────────────────┬───────────────────────────────────────────────────┤
+│ **Virus**          │ Attaches to files (.exe, .docx); spreads when     │
+│                    │ human users execute the infected file.            │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Worm**           │ Self-propagates across LAN networks by exploiting │
+│                    │ unpatched open ports without any human action.    │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Trojan Horse**   │ Disguised as legitimate software (e.g. game mod)  │
+│                    │ while executing a malicious payload in background.│
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Ransomware**     │ Encrypts files with AES-256; demands crypto pay.  │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Spyware /**      │ Records keystrokes, steals passwords, and streams │
+│ **Keylogger**      │ screenshots to a remote command server.           │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Rootkit**        │ Replaces OS kernel files; hides from Task Manager │
+│                    │ and standard antivirus. Requires offline scans!   │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Cryptominer**    │ Hijacks CPU/GPU cores to mine Monero/Bitcoin,     │
+│                    │ causing 100% hardware load and thermal throttling.│
+└────────────────────┴───────────────────────────────────────────────────┘
+```
 
-**Viruses** attach themselves to legitimate files and execute when those files are run. They spread through file sharing — emailed attachments, downloaded files, infected USB drives. When the infected file is opened, the virus executes and can infect other files on the system. Viruses require human action to spread (someone has to open the file).
+---
 
-**Worms** self-replicate and spread across networks without user action. They exploit vulnerabilities in services and operating systems to move from machine to machine. The WannaCry ransomworm (2017) spread by exploiting an SMB vulnerability — a system could become infected just by being reachable on the network with an unpatched Windows installation, no user interaction required.
+## 3. The CompTIA 7-Step Malware Remediation Process
 
-**Trojans** appear to be legitimate software but contain malicious functionality. A "free game" that installs perfectly and runs fine, while also logging keystrokes in the background, is a Trojan. The defining characteristic is the disguise — the user believes they're installing or running something benign.
+When an infection is discovered, execute this exact standard operating procedure:
 
-**Ransomware** encrypts the victim's files and demands payment (typically cryptocurrency) in exchange for the decryption key. The encryption is usually legitimate AES or RSA — there is typically no technical way to recover files without the key. The defense is backups: if you have a clean recovery point, ransomware is a nuisance rather than a catastrophe. If you don't have backups, ransomware is a catastrophe.
+1. **Step 1: Identify and Research Malware Symptoms**
+   - Check Task Manager for unknown processes, high CPU/GPU spikes, or browser redirection loops.
+2. **Step 2: Quarantine the Infected System**
+   - **Immediately unplug the physical Ethernet cable and disconnect Wi-Fi!** This prevents ransomware from encrypting shared network drives or communicating with botnet command servers.
+3. **Step 3: Disable System Restore**
+   - In System Properties, turn off System Protection. If left enabled, Windows will save a backup snapshot containing the active virus, reinfecting the PC after reboot.
+4. **Step 4: Remediate the Infected System**
+   - Boot into **Safe Mode with Networking** or use an offline **Windows Defender Offline / WinRE USB**.
+   - Update antivirus signatures and run complete deep scans.
+   - Inspect startup entries with Microsoft Sysinternals *Autoruns*.
+5. **Step 5: Schedule Scans and Run Updates**
+   - Configure weekly automated scans and install all pending Windows security patches.
+6. **Step 6: Enable System Restore and Create a Restore Point**
+   - Turn System Protection back on and generate a pristine, clean baseline checkpoint.
+7. **Step 7: Educate the End User**
+   - Explain how the infection entered (e.g., clicking a fake email tracking link) to prevent repeat incidents.
 
-**Spyware** monitors user activity without knowledge or consent. Keyloggers (capturing every keystroke), screen capture malware, and credential-harvesting software are spyware variants. Symptoms include unexplained network activity, browser settings that keep changing, and unusual outbound connections in network monitoring.
+---
 
-**Rootkits** embed themselves deep in the operating system — sometimes at the kernel level or in the boot process (bootkit) — and hide their own presence. They actively modify OS components to make themselves invisible to standard detection. A rootkit that hides itself from the file system won't appear in Task Manager, won't show in Autoruns, and may not be detectable while Windows is running. Offline scanning tools run before Windows boots are required for reliable rootkit detection.
+## 4. Hardware-Rooted Disk Encryption: BitLocker & TPM
 
-**Adware** generates unwanted advertisements — browser redirects, popup windows, additional toolbars. It's annoying rather than immediately damaging, but adware often bundles with spyware, and aggressive adware can redirect DNS queries to expose users to more dangerous content.
+- **BitLocker Full Disk Encryption (FDE):** Scrambles 100% of the volume sectors using AES-128 or AES-256 encryption.
+- **TPM 2.0 Integration:** BitLocker stores the decryption key in the motherboard's Trusted Platform Module. If a thief steals the physical SSD out of a corporate laptop, the drive cannot be read when plugged into another machine.
+- **BitLocker Recovery Key:** A 48-digit emergency numeric password backed up to Active Directory or Microsoft Entra ID.
 
-**Cryptomining malware** uses the victim's hardware to mine cryptocurrency for the attacker. The symptom is consistent high CPU and/or GPU utilization at idle, elevated power consumption, and potential thermal throttling. The machine runs, but runs slowly, and runs hot.
-
-## Windows Defender and Malware Removal
-
-**Windows Defender Antivirus** (built into Windows 10/11) provides real-time protection, scheduled scanning, and cloud-delivered threat intelligence. It's legitimately competitive with third-party antivirus — independent lab tests consistently rank it among the top performers. There's no longer a strong case for installing third-party antivirus on a personal Windows machine when Defender is active and up to date.
-
-Defender integrates with **Windows Security Center** (the shield icon in the taskbar), which provides a dashboard view of protection status: antivirus, firewall, account protection, and device performance. If Defender's real-time protection is disabled and nothing else is active, Windows Security Center flags it.
-
-For malware removal, the process is rarely just "run one scanner and reboot":
-
-1. Isolate the machine from the network if possible — stop active malware from communicating with command-and-control servers or spreading further.
-2. Run a full Windows Defender scan. Address everything it finds.
-3. Check **Autoruns** (Microsoft's Sysinternals tool, free download) — the definitive tool for finding everything that auto-starts on a Windows system. It shows startup entries, scheduled tasks, browser extensions, drivers, and services that Defender might miss.
-4. Check installed programs in **Settings → Apps** for unfamiliar software installed recently.
-5. Check browser extensions in each browser the user uses.
-6. Review the Startup tab in Task Manager.
-7. Consider a second-opinion scan with Microsoft Safety Scanner or Malwarebytes Free (one-time scans, not persistent — they don't conflict with Defender).
-8. Verify the system is clean: no unexpected network traffic, no unexplained processes, no browser redirects.
-
-If a rootkit is suspected — if the system's behavior doesn't match what the tools are showing — boot from external media and scan offline.
-
-## User Account Control — Why It Matters
-
-**UAC (User Account Control)** prompts for confirmation or administrator credentials when an action requires elevated permissions. The prompt is either a blue shield ("show details" type) or a yellow/red warning. The color indicates source trust: blue means the file is signed by a trusted publisher; yellow/red means unsigned or from an unknown publisher.
-
-The security value: malware running in a standard user context cannot silently install system-level components, modify protected system files, or change security settings without triggering a UAC prompt. If a user is in the habit of clicking "Yes" on every UAC prompt without reading it, they are undermining this protection. If a UAC prompt appears unexpectedly — without the user having initiated any action — that is a red flag that something is attempting to escalate privileges.
-
-UAC is configured in **Control Panel → User Accounts → Change User Account Control Settings**. On a corporate managed machine, UAC settings are enforced by Group Policy. Never recommend lowering UAC to "Never Notify" as a solution to UAC interruptions.
-
-## BitLocker Drive Encryption
-
-**BitLocker** encrypts the entire contents of a drive so that physical access to the drive doesn't grant access to the data. Without the correct PIN, password, or recovery key, the drive's contents are unreadable cipher text — a stolen laptop with BitLocker enabled exposes nothing.
-
-BitLocker on the system drive is most secure with a **TPM (Trusted Platform Module)** — a chip that stores the encryption keys. On boot, the TPM verifies that the hardware configuration hasn't changed and automatically provides the key (on TPM-only mode) or requires an additional PIN. If the drive is moved to a different machine, the TPM key isn't there, and the drive won't mount without the recovery key.
-
-The **BitLocker Recovery Key** is a 48-digit number generated when BitLocker is first enabled. It's the only way to unlock a BitLocker drive when normal authentication fails (wrong PIN, TPM cleared, hardware change). **Back this up immediately.** It can be saved to Azure AD (for Microsoft account or AAD-joined machines), stored in Active Directory (for domain-joined machines), saved as a file, or printed. A BitLocker drive without its recovery key — and where normal authentication fails — contains unrecoverable data.
-
-BitLocker is available on Windows 10/11 Pro, Enterprise, and Education. Windows Home has a limited version called Device Encryption that requires modern hardware but provides similar basic protection.
-
-**BitLocker To Go** extends encryption to removable drives (USB drives, external hard drives). Configured through the same BitLocker control panel.
-
-## Data Sanitization — Disposing of Drives Securely
-
-When a machine is being decommissioned, the storage device needs to be handled appropriately. "Deleting" files doesn't make them unrecoverable — it marks the space as available but leaves the data physically on the drive until overwritten. Standard formatting has the same limitation on traditional HDDs.
-
-The three levels of sanitization recognized in security frameworks:
-
-**Clear** — logical overwriting of data using software tools. For HDDs: a DOD-standard seven-pass overwrite or NIST 800-88 one-pass overwrite makes data practically unrecoverable with standard tools. For SSDs: manufacturer secure erase commands or OS-level encrypted wipe. Clearing is appropriate for equipment being reassigned within the organization.
-
-**Purge** — secure erase methods that resist laboratory recovery attempts. For SSDs: the ATA Secure Erase command (built into the drive firmware) cryptographically invalidates all data by erasing the internal encryption key. For HDDs: degaussing (exposing to a strong magnetic field, rendering the drive nonfunctional but data destroyed). For **Crypto Erase** (a specific purge method): encrypting the drive, then erasing the key — the data is unreadable because the key is gone. Purging is appropriate for sensitive data before equipment leaves the organization.
-
-**Destroy** — physical destruction of the storage media. Shredding, drilling, incineration. Recovery becomes physically impossible. Required for classified, regulated, or extremely sensitive data. Note: destroying an SSD by drilling through it may not destroy all flash chips — shredding to specific particle sizes is the reliable method.
-
-## Local Security Policy
-
-**Local Security Policy** (`secpol.msc`) — available on Windows 10/11 Pro and higher — configures security settings on a standalone (non-domain) machine: password policies (minimum length, complexity, expiration), account lockout policies (how many failed attempts before lockout, lockout duration), audit policies (what gets logged to the Security event log), and user rights assignments.
-
-Key policies every technician should know: **Password Complexity** (requires uppercase, lowercase, number, symbol), **Minimum Password Length** (14+ characters per NIST recommendations), **Account Lockout Threshold** (commonly 5–10 attempts), and **Audit Logon Events** (log both successful and failed logins to the Security event log).
-
-In domain environments, Group Policy Objects (GPOs) set these policies centrally across all machines. Local Security Policy settings are overridden by domain Group Policy — if a machine is domain-joined and a setting doesn't stick when configured locally, a conflicting GPO is the likely explanation.
+---
 
 ## Why This Matters in the Field
 
-A client's machine with malware is a trust problem. They trusted the machine with passwords, financial information, and personal files. Something violated that trust. Your job isn't just to remove the malware — it's to restore the machine to a state the client can trust, explain what happened in terms they understand, and help them avoid it happening again.
+Knowing how to methodically quarantine, remediate, and re-establish system trust separates amateur computer hobbyists from professional enterprise technicians.
 
-Removing adware without explaining that accepting every "free" software bundle is how adware gets installed means it'll be back in three months. Encrypting a business laptop with BitLocker and then failing to save the recovery key means a firmware update or hardware failure turns a recoverable situation into a data loss event. Understanding these tools at the level this lesson covers — not just "run the scanner" but knowing what the scanner looks for, what it misses, and what the backup safety net looks like — is what makes the difference.
+Following the 7-step remediation workflow guarantees that malware is eradicated permanently from the root up.
 
-## Demo Wrap and Next Action
+---
 
-Close this lesson by having students explain one hardening action they would enforce first in a real classroom lab: MFA, patching cadence, or BitLocker key escrow.
+## Key Terms
 
-Then move immediately into /workspace/activity/pct-windows-incident-triage so they apply those choices under ticket pressure.
+Authentication Factors · Windows Hello · Trusted Platform Module (TPM 2.0) · Virus · Worm · Trojan Horse · Ransomware · Spyware · Keylogger · Rootkit · Cryptominer · 7-Step Malware Remediation · Quarantine · Safe Mode · System Restore · BitLocker Drive Encryption · AES-256 · Recovery Key · User Account Control (UAC) · Sysinternals Autoruns
