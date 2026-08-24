@@ -1,6 +1,6 @@
 ---
-title: Fundamental Data Types
-description: Identify and work with fundamental data types — integers, floats, strings, booleans, and characters — used in programming. FC0-U71 objective 4.2.
+title: Fundamental Data Types — Integers, Floats, Strings, Booleans, and Characters
+description: Master the core data types of computer programming. Explore whole integer memory limits, floating-point decimal precision, string manipulation, boolean logic flags, and explicit vs implicit type casting.
 slug: tech-plus-4-2-1-fundamental-data-types
 track: tech-plus
 moduleId: tech-plus.software-dev
@@ -10,99 +10,210 @@ xp: 15
 source: cyber-org
 difficulty: Beginner
 estMinutes: 20
-tags: ["tech+", "FC0-U71 4.2", "data types", "integer", "string", "boolean", "float"]
+tags: ["tech+", "FC0-U71 4.2", "data types", "integer", "string", "boolean", "float", "char", "type casting"]
+sections:
+  - id: primitive-numeric-types
+    title: "Numeric Data Types: Integers (int) vs. Floating-Point (float/double)"
+    keyPoints:
+      - "Integers (int): Whole numbers (positive, negative, zero) with no decimal fractions; stored as 32-bit or 64-bit binary values"
+      - "Floating-Point (float/double): Numbers containing decimal points; represented as binary approximations of scientific real numbers"
+      - "Floating-point precision errors occur because decimal fractions (like 0.1) cannot be represented with exact binary fractions"
+    check:
+      - prompt: "A software application needs to store the exact count of physical computers in a classroom inventory (e.g. 28). Which data type should be used?"
+        options:
+          - "Integer (int)"
+          - "Floating-point (float)"
+          - "Boolean (bool)"
+          - "String (str)"
+        correct: 0
+      - prompt: "Why do financial banking applications avoid standard floating-point (float) data types for monetary cent calculations?"
+        options:
+          - "Floats use binary approximations that can introduce microscopic rounding precision errors (e.g. 0.1 + 0.2 = 0.30000000000000004)"
+          - "Floats cannot represent numbers greater than 10"
+          - "Floats are only supported on Linux"
+          - "Floats require internet access"
+        correct: 0
+  - id: text-and-character-types
+    title: "Text Types: Characters (char) vs. Strings (str)"
+    keyPoints:
+      - "Character (char): A single alphanumeric letter, symbol, or space (e.g. 'A', '9', '!') stored as an ASCII (1 byte) or Unicode (UTF-8) integer value"
+      - "String (str): An ordered sequence of characters enclosed in quotation marks (e.g. \"user@company.com\")"
+      - "String operations include Concatenation (joining strings together), Slicing, Length calculation, and Substring searching"
+    check:
+      - prompt: "What data type is represented by the literal value: \"192.168.1.1\" enclosed in quotation marks?"
+        options:
+          - "String (str)"
+          - "Integer (int)"
+          - "Boolean (bool)"
+          - "Float (float)"
+        correct: 0
+      - prompt: "In programming languages, what is the term for joining two text strings together using the plus operator (e.g. \"First\" + \"Name\")?"
+        options:
+          - "Concatenation"
+          - "Defragmentation"
+          - "Encapsulation"
+          - "Inheritance"
+        correct: 0
+  - id: boolean-logic-and-null
+    title: "Boolean Logic (bool) and the Absence of Value (Null/None)"
+    keyPoints:
+      - "Boolean (bool): A binary logic flag that can only evaluate to exactly True (1) or False (0)"
+      - "Booleans drive all programmatic conditional decisions (if statements and while loops)"
+      - "Null / None / Nil represents the intentional absence of any value or memory reference (distinct from 0 or empty string \"\")"
+    check:
+      - prompt: "A login script checks whether an employee's account has administrator privileges: `is_admin = True`. What data type is this variable?"
+        options:
+          - "Boolean (bool)"
+          - "Integer"
+          - "Float"
+          - "Character"
+        correct: 0
+      - prompt: "What is the difference between a variable holding a `Null` (or `None`) value versus an integer holding `0`?"
+        options:
+          - "`0` is a valid mathematical whole number value, while `Null` represents the complete absence of any value or memory reference"
+          - "`Null` is equal to 100"
+          - "`Null` is a decimal number"
+          - "There is no difference"
+        correct: 0
+  - id: type-conversion-and-casting
+    title: "Type Conversion: Implicit vs. Explicit Type Casting"
+    keyPoints:
+      - "Implicit Conversion (Type Coercion): The language automatically converts types during compatible operations (e.g. int 5 + float 2.0 = float 7.0)"
+      - "Explicit Conversion (Type Casting): The developer explicitly forces conversion using built-in functions (e.g. int(\"42\") or str(100))"
+      - "Type Mismatch Bugs: Attempting to perform arithmetic between incompatible types (e.g. adding integer 10 to string \"5\") will crash or concatenate"
+    check:
+      - prompt: "A web form captures a user's age as the text string `\"25\"`. To perform a mathematical calculation (age + 1), what must the programmer execute first?"
+        options:
+          - "Explicit Type Casting (convert the string `\"25\"` into the integer `25` using `int(\"25\")`)"
+          - "Reboot the server"
+          - "Delete the variable"
+          - "Format the database"
+        correct: 0
+      - prompt: "In JavaScript, what unexpected result occurs when adding integer `5` to string `\"10\"` (`5 + \"10\"`) without explicit type conversion?"
+        options:
+          - "String Concatenation resulting in `\"510\"` instead of mathematical addition `15`"
+          - "The program calculates `50`"
+          - "The computer restarts"
+          - "The value becomes `0`"
+        correct: 0
 domains:
   - domainId: techplus.software
     weight: 1
 ---
 
-## Fundamental Data Types
+import Callout from '../../components/Callout.astro';
 
-Every value in a computer program has a **data type** — a classification that defines what kind of data it is and what operations can be performed on it. Understanding data types is foundational to reading code, diagnosing bugs, and designing systems.
+## The Building Blocks of Program Memory
 
-### Core Data Types
+In computer programming, a computer does not view data as an abstract concept. Every piece of information—a user's password, a bank account balance, a high score, or a network IP address—must be stored in physical RAM transistors.
 
-**Integer (int)**
-- Whole numbers — no decimal point
-- Can be positive, negative, or zero
-- Examples: `0`, `42`, `-7`, `1000`
-- Storage: typically 16, 32, or 64 bits
-  - 32-bit integer: range approximately −2 billion to +2 billion
-  - 64-bit integer: range approximately −9.2 × 10¹⁸ to +9.2 × 10¹⁸
-- Use case: counting, indexing, loop counters, whole quantities (number of users)
+To know how many bytes of memory to reserve and what operations are legally permitted on that data, the programming language assigns each value a **Data Type**.
 
-**Floating-Point (float / double)**
-- Numbers with decimal points — approximations of real numbers
-- `float`: 32-bit (single precision); less precise; smaller range
-- `double`: 64-bit (double precision); more precise; used by default in most languages
-- Examples: `3.14`, `-0.001`, `9.99`, `2.0`
-- **Important:** floats are approximations — `0.1 + 0.2` in binary floating-point = `0.30000000000000004`, not exactly `0.3`
-- Use case: prices (with care), scientific measurements, graphics coordinates
+You cannot multiply a street address by 5, and you cannot spell-check a decimal temperature. Understanding data types allows you to prevent software crashes, eliminate type mismatch bugs, and manage memory effectively.
 
-**String (str)**
-- A sequence of characters — text data
-- Enclosed in quotes: `"Hello, World!"`, `'Tech+'`
-- Can contain letters, digits, spaces, symbols
-- Examples: `"user@example.com"`, `"192.168.1.1"`, `"FC0-U71"`
-- Operations: concatenation, slicing, length, search, replace, upper/lowercase
-- Use case: names, addresses, usernames, file paths, messages
-
-**Boolean (bool)**
-- Only two possible values: **True** or **False** (1 or 0)
-- The result of comparisons and logical operations
-- Examples: `is_logged_in = True`, `file_exists = False`
-- Use case: conditions, flags, control flow (`if`, `while`)
-
-**Character (char)**
-- A single character — one letter, digit, symbol, or whitespace
-- Examples: `'A'`, `'9'`, `'!'`, `' '`
-- In many languages (Java, C), `char` is a distinct type; in Python, a "character" is just a 1-character string
-- Encoded as a number: ASCII or Unicode (UTF-8, UTF-16)
-  - `'A'` = ASCII 65 = binary 01000001
-
-**Null / None / Void**
-- Represents the absence of a value
-- `null` (Java, JavaScript, C#), `None` (Python), `nil` (Ruby, Swift)
-- Different from `0` or `""` — it means "no value exists at all"
-- A variable declared but not assigned yet is often `null`
-
-### Type Conversion
-
-Moving data from one type to another:
-
-**Implicit (automatic) conversion:**
-```python
-x = 5 + 2.0   # int + float → float automatically: 7.0
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                      THE CORE PRIMITIVE DATA TYPES                     │
+├───────────────────┬────────────────────┬───────────────────────────────┤
+│ Data Type         │ Typical Values     │ Ideal Real-World Use Case     │
+├───────────────────┼────────────────────┼───────────────────────────────┤
+│ **Integer (int)** │ `0`, `42`, `-15`   │ User counts, age, loop indexes│
+├───────────────────┼────────────────────┼───────────────────────────────┤
+│ **Float / Double**│ `3.14`, `-0.05`    │ Sensor readings, measurements │
+├───────────────────┼────────────────────┼───────────────────────────────┤
+│ **String (str)**  │ `"Beattie"`, `"IT"`│ Usernames, emails, file paths │
+├───────────────────┼────────────────────┼───────────────────────────────┤
+│ **Character(char)**│ `'A'`, `'!'`, `'9'`│ Single menu hotkey, grade letter│
+├───────────────────┼────────────────────┼───────────────────────────────┤
+│ **Boolean (bool)**│ `True`, `False`    │ Security flags, conditional checks│
+├───────────────────┼────────────────────┼───────────────────────────────┤
+│ **Null / None**   │ `null`, `None`     │ Unassigned or missing data    │
+└───────────────────┴────────────────────┴───────────────────────────────┘
 ```
 
-**Explicit (casting) conversion:**
-```python
-x = int("42")    # string → integer: 42
-y = str(100)     # integer → string: "100"
-z = float("3.14") # string → float: 3.14
+---
+
+## 1. Numeric Types: Integers vs. Floating-Point Numbers
+
+Computers divide numbers into two distinct mathematical categories:
+
+### Integers (`int`) — Whole Numbers
+- **What they are:** Whole numbers without decimal fractions (`-500`, `0`, `1`, `2026`).
+- **Memory Allocation:** Standard 32-bit signed integers range from $-2,147,483,648$ to $+2,147,483,647$. Modern 64-bit integers scale to 9 quintillion.
+- **Use Cases:** Counting items, array position indexes, employee ID numbers.
+
+### Floating-Point Numbers (`float` / `double`) — Decimals
+- **What they are:** Numbers that include decimal points (`3.14159`, `-10.5`, `0.001`).
+- **Single Precision (`float`):** Uses 32 bits of memory (~7 decimal digits of precision).
+- **Double Precision (`double`):** Uses 64 bits of memory (~15 decimal digits of precision).
+- **The Binary Decimal Flaw:** In binary floating-point math (IEEE 754), certain decimal fractions like `0.1` or `0.2` cannot be cleanly represented in base-2 binary. When you calculate `0.1 + 0.2` in Python or JavaScript, the computer outputs `0.30000000000000004`!
+
+<Callout type="warn">
+**The Financial Math Rule:** Because floating-point numbers have microscopic precision rounding errors, enterprise financial banking software **never uses floats for currency**. Instead, banks store money as **Integers in Cents** ($10.50 is stored as integer `1050`) or use specialized exact decimal libraries!
+</Callout>
+
+---
+
+## 2. Textual Types: Characters vs. Strings
+
+### Character (`char`)
+- A single alphanumeric letter, punctuation mark, or space (e.g., `'Y'`, `'N'`, `'%'`).
+- Under the hood, characters are stored as integer values defined by **ASCII** (e.g. `'A'` is ASCII integer `65`) or **Unicode UTF-8**.
+
+### String (`str`)
+- An ordered collection of characters enclosed in quotation marks: `"Network Engineer"`.
+- **String Concatenation:** Joining two strings together using the `+` operator:
+  - `"Cyber" + "security"` $\rightarrow$ `"Cybersecurity"`
+
+---
+
+## 3. Boolean Logic & The Concept of Null
+
+### Boolean (`bool`)
+- Named after mathematician George Boole. A boolean can evaluate to only two possible states: **`True`** (binary 1) or **`False`** (binary 0).
+- Booleans drive all programmatic decision-making:
+  ```python
+  is_logged_in = True
+  account_locked = False
+
+  if is_logged_in and not account_locked:
+      grant_dashboard_access()
+  ```
+
+### Null / None / Nil (The Void)
+- `Null` does not mean `0` (which is a valid number), and it does not mean `""` (which is a valid empty string).
+- `Null` means **the total absence of a value**. When an employee is first created in a database before taking their first test, their `exam_score` variable is initialized to `Null`.
+
+---
+
+## 4. Type Casting: Converting Between Types
+
+Programs constantly need to transform data from one type to another:
+
+```
+┌────────────────────────────────────────────────────────┐
+│             EXPLICIT TYPE CASTING EXAMPLES             │
+│                                                        │
+│   String to Integer:  int("42")       ──> 42 (int)     │
+│   Integer to String:  str(100)        ──> "100" (str)  │
+│   String to Float:    float("19.99")  ──> 19.99 (float)│
+│   Integer to Float:   float(5)        ──> 5.0 (float)  │
+└────────────────────────────────────────────────────────┘
 ```
 
-**Type mismatch errors** are common bugs:
-- Can't add a string to an integer in strictly-typed languages without explicit conversion
-- `"5" + 3` may produce `"53"` (concatenation) or an error depending on the language
+### The Classic Type Mismatch Bug
+When a user types their zip code into a website form, the web browser sends the value as a **String (`"15237"`)**, not an integer. If the programmer attempts to calculate mathematical shipping distances without type casting the string to a numeric integer, the program will crash with a **Type Error**.
 
-### Data Type Size and Memory
+---
 
-| Type | Typical Size | Range / Notes |
-|---|---|---|
-| bool | 1 byte | True or False |
-| char | 1 byte (ASCII) or 4 bytes (Unicode) | Single character |
-| int (32-bit) | 4 bytes | ±2,147,483,647 |
-| int (64-bit) | 8 bytes | ±9.2 × 10¹⁸ |
-| float | 4 bytes | ~7 significant digits |
-| double | 8 bytes | ~15 significant digits |
+## Why This Matters in the Field
 
-### Key Exam Points
+When you write automation scripts to query an Active Directory server, parse firewall logs, or extract customer records, data types dictate how your code behaves.
 
-- **Integer (int)** — whole numbers; no decimal
-- **Float/double** — decimal numbers; approximations; `double` is more precise than `float`
-- **String** — text; sequence of characters
-- **Boolean** — True/False; used in conditions
-- **Char** — single character; encoded as ASCII or Unicode
-- **Null/None** — absence of a value; not the same as `0` or `""`
-- Float arithmetic can be imprecise — **avoid using floats for exact currency calculations** (use integer cents or a `Decimal` type instead)
+Recognizing integer limits, string concatenation rules, and boolean flags ensures your scripts execute reliably without silent data corruption.
+
+---
+
+## Key Terms
+
+Data Type · Primitive Types · Integer (`int`) · 32-bit vs 64-bit Integer · Floating-Point (`float`) · Double Precision (`double`) · Precision Error · Character (`char`) · ASCII · Unicode · String (`str`) · Concatenation · Boolean (`bool`) · True / False · Null / None · Type Casting · Implicit Conversion · Explicit Conversion · Type Mismatch Error

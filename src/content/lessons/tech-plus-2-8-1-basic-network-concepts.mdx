@@ -1,82 +1,204 @@
 ---
-title: Basic Network Concepts
-description: Understand how networks work — IP addresses, DNS, DHCP, routers, switches, and the difference between LAN, WAN, and the internet. FC0-U71 objective 2.8.
+title: Basic Network Concepts — Routers, Switches, IP, DHCP, and DNS
+description: Master the core building blocks of computer networking. Explore LAN vs WAN boundaries, the difference between Switches and Routers, IPv4 addressing, Subnet Masks, Default Gateways, DHCP leasing, and DNS name resolution.
 slug: tech-plus-2-8-1-basic-network-concepts
 track: tech-plus
 moduleId: tech-plus.infrastructure
 order: 12
+objective: "FC0-U71 2.8"
+xp: 15
+source: cyber-org
 difficulty: Beginner
 estMinutes: 25
-tags: ["tech+", "FC0-U71 2.8", "networking", "IP", "DNS", "DHCP"]
+tags: ["tech+", "FC0-U71 2.8", "networking", "IP", "DNS", "DHCP", "router", "switch", "gateway", "subnet mask"]
+sections:
+  - id: network-hardware-roles
+    title: "Network Hardware Roles: Switches vs. Routers vs. Access Points"
+    keyPoints:
+      - "Switches connect multiple devices within the same local network (LAN), forwarding frames based on Layer 2 MAC addresses"
+      - "Routers connect different networks together (LAN to WAN/Internet), forwarding packets based on Layer 3 IP addresses"
+      - "Wireless Access Points (APs) bridge radio Wi-Fi signals onto the physical wired Ethernet switch infrastructure"
+    check:
+      - prompt: "What network hardware device forwards data between different networks (such as routing home traffic out to the internet) using IP addresses?"
+        options:
+          - "A Network Switch"
+          - "A Network Router"
+          - "A Patch Panel"
+          - "A USB Hub"
+        correct: 1
+      - prompt: "Which network device connects 24 office desktop computers together on the same local subnet using physical Ethernet patch cables?"
+        options:
+          - "A Layer 2 Network Switch"
+          - "A Modem"
+          - "A Power Supply"
+          - "A DNS Server"
+        correct: 0
+  - id: ip-addressing-and-gateways
+    title: "IPv4 Addressing, Subnet Masks, and Default Gateways"
+    keyPoints:
+      - "IPv4 addresses are 32 bits long, written as four 8-bit octets separated by dots (e.g. 192.168.1.50)"
+      - "The Subnet Mask (e.g. 255.255.255.0) splits the IP address into the Network Portion and the Host Portion"
+      - "The Default Gateway is the IP address of the local router interface that forwards packets outside the local subnet"
+    check:
+      - prompt: "A computer has an IP of 192.168.1.25 and a Subnet Mask of 255.255.255.0. What is the role of the 'Default Gateway' configured on this machine?"
+        options:
+          - "It is the IP address of the local router that receives all outbound traffic destined for remote networks and the internet"
+          - "It is the password to the Wi-Fi network"
+          - "It is the MAC address of the printer"
+          - "It is the speed of the CPU"
+        correct: 0
+      - prompt: "How many total bits make up an IPv4 address?"
+        options:
+          - "16 bits"
+          - "32 bits (4 octets of 8 bits each)"
+          - "64 bits"
+          - "128 bits"
+        correct: 1
+  - id: dhcp-and-dns-services
+    title: "Core Network Services: DHCP Automatic Leasing vs. DNS Name Resolution"
+    keyPoints:
+      - "DHCP (Dynamic Host Configuration Protocol) automatically assigns IP addresses, subnet masks, default gateways, and DNS servers to client devices"
+      - "DNS (Domain Name System) translates human-readable domain names (e.g. www.google.com) into computer IP addresses (e.g. 142.250.80.46)"
+      - "Diagnostic sequence: ipconfig /all → ping 127.0.0.1 (NIC loopback) → ping Gateway → ping 8.8.8.8 (Internet IP) → ping google.com (DNS)"
+    check:
+      - prompt: "What network service allows you to type 'google.com' into a web browser instead of having to memorize and type '142.250.80.46'?"
+        options:
+          - "DHCP"
+          - "DNS (Domain Name System)"
+          - "FTP"
+          - "NTP"
+        correct: 1
+      - prompt: "When a new laptop connects to the school Wi-Fi network, which protocol automatically provides it with a valid IP address and network configuration?"
+        options:
+          - "DHCP (Dynamic Host Configuration Protocol)"
+          - "HTTP"
+          - "SSH"
+          - "SNMP"
+        correct: 0
 domains:
   - domainId: techplus.infrastructure
     weight: 1
 ---
 
-## Basic Network Concepts
+import Callout from '../../components/Callout.astro';
 
-A network is two or more devices connected to share resources and communicate. Understanding the building blocks of networking is essential for any IT role — you'll encounter them on day one.
+## The Highway System of the Digital Age
 
-### Types of Networks
+A standalone computer can calculate spreadsheets, play video games, and store local files. But the moment you connect that computer to a **Network**, its utility multiplies a million times over: it can query cloud AI models, collaborate in real time with teammates across the planet, stream media, and access centralized enterprise databases.
 
-| Type | Scope | Example |
-|---|---|---|
-| **PAN** — Personal Area Network | ~10 meters | Bluetooth devices around one person |
-| **LAN** — Local Area Network | Building or campus | Office computers on the same switch |
-| **MAN** — Metropolitan Area Network | City-wide | City government network |
-| **WAN** — Wide Area Network | Country / global | The internet; corporate branch connections |
+A network is simply two or more computing devices linked together via copper cables, fiber optics, or radio waves to share data and resources.
 
-### Network Hardware
+Understanding network hardware, IP addressing schemes, DHCP automatic configuration, and DNS name resolution is the cornerstone of all IT technical support.
 
-**Router** — connects different networks (e.g., your LAN to the ISP/WAN). Forwards packets based on IP addresses. Every home has one.
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        THE LOCAL NETWORK TOPOLOGY                      │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│   [ INTERNET / WAN ]                                                   │
+│          │                                                             │
+│          ▼ (Public IP: `203.0.113.10`)                                 │
+│   [ ROUTER / FIREWALL ] ──(The Gateway: `192.168.1.1`)                 │
+│          │                                                             │
+│          ▼ (Internal Private LAN)                                      │
+│   [ ETHERNET SWITCH ]                                                  │
+│     ├── PC 1 (`192.168.1.10`)                                          │
+│     ├── PC 2 (`192.168.1.11`)                                          │
+│     ├── Network Printer (`192.168.1.50`)                               │
+│     └── Wireless Access Point (AP) ──> [ Laptops / Phones on Wi-Fi ]   │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
 
-**Switch** — connects devices within the same LAN. Forwards frames based on MAC addresses. Faster and smarter than a hub.
+---
 
-**Access Point (AP)** — provides Wi-Fi connectivity. Bridges wireless devices onto the wired LAN.
+## 1. Hardware Roles: Switches vs. Routers vs. Modems
 
-**Modem** — modulates/demodulates the signal between your ISP and your router (DSL, cable, fiber ONT).
+End users often call their all-in-one home internet box "the Wi-Fi router." In enterprise networks, these are distinct physical devices:
 
-**Firewall** — filters traffic based on rules. Blocks unauthorized connections.
+- **Switch (The Intra-Network Organizer):** Connects devices within the **same Local Area Network (LAN)**. It inspects physical Layer 2 MAC addresses to forward Ethernet frames directly from Port 1 to Port 12 without broadcasting to everyone.
+- **Router (The Inter-Network Gateway):** Connects **different networks together** (e.g., connecting your home 192.168.1.0/24 LAN to your ISP's public network). It inspects Layer 3 IP addresses to route packets across the globe.
+- **Wireless Access Point (AP):** A radio transceiver that connects to a wired switch, broadcasting Wi-Fi signals so wireless laptops and smartphones can join the wired LAN.
+- **Modem (Modulator / Demodulator):** Converts digital computer signals into analog radio frequencies traveling across telephone DSL, cable TV coaxial, or fiber ONT light pulses.
 
-### IP Addressing
+---
 
-Every device on a network needs an IP address to communicate.
+## 2. IPv4 Addressing, Subnet Masks, and Default Gateways
 
-- **IPv4:** 32-bit address written as four octets — e.g., `192.168.1.100`
-- **IPv6:** 128-bit address written in hexadecimal — e.g., `2001:0db8::1`
-- **Subnet mask** — defines which part of the IP is the network vs. the host (e.g., `255.255.255.0` = `/24`)
-- **Default gateway** — the router's IP address; this is where non-local traffic is sent
+Every device on an IP network requires four basic configuration settings to communicate:
+
+```
+┌────────────────────────────────────────────────────────┐
+│             CORE IP CONFIGURATION QUAD                 │
+│                                                        │
+│   1. IP Address:      192.168.1.105                    │
+│   2. Subnet Mask:     255.255.255.0  (/24)             │
+│   3. Default Gateway: 192.168.1.1    (The Router)      │
+│   4. DNS Server:      1.1.1.1 / 8.8.8.8                │
+└────────────────────────────────────────────────────────┘
+```
+
+1. **IP Address (Host Identifier):** A 32-bit numerical label written as four decimal octets (e.g., `192.168.1.105`). It serves as your computer's unique mailing address on the network.
+2. **Subnet Mask (The Boundary Line):** Tells the computer which portion of the IP address represents the **Network ID** (your neighborhood street) and which portion represents the **Host ID** (your house number). In `255.255.255.0`, the first three numbers identify the local subnet (`192.168.1.x`).
+3. **Default Gateway (The Exit Door):** The IP address of your local router's inside interface (`192.168.1.1`). When your computer wants to send data to an IP address outside your local subnet (like `142.250.80.46` for Google), it delivers the packet directly to the Default Gateway.
+
+---
+
+## 3. Dynamic Configuration (DHCP) vs. Name Resolution (DNS)
 
 ### DHCP (Dynamic Host Configuration Protocol)
+Without DHCP, an IT technician would have to manually sit at every laptop, smartphone, and printer to type in a static IP address, subnet mask, and gateway.
+- **The DORA Flow:** When a device boots, it broadcasts: *"Hey, is there a DHCP server?"* (**Discover**). The router replies with an IP offer (**Offer**), the client accepts (**Request**), and the router confirms the temporary lease (**Acknowledge**).
 
-DHCP automatically assigns IP addresses to devices on a network.
+### DNS (Domain Name System): The Internet's Phonebook
+Computers only understand numbers; humans remember names.
+- When you type `amazon.com` into your browser, your computer asks its configured **DNS Server** (`8.8.8.8` or `1.1.1.1`): *"What is the IP address for amazon.com?"*
+- The DNS server returns `205.251.242.103`, and your browser connects immediately.
 
-- Without DHCP, every device would need a manually configured IP (static)
-- DHCP server (usually the router) hands out: IP address, subnet mask, default gateway, DNS server
-- **Lease** — temporary assignment; device renews before expiry
+---
 
-### DNS (Domain Name System)
+## 4. The Technician's 5-Step Network Triage Ladder
 
-DNS translates domain names to IP addresses.
-
-- Typing `google.com` → DNS returns `142.250.80.46` → browser connects to that IP
-- Without DNS, you'd need to memorize every website's IP address
-- **DNS server** — provided by ISP by default; alternatives: `8.8.8.8` (Google), `1.1.1.1` (Cloudflare)
-
-### Basic Troubleshooting Flow
+When a user complains: *"The internet is completely down!"*, follow this systematic command-line sequence to pinpoint the exact failure point:
 
 ```
-ipconfig /all       → Check IP, gateway, DNS
-ping 127.0.0.1      → Test local TCP/IP stack
-ping [gateway IP]   → Test LAN connectivity
-ping 8.8.8.8        → Test internet (no DNS)
-ping google.com     → Test DNS resolution
+┌────────────────────────────────────────────────────────────────────────┐
+│                   THE 5-STEP NETWORK DIAGNOSTIC LADDER                 │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│   Step 1: `ipconfig /all`                                              │
+│   └── Did you get a valid IP address from DHCP? (If 169.254.x.x, DHCP  │
+│       failed!)                                                         │
+│                                                                        │
+│   Step 2: `ping 127.0.0.1`                                             │
+│   └── Tests your own internal network card (NIC) TCP/IP software stack.│
+│                                                                        │
+│   Step 3: `ping [Default Gateway IP]` (e.g. `ping 192.168.1.1`)        │
+│   └── Tests physical cable/Wi-Fi connection to your local router.      │
+│                                                                        │
+│   Step 4: `ping 8.8.8.8`                                               │
+│   └── Tests connectivity out to the public internet by raw IP address. │
+│                                                                        │
+│   Step 5: `ping google.com`                                            │
+│   └── Tests whether DNS name resolution is functioning properly.       │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Key Exam Points
+<Callout type="exam">
+**The Classic DNS Trap:** If Step 4 (`ping 8.8.8.8`) succeeds with 0% packet loss, but Step 5 (`ping google.com`) fails with *"Could not find host"*, the internet connection and physical cables are 100% fine! The failure is purely **DNS Name Resolution**.
+</Callout>
 
-- LAN = local network; WAN = wide area (internet/branches)
-- Router connects **different networks**; switch connects devices on the **same network**
-- DHCP automatically assigns IP config; DNS translates names to IPs
-- Default gateway = the router's IP on the LAN
-- IPv4 = 32-bit; IPv6 = 128-bit
+---
+
+## Why This Matters in the Field
+
+Network issues account for over half of all corporate IT help-desk tickets. 
+
+Instead of randomly rebooting computers or guessing, the 5-step diagnostic ladder isolates whether a problem is a bad cable, a failing DHCP scope, a downed gateway router, or a broken DNS server in under 60 seconds.
+
+---
+
+## Key Terms
+
+Local Area Network (LAN) · Wide Area Network (WAN) · Layer 2 Switch · MAC Address · Layer 3 Router · Wireless Access Point (AP) · Modem · IPv4 Address · Octet · Subnet Mask · Default Gateway · DHCP (Dynamic Host Configuration Protocol) · DORA Sequence · IP Lease · DNS (Domain Name System) · Loopback Address (`127.0.0.1`) · `ipconfig` · `ping` · Network Diagnostic Ladder

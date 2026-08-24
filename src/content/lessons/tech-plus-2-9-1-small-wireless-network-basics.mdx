@@ -1,89 +1,197 @@
 ---
-title: Small Wireless Network Basics
-description: Set up and configure a basic Wi-Fi network — SSID, security modes, channels, frequency bands, and common troubleshooting. FC0-U71 objective 2.9.
+title: Small Wireless Network Basics — Standards, Frequencies, and WPA3 Security
+description: Configure and secure small office and home Wi-Fi networks. Master 802.11 Wi-Fi generations (Wi-Fi 4 through Wi-Fi 7), 2.4 GHz vs 5 GHz vs 6 GHz frequency bands, non-overlapping channels (1, 6, 11), and WPA2/WPA3 encryption.
 slug: tech-plus-2-9-1-small-wireless-network-basics
 track: tech-plus
 moduleId: tech-plus.infrastructure
 order: 13
+objective: "FC0-U71 2.9"
+xp: 15
+source: cyber-org
 difficulty: Beginner
 estMinutes: 20
-tags: ["tech+", "FC0-U71 2.9", "wireless", "Wi-Fi", "SSID"]
+tags: ["tech+", "FC0-U71 2.9", "wireless", "Wi-Fi", "SSID", "802.11", "WPA3", "WPA2", "channels", "2.4GHz", "5GHz"]
+sections:
+  - id: wifi-standards-generations
+    title: "IEEE 802.11 Wi-Fi Standards and Generations"
+    keyPoints:
+      - "802.11n (Wi-Fi 4): 2.4 GHz and 5 GHz bands up to 600 Mbps (introduced MIMO)"
+      - "802.11ac (Wi-Fi 5): 5 GHz band up to 3.5 Gbps (introduced MU-MIMO)"
+      - "802.11ax (Wi-Fi 6 / 6E): 2.4, 5, and 6 GHz bands up to 9.6 Gbps (OFDMA efficiency)"
+      - "802.11be (Wi-Fi 7): Multi-link operation (MLO) across 2.4, 5, and 6 GHz reaching up to 46 Gbps"
+    check:
+      - prompt: "Which Wi-Fi generation standard operates in the 5 GHz band exclusively to deliver multi-gigabit throughput (up to 3.5 Gbps)?"
+        options:
+          - "802.11b (Wi-Fi 1)"
+          - "802.11g (Wi-Fi 3)"
+          - "802.11ac (Wi-Fi 5)"
+          - "802.11a"
+        correct: 2
+      - prompt: "What new radio frequency band was unlocked by Wi-Fi 6E and Wi-Fi 7 to provide clean, interference-free spectrum for high-speed devices?"
+        options:
+          - "900 MHz"
+          - "2.4 GHz"
+          - "6 GHz"
+          - "60 GHz"
+        correct: 2
+  - id: radio-frequency-bands-channels
+    title: "2.4 GHz vs. 5 GHz vs. 6 GHz and Non-Overlapping Channels"
+    keyPoints:
+      - "2.4 GHz: Long range, superior wall penetration, but high interference (microwaves, Bluetooth) with only 3 non-overlapping channels: 1, 6, and 11"
+      - "5 GHz: Shorter range, reduced wall penetration, but much higher throughput and 24 non-overlapping channels"
+      - "6 GHz: Ultra-high throughput and lowest latency; shortest physical range"
+    check:
+      - prompt: "When configuring multiple 2.4 GHz wireless access points in an office to prevent co-channel radio interference, which three non-overlapping channels should be used?"
+        options:
+          - "Channels 1, 2, and 3"
+          - "Channels 1, 6, and 11"
+          - "Channels 6, 7, and 8"
+          - "Channels 10, 11, and 12"
+        correct: 1
+      - prompt: "A user in a basement bedroom complains that their laptop disconnects when connected to the 5 GHz Wi-Fi band, but stays connected reliably on the 2.4 GHz band. Why?"
+        options:
+          - "5 GHz signals travel faster than light"
+          - "2.4 GHz radio waves have longer wavelengths that penetrate solid walls and floors much more effectively than 5 GHz waves"
+          - "2.4 GHz uses fiber optics"
+          - "The laptop's battery is low"
+        correct: 1
+  - id: wireless-security-hardening
+    title: "Wireless Security: WPA3 vs. WPA2 vs. Broken WEP and WPS Risks"
+    keyPoints:
+      - "WPA3 is the current gold standard, featuring SAE (Simultaneous Authentication of Equals) to stop offline dictionary attacks"
+      - "WPA2-AES is the legacy standard; WEP is completely broken (crackable in 60 seconds) and must never be deployed"
+      - "Wi-Fi Protected Setup (WPS) contains severe PIN brute-force vulnerabilities and must be disabled on all routers"
+    check:
+      - prompt: "Which legacy wireless encryption standard uses broken RC4 ciphers and can be cracked by an attacker in under two minutes with free software?"
+        options:
+          - "WPA3-Enterprise"
+          - "WPA2-AES"
+          - "WEP (Wired Equivalent Privacy)"
+          - "IPsec"
+        correct: 2
+      - prompt: "Why should an IT technician immediately disable Wi-Fi Protected Setup (WPS) on a newly installed small business wireless router?"
+        options:
+          - "WPS has an 8-digit PIN design flaw that allows attackers to brute-force the router password within hours"
+          - "WPS increases the router's power bill"
+          - "WPS disables Ethernet ports"
+          - "WPS prevents smartphones from connecting"
+        correct: 0
 domains:
   - domainId: techplus.infrastructure
     weight: 1
 ---
 
-## Small Wireless Network Basics
+import Callout from '../../components/Callout.astro';
 
-Nearly every home, school, and small business runs a wireless network. Understanding how to set one up — and how to troubleshoot when the Wi-Fi is "broken" — is one of the most common real-world IT tasks.
+## The Invisible Network
 
-### Wi-Fi Standards (IEEE 802.11)
+Radio waves have replaced copper wires for billions of consumer devices. From smartphones and laptops to smart TVs and IoT security cameras, nearly every device in modern homes and small businesses connects via **Wi-Fi**.
 
-| Standard | Max Speed | Frequency | Also Called |
-|---|---|---|---|
-| 802.11b | 11 Mbps | 2.4 GHz | Wi-Fi 1 (legacy) |
-| 802.11g | 54 Mbps | 2.4 GHz | Wi-Fi 3 (legacy) |
-| 802.11n | 600 Mbps | 2.4 / 5 GHz | Wi-Fi 4 |
-| 802.11ac | 3.5 Gbps | 5 GHz | Wi-Fi 5 |
-| 802.11ax | 9.6 Gbps | 2.4 / 5 / 6 GHz | Wi-Fi 6 / 6E |
-| 802.11be | 46 Gbps | 2.4 / 5 / 6 GHz | Wi-Fi 7 |
+However, radio frequency (RF) signals are unconstrained: they pass through walls, travel out into parking lots, and bounce off metal filing cabinets. A poorly configured wireless network will suffer from agonizingly slow speeds, constant dropped connections, and severe cybersecurity eavesdropping vulnerabilities.
 
-### Frequency Bands
+Understanding Wi-Fi generations, frequency physics, channel allocation math, and cryptographic security protocols allows you to deploy fast, reliable, and secure wireless networks.
 
-**2.4 GHz**
-- Longer range, better wall penetration
-- More interference (microwaves, older devices, neighbors)
-- Fewer non-overlapping channels: only 3 (1, 6, 11)
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        WI-FI GENERATION ROADMAP                        │
+├──────────────┬───────────────┬──────────────────────┬──────────────────┤
+│ Generation   │ IEEE Standard │ Supported Frequencies│ Max Theoretical  │
+├──────────────┼───────────────┼──────────────────────┼──────────────────┤
+│ **Wi-Fi 4**  │ 802.11n       │ 2.4 GHz / 5 GHz      │ 600 Mbps         │
+│ **Wi-Fi 5**  │ 802.11ac      │ 5 GHz only           │ 3.5 Gbps         │
+│ **Wi-Fi 6**  │ 802.11ax      │ 2.4 GHz / 5 GHz      │ 9.6 Gbps         │
+│ **Wi-Fi 6E** │ 802.11ax      │ 2.4 GHz / 5 GHz / 6G │ 9.6 Gbps         │
+│ **Wi-Fi 7**  │ 802.11be      │ 2.4 GHz / 5 GHz / 6G │ **46 Gbps**      │
+└──────────────┴───────────────┴──────────────────────┴──────────────────┘
+```
 
-**5 GHz**
-- Shorter range, less wall penetration
-- Much faster; less interference
-- More non-overlapping channels (up to 24 at 20 MHz width)
+---
 
-**6 GHz (Wi-Fi 6E only)**
-- Newest band; no legacy interference
-- High speed; shortest range
+## 1. Frequency Bands: 2.4 GHz vs. 5 GHz vs. 6 GHz
 
-### Key Wireless Configuration Settings
+Radio physics dictates a fundamental trade-off: **Higher frequencies carry more data, but have shorter physical range and poorer wall penetration.**
 
-**SSID (Service Set Identifier)** — the name of the Wi-Fi network. Can be hidden (but hiding provides minimal security).
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        FREQUENCY BAND TRADEOFFS                        │
+├────────────────────┬────────────────────┬──────────────────────────────┤
+│ Frequency Band     │ Strengths          │ Weaknesses                   │
+├────────────────────┼────────────────────┼──────────────────────────────┤
+│ **2.4 GHz**        │ Long physical reach│ Crowded spectrum; extreme    │
+│                    │ (through walls)    │ interference (Bluetooth,     │
+│                    │                    │ microwaves); slow speeds     │
+├────────────────────┼────────────────────┼──────────────────────────────┤
+│ **5 GHz**          │ Blazing fast; 24   │ Shorter range; struggles to  │
+│                    │ non-overlap channels│ penetrate brick/concrete    │
+├────────────────────┼────────────────────┼──────────────────────────────┤
+│ **6 GHz (6E / 7)** │ Ultra-wide clean   │ Shortest range; requires     │
+│                    │ spectrum; 0 legacy │ line-of-sight or thin walls  │
+└────────────────────┴────────────────────┴──────────────────────────────┘
+```
 
-**Security Mode**
+### The 2.4 GHz Channel Mathematics (1, 6, 11)
+In the 2.4 GHz band, there are 11 channels in North America. Each channel is 20 MHz wide, but channels are spaced only 5 MHz apart. This means adjacent channels overlap and cause severe radio interference:
+- To prevent co-channel interference when deploying multiple access points, **technicians ONLY use Channels 1, 6, and 11**.
 
-| Mode | Status | Notes |
-|---|---|---|
-| WEP | Broken — never use | Cracked in minutes |
-| WPA | Deprecated — avoid | RC4 cipher weaknesses |
-| WPA2 | Current standard | AES-CCMP; use when WPA3 unavailable |
-| WPA3 | Best — use when supported | SAE handshake; stronger password protection |
+```
+┌────────────────────────────────────────────────────────┐
+│             2.4 GHz NON-OVERLAPPING CHANNELS           │
+│                                                        │
+│   [ Channel 1 ]       [ Channel 6 ]       [ Channel 11]│
+│   (2.412 GHz)         (2.437 GHz)         (2.462 GHz)  │
+│                                                        │
+│   ✔ All other channels (2,3,4,5,7,8,9,10) overlap and   │
+│     cause packet collisions!                           │
+└────────────────────────────────────────────────────────┘
+```
 
-**Channel** — Use **auto** or manually select a non-overlapping channel for 2.4 GHz (1, 6, or 11).
+---
 
-**Channel Width** — 20 MHz (least interference), 40 MHz, 80 MHz, 160 MHz (fastest, most interference).
+## 2. Wireless Security: Encryption Standards
 
-### Setting Up a Small Wireless Network
+Because Wi-Fi radio waves radiate beyond the walls of a building, encryption is mandatory to prevent attackers in parking lots from capturing passwords:
 
-1. Connect router/AP to internet (modem or ISP handoff)
-2. Log into router admin interface (typically `192.168.1.1` or `192.168.0.1`)
-3. Set a strong SSID (not manufacturer default like "NETGEAR_2G")
-4. Set security to **WPA3** or **WPA2-AES**
-5. Set a strong password (12+ characters, mixed)
-6. Change default admin credentials on the router
-7. Disable WPS (Wi-Fi Protected Setup) — it has known PIN brute-force vulnerabilities
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                      WIRELESS SECURITY PROTOCOLS                       │
+├──────────────┬───────────────┬─────────────────────────────────────────┤
+│ Protocol     │ Security State│ Cryptographic Notes                     │
+├──────────────┼───────────────┼─────────────────────────────────────────┤
+│ **WEP**      │ ❌ **DEAD**   │ Broken 64/128-bit RC4; cracked in 60 sec│
+│ **WPA**      │ ❌ Deprecated │ Temporary patch; TKIP vulnerabilities   │
+│ **WPA2**     │ ✔ Enterprise  │ AES-CCMP encryption; standard legacy    │
+│ **WPA3**     │ 🏆 **BEST**   │ SAE (Dragonfly) handshake; stops offline│
+│              │               │ password dictionary cracking            │
+└──────────────┴───────────────┴─────────────────────────────────────────┘
+```
 
-### Troubleshooting Wi-Fi
+<Callout type="warn">
+**The WPS Security Hazard:** **Wi-Fi Protected Setup (WPS)** was designed to help users connect printers by pushing a button or entering an 8-digit PIN. However, the WPS PIN architecture has a fatal design flaw that allows free automated attack tools (*Reaver*) to brute-force the PIN and reveal the plaintext Wi-Fi password in a few hours. **Always disable WPS on all routers.**
+</Callout>
 
-| Problem | Check |
-|---|---|
-| Can't see SSID | Hidden network; client too far from AP; 5 GHz on 2.4 GHz-only device |
-| Connected but no internet | Gateway/DNS issue; ISP outage; check with `ping 8.8.8.8` |
-| Slow speeds | Interference; channel congestion; distance; too many devices |
-| Intermittent drops | RF interference nearby; AP overheating; old firmware |
+---
 
-### Key Exam Points
+## 3. The 7-Step Small Office Wi-Fi Deployment Checklist
 
-- WPA3 is the current best practice; WEP is **completely broken**
-- 2.4 GHz = longer range, more interference; 5 GHz = shorter range, faster
-- Non-overlapping 2.4 GHz channels: **1, 6, 11**
-- Always change default router admin credentials — default passwords are publicly documented
-- Disable **WPS** — the PIN mode is vulnerable to brute force
+When unboxing and configuring a new wireless router or Access Point for a small business:
+1. **Change Default Admin Passwords:** Replace `admin/password` or `admin/admin` immediately with a 16+ character passphrase.
+2. **Assign a Professional SSID:** Set a descriptive network name (e.g. `AcmeCorp_Staff`), avoiding hardware brand names (`NETGEAR_5G`).
+3. **Enable WPA3-Personal (or WPA2/WPA3 Mixed):** Never deploy WEP or open networks.
+4. **Disable WPS:** Turn off Wi-Fi Protected Setup entirely.
+5. **Create a Segregated Guest Network:** Put visitors and smart IoT TVs on an isolated Guest VLAN with no access to local corporate PCs or printers.
+6. **Set Channel Allocation:** Manually set 2.4 GHz radios to Channels 1, 6, or 11; set 5 GHz to auto or uncrowded UNII bands.
+7. **Update Firmware:** Flash the latest security firmware from the manufacturer to patch known vulnerabilities.
+
+---
+
+## Why This Matters in the Field
+
+When a small business owner complains that their point-of-sale credit card terminals drop connection every time someone heats up lunch in the break room microwave, an untrained technician replaces the router.
+
+A trained technician understands RF physics: microwave ovens leak 2.4 GHz radiation! Shifting the POS terminals to the **5 GHz band** solves the problem permanently.
+
+---
+
+## Key Terms
+
+Wi-Fi · IEEE 802.11 · Wi-Fi 4 (802.11n) · Wi-Fi 5 (802.11ac) · Wi-Fi 6 / 6E (802.11ax) · Wi-Fi 7 (802.11be) · 2.4 GHz vs 5 GHz vs 6 GHz · Non-Overlapping Channels (1, 6, 11) · Service Set Identifier (SSID) · WEP (Broken) · WPA2-AES · WPA3-Personal · Simultaneous Authentication of Equals (SAE) · Wi-Fi Protected Setup (WPS) · Guest Network Isolation · RF Interference
