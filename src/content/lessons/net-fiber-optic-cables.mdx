@@ -8,13 +8,55 @@ order: 2
 difficulty: Beginner
 estMinutes: 20
 tags: ["network+", "cabling", "fiber", "N10-009 1.3", "N10-008 1.3"]
+sections:
+  - id: single-mode-vs-multimode
+    title: "Single-Mode (SMF) vs. Multi-Mode (MMF) Fiber"
+    keyPoints:
+      - "Single-Mode Fiber (SMF): 9-micron core, laser light source (1310nm/1550nm), spans 10 to 40+ kilometers with zero modal dispersion (Yellow jacket)"
+      - "Multi-Mode Fiber (MMF): 50 or 62.5-micron core, LED/VCSEL light source (850nm/1300nm), spans up to 300–550 meters for intra-building risers (Aqua/Orange jacket)"
+      - "Fiber is completely immune to Electromagnetic Interference (EMI), Radio Frequency Interference (RFI), and electrical ground loops"
+    check:
+      - prompt: "A municipal network requires an optical fiber link between two city buildings located 15 kilometers apart. Which type of fiber optic cabling must be deployed?"
+        options:
+          - "Multi-Mode Fiber (MMF)"
+          - "Single-Mode Fiber (SMF)"
+          - "Cat6a UTP"
+          - "Coaxial RG-6"
+        correct: 1
+      - prompt: "Why is optical fiber cabling immune to Electromagnetic Interference (EMI) from nearby electrical substations and lightning strikes?"
+        options:
+          - "Fiber cables are grounded with thick copper rods"
+          - "Data is transmitted as pulses of light (photons) through glass/plastic cores rather than electrical currents over copper"
+          - "Fiber runs at 220 Volts"
+          - "Fiber uses Wi-Fi encryption"
+        correct: 1
+  - id: modal-dispersion-and-transceivers
+    title: "Modal Dispersion and Optical Transceivers (SFP+)"
+    keyPoints:
+      - "Modal dispersion occurs in Multi-mode fiber when light rays bounce at different angles, limiting transmission distance"
+      - "Small Form-factor Pluggable (SFP/SFP+) transceivers convert switch electrical buses into optical laser signals"
+      - "Always use optical power meters and visual fault locators (VFL lasers) to test fiber integrity"
+    check:
+      - prompt: "What physical optical phenomenon limits the maximum reach of Multi-Mode Fiber (MMF) compared to Single-Mode Fiber (SMF)?"
+        options:
+          - "Ohmic electrical resistance"
+          - "Modal dispersion (different light paths taking slightly different times to reach the receiver)"
+          - "Copper oxidation"
+          - "Thermal throttling"
+        correct: 1
+      - prompt: "Which hot-pluggable modular transceiver is standard in modern enterprise 10-Gigabit optical switch ports?"
+        options:
+          - "SFP+ (Small Form-factor Pluggable Plus)"
+          - "DB-9 Serial connector"
+          - "BNC connector"
+          - "RJ-11 jack"
+        correct: 0
 domains:
   - domainId: netplus.networking_concepts
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
 ---
-
 ## The Run That Copper Can't Make
 
 The district is connecting two buildings 300 meters apart. Someone suggests running Ethernet copper between them. You already know that's dead on arrival — copper Ethernet maxes out at 100 meters, and even if you daisy-chained switches across the parking lot, you'd be creating failure points in outdoor enclosures exposed to weather, lightning, and landscaping crews with backhoes. The answer is fiber-optic cable: a glass or plastic strand that carries data as pulses of light instead of electrical signals. It laughs at 300 meters. Some fiber runs span 80 kilometers without a repeater. It's immune to electromagnetic interference because there's no electrical signal to interfere with. Lightning can strike right next to a fiber run and the data keeps moving. Fiber costs more to install and terminate than copper, and the equipment on each end is more expensive, but when the distance, speed, or environment demands it, fiber is the only option. And increasingly, it's the preferred option even when copper could technically work.

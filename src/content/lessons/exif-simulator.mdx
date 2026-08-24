@@ -278,7 +278,7 @@ import LegacyHtml from '../../components/LegacyHtml.astro';
         // Display the command
         const cmdLine = document.createElement('div');
         cmdLine.className = 'output-line';
-        cmdLine.innerHTML = \`<span class="prompt">$ </span><span class="command">\${cmd}</span>\`;
+        cmdLine.innerHTML = \`<span class="prompt"></span><span class="command">\{cmd}</span>\`;
         terminalOutput.appendChild(cmdLine);
         
         const trimmedCmd = cmd.trim().toLowerCase();
@@ -305,9 +305,9 @@ import LegacyHtml from '../../components/LegacyHtml.astro';
           addOutput('');
           Object.entries(exifData).forEach(([key, value]) => {
             if (key === 'Comment') {
-              addOutput(\`<span class="info">\${key}</span>                 : <span id="base64Comment" style="background: rgba(255, 170, 0, 0.3); padding: 2px 5px; border-radius: 2px; color: #ffaa00; font-weight: bold; cursor: text;">\${value}</span> <button onclick="copyToDecoder('\${value}')" style="padding: 3px 10px; background: #00ff88; color: #0a0e27; border: none; border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 0.8em; font-weight: bold; cursor: pointer; margin-left: 10px;">📋 Copy to Decoder</button>\`);
+              addOutput(\`<span class="info">\{key}</span>                 : <span id="base64Comment" style="background: rgba(255, 170, 0, 0.3); padding: 2px 5px; border-radius: 2px; color: #ffaa00; font-weight: bold; cursor: text;">\{value}</span> <button onclick="copyToDecoder('\${value}')" style="padding: 3px 10px; background: #00ff88; color: #0a0e27; border: none; border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 0.8em; font-weight: bold; cursor: pointer; margin-left: 10px;">📋 Copy to Decoder</button>\`);
             } else {
-              addOutput(\`<span class="info">\${key}</span>                 : \${value}\`);
+              addOutput(\`<span class="info">\{key}</span>                 : \{value}\`);
             }
           });
           addOutput('');

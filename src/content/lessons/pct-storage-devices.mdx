@@ -8,6 +8,70 @@ order: 3
 difficulty: Beginner
 estMinutes: 30
 tags: ["storage", "HDD", "SSD", "NVMe", "RAID", "file system", "A+", "Core 1", "CompTIA"]
+sections:
+  - id: hdd-mechanics-and-smart
+    title: "HDD Architecture, Spindle RPM, and S.M.A.R.T. Monitoring"
+    keyPoints:
+      - "7,200 RPM drives deliver ~150 MB/s; 5,400 RPM drives prioritize lower heat and acoustic noise"
+      - "S.M.A.R.T. (Self-Monitoring, Analysis, and Reporting Technology) tracks reallocated sectors and mechanical wear"
+      - "Clicking sounds (Click of Death) indicate repeated head recalibration failures across damaged platters"
+    check:
+      - prompt: "A customer brings in an older PC that makes a loud, rhythmic clicking noise when booting. What component is experiencing mechanical failure?"
+        options:
+          - "The CPU cooling fan"
+          - "The mechanical Hard Disk Drive (HDD read/write head)"
+          - "The solid-state NVMe drive"
+          - "The motherboard VRM"
+        correct: 1
+      - prompt: "What diagnostic reporting system built into hard drives and SSDs warns administrators of impending drive failure before data loss occurs?"
+        options:
+          - "S.M.A.R.T."
+          - "POST Beep Codes"
+          - "DHCP Relay"
+          - "RAID 0"
+        correct: 0
+  - id: ssd-form-factors-and-trim
+    title: "SSD Form Factors (2.5\" vs M.2) and the TRIM Command"
+    keyPoints:
+      - "2.5-inch SSDs use legacy SATA data and 15-pin SATA power cables (capped at ~550 MB/s)"
+      - "M.2 NVMe drives connect directly to motherboard PCIe slots with zero cabling required"
+      - "The OS TRIM command informs the SSD which data blocks are invalid to optimize garbage collection and write speeds"
+    check:
+      - prompt: "Why should a technician verify that the TRIM command is active on a modern Windows SSD installation?"
+        options:
+          - "TRIM defragments the drive continuously"
+          - "TRIM tells the SSD controller which blocks contain deleted data, preserving sustained write speeds and lifespan"
+          - "TRIM turns off the SSD fan"
+          - "TRIM converts SATA into NVMe"
+        correct: 1
+      - prompt: "What physical form factor SSD connects directly into a motherboard slot and requires neither data nor power cables?"
+        options:
+          - "3.5-inch SAS drive"
+          - "M.2 SSD (e.g. 2280)"
+          - "2.5-inch SATA drive"
+          - "5.25-inch optical drive"
+        correct: 1
+  - id: raid-arrays-and-filesystems
+    title: "Hardware RAID Configurations and Filesystem Formatting"
+    keyPoints:
+      - "RAID 0 (Striping) = Performance, 0 redundancy; RAID 1 (Mirroring) = 1 drive tolerance; RAID 5 = 1 drive tolerance with parity"
+      - "NTFS is the native Windows filesystem supporting file permissions (ACLs), compression, and BitLocker encryption"
+      - "exFAT is the ideal cross-platform filesystem for large USB flash drives and external hard drives (works on Windows & macOS)"
+    check:
+      - prompt: "A photographer uses both a Windows desktop and an Apple MacBook. Which filesystem format should they format their external 2TB SSD with to allow full read and write access on both operating systems?"
+        options:
+          - "NTFS"
+          - "APFS"
+          - "exFAT"
+          - "ext4"
+        correct: 2
+      - prompt: "An accounting server requires a storage array of three 4TB hard drives configured for fault tolerance. Which RAID level should the technician configure?"
+        options:
+          - "RAID 0"
+          - "RAID 5"
+          - "RAID 10"
+          - "JBOD"
+        correct: 1
 domains:
   - domainId: aplus1.hardware
     weight: 0.8

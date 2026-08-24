@@ -1,71 +1,226 @@
 ---
-title: Internal Computing Components
-description: Identify and explain motherboards, CPUs, RAM, storage, power supplies, and cooling inside a computer. FC0-U71 objective 2.2.
+title: Internal Computing Components — The Hardware Inside the Chassis
+description: Dissect the anatomy of a computer. Explore motherboards, CPU sockets (LGA vs PGA), memory channels, PCIe expansion lanes, power supply rails, and thermal management.
 slug: tech-plus-2-2-1-internal-computing-components
 track: tech-plus
 moduleId: tech-plus.infrastructure
 order: 3
+objective: "FC0-U71 2.2"
+xp: 15
+source: cyber-org
 difficulty: Beginner
 estMinutes: 25
-tags: ["tech+", "FC0-U71 2.2", "hardware", "components"]
+tags: ["tech+", "FC0-U71 2.2", "hardware", "components", "motherboard", "CPU", "RAM", "PCIe", "PSU"]
+sections:
+  - id: motherboard-anatomy
+    title: "The Motherboard and Bus Interconnects"
+    keyPoints:
+      - "The motherboard is the printed circuit board (PCB) that routes data and power between all components"
+      - "The Chipset manages high-speed data flow between the CPU, PCIe lanes, storage, and USB controllers"
+      - "PCIe slots scale by physical lane count: x1 (audio/NICs), x4 (NVMe), and x16 (high-performance GPUs)"
+    check:
+      - prompt: "Which motherboard component serves as the central traffic controller managing data pathways between the CPU, storage drives, and expansion buses?"
+        options:
+          - "The CMOS battery"
+          - "The Chipset"
+          - "The front panel audio header"
+          - "The case intake fan"
+        correct: 1
+      - prompt: "A technician is installing a dedicated high-end graphics card (GPU). Which motherboard expansion slot form factor is required?"
+        options:
+          - "PCIe x1"
+          - "PCIe x16"
+          - "SATA power connector"
+          - "M.2 E-Key slot"
+        correct: 1
+  - id: cpu-sockets-and-ram
+    title: "CPU Sockets (LGA vs. PGA) and Volatile Memory (RAM)"
+    keyPoints:
+      - "Land Grid Array (LGA) places fragile contact pins in the motherboard socket; Pin Grid Array (PGA) places pins on the CPU chip"
+      - "System RAM (DDR4/DDR5) is volatile working memory—all active data is wiped the instant power is removed"
+      - "Dual-channel memory configurations double the memory bandwidth between RAM and the CPU memory controller"
+    check:
+      - prompt: "What is the key physical difference between an LGA (Land Grid Array) and a PGA (Pin Grid Array) CPU interface?"
+        options:
+          - "LGA has pins on the motherboard socket (flat pads on CPU); PGA has physical pins on the underside of the CPU"
+          - "LGA is wireless; PGA uses copper cables"
+          - "LGA only works with liquid cooling"
+          - "PGA is only used in smartphones"
+        correct: 0
+      - prompt: "Why is system RAM classified as 'volatile' memory?"
+        options:
+          - "It generates explosive heat under load"
+          - "It requires continuous electrical power to maintain its stored data; when power cuts, all data is lost"
+          - "It can only be read once before self-destructing"
+          - "It can only be installed in servers"
+        correct: 1
+  - id: power-and-voltage-rails
+    title: "Power Delivery: PSUs and DC Voltage Rails"
+    keyPoints:
+      - "Power Supply Units convert AC wall power into three DC voltage rails: +12V (CPU/GPU), +5V (storage/logic), and +3.3V (RAM/PCIe)"
+      - "80 PLUS certification guarantees that the PSU achieves at least 80% electrical efficiency, minimizing waste heat"
+      - "Never open a PSU chassis due to lethal residual capacitor charges"
+    check:
+      - prompt: "Which internal voltage rail delivers the heaviest electrical load in a modern PC, supplying power to the CPU and dedicated GPU?"
+        options:
+          - "-12V"
+          - "+3.3V"
+          - "+5V"
+          - "+12V"
+        correct: 3
+      - prompt: "What does an '80 PLUS Gold' certification on a power supply signify?"
+        options:
+          - "The power supply contains 80 grams of real gold"
+          - "The PSU converts at least 87% to 90% of AC wall power into usable DC power, wasting only ~10% as heat"
+          - "The PSU lasts for exactly 80 months"
+          - "The PSU produces 80 Watts of maximum power"
+        correct: 1
+  - id: thermal-management
+    title: "Thermal Management and Airflow"
+    keyPoints:
+      - "Thermal Interface Material (TIM / thermal paste) fills microscopic metal imperfections between the CPU IHS and heatsink"
+      - "Air cooling uses copper heat pipes and aluminum fin stacks; Liquid cooling (AIO) circulates fluid to a radiator"
+      - "Positive case pressure (more intake than exhaust) forces air out through chassis gaps and prevents internal dust accumulation"
+    check:
+      - prompt: "What is the primary function of applying thermal paste between a CPU's heat spreader and the metal base of a cooler?"
+        options:
+          - "To permanently glue the cooler to the CPU so it cannot vibrate loose"
+          - "To fill microscopic air pockets and provide a continuous thermal conduction bridge"
+          - "To insulate the CPU from electrical shock"
+          - "To lubricate the cooling fan bearings"
+        correct: 1
+      - prompt: "A technician configures a PC case with 3 front intake fans and 1 rear exhaust fan. What type of internal pressure is created?"
+        options:
+          - "Negative pressure (draws dust in)"
+          - "Positive pressure (expels dust out through unsealed seams)"
+          - "Vacuum pressure"
+          - "Zero airflow"
+        correct: 1
 domains:
   - domainId: techplus.infrastructure
     weight: 1
 ---
 
-## Internal Computing Components
+import Callout from '../../components/Callout.astro';
 
-Opening a computer case reveals the core components that make all computing possible. Every device — from a phone to a server — has versions of these same parts.
+## The Anatomy of the Machine
 
-### Motherboard
+When you remove the side panel of a computer case, you are looking at a carefully orchestrated ecosystem of silicon, copper, power regulation, and thermal dynamics.
 
-The motherboard is the central circuit board that connects everything. Key features:
-- **Chipset** — controls communication between CPU, RAM, and peripherals
-- **CPU socket** — physical interface for the processor (LGA vs. PGA)
-- **RAM slots** — DIMM slots for memory modules
-- **Expansion slots** — PCIe for GPUs, NIC cards, NVMe SSDs
-- **I/O ports** — USB, audio, video outputs on the rear panel
-- **BIOS/UEFI chip** — firmware that initializes hardware before the OS loads
+Every component has a specific job, a specific power requirement, and a dedicated communication path. If one component fails or overheats, the entire system crashes.
 
-### CPU (Central Processing Unit)
+Understanding internal components is where theory turns into hands-on tradecraft.
 
-The processor executes instructions. Key specs:
-- **Clock speed** — GHz; how many cycles per second
-- **Cores** — independent execution units (dual-core, quad-core, octa-core)
-- **Threads** — logical processors per core (hyperthreading doubles thread count)
-- **Cache** — L1, L2, L3 on-chip memory for ultra-fast access
-- **TDP** — thermal design power; how much heat it generates
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        CORE INTERNAL ARCHITECTURE                      │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│   [ Power Supply Unit (PSU) ] ──(+12V, +5V, +3.3V DC Rails)──┐         │
+│                                                              │         │
+│   ┌─────────────────────────── MOTHERBOARD ──────────────────▼─────┐   │
+│   │                                                                │   │
+│   │  [ CPU + Cooler ] <──(High-Speed Bus)──> [ System RAM (DDR5) ] │   │
+│   │         │                                                      │   │
+│   │         └───(PCIe Lanes)───> [ Dedicated GPU (x16 Slot) ]      │   │
+│   │         │                                                      │   │
+│   │    [ CHIPSET ] <───(PCIe/SATA)───> [ M.2 NVMe SSD / SATA HDDs] │   │
+│   │         │                                                      │   │
+│   │         └───(I/O Controllers)───> [ Rear USB, Audio, Ethernet ]│   │
+│   └────────────────────────────────────────────────────────────────┘   │
+└────────────────────────────────────────────────────────────────────────┘
+```
 
-### RAM (Random Access Memory)
+---
 
-Volatile, fast, temporary storage. The OS and active applications live here while the computer is on. Types:
-- **DDR4 / DDR5** — current standards for desktops/laptops
-- **LPDDR** — low-power variant for mobile devices
-- **Capacity** — 8 GB minimum for modern use; 16–32 GB recommended for tech work
+## The Motherboard and Expansion Bus
 
-### Storage
+The **motherboard** (mainboard) is the central printed circuit board (PCB) that anchors all hardware together.
 
-| Type | Speed | Persistence | Notes |
-|---|---|---|---|
-| HDD | Slow | Yes | Spinning magnetic disk; cheap per GB |
-| SSD (SATA) | Fast | Yes | Flash; no moving parts |
-| NVMe SSD | Very fast | Yes | PCIe-attached; M.2 or U.2 form factor |
-| RAM | Fastest | No | Volatile — cleared on power loss |
+- **The Chipset:** The silicon brain on the motherboard that acts as the communications hub. It routes traffic between the CPU, PCIe expansion slots, M.2 storage slots, SATA ports, USB controllers, and audio chips.
+- **PCI Express (PCIe) Slots:** The universal high-speed expansion standard. PCIe slots deliver dedicated point-to-point serial data lanes:
+  - **PCIe x1:** Single data lane. Used for sound cards, Wi-Fi adapters, and legacy port expansion cards.
+  - **PCIe x4:** Four data lanes. Used for dedicated NVMe RAID controller cards and 10GbE network cards.
+  - **PCIe x16:** Sixteen data lanes. Delivers maximum bandwidth directly to dedicated high-performance **Graphics Processing Units (GPUs)**.
 
-### Power Supply Unit (PSU)
+---
 
-Converts AC wall power to DC voltages the computer needs (+12V, +5V, +3.3V). Wattage rating must exceed the total draw of all components. Efficiency rating (80 Plus Bronze/Gold/Platinum) indicates waste heat.
+## CPU Sockets: LGA vs. PGA
 
-### Cooling
+When installing a processor into a motherboard, the physical interface must match the CPU family exactly:
 
-- **Heat sink + fan (HSF)** — attached to CPU; conducts and dissipates heat
-- **Liquid cooling (AIO / custom loop)** — better for high-TDP processors
-- **Case fans** — maintain airflow through the chassis (intake front/bottom, exhaust rear/top)
-- **Thermal paste** — fills microscopic gaps between CPU and heat sink
+| Socket Type | Pin Location | CPU Underside | Dominant Manufacturer |
+|:---:|:---:|:---:|:---:|
+| **LGA (Land Grid Array)** | Pins are on the **motherboard socket** | Flat gold contact pads | Intel (Core Series), AMD (AM5 / Threadripper) |
+| **PGA (Pin Grid Array)** | Pins are on the **CPU itself** | Hundreds of fragile gold pins | Legacy AMD (AM4), specialized mobile sockets |
 
-### Key Exam Points
+```
+      LGA (Socket has pins)               PGA (CPU has pins)
+   ┌─────────────────────────┐         ┌─────────────────────────┐
+   │ [Motherboard with pins] │         │  [Flat socket holes]    │
+   │           ▲             │         │           ▲             │
+   │  [Flat CPU with pads]   │         │ [CPU with gold pins]    │
+   └─────────────────────────┘         └─────────────────────────┘
+```
 
-- RAM is **volatile** — storage is **non-volatile**
-- NVMe SSDs connect via **PCIe**, not SATA
-- CPU socket type must match motherboard (you can't put an Intel CPU in an AMD socket)
-- PSU wattage must exceed combined component TDP
+<Callout type="warn">
+**Technician Caution:** LGA socket pins on a motherboard are microscopic and extremely fragile. Dropping a CPU corner or slipping with a screwdriver will bend pins and permanently destroy a $300 motherboard. Never touch socket pins with your fingers.
+</Callout>
+
+---
+
+## Volatile RAM vs. Non-Volatile Storage
+
+One of the most important concepts in computing is the difference between working memory and long-term storage:
+
+- **System RAM (Random Access Memory):** High-speed, **volatile** memory. The operating system kernel, open browser tabs, game textures, and active files live here while the computer is powered on. Because RAM is volatile, **every bit of data is wiped the instant electrical power is cut**.
+- **Dual-Channel Memory:** Motherboards group RAM slots into pairs (Channels A and B). Installing two matching RAM sticks in alternating slots (e.g. Slots 2 and 4) doubles the communication bus width between the CPU and memory from 64-bit to 128-bit, significantly boosting performance.
+- **Storage Drives (Non-Volatile):** Solid State Drives (SSDs) and Hard Disk Drives (HDDs) retain all files, photos, operating system binaries, and game installs permanently, even when the PC is unplugged for months.
+
+---
+
+## Power Delivery and DC Voltage Rails
+
+Computers run on clean, low-voltage **Direct Current (DC)**. The **Power Supply Unit (PSU)** takes dangerous 120V/230V Alternating Current (AC) from the wall and transforms it into three primary DC rails:
+
+1. **+12V Rail (The Heavy Lifter):** Powers high-draw components: the CPU (via 8-pin EPS cable), graphics card (via 8-pin PCIe cables), cooling pumps, and fans.
+2. **+5V Rail:** Powers motherboard logic circuitry, USB ports, and SATA SSDs.
+3. **+3.3V Rail:** Powers RAM modules, PCIe slot circuits, and onboard chipsets.
+
+### 80 PLUS Efficiency Ratings
+Power supplies generate waste heat when converting AC to DC. An **80 PLUS** rated PSU is certified to operate at 80% to 90%+ efficiency under typical loads:
+Standard (80\%) → Bronze (85\%) → Silver (88\%) → Gold (90\%) → Platinum (92\%) → Titanium (94\%)
+
+Higher efficiency means less electricity wasted as heat, quieter fan operation, and lower monthly power bills.
+
+---
+
+## Thermal Management and Cooling Dynamics
+
+Every watt of electricity consumed by a CPU or GPU is converted into heat. If that heat is not removed immediately, the silicon will hit 100°C within seconds and trigger an emergency thermal shutdown.
+
+### Thermal Interface Material (TIM / Thermal Paste)
+Even when polished, the metal lid of a CPU (the Integrated Heat Spreader / IHS) and the copper base of a heatsink contain microscopic pits, grooves, and scratches. Trapped air inside these pits acts as a thermal insulator.
+- **The Fix:** Applying a **pea-sized or rice-grain-sized dot of thermal paste** in the center of the CPU fills these microscopic voids with thermally conductive zinc oxide or liquid metal, creating a continuous heat bridge.
+
+### Case Airflow Dynamics
+- **Positive Pressure (Intake CFM > Exhaust CFM):** More cool air is pushed into the chassis than is pulled out. Air vents naturally out through unsealed seams and ports. When intake fans are covered by dust mesh filters, positive pressure keeps the inside of the computer completely free of dust.
+- **Negative Pressure (Exhaust CFM > Intake CFM):** Air is sucked into the chassis through every unfiltered crack and port, rapidly coating components in a thick blanket of insulating dust.
+
+---
+
+## Why This Matters in the Field
+
+When a custom CAD workstation blue-screens during heavy exports, a novice technician blames the software. A trained technician checks the hardware:
+
+1. Did the builder plug RAM into single-channel slots instead of dual-channel?
+2. Is the PSU +12V rail sagging under heavy GPU load?
+3. Did someone forget to peel the plastic protective film off the bottom of the CPU heatsink before applying thermal paste?
+
+Understanding how internal components fit, draw power, and dissipate heat turns hardware troubleshooting into a structured science.
+
+---
+
+## Key Terms
+
+Motherboard · Chipset · PCIe Lanes (x1, x4, x16) · CPU Socket · LGA (Land Grid Array) · PGA (Pin Grid Array) · Volatile Memory · System RAM · Dual-Channel Memory · Non-Volatile Storage · Power Supply Unit (PSU) · +12V Rail · +5V Rail · +3.3V Rail · 80 PLUS Efficiency · Thermal Paste (TIM) · Heatsink · Positive Airflow Pressure · Negative Airflow Pressure

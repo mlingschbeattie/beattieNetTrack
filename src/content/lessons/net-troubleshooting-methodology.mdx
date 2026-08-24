@@ -8,13 +8,55 @@ order: 1
 difficulty: Intermediate
 estMinutes: 30
 tags: ["network+", "troubleshooting", "methodology", "seven steps", "N10-009 5.1", "N10-008 5.1"]
+sections:
+  - id: troubleshooting-framework-comptia
+    title: "CompTIA Network Troubleshooting Methodology"
+    keyPoints:
+      - "1. Identify the problem (gather symptoms, question users, determine scope, backup)"
+      - "2. Establish a theory of probable cause (question the obvious, top-down vs bottom-up)"
+      - "3. Test the theory to determine cause (if disproved, establish new theory or escalate)"
+    check:
+      - prompt: "Under the CompTIA Network Troubleshooting model, what is the mandatory first step before making any configuration changes?"
+        options:
+          - "Identify the problem (gather information, question users, identify symptoms, duplicate the issue)"
+          - "Reboot all core switches"
+          - "Implement a plan of action"
+          - "Close the ticket"
+        correct: 0
+      - prompt: "A technician tests their theory that a faulty patch cable is causing packet loss, but swapping the cable does not resolve the issue. What is the next proper action?"
+        options:
+          - "Escalate to the CEO"
+          - "Return to Step 2 to establish a new theory of probable cause (or escalate if beyond scope)"
+          - "Document that the computer cannot be fixed"
+          - "Order a replacement router"
+        correct: 1
+  - id: osi-troubleshooting-approaches
+    title: "OSI Diagnostic Approaches: Bottom-Up, Top-Down, Divide-and-Conquer"
+    keyPoints:
+      - "Bottom-Up: Starts at Physical Layer 1 (cables, link lights) and works up to Application Layer 7"
+      - "Top-Down: Starts at Application Layer 7 (browser, client software) and works down to Layer 1"
+      - "Divide-and-Conquer: Starts at Network Layer 3 (pinging default gateway); if successful, tests up; if failing, tests down"
+    check:
+      - prompt: "A technician begins troubleshooting a connectivity issue by testing a ping to the local default gateway. Which OSI troubleshooting strategy is being applied?"
+        options:
+          - "Bottom-Up approach"
+          - "Top-Down approach"
+          - "Divide-and-Conquer approach (starting at Layer 3)"
+          - "Random guessing approach"
+        correct: 2
+      - prompt: "When troubleshooting a complete link outage on a desktop, a technician first checks the RJ-45 physical link LED, then tests cable continuity with a toner. Which approach is this?"
+        options:
+          - "Top-Down approach"
+          - "Bottom-Up approach (starting at Layer 1 Physical)"
+          - "Application layer audit"
+          - "DNS recursive query"
+        correct: 1
 domains:
   - domainId: netplus.troubleshooting
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
 ---
-
 ## The Fix That Wasn't
 
 A help desk ticket comes in: users on the second floor can't reach the internet. You walk upstairs, check a workstation, confirm it can't browse. You notice the default gateway is unreachable. The uplink from the second-floor switch to the core — must be the cable. You grab a new patch cable, swap it out, and head back downstairs feeling efficient. Ten minutes later, another ticket: second floor still can't reach the internet. You go back. Same problem. You check the switch — the uplink port is err-disabled because someone plugged a loop into the VLAN an hour ago. The cable was never the problem. You just wasted twenty minutes, a patch cable, and your credibility because you skipped straight from "identify symptoms" to "implement the first fix that popped into your head."

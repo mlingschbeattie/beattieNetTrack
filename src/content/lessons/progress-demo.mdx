@@ -132,7 +132,7 @@ import LegacyHtml from '../../components/LegacyHtml.astro';
           
           const summary = getTrackSummary(trackId);
           html += \`<div class="info" style="margin-bottom: 15px;">
-            Modules: \${summary.completedModules}/\${summary.totalModules} completed | 
+            Modules: \{summary.completedModules}/\{summary.totalModules} completed | 
             Total Attempts: \${summary.totalAttempts} | 
             Avg Score: \${summary.averageScore.toFixed(1)}
           </div>\`;
@@ -149,7 +149,7 @@ import LegacyHtml from '../../components/LegacyHtml.astro';
             
             html += \`
               <div style="background: rgba(0, 20, 40, 0.8); padding: 15px; margin: 10px 0; border-left: 3px solid \${progress.completed ? '#00ff88' : '#ffaa00'};">
-                <strong style="color: #00d4ff;">\${moduleId}</strong> \${statusBadge}<br>
+                <strong style="color: #00d4ff;">\{moduleId}</strong> \{statusBadge}<br>
                 <span class="info" style="font-size: 0.9em;">
                   Best Score: \${progress.bestScore} | 
                   Attempts: \${progress.attempts} | 
@@ -184,7 +184,7 @@ import LegacyHtml from '../../components/LegacyHtml.astro';
         });
         
         refreshProgress();
-        alert(\`✓ Simulated: \${moduleId}\\nScore: \${score}/\${totalQuestions}\\nAttempt #\${progress.attempts + 1}\`);
+        alert(\`✓ Simulated: \{moduleId}\\nScore: \{score}/\{totalQuestions}\\nAttempt #\{progress.attempts + 1}\`);
       }
       
       // Initial load

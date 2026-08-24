@@ -8,13 +8,56 @@ order: 1
 difficulty: Beginner
 estMinutes: 25
 tags: ["network+", "DHCP", "N10-009 1.6", "N10-008 1.6"]
+sections:
+  - id: dora-process-mechanics
+    title: "The DHCP DORA Sequence"
+    keyPoints:
+      - "1. Discover (Client Broadcast): \"Is there a DHCP server out there?\""
+      - "2. Offer (Server Unicast/Broadcast): \"Here is an IP address proposal with subnet mask and gateway.\""
+      - "3. Request (Client Broadcast): \"I accept server X's offer.\""
+      - "4. Acknowledge (Server Unicast/Broadcast): \"IP lease confirmed for T hours.\""
+    check:
+      - prompt: "What is the correct sequential order of the four packets in the DHCP address assignment process?"
+        options:
+          - "Discover → Offer → Request → Acknowledge (DORA)"
+          - "SYN → SYN-ACK → ACK → FIN"
+          - "Query → Response → Accept → Lease"
+          - "Broadcast → Unicast → Multicast → Anycast"
+        correct: 0
+      - prompt: "Why does the initial DHCP Discover message get sent as a Layer 2 and Layer 3 Broadcast?"
+        options:
+          - "Because the client does not yet possess an IP address and does not know the IP or MAC address of the local DHCP server"
+          - "To test internet bandwidth"
+          - "To encrypt the payload"
+          - "To configure DNS records"
+        correct: 0
+  - id: dhcp-relay-and-scopes
+    title: "DHCP Scopes, Reservations, and IP Helper / Relay Agents"
+    keyPoints:
+      - "DHCP Scope defines the pool of allocatable IP addresses, subnet mask, default gateway, and DNS servers"
+      - "DHCP Reservation permanently binds a specific IP address to a device's MAC address"
+      - "DHCP Relay Agent (IP Helper) intercepts broadcast DHCP Discovers on remote subnets and forwards them as unicast packets to a centralized DHCP server"
+    check:
+      - prompt: "A company has 10 VLANs but only one centralized DHCP server. What router feature must be configured on each VLAN interface to forward DHCP broadcasts across subnet boundaries?"
+        options:
+          - "DHCP Relay Agent / IP Helper-Address"
+          - "Spanning Tree Protocol"
+          - "BGP Route Reflector"
+          - "Static ARP Mapping"
+        correct: 0
+      - prompt: "How does an administrator ensure a network printer always receives the exact same IP address from DHCP without statically configuring the printer itself?"
+        options:
+          - "Create a DHCP MAC Address Reservation"
+          - "Shorten the DHCP lease time to 5 seconds"
+          - "Disable DNS"
+          - "Use an APIPA address"
+        correct: 0
 domains:
   - domainId: netplus.networking_concepts
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
 ---
-
 ## The Monday Morning Meltdown
 
 You walk in Monday morning and every machine in the east wing is pulling 169.254.x.x addresses. Forty workstations, dead in the water. Teachers are sending emails from their phones — the one network that still works — telling you the internet is down. The internet is fine. The DHCP server's lease database got corrupted over the weekend and the service crashed silently. Nobody noticed because nobody was here. Now the lease expiration timers have run out across the building and every client is failing the DORA process and falling back to APIPA. You restart the DHCP service, the scopes re-initialize, and machines start pulling valid addresses within minutes. Forty tickets, one root cause, five-minute fix — if you know where to look. DHCP is one of those services that's invisible when it works and catastrophic when it stops. You touched the basics in the protocols lesson. Now you need to understand the server side — the configuration, the design decisions, and the failure modes.

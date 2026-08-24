@@ -8,6 +8,91 @@ order: 1
 difficulty: Beginner
 estMinutes: 25
 tags: ["troubleshooting", "methodology", "CompTIA", "A+", "documentation", "seven steps"]
+sections:
+  - id: identifying-the-problem-inquiry
+    title: "Step 1: Identify the Problem and Inquire on Environmental Changes"
+    keyPoints:
+      - "Question users directly: discover symptoms, recent software/hardware changes, and reproduce errors"
+      - "Perform system and data backups before making configuration or physical modifications"
+      - "Distinguish clearly between symptom reports ('it crashes') and underlying root causes"
+    check:
+      - prompt: "A user states: 'My laptop won't connect to the printer anymore.' What question should the technician ask first under Step 1?"
+        options:
+          - "What was the last change made to your computer or the office network before this stopped working?"
+          - "Would you like to buy a new laptop?"
+          - "Can you disassemble the printer?"
+          - "Did you reinstall Windows today?"
+        correct: 0
+      - prompt: "Why is taking a preliminary data backup considered mandatory before troubleshooting potential storage drive errors?"
+        options:
+          - "To speed up internet throughput"
+          - "To protect user files in case a failing drive dies permanently during diagnostic read/write stress"
+          - "To reset the BIOS battery"
+          - "To clear printer queues"
+        correct: 1
+  - id: theory-and-testing-framework
+    title: "Steps 2 & 3: Establish and Test a Theory of Probable Cause"
+    keyPoints:
+      - "Question the obvious: check power switches, loose cables, and airplane mode first"
+      - "Test theories one at a time; if a theory is disproved, establish a new theory or escalate"
+      - "If a theory is confirmed, proceed to determine the next steps to resolve the issue"
+    check:
+      - prompt: "A desktop PC powers on with fans spinning, but the monitor displays 'No Signal'. Under Step 2, what obvious possibility should be tested first?"
+        options:
+          - "Flash the motherboard BIOS"
+          - "Check if the video cable is firmly plugged into the dedicated GPU output rather than the motherboard onboard port"
+          - "Replace the CPU cooler"
+          - "Reinstall the operating system"
+        correct: 1
+      - prompt: "You test a theory by swapping a suspect RAM stick, but the system still blue-screens on boot. What is your next move?"
+        options:
+          - "Replace the CPU immediately"
+          - "Return to Step 2, formulate a new theory of probable cause (e.g. storage or driver issue), and test again"
+          - "Tell the customer the machine is haunted"
+          - "Close the support ticket"
+        correct: 1
+  - id: planning-implementing-verifying
+    title: "Steps 4, 5, & 6: Plan, Implement, Verify, and Prevent"
+    keyPoints:
+      - "Establish a plan of action and identify potential side effects before executing changes"
+      - "Implement the solution or escalate if administrative/physical scope exceeds your clearance"
+      - "Verify full system functionality with the user and implement preventive measures to stop recurrence"
+    check:
+      - prompt: "Why must a technician identify potential side effects during Step 4 before restarting a server service?"
+        options:
+          - "To verify that restarting the service won't disconnect 50 active warehouse barcode scanners during a shift"
+          - "To change the server password"
+          - "To decrease RAM speed"
+          - "To format the secondary drive"
+        correct: 0
+      - prompt: "Under Step 6, after replacing a faulty network cable, what must you do before closing the ticket?"
+        options:
+          - "Verify the user can browse the web AND access local network shares, then implement cable management to prevent chair snagging"
+          - "Run away immediately"
+          - "Reboot the main domain controller"
+          - "Delete the user's browser history"
+        correct: 0
+  - id: documenting-findings
+    title: "Step 7: Document Findings, Actions, and Outcomes"
+    keyPoints:
+      - "Record the original symptom, tested theories, root cause, and exact resolution in the ticketing knowledge base"
+      - "Accurate documentation saves hours of diagnostic time when similar fleet issues appear"
+      - "Closes the loop with the client, ensuring transparent service history"
+    check:
+      - prompt: "What is the primary benefit of documenting findings, actions, and outcomes in an enterprise IT service desk system?"
+        options:
+          - "It builds a searchable knowledge base allowing the team to resolve recurring issues in minutes"
+          - "It automatically orders spare parts from Amazon"
+          - "It disables the user's account"
+          - "It lowers the computer's CPU temperature"
+        correct: 0
+      - prompt: "What information should be recorded in Step 7 documentation?"
+        options:
+          - "Only the user's name"
+          - "The initial symptoms, the identified root cause, the exact steps taken to fix it, and the verification results"
+          - "The price of the technician's screwdriver"
+          - "The weather on the day of repair"
+        correct: 1
 domains:
   - domainId: aplus1.troubleshooting
     weight: 0.8

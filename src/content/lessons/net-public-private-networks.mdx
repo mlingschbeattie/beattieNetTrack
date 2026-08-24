@@ -8,13 +8,56 @@ order: 1
 difficulty: Beginner
 estMinutes: 20
 tags: ["network+", "IP addressing", "NAT", "RFC 1918", "N10-009 1.4", "N10-008 1.4"]
+sections:
+  - id: rfc1918-private-ranges
+    title: "RFC 1918 Private IP Address Ranges"
+    keyPoints:
+      - "Class A Private: 10.0.0.0 to 10.255.255.255 (10.0.0.0/8 — 16.7 Million Hosts)"
+      - "Class B Private: 172.16.0.0 to 172.31.255.255 (172.16.0.0/12 — 1 Million Hosts across 16 subnets)"
+      - "Class C Private: 192.168.0.0 to 192.168.255.255 (192.168.0.0/16 — 65,536 Hosts across 256 subnets)"
+      - "Private IP addresses are non-routable on the public internet; routers drop them immediately"
+    check:
+      - prompt: "Which of the following IPv4 addresses belongs to an RFC 1918 Private Address space and cannot be routed across the public internet?"
+        options:
+          - "8.8.8.8"
+          - "172.24.10.5"
+          - "208.67.222.222"
+          - "1.1.1.1"
+        correct: 1
+      - prompt: "What happens when a core internet border router receives a packet with a destination IP address of 10.1.50.12?"
+        options:
+          - "It broadcasts the packet to every ISP on Earth"
+          - "It converts the packet into an email"
+          - "It silently drops the packet because RFC 1918 private addresses are strictly non-routable on the public internet"
+          - "It forwards the packet to Google DNS"
+        correct: 2
+  - id: nat-and-apipa
+    title: "NAT/PAT and Automatic Private IP Addressing (APIPA)"
+    keyPoints:
+      - "Network Address Translation (NAT/PAT) translates many private internal IPs into one public routable IP"
+      - "APIPA range 169.254.0.1 to 169.254.255.254 (169.254.0.0/16) is self-assigned by OS when DHCP server fails to respond"
+      - "An APIPA address allows local subnet communication but has NO default gateway and ZERO internet access"
+    check:
+      - prompt: "A Windows workstation shows an IP address of 169.254.45.102 and cannot load any web pages. What is the root cause?"
+        options:
+          - "The workstation is connected to a public 10Gbps fiber backbone"
+          - "The workstation failed to contact a DHCP server and self-assigned an APIPA address with no default gateway"
+          - "The DNS server has crashed"
+          - "The network card has burned out"
+        correct: 1
+      - prompt: "What technology allows 500 office computers with private 192.168.1.0/24 addresses to simultaneously access the internet using a single public IP address?"
+        options:
+          - "PAT (Port Address Translation / NAT Overload)"
+          - "APIPA"
+          - "STP (Spanning Tree Protocol)"
+          - "VLAN tagging"
+        correct: 0
 domains:
   - domainId: netplus.networking_concepts
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
 ---
-
 ## The Address That Goes Nowhere
 
 You're troubleshooting a workstation that can't reach the internet. You open a command prompt and run `ipconfig`. The IP address reads 169.254.47.118. You don't need to check anything else yet — that number alone tells you DHCP failed. The machine tried to get an address from a DHCP server, got no response, and assigned itself an address from a specific range that is guaranteed to go absolutely nowhere beyond the local link. You've just read a diagnostic from an IP address without running a single test. That's the power of understanding address types. Not all IP addresses are created equal, and knowing which range you're looking at tells you where the traffic can go, where it came from, and sometimes exactly what broke.

@@ -231,7 +231,7 @@ import LegacyHtml from '../../components/LegacyHtml.astro';
             "30min": "30-minute"
           };
           const label = labelMap[presetKey] || labelMap[DEFAULT_PRESET];
-          note.textContent = \`You are in \${label} review mode (\${totalQuestions} questions).\`;
+          note.textContent = \`You are in \{label} review mode (\{totalQuestions} questions).\`;
         }
 
         function generateQuiz(presetKey = DEFAULT_PRESET) {

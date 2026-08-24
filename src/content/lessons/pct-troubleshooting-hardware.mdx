@@ -8,6 +8,70 @@ order: 1
 difficulty: Beginner
 estMinutes: 30
 tags: ["hardware", "troubleshooting", "POST", "beep codes", "overheating", "RAM", "storage", "A+", "Core 1"]
+sections:
+  - id: no-power-triage
+    title: "No-Power Triage and Multimeter PSU Testing"
+    keyPoints:
+      - "Verify wall outlet AC power, surge protector switches, and IEC power cable seating"
+      - "Test the PSU with a dedicated power supply tester or paperclip jump-test on 24-pin ATX green wire (PS_ON# to Ground)"
+      - "Verify +12V, +5V, +3.3V, and +5VSB voltage tolerances (within ±5%) using a digital multimeter"
+    check:
+      - prompt: "A desktop completely fails to turn on: zero fan movement, zero motherboard LEDs, zero sound. What tool should the technician use to test if the power supply outputs correct DC voltages?"
+        options:
+          - "A digital multimeter / dedicated PSU tester"
+          - "A loopback plug"
+          - "A cable toner"
+          - "A thermal imaging camera"
+        correct: 0
+      - prompt: "When measuring the +12V rail on a 24-pin ATX connector with a multimeter, what measured voltage indicates a failing PSU outside standard ±5% ATX tolerance?"
+        options:
+          - "12.10 Volts"
+          - "11.90 Volts"
+          - "10.40 Volts"
+          - "12.05 Volts"
+        correct: 2
+  - id: no-post-and-beep-codes
+    title: "No-POST Diagnosis, Debug LEDs, and POST Cards"
+    keyPoints:
+      - "POST (Power-On Self-Test) initializes CPU, RAM, and GPU before video drivers load"
+      - "Diagnostic motherboard LEDs (CPU, DRAM, VGA, BOOT) isolate the failing subsystem instantly"
+      - "Strip down to 'Bare Bones' (CPU + 1 RAM stick + PSU + Motherboard) to isolate shorts"
+    check:
+      - prompt: "During system startup, the motherboard stops at a solid amber 'DRAM' debug LED and the screen remains dark. What is the next diagnostic step?"
+        options:
+          - "Reinstall Windows"
+          - "Power off, unplug AC power, drain residual charge, and reseat the RAM sticks (testing one stick at a time in known-good slots)"
+          - "Replace the monitor cable"
+          - "Format the storage drive"
+        correct: 1
+      - prompt: "What is the primary purpose of stripping a malfunctioning computer down to a 'Bare Bones' test configuration?"
+        options:
+          - "To decrease power consumption"
+          - "To eliminate non-essential expansion cards, peripherals, and secondary drives that could be causing a short circuit or bus conflict"
+          - "To speed up the BIOS clock"
+          - "To clean dust off the chassis"
+        correct: 1
+  - id: ram-storage-overheating-triage
+    title: "RAM BSODs, Storage Degradation, and Overheating"
+    keyPoints:
+      - "Intermittent Blue Screens with random memory stop codes indicate failing RAM modules (run MemTest86)"
+      - "Continuous grinding/clicking noises or extreme sluggishness indicate failing HDD platters or failing SSD controller"
+      - "Sudden shutdowns under load followed by failure to immediately reboot indicate thermal tripping"
+    check:
+      - prompt: "A workstation suffers random Blue Screen crashes with varying error codes (PAGE_FAULT_IN_NONPAGED_AREA, MEMORY_MANAGEMENT). Which hardware diagnostic test should be run overnight?"
+        options:
+          - "Chkdsk /f"
+          - "MemTest86 memory diagnostic scan"
+          - "Speedtest.net"
+          - "GPU benchmark loop only"
+        correct: 1
+      - prompt: "A user reports their PC shuts down instantly every time they start an intensive video export. If they attempt to turn it on immediately, it turns off after 3 seconds. What is the root cause?"
+        options:
+          - "CPU thermal overheat protection tripping (e.g. failed pump, dried thermal paste, detached cooler)"
+          - "Missing mouse driver"
+          - "Wi-Fi channel congestion"
+          - "Full recycling bin"
+        correct: 0
 domains:
   - domainId: aplus1.troubleshooting
     weight: 0.8

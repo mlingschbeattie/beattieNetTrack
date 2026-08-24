@@ -8,13 +8,55 @@ order: 4
 difficulty: Beginner
 estMinutes: 20
 tags: ["network+", "cable management", "patch panel", "N10-009 1.3", "N10-008 1.3"]
+sections:
+  - id: structured-cabling-architecture
+    title: "Structured Cabling: Patch Panels and 110 Punchdown Blocks"
+    keyPoints:
+      - "Solid copper core cable is installed permanently in walls/ceilings (horizontal cabling)"
+      - "Stranded copper wire is used for flexible patch cords between patch panels and switches"
+      - "Patch panels terminate permanent horizontal runs into 110 punchdown blocks, protecting switch ports from wear"
+    check:
+      - prompt: "Why do network standards mandate terminating horizontal wall cabling into a stationary Patch Panel rather than plugging wall runs directly into expensive switch ports?"
+        options:
+          - "Switches only accept stranded wire"
+          - "Patch panels eliminate physical wear on switch ports and allow fast re-patching without re-pulling wall cables"
+          - "Patch panels increase internet speed by 10x"
+          - "Patch panels provide AC electrical power"
+        correct: 1
+      - prompt: "What hand tool is used to seat and trim insulated twisted-pair copper conductors into a 110 punchdown block or keystone jack?"
+        options:
+          - "Crimper"
+          - "Punchdown tool with 110 cutting blade"
+          - "Wire stripper"
+          - "Multimeter"
+        correct: 1
+  - id: cable-triage-and-testing
+    title: "Cable Management Best Practices and Labeling"
+    keyPoints:
+      - "Follow ANSI/TIA-606-B labeling standards at both cable ends and patch panel ports"
+      - "Maintain minimum bend radius (4x cable diameter for UTP) to prevent impedance anomalies and alien crosstalk"
+      - "Use hook-and-loop (Velcro) straps instead of plastic zip ties to avoid crushing internal twisted pairs"
+    check:
+      - prompt: "Why do enterprise cabling standards mandate using Velcro straps rather than plastic zip ties to bundle high-performance Cat6a cables?"
+        options:
+          - "Plastic zip ties are conductive"
+          - "Overtightened zip ties crush the internal pair geometry and cause severe near-end crosstalk (NEXT)"
+          - "Velcro makes cables fireproof"
+          - "Zip ties void the Windows license"
+        correct: 1
+      - prompt: "What document or standard defines physical asset labeling, telecommunications room identifiers, and cable tagging conventions?"
+        options:
+          - "ANSI/TIA-606-B"
+          - "OSI Layer 3 RFC"
+          - "CompTIA 7-Step Method"
+          - "DHCP RFC 2131"
+        correct: 0
 domains:
   - domainId: netplus.networking_concepts
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
 ---
-
 ## The Closet That Teaches the Lesson
 
 You open a network closet for the first time and see this: a 42U rack, switches mounted clean with uniform patch cables routed through horizontal cable managers, every port on the patch panel labeled, a printed diagram taped inside the door matching port numbers to room numbers. You need to find the drop for Room 214? Check the diagram, find port 214-A on the patch panel, trace the patch cable to switch port Gi1/0/12. Done in thirty seconds.

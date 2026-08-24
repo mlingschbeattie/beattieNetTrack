@@ -8,13 +8,57 @@ order: 2
 difficulty: Intermediate
 estMinutes: 35
 tags: ["network+", "troubleshooting", "ping", "traceroute", "nslookup", "netstat", "Wireshark", "nmap", "N10-009 5.1", "N10-008 5.1"]
+sections:
+  - id: cli-diagnostic-commands
+    title: "Essential Network CLI Tools: ping, traceroute, nslookup, netstat"
+    keyPoints:
+      - "ping (ICMP Echo): Verifies basic Layer 3 reachability and measures round-trip latency"
+      - "traceroute / tracert (TTL Expiration): Identifies every router hop and pinpoints which link is dropping packets"
+      - "nslookup / dig: Queries DNS servers directly to verify domain name resolution records"
+      - "netstat -ano / ss: Displays active TCP connections, listening ports, and associated process IDs (PIDs)"
+    check:
+      - prompt: "Which command-line utility decrements the IP Time-To-Live (TTL) field on successive packets to map every router hop along a path to a remote destination?"
+        options:
+          - "ipconfig"
+          - "tracert (Windows) / traceroute (Linux)"
+          - "netstat"
+          - "arp -a"
+        correct: 1
+      - prompt: "A technician needs to see all active listening TCP ports and the specific Process IDs (PIDs) running on a Windows server. Which command should they run?"
+        options:
+          - "ping 127.0.0.1"
+          - "nslookup google.com"
+          - "netstat -ano"
+          - "route print"
+        correct: 2
+  - id: hardware-testing-tools
+    title: "Physical Network Hardware Tools: Toner, Cable Tester, Loopback, OTDR"
+    keyPoints:
+      - "Tone Generator and Probe (Fox and Hound): Traces and locates unlabeled cables in crowded wiring closets"
+      - "Cable Continuity Tester / Wiremap: Identifies opens, shorts, crossed wires, and split pairs"
+      - "Loopback Plug: Tests the transmit/receive circuitry of a physical NIC port by looping signals back to itself"
+      - "OTDR (Optical Time-Domain Reflectometer): Pinpoints the exact meter distance to a break or bend in an optical fiber run"
+    check:
+      - prompt: "Which physical tool injects an audible tone onto a copper wire pair so a technician can identify the cable among 200 drops in a punchdown closet using an inductive probe?"
+        options:
+          - "Time-Domain Reflectometer"
+          - "Tone Generator and Probe (Toner / Fox & Hound)"
+          - "Loopback Plug"
+          - "Crimper"
+        correct: 1
+      - prompt: "What specialized testing instrument injects light pulses into a fiber optic cable to measure light attenuation and pinpoint the exact distance to a fiber break?"
+        options:
+          - "Multimeter"
+          - "OTDR (Optical Time-Domain Reflectometer)"
+          - "Cable Continuity Tester"
+          - "Punchdown tool"
+        correct: 1
 domains:
   - domainId: netplus.troubleshooting
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
 ---
-
 ## The Terminal That Answers Back
 
 A user reports they can't reach the company intranet. You sit down at their workstation, open a command prompt, and type `ping 10.1.50.10`. Four replies come back, 1ms each. The network path is fine. You type `nslookup intranet.company.local` and get a "server not found" response. DNS can't resolve the hostname. The network is working. Name resolution is broken. Two commands. Ten seconds. You've narrowed the problem from "the internet is down" (it isn't) to "DNS resolution is failing for internal names" — a completely different investigation with a completely different fix.

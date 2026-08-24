@@ -8,6 +8,70 @@ order: 1
 difficulty: Beginner
 estMinutes: 30
 tags: ["build", "compatibility", "CPU", "socket", "PSU", "RAM", "A+", "Core 1", "CompTIA"]
+sections:
+  - id: cpu-socket-matching
+    title: "CPU Socket Matching and Generation Locks"
+    keyPoints:
+      - "Motherboard socket must match the CPU exactly (e.g. AMD AM4 vs AM5, Intel LGA1700 vs LGA1851)"
+      - "PGA processors cannot fit into LGA sockets and vice versa"
+      - "Motherboard BIOS updates may be required for newer generation CPUs on older chipsets"
+    check:
+      - prompt: "A builder purchases an AMD Ryzen 7 7800X3D CPU (AM5 socket) and an AMD B550 motherboard (AM4 socket). What will happen when they attempt installation?"
+        options:
+          - "The system runs at half speed"
+          - "The CPU will physically not fit into the socket because AM4 (PGA) and AM5 (LGA) are mechanically incompatible"
+          - "The system works after a Windows update"
+          - "The RAM will overheat"
+        correct: 1
+      - prompt: "What feature on modern motherboards allows technicians to update the BIOS using a USB drive without having a compatible CPU installed?"
+        options:
+          - "BIOS Flashback / Q-Flash Plus"
+          - "Secure Boot"
+          - "Overclocking Mode"
+          - "Direct Memory Access"
+        correct: 0
+  - id: ram-generation-qvl
+    title: "RAM Generations (DDR4 vs DDR5) and the QVL List"
+    keyPoints:
+      - "DDR4 and DDR5 memory modules have physical key notches in different locations—they are never interchangeable"
+      - "Check the motherboard Qualified Vendor List (QVL) to verify tested memory kit part numbers"
+      - "Enable XMP (Intel) or EXPO (AMD) in BIOS to run memory at its advertised overclocked speed"
+    check:
+      - prompt: "Why can't a DDR4 RAM stick be physically inserted into a DDR5 memory slot on a motherboard?"
+        options:
+          - "DDR4 sticks are 5 inches longer"
+          - "The physical alignment notch on the bottom contact edge is positioned in a different location"
+          - "DDR4 runs on 220V electricity"
+          - "DDR5 slots are circular"
+        correct: 1
+      - prompt: "What motherboard manufacturer document lists the specific memory kits tested and guaranteed to run stably at advertised speeds?"
+        options:
+          - "The Hardware Bill of Materials"
+          - "The Qualified Vendor List (QVL)"
+          - "The Windows Registry"
+          - "The System Event Log"
+        correct: 1
+  - id: psu-sizing-clearance
+    title: "PSU Wattage Sizing and Physical Case Clearances"
+    keyPoints:
+      - "Calculate total component TDP (CPU + GPU + peripherals) and add 20–30% overhead for transient power spikes"
+      - "Verify maximum GPU length (mm), CPU cooler height (mm), and radiator support in case specs"
+      - "Check PCIe power connector requirements (8-pin PCIe vs 12VHPWR 16-pin Gen 5)"
+    check:
+      - prompt: "A PC builder buys a high-end 3-fan graphics card that is 340mm long, but the selected micro-ATX case only supports GPUs up to 300mm. What issue will occur?"
+        options:
+          - "The GPU will overheat"
+          - "The graphics card will physically collide with the front case fans/radiator and cannot be installed"
+          - "The motherboard PCIe slot will reject the card"
+          - "The Windows driver will fail to install"
+        correct: 1
+      - prompt: "Which new high-power 16-pin power connector standard was introduced for modern PCIe Gen 5 graphics cards?"
+        options:
+          - "Molex 4-pin"
+          - "SATA 15-pin"
+          - "12VHPWR (12+4 pin / 600W max)"
+          - "Floppy 4-pin connector"
+        correct: 2
 domains:
   - domainId: aplus1.hardware
     weight: 0.8

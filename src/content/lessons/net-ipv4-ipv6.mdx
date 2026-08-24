@@ -8,13 +8,55 @@ order: 2
 difficulty: Beginner
 estMinutes: 25
 tags: ["network+", "IPv4", "IPv6", "subnetting", "CIDR", "N10-009 1.4", "N10-008 1.4"]
+sections:
+  - id: ipv4-structure-and-classes
+    title: "IPv4 Structure, Subnet Masks, and Default Gateways"
+    keyPoints:
+      - "IPv4 is 32 bits long, divided into four 8-bit octets separated by dots (e.g. 192.168.1.50)"
+      - "The Subnet Mask separates the Network portion from the Host portion (e.g. 255.255.255.0 = /24)"
+      - "The Default Gateway is the local router interface address that forwards traffic outside the local subnet"
+    check:
+      - prompt: "How many total bits comprise an IPv4 network address?"
+        options:
+          - "16 bits"
+          - "32 bits (4 octets x 8 bits)"
+          - "64 bits"
+          - "128 bits"
+        correct: 1
+      - prompt: "A host has an IP of 192.168.10.15 with a subnet mask of 255.255.255.0. What is the Network ID for this host?"
+        options:
+          - "192.168.0.0"
+          - "192.168.10.0"
+          - "192.168.10.255"
+          - "10.0.0.0"
+        correct: 1
+  - id: ipv6-structure-and-compression
+    title: "IPv6 Architecture and Zero Compression Rules"
+    keyPoints:
+      - "IPv6 is 128 bits long, written as 8 groups of 4 hex digits (hextets) separated by colons"
+      - "Leading zero compression: Omit leading zeros inside any hextet (:0042: becomes :42:)"
+      - "Double colon (::) compression: Replace one contiguous string of all-zero hextets once per address (e.g. fe80::1)"
+    check:
+      - prompt: "How many total bits comprise an IPv6 address?"
+        options:
+          - "32 bits"
+          - "64 bits"
+          - "128 bits (32 hexadecimal characters)"
+          - "256 bits"
+        correct: 2
+      - prompt: "Which IPv6 address is the fully valid, compressed shorthand equivalent of 2001:0db8:0000:0000:0000:0000:0000:0001?"
+        options:
+          - "2001:db8::1"
+          - "2001:db8:1"
+          - "2001::db8::1"
+          - "2001:0db8::0001"
+        correct: 0
 domains:
   - domainId: netplus.networking_concepts
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
 ---
-
 ## The Address Book That Ran Out of Pages
 
 Here's the problem in one sentence: the internet was designed in the 1970s for a research network connecting a few hundred machines, and the addressing system they chose — 32 bits, roughly 4.3 billion possible addresses — is not enough for a planet with 8 billion people carrying multiple networked devices each. On February 3, 2011, the Internet Assigned Numbers Authority (IANA) handed out the last blocks of IPv4 addresses to the regional registries. The free pool hit zero. We've been living on borrowed time ever since — surviving through NAT, private addressing, and creative reuse of existing allocations. IPv6 is the long-term fix. It's been available since 1998. The migration is still happening. Understanding both protocols isn't optional because you will work with both, simultaneously, for the foreseeable future.

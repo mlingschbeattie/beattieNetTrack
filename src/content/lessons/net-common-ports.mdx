@@ -8,13 +8,56 @@ order: 1
 difficulty: Beginner
 estMinutes: 20
 tags: ["network+", "ports", "protocols", "N10-009 1.5", "N10-008 1.5"]
+sections:
+  - id: core-infrastructure-ports
+    title: "Core Infrastructure Ports: SSH, DNS, DHCP, and Web"
+    keyPoints:
+      - "Port 22 (TCP): SSH (Secure Shell) encrypted remote management"
+      - "Port 53 (UDP/TCP): DNS (Domain Name System) name resolution"
+      - "Port 67/68 (UDP): DHCP (Dynamic Host Configuration Protocol) client/server IP leasing"
+      - "Port 80 (TCP): HTTP unencrypted web traffic; Port 443 (TCP): HTTPS TLS-encrypted web traffic"
+    check:
+      - prompt: "What port number and transport protocol is used for secure, encrypted remote terminal CLI sessions via SSH?"
+        options:
+          - "Port 21 TCP"
+          - "Port 22 TCP"
+          - "Port 23 UDP"
+          - "Port 80 TCP"
+        correct: 1
+      - prompt: "Which standard UDP port is queried by client computers when requesting domain name resolution from a DNS server?"
+        options:
+          - "Port 25"
+          - "Port 53"
+          - "Port 67"
+          - "Port 110"
+        correct: 1
+  - id: remote-access-and-email-ports
+    title: "Remote Desktop and Email Ports: RDP, SMTP, IMAP, POP3"
+    keyPoints:
+      - "Port 3389 (TCP/UDP): Microsoft RDP (Remote Desktop Protocol)"
+      - "Port 25 (TCP): SMTP unencrypted mail transfer; Port 587 (TCP): SMTP Secure mail submission"
+      - "Port 110/995 (TCP): POP3 / POP3S (downloads and deletes from server); Port 143/993 (TCP): IMAP / IMAPS (syncs folders across devices)"
+    check:
+      - prompt: "What standard TCP port must be permitted on a corporate firewall to allow Microsoft Remote Desktop (RDP) administration sessions?"
+        options:
+          - "Port 80"
+          - "Port 443"
+          - "Port 3389"
+          - "Port 8080"
+        correct: 2
+      - prompt: "Which email retrieval protocol synchronizes email folders, read/unread flags, and drafts across multiple devices using TCP Port 993 (secure)?"
+        options:
+          - "POP3 (Port 110)"
+          - "IMAPS (Port 993)"
+          - "SMTP (Port 25)"
+          - "SNMP (Port 161)"
+        correct: 1
 domains:
   - domainId: netplus.networking_concepts
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
 ---
-
 ## The Firewall Rule That Broke Everything
 
 A teacher submits a ticket: "I can't get to the school's website from my classroom, but I can get to Google." You check — the workstation pings the web server fine. DNS resolves the hostname. The server is up. But the browser spins forever. You check the firewall and find a new rule someone added yesterday: block all traffic on port 8080. Turns out the school's internal web server runs on port 8080 instead of the default 80, and whoever wrote that firewall rule didn't know that. One port number, one rule, one broken service for an entire wing of the building. Port numbers are how a single server running multiple services keeps traffic sorted, and knowing which ports belong to which services is the foundation of firewall management, network troubleshooting, and security. This is a memorization topic. There's no way around it. But once these numbers are in your head, you'll read firewall logs, packet captures, and `netstat` output like a language you speak fluently.

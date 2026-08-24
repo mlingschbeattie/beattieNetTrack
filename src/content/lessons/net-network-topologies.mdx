@@ -8,13 +8,55 @@ order: 1
 difficulty: Beginner
 estMinutes: 20
 tags: ["network+", "topology", "N10-009 1.2", "N10-008 1.2"]
+sections:
+  - id: star-and-mesh-topologies
+    title: "Star vs. Mesh Topologies"
+    keyPoints:
+      - "Star topology connects all nodes to a central switch (single point of failure is the switch)"
+      - "Full Mesh connects every node to every other node (extreme redundancy, formula: N(N-1)/2 connections)"
+      - "Partial Mesh provides redundant uplinks between critical core and distribution switches"
+    check:
+      - prompt: "What is the primary operational risk in a standard physical Star network topology?"
+        options:
+          - "If one client cable breaks, all other clients disconnect"
+          - "If the central switch fails, all connected devices lose communication"
+          - "Star topologies cannot run Ethernet"
+          - "Data travels only in one circular direction"
+        correct: 1
+      - prompt: "How many total physical cables are required to build a Full Mesh network between 6 core routers?"
+        options:
+          - "6 cables"
+          - "12 cables"
+          - "15 cables (Formula: 6 * 5 / 2)"
+          - "36 cables"
+        correct: 2
+  - id: spine-leaf-architecture
+    title: "Modern Datacenter Spine-and-Leaf Architecture"
+    keyPoints:
+      - "Spine-and-Leaf provides predictable East-West low latency for datacenter server-to-server traffic"
+      - "Every Leaf switch connects to every Spine switch; Spine switches never connect to other Spines"
+      - "Eliminates spanning-tree blocking and bottlenecks in modern cloud virtualization clusters"
+    check:
+      - prompt: "In a modern datacenter Spine-and-Leaf topology, what is a strict rule regarding physical switch connections?"
+        options:
+          - "Spine switches must daisy-chain to other Spine switches"
+          - "Leaf switches connect to every Spine switch, but Spine switches never connect directly to other Spine switches"
+          - "Servers plug directly into Spine switches"
+          - "Leaf switches cannot connect to servers"
+        correct: 1
+      - prompt: "What type of network traffic pattern is Spine-and-Leaf specifically engineered to optimize?"
+        options:
+          - "North-South internet edge browsing only"
+          - "East-West server-to-server and storage cluster replication traffic"
+          - "Analog telephone traffic"
+          - "Dial-up modem connections"
+        correct: 1
 domains:
   - domainId: netplus.networking_concepts
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
 ---
-
 ## The Outage That Draws Itself
 
 You get pulled into a network outage at a small office. Twelve people, nobody can reach the internet, nobody can print, nobody can hit the file share. You check the server rack and find one switch dead — the power supply gave out. One device failed and it took down the entire network. That tells you something about how this network is designed before you even look at a diagram. Every device connected back to that single switch like spokes on a wheel, and when the hub of the wheel broke, so did everything. You just diagnosed a topology problem. The word "topology" sounds academic, but it describes something very practical: the shape of how devices connect. That shape determines what fails, how it fails, and how bad it gets when it does.
@@ -33,7 +75,7 @@ In a star topology, every device connects to a central device — a switch, in m
 
 ## Mesh — Redundancy Taken Seriously
 
-A mesh topology gives each device multiple paths to reach other devices. In a full mesh, every device connects directly to every other device — which means the number of connections scales exponentially and gets expensive fast. The formula is $n(n-1)/2$ links for $n$ devices. Ten devices? Forty-five links. A hundred devices? Not happening at full mesh. Partial mesh is the real-world compromise: critical devices get multiple connections, less critical ones get fewer. The internet itself is a partial mesh — your packets can take dozens of different paths to reach the same destination, which is why cutting a single undersea cable doesn't break the whole network (just makes it slower for a while and very stressful for some network engineers). You'll see mesh designs in WAN cores, data centers, and wireless mesh networks where access points relay traffic for each other. The exam will ask about both full and partial — know the cost-versus-redundancy tradeoff.
+A mesh topology gives each device multiple paths to reach other devices. In a full mesh, every device connects directly to every other device — which means the number of connections scales exponentially and gets expensive fast. The formula is n(n-1)/2 links for n devices. Ten devices? Forty-five links. A hundred devices? Not happening at full mesh. Partial mesh is the real-world compromise: critical devices get multiple connections, less critical ones get fewer. The internet itself is a partial mesh — your packets can take dozens of different paths to reach the same destination, which is why cutting a single undersea cable doesn't break the whole network (just makes it slower for a while and very stressful for some network engineers). You'll see mesh designs in WAN cores, data centers, and wireless mesh networks where access points relay traffic for each other. The exam will ask about both full and partial — know the cost-versus-redundancy tradeoff.
 
 ## Hybrid — What Everyone Actually Builds
 

@@ -8,13 +8,55 @@ order: 2
 difficulty: Beginner
 estMinutes: 25
 tags: ["network+", "protocols", "DNS", "DHCP", "ARP", "ICMP", "N10-009 1.5", "N10-008 1.5"]
+sections:
+  - id: tcp-handshake-flags
+    title: "TCP Connection Management and Control Flags"
+    keyPoints:
+      - "TCP 3-Way Handshake establishes session: SYN (Seq=x) → SYN-ACK (Seq=y, Ack=x+1) → ACK (Ack=y+1)"
+      - "TCP 4-Way Teardown cleanly closes session: FIN → ACK → FIN → ACK"
+      - "RST (Reset) immediately aborts an invalid or unauthorized connection"
+    check:
+      - prompt: "What initial TCP control flag is sent by a client to initiate a new connection to a web server?"
+        options:
+          - "ACK"
+          - "SYN"
+          - "FIN"
+          - "RST"
+        correct: 1
+      - prompt: "What TCP flag is returned by a firewall or server when a client attempts to connect to a closed or filtered port?"
+        options:
+          - "SYN"
+          - "RST (Reset)"
+          - "URG"
+          - "PSH"
+        correct: 1
+  - id: icmp-and-arp-mechanics
+    title: "Network Layer Assistants: ICMP and ARP"
+    keyPoints:
+      - "ICMP (Internet Control Message Protocol) handles network diagnostics and error messages (Ping Echo Request Type 8 / Echo Reply Type 0)"
+      - "ARP (Address Resolution Protocol) maps a known Layer 3 IP address to a Layer 2 MAC address on the local broadcast domain"
+      - "ARP Request is a Broadcast (FF:FF:FF:FF:FF:FF); ARP Reply is a Unicast response"
+    check:
+      - prompt: "When a host knows the destination IP address of a local printer but does not know its physical hardware address, which protocol sends an ARP Request broadcast?"
+        options:
+          - "DNS"
+          - "ARP (Address Resolution Protocol)"
+          - "DHCP"
+          - "NTP"
+        correct: 1
+      - prompt: "Which diagnostic protocol is utilized by the ping and traceroute commands to measure packet latency and TTL hop expirations?"
+        options:
+          - "ICMP"
+          - "FTP"
+          - "SNMP"
+          - "SSH"
+        correct: 0
 domains:
   - domainId: netplus.networking_concepts
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
 ---
-
 ## The Invisible Conversations
 
 Before your browser ever shows you a webpage, at least four different protocols had entire conversations on your behalf without you knowing. Your machine asked a DHCP server for an IP address. It queried a DNS server to translate the hostname into an IP. It ARPed the local network to find the MAC address of the default gateway. Then it opened an HTTPS session to the web server and started pulling content. All of that happened in the time it took you to press Enter. Each protocol has a specific job, a defined structure, and a predictable failure mode — and when any one of them breaks, the symptom at the surface is usually the same unhelpful "nothing works." The difference between a twenty-minute troubleshooting session and a two-minute one is knowing which conversation failed.

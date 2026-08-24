@@ -8,13 +8,55 @@ order: 2
 difficulty: Beginner
 estMinutes: 25
 tags: ["network+", "DNS", "N10-009 1.6", "N10-008 1.6"]
+sections:
+  - id: dns-hierarchy-and-resolution
+    title: "The DNS Hierarchy and Recursive Resolution"
+    keyPoints:
+      - "DNS translates human-readable FQDNs (e.g. www.google.com) into computer IP addresses"
+      - "Hierarchy: Root (.) → Top-Level Domain (.com, .org) → Second-Level Domain (google.com) → Host/Subdomain (www)"
+      - "Recursive Resolvers query Root servers, TLD servers, and Authoritative Name Servers to return answers to clients"
+    check:
+      - prompt: "In the fully qualified domain name \"mail.company.com.\", what entity is represented by the rightmost root level dot (.)?"
+        options:
+          - "The DNS Root Zone"
+          - "The Top-Level Domain (TLD)"
+          - "The Subdomain"
+          - "The Mail Exchanger"
+        correct: 0
+      - prompt: "Which DNS server holds the official, definitive master records for a registered domain name?"
+        options:
+          - "The Authoritative Name Server"
+          - "The Local Browser Cache"
+          - "The Root Hint Server"
+          - "The DHCP Server"
+        correct: 0
+  - id: dns-record-types
+    title: "Core DNS Record Types: A, AAAA, CNAME, MX, TXT, PTR"
+    keyPoints:
+      - "A Record: Maps hostname to 32-bit IPv4 address; AAAA Record: Maps hostname to 128-bit IPv6 address"
+      - "CNAME (Canonical Name): Creates an alias pointing to another hostname"
+      - "MX (Mail Exchanger): Routes email to mail servers (includes priority value); TXT Record: Holds SPF/DKIM anti-spam verification records"
+    check:
+      - prompt: "Which DNS record type is configured to map an IPv6 address (e.g. 2001:db8::1) to a fully qualified domain name?"
+        options:
+          - "A Record"
+          - "AAAA (Quad-A) Record"
+          - "CNAME Record"
+          - "PTR Record"
+        correct: 1
+      - prompt: "Which DNS record type is queried by internet mail transfer agents to determine which mail server handles email delivery for @company.com?"
+        options:
+          - "MX (Mail Exchanger) Record"
+          - "PTR Record"
+          - "SOA Record"
+          - "NS Record"
+        correct: 0
 domains:
   - domainId: netplus.networking_concepts
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
 ---
-
 ## The Service That Everything Depends On
 
 A sysadmin joke that isn't really a joke: "It's always DNS." When a web application stops loading, when email stops flowing, when a VPN client can't find the server, when a printer disappears from the network — the first suspect is DNS, and it's right more often than any other guess. You covered the resolution process in the protocols lesson: client asks, server finds, answer comes back in milliseconds. Now you need to know what lives inside DNS — the record types that make up the database, the server roles that manage it, and the failures that make grown engineers stare at screens for hours. DNS is a distributed database spread across millions of servers worldwide and it's the most heavily queried service on the internet. Understanding its internals isn't a certification checkbox — it's a survival skill.

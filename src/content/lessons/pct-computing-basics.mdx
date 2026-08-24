@@ -8,6 +8,91 @@ order: 1
 difficulty: Beginner
 estMinutes: 25
 tags: ["computing", "CPU", "RAM", "storage", "motherboard", "A+", "Core 1", "CompTIA"]
+sections:
+  - id: fetch-decode-execute
+    title: "The CPU Instruction Cycle (Fetch-Decode-Execute)"
+    keyPoints:
+      - "The Control Unit fetches instructions from system RAM into instruction registers"
+      - "The decoder converts machine code into micro-operations executed by the Arithmetic Logic Unit (ALU)"
+      - "The clock generator synchronizes every stage of the pipeline in gigahertz (GHz) intervals"
+    check:
+      - prompt: "Which internal sub-unit of the CPU performs mathematical calculations (addition, subtraction) and logical comparisons (AND, OR, NOT)?"
+        options:
+          - "The Arithmetic Logic Unit (ALU)"
+          - "The Control Unit"
+          - "The System Bus"
+          - "The CMOS Battery"
+        correct: 0
+      - prompt: "What is the correct sequential order of the fundamental CPU instruction cycle?"
+        options:
+          - "Execute → Fetch → Decode → Store"
+          - "Fetch → Decode → Execute → Store"
+          - "Store → Decode → Execute → Fetch"
+          - "Decode → Execute → Fetch → Store"
+        correct: 1
+  - id: cpu-ram-storage-pipeline
+    title: "The Data Pipeline: CPU, Cache, RAM, and Storage"
+    keyPoints:
+      - "Storage (SSD/HDD) holds persistent code; RAM holds active working applications"
+      - "CPU Cache (L1/L2/L3) keeps critical hot loops on silicon to prevent DRAM bus stalls"
+      - "Virtual Memory (paging/swap) spills overflow RAM onto SSD when physical RAM is exhausted"
+    check:
+      - prompt: "When physical system RAM becomes 100% full, what mechanism does Windows use to prevent applications from crashing immediately?"
+        options:
+          - "Overclocking the CPU"
+          - "Virtual Memory / Paging file (pagefile.sys on the storage drive)"
+          - "Deleting the BIOS firmware"
+          - "Disabling the network adapter"
+        correct: 1
+      - prompt: "Why does an application execute thousands of times faster when residing in system RAM compared to reading directly from a hard drive?"
+        options:
+          - "RAM has nanosecond access times with zero mechanical seek delay"
+          - "RAM is an analog medium"
+          - "RAM only runs on 128-bit circuits"
+          - "RAM uses laser beams"
+        correct: 0
+  - id: post-and-uefi-boot
+    title: "POST Sequence and UEFI/BIOS Boot Architecture"
+    keyPoints:
+      - "Power-On Self-Test (POST) runs hardware checks on CPU, RAM, and GPU before loading the OS"
+      - "POST beep codes and debug LEDs diagnose hardware failures when no video output is available"
+      - "UEFI initializes GPT partition tables, Secure Boot certificates, and hand-off to the OS bootloader"
+    check:
+      - prompt: "During system boot, a motherboard sounds a series of repeated beeps and the monitor remains black. What diagnostic process is reporting a hardware initialization failure?"
+        options:
+          - "Windows Update"
+          - "Power-On Self-Test (POST)"
+          - "DHCP Discovery"
+          - "Disk Defragmentation"
+        correct: 1
+      - prompt: "What security feature in modern UEFI firmware prevents malicious rootkits from loading before the operating system kernel starts?"
+        options:
+          - "Secure Boot"
+          - "Hyper-Threading"
+          - "RAID 0"
+          - "Overclocking"
+        correct: 0
+  - id: triage-mental-model
+    title: "The Hardware Triage Mental Model"
+    keyPoints:
+      - "Differentiate between: No Power vs No POST vs No Boot vs OS Crash"
+      - "No Power = PSU, wall outlet, front panel switch; No POST = CPU, RAM, motherboard, GPU"
+      - "No Boot = Storage drive, bootloader, UEFI boot order; OS Crash = Drivers, malware, heat"
+    check:
+      - prompt: "A computer's fans spin and power lights turn on, but the display shows 'No Bootable Device Found'. Where in the triage pipeline is the failure?"
+        options:
+          - "No Power (PSU failure)"
+          - "No POST (Motherboard/RAM failure)"
+          - "No Boot (Storage drive connection, bootloader corruption, or boot order issue)"
+          - "Display cable failure"
+        correct: 2
+      - prompt: "A PC runs perfectly for 20 minutes, then suddenly shuts down completely with zero warning during heavy 3D rendering. What is the most likely hardware root cause?"
+        options:
+          - "Thermal overheating triggering automatic CPU/GPU thermal shutdown (or failing PSU under heavy load)"
+          - "Corrupt desktop icon"
+          - "Unplugged mouse"
+          - "Slow Wi-Fi connection"
+        correct: 0
 domains:
   - domainId: aplus1.hardware
     weight: 0.5

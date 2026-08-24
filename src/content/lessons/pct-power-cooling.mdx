@@ -8,6 +8,70 @@ order: 4
 difficulty: Beginner
 estMinutes: 30
 tags: ["PSU", "power supply", "cooling", "thermal paste", "airflow", "80 PLUS", "A+", "Core 1", "CompTIA"]
+sections:
+  - id: psu-voltage-rails
+    title: "PSU Architecture and DC Voltage Rails"
+    keyPoints:
+      - "+12V rail powers heavy loads (CPU, GPU, pumps); +5V powers logic/SATA; +3.3V powers RAM/PCIe; +5VSB maintains standby state"
+      - "Always size PSUs with 20% to 30% wattage headroom above calculated peak component draw"
+      - "Modular PSUs allow technicians to connect only needed cables, optimizing case airflow"
+    check:
+      - prompt: "A custom gaming PC with an estimated peak draw of 550 Watts is being built. Which PSU wattage rating provides proper 20–30% operating headroom?"
+        options:
+          - "400 Watts"
+          - "550 Watts exactly"
+          - "750 Watts"
+          - "1600 Watts"
+        correct: 2
+      - prompt: "Which motherboard voltage line provides continuous low-level power to enable Wake-on-LAN and the front panel power switch while the PC is off?"
+        options:
+          - "-12V"
+          - "+5VSB (+5V Standby)"
+          - "+3.3V"
+          - "+12V"
+        correct: 1
+  - id: thermal-paste-application
+    title: "Thermal Interface Material (TIM) Application"
+    keyPoints:
+      - "TIM bridges microscopic air pockets between CPU Integrated Heat Spreader (IHS) and cooler base"
+      - "Apply a single pea-sized or rice-grain dot in the center of the CPU; let mounting pressure spread it evenly"
+      - "Clean old, dried thermal paste using 90%+ Isopropyl Alcohol and a lint-free wipe"
+    check:
+      - prompt: "What solvent should a technician use to safely dissolve and clean dried thermal paste from a CPU's heat spreader?"
+        options:
+          - "Tap water"
+          - "Window cleaner"
+          - "90%+ Isopropyl Alcohol (IPA)"
+          - "Acetone"
+        correct: 2
+      - prompt: "What is the recommended technique for applying standard non-conductive thermal paste on a modern consumer desktop CPU?"
+        options:
+          - "Coat the entire motherboard in thermal paste"
+          - "Apply a pea-sized dot in the center of the CPU IHS and let cooler pressure spread it"
+          - "Pour thermal paste inside the socket pin holes"
+          - "Use a paintbrush to apply 5 thick coats"
+        correct: 1
+  - id: airflow-and-throttling
+    title: "Case Airflow Dynamics and Thermal Throttling Triage"
+    keyPoints:
+      - "Intake cool air from front/bottom; Exhaust hot air out the rear/top (heat rises)"
+      - "Positive pressure (more filtered intake CFM than exhaust) prevents dust ingestion through chassis seams"
+      - "Thermal throttling reduces CPU/GPU clock multiplier when die temperature approaches TjMax (95°C–105°C)"
+    check:
+      - prompt: "A gaming PC experiences severe frame drops after 10 minutes of play. Hardware monitoring shows CPU clock speed dropping from 4.8 GHz to 1.6 GHz while temperature hits 100°C. What is occurring?"
+        options:
+          - "The SSD is full"
+          - "The CPU is thermally throttling to prevent permanent silicon heat damage"
+          - "The monitor refresh rate is set too high"
+          - "The network cable has high latency"
+        correct: 1
+      - prompt: "Why is positive air pressure inside a PC case preferred over negative air pressure in dusty office environments?"
+        options:
+          - "It cools the room faster"
+          - "It forces air outward through unfiltered case seams, keeping internal components cleaner"
+          - "It makes the cooling fans spin silently"
+          - "It lowers the system voltage"
+        correct: 1
 domains:
   - domainId: aplus1.hardware
     weight: 0.8

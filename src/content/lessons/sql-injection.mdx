@@ -286,7 +286,7 @@ Result: If query takes 5+ seconds, condition was true. Data exfiltrated via timi
         const output = document.getElementById('vulnOutput');
         
         // Simulating vulnerable concatenation
-        const vulnerableQuery = \`SELECT * FROM users WHERE username='\${username}' AND password='\${password}'\`;
+        const vulnerableQuery = \`SELECT * FROM users WHERE username='\{username}' AND password='\{password}'\`;
         
         output.innerHTML = \`<div style="color: #ffff00;">QUERY: \${vulnerableQuery}</div><br>\`;
         
@@ -296,7 +296,7 @@ Result: If query takes 5+ seconds, condition was true. Data exfiltrated via timi
           output.innerHTML += \`<div class="vulnerable">Attacker bypassed the login!</div>\`;
           output.innerHTML += \`<div style="color: #ffff00; margin-top: 10px;">All user data exposed:</div>\`;
           mockUsers.forEach(user => {
-            output.innerHTML += \`<div>👤 \${user.username} | 🔑 \${user.password}</div>\`;
+            output.innerHTML += \`<div>👤 \{user.username} | 🔑 \{user.password}</div>\`;
           });
         } else {
           // Normal login
@@ -317,7 +317,7 @@ Result: If query takes 5+ seconds, condition was true. Data exfiltrated via timi
         const safeQuery = \`SELECT * FROM users WHERE username=? AND password=?\`;
         
         output.innerHTML = \`<div style="color: #ffff00;">QUERY: \${safeQuery}</div>\`;
-        output.innerHTML += \`<div style="color: #00ff88;">PARAMS: ["\${username}", "\${password}"]</div><br>\`;
+        output.innerHTML += \`<div style="color: #00ff88;">PARAMS: ["\{username}", "\{password}"]</div><br>\`;
         
         // Even with injection attempt, we search for the literal username
         const user = mockUsers.find(u => u.username === username && u.password === password);

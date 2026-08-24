@@ -1,93 +1,228 @@
 ---
-title: File System Management
-description: Manage files and directories — create, move, copy, delete, search, and organize using OS tools and the command line. FC0-U71 objective 3.1.
+title: File System Management — Navigation, Paths, and Permissions
+description: Master file operations in GUI and CLI environments. Learn absolute vs relative paths, Windows drive letters vs Linux POSIX hierarchies, file extensions, and security access control lists.
 slug: tech-plus-3-1-2-file-system-management
 track: tech-plus
 moduleId: tech-plus.applications
 order: 2
+objective: "FC0-U71 3.1"
+xp: 15
+source: cyber-org
 difficulty: Beginner
 estMinutes: 20
-tags: ["tech+", "FC0-U71 3.1", "file management", "directories", "permissions", "CLI"]
+tags: ["tech+", "FC0-U71 3.1", "file management", "directories", "permissions", "CLI", "paths", "file extensions"]
+sections:
+  - id: path-structures-and-hierarchies
+    title: "Path Structures: Windows Drive Letters vs. Linux POSIX Root"
+    keyPoints:
+      - "Windows uses drive letters (C:\\, D:\\) with backslashes (\\) for path separation"
+      - "Linux/macOS uses a single unified hierarchical tree starting at root (/) with forward slashes (/)"
+      - "Absolute paths specify full location from root; Relative paths calculate location from current working directory"
+    check:
+      - prompt: "Which of the following is a fully qualified Absolute Path in a Windows operating system environment?"
+        options:
+          - "..\\Documents\\report.docx"
+          - "C:\\Users\\Student\\Documents\\report.docx"
+          - "/var/log/syslog"
+          - "report.docx"
+        correct: 1
+      - prompt: "What symbol represents the absolute top-level root directory in Linux and macOS filesystems?"
+        options:
+          - "C:\\"
+          - "root:\\"
+          - "/ (forward slash)"
+          - "~ (tilde)"
+        correct: 2
+  - id: core-cli-file-commands
+    title: "Core CLI File Navigation and Manipulation Commands"
+    keyPoints:
+      - "Listing directory contents: dir (Windows) / ls (Linux/macOS)"
+      - "Changing working directory: cd foldername; moving up one level: cd .."
+      - "Creating folders: mkdir; copying files: copy (Windows) / cp (Linux); moving/renaming: move / mv"
+    check:
+      - prompt: "A technician needs to view all files and folders inside their current command-line working directory on a Windows PC. Which command should they execute?"
+        options:
+          - "cd"
+          - "dir"
+          - "mkdir"
+          - "del"
+        correct: 1
+      - prompt: "What command-line instruction moves the current shell prompt up one parent directory level in both Windows and Linux?"
+        options:
+          - "cd /"
+          - "cd .."
+          - "exit"
+          - "rmdir"
+        correct: 1
+  - id: file-extensions-and-associations
+    title: "File Extensions, Associations, and Hidden Attributes"
+    keyPoints:
+      - "File extensions (.docx, .pdf, .exe) inform the OS which application is associated to open the file"
+      - "Attackers disguise malware using double extensions (e.g. invoice.pdf.exe) when Windows hides file extensions by default"
+      - "Hidden files in Linux/macOS start with a leading dot (.bashrc); in Windows they use the Hidden file attribute"
+    check:
+      - prompt: "Why is it an enterprise cybersecurity best practice to enable 'Show file name extensions' in Windows File Explorer?"
+        options:
+          - "It speeds up file opening times"
+          - "It prevents users from being tricked by malicious executable files disguised as documents (e.g. quarterly_report.pdf.exe)"
+          - "It decreases disk usage"
+          - "It encrypts file contents"
+        correct: 1
+      - prompt: "In Linux and macOS filesystems, how is a file or folder designated as hidden from standard directory listings?"
+        options:
+          - "By starting the filename with a period/dot (e.g. .hidden_config)"
+          - "By typing HIDE in all caps"
+          - "By saving it as a .exe file"
+          - "By making the file size 0 bytes"
+        correct: 0
+  - id: file-permissions-and-hardening
+    title: "File System Permissions and Access Control (ACLs)"
+    keyPoints:
+      - "Windows NTFS permissions include Full Control, Modify, Read & Execute, Read, and Write"
+      - "Permissions can be explicitly configured or inherited from parent directory containers"
+      - "Principle of Least Privilege: Never grant 'Full Control' or 'Everyone: Write' to sensitive system directories"
+    check:
+      - prompt: "An employee can view and open files in a network folder, but cannot save changes or delete files. Which NTFS permission do they possess?"
+        options:
+          - "Full Control"
+          - "Read (or Read & Execute)"
+          - "Modify"
+          - "Write only"
+        correct: 1
+      - prompt: "What occurs when permission inheritance is disabled on a secure accounting folder in Windows NTFS?"
+        options:
+          - "All files inside the folder are deleted"
+          - "The folder stops inheriting permissions from its parent directory, allowing custom restrictive access lists"
+          - "The folder is automatically uploaded to the cloud"
+          - "The folder becomes public to all users"
+        correct: 1
 domains:
   - domainId: techplus.applications
     weight: 1
 ---
 
-## File System Management
+import Callout from '../../components/Callout.astro';
 
-File system management is the day-to-day work of organizing and maintaining files and directories — whether through a graphical file explorer or the command line. It is a fundamental skill for any IT role.
+## The Technician's Command Over Data
 
-### File System Hierarchy
+Every task you perform in IT—installing software, running security scans, gathering diagnostic logs, backing up user databases, or writing automation scripts—requires interacting with files and directories.
 
-**Windows:**
-- Drive letters: `C:\`, `D:\`, etc.
-- System files: `C:\Windows\`
-- User data: `C:\Users\[username]\`
-- Programs: `C:\Program Files\` (64-bit), `C:\Program Files (x86)\` (32-bit)
+End users click icons on a desktop. Technicians understand file system architecture, absolute paths, command-line manipulation, and security access control lists.
 
-**Linux/macOS (POSIX hierarchy):**
-- Root: `/`
-- User home directories: `/home/[username]/` (Linux) or `/Users/[username]/` (macOS)
-- System binaries: `/bin/`, `/usr/bin/`
-- Configuration: `/etc/`
-- Temporary files: `/tmp/`
+When an automated backup script fails or a user cannot open a shared corporate spreadsheet, your understanding of file management isolates the root cause in seconds.
 
-### Core File Operations
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                     FILE SYSTEM HIERARCHY COMPARISON                   │
+├────────────────────┬───────────────────────────────────────────────────┤
+│ Windows (Letters)  │ `C:\Users\mbeattie\Documents\network_diagram.vsdx`│
+│ Linux/macOS (Root) │ `/home/mbeattie/documents/network_diagram.vsdx`   │
+└────────────────────┴───────────────────────────────────────────────────┘
+```
 
-| Operation | Windows GUI | Windows CLI | Linux/macOS CLI |
+---
+
+## Path Hierarchies: Windows Drive Letters vs. Linux Unified Root
+
+Operating systems organize files into tree hierarchies, but they structure the base of the tree differently:
+
+### 1. Windows Drive Letter Hierarchy
+Windows assigns a capital letter followed by a colon and backslash to every physical storage volume or mounted partition:
+- **`C:\` (Primary System Volume):**
+  - `C:\Windows\` — Core operating system binaries and drivers.
+  - `C:\Program Files\` — 64-bit application software.
+  - `C:\Program Files (x86)\` — Legacy 32-bit application software.
+  - `C:\Users\[Username]\` — User profile directory (Desktop, Downloads, Documents).
+- **`D:\`, `E:\`, `F:\`:** Secondary internal SSDs, optical disc drives, or mapped network drives.
+- **Path Separator:** Windows uses the **Backslash (`\`)**.
+
+### 2. Linux and macOS POSIX Unified Hierarchy
+Unix-like systems have **no drive letters**. Everything—internal NVMe drives, USB sticks, network shares, and even hardware devices—is mounted under a single root directory:
+- **`/` (The Root Directory):** The absolute top of the entire filesystem tree.
+- `/home/[username]/` (Linux) or `/Users/[username]/` (macOS) — User profile data.
+- `/bin/` and `/usr/bin/` — Core executable programs and command utilities.
+- `/etc/` — System-wide configuration files (networking, services, security).
+- `/var/log/` — System, security, and application error logs.
+- **Path Separator:** Linux/macOS uses the **Forward Slash (`/`)**.
+
+### Absolute vs. Relative Paths
+- **Absolute Path:** The complete, unambiguous address starting from the root of the filesystem (e.g. `C:\Users\Admin\Logs\app.log` or `/var/log/nginx/access.log`). It points to the exact same file regardless of where your terminal is currently located.
+- **Relative Path:** A path calculated from your **Current Working Directory (CWD)**.
+  - `.` represents the current folder.
+  - `..` represents the parent folder one level up. (e.g., `cd ..` moves up one folder).
+
+---
+
+## Core Command-Line File Operations
+
+GUI File Explorers are intuitive, but command-line file management is scriptable, faster, and works across headless remote servers:
+
+| Action | Windows GUI | Windows Command Prompt | Linux / macOS Shell (Bash/Zsh) |
 |---|---|---|---|
-| List directory | File Explorer | `dir` | `ls` |
-| Change directory | Click folder | `cd foldername` | `cd foldername` |
-| Create folder | Right-click → New | `mkdir foldername` | `mkdir foldername` |
-| Copy file | Ctrl+C, Ctrl+V | `copy src dst` | `cp src dst` |
-| Move/rename | Drag or F2 | `move src dst` | `mv src dst` |
-| Delete file | Delete key | `del filename` | `rm filename` |
-| Delete folder | Delete key | `rmdir /s folder` | `rm -r folder` |
+| **List Files** | View in Explorer | `dir` | `ls -la` |
+| **Change Directory** | Double-click folder | `cd [foldername]` | `cd [foldername]` |
+| **Move Up Directory** | Click Up Arrow | `cd ..` | `cd ..` |
+| **Create Directory** | Right-click → New Folder | `mkdir [name]` | `mkdir [name]` |
+| **Copy File** | Ctrl + C / Ctrl + V | `copy [source] [dest]` | `cp [source] [dest]` |
+| **Move / Rename File** | Drag / Press F2 | `move [source] [dest]` | `mv [source] [dest]` |
+| **Delete File** | Press Delete key | `del [filename]` | `rm [filename]` |
+| **Delete Folder** | Press Delete key | `rmdir /s [folder]` | `rm -rf [folder]` |
 
-### File Naming and Extensions
+---
 
-- Extensions identify file type: `.txt` (text), `.docx` (Word), `.exe` (executable), `.pdf`, `.jpg`
-- Windows hides extensions by default — enable in View → Show → File name extensions
-- Linux/macOS: extensions are conventions, not enforced by the OS (a file without .txt can still be a text file)
-- **Hidden files:** Windows — names starting with nothing special; Linux/macOS — names starting with `.` (dot files)
+## File Extensions, Associations, and Security Hazards
 
-### File Permissions
+A filename consists of two parts: the base name and the **file extension**:
 
-**Windows NTFS permissions** (set in Properties → Security):
-- Full Control, Modify, Read & Execute, List Folder Contents, Read, Write
-- Each permission can be Allowed or Denied per user or group
+**payroll\_q3.xlsx**
 
-**Linux/macOS permissions** (`rwx` model):
-- Three sets: **owner**, **group**, **others**
-- `r` = read (4), `w` = write (2), `x` = execute (1)
-- `chmod 755 file` = owner: rwx (7), group: r-x (5), others: r-x (5)
+- **The Extension (`.xlsx`):** A suffix (usually 3 to 4 characters) following a period that identifies the file format and tells the OS which default program to launch when double-clicked.
+- **File Associations:** Windows maps extensions in the registry (e.g., `.docx` launches Microsoft Word, `.pdf` launches Adobe Acrobat, `.py` opens Python).
 
-### Searching for Files
+```
+┌────────────────────────────────────────────────────────┐
+│              THE DOUBLE-EXTENSION MALWARE TRAP         │
+│                                                        │
+│   Windows hides extensions by default:                 │
+│   What user sees:    [📄 invoice_august.pdf       ]    │
+│   What it really is: [⚠️ invoice_august.pdf.exe   ]    │
+│                                                        │
+│   Result: User thinks it is an invoice, clicks it,     │
+│           and executes a ransomware binary!            │
+└────────────────────────────────────────────────────────┘
+```
 
-**Windows:**
-- Search bar in File Explorer
-- `where filename` (CMD) — finds executables in PATH
-- `Get-ChildItem -Recurse -Filter "*.log"` (PowerShell)
+<Callout type="exam">
+**Security Hardening Rule:** In Windows File Explorer, always navigate to **View → Show → File name extensions**. Hiding extensions is a major security vulnerability because attackers name trojan malware `resume.pdf.exe` or `receipt.docx.vbs`. If extensions are hidden, the victim only sees `resume.pdf` with an Acrobat icon!
+</Callout>
 
-**Linux/macOS:**
-- `find /path -name "filename"` — search by name
-- `grep -r "searchterm" /path` — search inside file contents
+---
 
-### Disk Management Tasks
+## File Permissions and Access Control Lists (ACLs)
 
-- **Format** — erase and apply a file system (destructive)
-- **Partition** — divide a physical disk into logical sections
-- **Defragment** — reorganize fragmented data on HDDs (not needed/harmful on SSDs)
-- **Check disk** — `chkdsk` (Windows), `fsck` (Linux) — scans for and repairs file system errors
+In multi-user corporate environments, files must be protected against unauthorized modification or viewing.
 
-### OWASP Connection
+### Windows NTFS Permissions
+Configured under **File Properties → Security**:
+- **Full Control:** Can read, modify, delete, and change file ownership/permissions. (Reserved for Administrators).
+- **Modify:** Can read, edit, overwrite, and delete files, but cannot change security permissions.
+- **Read & Execute:** Can view file contents and run executable scripts/programs.
+- **Read:** Can view contents and attributes only.
+- **Write:** Can create new files and append data, but cannot view existing files.
 
-**Broken Access Control** (OWASP #1) and **Security Misconfiguration** (OWASP #5) apply at the file system level: overly permissive file permissions are one of the most common misconfigurations on servers, allowing unauthorized users to read or modify files they shouldn't.
+### Permission Inheritance
+By default, any new subfolder or file created inside a directory automatically **inherits** the security permissions of its parent folder. To create a private folder within a shared company drive, an administrator must **disable inheritance** and explicitly configure custom access lists.
 
-### Key Exam Points
+---
 
-- FAT32 max file: **4 GB**; NTFS supports large files with journaling and ACLs
-- Linux hidden files start with `.` (dot)
-- Linux permissions: `rwx` = 7, `rw-` = 6, `r-x` = 5, `r--` = 4
-- `chmod 755` = owner full access; group and others read + execute
-- `chkdsk` (Windows) / `fsck` (Linux) repair file system errors
+## Why This Matters in the Field
+
+When you write a PowerShell script to automate workstation deployments, configure permissions on a network file server, or investigate an employee workstation infected with ransomware, file system management is your core toolkit.
+
+Understanding path structures, CLI file commands, extension associations, and NTFS permissions ensures you keep data organized, automated, and secure.
+
+---
+
+## Key Terms
+
+File System Management · Windows Drive Letters · Linux POSIX Hierarchy · Root Directory (`/`) · Absolute Path · Relative Path · Current Working Directory (CWD) · Parent Directory (`..`) · `dir` / `ls` · `cd` · `mkdir` · `copy` / `cp` · `move` / `mv` · `del` / `rm` · File Extension · File Association · Hidden File Attribute · Access Control List (ACL) · NTFS Permissions · Permission Inheritance · Principle of Least Privilege

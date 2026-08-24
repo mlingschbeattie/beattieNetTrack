@@ -8,13 +8,56 @@ order: 3
 difficulty: Beginner
 estMinutes: 20
 tags: ["network+", "connectors", "transceivers", "N10-009 1.3", "N10-008 1.3"]
+sections:
+  - id: twisted-pair-pinouts
+    title: "Twisted-Pair Pinouts: T568A vs. T568B"
+    keyPoints:
+      - "T568B is the enterprise commercial standard: White/Orange, Orange, White/Green, Blue, White/Blue, Green, White/Brown, Brown"
+      - "T568A swaps the Orange and Green pairs (White/Green, Green, White/Orange, Blue, White/Blue, Orange, White/Brown, Brown)"
+      - "Straight-through cable has the same pinout on both ends; Crossover cable has T568A on one end and T568B on the other"
+    check:
+      - prompt: "What is the correct 8-pin color sequence for the standard T568B wiring standard from Pin 1 to Pin 8?"
+        options:
+          - "White/Green, Green, White/Orange, Blue, White/Blue, Orange, White/Brown, Brown"
+          - "White/Orange, Orange, White/Green, Blue, White/Blue, Green, White/Brown, Brown"
+          - "Blue, White/Blue, Orange, White/Orange, Green, White/Green, Brown, White/Brown"
+          - "White/Orange, Green, White/Green, Blue, White/Blue, Orange, White/Brown, Brown"
+        correct: 1
+      - prompt: "What cable type is created when a technician terminates one end of an Ethernet cable with T568A and the other end with T568B?"
+        options:
+          - "Straight-Through patch cable"
+          - "Crossover cable"
+          - "Rollover console cable"
+          - "Loopback adapter"
+        correct: 1
+  - id: fiber-connector-types
+    title: "Fiber Optic Connectors: LC, SC, ST, and MPO"
+    keyPoints:
+      - "LC (Lucent Connector): Small form factor with push-pull clip (Little Connector / Local Connector); dominant in modern switches and SFPs"
+      - "SC (Subscriber Connector): Square push-pull snap connector (Stick and Click / Square Connector)"
+      - "ST (Straight Tip): Round connector with bayonet twist-lock (Set and Twist; common in legacy campuses)"
+      - "MPO / MTP: Multi-fiber push-on connector carrying 12 or 24 optical fibers for 40G/100G datacenter trunks"
+    check:
+      - prompt: "Which compact, square push-pull fiber connector with a retention tab is the universal standard for modern high-density SFP/SFP+ optical transceivers?"
+        options:
+          - "ST (Straight Tip)"
+          - "LC (Lucent Connector)"
+          - "BNC"
+          - "F-Type connector"
+        correct: 1
+      - prompt: "Which legacy round fiber-optic connector uses a spring-loaded bayonet twist-lock mechanism similar to a BNC connector?"
+        options:
+          - "LC"
+          - "SC"
+          - "ST (Straight Tip)"
+          - "RJ-45"
+        correct: 2
 domains:
   - domainId: netplus.networking_concepts
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
 ---
-
 ## The Drawer Full of Cables
 
 Every IT shop has one. A drawer, a bin, maybe an entire shelf — stuffed with cables and adapters accumulated over a decade. Some are labeled. Most aren't. You reach in looking for a patch cable and pull out something with a connector you don't recognize. Is it network? Serial? Telephone? Legacy garbage from 2009? If you can identify connectors on sight, you grab what you need in seconds and move on. If you can't, you stand there plugging things into ports that don't fit while your ticket queue grows. Connector identification is not glamorous knowledge, but it's the kind that saves you five minutes fifty times a year, and the exam tests it with images.

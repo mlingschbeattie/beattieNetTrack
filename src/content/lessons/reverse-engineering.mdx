@@ -180,7 +180,7 @@ import LegacyHtml from '../../components/LegacyHtml.astro';
 
           const labelMap = { "5min": "5-minute", "15min": "15-minute", "30min": "30-minute" };
           const label = labelMap[presetKey] || labelMap[DEFAULT_PRESET];
-          document.getElementById('review-mode-note').textContent = \`You are in \${label} review mode (\${quizQuestions.length} questions).\`;
+          document.getElementById('review-mode-note').textContent = \`You are in \{label} review mode (\{quizQuestions.length} questions).\`;
 
           document.querySelectorAll('.quiz-mode-controls button').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.review === presetKey);

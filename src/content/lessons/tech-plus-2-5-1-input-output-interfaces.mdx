@@ -1,69 +1,218 @@
 ---
-title: Input/Output Interfaces
-description: Identify and compare port types — USB, HDMI, DisplayPort, Thunderbolt, audio, and legacy interfaces. FC0-U71 objective 2.5.
+title: Input/Output Interfaces — Ports, Cables, and Signaling Protocols
+description: Identify and troubleshoot physical I/O ports. Master USB generations and color coding, USB-C Power Delivery and Alt-Modes, Thunderbolt PCIe tunneling, RJ-45 Ethernet, and legacy interfaces.
 slug: tech-plus-2-5-1-input-output-interfaces
 track: tech-plus
 moduleId: tech-plus.infrastructure
 order: 7
+objective: "FC0-U71 2.5"
+xp: 15
+source: cyber-org
 difficulty: Beginner
 estMinutes: 20
-tags: ["tech+", "FC0-U71 2.5", "ports", "interfaces", "hardware"]
+tags: ["tech+", "FC0-U71 2.5", "ports", "interfaces", "hardware", "USB", "USB-C", "Thunderbolt", "RJ-45"]
+sections:
+  - id: usb-generations-and-colors
+    title: "USB Generations, Connectors, and Physical Color Codes"
+    keyPoints:
+      - "USB 2.0 (480 Mbps) uses black/white ports; USB 3.0 / 3.1 Gen 1 (5 Gbps) uses blue ports"
+      - "USB 3.1 Gen 2 (10 Gbps) uses teal or red ports; sleep-and-charge ports feature a lightning or battery icon"
+      - "USB Type-C is a 24-pin reversible connector supporting high-speed data, video, and Power Delivery up to 240W"
+    check:
+      - prompt: "What color is standard on the internal plastic insert of a USB 3.0 (SuperSpeed 5 Gbps) Type-A port?"
+        options:
+          - "White"
+          - "Black"
+          - "Blue"
+          - "Yellow"
+        correct: 2
+      - prompt: "What is a major mechanical and electrical advantage of the USB Type-C connector over legacy USB Type-A?"
+        options:
+          - "USB-C can only carry analog sound"
+          - "USB-C is reversible (no upside-down orientation) and supports high-wattage bidirectional Power Delivery"
+          - "USB-C requires screws to mount"
+          - "USB-C only works on Linux"
+        correct: 1
+  - id: thunderbolt-and-alt-mode
+    title: "Thunderbolt and USB-C DisplayPort Alt-Mode"
+    keyPoints:
+      - "All Thunderbolt 3/4 ports use the physical USB-C connector, but not all USB-C ports support Thunderbolt"
+      - "Thunderbolt tunnels PCI Express and DisplayPort protocols directly, reaching 40 Gbps for external GPUs and docks"
+      - "DisplayPort Alt-Mode allows a USB-C cable to transmit native 4K/8K video directly from the GPU to a monitor"
+    check:
+      - prompt: "A technician connects a high-end dual-4K docking station to a laptop's USB-C port, but video does not appear. What is the most likely cause?"
+        options:
+          - "The laptop's USB-C port is data-only and lacks DisplayPort Alt-Mode / Thunderbolt support"
+          - "The USB-C cable was plugged in upside down"
+          - "The laptop has too much RAM"
+          - "The monitor needs a VGA adapter"
+        correct: 0
+      - prompt: "What is the maximum theoretical data throughput of a Thunderbolt 4 interface?"
+        options:
+          - "480 Mbps"
+          - "5 Gbps"
+          - "10 Gbps"
+          - "40 Gbps"
+        correct: 3
+  - id: network-and-audio-ports
+    title: "Network (RJ-45) and Audio (TRS & S/PDIF) Interfaces"
+    keyPoints:
+      - "RJ-45 is an 8-pin modular connector for wired Ethernet; RJ-11 is a smaller 4-pin/6-pin connector for analog phone/DSL lines"
+      - "3.5mm TRS audio jacks use standard PC color codes: Lime Green for stereo audio output, Pink for microphone input"
+      - "S/PDIF (Sony/Philips Digital Interface) transmits multi-channel digital audio over TOSLINK fiber-optic or coaxial cables"
+    check:
+      - prompt: "Which connector type is used to terminate standard 8-conductor twisted-pair Ethernet cables?"
+        options:
+          - "RJ-11"
+          - "RJ-45"
+          - "BNC"
+          - "DB-9"
+        correct: 1
+      - prompt: "On a desktop PC motherboard audio panel, which color-coded 3.5mm jack is dedicated to headphones / stereo speaker output?"
+        options:
+          - "Pink"
+          - "Lime Green"
+          - "Light Blue"
+          - "Orange"
+        correct: 1
+  - id: legacy-interfaces
+    title: "Legacy Interfaces (Serial DB-9, Parallel DB-25, PS/2, FireWire)"
+    keyPoints:
+      - "Serial (RS-232 / DB-9) is still used by network engineers for direct console access to enterprise routers and switches"
+      - "Parallel (DB-25 / IEEE 1284) was the legacy printer standard before USB"
+      - "PS/2 6-pin mini-DIN ports connected legacy keyboards (purple) and mice (green)"
+    check:
+      - prompt: "A network engineer needs to configure a brand-new, out-of-the-box Cisco router before it has an IP address. What legacy port or USB rollover adapter is used?"
+        options:
+          - "HDMI"
+          - "RS-232 Serial (DB-9) / Console Port"
+          - "Parallel DB-25"
+          - "S/PDIF Optical"
+        correct: 1
+      - prompt: "What were the legacy 6-pin round mini-DIN connectors on older motherboards called?"
+        options:
+          - "PS/2 ports"
+          - "FireWire 800"
+          - "Thunderbolt 1"
+          - "DisplayPort"
+        correct: 0
 domains:
   - domainId: techplus.infrastructure
     weight: 1
 ---
 
-## Input/Output Interfaces
+import Callout from '../../components/Callout.astro';
 
-I/O interfaces are the physical connection points on a computer that allow peripherals to send data in (input) or receive data out (output). Knowing which port does what — and which cable it takes — is a daily skill for any technician.
+## The Ports That Power the World
 
-### USB (Universal Serial Bus)
+Look at the back of any desktop tower, the side of a laptop, or the rear panel of a server. You will see an array of metal slots, pins, holes, and colored plastic inserts.
 
-The most common peripheral interface today.
+To the untrained eye, it is an intimidating mess of cables. To a technician, every port represents a specific signaling protocol, electrical voltage limit, and bandwidth tier.
 
-| Standard | Speed | Connector |
-|---|---|---|
-| USB 2.0 | 480 Mbps | Type-A, Type-B, Mini, Micro |
-| USB 3.0 / 3.1 Gen 1 | 5 Gbps | Type-A (blue), Type-B |
-| USB 3.1 Gen 2 | 10 Gbps | Type-A, Type-C |
-| USB 3.2 Gen 2×2 | 20 Gbps | Type-C |
-| USB4 | 40 Gbps | Type-C |
+Plugging the wrong cable into the wrong port—or using a cheap charging cable instead of a high-speed data cable—can bring a user's workstation grinding to a halt.
 
-**USB Type-C** — small, reversible connector used in modern laptops and phones. Can carry USB data, video (DisplayPort alt mode), and power simultaneously.
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        UNIVERSAL I/O TAXONOMY                          │
+├───────────────────┬────────────────────────────────────────────────────┤
+│ Category          │ Common Ports / Interfaces                          │
+├───────────────────┼────────────────────────────────────────────────────┤
+│ **Peripheral/Data**│ USB Type-A, USB Type-C, Thunderbolt 4             │
+│ **Display/Video** │ HDMI 2.1, DisplayPort 2.0, DVI, VGA                │
+│ **Network**       │ RJ-45 (Gigabit/10GbE Ethernet), SFP+ Fiber         │
+│ **Audio**         │ 3.5mm TRS (Green/Pink), S/PDIF Optical (TOSLINK)   │
+│ **Serial/Console**│ RS-232 DB-9, RJ-45 Rollover                        │
+└───────────────────┴────────────────────────────────────────────────────┘
+```
 
-### Video Interfaces
+---
 
-| Port | Max Resolution | Notes |
-|---|---|---|
-| VGA | 1080p (analog) | Legacy; no audio |
-| DVI | 1080p–2560×1600 | Partial digital transition; no audio |
-| HDMI | 4K–8K (HDMI 2.1) | Audio + video; common on TVs and monitors |
-| DisplayPort | 8K (DP 2.0) | Audio + video; daisy-chain capable |
-| Thunderbolt 3/4 | 4K (via DP alt) | USB-C connector; also PCIe tunneling |
+## USB Generations, Connectors, and Color Coding
+
+The **Universal Serial Bus (USB)** revolutionized computing by replacing dozens of proprietary cables with a single standard.
+
+### Port Color Codes (The Technician's Cheat Sheet)
+Motherboard and laptop manufacturers use standardized color inserts inside USB Type-A ports:
+
+| Port Color | USB Standard | Max Theoretical Speed | Common Label / Icon |
+|:---:|:---:|:---:|---|
+| **White** | USB 1.1 (Full Speed) | 12 Mbps | Standard USB |
+| **Black** | USB 2.0 (Hi-Speed) | 480 Mbps | Standard USB |
+| **Blue** | USB 3.0 / 3.1 Gen 1 | 5 Gbps | **SS** (SuperSpeed) |
+| **Teal / Cyan** | USB 3.1 Gen 2 | 10 Gbps | **SS 10** |
+| **Red / Orange / Yellow** | Sleep & Charge / Always-On | 5 to 10 Gbps | Battery / Lightning Icon (delivers power when PC is off) |
+
+### The Power of USB Type-C
+USB Type-C is not a speed standard—it is a **24-pin physical connector form factor**:
+- **Reversible:** No more trying three times to plug a USB drive in right-side up.
+- **Power Delivery (USB-PD):** Can negotiate up to **240 Watts (48V @ 5A)** of bidirectional power, allowing a single USB-C cable to power gaming laptops and monitors.
+- **DisplayPort Alt-Mode:** Allows the GPU to repurpose high-speed lanes on the USB-C cable to transmit raw video directly to external 4K/8K displays.
+
+---
+
+## Thunderbolt vs. USB-C: The Critical Difference
+
+Every technician must understand this golden rule:
+
+All Thunderbolt 3/4 ports use USB-C, but NOT all USB-C ports support Thunderbolt.
+
+```
+┌────────────────────────────────────────────────────────┐
+│               THUNDERBOLT 3 / 4 ARCHITECTURE           │
+│                                                        │
+│  [ USB-C Physical Connector ] (Marked with ⚡ Icon)    │
+│           │                                            │
+│           ├───> PCIe Tunneling (Up to 40 Gbps to eGPU) │
+│           ├───> DisplayPort Video (Dual 4K / 8K)       │
+│           └───> USB-PD (Up to 100W - 240W Power)       │
+└────────────────────────────────────────────────────────┘
+```
+
+When a port has a **Lightning Bolt (\unicode{x26A1})** next to the USB-C slot, it is **Thunderbolt 3 or 4**:
+- It tunnels raw **PCI Express lanes** and **DisplayPort** signals across the cable at **40 Gbps**.
+- This enables connecting **external desktop graphics cards (eGPUs)**, high-speed NVMe RAID docks, and enterprise single-cable docking stations.
+
+<Callout type="exam">
+CompTIA tests your recognition of this distinction. If a user buys a Thunderbolt 4 docking station and plugs it into a standard budget laptop with a basic USB 3.2 Gen 1 Type-C port, the dual external monitors will not light up because the port lacks PCIe/DisplayPort tunneling.
+</Callout>
+
+---
+
+## Network and Audio Interfaces
+
+### RJ-45 Ethernet vs. RJ-11 Phone
+- **RJ-45 (Registered Jack 45):** Wide, **8-pin (8P8C)** modular connector used for unshielded twisted-pair (UTP) Ethernet networking (Cat5e, Cat6, Cat6a).
+- **RJ-11:** Narrow, **4-pin / 6-pin** modular connector used for legacy analog telephone lines, fax machines, and DSL internet modems. If you try to plug an RJ-11 plug into an RJ-45 jack, it will sit loose and fail to make contact on the outer pins.
 
 ### Audio Interfaces
+- **3.5mm TRS (Tip-Ring-Sleeve) Jacks:** Analog stereo audio. Standard PC color coding:
+  - **Lime Green:** Stereo Line-Out / Headphones (Audio output).
+  - **Pink:** Microphone In (Audio input).
+  - **Light Blue:** Line-In (Analog audio from an external source like an instrument or mixer).
+- **S/PDIF (TOSLINK):** Transmits pure uncompressed digital surround sound over a red laser fiber-optic cable, completely eliminating analog electrical hum and ground loops.
 
-- **3.5mm TRS (headphone jack)** — analog stereo audio; green = output, pink = microphone
-- **S/PDIF (optical / coaxial)** — digital audio for home theater
-- **HDMI / DisplayPort** — carry digital audio alongside video
+---
 
-### Network Interfaces
+## Legacy Interfaces in Modern IT
 
-- **RJ-45 (Ethernet)** — 8-pin modular connector for wired LAN; speeds from 10 Mbps (cat3) to 10 Gbps (cat6a)
-- **Wi-Fi antenna ports** — internal or external antennas on wireless cards
+While modern PCs have phased out legacy ports, network engineers and industrial technicians encounter them constantly:
 
-### Legacy Interfaces (Know for Exams)
-
-| Port | Use | Status |
+| Legacy Interface | Connector Type | Modern Relevance & Technician Tradecraft |
 |---|---|---|
-| PS/2 | Keyboard/mouse | Legacy; some motherboards retain |
-| Serial (RS-232, DB-9) | Modems, lab equipment | Legacy; USB adapters common |
-| Parallel (DB-25) | Printers | Obsolete |
-| FireWire (IEEE 1394) | Video cameras, early storage | Obsolete |
+| **RS-232 Serial** | **DB-9 (9-Pin Male)** | **Router & Switch Console Access:** When a Cisco or Juniper router is bricked and has no IP address, engineers connect a DB-9 / USB-to-Serial rollover cable to access the CLI. |
+| **Parallel Port** | **DB-25 (25-Pin Female)** | Legacy dot-matrix impact printers used for multi-part carbon copy invoices in warehouses and auto shops. |
+| **PS/2 Ports** | **6-Pin Mini-DIN** | **Purple (Keyboard)** and **Green (Mouse)**. Still found on high-security server motherboards because PS/2 uses direct hardware interrupts with zero USB driver overhead. |
 
-### Key Exam Points
+---
 
-- USB 3.x ports are **blue** inside; USB 2.0 ports are **black or white**
-- USB Type-C ≠ Thunderbolt — all Thunderbolt uses USB-C, but not all USB-C is Thunderbolt
-- HDMI carries audio; VGA and DVI do not (VGA = analog only)
-- DisplayPort can daisy-chain multiple monitors from one port
+## Why This Matters in the Field
+
+When you unpack a new workstation or design a conference room setup, matching the exact throughput requirements of peripherals to the available I/O ports prevents hardware return headaches.
+
+Knowing which USB ports deliver 10 Gbps, which USB-C ports support Power Delivery, and how to connect a serial console cable to a core switch ensures you can connect any device, old or new, in any environment.
+
+---
+
+## Key Terms
+
+I/O Interface · USB Type-A · USB Type-C · USB 2.0 (480 Mbps) · USB 3.0 / SuperSpeed (5 Gbps) · USB 3.1 Gen 2 (10 Gbps) · Sleep-and-Charge Port · USB Power Delivery (USB-PD) · DisplayPort Alt-Mode · Thunderbolt 3/4 (40 Gbps) · PCIe Tunneling · RJ-45 (8P8C) · RJ-11 · 3.5mm TRS (Lime Green, Pink) · S/PDIF TOSLINK · RS-232 Serial (DB-9) · Console Port · PS/2 (Mini-DIN)

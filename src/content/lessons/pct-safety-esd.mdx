@@ -8,13 +8,98 @@ order: 1
 difficulty: Beginner
 estMinutes: 20
 tags: ["safety", "ESD", "grounding", "antistatic", "A+", "Core 1", "CompTIA"]
+sections:
+  - id: electrical-safety-psu
+    title: "Electrical Safety and High-Voltage Hazards"
+    keyPoints:
+      - "Never open a Power Supply Unit (PSU) or CRT monitor due to lethal residual capacitor charges"
+      - "Laser printer fusers reach 400°F+ and corona wires operate at thousands of volts"
+      - "Remove all metal jewelry and disconnect AC power cords before opening a chassis"
+    check:
+      - prompt: "What is the primary safety rule regarding internal repair of a computer Power Supply Unit (PSU)?"
+        options:
+          - "Always open the PSU casing while standing on a wet surface"
+          - "Never open the PSU casing under any circumstances; high-voltage capacitors hold lethal charges even when unplugged"
+          - "Only open the PSU if you are wearing rubber gloves"
+          - "Disassemble the transformer coils using a magnetic screwdriver"
+        correct: 1
+      - prompt: "Why must a technician wait several minutes before servicing the internal paper path of a laser printer after shutdown?"
+        options:
+          - "The laser beam needs time to cool to room temperature"
+          - "The fuser rollers reach temperatures over 400°F and retain severe burn hazards"
+          - "The toner powder evaporates if exposed to air immediately"
+          - "The printer requires time to format its hard drive"
+        correct: 1
+  - id: esd-mechanics-and-latent-damage
+    title: "Electrostatic Discharge (ESD) and Latent Failures"
+    keyPoints:
+      - "Static electricity is felt by humans at ~3,000V+, but sensitive semiconductors take fatal damage at <100V"
+      - "Latent damage occurs when ESD weakens a chip, causing mysterious crashes weeks or months later"
+      - "The components most vulnerable to ESD include CPUs, RAM modules, NVMe SSDs, and motherboard chipsets"
+    check:
+      - prompt: "Why is latent ESD damage considered the most dangerous type of hardware failure?"
+        options:
+          - "It immediately causes the motherboard to catch fire"
+          - "It partially weakens microscopic semiconductor traces without immediate failure, causing intermittent crashes weeks later"
+          - "It reverses the polarity of the wall power outlet"
+          - "It permanently locks the BIOS password"
+        correct: 1
+      - prompt: "At approximately what static electrical voltage threshold do humans first feel a physical spark discharge?"
+        options:
+          - "10 Volts"
+          - "100 Volts"
+          - "3,000 Volts (3 kV)"
+          - "50,000 Volts"
+        correct: 2
+  - id: grounding-and-antistatic-gear
+    title: "Grounding Techniques and Anti-Static Gear"
+    keyPoints:
+      - "Anti-static wrist straps equalize electrical potential between the technician's body and the metal chassis"
+      - "Attach the alligator clip to unpainted metal on the PC chassis"
+      - "Anti-static bags (metallic shielding bags) protect sensitive components during transport and storage"
+    check:
+      - prompt: "Where should the alligator clip of an anti-static ESD wrist strap be attached when servicing a desktop PC?"
+        options:
+          - "To an unpainted metal surface of the computer chassis"
+          - "Directly to the golden CPU socket pins"
+          - "To the plastic front bezel"
+          - "To the rubber soles of your shoes"
+        correct: 0
+      - prompt: "Why should sensitive components (like RAM and SSDs) only be placed on anti-static mats or inside shielding bags?"
+        options:
+          - "To keep them warm during installation"
+          - "To prevent static charges from equalizing across delicate surface-mount ICs"
+          - "To prevent thermal paste from drying out"
+          - "To avoid magnetic radio interference from Wi-Fi routers"
+        correct: 1
+  - id: power-drain-and-safe-handling
+    title: "Power Draining and Safe Component Handling"
+    keyPoints:
+      - "Unplug the AC power cable and press the power button for 5 seconds to drain residual motherboard capacitors"
+      - "Always handle expansion cards and RAM by their edges, never touching gold contact fingers or surface ICs"
+      - "Keep liquids and magnetized heavy tools away from unshielded electronics"
+    check:
+      - prompt: "After unplugging the AC power cord from a PC, why should you press the power button once before touching internal components?"
+        options:
+          - "To test if the fan bearings are smooth"
+          - "To discharge residual electrical energy stored in motherboard and PSU capacitors"
+          - "To reset the Windows operating system clock"
+          - "To format the primary solid-state drive"
+        correct: 1
+      - prompt: "What is the proper physical technique for handling a RAM module or PCIe expansion card?"
+        options:
+          - "Grip the gold contact edge connectors firmly with bare fingers"
+          - "Hold the component by its edges, avoiding contact with gold pins and silicon IC chips"
+          - "Carry the board by resting your fingers on the capacitors"
+          - "Stack three boards directly on top of each other while powered"
+        correct: 1
 domains:
   - domainId: aplus1.hardware
     weight: 0.5
   - domainId: aplus2.os
     weight: 0.5
 ---
- 
+
 ## The Rule Nobody Teaches First (But Should)
  
 Before you open a case, before you touch a component, before you do anything inside a computer — you need to understand two things that can end your career as a technician before it starts: electricity that can hurt you, and electricity that can hurt the hardware. They are not the same problem, and they don't have the same solution.

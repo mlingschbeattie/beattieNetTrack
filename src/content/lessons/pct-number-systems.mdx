@@ -8,6 +8,70 @@ order: 1
 difficulty: Beginner
 estMinutes: 25
 tags: ["binary", "hexadecimal", "number systems", "A+", "Core 1", "CompTIA", "IP addressing"]
+sections:
+  - id: binary-for-technicians
+    title: "Binary Fundamentals for Technicians"
+    keyPoints:
+      - "Transistors represent binary states: 1 = voltage present, 0 = ground"
+      - "The 8-bit power-of-two values are 128, 64, 32, 16, 8, 4, 2, 1"
+      - "An 8-bit byte represents numbers from 0 to 255 (e.g., IPv4 octets)"
+    check:
+      - prompt: "What is the decimal value of the binary byte 11000000 (a common subnet mask octet)?"
+        options:
+          - "128"
+          - "192"
+          - "224"
+          - "240"
+        correct: 1
+      - prompt: "How many bits are in an IPv4 address, which consists of four 8-bit decimal octets?"
+        options:
+          - "16 bits"
+          - "32 bits"
+          - "64 bits"
+          - "128 bits"
+        correct: 1
+  - id: hex-and-mac-addresses
+    title: "Hexadecimal Notation and Hardware MAC Addresses"
+    keyPoints:
+      - "Hexadecimal (Base-16) uses 0-9 and A-F (where A=10, B=11, C=12, D=13, E=14, F=15)"
+      - "One hex character represents 4 binary bits (a nibble); two hex characters represent one byte"
+      - "48-bit MAC addresses are written as 12 hex characters (e.g. 00:1A:2B:3C:4D:5E)"
+    check:
+      - prompt: "In a 48-bit MAC address like 00:1A:2B:3C:4D:5E, what do the first 6 hexadecimal characters identify?"
+        options:
+          - "The device's internal IP address"
+          - "The Organizationally Unique Identifier (OUI) assigned to the network card manufacturer"
+          - "The physical switch port number"
+          - "The Wi-Fi password"
+        correct: 1
+      - prompt: "Convert the hexadecimal byte 0xFF into decimal."
+        options:
+          - "128"
+          - "255"
+          - "256"
+          - "512"
+        correct: 1
+  - id: memory-addresses-and-bsod
+    title: "Memory Addresses, Crash Codes, and Web Hex Colors"
+    keyPoints:
+      - "The '0x' prefix denotes hexadecimal numbers in debugging logs and crash screens"
+      - "Windows BSOD stop codes (e.g. 0x0000007E) point to specific RAM memory fault locations"
+      - "HTML/CSS hex color codes use #RRGGBB format to mix Red, Green, and Blue byte levels"
+    check:
+      - prompt: "What does the prefix '0x' signify when viewing a Windows kernel crash dump code?"
+        options:
+          - "The value is encrypted with AES"
+          - "The following value is formatted in base-16 hexadecimal"
+          - "The CPU is running at 0 GHz"
+          - "The memory module was manufactured in 2000"
+        correct: 1
+      - prompt: "Which hexadecimal RGB color code produces pure white light on a digital display?"
+        options:
+          - "#000000"
+          - "#FF0000"
+          - "#00FF00"
+          - "#FFFFFF"
+        correct: 3
 domains:
   - domainId: aplus1.hardware
     weight: 0.5

@@ -1,6 +1,6 @@
 ---
-title: Binary
-description: Understand the binary number system — counting, place values, converting between binary and decimal, and why computers use binary. FC0-U71 objective 1.2.
+title: Binary — The Language of the Machine
+description: How computers represent numbers, letters, and instructions using base-2 binary logic, place values (128 to 1), and rapid mental conversion techniques.
 slug: tech-plus-1-2-1-binary
 track: tech-plus
 moduleId: tech-plus.it-concepts
@@ -11,116 +11,214 @@ source: cyber-org
 difficulty: Beginner
 estMinutes: 25
 tags: ["tech+", "FC0-U71 1.2", "binary", "number systems", "decimal", "conversion"]
+sections:
+  - id: why-binary
+    title: "Why Computers Think in Base-2"
+    keyPoints:
+      - "Computers use binary because transistors have two physical states: electrical voltage (1) or ground (0)"
+      - "A bit is a single binary digit; a nibble is 4 bits; a byte is 8 bits"
+      - "An 8-bit byte can represent 256 distinct values, ranging from 0 to 255"
+    check:
+      - prompt: "What is the primary physical reason modern computing hardware uses the binary (base-2) system?"
+        options:
+          - "Binary math is easier for humans to read than decimal"
+          - "Transistors reliably represent two discrete electrical states: ON (voltage) and OFF (no voltage)"
+          - "Binary was mandated by international internet treaties"
+          - "Base-10 circuits require liquid cooling to calculate"
+        correct: 1
+      - prompt: "How many unique numeric values can be represented by a single 8-bit byte?"
+        options:
+          - "128 (values 0 to 127)"
+          - "255 (values 1 to 255)"
+          - "256 (values 0 to 255)"
+          - "512 (values 0 to 511)"
+        correct: 2
+  - id: binary-place-values
+    title: "Binary Place Values and the Power-of-2 Table"
+    keyPoints:
+      - "Binary place values double from right to left: 1, 2, 4, 8, 16, 32, 64, 128"
+      - "To convert binary to decimal, sum the place values where a 1 is present"
+      - "The rightmost bit is the Least Significant Bit (LSB); the leftmost is the Most Significant Bit (MSB)"
+    check:
+      - prompt: "What is the decimal equivalent of the binary byte 11000000?"
+        options:
+          - "128"
+          - "192"
+          - "224"
+          - "240"
+        correct: 1
+      - prompt: "What is the decimal value of the binary byte 00001101?"
+        options:
+          - "11"
+          - "13"
+          - "15"
+          - "29"
+        correct: 1
+  - id: decimal-to-binary
+    title: "Decimal to Binary Conversion (The Technician's Subtraction Method)"
+    keyPoints:
+      - "Start with 128: if the decimal number is >= place value, write a 1 and subtract; otherwise write a 0"
+      - "Continue descending through 64, 32, 16, 8, 4, 2, 1 until the remainder is 0"
+      - "Odd decimal numbers always end in a 1 (LSB); even decimal numbers always end in a 0"
+    check:
+      - prompt: "What is the binary representation of decimal 75?"
+        options:
+          - "01001011"
+          - "01011010"
+          - "00111101"
+          - "10001011"
+        correct: 0
+      - prompt: "You see a binary number ending in a 0 (e.g., 10110110). Without converting, what can you immediately conclude?"
+        options:
+          - "The decimal number is prime"
+          - "The decimal number is odd"
+          - "The decimal number is even"
+          - "The decimal number is negative"
+        correct: 2
+  - id: encoding-characters
+    title: "Encoding Text and Media into Binary"
+    keyPoints:
+      - "ASCII maps 7-bit/8-bit binary integers to standard alphanumeric characters (e.g., 'A' = 65 = 01000001)"
+      - "Unicode (UTF-8) expands binary mapping to support global alphabets, symbols, and emoji"
+      - "Every digital file—whether an MP3, JPEG, or executable—is fundamentally a sequence of bytes"
+    check:
+      - prompt: "If uppercase letter 'A' is represented in ASCII by decimal 65, what is its 8-bit binary representation?"
+        options:
+          - "01000001"
+          - "01000010"
+          - "10000001"
+          - "00100001"
+        correct: 0
+      - prompt: "Why was Unicode developed to replace basic 7-bit ASCII?"
+        options:
+          - "ASCII was too fast for modern network switches"
+          - "7-bit ASCII only had 128 characters, which could not represent international languages and symbols"
+          - "Unicode uses analog waves instead of binary bits"
+          - "ASCII was incompatible with Windows operating systems"
+        correct: 1
 domains:
   - domainId: techplus.concepts
     weight: 1
 ---
 
-## Binary
+import Callout from '../../components/Callout.astro';
 
-Computers store and process all data as **binary** — a base-2 number system using only the digits **0** and **1**. Understanding binary is foundational for IT: it underlies IP addressing, storage calculations, permissions, and encryption.
+## Why Computers Think in Base-2
 
-### Why Binary?
+Humans count in **decimal (base-10)** because we were born with ten fingers. We use the digits 0 through 9, and when we run out of single digits, we roll over into a new column: 10, 100, 1000.
 
-Electronic circuits have two reliable states:
-- **Off** (no voltage) = **0**
-- **On** (has voltage) = **1**
+Computers do not have fingers. Inside a modern processor are billions of microscopic transistors made of silicon. A transistor is not a tiny calculator; it is an electronic switch. It can only be in one of two reliable physical states:
 
-Using just two states makes hardware simple, fast, and resistant to electrical noise. All data — text, images, video, programs — is ultimately stored as sequences of 0s and 1s.
+- **Switch Closed / Voltage Present:** Represented as **1**
+- **Switch Open / No Voltage (Ground):** Represented as **0**
 
-### The Decimal System (Base-10) Review
+Trying to make transistors detect ten distinct voltage levels (0V, 0.5V, 1.0V... 4.5V) would make circuits fragile, slow, and prone to corruption from tiny electrical fluctuations. But distinguishing between *electricity flowing* versus *electricity blocked* is virtually bulletproof. This two-state system is called **binary (base-2)**.
 
-Decimal uses **10 digits** (0–9). Each position represents a power of 10:
+```
+┌──────────────────────────────────────────────────────────┐
+│                   THE DIGITAL HIERARCHY                  │
+├────────────┬─────────────┬───────────────────────────────┤
+│ Unit       │ Size        │ What it Represents            │
+├────────────┼─────────────┼───────────────────────────────┤
+│ **Bit**    │ 1 binary bit│ Single switch (0 or 1)        │
+│ **Nibble** │ 4 bits      │ One hexadecimal digit (0–F)   │
+│ **Byte**   │ 8 bits      │ One ASCII character (0–255)   │
+└────────────┴─────────────┴───────────────────────────────┘
+```
 
-| Position | 10³ | 10² | 10¹ | 10⁰ |
-|---|---|---|---|---|
-| Place value | 1000 | 100 | 10 | 1 |
+A single **bit** (binary digit) can only tell you true/false or yes/no. But when you chain 8 bits together into a **byte**, you get 2^8 = 256 possible combinations (from `00000000` to `11111111`). That is enough combinations to represent every letter of the alphabet, every punctuation mark, every number from 0 to 255, or the red intensity of a single pixel on your monitor.
 
-Example: 4,352 = (4 × 1000) + (3 × 100) + (5 × 10) + (2 × 1)
+---
 
-### Binary Place Values (Base-2)
+## Binary Place Values and the Power-of-2 Table
 
-Each binary position represents a power of 2:
+In decimal, every column moving right to left increases by a power of 10 (10^0 = 1, 10^1 = 10, 10^2 = 100, 10^3 = 1000).
 
-| Position | 2⁷ | 2⁶ | 2⁵ | 2⁴ | 2³ | 2² | 2¹ | 2⁰ |
-|---|---|---|---|---|---|---|---|---|
-| Place value | 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 |
+In binary, every column moving right to left **doubles** as a power of 2 (2^0 = 1, 2^1 = 2, 2^2 = 4, 2^3 = 8). For an 8-bit byte, memorize this power-of-2 row cold:
 
-### Binary → Decimal Conversion
+| 2^7 | 2^6 | 2^5 | 2^4 | 2^3 | 2^2 | 2^1 | 2^0 |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **128** | **64** | **32** | **16** | **8** | **4** | **2** | **1** |
 
-Add up the place values for every position that has a **1**:
+The rightmost bit (2^0 = 1) is called the **Least Significant Bit (LSB)**. The leftmost bit (2^7 = 128) is called the **Most Significant Bit (MSB)**.
 
-**Example: 10110101**
+### Binary to Decimal: The Addition Rule
 
-| 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 |
-|---|---|---|---|---|---|---|---|
-| 1 | 0 | 1 | 1 | 0 | 1 | 0 | 1 |
+To convert any binary byte to decimal, write the byte under your power-of-2 chart and add up the values of every column that contains a **1**.
 
-Result: 128 + 32 + 16 + 4 + 1 = **181**
+#### Example 1: Convert `11000000`
+```
+128   64   32   16    8    4    2    1
+ 1     1    0    0    0    0    0    0
+--------------------------------------
+128 + 64 = 192
+```
+*(Fun fact: `192.168.1.1` in your home router begins with this exact byte!)*
 
-**Example: 11001010**
+#### Example 2: Convert `10101011`
+```
+128   64   32   16    8    4    2    1
+ 1     0    1    0    1    0    1    1
+--------------------------------------
+128 + 32 + 8 + 2 + 1 = 171
+```
 
-128 + 64 + 0 + 0 + 8 + 0 + 2 + 0 = **202**
+<Callout type="tip">
+**Quick Odd/Even Check:** Look at the LSB (the `1` column). If the last bit is `1`, the decimal number is guaranteed to be **odd** (128+64+32+16+8+4+2 are all even; only +1 makes it odd). If the last bit is `0`, the number is **even**.
+</Callout>
 
-### Decimal → Binary Conversion
+---
 
-**Divide by 2 method:** Repeatedly divide by 2, record remainders, read bottom-to-top.
+## Decimal to Binary (The Technician's Subtraction Method)
 
-Convert **45** to binary:
-- 45 ÷ 2 = 22 remainder **1**
-- 22 ÷ 2 = 11 remainder **0**
-- 11 ÷ 2 = 5 remainder **1**
-- 5 ÷ 2 = 2 remainder **1**
-- 2 ÷ 2 = 1 remainder **0**
-- 1 ÷ 2 = 0 remainder **1**
+In school you might have learned the division-by-2 method. In the server room or on a certification exam, technicians use the **Subtraction Method** because it is faster and can be calculated in your head.
 
-Reading remainders bottom-to-top: **101101**
+**The Rule:** Ask: *"Is my number greater than or equal to the column value?"*
+- If **YES**: Write down a `1`, subtract the column value, and take the remainder to the next column.
+- If **NO**: Write down a `0` and move to the next column.
 
-Verify: 32 + 8 + 4 + 1 = 45 ✓
+#### Step-by-Step: Convert Decimal `109` to Binary
 
-### Bits, Nibbles, Bytes
+1. Is 109 >= 128? **No** → **0** (Remainder: 109)
+2. Is 109 >= 64? **Yes** → **1** (109 - 64 = 45)
+3. Is 45 >= 32? **Yes** → **1** (45 - 32 = 13)
+4. Is 13 >= 16? **No** → **0** (Remainder: 13)
+5. Is 13 >= 8? **Yes** → **1** (13 - 8 = 5)
+6. Is 5 >= 4? **Yes** → **1** (5 - 4 = 1)
+7. Is 1 >= 2? **No** → **0** (Remainder: 1)
+8. Is 1 >= 1? **Yes** → **1** (1 - 1 = 0)
 
-| Term | Size | Notes |
-|---|---|---|
-| **Bit** | 1 binary digit | Smallest unit of data |
-| **Nibble** | 4 bits | Half a byte; one hex digit |
-| **Byte** | 8 bits | Fundamental unit of storage |
+**Result:** `01101101`
 
-A byte can represent 2⁸ = **256** unique values (0–255).
+Double check: 64 + 32 + 8 + 4 + 1 = 109. Perfect.
 
-### Quick Reference: Binary Counting 0–15
+---
 
-| Decimal | Binary |
-|---|---|
-| 0 | 0000 |
-| 1 | 0001 |
-| 2 | 0010 |
-| 3 | 0011 |
-| 4 | 0100 |
-| 5 | 0101 |
-| 6 | 0110 |
-| 7 | 0111 |
-| 8 | 1000 |
-| 9 | 1001 |
-| 10 | 1010 |
-| 11 | 1011 |
-| 12 | 1100 |
-| 13 | 1101 |
-| 14 | 1110 |
-| 15 | 1111 |
+## Encoding Text and Media into Binary
 
-### Binary in IT Context
+A CPU has no inherent concept of the letter "A", the color blue, or a song. Everything is assigned a numeric code:
 
-- **IPv4 addresses** each octet is an 8-bit binary number (192.168.1.1 = four bytes)
-- **Subnet masks** are binary (255.255.255.0 = 11111111.11111111.11111111.00000000)
-- **Permissions** in Linux are represented as 3-bit groups (`rwx` = 111 = 7)
-- **Colors** in RGB: each channel is 0–255 (one byte per channel)
+- **ASCII (American Standard Code for Information Interchange):** Standardized table created in 1963. It assigns every keyboard key a number from 0 to 127:
+  - Capital `'A'` = Decimal 65 → Binary `01000001`
+  - Capital `'B'` = Decimal 66 → Binary `01000010`
+  - Space bar = Decimal 32 → Binary `00100000`
+- **Unicode / UTF-8:** Standard ASCII only supported 128 characters—enough for English, but useless for Japanese, Arabic, Greek, or emoji. Unicode expands character encoding up to 4 bytes (32 bits), supporting over 149,000 characters and symbols.
+- **Images (RGB Pixels):** A color monitor displays pixels made of Red, Green, and Blue sub-pixels. In 24-bit TrueColor, each color channel gets 1 byte (values 0–255). Pure red is `255, 0, 0` (`11111111 00000000 00000000`).
 
-### Key Exam Points
+<Callout type="exam">
+For CompTIA Tech+, you are not expected to memorize the full ASCII chart, but you **must** understand that characters are encoded as numeric binary values (e.g. ASCII/Unicode) and that 1 Byte = 8 Bits = values 0 to 255.
+</Callout>
 
-- Binary is base-2: only digits 0 and 1
-- **8 bits = 1 byte** — this is the most important conversion to memorize
-- Binary place values: 128, 64, 32, 16, 8, 4, 2, 1 (right to left)
-- Convert decimal → binary using repeated division by 2
-- Convert binary → decimal by summing place values where bit = 1
-- Decimal (base-10) is our everyday number system; binary (base-2) is a computer's native language
+---
+
+## Why This Matters in the Field
+
+When you configure IPv4 subnets, diagnose bit errors on serial cables, set file permission bitmasks in Linux (`chmod 777`), or troubleshoot Wi-Fi signal-to-noise ratios, you are interacting directly with binary boundaries.
+
+A technician who doesn't understand binary is forced to memorize strings without understanding what they mean. A technician who knows binary sees `255.255.255.0` and immediately understands that the first 24 bits are locked to network routing, leaving 8 bits for host addressing. Master the powers of 2 now, and networking will make sense for the rest of your career.
+
+---
+
+## Key Terms
+
+Binary (Base-2) · Decimal (Base-10) · Transistor · Bit · Nibble · Byte · Place Value · Power of 2 · Least Significant Bit (LSB) · Most Significant Bit (MSB) · Subtraction Method · ASCII · Unicode · UTF-8 · Character Encoding

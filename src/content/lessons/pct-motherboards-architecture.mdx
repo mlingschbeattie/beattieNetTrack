@@ -8,6 +8,70 @@ order: 2
 difficulty: Beginner
 estMinutes: 30
 tags: ["motherboard", "BIOS", "UEFI", "chipset", "form factor", "A+", "Core 1", "CompTIA"]
+sections:
+  - id: form-factors-and-sizes
+    title: "Form Factors: ATX, Micro-ATX, and Mini-ITX"
+    keyPoints:
+      - "Standard ATX (12 x 9.6 inches) provides up to 7 expansion slots and 4 RAM slots"
+      - "Micro-ATX (9.6 x 9.6 inches) balances compact cases with up to 4 expansion slots"
+      - "Mini-ITX (6.7 x 6.7 inches) is designed for ultra-compact SFF builds with 1 PCIe slot"
+    check:
+      - prompt: "What are the physical dimensions of a standard ATX motherboard?"
+        options:
+          - "6.7 x 6.7 inches"
+          - "9.6 x 9.6 inches"
+          - "12.0 x 9.6 inches"
+          - "15.0 x 12.0 inches"
+        correct: 2
+      - prompt: "A client wants a compact home theater PC (HTPC) with the smallest possible desktop footprint. Which motherboard form factor should you choose?"
+        options:
+          - "Standard ATX"
+          - "E-ATX"
+          - "Mini-ITX"
+          - "Micro-ATX"
+        correct: 2
+  - id: chipsets-and-bus-lanes
+    title: "Motherboard Chipsets and PCIe Lane Allocation"
+    keyPoints:
+      - "The Chipset determines CPU generation support, overclocking capability, and available high-speed I/O lanes"
+      - "Direct CPU PCIe lanes route to the primary GPU slot (x16) and primary M.2 NVMe slot (x4)"
+      - "Chipset PCIe lanes route to secondary M.2 slots, onboard audio, SATA, and USB controllers"
+    check:
+      - prompt: "Why does the primary M.2 NVMe SSD slot connect directly to CPU PCIe lanes rather than through the motherboard chipset?"
+        options:
+          - "To minimize latency and avoid bandwidth contention with secondary USB and SATA controllers"
+          - "Because the chipset does not support electricity"
+          - "To bypass the operating system"
+          - "To prevent the drive from heating up"
+        correct: 0
+      - prompt: "What motherboard component determines whether a system supports CPU multiplier overclocking and how many USB 3.2 ports are enabled?"
+        options:
+          - "The CMOS Battery"
+          - "The Chipset"
+          - "The Front Panel Audio Header"
+          - "The VRM Heatsink"
+        correct: 1
+  - id: uefi-bios-and-cmos
+    title: "UEFI Setup, TPM 2.0, and the CMOS Battery"
+    keyPoints:
+      - "UEFI supports GUI mouse input, drives >2TB (GPT), and Secure Boot security"
+      - "TPM 2.0 (Trusted Platform Module) securely stores BitLocker encryption keys on hardware"
+      - "The CR2032 coin-cell battery maintains the real-time clock (RTC) when AC power is disconnected"
+    check:
+      - prompt: "A desktop loses its accurate system time and date every time the surge protector is turned off at night. What component needs replacement?"
+        options:
+          - "The CPU cooler"
+          - "The CR2032 CMOS coin-cell battery"
+          - "The primary SSD"
+          - "The power cord"
+        correct: 1
+      - prompt: "Which hardware cryptographic chip is required by Windows 11 to securely store BitLocker disk encryption keys?"
+        options:
+          - "TPM 2.0 (Trusted Platform Module)"
+          - "ECC RAM module"
+          - "SATA III controller"
+          - "Audio DAC"
+        correct: 0
 domains:
   - domainId: aplus1.hardware
     weight: 0.8

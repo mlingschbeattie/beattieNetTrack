@@ -8,6 +8,70 @@ order: 2
 difficulty: Beginner
 estMinutes: 20
 tags: ["network+", "encapsulation", "tcp", "udp", "N10-009 1.1", "N10-008 1.1"]
+sections:
+  - id: pdu-taxonomy-and-layers
+    title: "PDU Taxonomy Across the OSI Stack"
+    keyPoints:
+      - "Application Data → L4 Segment (TCP/UDP Ports) → L3 Packet (IP Addresses) → L2 Frame (MAC Addresses + FCS) → L1 Bits (Physical Signals)"
+      - "Encapsulation adds headers moving down the stack (outbound); Decapsulation strips headers moving up the stack (inbound)"
+      - "Switches inspect Layer 2 Frames; Routers strip L2 headers to inspect Layer 3 Packets"
+    check:
+      - prompt: "What is the correct Protocol Data Unit (PDU) name for data at Layer 4 (Transport Layer) when using TCP or UDP?"
+        options:
+          - "Frame"
+          - "Packet"
+          - "Segment (or Datagram)"
+          - "Bit"
+        correct: 2
+      - prompt: "When a router receives a frame on an Ethernet interface and forwards it to another network, what encapsulation action occurs?"
+        options:
+          - "It deletes the payload"
+          - "It strips the old Layer 2 Ethernet frame header/trailer, inspects the Layer 3 IP packet destination, and encapsulates it in a new Layer 2 frame"
+          - "It converts the IP packet into analog radio waves"
+          - "It changes the TCP source port"
+        correct: 1
+  - id: tcp-vs-udp-transport
+    title: "Layer 4 Transport: TCP Reliability vs. UDP Speed"
+    keyPoints:
+      - "TCP provides connection-oriented, reliable delivery via 3-Way Handshake (SYN, SYN-ACK, ACK), sequence numbers, and retransmissions"
+      - "UDP is connectionless and best-effort with minimal 8-byte header overhead"
+      - "Voice over IP (VoIP), live video streaming, and DNS queries use UDP; Web browsing, file transfer, and SSH use TCP"
+    check:
+      - prompt: "Why does live streaming audio and VoIP phone traffic rely on UDP rather than TCP at Layer 4?"
+        options:
+          - "UDP is encrypted by default"
+          - "Real-time voice cannot wait for TCP acknowledgments and retransmissions; dropped audio packets are discarded to prevent latency"
+          - "TCP cannot carry sound"
+          - "UDP requires expensive hardware"
+        correct: 1
+      - prompt: "What is the three-packet sequence used by TCP to establish a reliable connection before transmitting application data?"
+        options:
+          - "DORA (Discover, Offer, Request, Acknowledge)"
+          - "SYN → SYN-ACK → ACK (The Three-Way Handshake)"
+          - "GET → POST → PUT"
+          - "PING → ECHO → REPLY"
+        correct: 1
+  - id: frame-trailers-fcs-crc
+    title: "Layer 2 Trailers: Frame Check Sequence (FCS) and CRC"
+    keyPoints:
+      - "Layer 2 is unique because it adds both a header (source/dest MAC) AND a trailer (FCS)"
+      - "The Frame Check Sequence uses a Cyclic Redundancy Check (CRC) math algorithm to detect corrupted bits"
+      - "If the receiving switch's CRC calculation does not match the FCS trailer, the frame is silently dropped"
+    check:
+      - prompt: "What is the purpose of the Frame Check Sequence (FCS) located in the trailer of a Layer 2 Ethernet frame?"
+        options:
+          - "To encrypt the payload with RSA"
+          - "To provide hardware-level error detection using a Cyclic Redundancy Check (CRC) algorithm"
+          - "To route the packet across WAN boundaries"
+          - "To negotiate Wi-Fi speeds"
+        correct: 1
+      - prompt: "What action does a network switch take when a received frame fails the CRC integrity check in its FCS trailer?"
+        options:
+          - "It fixes the corrupted bits automatically"
+          - "It forwards the frame anyway"
+          - "It silently drops (discards) the corrupted frame"
+          - "It shuts down the switch port permanently"
+        correct: 2
 domains:
   - domainId: netplus.networking_concepts
     weight: 0.8

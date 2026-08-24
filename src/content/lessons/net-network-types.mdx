@@ -8,13 +8,55 @@ order: 2
 difficulty: Beginner
 estMinutes: 20
 tags: ["network+", "LAN", "WAN", "SD-WAN", "N10-009 1.2", "N10-008 1.2"]
+sections:
+  - id: lan-wan-man-can
+    title: "Geographic Classifications: LAN, WAN, MAN, CAN, and PAN"
+    keyPoints:
+      - "Local Area Network (LAN) spans a single room, floor, or building under one administrative control"
+      - "Campus Area Network (CAN) connects multiple buildings across a university, hospital, or corporate park"
+      - "Wide Area Network (WAN) spans broad geographic regions across telco service provider links"
+    check:
+      - prompt: "A university connects five academic buildings located across a 100-acre campus using private fiber conduits. What network classification describes this setup?"
+        options:
+          - "Personal Area Network (PAN)"
+          - "Campus Area Network (CAN)"
+          - "Wide Area Network (WAN)"
+          - "Storage Area Network (SAN)"
+        correct: 1
+      - prompt: "Which network type describes a Bluetooth connection between a technician's smartphone and wireless earbuds?"
+        options:
+          - "PAN (Personal Area Network)"
+          - "MAN (Metropolitan Area Network)"
+          - "WAN (Wide Area Network)"
+          - "CAN (Campus Area Network)"
+        correct: 0
+  - id: wlan-and-san
+    title: "Wireless LAN (WLAN) and Storage Area Network (SAN)"
+    keyPoints:
+      - "WLAN uses 802.11 Wi-Fi radio frequencies to deliver mobility without physical cabling"
+      - "SAN uses dedicated high-speed optical Fibre Channel or iSCSI to deliver block storage to hypervisors"
+      - "Software-Defined WAN (SD-WAN) uses software controllers to dynamically route traffic over multiple broadband links"
+    check:
+      - prompt: "What type of specialized network is dedicated entirely to block-level data transfer between server hypervisors and disk arrays?"
+        options:
+          - "WLAN"
+          - "Storage Area Network (SAN)"
+          - "PAN"
+          - "CAN"
+        correct: 1
+      - prompt: "What is the primary advantage of deploying Software-Defined WAN (SD-WAN) for branch offices?"
+        options:
+          - "It eliminates the need for routers"
+          - "It dynamically routes application traffic across multiple internet links (fiber, broadband, 5G) based on real-time quality metrics"
+          - "It converts analog phones to digital"
+          - "It eliminates Wi-Fi passwords"
+        correct: 1
 domains:
   - domainId: netplus.networking_concepts
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
 ---
-
 ## Every Day You've Used Five Different Networks
 
 Think about what happened between waking up and getting to school today. Your phone talked to Bluetooth earbuds on your nightstand — that's a network. It connected to your home Wi-Fi to load notifications — different network. You got in a car that synced to your phone over Bluetooth again while the car's GPS pulled map data over a cellular WAN. You walked into the building and your phone jumped to the school's WLAN. You sat down at a workstation connected to the school's wired LAN, which reaches the internet through the district's WAN. Five different network types, all before first period. The networking industry sorts these by geographic scope, transport technology, and architecture — and the exam expects you to know each one cold.

@@ -1,100 +1,232 @@
 ---
-title: Web Browsers
-description: Understand how web browsers work, browser components, privacy settings, extensions, and cross-browser compatibility. FC0-U71 objective 3.4.
+title: Web Browsers — Engines, Caching, Cookies, and Security Architecture
+description: Demystify the most-used application in modern computing. Master rendering engines (Blink, Gecko, WebKit), HTTP vs HTTPS handshakes, cache vs cookies, private browsing myths, extensions, and F12 developer tools.
 slug: tech-plus-3-4-1-web-browsers
 track: tech-plus
 moduleId: tech-plus.applications
 order: 8
+objective: "FC0-U71 3.4"
+xp: 15
+source: cyber-org
 difficulty: Beginner
 estMinutes: 20
-tags: ["tech+", "FC0-U71 3.4", "browsers", "Chrome", "Edge", "Firefox", "privacy", "extensions"]
+tags: ["tech+", "FC0-U71 3.4", "browsers", "Chrome", "Edge", "Firefox", "privacy", "extensions", "cookies", "cache", "HTTPS"]
+sections:
+  - id: rendering-engines-and-http-flow
+    title: "Browser Rendering Engines and the HTTP/HTTPS Request Lifecycle"
+    keyPoints:
+      - "Major browser engines: Blink/Chromium (Chrome, Edge, Brave, Opera), Gecko (Firefox), WebKit (Safari)"
+      - "Web request lifecycle: URL Entry → DNS Resolution → TCP 3-Way Handshake → TLS Cryptographic Handshake (HTTPS) → HTTP GET → HTML/CSS/JS Rendering"
+      - "HTTPS (Port 443) encrypts session traffic with TLS; HTTP (Port 80) transmits passwords and data in unencrypted plaintext"
+    check:
+      - prompt: "Which rendering engine powers both Google Chrome and Microsoft Edge on modern desktops?"
+        options:
+          - "Gecko"
+          - "Blink (Chromium open-source engine)"
+          - "WebKit"
+          - "Trident"
+        correct: 1
+      - prompt: "What visual indicator in the browser address bar confirms that the current web session is encrypted with a valid TLS certificate over HTTPS?"
+        options:
+          - "A spinning beach ball"
+          - "A closed padlock icon"
+          - "A red question mark"
+          - "A green magnifying glass"
+        correct: 1
+  - id: cache-vs-cookies
+    title: "Browser Cache vs. Cookies (Temporary Storage vs. State)"
+    keyPoints:
+      - "Browser Cache stores static web assets (images, CSS styles, JavaScript files) locally on the SSD to accelerate page load times"
+      - "Cookies are small text files stored by websites to remember login session tokens, user preferences, and shopping cart items"
+      - "First-Party cookies are set by the active website; Third-Party cookies are set by advertising trackers to follow users across different domains"
+    check:
+      - prompt: "A web developer updates a company logo, but an employee's computer still shows the old logo until they press Ctrl+Shift+R (Hard Refresh). What browser feature caused the old logo to display?"
+        options:
+          - "The DNS Server"
+          - "The Browser Cache (storing local copies of static images to speed up loading)"
+          - "The CMOS battery"
+          - "The Graphics Driver"
+        correct: 1
+      - prompt: "What type of browser cookie is placed by external marketing networks to track a user's browsing history across multiple unrelated websites?"
+        options:
+          - "A First-Party Cookie"
+          - "A Third-Party Tracking Cookie"
+          - "A Session Cookie"
+          - "A Kernel Cookie"
+        correct: 1
+  - id: private-browsing-myths-and-extensions
+    title: "Private Browsing Myths and Extension Security Risks"
+    keyPoints:
+      - "Private / Incognito mode only prevents local history, form data, and cookies from being saved to the client SSD after closing the window"
+      - "Private mode does NOT hide internet traffic from corporate firewalls, ISPs, DNS servers, or visited web servers"
+      - "Browser extensions run with high privileges (reading page content, modifying DOM, injecting scripts) and represent a significant malware vector"
+    check:
+      - prompt: "An employee believes that browsing the web in Chrome 'Incognito Mode' hides their online activity from the corporate network firewall and IT department. Why is this belief incorrect?"
+        options:
+          - "Incognito mode only disables audio"
+          - "Private / Incognito mode only deletes local cookies and history upon closing; network packets still travel across the corporate firewall and DNS servers unhidden"
+          - "Incognito mode only works on Sundays"
+          - "Incognito mode requires a paid subscription"
+        correct: 1
+      - prompt: "Why should enterprise IT administrators strictly audit and restrict browser extensions installed on employee workstations?"
+        options:
+          - "Extensions can have permissions to read all web page data, capture typed passwords, and inject malicious adware scripts"
+          - "Extensions make mice stop working"
+          - "Extensions only run on Linux"
+          - "Extensions consume 100% of hard drive space"
+        correct: 0
+  - id: developer-tools-triage
+    title: "Browser Developer Tools (F12) for Troubleshooting"
+    keyPoints:
+      - "Pressing F12 opens Developer Tools across Chrome, Edge, Firefox, and Safari"
+      - "Network Tab captures every live HTTP request, status code (200 OK, 404 Not Found, 500 Server Error), and download latency"
+      - "Console Tab displays live JavaScript execution errors, failed API endpoints, and security policy blocks"
+    check:
+      - prompt: "A technician needs to inspect why a company web application fails to submit an order form. Which browser developer tool tab (F12) captures live HTTP status codes and failed network requests?"
+        options:
+          - "The Elements / Inspector Tab"
+          - "The Network Tab"
+          - "The Font Tab"
+          - "The Bookmark Manager"
+        correct: 1
+      - prompt: "What standard HTTP response code indicates that a requested web resource or page cannot be found on the remote web server?"
+        options:
+          - "200 OK"
+          - "301 Moved Permanently"
+          - "404 Not Found"
+          - "500 Internal Server Error"
+        correct: 2
 domains:
   - domainId: techplus.applications
     weight: 1
 ---
 
-## Web Browsers
+import Callout from '../../components/Callout.astro';
 
-The web browser is the most-used application on most computing devices. It is both the gateway to internet resources and a frequent target for attacks. Understanding how browsers work and how to configure them is essential for technicians and security-aware users.
+## The Universal Application Gateway
 
-### Major Browsers
+The web browser is no longer just a tool for reading static text articles—it has become the primary application platform of the modern world.
 
-| Browser | Developer | Engine | Notes |
-|---|---|---|---|
-| **Google Chrome** | Google | Blink / V8 | Highest market share; heavy RAM usage |
-| **Microsoft Edge** | Microsoft | Blink (Chromium-based) | Windows default since 2020; built-in PDF reader |
-| **Mozilla Firefox** | Mozilla (non-profit) | Gecko | Open source; strong privacy focus |
-| **Safari** | Apple | WebKit | macOS/iOS default; energy-efficient on Apple hardware |
-| **Opera** | Opera Software | Blink (Chromium-based) | Built-in VPN, ad blocker |
+Word processing, financial accounting, software development, medical records, cloud administration, and email all live inside browser tabs. In many enterprises, a Chromebook running Google Chrome is the only client hardware employees ever touch.
 
-### How a Browser Works
+Understanding how browsers parse web code, manage local caching, store tracking cookies, and enforce TLS encryption is essential for troubleshooting web applications and protecting corporate networks.
 
-1. User enters a URL or clicks a link
-2. Browser performs **DNS resolution** — domain → IP address
-3. Browser opens a **TCP connection** (port 80 for HTTP, port 443 for HTTPS)
-4. **TLS handshake** for HTTPS — verifies certificate, establishes encrypted session
-5. Browser sends an **HTTP GET request**
-6. Server responds with HTML, CSS, JavaScript files
-7. Browser **renders** the page — parses HTML, applies CSS, executes JavaScript
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        THE WEB REQUEST LIFECYCLE                       │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│   1. User types: `https://portal.company.com`                          │
+│   2. DNS Resolution: Converts domain to IP (`198.51.100.42`)           │
+│   3. TCP Handshake: SYN → SYN-ACK → ACK (Port 443) │
+│   4. TLS Handshake: Validates digital certificate & negotiates cipher  │
+│   5. HTTP GET: Browser requests HTML, CSS, JavaScript, and images      │
+│   6. Rendering Engine: Parses DOM tree, applies styles, runs JS        │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
 
-### Browser Components
+---
 
-- **Address bar (Omnibox)** — URL entry + search; shows security padlock for HTTPS
-- **Tabs** — each tab is generally an isolated process (Chrome's multi-process model)
-- **Bookmarks / Favorites** — saved URLs for quick access
-- **History** — record of visited pages (stored locally unless in private mode)
-- **Cookies** — small data files websites store on your device (sessions, preferences, tracking)
-- **Cache** — locally stored copies of web resources (speeds up repeat visits)
-- **Extensions / Add-ons** — third-party plugins that extend browser functionality
+## 1. Browser Engines: Under the Hood
 
-### Privacy and Security Settings
+The **Rendering Engine** is the core software component that takes raw HTML markup, CSS stylesheets, and JavaScript code and paints interactive pixels onto your screen:
 
-**Cookies:**
-- **First-party cookies** — set by the site you're visiting; needed for logins and preferences
-- **Third-party cookies** — set by advertisers on the page; used for cross-site tracking
-- Most browsers now block or phase out third-party cookies
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        MAJOR BROWSER ENGINES                           │
+├────────────────────┬────────────────────┬──────────────────────────────┤
+│ Rendering Engine   │ JavaScript Engine  │ Browsers Utilizing It        │
+├────────────────────┼────────────────────┼──────────────────────────────┤
+│ **Blink**          │ V8                 │ Google Chrome, MS Edge,      │
+│ (Chromium Project) │                    │ Brave, Opera, Vivaldi        │
+├────────────────────┼────────────────────┼──────────────────────────────┤
+│ **Gecko**          │ SpiderMonkey       │ Mozilla Firefox, Tor Browser │
+├────────────────────┼────────────────────┼──────────────────────────────┤
+│ **WebKit**         │ JavaScriptCore     │ Apple Safari (macOS / iOS)   │
+└────────────────────┴────────────────────┴──────────────────────────────┘
+```
 
-**Private / Incognito Mode:**
-- Does NOT save local history, cookies, or form data after the session ends
-- Does NOT hide your activity from your ISP, employer network, or the websites you visit
-- Useful for: logging into multiple accounts, shared computers, gift purchases
+---
 
-**Browser Extensions — Security Risk:**
-- Extensions have broad access to page content and browsing data
-- Audit extensions regularly; remove any you don't recognize or use
-- Only install from official browser stores; verify publisher
+## 2. Browser Cache vs. Cookies: Know the Difference
 
-**Do Not Track (DNT):**
-- A header the browser sends asking sites not to track you
-- Compliance is voluntary — most sites ignore it
+Users frequently confuse cache and cookies. They serve completely different purposes:
 
-### Browser Developer Tools (F12)
+### The Browser Cache (Speed & Bandwidth)
+- **What it is:** A temporary local folder on your SSD where the browser saves static assets (high-resolution `.png` logos, `.css` styling sheets, `.js` script bundles, web fonts).
+- **How it works:** When you visit a website, the browser checks if it already has the logo in its local cache. If it does, it loads the image from your local SSD in 2 milliseconds rather than downloading it over the internet.
+- **The Issue:** When web developers update a site, users often see broken or mismatched layouts because their browser is still loading old cached files. **The Fix:** Perform a *Hard Refresh* (`Ctrl + F5` or `Ctrl + Shift + R`) to force a fresh download.
 
-Built-in developer tools provide:
-- **Inspector** — view and edit HTML/CSS live
-- **Console** — run JavaScript; view errors
-- **Network tab** — see every HTTP request/response; useful for troubleshooting
-- **Storage** — view cookies, localStorage, sessionStorage
+### Cookies (State, Sessions, and Identity)
+- **What they are:** Tiny text files (under 4 KB) stored by websites to maintain state across page reloads.
+- **First-Party Cookies:** Created by the site you are visiting (e.g. `amazon.com`). Used to keep you logged in and remember your shopping cart items.
+- **Third-Party Cookies:** Created by external advertising networks embedded on the page (e.g. `doubleclick.net`). Used to track your browsing habits across hundreds of different websites to serve targeted advertisements.
 
-### Troubleshooting Common Browser Issues
+---
 
-| Problem | Solution |
-|---|---|
-| Page not loading | Check network; clear cache (Ctrl+Shift+Delete) |
-| SSL certificate error | Do not proceed; check date/time settings; report to admin |
-| Slow performance | Disable extensions; clear cache; check RAM usage |
-| Saved passwords lost | Check sync settings; check if private mode was used |
-| Pop-ups / redirects | Scan for adware; check extension list; reset browser settings |
+## 3. The Private Browsing Myth (Incognito Mode)
 
-### OWASP Connection
+When you open an **Incognito / Private Window** in Chrome, Edge, or Firefox, the browser does exactly two things when you close the window:
+1. It deletes the local browsing history for that session.
+2. It deletes any cookies and cached files downloaded during that session.
 
-**Injection / XSS** (OWASP #3) — malicious JavaScript injected into web pages executes in the victim's browser. **Cryptographic Failures** (OWASP #2) — accessing sites over HTTP instead of HTTPS exposes transmitted data to interception.
+```
+┌────────────────────────────────────────────────────────┐
+│              WHAT INCOGNITO MODE DOES NOT DO           │
+│                                                        │
+│   ❌ It does NOT make you anonymous on the internet.   │
+│   ❌ It does NOT hide traffic from your ISP.           │
+│   ❌ It does NOT hide traffic from corporate firewalls.│
+│   ❌ It does NOT bypass DNS query logging.             │
+│                                                        │
+│   ✔ It ONLY prevents local history from being saved.   │
+└────────────────────────────────────────────────────────┘
+```
 
-### Key Exam Points
+<Callout type="warn">
+**The Private Browsing Reality:** Private mode does **not** hide your web browsing from your employer's network firewall, your internet service provider, or the websites you visit. Your IP address and network packets are completely visible.
+</Callout>
 
-- Chrome and Edge both use the **Blink** rendering engine (Chromium-based)
-- Firefox uses **Gecko**; Safari uses **WebKit**
-- **Private mode** hides local history — it does NOT anonymize network-level traffic
-- Third-party cookies enable cross-site tracking; most browsers are phasing them out
-- Browser extensions have broad access — keep only what you need and trust
-- **F12** opens developer tools; Network tab shows all HTTP requests
+---
+
+## 4. Browser Extensions: The Stealth Attack Vector
+
+Browser extensions (ad blockers, password managers, grammar checkers) extend browser functionality. However, they run with exceptionally high privileges:
+- Extensions frequently request permissions to: *"Read and change all your data on all websites you visit."*
+- If an extension developer sells their extension to a malicious actor, an automated update can convert that trusted tool into a keylogger that captures credit card numbers and passwords as you type them into web forms.
+
+---
+
+## 5. Developer Tools (F12): The Technician's Diagnostic Window
+
+Pressing **F12** in any modern web browser opens the built-in Developer Tools:
+- **Network Tab:** Displays every individual HTTP request, asset size, and load time. If a web page is hanging, the Network Tab pinpoints the exact image or API call causing the delay.
+- **Console Tab:** Shows JavaScript runtime errors, security warnings, and cross-origin (CORS) blocks.
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                       COMMON HTTP STATUS CODES                         │
+├───────────────────┬────────────────────────────────────────────────────┤
+│ **200 OK**        │ Request succeeded; resource delivered.             │
+│ **301 Moved**     │ Permanent redirect to a new URL.                   │
+│ **403 Forbidden** │ Server understood request, but refuses access.     │
+│ **404 Not Found** │ Requested file or page does not exist on server.   │
+│ **500 Server Err**│ Backend server crashed or encountered a bug.       │
+│ **503 Unavail**   │ Server overloaded or down for maintenance.         │
+└───────────────────┴────────────────────────────────────────────────────┘
+```
+
+---
+
+## Why This Matters in the Field
+
+When a remote worker calls reporting: *"I can't log into the company payroll portal,"* an untrained technician tells them to restart their computer.
+
+A trained technician asks them to open an Incognito window (to rule out corrupt session cookies), do a Hard Refresh (`Ctrl + Shift + R`), or press **F12** to check for a `403 Forbidden` or `500 Server Error`.
+
+---
+
+## Key Terms
+
+Web Browser · Rendering Engine · Blink · Chromium · Gecko · WebKit · JavaScript Engine (V8) · DNS Resolution · TLS Handshake · HTTPS (Port 443) · Browser Cache · Hard Refresh (`Ctrl+Shift+R`) · Cookie · First-Party Cookie · Third-Party Tracking Cookie · Incognito / Private Browsing · Browser Extension · Developer Tools (F12) · Network Tab · HTTP Status Codes (200, 404, 500)

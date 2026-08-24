@@ -8,13 +8,56 @@ order: 1
 difficulty: Beginner
 estMinutes: 20
 tags: ["network+", "cabling", "copper", "N10-009 1.3", "N10-008 1.3"]
+sections:
+  - id: cable-categories-and-speeds
+    title: "Twisted-Pair Cable Categories and Distance Limits"
+    keyPoints:
+      - "Cat5e: 1 Gbps @ 100 meters (100 MHz bandwidth)"
+      - "Cat6: 10 Gbps up to 55 meters (1 Gbps @ 100m, 250 MHz)"
+      - "Cat6a: 10 Gbps @ full 100 meters (500 MHz with alien crosstalk shielding)"
+      - "The maximum horizontal run distance for all standard twisted-pair copper Ethernet is 100 meters (328 feet)"
+    check:
+      - prompt: "What is the maximum certified physical transmission distance for a Cat6 Ethernet cable running at 1 Gigabit speed?"
+        options:
+          - "10 meters"
+          - "55 meters"
+          - "100 meters (328 feet)"
+          - "500 meters"
+        correct: 2
+      - prompt: "An enterprise installs structured cabling in a new datacenter and requires guaranteed 10 Gbps Ethernet throughput over 90-meter runs. Which cable category is required?"
+        options:
+          - "Cat3"
+          - "Cat5e"
+          - "Cat6 (limited to 55m @ 10Gbps)"
+          - "Cat6a (supports 10Gbps up to 100m)"
+        correct: 3
+  - id: utp-stp-and-plenum
+    title: "Shielding (UTP vs STP) and Fire Safety (Plenum vs PVC)"
+    keyPoints:
+      - "Unshielded Twisted Pair (UTP) is standard; Shielded Twisted Pair (STP) prevents Electromagnetic Interference (EMI) in industrial environments"
+      - "Plenum-rated cable (CMP) uses fire-retardant Teflon jacket that produces low smoke and non-toxic fumes in HVAC air spaces"
+      - "Non-plenum (PVC / CMR) produces thick toxic hydrogen cyanide gas when burning—strictly illegal in drop-ceiling air plenums"
+    check:
+      - prompt: "Why do municipal building codes mandate Plenum-rated (CMP) network cabling inside false drop-ceiling spaces that circulate return air for HVAC systems?"
+        options:
+          - "Plenum cable is faster than PVC"
+          - "Plenum jacketing is fire-resistant and emits low smoke without lethal toxic gases when exposed to open flame"
+          - "Plenum cable is waterproof"
+          - "Plenum cable eliminates Wi-Fi dead zones"
+        correct: 1
+      - prompt: "A network technician runs an Ethernet drop directly adjacent to high-voltage industrial elevator motors and fluorescent ballasts. Which cable construction should be selected to prevent packet corruption from EMI?"
+        options:
+          - "Standard UTP (Unshielded Twisted Pair)"
+          - "STP (Shielded Twisted Pair) with grounded metal foil shielding"
+          - "Cat3 telephone wire"
+          - "Flat ribbon cable"
+        correct: 1
 domains:
   - domainId: netplus.networking_concepts
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
 ---
-
 ## The Cable Run That Teaches You Everything
 
 A teacher wants a new workstation at the back of her classroom. You trace the drop from the wall jack to the patch panel in the wiring closet — and there's no cable. Someone labeled the panel port, but the run was never pulled. So you grab a box of Cat6 from the supply room, route it through the ceiling, terminate both ends with RJ-45 jacks, and patch it into the switch. The workstation comes up at 1 Gbps, full duplex. Then a week later, the night custodian bumps the ceiling tile and kinks the cable. Link drops to 100 Mbps. Then someone across the hall is getting intermittent disconnects and you discover the cable running parallel to a fluorescent light ballast for fifteen feet. Three different problems, three different copper cable lessons, all in the same hallway. Copper cabling is the most hands-on, most testable, most "you will actually do this" topic in the entire Network+ curriculum.
