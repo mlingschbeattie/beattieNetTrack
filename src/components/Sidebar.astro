@@ -64,10 +64,11 @@ const trackSections = currentTrack?.data.sections?.map((section) => ({
   title: section.title,
   lessons: section.lessons
     .map((entry) => normalizeItem(entry as string | { type: 'lesson' | 'lab' | 'quiz'; slug: string }))
-    .filter((entry) => entry.type === 'lesson')
     .map((entry) => ({
       slug: entry.slug,
-      title: lessonMap[entry.slug]?.data?.title ?? entry.slug,
+      title: displayTitle(entry),
+      type: entry.type,
+      href: hrefForItem(entry),
     })),
 }));
 

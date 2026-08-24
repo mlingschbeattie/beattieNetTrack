@@ -2009,19 +2009,21 @@ html.progress-ready .top-nav__status-react {
   position: relative;
 }
 
+.sidebar__progress-slot .sidebar__skeleton {
+  display: block;
+}
+
 .sidebar__progress-slot .sidebar__react {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  pointer-events: none;
+  display: none;
 }
 
 html.sidebar-ready .sidebar__progress-slot .sidebar__skeleton {
-  opacity: 0;
-  pointer-events: none;
+  display: none;
 }
 
 html.sidebar-ready .sidebar__progress-slot .sidebar__react {
+  display: block;
+  position: static;
   opacity: 1;
   pointer-events: auto;
 }
