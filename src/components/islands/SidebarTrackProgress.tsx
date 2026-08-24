@@ -47,13 +47,20 @@ export default function SidebarTrackProgress({ sections, activeLesson }: Sidebar
 
       const map: Record<string, boolean> = {};
       for (const [slug, entry] of Object.entries(state.lessons ?? {})) {
-        if (entry.completed) map[slug] = true;
+        if (entry.completed) {
+          const sectionChecks = state.lessonSections?.[slug];
+          if (sectionChecks && Object.keys(sectionChecks).length > 0) {
+            map[slug] = Object.values(sectionChecks).every(Boolean);
+          } else {
+            map[slug] = true;
+          }
+        }
       }
       for (const [slug, entry] of Object.entries(state.labs ?? {})) {
         if (entry.completed) map[slug] = true;
       }
       for (const [slug, entry] of Object.entries(state.quizzes ?? {})) {
-        if ((entry.bestScore ?? 0) >= 80) map[slug] = true;
+        if ((entry.bestScore ?? 0) >= 70) map[slug] = true;
       }
       setCompletedMap(map);
     };
@@ -68,6 +75,25 @@ export default function SidebarTrackProgress({ sections, activeLesson }: Sidebar
     return () => clearTimeout(t);
   }, [progress.percent]);
 
+  // Section gating: Section 0 is always unlocked. Section i (i >= 1) unlocks when section i-1 has >= 80% completion.
+  const sectionStats = sections.map((sec) => {
+    const items = sec.lessons || [];
+    const total = items.length;
+    const completed = items.filter((item) => completedMap[item.slug]).length;
+    const isPassing = total === 0 || (completed / total) >= 0.8;
+    return { total, completed, isPassing };
+  });
+
+  const isUnlockedList: boolean[] = [];
+  for (let i = 0; i < sections.length; i++) {
+    if (i === 0) {
+      isUnlockedList.push(true);
+    } else {
+      const prev = sectionStats[i - 1];
+      isUnlockedList.push(Boolean(prev && prev.isPassing));
+    }
+  }
+
   return (
     <div className="sidebar-progress">
       <div className="sidebar-progress__row">
@@ -81,38 +107,62 @@ export default function SidebarTrackProgress({ sections, activeLesson }: Sidebar
       <div className="progress-bar-track" aria-hidden="true">
         <div className="progress-bar-fill" style={{ width: `${displayPct}%` }}></div>
       </div>
-      {sections.map((section) => (
-        <div className="sidebar__group" key={section.title}>
-          <div className="sidebar__group-title">{section.title}</div>
-          {(!section.lessons || section.lessons.length === 0) ? (
-            <div className="sidebar__empty-group" style={{ padding: '4px 8px', fontSize: '12px', opacity: 0.5 }}>
-              No activities in section
+      {sections.map((section, index) => {
+        const isUnlocked = isUnlockedList[index];
+
+        return (
+          <div className={`sidebar__group ${!isUnlocked ? 'sidebar__group--locked' : ''}`} key={section.title}>
+            <div className="sidebar__group-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span>{section.title}</span>
+              {!isUnlocked && <span title="Section locked" aria-hidden="true">🔒</span>}
             </div>
-          ) : (
-            section.lessons.map((item) => {
-              const isActive = activeLesson === item.slug;
-              const isCompleted = Boolean(completedMap[item.slug]);
-              const href = item.href || (item.type === 'lab' ? `/labs/${item.slug}` : item.type === 'quiz' ? `/quizzes/${item.slug}` : `/lessons/${item.slug}`);
-              return (
-                <a
-                  key={item.slug}
-                  className={`sidebar__lesson-link ${isActive ? 'sidebar__lesson-link--active' : ''} ${
-                    isCompleted ? 'sidebar__lesson-link--completed' : ''
-                  }`}
-                  href={href}
-                >
-                  <span className="sidebar__lesson-title">{item.title}</span>
-                  {isCompleted && (
-                    <span className="sidebar__lesson-check" aria-hidden="true">
-                      ✓
+            {(!section.lessons || section.lessons.length === 0) ? (
+              <div className="sidebar__empty-group" style={{ padding: '4px 8px', fontSize: '12px', opacity: 0.5 }}>
+                No activities in section
+              </div>
+            ) : (
+              section.lessons.map((item) => {
+                const isActive = activeLesson === item.slug;
+                const isCompleted = Boolean(completedMap[item.slug]);
+                const href = item.href || (item.type === 'lab' ? `/labs/${item.slug}` : item.type === 'quiz' ? `/quizzes/${item.slug}` : `/lessons/${item.slug}`);
+
+                if (!isUnlocked) {
+                  return (
+                    <span
+                      key={item.slug}
+                      className="sidebar__lesson-link sidebar__lesson-link--locked"
+                      aria-disabled="true"
+                      role="link"
+                      tabIndex={0}
+                      aria-label={`Locked: ${item.title} — Complete previous section to unlock`}
+                    >
+                      <span className="sidebar__lesson-title">{item.title}</span>
+                      <span style={{ fontSize: '11px', opacity: 0.7 }} aria-hidden="true">🔒</span>
                     </span>
-                  )}
-                </a>
-              );
-            })
-          )}
-        </div>
-      ))}
+                  );
+                }
+
+                return (
+                  <a
+                    key={item.slug}
+                    className={`sidebar__lesson-link ${isActive ? 'sidebar__lesson-link--active' : ''} ${
+                      isCompleted ? 'sidebar__lesson-link--completed' : ''
+                    }`}
+                    href={href}
+                  >
+                    <span className="sidebar__lesson-title">{item.title}</span>
+                    {isCompleted && (
+                      <span className="sidebar__lesson-check" aria-hidden="true">
+                        ✓
+                      </span>
+                    )}
+                  </a>
+                );
+              })
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

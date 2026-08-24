@@ -2461,6 +2461,49 @@ html.sidebar-ready .sidebar__progress-slot .sidebar__react {
   filter: saturate(0.8);
 }
 
+.track-section--locked,
+.sidebar__group--locked {
+  opacity: 0.55;
+  filter: grayscale(0.25);
+  transition: opacity var(--transition-normal);
+}
+
+.track-section--locked .card {
+  border-color: rgba(148, 163, 184, 0.2);
+}
+
+html[data-theme='light'] .track-section--locked .card {
+  background: rgba(241, 245, 249, 0.65);
+  border-color: rgba(148, 163, 184, 0.25);
+}
+
+.track-section__lock-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  background: rgba(148, 163, 184, 0.12);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: var(--radius-full);
+  padding: 2px 8px;
+}
+
+html[data-theme='light'] .track-section__lock-badge {
+  background: rgba(241, 245, 249, 0.9);
+  color: #64748b;
+  border-color: rgba(148, 163, 184, 0.35);
+}
+
+.sidebar__lesson-link--locked {
+  opacity: 0.52;
+  cursor: not-allowed;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .workspace-steps {
   margin-top: var(--space-5);
   padding: var(--space-4);

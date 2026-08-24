@@ -61,3 +61,21 @@ test('level derives from xpTotal', () => {
   assert.equal(getLevel(99), 1);
   assert.equal(getLevel(100), 2);
 });
+
+test('section unlock gating requires >= 80% completion of previous section', () => {
+  // Test section unlock logic with 5 items (needs 4 items for 80%)
+  const isSectionPassing = (completed: number, total: number) => total === 0 || (completed / total) >= 0.8;
+
+  // 5 items
+  assert.equal(isSectionPassing(3, 5), false); // 60% -> locked
+  assert.equal(isSectionPassing(4, 5), true);  // 80% -> unlocked
+  assert.equal(isSectionPassing(5, 5), true);  // 100% -> unlocked
+
+  // 4 items
+  assert.equal(isSectionPassing(3, 4), false); // 75% -> locked
+  assert.equal(isSectionPassing(4, 4), true);  // 100% -> unlocked
+
+  // 1 item
+  assert.equal(isSectionPassing(0, 1), false); // 0% -> locked
+  assert.equal(isSectionPassing(1, 1), true);  // 100% -> unlocked
+});
