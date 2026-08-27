@@ -1,9 +1,12 @@
 ---
 
 
+import type { AuthUser } from '../lib/auth';
+
 interface Props {
   activePath?: string;
   activeTrackLabel?: string;
+  user?: AuthUser | null;
 }
 
 type NavItem = {
@@ -11,7 +14,7 @@ type NavItem = {
   href: string;
 };
 
-const { activePath = '/', activeTrackLabel = 'None' } = Astro.props as Props;
+const { activePath = '/', activeTrackLabel = 'None', user = null } = Astro.props as Props;
 
 const navItems: NavItem[] = [
   { label: 'Home', href: '/' },
@@ -55,6 +58,17 @@ const isActive = (href: string) => {
     </ul>
 
     <div class="top-nav__actions">
+      {user && (
+        <div class="nav-user-pill" title={`Logged in as ${user.name} (${user.username})`}>
+          <span class="nav-user-avatar" aria-hidden="true">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </span>
+          <span class="nav-user-name">{user.name}</span>
+        </div>
+      )}
       <div class="nav-session-pill" title="Your currently active certification track">
         <span class="nav-session-dot"></span>
         Active Track: {activeTrackLabel}

@@ -409,6 +409,35 @@ img {
   justify-self: end;
 }
 
+/* User identity pill */
+.nav-user-pill {
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--beattie-border);
+  background: var(--beattie-surface);
+  color: var(--beattie-text);
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.nav-user-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--beattie-primary);
+}
+
+.nav-user-name {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* Live session pill */
 .nav-session-pill {
   padding: 5px 12px;

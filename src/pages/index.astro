@@ -63,6 +63,9 @@ const TRACK_ICONS: Record<string, string> = {
 };
 const DEFAULT_ICON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/></svg>';
 
+import { getAuthUser } from '../lib/auth';
+
+const user = getAuthUser(Astro.request.headers);
 const isAvailable = (slug: string) => (activityMap[slug]?.length ?? 0) > 0;
 ---
 
@@ -70,11 +73,12 @@ const isAvailable = (slug: string) => (activityMap[slug]?.length ?? 0) > 0;
   title="Beattie Tech • Tracks"
   tracks={visibleTracks}
   breadcrumbs={[{ label: 'Home' }]}
+  user={user}
 >
   <section class="hero">
-    <h1 class="hero__title">Learning Dashboard</h1>
+    <h1 class="hero__title">{user ? `Welcome back, ${user.name}` : 'Learning Dashboard'}</h1>
     <p class="hero__subtitle">Your structured pathway from foundational IT to advanced cyber operations.</p>
-    <div class="hero__stats" style="margin-top: var(--space-6);">
+    <div class="hero__stats" style="margin-top: var(--space-4);">
       <ProgressStatus client:only="react" />
     </div>
   </section>

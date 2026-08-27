@@ -7,6 +7,7 @@ import RightPanel from '../components/islands/RightPanel.tsx';
 import SearchOverlay from '../components/SearchOverlay.astro';
 import { getModuleProgressData } from '../lib/content';
 import { getSearchIndexData } from '../lib/searchIndex';
+import { getAuthUser, type AuthUser } from '../lib/auth';
 
 const {
   title,
@@ -20,11 +21,13 @@ const {
   rightPanelHints = [],
   rightPanelChecklist = [],
   activityNavigation,
+  user: userProp,
 } = Astro.props;
 // Allow a page to opt-in to legacy skin by passing `legacySkin` prop (boolean).
 // This is intentionally small-scope and should only be used for visual testing.
 const { legacySkin = false } = Astro.props;
 const activePath = Astro.url.pathname;
+const user = userProp !== undefined ? userProp : getAuthUser(Astro.request.headers);
 const searchIndexData = await getSearchIndexData();
 const searchIndexJson = JSON.stringify(searchIndexData);
 let moduleProgress = null;
@@ -40,7 +43,7 @@ if (activityNavigation && (activityNavigation as any).trackSlug && (activityNavi
 <BaseLayout title={title} legacySkin={legacySkin}>
   <a class="skip-link" href="#main-content">Skip to main content</a>
   <script id="__SEARCH_INDEX__" type="application/json" is:inline set:html={searchIndexJson}></script>
-  <Navbar activePath={activePath} activeTrackLabel={currentTrack?.data.title ?? 'None'} />
+  <Navbar activePath={activePath} activeTrackLabel={currentTrack?.data.title ?? 'None'} user={user} />
   <Breadcrumbs items={breadcrumbs} />
   <div class="app-shell">
     <Sidebar
