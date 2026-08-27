@@ -112,13 +112,13 @@ const outlineSections = authoredSections.length
 
   <div class="lesson-view-toggle" data-lesson-toggle>
       <div class="lesson-view-toggle__buttons" role="tablist" aria-label="Lesson view">
-        <button type="button" class="lvt-btn is-active" data-view="guided" role="tab" aria-selected="true">
+        <button type="button" class="lvt-btn is-active" data-view="guided" role="tab" id="tab-guided" aria-selected="true" aria-controls="panel-guided">
           <span aria-hidden="true">▶</span> Guided
         </button>
-        <button type="button" class="lvt-btn" data-view="outline" role="tab" aria-selected="false">
+        <button type="button" class="lvt-btn" data-view="outline" role="tab" id="tab-outline" aria-selected="false" aria-controls="panel-outline">
           <span aria-hidden="true">▤</span> Outline
         </button>
-        <button type="button" class="lvt-btn" data-view="reading" role="tab" aria-selected="false">
+        <button type="button" class="lvt-btn" data-view="reading" role="tab" id="tab-reading" aria-selected="false" aria-controls="panel-reading">
           <span aria-hidden="true">≡</span> Reading
         </button>
       </div>
@@ -127,7 +127,7 @@ const outlineSections = authoredSections.length
       </div>
     </div>
 
-  <section class="lesson-guided" data-view-pane="guided">
+  <section class="lesson-guided" data-view-pane="guided" role="tabpanel" id="panel-guided" aria-labelledby="tab-guided">
     <GuidedView
       client:only="react"
       lessonSlug={lesson.slug}
@@ -135,7 +135,7 @@ const outlineSections = authoredSections.length
     />
   </section>
 
-  <section class="lesson-outline" data-view-pane="outline" hidden>
+  <section class="lesson-outline" data-view-pane="outline" role="tabpanel" id="panel-outline" aria-labelledby="tab-outline" hidden>
     <OutlineView
       client:only="react"
       lessonSlug={lesson.slug}
@@ -143,7 +143,7 @@ const outlineSections = authoredSections.length
     />
   </section>
 
-  <section class="lesson-body lesson-body--reading" data-view-pane="reading" hidden>
+  <section class="lesson-body lesson-body--reading" data-view-pane="reading" role="tabpanel" id="panel-reading" aria-labelledby="tab-reading" hidden>
     <div class="lesson-reading-layout">
       <div class="lesson-reading-main" data-reading-content>
         <Content components={{ Callout, CodeBlock }} />
@@ -199,6 +199,29 @@ const outlineSections = authoredSections.length
 
         buttons.forEach((btn) => {
           btn.addEventListener('click', () => setView(btn.getAttribute('data-view')));
+          btn.addEventListener('keydown', (e) => {
+            const btnArray = Array.from(buttons);
+            const idx = btnArray.indexOf(btn);
+            let nextIdx = -1;
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+              e.preventDefault();
+              nextIdx = (idx + 1) % btnArray.length;
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+              e.preventDefault();
+              nextIdx = (idx - 1 + btnArray.length) % btnArray.length;
+            } else if (e.key === 'Home') {
+              e.preventDefault();
+              nextIdx = 0;
+            } else if (e.key === 'End') {
+              e.preventDefault();
+              nextIdx = btnArray.length - 1;
+            }
+            if (nextIdx >= 0) {
+              const nextBtn = btnArray[nextIdx];
+              setView(nextBtn.getAttribute('data-view'));
+              nextBtn.focus();
+            }
+          });
         });
 
         window.addEventListener('lesson:jump-reading', (event) => {

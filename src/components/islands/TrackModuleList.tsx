@@ -182,8 +182,7 @@ export default function TrackModuleList({ modules }: TrackModuleListProps) {
                         <span
                           className="btn-link btn-is-disabled"
                           aria-disabled="true"
-                          tabIndex={0}
-                          role="link"
+                          role="status"
                           aria-label={`Locked: ${activity.title} — Complete previous section to unlock`}
                           style={{ cursor: 'not-allowed', opacity: 0.6 }}
                         >

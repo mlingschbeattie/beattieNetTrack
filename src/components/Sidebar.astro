@@ -118,7 +118,7 @@ const TRACK_SVGS: Record<string, string> = {
 const DEFAULT_TRACK_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/></svg>';
 ---
 
-<aside class="sidebar" id="app-sidebar">
+<aside class="sidebar" id="app-sidebar" aria-label="Track navigation">
   <div class="sidebar__brand">
     <span class="sidebar__brand-badge">BN</span>
     <span class="sidebar__brand-text">Beattie Tech</span>
@@ -133,7 +133,7 @@ const DEFAULT_TRACK_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" fill=
           class={`sidebar__link ${activeTrack === track.slug ? 'sidebar__link--active' : ''}`}
           href={`/tracks/${track.slug}`}
         >
-          <span class="sidebar__link-icon" set:html={svg}></span>
+          <span class="sidebar__link-icon" aria-hidden="true" set:html={svg}></span>
           <span class="sidebar__link-text">{track.data.title}</span>
         </a>
       );

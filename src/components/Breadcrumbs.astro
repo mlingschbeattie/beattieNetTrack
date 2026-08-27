@@ -12,18 +12,18 @@ const { items = [] } = Astro.props as Props;
 ---
 
 {items.length > 0 && (
-  <div class="breadcrumb-row">
-    <div class="breadcrumb-row__inner container">
+  <nav aria-label="Breadcrumb" class="breadcrumb-row">
+    <ol class="breadcrumb-row__inner container">
       {items.map((item, index) => (
-        <div class="breadcrumb">
+        <li class="breadcrumb">
           {item.href ? (
             <a class="breadcrumb__link" href={item.href}>{item.label}</a>
           ) : (
-            <span class="breadcrumb__current">{item.label}</span>
+            <span class="breadcrumb__current" aria-current="page">{item.label}</span>
           )}
-          {index < items.length - 1 && <span class="breadcrumb__sep">/</span>}
-        </div>
+          {index < items.length - 1 && <span class="breadcrumb__sep" aria-hidden="true">/</span>}
+        </li>
       ))}
-    </div>
-  </div>
+    </ol>
+  </nav>
 )}

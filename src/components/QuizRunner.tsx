@@ -186,7 +186,14 @@ export default function QuizRunner({ quiz, workspaceSlug, domains = [], apiUrl }
         <div className="pill pill--pass">PASS ≥ {quiz.passThreshold}%</div>
       </div>
 
-      <div className="progress-bar-track" aria-hidden="true">
+      <div
+          className="progress-bar-track"
+          role="progressbar"
+          aria-valuenow={current + 1}
+          aria-valuemin={1}
+          aria-valuemax={quiz.questions.length}
+          aria-label={`Question ${current + 1} of ${quiz.questions.length}`}
+        >
         <div
           className="progress-bar-fill"
           style={{ width: `${quiz.questions.length ? ((current + 1) / quiz.questions.length) * 100 : 0}%` }}
@@ -194,8 +201,8 @@ export default function QuizRunner({ quiz, workspaceSlug, domains = [], apiUrl }
       </div>
 
       <div className="quiz-question">
-        <p className="quiz-question__prompt">{activeQuestion.prompt}</p>
-        <div className="quiz-options">
+        <p className="quiz-question__prompt" id={`quiz-prompt-${activeQuestion.id}`}>{activeQuestion.prompt}</p>
+        <div className="quiz-options" role={activeQuestion.type === 'single' ? 'radiogroup' : activeQuestion.type === 'multi' ? 'group' : undefined} aria-labelledby={`quiz-prompt-${activeQuestion.id}`}>
           {activeQuestion.type === 'single' &&
             activeQuestion.options.map((option, index) => {
               const answer = answers[activeQuestion.id];
@@ -212,13 +219,17 @@ export default function QuizRunner({ quiz, workspaceSlug, domains = [], apiUrl }
               return (
                 <div
                   key={option}
-                  role="button"
+                  role="radio"
+                  aria-checked={selected}
                   tabIndex={showResults ? -1 : 0}
                   className={classes}
                   data-testid={`quiz-option-${index}`}
                   onClick={() => !showResults && setSingle(activeQuestion.id, index)}
                   onKeyDown={(e) => {
-                    if (!showResults && (e.key === 'Enter' || e.key === ' ')) setSingle(activeQuestion.id, index);
+                    if (!showResults && (e.key === 'Enter' || e.key === ' ')) {
+                      e.preventDefault();
+                      setSingle(activeQuestion.id, index);
+                    }
                   }}
                 >
                   <span className="quiz-option__letter">{String.fromCharCode(65 + index)}</span>
@@ -243,12 +254,16 @@ export default function QuizRunner({ quiz, workspaceSlug, domains = [], apiUrl }
               return (
                 <div
                   key={option}
-                  role="button"
+                  role="checkbox"
+                  aria-checked={selected}
                   tabIndex={showResults ? -1 : 0}
                   className={classes}
                   onClick={() => !showResults && toggleMulti(activeQuestion.id, index)}
                   onKeyDown={(e) => {
-                    if (!showResults && (e.key === 'Enter' || e.key === ' ')) toggleMulti(activeQuestion.id, index);
+                    if (!showResults && (e.key === 'Enter' || e.key === ' ')) {
+                      e.preventDefault();
+                      toggleMulti(activeQuestion.id, index);
+                    }
                   }}
                 >
                   <span className="quiz-option__letter">{String.fromCharCode(65 + index)}</span>
@@ -268,6 +283,7 @@ export default function QuizRunner({ quiz, workspaceSlug, domains = [], apiUrl }
                   value={value}
                   onChange={(event) => setShort(activeQuestion.id, event.target.value)}
                   placeholder="Type your answer"
+                  aria-labelledby={`quiz-prompt-${activeQuestion.id}`}
                   data-testid="quiz-short-input"
                 />
               );

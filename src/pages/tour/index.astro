@@ -14,12 +14,21 @@ const first = steps[0];
     <p class="hero__subtitle">Experience a mini version of the program with terminal, quiz, and code challenges.</p>
   </section>
 
-  <section class="card-grid">
+  <section class="card-grid card-grid--two">
     <article class="card">
-      <h3>Tour Chapters</h3>
-      <ol>
-        {steps.map((step) => (
-          <li><a href={`/tour/${step.slug}`}>{step.data.title}</a></li>
+      <h2>Tour Chapters</h2>
+      <p style="color: var(--text-muted); margin-bottom: var(--space-4); font-size: var(--text-sm);">Complete each challenge in order. Estimated time: ~5 minutes.</p>
+      <ol class="tour-chapter-list">
+        {steps.map((step, i) => (
+          <li class="tour-chapter-item">
+            <a href={`/tour/${step.slug}`} class="tour-chapter-link">
+              <span class="tour-chapter-num">{i + 1}</span>
+              <span class="tour-chapter-info">
+                <strong>{step.data.title}</strong>
+                {step.data.description && <span class="tour-chapter-desc">{step.data.description}</span>}
+              </span>
+            </a>
+          </li>
         ))}
       </ol>
     </article>

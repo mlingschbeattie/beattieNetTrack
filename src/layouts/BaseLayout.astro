@@ -15,7 +15,7 @@ const { title = 'Beattie Tech', legacySkin = false } = Astro.props;
 <html lang="en" data-skin={legacySkin ? 'legacy' : undefined}>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -26,6 +26,11 @@ const { title = 'Beattie Tech', legacySkin = false } = Astro.props;
           const stored = window.localStorage.getItem('theme');
           const theme = stored === 'light' ? 'light' : 'dark';
           document.documentElement.dataset.theme = theme;
+
+          const params = new URLSearchParams(window.location.search);
+          const lang = params.get('lang') || window.localStorage.getItem('beattienet_lang') || 'en';
+          document.documentElement.lang = lang;
+          document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
         } catch {
           document.documentElement.dataset.theme = 'dark';
         }
@@ -34,8 +39,46 @@ const { title = 'Beattie Tech', legacySkin = false } = Astro.props;
   </head>
   <body>
     <slot />
+
+    <!-- Floating Global Language Selector for ESL Students -->
+    <div id="beattie-lang-bar" class="beattie-lang-float" role="group" aria-label="Language" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 9999; display: flex; gap: 4px; background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; padding: 4px; backdrop-filter: blur(8px); box-shadow: 0 4px 12px rgba(0,0,0,0.5); font-family: monospace; font-size: 11px;">
+      <button data-set-lang="en" aria-pressed="true" style="background: none; border: none; color: #94a3b8; padding: 6px 10px; min-width: 24px; min-height: 24px; border-radius: 4px; cursor: pointer; font-weight: bold;">EN</button>
+      <button data-set-lang="ar" aria-pressed="false" style="background: none; border: none; color: #94a3b8; padding: 6px 10px; min-width: 24px; min-height: 24px; border-radius: 4px; cursor: pointer; font-weight: bold;">عربي</button>
+      <button data-set-lang="uk" aria-pressed="false" style="background: none; border: none; color: #94a3b8; padding: 6px 10px; min-width: 24px; min-height: 24px; border-radius: 4px; cursor: pointer; font-weight: bold;">УКР</button>
+    </div>
+
     <script>
       document.documentElement.classList.add('js');
+      
+      // Floating language selector logic
+      const langButtons = document.querySelectorAll('[data-set-lang]');
+      const updateLangUi = (currentLang: string) => {
+        document.documentElement.lang = currentLang;
+        document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+        localStorage.setItem('beattienet_lang', currentLang);
+        langButtons.forEach((btn) => {
+          const l = btn.getAttribute('data-set-lang');
+          const isActive = l === currentLang;
+          btn.setAttribute('aria-pressed', String(isActive));
+          if (isActive) {
+            (btn as HTMLElement).style.background = '#0284c7';
+            (btn as HTMLElement).style.color = '#ffffff';
+          } else {
+            (btn as HTMLElement).style.background = 'none';
+            (btn as HTMLElement).style.color = '#94a3b8';
+          }
+        });
+      };
+
+      const initialLang = document.documentElement.lang || 'en';
+      updateLangUi(initialLang);
+
+      langButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const target = btn.getAttribute('data-set-lang') || 'en';
+          updateLangUi(target);
+        });
+      });
       const themeToggle = document.querySelector('[data-theme-toggle]');
       const themeIcon = document.querySelector('[data-theme-icon]');
       const themeLabel = document.querySelector('[data-theme-label]');
@@ -46,8 +89,7 @@ const { title = 'Beattie Tech', legacySkin = false } = Astro.props;
         if (themeIcon) themeIcon.textContent = isLight ? '☀️' : '🌙';
         if (themeLabel) themeLabel.textContent = isLight ? 'Light' : 'Dark';
         if (themeToggle instanceof HTMLButtonElement) {
-          themeToggle.setAttribute('aria-label', 'Toggle color theme');
-          themeToggle.setAttribute('aria-pressed', isLight ? 'false' : 'true');
+          themeToggle.setAttribute('aria-label', isLight ? 'Switch to dark mode' : 'Switch to light mode');
         }
       };
 

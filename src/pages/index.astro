@@ -104,7 +104,7 @@ const isAvailable = (slug: string) => (activityMap[slug]?.length ?? 0) > 0;
         return (
           <article class="card card--track">
             <div class="card__header-row">
-              <div class="card__icon-badge" set:html={svgIcon}></div>
+              <div class="card__icon-badge" aria-hidden="true" set:html={svgIcon}></div>
               <span class={`track-badge track-badge--${isAvailable(track.slug) ? 'available' : 'coming-soon'}`}>
                 {isAvailable(track.slug) ? 'Curriculum Ready' : 'Coming Soon'}
               </span>

@@ -8,8 +8,8 @@
   --beattie-surface-subtle: #1c2638;
   --beattie-surface-glass: rgba(14, 19, 31, 0.85);
 
-  --beattie-border: rgba(255, 255, 255, 0.08);
-  --beattie-border-subtle: rgba(255, 255, 255, 0.14);
+  --beattie-border: rgba(255, 255, 255, 0.22);
+  --beattie-border-subtle: rgba(255, 255, 255, 0.28);
   --beattie-border-hover: rgba(255, 255, 255, 0.22);
   --beattie-border-active: #3b82f6;
 

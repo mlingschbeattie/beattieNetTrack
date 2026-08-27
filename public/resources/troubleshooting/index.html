@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beattie-Net // CompTIA 6-Step Troubleshooting Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700;800&family=Space+Grotesk:wght@600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #040608;
+      --panel: #090e13;
+      --panel-elevated: #101720;
+      --line: #1c2b26;
+      --green: #39ff9e;
+      --cyan: #38bdf8;
+      --amber: #ffb454;
+      --text: #e2f4ea;
+      --text-muted: #829a90;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background-image: linear-gradient(rgba(57, 255, 158, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(57, 255, 158, 0.04) 1px, transparent 1px);
+      background-size: 36px 36px;
+    }
+
+    :root:lang(ar), :root:lang(fa) {
+      font-family: 'IBM Plex Sans Arabic', 'Inter', sans-serif;
+    }
+    :root:lang(fa) {
+      font-family: 'IBM Plex Sans Arabic', 'Inter', sans-serif;
+    }
+
+    [dir="rtl"] {
+      text-align: start;
+    }
+
+    .hub-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 2.5rem 3rem;
+      max-width: 900px;
+      width: 100%;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+      position: relative;
+    }
+
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--green);
+      background: rgba(57, 255, 158, 0.08);
+      border: 1px solid var(--green);
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+    }
+
+    .lang-btns {
+      display: flex;
+      gap: 0.3rem;
+      background: var(--panel-elevated);
+      border: 1px solid var(--line);
+      padding: 2px;
+      border-radius: 4px;
+    }
+
+    .lang-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.6rem;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .lang-btn.active {
+      background: rgba(57, 255, 158, 0.15);
+      color: var(--green);
+    }
+
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.2rem;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .nav-box {
+      background: var(--panel-elevated);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      transition: all 0.2s ease;
+    }
+
+    .nav-box:hover {
+      border-color: var(--green);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .nav-box-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.4rem;
+    }
+
+    .nav-box-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .nav-box-tag {
+      margin-top: auto;
+      padding-top: 1rem;
+      font-size: 0.75rem;
+      color: var(--green);
+      font-weight: 700;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="hub-card">
+    <div class="top-row">
+      <div class="badge" id="hub-badge">CTE CURRICULUM // MR. LINGSCH-BEATTIE</div>
+      <div class="lang-btns">
+        <button id="l-en" class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button id="l-fa" class="lang-btn" onclick="setLang('fa')">فارسی</button>
+        <button id="l-ar" class="lang-btn" onclick="setLang('ar')">عربي</button>
+        <button id="l-uk" class="lang-btn" onclick="setLang('uk')">УКР</button>
+      </div>
+    </div>
+
+    <h1 id="hub-title">Divide &amp; Conquer Troubleshooting Hub</h1>
+    <p id="hub-desc">A.W. Beattie Career Center · Network Engineering &amp; Cybersecurity. Master the CompTIA 6-Step
+      Troubleshooting Framework &amp; Binary Search Logic.</p>
+
+    <div class="grid">
+      <a href="presentation.html" class="nav-box" style="border-left: 4px solid var(--green);">
+        <div class="nav-box-title" id="card1-title">📺 Slide Deck Presentation</div>
+        <div class="nav-box-desc" id="card1-desc">Interactive 15-slide master lesson with live Midpoint Sandbox,
+          presenter teaching notes, and keyboard controls.</div>
+        <div class="nav-box-tag" id="card1-tag">Launch Slides (HTML) →</div>
+      </a>
+
+      <a href="activity.html" class="nav-box" style="border-left: 4px solid var(--cyan);">
+        <div class="nav-box-title" id="card2-title" style="color:var(--cyan);">⚡ Interactive Lab Activity</div>
+        <div class="nav-box-desc" id="card2-desc">5 progressive troubleshooting tiers, interactive CLI terminal
+          emulator, auto-saving forms, and printable worksheet PDF export.</div>
+        <div class="nav-box-tag" id="card2-tag" style="color:var(--cyan);">Open Student Workbench →</div>
+      </a>
+
+      <a href="activity.html?key=true" class="nav-box" style="border-left: 4px solid var(--amber);">
+        <div class="nav-box-title" id="card3-title" style="color:var(--amber);">🔑 Teacher Answer Key &amp; Rubric</div>
+        <div class="nav-box-desc" id="card3-desc">Instructor review mode displaying complete answers, model flowchart
+          logic, and grading criteria for all 5 scenarios.</div>
+        <div class="nav-box-tag" id="card3-tag" style="color:var(--amber);">Open Teacher Rubric →</div>
+      </a>
+
+      <a href="Divide_and_Conquer_Mastery.pptx" download class="nav-box" style="border-left: 4px solid #94a3b8;">
+        <div class="nav-box-title" id="card4-title">📥 Native PowerPoint (.PPTX)</div>
+        <div class="nav-box-desc" id="card4-desc">16:9 widescreen presentation deck ready for classroom projectors and
+          offline PowerPoint presentations.</div>
+        <div class="nav-box-tag" id="card4-tag" style="color:#fff;">Download PPTX File →</div>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const HUB_DB = {
+      fa: {"badge": "برنامه درسی مهارتی و فنی // مهندس LINGSCH-BEATTIE", "title": "پورتال جامع عیب‌یابی: متدولوژی تقسیم و غلبه", "desc": "مرکز مهارتی و حرفه‌ای بیتی · مهندسی شبکه و امنیت سایبری. تسلط بر مدل ۶ مرحله‌ای CompTIA و منطق جستجوی دودویی در شبکه‌های سازمانی.", "c1": {"title": "📺 اسلایدهای آموزشی درس", "desc": "درس تعاملی ۱۵ اسلایدی با شبیه‌ساز زنده نقطه میانی، یادداشت‌های مدرس و کلیدهای راهنما.", "tag": "مشاهده اسلایدها (HTML) ←"}, "c2": {"title": "⚡ کاربرگ تمرین کارگاهی", "desc": "۵ سطح چالش مهارتی، شبیه‌ساز کنسول، ذخیره خودکار پاسخ‌ها و امکان چاپ مستقیم کاربرگ PDF.", "tag": "ورود به میزکار دانش‌آموز ←"}, "c3": {"title": "🔑 پاسخ‌نامه و کلید مدرس", "desc": "حالت ویژه مدرس شامل راه‌حل‌های کامل، منطق فلوچارت و سنجه‌های نمره‌دهی ۵ سناریو.", "tag": "مشاهده پاسخ‌نامه مدرس ←"}, "c4": {"title": "📥 فایل اصلی پاورپوینت (.PPTX)", "desc": "اسلایدهای عریض ۱۶:۹ آماده برای نمایش در کلاس درس بدون نیاز به اینترنت.", "tag": "دانلود فایل PPTX ←"}},
+      en: {
+        badge: "CTE CURRICULUM // MR. LINGSCH-BEATTIE",
+        title: "Divide & Conquer Troubleshooting Hub",
+        desc: "A.W. Beattie Career Center · Network Engineering & Cybersecurity. Master the CompTIA 6-Step Troubleshooting Framework & Binary Search Logic.",
+        c1: { title: "📺 Slide Deck Presentation", desc: "Interactive 15-slide master lesson with live Midpoint Sandbox, presenter teaching notes, and keyboard controls.", tag: "Launch Slides (HTML) →" },
+        c2: { title: "⚡ Interactive Lab Activity", desc: "5 progressive troubleshooting tiers, interactive CLI terminal emulator, auto-saving forms, and printable worksheet PDF export.", tag: "Open Student Workbench →" },
+        c3: { title: "🔑 Teacher Answer Key & Rubric", desc: "Instructor review mode displaying complete answers, model flowchart logic, and grading criteria for all 5 scenarios.", tag: "Open Teacher Rubric →" },
+        c4: { title: "📥 Native PowerPoint (.PPTX)", desc: "16:9 widescreen presentation deck ready for classroom projectors and offline PowerPoint presentations.", tag: "Download PPTX File →" }
+      },
+      ar: {
+        badge: "المنهاج التعليمي المهني // الأستاذ LINGSCH-BEATTIE",
+        title: "مركز حل المشكلات: منهجية فرّق تسُد",
+        desc: "مركز بيتي المهني والتقني · هندسة الشبكات والأمن السيبراني. احتراف خطوات CompTIA الست لحل الأعطال وخوارزمية البحث الثنائي.",
+        c1: { title: "📺 العرض التقديمي للدرس", desc: "درس تفاعلي متقدم من 15 شريحة مع محاكي نقطة المنتصف، ملاحظات المعلم، والتحكم بلوحة المفاتيح.", tag: "بدء العرض التقديمي ←" },
+        c2: { title: "⚡ ورقة عمل النشاط العملي", desc: "5 مستويات متدرجة، محاكي طرفية سطر الأوامر، حفظ تلقائي للإجابات، وتصدير ورقة عمل PDF جاهزة للطباعة.", tag: "فتح منصة النشاط للطلاب ←" },
+        c3: { title: "🔑 دليل وإجابات المعلم", desc: "وضع مراجعة المعلم لعرض الإجابات النموذجية، مخططات التدفق، ومعايير تقييم المستويات الخمسة.", tag: "فتح نموذج إجابات المعلم ←" },
+        c4: { title: "📥 عرض تقديمي أصلي (PPTX)", desc: "ملف PowerPoint بتنسيق 16:9 عريض جاهز للعرض على أجهزة العرض في الفصل دون اتصال بالإنترنت.", tag: "تحميل ملف البوربوينت ←" }
+      },
+      uk: {
+        badge: "НАВЧАЛЬНА ПРОГРАМА // ВИКЛАДАЧ LINGSCH-BEATTIE",
+        title: "Портал діагностики: Розділяй і володарюй",
+        desc: "Професійно-технічний центр імені А.В. Бітті · Мережева інженерія та кібербезпека. Опануйте 6-етапну модель CompTIA та логіку бінарного пошуку.",
+        c1: { title: "📺 Презентація уроку", desc: "Інтерактивний урок на 15 слайдів із симулятором бінарного пошуку, нотатками викладача та керуванням з клавіатури.", tag: "Запустити слайди (HTML) →" },
+        c2: { title: "⚡ Практична робота", desc: "5 прогресивних рівнів складності, віртуальний термінал, автозбереження відповідей та друк у PDF.", tag: "Відкрити практичну роботу →" },
+        c3: { title: "🔑 Відповіді та критерії викладача", desc: "Режим перевірки для викладача з повними відповідями, блок-схемами та шкалою оцінювання.", tag: "Відкрити критерії оцінювання →" },
+        c4: { title: "📥 Презентація PowerPoint (.PPTX)", desc: "Широкоформатна презентація 16:9 для проєкторів та офлайн-використання.", tag: "Завантажити файл PPTX →" }
+      }
+    };
+
+    function setLang(lang) {
+      document.documentElement.lang = lang;
+      document.documentElement.dir = (lang === 'ar' || lang === 'fa') ? 'rtl' : 'ltr';
+      localStorage.setItem('hub_lang', lang);
+
+      document.querySelectorAll('#l-en, #l-fa, #l-ar, #l-uk').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`l-${lang}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const data = HUB_DB[lang] || HUB_DB.en;
+      document.getElementById('hub-badge').textContent = data.badge;
+      document.getElementById('hub-title').textContent = data.title;
+      document.getElementById('hub-desc').textContent = data.desc;
+
+      document.getElementById('card1-title').textContent = data.c1.title;
+      document.getElementById('card1-desc').textContent = data.c1.desc;
+      document.getElementById('card1-tag').textContent = data.c1.tag;
+
+      document.getElementById('card2-title').textContent = data.c2.title;
+      document.getElementById('card2-desc').textContent = data.c2.desc;
+      document.getElementById('card2-tag').textContent = data.c2.tag;
+
+      document.getElementById('card3-title').textContent = data.c3.title;
+      document.getElementById('card3-desc').textContent = data.c3.desc;
+      document.getElementById('card3-tag').textContent = data.c3.tag;
+
+      document.getElementById('card4-title').textContent = data.c4.title;
+      document.getElementById('card4-desc').textContent = data.c4.desc;
+      document.getElementById('card4-tag').textContent = data.c4.tag;
+    }
+
+    const saved = localStorage.getItem('hub_lang') || 'en';
+    setLang(saved);
+  </script>
+</body>
+
+</html>

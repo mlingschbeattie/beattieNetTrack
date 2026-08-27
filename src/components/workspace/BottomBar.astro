@@ -12,7 +12,7 @@ const { checkLabel = 'Check', submitLabel = 'Submit' } = Astro.props as Props;
     <button type="button" class="btn-secondary workspace-bar__run" data-workspace-action="run">Run</button>
     <div class="workspace-bar__primary-group">
       <button type="button" class="btn-primary" data-workspace-action="check">{checkLabel}</button>
-      <button type="button" class="btn-primary" data-workspace-action="submit">{submitLabel}</button>
+      <button type="button" class="btn-primary" data-workspace-action="submit" title="Ctrl+Enter">{submitLabel} <kbd class="kbd-hint">Ctrl+↵</kbd></button>
     </div>
     <button type="button" class="btn-ghost workspace-bar__reset" data-workspace-action="reset">Reset</button>
   </div>

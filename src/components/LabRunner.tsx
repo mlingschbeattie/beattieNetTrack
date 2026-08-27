@@ -156,7 +156,7 @@ export default function LabRunner({
 
     if (allDone) {
       setToastMsg(`✓ Lab complete! +${xpReward} XP`);
-      setTimeout(() => setToastMsg(''), 1500);
+      setTimeout(() => setToastMsg(''), 4000);
       const completedAt = new Date().toISOString();
       setIsCompleted(true);
       persist({
@@ -196,7 +196,7 @@ export default function LabRunner({
       completedAt: null,
     });
     setToastMsg('✓ Step complete!');
-    setTimeout(() => setToastMsg(''), 1500);
+    setTimeout(() => setToastMsg(''), 4000);
   };
 
   const handleNext = () => {
@@ -235,19 +235,35 @@ export default function LabRunner({
           const isActive = index === currentStepIndex;
           const isLocked = !isDone && !isActive;
           return (
-            <div
+            <button
               key={step.id}
+              type="button"
               className={`lab-step${isActive ? ' lab-step--active' : ''}${isDone ? ' lab-step--complete' : ''}${isLocked ? ' lab-step--locked' : ''}`}
+              onClick={() => {
+                if (!isLocked) {
+                  setCurrentStepIndex(index);
+                  setFeedback(null);
+                }
+              }}
+              disabled={isLocked}
+              aria-current={isActive ? 'step' : undefined}
             >
               <span className="lab-step__num">{isDone ? '' : index + 1}</span>
               <span>{step.title}</span>
-            </div>
+            </button>
           );
         })}
       </aside>
 
       <div>
-        <div className="progress-bar-track" aria-hidden="true">
+        <div
+            className="progress-bar-track"
+            role="progressbar"
+            aria-valuenow={currentStepIndex + 1}
+            aria-valuemin={1}
+            aria-valuemax={totalSteps}
+            aria-label={`Step ${currentStepIndex + 1} of ${totalSteps}`}
+          >
           <div className="progress-bar-fill" style={{ width: `${progressPercent}%` }} />
         </div>
 
@@ -311,7 +327,7 @@ export default function LabRunner({
         )}
       </div>
 
-      {toastMsg && <div className="step-toast">{toastMsg}</div>}
+      {toastMsg && <div className="step-toast" role="status" aria-live="polite">{toastMsg}</div>}
     </div>
   );
 }

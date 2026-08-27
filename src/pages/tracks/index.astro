@@ -49,7 +49,7 @@ const DEFAULT_ICON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none
       return (
         <article class="card card--track">
           <div class="card__header-row">
-            <div class="card__icon-badge" set:html={svgIcon}></div>
+            <div class="card__icon-badge" aria-hidden="true" set:html={svgIcon}></div>
             <span class={`track-badge track-badge--${activityCounts[track.slug] > 0 ? 'available' : 'coming-soon'}`}>
               {activityCounts[track.slug] > 0 ? 'Curriculum Ready' : 'Coming Soon'}
             </span>

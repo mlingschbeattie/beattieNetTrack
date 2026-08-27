@@ -1,4 +1,23 @@
 @import "./tokens.css";
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;600;700&display=swap');
+
+:root:lang(ar) {
+  font-family: 'IBM Plex Sans Arabic', 'Noto Sans Arabic', sans-serif !important;
+}
+
+[dir="rtl"] {
+  text-align: start;
+}
+
+[dir="rtl"] code,
+[dir="rtl"] pre,
+[dir="rtl"] .font-mono,
+[dir="rtl"] .terminal,
+[dir="rtl"] pre code {
+  direction: ltr !important;
+  unicode-bidi: isolate;
+  text-align: left;
+}
 
 * {
   box-sizing: border-box;
@@ -67,6 +86,16 @@ a:hover {
 
 .skip-link:focus {
   transform: translateY(var(--space-2));
+}
+
+/* ── Global Focus Indicator (WCAG 2.4.7) ─────────────── */
+:focus-visible {
+  outline: 2px solid var(--beattie-primary);
+  outline-offset: 2px;
+}
+
+html[data-theme='light'] :focus-visible {
+  outline-color: #0369a1;
 }
 
 img {
@@ -157,6 +186,7 @@ img {
   align-items: center;
   justify-content: space-between;
   padding: var(--space-2) var(--space-4);
+  min-height: 36px;
   border-radius: var(--radius-md);
   color: var(--color-text-soft);
   margin-bottom: var(--space-1);
@@ -766,18 +796,7 @@ html[data-theme='light'] .sidebar__lesson-link--active {
   color: var(--beattie-primary);
 }
 
-.track-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-
+/* Track badge — card-level (inherits from .track-badge at L1058) */
 .track-badge--available {
   background: rgba(16, 185, 129, 0.12);
   color: #10b981;
@@ -1061,9 +1080,8 @@ html[data-theme='light'] .card:hover {
 
 .track-badge--coming-soon {
   border: 1px solid var(--border-subtle);
-  color: var(--text-muted);
+  color: #78899e;
   background: transparent;
-  opacity: 0.6;
 }
 
 /* ── Quick Actions ───────────────────────────────────── */
@@ -1261,6 +1279,33 @@ html[data-theme='light'] .quiz-option:hover:not(.quiz-option--revealed) {
   background: rgba(3, 105, 161, 0.05);
 }
 
+html.light-mode .quiz-option__text,
+html[data-theme='light'] .quiz-option__text {
+  color: #334155;
+}
+
+html.light-mode .quiz-option__letter,
+html[data-theme='light'] .quiz-option__letter {
+  color: #475569;
+  border-color: rgba(0, 0, 0, 0.20);
+}
+
+html.light-mode .quiz-option--selected .quiz-option__text,
+html[data-theme='light'] .quiz-option--selected .quiz-option__text {
+  color: #0f172a;
+}
+
+html.light-mode .quiz-option--selected .quiz-option__letter,
+html[data-theme='light'] .quiz-option--selected .quiz-option__letter {
+  color: var(--accent-purple);
+  border-color: var(--accent-purple);
+}
+
+html.light-mode .quiz-question__prompt,
+html[data-theme='light'] .quiz-question__prompt {
+  color: #0f172a;
+}
+
 .quiz-answer-feedback {
   margin-top: 14px;
   font-size: 12px;
@@ -1369,7 +1414,7 @@ html[data-theme='light'] .quiz-option:hover:not(.quiz-option--revealed) {
 .lesson-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-3);
+  gap: var(--space-4);
   margin-top: var(--space-4);
   align-items: center;
 }
@@ -1979,6 +2024,31 @@ html[data-theme='light'] .xp-display__value {
   text-shadow: none;
 }
 
+html.light-mode .progress-header__title,
+html[data-theme='light'] .progress-header__title {
+  color: #0f172a;
+}
+
+html.light-mode .progress-header__subtitle,
+html[data-theme='light'] .progress-header__subtitle {
+  color: #475569;
+}
+
+html.light-mode .progress-bar-label,
+html[data-theme='light'] .progress-bar-label {
+  color: #475569;
+}
+
+html.light-mode .track-progress__row,
+html[data-theme='light'] .track-progress__row {
+  color: #334155;
+}
+
+html.light-mode .track-progress__label,
+html[data-theme='light'] .track-progress__label {
+  color: #475569;
+}
+
 html.js .sidebar__skeleton {
   display: block;
 }
@@ -2360,6 +2430,24 @@ html.sidebar-ready .sidebar__progress-slot .sidebar__react {
   align-items: center;
 }
 
+.kbd-hint {
+  font-size: 9px;
+  font-family: var(--font-mono);
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.6);
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+html[data-theme='light'] .kbd-hint {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.15);
+  color: rgba(0, 0, 0, 0.5);
+}
+
 .right-panel {
   position: sticky;
   top: calc(var(--space-8) + 84px);
@@ -2668,6 +2756,65 @@ html[data-theme='light'] .terminal-titlebar {
   background: rgba(0, 0, 0, 0.7);
 }
 
+/* ── Tour Chapter List ─────────────────────────────── */
+.tour-chapter-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.tour-chapter-item {
+  border-radius: var(--radius-md);
+  transition: background 0.2s ease;
+}
+
+.tour-chapter-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  color: inherit;
+  text-decoration: none;
+  border: 1px solid var(--beattie-border);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.tour-chapter-link:hover {
+  border-color: var(--beattie-primary);
+  background: rgba(56, 189, 248, 0.05);
+}
+
+.tour-chapter-num {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(56, 189, 248, 0.12);
+  color: var(--beattie-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.tour-chapter-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tour-chapter-desc {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
 /* ── Lab Layout + Step Tracker ──────────────────────── */
 .lab-layout {
   display: grid;
@@ -2707,7 +2854,20 @@ html[data-theme='light'] .terminal-titlebar {
   font-size: 12px;
   color: var(--text-muted);
   transition: all var(--transition-fast);
+  cursor: pointer;
+  background: none;
+  border: 1px solid transparent;
+  text-align: left;
+  width: 100%;
+  font-family: inherit;
+}
+
+.lab-step:disabled {
   cursor: default;
+}
+
+.lab-step:not(:disabled):hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .lab-step--active {

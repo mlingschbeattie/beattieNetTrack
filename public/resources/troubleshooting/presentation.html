@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Divide &amp; Conquer // CompTIA 6-Step Troubleshooting Mastery</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #040608;
+      --panel: #090e13;
+      --panel-elevated: #101720;
+      --line: #1b272c;
+      --line-bright: #2d424b;
+      --green: #39ff9e;
+      --green-glow: rgba(57, 255, 158, 0.35);
+      --green-dim: #134e35;
+      --cyan: #38bdf8;
+      --cyan-glow: rgba(56, 189, 248, 0.35);
+      --amber: #ffb454;
+      --red: #ff5c72;
+      --purple: #a855f7;
+      --text: #e2f4ea;
+      --text-muted: #829a90;
+      --text-dim: #4d665c;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(57, 255, 158, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(57, 255, 158, 0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: 
+        repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,0.18) 3px, rgba(0,0,0,0) 4px),
+        radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.7) 100%);
+      pointer-events: none;
+      mix-blend-mode: multiply;
+      z-index: 2;
+    }
+
+    :root:lang(ar), :root:lang(fa) {
+      font-family: 'IBM Plex Sans Arabic', 'Inter', sans-serif;
+    }
+    :root:lang(fa) {
+      font-family: 'IBM Plex Sans Arabic', 'Inter', sans-serif;
+    }
+
+    [dir="rtl"] {
+      text-align: start;
+    }
+
+    [dir="rtl"] code,
+    [dir="rtl"] pre,
+    [dir="rtl"] .font-mono,
+    [dir="rtl"] .cli-box {
+      direction: ltr !important;
+      unicode-bidi: isolate;
+      text-align: left;
+    }
+
+    .topbar {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 2rem;
+      border-bottom: 1px solid var(--line);
+      background: rgba(9, 14, 19, 0.85);
+      backdrop-filter: blur(8px);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #fff;
+    }
+    .brand-dot { color: var(--green); animation: pulse 2s infinite; }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .btn-ctrl {
+      background: var(--panel-elevated);
+      border: 1px solid var(--line-bright);
+      color: var(--text);
+      padding: 0.35rem 0.8rem;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+    .btn-ctrl:hover {
+      border-color: var(--green);
+      color: var(--green);
+      box-shadow: 0 0 10px var(--green-glow);
+    }
+    .btn-ctrl.active {
+      background: var(--green-dim);
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .slide-counter {
+      font-weight: 800;
+      color: var(--green);
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      padding: 0 0.5rem;
+    }
+
+    .stage {
+      position: relative;
+      z-index: 5;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem 3rem;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      width: 100%;
+      max-width: 1350px;
+      height: 82vh;
+      max-height: 850px;
+      background: var(--panel);
+      border: 1px solid var(--line-bright);
+      border-radius: 12px;
+      padding: 2.2rem 3rem;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(57, 255, 158, 0.03);
+      opacity: 0;
+      transform: translateX(60px) scale(0.97);
+      pointer-events: none;
+      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .slide.prev {
+      opacity: 0;
+      transform: translateX(-60px) scale(0.97);
+    }
+
+    .slide-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--green);
+      background: rgba(57, 255, 158, 0.08);
+      border: 1px solid var(--green-dim);
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+      width: fit-content;
+      margin-bottom: 0.8rem;
+    }
+
+    .slide-badge.cyan { color: var(--cyan); background: rgba(56, 189, 248, 0.08); border-color: rgba(56, 189, 248, 0.3); }
+    .slide-badge.amber { color: var(--amber); background: rgba(255, 180, 84, 0.08); border-color: rgba(255, 180, 84, 0.3); }
+    .slide-badge.purple { color: var(--purple); background: rgba(168, 85, 247, 0.08); border-color: rgba(168, 85, 247, 0.3); }
+    .slide-badge.red { color: var(--red); background: rgba(255, 92, 114, 0.08); border-color: rgba(255, 92, 114, 0.3); }
+
+    .slide-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.15;
+      margin-bottom: 0.4rem;
+      letter-spacing: -0.02em;
+    }
+
+    .slide-subtitle {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 1.8rem;
+      line-height: 1.5;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.6rem;
+      flex: 1;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.4rem;
+      flex: 1;
+    }
+
+    .grid-6 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 1.2rem;
+      flex: 1;
+    }
+
+    .card {
+      background: var(--panel-elevated);
+      border: 1px solid var(--line-bright);
+      border-radius: 8px;
+      padding: 1.3rem 1.5rem;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.2s ease;
+    }
+    .card:hover {
+      border-color: var(--green);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+
+    .card-num {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--green);
+      margin-bottom: 0.4rem;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .card-num.cyan { color: var(--cyan); }
+    .card-num.amber { color: var(--amber); }
+    .card-num.red { color: var(--red); }
+    .card-num.purple { color: var(--purple); }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5rem;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .card-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .card-desc strong { color: #fff; }
+
+    .card-tag {
+      margin-top: auto;
+      padding-top: 0.8rem;
+      font-size: 0.72rem;
+      color: var(--green);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .cli-box {
+      background: #020305;
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--green);
+      padding: 0.8rem 1.1rem;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: var(--green);
+      margin: 0.7rem 0;
+      white-space: pre-wrap;
+    }
+
+    .cli-box.amber { border-left-color: var(--amber); color: var(--amber); }
+    .cli-box.cyan { border-left-color: var(--cyan); color: var(--cyan); }
+    .cli-box.red { border-left-color: var(--red); color: var(--red); }
+
+    .sim-container {
+      background: #020305;
+      border: 1px solid var(--line-bright);
+      border-radius: 8px;
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .osi-ladder {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .osi-step {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 1.1rem;
+      background: var(--panel-elevated);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .osi-step:hover {
+      border-color: var(--cyan);
+      background: #141e2b;
+    }
+    .osi-step.selected {
+      border-color: var(--green);
+      background: rgba(57, 255, 158, 0.1);
+      box-shadow: 0 0 15px rgba(57, 255, 158, 0.2);
+    }
+    .osi-step.failed {
+      border-color: var(--red);
+      background: rgba(255, 92, 114, 0.1);
+    }
+
+    .osi-step-left {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+    }
+    .osi-num {
+      font-weight: 800;
+      color: var(--cyan);
+      font-size: 0.85rem;
+      width: 2rem;
+    }
+    .osi-name {
+      font-weight: 700;
+      color: #fff;
+      font-size: 0.9rem;
+    }
+    .osi-cmd {
+      font-size: 0.75rem;
+      color: var(--amber);
+    }
+
+    .osi-status {
+      font-weight: 800;
+      font-size: 0.72rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+    .osi-status.pass { background: rgba(57, 255, 158, 0.2); color: var(--green); }
+    .osi-status.fail { background: rgba(255, 92, 114, 0.2); color: var(--red); }
+    .osi-status.untested { background: rgba(255, 255, 255, 0.05); color: var(--text-muted); }
+
+    .bottombar {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.8rem 2rem;
+      border-top: 1px solid var(--line);
+      background: rgba(9, 14, 19, 0.95);
+      backdrop-filter: blur(8px);
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 4px;
+      background: var(--line);
+      margin: 0 2rem;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--green));
+      width: 6.66%;
+      transition: width 0.3s ease;
+      box-shadow: 0 0 8px var(--green-glow);
+    }
+
+    .key-hints {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      display: flex;
+      gap: 1rem;
+    }
+    .key-hints span kbd {
+      background: var(--panel-elevated);
+      border: 1px solid var(--line-bright);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .presenter-drawer {
+      position: fixed;
+      bottom: 60px;
+      left: 2rem;
+      right: 2rem;
+      max-height: 220px;
+      background: #020305;
+      border: 1px solid var(--amber);
+      border-radius: 8px;
+      padding: 1.2rem 1.6rem;
+      z-index: 100;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+      display: none;
+      overflow-y: auto;
+    }
+    .presenter-drawer.open { display: block; }
+    .presenter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.6rem;
+      color: var(--amber);
+      font-weight: 800;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .presenter-text {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #fed7aa;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-dot">●</span>
+      <span id="brand-text">BEATTIE-NET // CYBER &amp; NET ENGINEERING</span>
+      <span style="color: var(--text-dim);">|</span>
+      <span id="brand-sub" style="color: var(--cyan); font-weight: 600;">COMPTIA 6-STEP TROUBLESHOOTING</span>
+    </div>
+
+    <div class="nav-controls">
+      <div style="display:flex; background:var(--panel-elevated); border:1px solid var(--line-bright); border-radius:4px; padding:2px; font-size:0.75rem;">
+        <button id="lang-en" class="btn-ctrl active" onclick="setLanguage('en')" style="border:none; padding:0.2rem 0.5rem;">EN</button>
+        <button id="lang-fa" class="btn-ctrl" onclick="setLanguage('fa')" style="border:none; padding:0.2rem 0.5rem;">فارسی</button>
+        <button id="lang-ar" class="btn-ctrl" onclick="setLanguage('ar')" style="border:none; padding:0.2rem 0.6rem;">عربي</button>
+        <button id="lang-uk" class="btn-ctrl" onclick="setLanguage('uk')" style="border:none; padding:0.2rem 0.6rem;">УКР</button>
+      </div>
+
+      <button id="btn-notes" class="btn-ctrl" onclick="toggleNotes()" title="Toggle Instructor Teaching Notes (Press 'N')">
+        📝 <span id="txt-notes">Notes [N]</span>
+      </button>
+      
+      <button id="btn-fs" class="btn-ctrl" onclick="toggleFullScreen()" title="Fullscreen Mode (Press 'F')">
+        ⛶ <span id="txt-fs">Fullscreen [F]</span>
+      </button>
+
+      <a href="activity.html" class="btn-ctrl" style="border-color:var(--green); color:var(--green);">
+        ⚡ <span id="txt-act">Launch Lab Activity →</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="stage" id="stage">
+    <!-- Slide container dynamically populated by renderSlide() -->
+  </main>
+
+  <aside id="presenter-drawer" class="presenter-drawer">
+    <div class="presenter-header">
+      <span id="txt-notes-header">TEACHER PRESENTER NOTES // MR. L'S GUIDE</span>
+      <button onclick="toggleNotes()" style="background:none; border:none; color:var(--amber); cursor:pointer; font-weight:bold;">[X]</button>
+    </div>
+    <div id="presenter-content" class="presenter-text"></div>
+  </aside>
+
+  <footer class="bottombar">
+    <div class="key-hints">
+      <span id="hint-prev"><kbd>&larr;</kbd> Previous</span>
+      <span id="hint-next"><kbd>&rarr;</kbd> Next</span>
+      <span id="hint-adv"><kbd>Space</kbd> Advance</span>
+      <span id="hint-notes"><kbd>N</kbd> Notes</span>
+      <span id="hint-fs"><kbd>F</kbd> Fullscreen</span>
+    </div>
+
+    <div class="progress-track">
+      <div id="progress-fill" class="progress-fill"></div>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:0.6rem;">
+      <button class="btn-ctrl" onclick="prevSlide()" id="btn-prev">&larr; PREV</button>
+      <span id="slide-counter" class="slide-counter">01 / 15</span>
+      <button class="btn-ctrl" onclick="nextSlide()" id="btn-next">NEXT &rarr;</button>
+    </div>
+  </footer>
+
+  <script>
+    // FULL MULTILINGUAL SLIDE DATABASE (EN, AR, UK)
+    const SLIDES_DB = {
+      fa: {"brand": "شبکه بیتی // مهندسی شبکه و امنیت سایبری", "sub": "متدولوژی ۶ مرحله‌ای عیب‌یابی کامپتیا (CompTIA)", "notes": "یادداشت‌های مدرس [N]", "fs": "تمام صفحه [F]", "act": "شروع فعالیت کارگاهی ←", "prev": "← قبلی", "next": "بعدی →", "notesHeader": "یادداشت‌های آموزشی مدرس // راهنمای مهندس L", "hints": {"prev": "قبلی", "next": "بعدی", "adv": "پیشروی", "notes": "یادداشت", "fs": "تمام‌صفحه"}, "slides": [{"badge": "درس // متدولوژی رسمی COMPTIA", "title": "تقسیم و غلبه: مدل ۶ مرحله‌ای عیب‌یابی", "subtitle": "ایزوله‌سازی سیستماتیک خطا، جستجوی دودویی و اولویت‌بندی مشکلات سازمانی", "layout": "grid-2", "cards": [{"num": "01", "col": "green", "title": "حدس زدن را متوقف کنید. ایزوله‌سازی را آغاز کنید.", "desc": "تکنسین‌های مبتدی حدس می‌زنند و کابل‌ها را تصادفی جابجا می‌کنند. مهندسان شبکه و هکرهای قانونمند از <strong>مدل‌های استنتاجی دقیق</strong> استفاده می‌کنند. امروز شما چارچوب ۶ مرحله‌ای استاندارد <strong>CompTIA A+, Network+, Security+</strong> را فرا خواهید گرفت.", "cli": "root@beattie-net:~# ./isolate_fault.sh --target=\"enterprise-network\"\n[+] Establishing baseline telemetry...\n[+] Initializing 6-step diagnostic protocol...", "tag": "استاندارد CompTIA A+ (220-1101/1102) و Network+"}, {"num": "02", "col": "cyan", "title": "الگوریتم جستجوی دودویی (Binary Search)", "desc": "بررسی خطی ۷ لایه OSI زمان زیادی می‌گیرد. با اعمال <strong>تقسیم و غلبه در نقطه میانی OSI (لایه ۳/۴)</strong>، شما ۵۰٪ از دامنه مشکل را تنها با یک دستور CLI حذف می‌کنید (`ping 127.0.0.1` ← `ping gateway` ← `ping 8.8.8.8` ← `nslookup`).", "cli": "بازدهی الگوریتم:\n۷ تست خطی -> ۱۰۰٪ زمان\nتقسیم و غلبه (۳ تست) -> ۵۷٪ کاهش میانگین زمان رفع مشکل (MTTR)", "tag": "بهینه‌سازی میانگین زمان رفع عیب (MTTR)"}], "notes": "اسلاید ۱: توجه کلاس را جلب کنید. بپرسید: 'وقتی وای‌فای خانه قطع می‌شود اولین کارتان چیست؟' توضیح دهید که کشیدن سیم‌ها بدون بررسی لایه‌ها کاری غیرحرفه‌ای است. استانداردهای ۶ مرحله‌ای کامپتیا را معرفی کنید."}, {"badge": "واقعیت دنیای صنعت", "badgeClass": "amber", "title": "هزینه سنگین حدس‌های تصادفی", "subtitle": "چرا عیب‌یابی سیستماتیک در محیط‌های سازمانی و امنیت سایبری الزامی است", "layout": "grid-3", "cards": [{"num": "01", "col": "red", "title": "خسارت مالی قطعی شبکه ($$$)", "desc": "در مراکز داده سازمانی، قطعی شبکه به طور میانگین دقیقه‌ای <strong>۵,۶۰۰ دلار</strong> خسارت می‌زند. تعویض قطعات بدون فرضیه معتبر، قطعی‌های چندساعته میلیونی به بار می‌آورد.", "tag": "ریسک‌های مالی و عملیاتی"}, {"num": "02", "col": "amber", "title": "خسارت‌های جانبی ناخواسته", "desc": "تغییر تنظیمات یا ریستارت روترهای اصلی بدون برنامه کاری، باعث <strong>از کار افتادن سایر سرویس‌های وابسته</strong> شده و یک تیکت را به پنجاه تیکت تبدیل می‌کند.", "tag": "آشفتگی و تداخل تنظیمات"}, {"num": "03", "col": "green", "title": "راه‌حل‌های غیرقابل بازتولید", "desc": "اگر ۶ تنظیم مختلف را همزمان دستکاری کنید و شبکه وصل شود، <strong>کدام تنظیم مشکل را حل کرد؟</strong> نمی‌دانید! و هفته بعد هنگام بروز مجدد، از نقطه صفر شروع می‌کنید.", "tag": "متدولوژی علمی و مستندسازی"}], "notes": "اسلاید ۲: زمینه تجاری. روی هزینه توقف شبکه در بیمارستان‌ها و مراکز معاملات مالی تاکید کنید. اگر حین آزمون مدرسه یک سوئیچ اصلی ریستارت شود چه رخ می‌دهد؟"}, {"badge": "استاندارد رسمی COMPTIA", "badgeClass": "cyan", "title": "چرخه کامل ۶ مرحله‌ای عیب‌یابی", "subtitle": "متدولوژی متوالی و استاندارد بین‌المللی برای دریافت مدارک CompTIA", "layout": "grid-6", "cards": [{"num": "1", "col": "green", "title": "۱. شناسایی مشکل", "desc": "پرسش از کاربر، بررسی تغییرات اخیر، تحلیل لاگ‌های سیستم و بازتولید عیب."}, {"num": "2", "col": "cyan", "title": "۲. ایجاد نظریه علت", "desc": "بررسی موارد بدیهی. انتخاب استراتژی (از بالا به پایین، از پایین به بالا، یا تقسیم و غلبه)."}, {"num": "3", "col": "amber", "title": "۳. آزمایش نظریه", "desc": "اجرای تست هدفمند. در صورت تایید نظریه ادامه دهید؛ در غیر اینصورت نظریه جدید بسازید."}, {"num": "4", "col": "purple", "title": "۴. برنامه اقدام و اجرا", "desc": "تدوین مراحل دقیق، شناسایی عوارض جانبی و پلن بازگشت (Rollback)، و اجرای ایمن راه‌حل."}, {"num": "5", "col": "green", "title": "۵. تأیید و پیشگیری", "desc": "تأیید عملکرد کامل همراه با کاربر؛ اعمال اقدامات پیشگیرانه برای جلوگیری از تکرار."}, {"num": "6", "col": "cyan", "title": "۶. مستندسازی کامل", "desc": "ثبت علائم، علت ریشه‌ای، اقدامات انجام شده و نتایج در سیستم تیکتینگ و پایگاه دانش."}], "notes": "اسلاید ۳: کل چرخه. از کلاس بخواهید ۶ مرحله را با هم تکرار کنند: شناسایی، نظریه، تست، برنامه و اجرا، تأیید و پیشگیری، مستندسازی. مراحل ۵ و ۶ مهندس ارشد را از تکنسین عادی متمایز می‌کند."}, {"badge": "بررسی عمیق مرحله ۱", "title": "مرحله ۱: شناسایی مشکل و گردآوری اطلاعات", "subtitle": "جمع‌آوری تله‌متری و داده‌های سیستم قبل از دستکاری فایل‌های پیکربندی", "layout": "grid-2", "cards": [{"num": "01", "col": "green", "title": "پرسش از کاربر و بررسی تغییرات", "desc": "کاربران به ندرت علت فنی را گزارش می‌دهند؛ آنها علائم ظاهری را می‌گویند (مانند: <em>'سرور سوخته است'</em>). وظیفه شما:<br><br>• <strong>پرسش از کاربر:</strong> مشکل از کی شروع شد؟ دقیقا چه کاری انجام می‌دادید؟<br>• <strong>تغییرات محیطی:</strong> آیا نرم‌افزار جدیدی نصب شده؟ آپدیت شبانه سیستم عامل بوده؟<br>• <strong>بازتولید خطا:</strong> آیا می‌توانید خطا را مجدداً مشاهده و شبیه‌سازی کنید؟<br>• <strong>تعیین دامنه:</strong> آیا مشکل مربوط به ۱ سیستم است، کل VLAN یا تمام ساختمان؟"}, {"num": "02", "col": "cyan", "title": "استخراج تله‌متری و لاگ‌های سیستم", "desc": "همیشه قبل از نظریه‌پردازی، لاگ‌های سیستمی را بررسی کنید:", "cli": "# دستورات تشخیصی Windows PowerShell:\nGet-EventLog -LogName System -Newest 10 -EntryType Error\nipconfig /all\nTest-NetConnection -ComputerName 10.0.0.1 -Port 443\n\n# بررسی لاگ‌های لینوکس:\njournalctl -xe -u networking.service\ndmesg | grep -E \"eth|wlan|link\""}], "notes": "اسلاید ۴: به دانش‌آموزان یاد دهید چگونه سوالات دقیق بپرسند. خطرات اعتماد کورکورانه به حرف کاربر وقتی می‌گوید کل سرور خراب است چیست؟ همیشه لاگ‌ها را چک کنید."}, {"badge": "بررسی عمیق مراحل ۲ و ۳", "badgeClass": "cyan", "title": "مراحل ۲ و ۳: فرضیه‌سازی و اعتبارسنجی علمی", "subtitle": "تولید فرضیه و رد سریع مسیرهای اشتباه (Falsification)", "layout": "grid-2", "cards": [{"num": "02", "col": "cyan", "title": "ایجاد نظریه علت احتمالی", "desc": "<strong>موارد بدیهی را بررسی کنید:</strong> آیا کابل شبکه وصل است؟ آیا کلید Caps Lock روشن است؟ آیا لایسنس DHCP منقضی شده؟<br><br>نظریات خود را بر اساس احتمال اولویت‌بندی کنید. همیشه کم‌خطرترین و محتمل‌ترین فرضیه را اول تست کنید.", "cli": "نظریه الف (بالاترین احتمال): تایم‌اوت ریزالور DNS محلی\nنظریه ب (احتمال متوسط): جدول ARP گیت‌وی پاک شده\nنظریه ج (احتمال پایین): قطعی فیبر نوری سراسری ISP"}, {"num": "03", "col": "amber", "title": "آزمایش نظریه برای رد یا اثبات", "desc": "تست‌های ایزوله و مشخصی اجرا کنید که نتیجه دوگانه شفاف داشته باشند: <strong>تایید شده (PASS)</strong> یا <strong>رد شده (FAIL)</strong>.<br><br><strong>قاعده طلایی:</strong> اگر تست فرضیه را رد کرد، چیزی را تغییر ندهید! فرضیه جدید بسازید یا ارجاع دهید.", "cli": "C:\\> ping 8.8.8.8  -> پاسخ از 8.8.8.8 (موفق!)\nC:\\> nslookup google.com -> تایم‌اوت درخواست DNS (ناموفق!)\n[+] نظریه تایید شد: مسیریابی IP سالم است؛ اما سرویس DNS قطع می‌باشد."}], "notes": "اسلاید ۵: اصل ابطال‌پذیری. شکست یک تست خبر خوبی است چون یک مسیر غلط را کاملا می‌بندد. تاکید کنید: در مرحله ۳ فقط تست می‌کنیم، نه تعمیر!"}, {"badge": "بررسی عمیق مرحله ۴", "badgeClass": "purple", "title": "مرحله ۴: برنامه اقدام و اجرای راه‌حل", "subtitle": "اجرای ایمن با مدیریت تغییرات، کاهش ریسک و برنامه بازگشت (Rollback)", "layout": "grid-2", "cards": [{"num": "01", "col": "purple", "title": "ساختار یک برنامه اقدام حرفه‌ای", "desc": "هرگز تغییرات را بدون نقشه اعمال نکنید. برنامه حرفه‌ای شامل سه رکن است:<br><br>• <strong>مراحل گام‌به‌گام:</strong> دستورات دقیق، سینتکس پیکربندی و فایل‌های هدف.<br>• <strong>عوارض جانبی:</strong> آیا ریستارت پورت سوئیچ باعث قطعی تماس‌های VoIP در اتاق ۲۰۴ می‌شود؟<br>• <strong>برنامه بازگشت (Rollback):</strong> در صورت بروز مشکل حین آپدیت، چگونه در ۵ دقیقه سیستم را به حالت قبل برگردانیم؟"}, {"num": "02", "col": "cyan", "title": "پنجره‌های تعمیرات و مجوزها", "desc": "همیشه قبل از دستکاری زیرساخت، مجوز لازم را از کمیته مدیریت تغییرات دریافت کنید.", "cli": "تیکت تغییرات سازمانی #8849\nدامنه: آپدیت آدرس IP Helper برای VLAN 20 روی سوئیچ اصلی\nپنجره نگهداری: ۰۵:۰۰ الی ۰۵:۱۵ صبح (کمترین ترافیک)\nتحلیل اثرات: ۴۵ کلاینت آدرس DHCP خود را تمدید خواهند کرد\nپلن بازگشت: بازیابی کانفیگ قبلی از TFTP /backup/sw01_prev.cfg"}], "notes": "اسلاید ۶: در مورد مدیریت تغییر و گرفتن بکاپ قبل از اعمال تغییرات صحبت کنید."}, {"badge": "بررسی عمیق مراحل ۵ و ۶", "title": "مراحل ۵ و ۶: تأیید، پیشگیری و مستندسازی", "subtitle": "تکمیل چرخه عیب‌یابی، مقاوم‌سازی سیستم و ثبت تجربیات در پایگاه دانش", "layout": "grid-2", "cards": [{"num": "05", "col": "green", "title": "۵. تأیید سیستم و اقدامات پیشگیرانه", "desc": "<strong>۱. تأیید جامع:</strong> فقط به کنسول خود اکتفا نکنید؛ از کاربر بخواهید کار واقعی خود را جلوی شما انجام دهد.<br><br><strong>۲. پیشگیری از تکرار:</strong> چرا خرابی رخ داد؟ اگر کابل لگد شده بود، داکت محافظ نصب کنید. اگر تداخل IP بود، DHCP Snooping فعال کنید."}, {"num": "06", "col": "cyan", "title": "۶. ثبت یافته‌ها و اقدامات در تیکت", "desc": "اگر مشکل را مستند نکنید، گویی اصلا حل نشده است. فرمت استاندارد بستن تیکت:", "cli": "گزارش بستن تیکت پشتیبانی\nعلامت: کلاینت شماره ۱۲ آدرس 169.254.x.x (APIPA) نشان می‌دهد\nعلت ریشه‌ای: اتمام ۱۰۰٪ ظرفیت پول آدرس‌های DHCP\nاقدام انجام شده: افزایش ساب‌نت به /23 و کاهش مدت زمان اجاره به ۴ ساعت\nتأیید: کلاینت 192.168.10.142 گرفت و پینگ گیت‌وی موفق بود\nاقدام پیشگیرانه: تنظیم هشدار خودکار در پر شدن ۸۰٪ ظرفیت DHCP"}], "notes": "اسلاید ۷: بررسی سیستم باید با کاربر نهایی باشد. اهمیت مستندسازی در پایگاه دانش سازمان را بیان کنید."}, {"badge": "استراتژی کلیدی", "badgeClass": "cyan", "title": "جستجوی دودویی در متدولوژی 'تقسیم و غلبه'", "subtitle": "نصف کردن زمان عیب‌یابی با تست نقطه میانی لایه‌های هفت‌گانه OSI", "layout": "grid-2", "cards": [{"num": "01", "col": "red", "title": "روش کند: پیمایش خطی لایه‌های OSI (۷ مرحله)", "desc": "تست لایه ۱ (کابل) ← لایه ۲ (مک سوئیچ) ← لایه ۳ (IP گیت‌وی) ← لایه ۴ (پورت TCP) ← لایه ۵ ← لایه ۶ ← لایه ۷ (برنامه).", "cli": "تعداد کل تست‌های متوالی: ۷ تست\nزمان مورد نیاز: ۱۰۰٪\nمیزان سردرگمی: بسیار بالا"}, {"num": "02", "col": "green", "title": "روش حرفه‌ای: تست نقطه میانی لایه ۳ (۳ مرحله)", "desc": "تست را مستقیماً در <strong>لایه ۳ (لایه شبکه)</strong> شروع کنید.<br><br>• <strong>اگر لایه ۳ موفق بود (PASS):</strong> لایه‌های ۱، ۲ و ۳ صددرصد سالمند! به کابل یا پورت سوئیچ دست نزنید و مستقیم به لایه‌های ۴ تا ۷ بروید.<br><br>• <strong>اگر لایه ۳ ناموفق بود (FAIL):</strong> مشکل حتماً در لایه‌های ۱ تا ۳ است. وقت خود را برای تنظیمات مرورگر یا فایروال تلف نکنید."}], "notes": "اسلاید ۸: درخت جستجوی دودویی را رسم کنید. نشان دهید تست لایه ۳ چگونه نیمی از گزینه‌ها را حذف می‌کند."}, {"badge": "نردبان تشخیصی ۵ مرحله‌ای", "badgeClass": "amber", "title": "توالی طلایی دستورات عیب‌یابی شبکه", "subtitle": "این ۵ دستور متوالی CLI را برای عیب‌یابی هر شبکه سازمانی به خاطر بسپارید", "layout": "ladder", "steps": [{"num": "1", "cmd": "ping 127.0.0.1", "title": "تست استک محلی TCP/IP (لوپ‌بک)", "desc": "بررسی سلامت درایور کارت شبکه و استک پروتکل‌های سیستم عامل"}, {"num": "2", "cmd": "ping 192.168.1.1", "title": "تست گیت‌وی پیش‌فرض (خروجی LAN)", "desc": "بررسی کابل، پریز شبکه، پورت سوئیچ و اینترفیس روتر (لایه‌های ۱ تا ۳)"}, {"num": "3", "cmd": "ping 8.8.8.8", "title": "تست IP عمومی اینترنت (شبکه WAN)", "desc": "بررسی مودم مخابرات، سرویس NAT و مسیریابی اینترنت جهانی"}, {"num": "4", "cmd": "nslookup google.com", "title": "تست وضوح نام دامنه توسط DNS (لایه ۷)", "desc": "بررسی سرور DNS روی پورت ۵۳ و کش ترجمه نام‌های دامنه"}, {"num": "5", "cmd": "Test-NetConnection -Port 443", "title": "تست پورت و سرویس اپلیکیشن", "desc": "بررسی سرویس وب‌سرور، هندشیک TLS و فایروال‌های بازرسی وضعیت"}], "notes": "اسلاید ۹: نردبان طلایی عیب‌یابی. ۱. 127.0.0.1 (NIC). ۲. گیت‌وی (LAN). ۳. 8.8.8.8 (اینترنت). ۴. google.com (DNS). ۵. پورت 443 (برنامه). دانش‌آموزان باید این را یادداشت کنند."}, {"badge": "دموی تعاملی کارگاهی", "badgeClass": "cyan", "title": "شبیه‌ساز تعاملی نقطه میانی شبکه", "subtitle": "روی هر دستور تشخیصی کلیک کنید تا تقسیم دامنه مشکل را زنده مشاهده کنید", "layout": "sim", "notes": "اسلاید ۱۰: شبیه‌ساز تعاملی. روی پروجکتور کلیک کنید و تحلیل خروجی‌ها را نشان دهید."}, {"badge": "مطالعه موردی ۱ // سطح ۱", "badgeClass": "amber", "title": "بحران آدرس APIPA (169.254.x.x)", "subtitle": "علامت: ۸ کامپیوتر در کارگاه ناگهان پیام 'عدم دسترسی به اینترنت' نشان می‌دهند", "layout": "grid-2", "cards": [{"num": "01", "col": "amber", "title": "سناریوی رخداد عیب", "desc": "دانش‌آموزان سیستم‌های اتاق ۱۰۴ را روشن می‌کنند. چراغ‌های کارت شبکه سبز و ثابت است، اما دستور <code>ipconfig</code> این خروجی را می‌دهد:", "cli": "IPv4 Address. . . . . . . . . . . : 169.254.144.82\nSubnet Mask . . . . . . . . . . . : 255.255.0.0\nDefault Gateway . . . . . . . . . : [کاملاً خالی]", "tag": "آدرس‌دهی خودکار خصوصی IP (APIPA / RFC 3927)"}, {"num": "02", "col": "green", "title": "گردش کار تقسیم و غلبه", "desc": "• <strong>مرحله ۱:</strong> چراغ‌ها روشن است ← لایه‌های ۱ و ۲ فیزیکی سالمند.<br>• <strong>مرحله ۲:</strong> فرضیه ← سرویس DHCP سرور متوقف شده یا ظرفیت آدرس‌ها پر شده.<br>• <strong>مرحله ۳:</strong> تست ← بررسی وضعیت سرویس DHCP سرور.<br>• <strong>مرحله ۴:</strong> حل ← ریستارت سرویس DHCP و گسترش پول ساب‌نت.<br>• <strong>مرحله ۵:</strong> تأیید ← اجرای <code>ipconfig /renew</code> و دریافت <code>192.168.10.45</code>.<br>• <strong>مرحله ۶:</strong> مستندسازی ← ثبت گسترش پول DHCP در سیستم تیکتینگ."}], "notes": "اسلاید ۱۱: رخداد APIPA. چرا 169.254.0.0/16 رخ می‌دهد و چرا چراغ‌های سبز فقط سلامت لایه ۱ و ۲ را نشان می‌دهند."}, {"badge": "مطالعه موردی ۲ // رخداد سایبری", "badgeClass": "red", "title": "نشت مشکوک داده از طریق پورت 22 (SSH)", "subtitle": "علامت: سیستم تشخیص نفوذ (IDS) هشدار بحرانی ارسال ترافیک سنگین به سرور ناشناس را صادر می‌کند", "layout": "grid-2", "cards": [{"num": "01", "col": "red", "title": "رخداد امنیتی", "desc": "سیستم IDS هشدار بحرانی داد: <strong>سیستم شماره ۰۴ (192.168.10.84)</strong> در حال ارسال ۲.۴ گیگابایت داده رمزنگاری شده به یک سرور مشکوک خارجی روی پورت 22 (SSH) است.", "cli": "ALERT: [1:2010935:2] ET EXPLOIT Outbound SSH Connection to Threat Intel C2 IP 185.220.101.5\nSrc: 192.168.10.84:54210 -> Dst: 185.220.101.5:22", "tag": "اقدام امنیتی فوری: ایزوله‌سازی کلاینت آلوده"}, {"num": "02", "col": "amber", "title": "رسیدگی به حادثه در ۶ مرحله", "desc": "• <strong>مرحله ۱:</strong> ایزوله کردن کلاینت با قطع پورت سوئیچ مربوطه.<br>• <strong>مرحله ۲:</strong> فرضیه وجود تونل معکوس SSH و بدافزار سرقت داده.<br>• <strong>مرحله ۳:</strong> بررسی پروسه‌ها با دستور <code>netstat -ano | findstr :22</code>.<br>• <strong>مرحله ۴:</strong> کشتن PID بدافزار، ابطال دسترسی و مسدود کردن IP در فایروال.<br>• <strong>مرحله ۵:</strong> اسکن کامل بدافزار و نصب مجدد ویندوز از ایمیج سالم.<br>• <strong>مرحله ۶:</strong> تنظیم گزارش حادثه امنیتی و آپدیت رول‌های فایروال."}], "notes": "اسلاید ۱۲: رخداد امنیت سایبری. اهمیت ایزوله‌سازی سریع سیستم آلوده برای جلوگیری از نفوذ افقی در شبکه."}, {"badge": "مطالعه موردی ۳ // حمله لایه ۲", "badgeClass": "purple", "title": "حمله مسموم‌سازی ARP (داپل‌گانگر / قرین)", "subtitle": "علامت: کاربران با خطاهای امنیتی SSL/TLS در مرورگر و کندی شدید شبکه مواجه می‌شوند", "layout": "grid-2", "cards": [{"num": "01", "col": "purple", "title": "بررسی جدول نگاشت آدرس‌های ARP", "desc": "دستور <code>arp -a</code> را روی سیستم قربانی اجرا کرده و با این ناهنجاری مواجه می‌شوید:", "cli": "Interface: 192.168.1.105 --- 0x3\n  Internet Address      Physical Address      Type\n  192.168.1.1           b8-27-eb-93-11-aa     dynamic  <-- گیت‌وی پیش‌فرض\n  192.168.1.55          b8-27-eb-93-11-aa     dynamic  <-- لپ‌تاپ مهاجم!", "tag": "تشخیص: حمله مرد میانی (Man-in-the-Middle)"}, {"num": "02", "col": "green", "title": "رفع مشکل و ایمن‌سازی دائم", "desc": "• <strong>اقدام فوری:</strong> خاموش کردن پورت سوئیچ مربوط به مک <code>b8-27-eb-93-11-aa</code>.<br>• <strong>پاکسازی کلاینت:</strong> پاک کردن کش ARP با دستور <code>netsh interface ip delete arpcache</code>.<br>• <strong>مرحله ۵ پیشگیری (مقاوم‌سازی):</strong> فعال‌سازی <strong>Dynamic ARP Inspection (DAI)</strong> و <strong>DHCP Snooping</strong> روی سوئیچ‌های سیسکو.<br>• <strong>مرحله ۶ مستندسازی:</strong> ثبت مک‌ادرس مهاجم و گزارش به مدیریت."}], "notes": "اسلاید ۱۳: حمله مسموم‌سازی ARP. دو IP با مک یکسان نشانه حمله مرد میانی است! مکانیزم امنیتی DAI را تشریح کنید."}, {"badge": "استانداردهای مهندسی", "badgeClass": "cyan", "title": "چگونه یک فلوچارت منطقی استاندارد بکشیم", "subtitle": "تبدیل فرآیند عیب‌یابی به یک درخت تصمیم‌گیری دقیق و بدون ابهام", "layout": "grid-3", "cards": [{"num": "01", "col": "cyan", "title": "لوزی‌های تصمیم‌گیری", "desc": "هر تست در فلوچارت باید یک <strong>دستور قابل اجرای CLI</strong> باشد که دقیقاً دو خروجی شفاف دارد: <strong>[موفق ← بله]</strong> و <strong>[ناموفق ← خیر]</strong>.", "cli": "[ping 192.168.1.1]\n   /         \\\n [موفق]     [ناموفق]"}, {"num": "02", "col": "amber", "title": "پرهیز از عبارات مبهم", "desc": "هرگز عباراتی مثل <em>'بررسی کامپیوتر'</em> یا <em>'تعمیر اینترنت'</em> ننویسید. دستور مشخص را بنویسید: <code>ipconfig /flushdns</code> یا <code>tracert -d 8.8.8.8</code>.", "tag": "دقت مهندسی و حرفه‌ای"}, {"num": "03", "col": "green", "title": "نقاط پایانی معین", "desc": "هر مسیر باید به یکی از دو پایان شفاف ختم شود:<br><br>• <strong>[حل شد و در تیکت ثبت گردید]</strong><br>• <strong>[ارجاع به سطح ۲ / ادمین شبکه]</strong>", "tag": "بستن سازمان‌یافته فرآیند"}], "notes": "اسلاید ۱۴: معیارهای ارزیابی فلوچارت: دقت دستورات، دوشاخه‌ای بودن و انتهای مشخص."}, {"badge": "دستور کار فعالیت", "title": "شروع کارگاه عملی و حل سناریوها", "subtitle": "ترمینال خود را آماده کنید و وارد کاربرگ تمرینی شوید.", "layout": "launch", "notes": "اسلاید ۱۵: شروع فعالیت. دانش‌آموزان activity.html را باز کرده و تمرین ۵ سطح را شروع می‌کنند."}]},
+      en: {
+        brand: "BEATTIE-NET // CYBER & NET ENGINEERING",
+        sub: "COMPTIA 6-STEP TROUBLESHOOTING",
+        notes: "Notes [N]",
+        fs: "Fullscreen [F]",
+        act: "Launch Lab Activity →",
+        prev: "← PREV",
+        next: "NEXT →",
+        notesHeader: "TEACHER PRESENTER NOTES // MR. L'S GUIDE",
+        hints: { prev: "Previous", next: "Next", adv: "Advance", notes: "Notes", fs: "Fullscreen" },
+        slides: [
+          {
+            badge: "LESSON // COMPTIA CORE METHODOLOGY",
+            title: "Divide & Conquer: The 6-Step Model",
+            subtitle: "Systematic Fault Isolation, Binary Search Troubleshooting, & Enterprise Triage",
+            layout: "grid-2",
+            cards: [
+              { num: "01", col: "green", title: "Stop Guessing. Start Isolating.", desc: "Amateur technicians guess and swap random cables. Enterprise network engineers and ethical hackers use <strong>formal deductive models</strong>. Today, you master the exact 6-step framework codified by <strong>CompTIA A+, Network+, and Security+</strong>.", cli: "root@beattie-net:~# ./isolate_fault.sh --target=\"enterprise-network\"\n[+] Establishing baseline telemetry...\n[+] Initializing 6-step diagnostic protocol...", tag: "CompTIA A+ (220-1101/1102) · Network+ (N10-008/009)" },
+              { num: "02", col: "cyan", title: "The Binary Search Algorithm", desc: "Linear troubleshooting takes O(N) time. By applying <strong>Divide & Conquer at the OSI midpoint</strong> (Layer 3/4), you eliminate 50% of the entire problem space in a single CLI command (`ping 127.0.0.1` → `ping gateway` → `ping 8.8.8.8` → `nslookup`).", cli: "Algorithm Efficiency:\n7 Linear Tests -> 100% Time\nDivide & Conquer (3 Tests) -> 57% Faster Mean Time to Resolution (MTTR)", tag: "Mean Time to Resolution (MTTR) Optimization" }
+            ],
+            notes: "SLIDE 1: Hook the class immediately. Ask students: 'When your Wi-Fi drops at home, what is the first thing you do?' Point out that pulling random plugs without knowing what layer failed is amateur. Introduce the 6 steps as the universal CompTIA standard."
+          },
+          {
+            badge: "INDUSTRY REALITY CHECK",
+            badgeClass: "amber",
+            title: "The High Cost of Random Guessing",
+            subtitle: "Why systematic diagnosis is mandatory in corporate and cybersecurity environments",
+            layout: "grid-3",
+            cards: [
+              { num: "01", col: "red", title: "Wasted Downtime ($$$)", desc: "In enterprise datacenters, network downtime averages <strong>$5,600 per minute</strong>. Swapping parts randomly without a verified hypothesis creates multi-hour outages that cost companies millions.", tag: "Financial & Operational Risk" },
+              { num: "02", col: "amber", title: "Collateral Damage", desc: "Modifying settings, rebooting production routers, or updating drivers without an action plan often breaks <strong>unrelated dependent services</strong>, multiplying one ticket into fifty.", tag: "Configuration Drift & Chaos" },
+              { num: "03", col: "green", title: "Un-reproducible Fixes", desc: "If you tweak six settings simultaneously and the network starts working, <strong>which one fixed it?</strong> You don't know, and when it breaks next week, you will start from square one.", tag: "Scientific Methodology" }
+            ],
+            notes: "SLIDE 2: Business context. Emphasize downtime cost. In modern hospitals, data centers, and trading firms, network downtime is an existential crisis. Ask students what happens if you reboot a core switch during school testing."
+          },
+          {
+            badge: "THE COMPTIA 6-STEP STANDARD",
+            badgeClass: "cyan",
+            title: "The Complete Troubleshooting Lifecycle",
+            subtitle: "The industry-standard sequential methodology required for CompTIA Certification",
+            layout: "grid-6",
+            cards: [
+              { num: "1", col: "green", title: "Identify the Problem", desc: "Question the user, identify changes, review system logs, duplicate the symptom." },
+              { num: "2", col: "cyan", title: "Establish a Theory", desc: "Question the obvious. Consider Top-to-Bottom, Bottom-to-Top, or Divide & Conquer." },
+              { num: "3", col: "amber", title: "Test the Theory", desc: "Confirm root cause. If disproven, form a new theory or escalate immediately." },
+              { num: "4", col: "purple", title: "Plan & Implement", desc: "Establish action plan, identify potential side effects, and safely execute solution." },
+              { num: "5", col: "green", title: "Verify & Prevent", desc: "Verify full functionality with user; implement proactive preventive measures." },
+              { num: "6", col: "cyan", title: "Document Everything", desc: "Record findings, actions, and outcomes in enterprise ticketing & knowledge base." }
+            ],
+            notes: "SLIDE 3: The Complete Lifecycle. Have the class repeat the 6 steps aloud: Identify, Theorize, Test, Plan/Implement, Verify/Prevent, Document. Highlight that Step 5 (preventative) and Step 6 (documentation) are where good techs become senior engineers."
+          },
+          {
+            badge: "STEP 1 IN-DEPTH",
+            title: "Step 1: Identify the Problem",
+            subtitle: "Gathering raw telemetry before touching a single configuration file",
+            layout: "grid-2",
+            cards: [
+              { num: "01", col: "green", title: "Interrogation & Change Tracking", desc: "Users rarely report the technical root cause; they report symptoms (e.g. <em>'The server is dead'</em>). Your job:<br><br>• <strong>User Questioning:</strong> When did it start? What exactly were you doing?<br>• <strong>Environmental Changes:</strong> Was new software installed? Was an OS update pushed overnight?<br>• <strong>Duplication:</strong> Can you replicate the exact failure on command?<br>• <strong>Scope Determination:</strong> Is this 1 workstation, 1 VLAN, or the entire building?" },
+              { num: "02", col: "cyan", title: "Telemetry & Log Extraction", desc: "Always inspect authoritative system telemetry before theorizing:", cli: "# Windows PowerShell Diagnostic Commands:\nGet-EventLog -LogName System -Newest 10 -EntryType Error\nipconfig /all\nTest-NetConnection -ComputerName 10.0.0.1 -Port 443\n\n# Linux Forensic Inspection:\njournalctl -xe -u networking.service\ndmesg | grep -E \"eth|wlan|link\"" }
+            ],
+            notes: "SLIDE 4: Step 1 (Identify). Teach students how to ask open-ended vs closed-ended questions. Ask: 'What is the danger of trusting the user when they say the server is down?' Check logs and verify scope first."
+          },
+          {
+            badge: "STEPS 2 & 3 IN-DEPTH",
+            badgeClass: "cyan",
+            title: "Step 2 & 3: Theorize & Falsify",
+            subtitle: "Hypothesis generation and rapid scientific testing",
+            layout: "grid-2",
+            cards: [
+              { num: "02", col: "cyan", title: "Establish Theory of Probable Cause", desc: "<strong>Question the Obvious:</strong> Is the patch cable disconnected? Is caps lock on? Did the DHCP lease expire?<br><br>Rank your theories by likelihood. Always test the least invasive, highest-probability hypothesis first.", cli: "Theory A (Highest Prob): Local DNS resolver timeout\nTheory B (Medium Prob): Default gateway dropped ARP\nTheory C (Low Prob): ISP fiber cut across town" },
+              { num: "03", col: "amber", title: "Test the Theory (Falsification)", desc: "Execute targeted, isolated tests. A good test produces a clean binary outcome: <strong>CONFIRMED</strong> or <strong>DISPROVEN</strong>.<br><br><strong>Critical Rule:</strong> If your test disproves the theory, do not fix anything! Form a new theory or escalate.", cli: "C:\\> ping 8.8.8.8  -> Reply from 8.8.8.8 (PASS!)\nC:\\> nslookup google.com -> DNS request timed out (FAIL!)\n[+] THEORY CONFIRMED: IP routing works; DNS resolution failed." }
+            ],
+            notes: "SLIDE 5: Steps 2 & 3. Falsification! Explain that a failed test is great news because it permanently eliminates a wrong direction. Emphasize: DO NOT fix anything in Step 3; Step 3 is only for testing!"
+          },
+          {
+            badge: "STEP 4 IN-DEPTH",
+            badgeClass: "purple",
+            title: "Step 4: Plan of Action & Implementation",
+            subtitle: "Safe execution with change management, risk mitigation, & rollback plans",
+            layout: "grid-2",
+            cards: [
+              { num: "01", col: "purple", title: "Constructing the Action Plan", desc: "Never deploy a fix blind. A professional action plan consists of three core pillars:<br><br>• <strong>Step-by-Step Remediation:</strong> Exact commands, config syntax, and files to modify.<br>• <strong>Potential Side Effects:</strong> Will bouncing this switch interface drop active VoIP phone calls in room 204?<br>• <strong>Rollback Protocol:</strong> If the update corrupts the database, how do you restore the exact previous snapshot in under 5 minutes?" },
+              { num: "02", col: "cyan", title: "Change Windows & Authorization", desc: "Always obtain appropriate authorization (Change Advisory Board / Lead Systems Admin) before modifying enterprise infrastructure.", cli: "ENTERPRISE CHANGE TICKET #8849\nScope: Core Switch VLAN 20 IP Helper Update\nOutage Window: 05:00 - 05:15 EST (Low impact)\nImpact Analysis: 45 Workstations will renew DHCP leases\nRollback Plan: Restore running-config from TFTP /backup/sw01_prev.cfg" }
+            ],
+            notes: "SLIDE 6: Step 4 (Plan & Implement). Talk about Change Management in real enterprises. Mention outage windows and rollback procedures (e.g. taking a VM snapshot before installing an update)."
+          },
+          {
+            badge: "STEPS 5 & 6 IN-DEPTH",
+            title: "Step 5 & 6: Verification & Documentation",
+            subtitle: "Closing the loop, preventative hardening, and building organizational memory",
+            layout: "grid-2",
+            cards: [
+              { num: "05", col: "green", title: "Verify & Prevent", desc: "<strong>1. Full System Verification:</strong> Do not just check your command line; have the end user perform their real daily workflow in front of you.<br><br><strong>2. Preventative Hardening:</strong> Why did it fail? If a cable failed from being stepped on, install floor raceways. If an IP address conflicted, configure DHCP reservation and Dynamic ARP Inspection (DAI)." },
+              { num: "06", col: "cyan", title: "Document Findings, Actions & Outcomes", desc: "If you don't document it, the problem was never solved. Standard ticketing format:", cli: "TICKET RESOLUTION REPORT\nSymptom: Lab Workstation 12 showing 169.254.x.x (APIPA)\nRoot Cause: DHCP Scope 192.168.10.0/24 100% exhausted\nRemediation: Expanded subnet to /23, reduced lease time to 4h\nVerification: Workstation acquired 192.168.10.142; pinged Gateway\nPreventative Action: Configured 80% capacity alert on DHCP server" }
+            ],
+            notes: "SLIDE 7: Steps 5 & 6. Verification must involve the user. Then explain preventative maintenance: why did it happen? If a cable failed, replace it with molded boot Cat6. Show ticket documentation format."
+          },
+          {
+            badge: "CORE STRATEGY",
+            badgeClass: "cyan",
+            title: "The 'Divide & Conquer' Binary Search",
+            subtitle: "Slashing diagnosis time by testing the midpoint of the OSI 7-Layer Stack",
+            layout: "grid-2",
+            cards: [
+              { num: "01", col: "red", title: "The Slow Way: Linear OSI Walk (7 Steps)", desc: "Testing Layer 1 (Cable) → Layer 2 (Switch MAC) → Layer 3 (IP Gateway) → Layer 4 (TCP Port) → Layer 5 (Session) → Layer 6 (SSL) → Layer 7 (App).", cli: "Total Sequential Tests: 7\nTime Required: 100%\nFrustration Factor: HIGH" },
+              { num: "02", col: "green", title: "The Pro Way: Midpoint Binary Search (3 Steps)", desc: "Test directly at <strong>Layer 3 (Network Layer)</strong>.<br><br>• <strong>If Layer 3 PASSES:</strong> Layers 1, 2, and 3 are 100% confirmed healthy! Never touch a patch cable or switch port. Zoom straight to Layer 4-7.<br><br>• <strong>If Layer 3 FAILS:</strong> The issue is definitely in Layer 1-3. Never waste time checking browser settings, firewalls, or TLS certs." }
+            ],
+            notes: "SLIDE 8: Divide and Conquer Core Concept. Draw the binary search tree on the board. 7 linear tests take too long. By testing Layer 3, we cut the problem domain in half immediately."
+          },
+          {
+            badge: "THE 5-STEP MIDPOINT LADDER",
+            badgeClass: "amber",
+            title: "The Golden Diagnostic Sequence",
+            subtitle: "Memorize these 5 sequential CLI commands for enterprise network troubleshooting",
+            layout: "ladder",
+            steps: [
+              { num: "1", cmd: "ping 127.0.0.1", title: "Test Local TCP/IP Stack", desc: "Verifies local NIC driver and OS protocol stack" },
+              { num: "2", cmd: "ping 192.168.1.1", title: "Test Local Gateway (LAN Exit)", desc: "Verifies Patch Cable, Wall Jack, Switch, & Router Interface (L1-L3)" },
+              { num: "3", cmd: "ping 8.8.8.8", title: "Test External Public IP (WAN)", desc: "Verifies ISP modem, NAT, Default Route, & WAN Internet Routing" },
+              { num: "4", cmd: "nslookup google.com", title: "Test DNS Name Resolution", desc: "Verifies Port 53 DNS resolver, root hints, & caching server" },
+              { num: "5", cmd: "Test-NetConnection -Port 443", title: "Test Application Port & Service", desc: "Verifies Web Daemon, TLS Handshake, & State Inspection Firewall" }
+            ],
+            notes: "SLIDE 9: The 5-Step Midpoint Ladder. This is the Holy Grail! 1. 127.0.0.1 (NIC). 2. Gateway (LAN). 3. 8.8.8.8 (WAN). 4. google.com (DNS). 5. Port 443 (App). Have students copy this into their notebooks."
+          },
+          {
+            badge: "INTERACTIVE LAB DEMO",
+            badgeClass: "cyan",
+            title: "Live Midpoint Diagnostic Sandbox",
+            subtitle: "Click each diagnostic test to see how the problem space splits in real-time",
+            layout: "sim",
+            notes: "SLIDE 10: Interactive Sandbox. Walk through the clicks live on the projector. Show what happens when Gateway passes vs fails."
+          },
+          {
+            badge: "CASE STUDY 1 // TIER 1 TRIAGE",
+            badgeClass: "amber",
+            title: "The 169.254.x.x (APIPA) Outage",
+            subtitle: "Symptom: 8 lab workstations suddenly display 'No Internet Access'",
+            layout: "grid-2",
+            cards: [
+              { num: "01", col: "amber", title: "The Incident Scenario", desc: "Students boot up lab computers in Room 104. Link lights on NICs are solid green. However, running <code>ipconfig</code> reveals:", cli: "IPv4 Address. . . . . . . . . . . : 169.254.144.82\nSubnet Mask . . . . . . . . . . . : 255.255.0.0\nDefault Gateway . . . . . . . . . : [BLANK]", tag: "Automatic Private IP Addressing (APIPA / RFC 3927)" },
+              { num: "02", col: "green", title: "Divide & Conquer Action Flow", desc: "• <strong>Step 1:</strong> Link lights on → Physical Layer 1 & 2 link are UP.<br>• <strong>Step 2:</strong> Theory → DHCP Server service crashed or scope exhausted.<br>• <strong>Step 3:</strong> Test → Check DHCP server daemon status.<br>• <strong>Step 4:</strong> Fix → Restart DHCP daemon & expand scope.<br>• <strong>Step 5:</strong> Verify → Run <code>ipconfig /renew</code> on client; verify address <code>192.168.10.45</code> received.<br>• <strong>Step 6:</strong> Document → Log DHCP lease pool expansion." }
+            ],
+            notes: "SLIDE 11: Case Study 1 (APIPA). Teach students why 169.254.0.0/16 happens. Link lights are green because physical Layer 1/2 is UP, but DHCP failed at Layer 3/7. Have them practice `ipconfig /renew`."
+          },
+          {
+            badge: "CASE STUDY 2 // CYBERSECURITY TIER 2",
+            badgeClass: "red",
+            title: "Suspicious Outbound Port 22 Exfiltration",
+            subtitle: "Symptom: Intrusion Detection System (IDS) alerts on high-bandwidth outbound SSH traffic",
+            layout: "grid-2",
+            cards: [
+              { num: "01", col: "red", title: "The Security Incident", desc: "Snort/Suricata IDS triggers high-severity alert: <strong>Workstation-04 (192.168.10.84)</strong> is sending 2.4 GB of encrypted traffic to a known malicious Russian VPS on Port 22 (SSH).", cli: "ALERT: [1:2010935:2] ET EXPLOIT Outbound SSH Connection to Threat Intel C2 IP 185.220.101.5\nSrc: 192.168.10.84:54210 -> Dst: 185.220.101.5:22", tag: "Immediate Security Action: Quarantine Host" },
+              { num: "02", col: "amber", title: "Incident Response 6-Step Triage", desc: "• <strong>Step 1:</strong> Identify host & quarantine endpoint (disable switch port).<br>• <strong>Step 2:</strong> Theorize unauthorized persistence / reverse shell.<br>• <strong>Step 3:</strong> Inspect processes with <code>netstat -ano | findstr :22</code>.<br>• <strong>Step 4:</strong> Terminate rogue PID, revoke credentials, block C2 IP.<br>• <strong>Step 5:</strong> Full forensic antivirus scan & re-image.<br>• <strong>Step 6:</strong> File Incident Response report & update firewall rules." }
+            ],
+            notes: "SLIDE 12: Case Study 2 (Cybersecurity Incident). Transition into Ethical Hacking. Explain Port 22 SSH exfiltration. Immediate action: isolate endpoint from switch port before attacker can move laterally."
+          },
+          {
+            badge: "CASE STUDY 3 // LAYER 2 CYBER ATTACK",
+            badgeClass: "purple",
+            title: "The ARP Spoofing Doppelgänger",
+            subtitle: "Symptom: Multiple lab users report browser SSL/TLS certificate warnings & slow speeds",
+            layout: "grid-2",
+            cards: [
+              { num: "01", col: "purple", title: "Inspecting the ARP Table", desc: "You run <code>arp -a</code> on a victim workstation and make an alarming discovery:", cli: "Interface: 192.168.1.105 --- 0x3\n  Internet Address      Physical Address      Type\n  192.168.1.1           b8-27-eb-93-11-aa     dynamic  <-- Default Gateway\n  192.168.1.55          b8-27-eb-93-11-aa     dynamic  <-- Student Laptop!", tag: "Diagnosis: Man-in-the-Middle (MitM) Attack" },
+              { num: "02", col: "green", title: "Remediation & Permanent Prevention", desc: "• <strong>Immediate Fix:</strong> Shut down switch port hosting MAC <code>b8-27-eb-93-11-aa</code>.<br>• <strong>Client Remediation:</strong> Flush ARP cache with <code>netsh interface ip delete arpcache</code>.<br>• <strong>Step 5 Prevention (Hardening):</strong> Enable <strong>Dynamic ARP Inspection (DAI)</strong> and <strong>DHCP Snooping</strong> on Cisco switches.<br>• <strong>Step 6 Documentation:</strong> Document rogue MAC and report incident." }
+            ],
+            notes: "SLIDE 13: Case Study 3 (ARP Poisoning). Look at `arp -a`. Two IPs with the same MAC address means a Man-in-the-Middle attacker! Introduce Dynamic ARP Inspection (DAI) and DHCP Snooping."
+          },
+          {
+            badge: "ENGINEERING STANDARDS",
+            badgeClass: "cyan",
+            title: "How to Draw an Elite Logic Flowchart",
+            subtitle: "Turning your troubleshooting methodology into a bulletproof decision tree",
+            layout: "grid-3",
+            cards: [
+              { num: "01", col: "cyan", title: "Decision Diamonds", desc: "Every test in your flowchart must be a <strong>testable command</strong> with exactly two exit branches: <strong>[PASS → TRUE]</strong> and <strong>[FAIL → FALSE]</strong>.", cli: "[ping 192.168.1.1]\n   /         \\\n [PASS]     [FAIL]" },
+              { num: "02", col: "amber", title: "No Ambiguous Steps", desc: "Never write <em>'Check computer'</em> or <em>'Fix internet'</em>. Write the exact CLI command: <code>ipconfig /flushdns</code>, <code>tracert -d 8.8.8.8</code>, or <code>net start spooler</code>.", tag: "Precision Engineering" },
+              { num: "03", col: "green", title: "Terminal Endpoints", desc: "Every path must terminate in either:<br><br>• <strong>[RESOLVED & DOCUMENTED]</strong><br>• <strong>[ESCALATE TO TIER 2 / NET ADMIN]</strong>", tag: "Definitive Closure" }
+            ],
+            notes: "SLIDE 14: Logic Flowcharts. Explain the rubric for today's lab activity. Every diamond must be an exact CLI command, and every branch must lead to pass/fail next steps."
+          },
+          {
+            badge: "MISSION BRIEFING",
+            title: "Deploying to the Interactive Lab",
+            subtitle: "Ready your terminal. Open your companion activity worksheet.",
+            layout: "launch",
+            notes: "SLIDE 15: Mission Launch! Instruct students to open `activity.html` and begin Tier 1 through Tier 5 scenarios."
+          }
+        ]
+      },
+
+      ar: {
+        brand: "شبكة بيتي // هندسة الشبكات والأمن السيبراني",
+        sub: "منهجية حل المشكلات المعتمدة من CompTIA (الخطوات الست)",
+        notes: "ملاحظات المعلم [N]",
+        fs: "ملء الشاشة [F]",
+        act: "تشغيل ورقة عمل النشاط العملي ←",
+        prev: "← السابق",
+        next: "التالي →",
+        notesHeader: "دليل وملاحظات المعلم // إرشادات الأستاذ L",
+        hints: { prev: "السابق", next: "التالي", adv: "تقدم", notes: "ملاحظات", fs: "ملء الشاشة" },
+        slides: [
+          {
+            badge: "الدرس // المنهجية الأساسية لـ CompTIA",
+            title: "فرّق تسُد: نموذج الخطوات الست لحل الأعطال",
+            subtitle: "العزل المنهجي للأعطال، التشخيص بالبحث الثنائي، وفرز المشكلات المؤسسية",
+            layout: "grid-2",
+            cards: [
+              { num: "01", col: "green", title: "توقف عن التخمين. ابدأ بالعزل المنهجي.", desc: "الفنيون المبتدئون يخمنون ويستبدلون الكابلات عشوائياً. مهندسو الشبكات وخبراء الأمن السيبراني المحترفون يستخدمون <strong>نماذج استنتاجية صارمة</strong>. اليوم ستتقن الإطار المعتمد في اختبارات <strong>CompTIA A+ و Network+ و Security+</strong>.", cli: "root@beattie-net:~# ./isolate_fault.sh --target=\"enterprise-network\"\n[+] Establishing baseline telemetry...\n[+] Initializing 6-step diagnostic protocol...", tag: "معتمد لاختبارات CompTIA A+ و Network+" },
+              { num: "02", col: "cyan", title: "خوارزمية البحث الثنائي (Binary Search)", desc: "استكشاف الأعطال خطياً عبر طبقات OSI السبع يستغرق وقتاً طويلاً. عبر تطبيق مبدأ <strong>فرّق تسُد في نقطة المنتصف (الطبقة 3/4)</strong>، ستختزل 50% من نطاق المشكلة بأمر سطر أوامر واحد فقط (`ping 127.0.0.1` ثم `ping gateway` ثم `ping 8.8.8.8` ثم `nslookup`).", cli: "كفاءة الخوارزمية:\n7 اختبارات خطية -> 100% من الوقت المستغرق\nفرّق تسُد (3 اختبارات فقط) -> تقليل وقت الحل (MTTR) بنسبة 57%", tag: "تحسين متوسط وقت الإصلاح (MTTR)" }
+            ],
+            notes: "الشريحة 1: اجذب انتباه الفصل فوراً. اسأل الطلاب: 'عندما تنقطع شبكة الواي فاي في منزلك، ما هو أول شيء تفعله؟' وضح أن فصل الأسلاك عشوائياً دون معرفة الطبقة المتعطلة تصرف غير مهني. عرّفهم على معيار CompTIA العالمي."
+          },
+          {
+            badge: "واقع سوق العمل",
+            badgeClass: "amber",
+            title: "التكلفة الباهظة للتخمين العشوائي",
+            subtitle: "لماذا يعد التشخيص المنهجي إلزامياً في بيئات العمل ومراكز العمليات السيبرانية",
+            layout: "grid-3",
+            cards: [
+              { num: "01", col: "red", title: "الخسائر المالية لانقطاع الخدمة ($$$)", desc: "في مراكز البيانات المؤسسية، يكلف توقف الشبكة في المتوسط <strong>5,600 دولار في الدقيقة الواحدة</strong>. استبدال القطع عشوائياً يطيل فترات الانقطاع ويكلف الملايين.", tag: "مخاطر تشغيلية ومالية جسيمة" },
+              { num: "02", col: "amber", title: "الأضرار الجانبية غير المقصودة", desc: "تعديل الإعدادات أو إعادة تشغيل الموجهات الرئيسية (Routers) دون خطة عمل مدروسة يتسبب غالباً في <strong>تعطيل خدمات تابعة أخرى</strong>، مما يحول تذكرة دعم واحدة إلى خمسين تذكرة.", tag: "تشتت الإعدادات وفوضى الشبكة" },
+              { num: "03", col: "green", title: "حلول غير قابلة للتكرار أو التوثيق", desc: "إذا قمت بتعديل ستة إعدادات مختلفة في نفس الوقت وعادت الشبكة للعمل، <strong>أي إعداد منها هو الذي أصلح المشكلة؟</strong> لن تعرف ذلك، وعندما تتكرر المشكلة الأسبوع القادم ستبدأ من الصفر.", tag: "المنهجية العلمية والتوثيق" }
+            ],
+            notes: "الشريحة 2: سياق الأعمال. ركز على تكلفة توقف الأنظمة في المستشفيات ومراكز التداول المالي. اسأل الطلاب عما يحدث إذا قام فني بإعادة تشغيل محول رئيسي أثناء اختبار مدرسي."
+          },
+          {
+            badge: "معيار CompTIA المعتمد",
+            badgeClass: "cyan",
+            title: "دورة حياة حل المشكلات الكاملة",
+            subtitle: "الخطوات المتسلسلة المعتمدة عالمياً للحصول على شهادات CompTIA الاحترافية",
+            layout: "grid-6",
+            cards: [
+              { num: "1", col: "green", title: "1. تحديد المشكلة", desc: "استجواب المستخدم، حصر التغييرات الأخيرة، فحص سجلات النظام (Logs)، وإعادة تمثيل العطل." },
+              { num: "2", col: "cyan", title: "2. صياغة فرضية السبب", desc: "افحص الأمور البديهية أولاً. اختر المنهجية (من أعلى لأسفل، من أسفل لأعلى، أو فرّق تسُد)." },
+              { num: "3", col: "amber", title: "3. اختبار الفرضية", desc: "نفّذ اختباراً دقيقاً. إذا ثبتت الفرضية تقدم للحل؛ وإذا بطلت صِغ فرضية جديدة أو صعّد المشكلة." },
+              { num: "4", col: "purple", title: "4. خطة العمل والتنفيذ", desc: "ضع خطة عمل تفصيلية، حدد الآثار الجانبية المحتملة وخطة التراجع (Rollback)، ثم نفذ الحل بأمان." },
+              { num: "5", col: "green", title: "5. التحقق والوقاية", desc: "تحقق من عمل النظام بالكامل مع المستخدم؛ طبّق تدابير وقائية لمنع تكرار المشكلة مستقبلاً." },
+              { num: "6", col: "cyan", title: "6. التوثيق الشامل", desc: "سجل الأعراض، والسبب الجذري، والإجراءات المتخذة، والنتائج في نظام التذاكر وقاعدة المعرفة." }
+            ],
+            notes: "الشريحة 3: اطلب من الفصل ترديد الخطوات الست معاً بصوت عالٍ: تحديد، فرضية، اختبار، خطة وتنفيذ، تحقق ووقاية، توثيق. أكد أن الخطوتين 5 و 6 هما ما يميز المهندس المحترف عن الفني المبتدئ."
+          },
+          {
+            badge: "الخطوة الأولى بالتفصيل",
+            title: "الخطوة 1: تحديد المشكلة والتحقق منها",
+            subtitle: "جمع البيانات والقياسات الرقمية قبل لمس أي ملف إعداد في النظام",
+            layout: "grid-2",
+            cards: [
+              { num: "01", col: "green", title: "استجواب المستخدم وحصر التغييرات", desc: "المستخدمون نادراً ما يذكرون السبب الجذري؛ بل يصفون الأعراض الظاهرة (مثل: <em>'الخادم مات'</em>). واجبك كفني محترف:<br><br>• <strong>استجواب المستخدم:</strong> متى بدأت المشكلة؟ ماذا كنت تفعل بالتحديد؟<br>• <strong>التغييرات البيئية:</strong> هل تم تثبيت برامج جديدة؟ هل طُبق تحديث للنظام ليلاً؟<br>• <strong>تكرار العطل:</strong> هل يمكنك إعادة تمثيل نفس الخطأ أمامك؟<br>• <strong>تحديد النطاق:</strong> هل المشكلة في جهاز واحد، أم في شبكة VLAN كاملة، أم في المبنى بأكمله؟" },
+              { num: "02", col: "cyan", title: "استخراج السجلات والبيانات الرقمية", desc: "افحص دائماً السجلات الرسمية للنظام قبل بناء أي فرضية:", cli: "# أوامر الفحص في Windows PowerShell:\nGet-EventLog -LogName System -Newest 10 -EntryType Error\nipconfig /all\nTest-NetConnection -ComputerName 10.0.0.1 -Port 443\n\n# الفحص والتحقيق الجنائي في أنظمة Linux:\njournalctl -xe -u networking.service\ndmesg | grep -E \"eth|wlan|link\"" }
+            ],
+            notes: "الشريحة 4: علم الطلاب كيفية طرح الأسئلة المفتوحة والمغلقة. اسأل: 'ما خطورة تصديق تشخيص المستخدم عندما يقول إن الخادم معطل تماماً؟' يجب دائماً التحقق من السجلات أولاً."
+          },
+          {
+            badge: "الخطوتان 2 و 3 بالتفصيل",
+            badgeClass: "cyan",
+            title: "الخطوتان 2 و 3: بناء الفرضيات واختبارها",
+            subtitle: "توليد الفرضيات والتحقق العلمي السريع بالاستبعاد (Falsification)",
+            layout: "grid-2",
+            cards: [
+              { num: "02", col: "cyan", title: "صياغة فرضية السبب المحتمل", desc: "<strong>افحص الأمور البديهية:</strong> هل كابل الشبكة مفصول؟ هل زر Caps Lock مفعل؟ هل انتهت صلاحية عنوان الـ DHCP؟<br><br>رتب الفرضيات حسب الأرجحية. اختبر دائماً الفرضية الأسهل والأكثر احتمالاً أولاً.", cli: "الفرضية أ (الأعلى احتمالاً): مهلة خادم الـ DNS المحلي انتهت\nالفرضية ب (احتمال متوسط): البوابة الافتراضية فقدت جدول ARP\nالفرضية ج (احتمال ضعيف): انقطاع كابل الألياف الضوئية للمزود في المدينة" },
+              { num: "03", col: "amber", title: "اختبار الفرضية للتحقق منها", desc: "نفذ اختبارات محددة ومعزولة تنتج نتيجة ثنائية واضحة: <strong>تم التأكيد (PASS)</strong> أو <strong>تم الاستبعاد (FAIL)</strong>.<br><br><strong>قاعدة ذهبية:</strong> إذا أثبت الاختبار بطلان الفرضية، لا تقم بأي تعديل! صِغ فرضية جديدة أو صعّد البلاغ.", cli: "C:\\> ping 8.8.8.8  -> Reply from 8.8.8.8 (نجاح!)\nC:\\> nslookup google.com -> DNS request timed out (فشل!)\n[+] تم تأكيد الفرضية: توجيه الـ IP سليم؛ بينما خادم الـ DNS معطل." }
+            ],
+            notes: "الشريحة 5: الاستبعاد العلمي! وضح للطلاب أن فشل الفرضية هو خبر ممتاز لأنه يستبعد مساراً خاطئاً بالكامل. أكد بشدة: لا تقم بأي إصلاح في الخطوة 3؛ الخطوة 3 مخصصة للاختبار فقط!"
+          },
+          {
+            badge: "الخطوة الرابعة بالتفصيل",
+            badgeClass: "purple",
+            title: "الخطوة 4: وضع خطة العمل والتنفيذ الآمن",
+            subtitle: "التنفيذ المنظم مع إدارة التغيير، تقليل المخاطر، وخطة التراجع الفوري",
+            layout: "grid-2",
+            cards: [
+              { num: "01", col: "purple", title: "عناصر خطة العمل المحترفة", desc: "إياك وتطبيق الحلول بعشوائية. تتكون خطة العمل الاحترافية من ثلاثة ركائز أساسية:<br><br>• <strong>خطوات الإصلاح التفصيلية:</strong> الأوامر الدقيقة، ونصوص الإعدادات، والملفات المستهدفة.<br>• <strong>حصر الآثار الجانبية:</strong> هل ستؤدي إعادة تشغيل هذا المنفذ إلى قطع مكالمات الهاتف (VoIP) النشطة في الغرفة 204؟<br>• <strong>بروتوكول التراجع (Rollback):</strong> إذا تسبب التحديث في عطل أكبر، كيف تعيد النظام لحالته السابقة خلال 5 دقائق؟" },
+              { num: "02", col: "cyan", title: "نوافذ الصيانة وإذن التعديل", desc: "احصل دائماً على الإذن الرسمي (فريق إدارة التغيير / كبير مهندسي الأنظمة) قبل تعديل البنية التحتية للمؤسسة.", cli: "تذكرة تغيير البنية المؤسسية #8849\nالنطاق: تحديث عنوان IP Helper لشبكة VLAN 20 على المحول الرئيسي\nنافذة الصيانة: 05:00 - 05:15 صباحاً (تأثير منخفض)\nتحليل التأثير: 45 محطة عمل ستجدد عناوين الـ DHCP الخاصة بها\nخطة التراجع: استعادة ملف الإعدادات السابق عبر TFTP /backup/sw01_prev.cfg" }
+            ],
+            notes: "الشريحة 6: ناقش مع الطلاب مفهوم إدارة التغيير ونوافذ الصيانة وأهمية أخذ لقطات للنظام (Snapshots) قبل التحديث."
+          },
+          {
+            badge: "الخطوتان 5 و 6 بالتفصيل",
+            title: "الخطوتان 5 و 6: التحقق والتوثيق المؤسسي",
+            subtitle: "إغلاق حلقة الدعم، التحصين الوقائي، وبناء الذاكرة المعرفية للمؤسسة",
+            layout: "grid-2",
+            cards: [
+              { num: "05", col: "green", title: "5. التحقق من النظام والتدابير الوقائية", desc: "<strong>1. التحقق الشامل:</strong> لا تكتفِ بفحص شاشة الأوامر الخاصة بك؛ اطلب من المستخدم إنجاز مهام عمله الفعلية أمامك.<br><br><strong>2. التحصين الوقائي:</strong> لماذا حدث العطل؟ إذا تضرر كابل بسبب الدوس عليه، ركّب مسارات أرضية واقية. وإذا حدث تعارض في العناوين، فعّل خاصية DHCP Snooping." },
+              { num: "06", col: "cyan", title: "6. توثيق النتائج والإجراءات في التذكرة", desc: "إذا لم توثق ما قمت به، فالخلل يعتبر كأنه لم يُحل قط. التنسيق القياسي لتوثيق التذاكر:", cli: "تقرير إغلاق تذكرة الدعم الفني\nالعَرَض: محطة العمل 12 تظهر عنوان 169.254.x.x (APIPA)\nالسبب الجذري: نفاد نطاق الـ DHCP 192.168.10.0/24 بنسبة 100%\nالإصلاح المنفذ: توسيع قناع الشبكة إلى /23 وتقليص مدة التأجير إلى 4 ساعات\nالتحقق: حصل الجهاز على 192.168.10.142 وتم الاتصال بالبوابة بنجاح\nالإجراء الوقائي: تفعيل تنبيه تلقائي عند وصول سعة الـ DHCP إلى 80%" }
+            ],
+            notes: "الشريحة 7: التحقق يجب أن يشمل المستخدم نفسه. ثم اشرح أهمية الصيانة الوقائية والتوثيق القياسي في قواعد المعرفة (KB)."
+          },
+          {
+            badge: "الاستراتيجية الأساسية",
+            badgeClass: "cyan",
+            title: "البحث الثنائي: منهجية 'فرّق تسُد'",
+            subtitle: "اختصار وقت التشخيص للنصف عبر فحص نقطة المنتصف في طبقات OSI السبع",
+            layout: "grid-2",
+            cards: [
+              { num: "01", col: "red", title: "الطريقة البطيئة: الفحص الخطي المتسلسل (7 خطوات)", desc: "فحص الطبقة 1 (الكابل) ← الطبقة 2 (عنوان MAC للمحول) ← الطبقة 3 (عنوان IP البوابة) ← الطبقة 4 (المنفذ) ← الطبقة 5 ← الطبقة 6 ← الطبقة 7 (التطبيق).", cli: "إجمالي الفحوصات المتسلسلة: 7 اختبارات\nالوقت المستغرق: 100%\nمستوى الإحباط: مرتفع جداً" },
+              { num: "02", col: "green", title: "طريقة المحترفين: البحث الثنائي عند نقطة المنتصف (3 خطوات)", desc: "ابدأ الفحص مباشرة عند <strong>الطبقة 3 (طبقة الشبكة)</strong>.<br><br>• <strong>إذا نجحت الطبقة 3 (PASS):</strong> فهذا يثبت 100% أن الطبقات 1 و 2 و 3 سليمة تماماً! إياك ولمس الكابل أو منفذ المحول، وانتقل فوراً للطبقات 4 إلى 7.<br><br>• <strong>إذا فشلت الطبقة 3 (FAIL):</strong> المشكلة حتماً في الطبقات 1 إلى 3. لا تضيع وقتك في فحص المتصفح أو جدار الحماية." }
+            ],
+            notes: "الشريحة 8: ارسم شجرة البحث الثنائي على السبورة. وضح كيف أن فحص الطبقة 3 يقسم مجال البحث إلى نصفين فوراً."
+          },
+          {
+            badge: "سلّم التشخيص الخماسي",
+            badgeClass: "amber",
+            title: "التسلسل التشخيصي الذهبي للمحترفين",
+            subtitle: "احفظ هذه الأوامر الخمسة المتسلسلة لتشخيص أي عطل في شبكات المؤسسات",
+            layout: "ladder",
+            steps: [
+              { num: "1", cmd: "ping 127.0.0.1", title: "اختبار مكدس TCP/IP المحلي (Loopback)", desc: "يتحقق من سلامة تعريف بطاقة الشبكة ومكدس بروتوكولات نظام التشغيل" },
+              { num: "2", cmd: "ping 192.168.1.1", title: "اختبار البوابة الافتراضية (مخرج الشبكة المحلية)", desc: "يتحقق من الكابل، مقبس الجدار، منفذ المحول، وواجهة الموجه (الطبقات 1-3)" },
+              { num: "3", cmd: "ping 8.8.8.8", title: "اختبار عنوان IP خارجي عام (الإنترنت WAN)", desc: "يتحقق من مودم المزود، ترجمة العناوين NAT، والتوجيه عبر الإنترنت" },
+              { num: "4", cmd: "nslookup google.com", title: "اختبار دقة وخادم الـ DNS (الطبقة 7)", desc: "يتحقق من عمل خادم الـ DNS على المنفذ 53 وترجمة أسماء النطاقات" },
+              { num: "5", cmd: "Test-NetConnection -Port 443", title: "اختبار منفذ الخدمة والتطبيق", desc: "يتحقق من تشغيل خادم الويب، ومصافحة TLS، وجدار الحماية" }
+            ],
+            notes: "الشريحة 9: التسلسل الذهبي الخماسي! 1. 127.0.0.1 (البطاقة). 2. البوابة (الشبكة المحلية). 3. 8.8.8.8 (الإنترنت). 4. google.com (DNS). 5. المنفذ 443 (التطبيق). اطلب من الطلاب تدوينها في دفاترهم."
+          },
+          {
+            badge: "عرض عملي تفاعلي",
+            badgeClass: "cyan",
+            title: "المختبر التجريبي التفاعلي لنقطة المنتصف",
+            subtitle: "اضغط على أوامر التشخيص أدناه لتشاهد كيف ينقسم نطاق البحث لحظياً",
+            layout: "sim",
+            notes: "الشريحة 10: المحاكي التفاعلي. قم باستعراض النقر المباشر أمام الطلاب على جهاز العرض."
+          },
+          {
+            badge: "دراسة حالة 1 // المستوى الأول",
+            badgeClass: "amber",
+            title: "أزمة عنوان APIPA (169.254.x.x)",
+            subtitle: "العَرَض: 8 محطات عمل في المعمل تظهر فجأة 'لا يوجد اتصال بالإنترنت'",
+            layout: "grid-2",
+            cards: [
+              { num: "01", col: "amber", title: "سيناريو الحادثة الفنية", desc: "قام الطلاب بتشغيل الحواسيب في القاعة 104. أضواء بطاقات الشبكة خضراء وثابتة، لكن تشغيل أمر <code>ipconfig</code> أظهر التالي:", cli: "IPv4 Address. . . . . . . . . . . : 169.254.144.82\nSubnet Mask . . . . . . . . . . . : 255.255.0.0\nDefault Gateway . . . . . . . . . : [فارغ تماماً]", tag: "عنونة IP التلقائية الخاصة (APIPA / RFC 3927)" },
+              { num: "02", col: "green", title: "خطوات المعالجة بمبدأ فرّق تسُد", desc: "• <strong>الخطوة 1:</strong> الأضواء تعمل ← الطبقتان 1 و 2 سليمتان تماماً.<br>• <strong>الخطوة 2:</strong> الفرضية ← توقف خدمة خادم الـ DHCP أو نفاد العناوين.<br>• <strong>الخطوة 3:</strong> الاختبار ← فحص حالة خدمة الـ DHCP على الخادم.<br>• <strong>الخطوة 4:</strong> الحل ← إعادة تشغيل الخدمة وتوسيع نطاق العناوين.<br>• <strong>الخطوة 5:</strong> التحقق ← تنفيذ <code>ipconfig /renew</code> على الأجهزة واستلام عنوان <code>192.168.10.45</code>.<br>• <strong>الخطوة 6:</strong> التوثيق ← تسجيل توسيع النطاق في نظام التذاكر." }
+            ],
+            notes: "الشريحة 11: دراسة حالة APIPA. وضح للطلاب سبب ظهور 169.254.0.0/16 وأن أضواء البطاقة الخضراء تعني سلامة الطبقة 1 و 2 فقط."
+          },
+          {
+            badge: "دراسة حالة 2 // حادثة سيبرانية",
+            badgeClass: "red",
+            title: "تسريب بيانات مشبوه عبر المنفذ 22 (SSH)",
+            subtitle: "العَرَض: نظام كشف التسلل (IDS) يطلق تنبيهاً عالي الخطورة لحركة بيانات صادرة ضخمة",
+            layout: "grid-2",
+            cards: [
+              { num: "01", col: "red", title: "الحادثة الأمنية", desc: "أطلق نظام كشف التسلل (IDS) تنبيهاً حرجاً: <strong>محطة العمل 04 (192.168.10.84)</strong> ترسل 2.4 جيجابايت من البيانات المشفرة إلى خادم روسي مشبوه عبر المنفذ 22 (SSH).", cli: "ALERT: [1:2010935:2] ET EXPLOIT Outbound SSH Connection to Threat Intel C2 IP 185.220.101.5\nSrc: 192.168.10.84:54210 -> Dst: 185.220.101.5:22", tag: "الإجراء الأمني الفوري: عزل الجهاز المصاب" },
+              { num: "02", col: "amber", title: "الاستجابة للحادثة وفق الخطوات الست", desc: "• <strong>الخطوة 1:</strong> عزل الجهاز فوراً عبر تعطيل منفذ المحول.<br>• <strong>الخطوة 2:</strong> فرضية وجود نفق SSH عكسي وبرمجية خبيثة.<br>• <strong>الخطوة 3:</strong> فحص العمليات بأمر <code>netstat -ano | findstr :22</code>.<br>• <strong>الخطوة 4:</strong> إنهاء العملية الخبيثة وحظر عنوان الخادم الخارجي في جدار الحماية.<br>• <strong>الخطوة 5:</strong> فحص جنائي شامل وإعادة تثبيت النظام من النسخة المعتمدة.<br>• <strong>الخطوة 6:</strong> كتابة تقرير الاستجابة للحوادث وتحديث قواعد جدار الحماية." }
+            ],
+            notes: "الشريحة 12: دراسة حالة أمن سيبراني. وضح للطلاب أهمية العزل الفوري للجهاز المصاب لمنع المهاجم من التحرك أفقياً في الشبكة."
+          },
+          {
+            badge: "دراسة حالة 3 // هجوم على الطبقة الثانية",
+            badgeClass: "purple",
+            title: "هجوم انتحال ARP (القرين / Doppelgänger)",
+            subtitle: "العَرَض: المستخدمون يواجهون تحذيرات أمنية في المتصفح وتراجعاً شديداً في سرعة الشبكة",
+            layout: "grid-2",
+            cards: [
+              { num: "01", col: "purple", title: "فحص جدول مطابقة العناوين (ARP)", desc: "قمت بتشغيل أمر <code>arp -a</code> على أحد الأجهزة المصابة واكتشفت ما يلي:", cli: "Interface: 192.168.1.105 --- 0x3\n  Internet Address      Physical Address      Type\n  192.168.1.1           b8-27-eb-93-11-aa     dynamic  <-- البوابة الافتراضية\n  192.168.1.55          b8-27-eb-93-11-aa     dynamic  <-- حاسوب طالب!", tag: "التشخيص: هجوم الوسيط (Man-in-the-Middle)" },
+              { num: "02", col: "green", title: "الإصلاح والتحصين الدائم", desc: "• <strong>الحل الفوري:</strong> إيقاف منفذ المحول المرتبط بالماك <code>b8-27-eb-93-11-aa</code>.<br>• <strong>تنظيف الأجهزة:</strong> مسح ذاكرة ARP بأمر <code>netsh interface ip delete arpcache</code>.<br>• <strong>الخطوة 5 الوقاية (التحصين):</strong> تفعيل ميزتي <strong>Dynamic ARP Inspection (DAI)</strong> و <strong>DHCP Snooping</strong> على محولات سيسكو.<br>• <strong>الخطوة 6 التوثيق:</strong> تسجيل عنوان MAC المهاجم وإبلاغ الإدارة." }
+            ],
+            notes: "الشريحة 13: هجوم تسميم ARP. عندما يشترك عنوانان في نفس الماك أدرس، فهذا يعني وجود مهاجم وسيط في الشبكة! اشرح ميزة DAI."
+          },
+          {
+            badge: "معايير الهندسة ورسم المخططات",
+            badgeClass: "cyan",
+            title: "كيف ترسم مخطط تدفق منطقي احترافي",
+            subtitle: "تحويل منهجيتك في التفكير إلى شجرة قرارات برمجية دقيقة لا تقبل اللبس",
+            layout: "grid-3",
+            cards: [
+              { num: "01", col: "cyan", title: "معينات اتخاذ القرار (Diamonds)", desc: "كل اختبار في المخطط يجب أن يكون <strong>أمراً قابلاً للتنفيذ الفعلي</strong> وله مخرجان محددان فقط: <strong>[نجاح ← نعم]</strong> و <strong>[فشل ← لا]</strong>.", cli: "[ping 192.168.1.1]\n   /         \\\n [نجاح]     [فشل]" },
+              { num: "02", col: "amber", title: "تجنب العبارات الغامضة", desc: "لا تكتب أبداً عبارات مثل <em>'افحص الحاسوب'</em> أو <em>'أصلح الشبكة'</em>. اكتب الأمر الدقيق: <code>ipconfig /flushdns</code> أو <code>tracert -d 8.8.8.8</code>.", tag: "الدقة الهندسية والاحترافية" },
+              { num: "03", col: "green", title: "نقاط النهاية الحاسمة", desc: "يجب أن ينتهي كل مسار بأحد خيارين واضحين:<br><br>• <strong>[تم الحل وتوثيق التذكرة]</strong><br>• <strong>[تصعيد البلاغ للمستوى 2 / مهندس الشبكات]</strong>", tag: "الحسم والإغلاق المنظم" }
+            ],
+            notes: "الشريحة 14: وضح للطلاب معايير تقييم ورقة النشاط اليوم: الدقة، عدم الغموض، وتحديد مسارات واضحة لكل قرار."
+          },
+          {
+            badge: "توجيهات المهمة",
+            title: "الانطلاق إلى ورقة النشاط العملي",
+            subtitle: "جهّز الطرفية الخاصة بك وافتح ورقة عمل المختبر المرافقة.",
+            layout: "launch",
+            notes: "الشريحة 15: اطلب من الطلاب فتح activity.html وبدء العمل على المستويات الخمسة."
+          }
+        ]
+      },
+
+      uk: {
+        brand: "МЕРЕЖА БІТТІ // КІБЕРБЕЗПЕКА ТА МЕРЕЖЕВА ІНЖЕНЕРІЯ",
+        sub: "6-ЕТАПНА МОДЕЛЬ УСУНЕННЯ НЕСПРАВНОСТЕЙ COMPTIA",
+        notes: "Нотатки викладача [N]",
+        fs: "На весь екран [F]",
+        act: "Запустити практичну роботу →",
+        prev: "← НАЗАД",
+        next: "ДАЛІ →",
+        notesHeader: "НОТАТКИ ДЛЯ ВИКЛАДАЧА // МЕТОДИЧНІ ВКАЗІВКИ",
+        hints: { prev: "Назад", next: "Далі", adv: "Вперед", notes: "Нотатки", fs: "На весь екран" },
+        slides: [
+          {
+            badge: "УРОК // БАЗОВА МЕТОДОЛОГІЯ COMPTIA",
+            title: "Розділяй і володарюй: 6-етапна модель",
+            subtitle: "Систематична ізоляція збоїв, бінарний пошук та корпоративна діагностика",
+            layout: "grid-2",
+            cards: [
+              { num: "01", col: "green", title: "Годі вгадувати. Почніть ізолювати збої.", desc: "Початківці вгадують і навмання міняють кабелі. Корпоративні мережеві інженери та етичні хакери використовують <strong>суворі дедуктивні моделі</strong>. Сьогодні ви опануєте офіційну 6-етапну модель <strong>CompTIA A+, Network+ та Security+</strong>.", cli: "root@beattie-net:~# ./isolate_fault.sh --target=\"enterprise-network\"\n[+] Establishing baseline telemetry...\n[+] Initializing 6-step diagnostic protocol...", tag: "Стандарт CompTIA A+ (220-1101/1102) та Network+" },
+              { num: "02", col: "cyan", title: "Алгоритм бінарного пошуку (Divide & Conquer)", desc: "Лінійний пошук через усі 7 рівнів OSI займає багато часу. Застосовуючи <strong>бінарний поділ на середньому рівні OSI (L3/L4)</strong>, ви відсікаєте 50% проблеми однією командою (`ping 127.0.0.1` → `ping gateway` → `ping 8.8.8.8` → `nslookup`).", cli: "Ефективність алгоритму:\n7 послідовних тестів -> 100% часу\nБінарний пошук (3 тести) -> на 57% швидший час вирішення (MTTR)", tag: "Оптимізація середнього часу відновлення (MTTR)" }
+            ],
+            notes: "СЛАЙД 1: Зацікавте клас. Запитайте: 'Що ви робите вдома, коли зникає інтернет?' Поясніть, що хаотичне смикання дротів — це непрофесійно. Представте 6 кроків CompTIA."
+          },
+          {
+            badge: "РЕАЛЬНІСТЬ КОРПОРАТИВНИХ МЕРЕЖ",
+            badgeClass: "amber",
+            title: "Висока ціна хаотичного вгадування",
+            subtitle: "Чому систематичний підхід є обов'язковим у корпоративній сфері та кібербезпеці",
+            layout: "grid-3",
+            cards: [
+              { num: "01", col: "red", title: "Фінансові збитки від простою ($$$)", desc: "У корпоративних дата-центрах хвилина простою мережі коштує в середньому <strong>$5,600</strong>. Хаотична заміна компонентів без перевірки гіпотези затягує відновлення на години.", tag: "Фінансові та операційні ризики" },
+              { num: "02", col: "amber", title: "Супутні пошкодження систем", desc: "Зміна налаштувань, перезавантаження магістральних маршрутизаторів без плану часто порушує роботу <strong>пов'язаних сервісів</strong>, перетворюючи одну заявку на десятки.", tag: "Конфігураційний хаос" },
+              { num: "03", col: "green", title: "Неповторюваність результату", desc: "Якщо ви одночасно змінили 6 налаштувань і зв'язок з'явився, <strong>яка дія спрацювала?</strong> Ви не знаєте, і при повторенні збою доведеться починати все спочатку.", tag: "Наукова методологія" }
+            ],
+            notes: "СЛАЙД 2: Бізнес-контекст. Наголосіть на ціні простою в лікарнях чи банках. Що станеться, якщо перезавантажити комутатор під час шкільного тестування?"
+          },
+          {
+            badge: "СТАНДАРТ COMPTIA",
+            badgeClass: "cyan",
+            title: "Повний життєвий цикл діагностики",
+            subtitle: "Загальноприйнята послідовна методологія, необхідна для сертифікації CompTIA",
+            layout: "grid-6",
+            cards: [
+              { num: "1", col: "green", title: "1. Ідентифікація проблеми", desc: "Опитування користувача, виявлення змін, аналіз системних логів, відтворення симптому." },
+              { num: "2", col: "cyan", title: "2. Складання теорії причини", desc: "Перевірка очевидного. Формулювання гіпотези (згори вниз, знизу вгору, або поділ навпіл)." },
+              { num: "3", col: "amber", title: "3. Тестування теорії", desc: "Цільовий тест. Якщо підтверджено — перехід до плану; якщо спростовано — нова теорія або ескалація." },
+              { num: "4", col: "purple", title: "4. План дій та впровадження", desc: "Складання плану дій, оцінка побічних наслідків, план відкату (Rollback) та безпечне впровадження." },
+              { num: "5", col: "green", title: "5. Перевірка та запобігання", desc: "Перевірка працездатності разом із користувачем; впровадження превентивних заходів." },
+              { num: "6", col: "cyan", title: "6. Повне документування", desc: "Фіксація симптомів, першопричини, виконаних дій та результату в тікет-системі та базі знань." }
+            ],
+            notes: "СЛАЙД 3: Повторіть усі 6 кроків уголос: Ідентифікація, Теорія, Тест, План/Впровадження, Перевірка/Запобігання, Документування. Кроки 5 і 6 відрізняють профі від аматора."
+          },
+          {
+            badge: "ЕТАП 1 ДЕТАЛЬНО",
+            title: "Етап 1: Ідентифікація проблеми",
+            subtitle: "Збір телеметрії та фактів перед зміною будь-якої конфігурації",
+            layout: "grid-2",
+            cards: [
+              { num: "01", col: "green", title: "Опитування та фіксація змін", desc: "Користувачі рідко повідомляють технічну причину; вони кажуть про симптоми (наприклад: <em>'Сервер упав'</em>). Ваша задача:<br><br>• <strong>Опитування:</strong> Коли це почалося? Що ви робили в цей момент?<br>• <strong>Зміни середовища:</strong> Чи встановлювали нове ПЗ? Чи були нічні оновлення ОС?<br>• <strong>Відтворення:</strong> Чи можете ви повторити цей збій прямо зараз?<br>• <strong>Визначення масштабу:</strong> Проблема в одного ПК, у всього VLAN, чи в усій будівлі?" },
+              { num: "02", col: "cyan", title: "Збір системних логів та телеметрії", desc: "Завжди аналізуйте логи перед тим, як будувати теорії:", cli: "# Діагностичні команди Windows PowerShell:\nGet-EventLog -LogName System -Newest 10 -EntryType Error\nipconfig /all\nTest-NetConnection -ComputerName 10.0.0.1 -Port 443\n\n# Форензика та аналіз логів Linux:\njournalctl -xe -u networking.service\ndmesg | grep -E \"eth|wlan|link\"" }
+            ],
+            notes: "СЛАЙД 4: Навчіть ставити відкриті запитання. Чому не можна сліпо довіряти користувачу, коли він каже, що зламався весь сервер? Перевіряйте логи."
+          },
+          {
+            badge: "ЕТАПИ 2 ТА 3 ДЕТАЛЬНО",
+            badgeClass: "cyan",
+            title: "Етапи 2 і 3: Гіпотези та верифікація",
+            subtitle: "Формулювання теорій та їх швидке спростування (Falsification)",
+            layout: "grid-2",
+            cards: [
+              { num: "02", col: "cyan", title: "Складання теорії ймовірної причини", desc: "<strong>Перевірте очевидне:</strong> Чи підключений патч-корд? Чи не увімкнено Caps Lock? Чи не закінчилася оренда DHCP?<br><br>Ранжуйте теорії за ймовірністю. Завжди спочатку перевіряйте найпростішу та найвірогіднішу гіпотезу.", cli: "Теорія А (Найвища ймов.): Тайм-аут локального DNS-резолвера\nТеорія Б (Середня ймов.): Шлюз скинув таблицю ARP\nТеорія В (Низька ймов.): Обрив оптоволокна провайдера" },
+              { num: "03", col: "amber", title: "Тестування теорії (Верифікація)", desc: "Виконуйте ізольовані тести з чітким бінарним результатом: <strong>ПІДТВЕРДЖЕНО (PASS)</strong> або <strong>СПРОСТОВАНО (FAIL)</strong>.<br><br><strong>Правило:</strong> Якщо тест спростував теорію, нічого не ремонтуйте! Сформулюйте нову гіпотезу або ескалюйте заявку.", cli: "C:\\> ping 8.8.8.8  -> Відповідь від 8.8.8.8 (PASS!)\nC:\\> nslookup google.com -> DNS request timed out (FAIL!)\n[+] ТЕОРІЮ ПІДТВЕРДЖЕНО: IP-маршрутизація працює; DNS не відповідає." }
+            ],
+            notes: "СЛАЙД 5: Принцип спростування. Невдалий тест — це чудовий результат, бо він виключає хибний шлях. Наголосіть: на Етапі 3 ми ТІЛЬКИ тестуємо, а не ремонтуємо!"
+          },
+          {
+            badge: "ЕТАП 4 ДЕТАЛЬНО",
+            badgeClass: "purple",
+            title: "Етап 4: План дій та безпечне впровадження",
+            subtitle: "Управління змінами, мінімізація ризиків та процедура відкату (Rollback)",
+            layout: "grid-2",
+            cards: [
+              { num: "01", col: "purple", title: "Складання плану дій", desc: "Ніколи не застосовуйте виправлення наосліп. Професійний план містить три елементи:<br><br>• <strong>Покрокові дії:</strong> Точні команди, синтаксис конфігурації та файли.<br>• <strong>Побічні ефекти:</strong> Чи не перерве перезавантаження порту активні дзвінки IP-телефонії в каб. 204?<br>• <strong>План відкату:</strong> Якщо оновлення пошкодить базу даних, як повернути попередній стан за 5 хвилин?" },
+              { num: "02", col: "cyan", title: "Вікна обслуговування та авторизація", desc: "Завжди отримуйте дозвіл (Change Advisory Board / Головний адмін) перед зміною конфігурації корпоративної мережі.", cli: "ЗАЯВКА НА ЗМІНУ #8849\nОбласть: Оновлення IP Helper для VLAN 20 на магістральному комутаторі\nВікно робіт: 05:00 - 05:15 EST (Мінімальний вплив)\nАналіз: 45 робочих станцій оновлять оренду DHCP\nПлан відкату: Відновлення running-config з TFTP /backup/sw01_prev.cfg" }
+            ],
+            notes: "СЛАЙД 6: Розповісти про Change Management, вікна регламентних робіт та резервні копії перед змінами."
+          },
+          {
+            badge: "ЕТАПИ 5 ТА 6 ДЕТАЛЬНО",
+            title: "Етапи 5 і 6: Перевірка та документування",
+            subtitle: "Закриття циклу, превентивні заходи та збереження корпоративного досвіду",
+            layout: "grid-2",
+            cards: [
+              { num: "05", col: "green", title: "5. Повна перевірка та запобігання збоям", desc: "<strong>1. Комплексна перевірка:</strong> Не обмежуйтесь консоллю; попросіть користувача виконати його реальну робочу задачу у вашій присутності.<br><br><strong>2. Превентивні заходи:</strong> Чому це сталося? Якщо кабель перетерся, встановіть кабель-канал. Якщо був конфлікт IP, увімкніть DHCP Snooping." },
+              { num: "06", col: "cyan", title: "6. Документування у базі знань", desc: "Якщо дія не задокументована — проблема не вирішена. Стандартний звіт за заявкою:", cli: "ЗВІТ ПРО ВИРІШЕННЯ ІНЦИДЕНТУ\nСимптом: ПК 12 показує адресу 169.254.x.x (APIPA)\nПершопричина: Пул DHCP 192.168.10.0/24 вичерпано на 100%\nВиконані дії: Розширено маску підмережі до /23, оренду скорочено до 4 год\nПеревірка: ПК отримав адресу 192.168.10.142; пінг до шлюзу успішний\nПревентивна дія: Налаштовано алерт при заповненні пулу DHCP на 80%" }
+            ],
+            notes: "СЛАЙД 7: Перевірка повинна виконуватись разом з користувачем. Розкажіть про превентивні заходи та ведення бази знань (KB)."
+          },
+          {
+            badge: "ОСНОВНА СТРАТЕГІЯ",
+            badgeClass: "cyan",
+            title: "Бінарний пошук 'Розділяй і володарюй'",
+            subtitle: "Скорочення часу діагностики вдвічі через тест середньої точки моделі OSI",
+            layout: "grid-2",
+            cards: [
+              { num: "01", col: "red", title: "Повільний шлях: Послідовний прохід OSI (7 кроків)", desc: "Тест Рівня 1 (Кабель) → Рівня 2 (MAC комутатора) → Рівня 3 (IP шлюзу) → Рівня 4 (TCP-порт) → Рівня 5 → Рівня 6 → Рівня 7 (Додаток).", cli: "Всього послідовних тестів: 7\nВитрачений час: 100%\nРівень фрустрації: ВИСОКИЙ" },
+              { num: "02", col: "green", title: "Шлях профі: Бінарний поділ навпіл (3 кроки)", desc: "Тестуйте безпосередньо <strong>Рівень 3 (Мережевий рівень)</strong>.<br><br>• <strong>Якщо Рівень 3 ПРАЦЮЄ (PASS):</strong> Рівні 1, 2 і 3 гарантовано справні! Не чіпайте кабель і порт. Одразу переходьте до рівнів 4–7.<br><br>• <strong>Якщо Рівень 3 НЕ ПРАЦЮЄ (FAIL):</strong> Проблема точно на рівнях 1–3. Не гайте час на перевірку браузера чи сертифікатів." }
+            ],
+            notes: "СЛАЙД 8: Намалюйте дерево бінарного пошуку. Поясніть, що перевірка рівня L3 одразу відсікає половину стеку."
+          },
+          {
+            badge: "5 КРОКІВ ДІАГНОСТИКИ",
+            badgeClass: "amber",
+            title: "Золота послідовність діагностики мережі",
+            subtitle: "Запам'ятайте ці 5 послідовних команд для розв'язання будь-якої мережевої проблеми",
+            layout: "ladder",
+            steps: [
+              { num: "1", cmd: "ping 127.0.0.1", title: "Тест локального стеку TCP/IP", desc: "Перевіряє драйвер мережевої карти та стек протоколів ОС" },
+              { num: "2", cmd: "ping 192.168.1.1", title: "Тест локального шлюзу (вихід з LAN)", desc: "Перевіряє патч-корд, розетку, порт комутатора та інтерфейс роутера (L1-L3)" },
+              { num: "3", cmd: "ping 8.8.8.8", title: "Тест зовнішньої публічної IP-адреси (WAN)", desc: "Перевіряє модем провайдера, NAT-маршрутизацію та інтернет-канал" },
+              { num: "4", cmd: "nslookup google.com", title: "Тест розпізнавання DNS (Рівень 7)", desc: "Перевіряє DNS-сервер на порті 53, кеш та резолвінг доменних імен" },
+              { num: "5", cmd: "Test-NetConnection -Port 443", title: "Тест порту додатка та сервісу", desc: "Перевіряє веб-сервер, сертифікат TLS та правила брандмауера" }
+            ],
+            notes: "СЛАЙД 9: Золотий алгоритм. 1. 127.0.0.1 (NIC). 2. Шлюз (LAN). 3. 8.8.8.8 (WAN). 4. google.com (DNS). 5. Порт 443 (App). Учні мають записати це в конспект."
+          },
+          {
+            badge: "ІНТЕРАКТИВНИЙ ДЕМО-СТЕНД",
+            badgeClass: "cyan",
+            title: "Інтерактивний симулятор бінарного пошуку",
+            subtitle: "Натискайте діагностичні команди нижче, щоб побачити поділ простору збою",
+            layout: "sim",
+            notes: "СЛАЙД 10: Інтерактивний стенд. Продемонструйте на проєкторі логіку відсікання помилок."
+          },
+          {
+            badge: "ПРАКТИЧНИЙ КЕЙС 1 // TIER 1",
+            badgeClass: "amber",
+            title: "Збій APIPA (Адреса 169.254.x.x)",
+            subtitle: "Симптом: 8 ПК у комп'ютерному класі раптово втратили доступ до мережі",
+            layout: "grid-2",
+            cards: [
+              { num: "01", col: "amber", title: "Опис інциденту", desc: "Студенти увімкнули комп'ютери в каб. 104. Індикатори лінку світяться зеленим, але команда <code>ipconfig</code> видає:", cli: "IPv4 Address. . . . . . . . . . . : 169.254.144.82\nSubnet Mask . . . . . . . . . . . : 255.255.0.0\nDefault Gateway . . . . . . . . . : [ПОРОЖНЬО]", tag: "Автоматична приватна IP-адресація (APIPA / RFC 3927)" },
+              { num: "02", col: "green", title: "Алгоритм вирішення 'Розділяй і володарюй'", desc: "• <strong>Крок 1:</strong> Лінки горять → Фізичні рівні 1 і 2 в нормі.<br>• <strong>Крок 2:</strong> Теорія → Служба DHCP впала або закінчився пул адрес.<br>• <strong>Крок 3:</strong> Тест → Перевірка служби DHCP на сервері.<br>• <strong>Крок 4:</strong> Дія → Перезапуск служби та розширення пулу.<br>• <strong>Крок 5:</strong> Перевірка → Виконання <code>ipconfig /renew</code> на ПК, отримано <code>192.168.10.45</code>.<br>• <strong>Крок 6:</strong> Документування → Фіксація розширення пулу DHCP у тікеті." }
+            ],
+            notes: "СЛАЙД 11: Кейс APIPA. Поясніть діапазон 169.254.0.0/16. Індикатори лінку активні, бо фізичний рівень працює, а збій на рівні сервісу DHCP."
+          },
+          {
+            badge: "ПРАКТИЧНИЙ КЕЙС 2 // ІНЦИДЕНТ КІБЕРБЕЗПЕКИ",
+            badgeClass: "red",
+            title: "Підозріла ексфільтрація даних через SSH (Порт 22)",
+            subtitle: "Симптом: Система виявлення вторгнень (IDS) сигналізує про витік трафіку",
+            layout: "grid-2",
+            cards: [
+              { num: "01", col: "red", title: "Інцидент безпеки", desc: "Система IDS зафіксувала критичний алерт: <strong>ПК-04 (192.168.10.84)</strong> передає 2.4 ГБ зашифрованого трафіку на підозрілий зарубіжний сервер через порт 22 (SSH).", cli: "ALERT: [1:2010935:2] ET EXPLOIT Outbound SSH Connection to Threat Intel C2 IP 185.220.101.5\nSrc: 192.168.10.84:54210 -> Dst: 185.220.101.5:22", tag: "Невідкладна дія: Ізоляція скомпрометованого ПК" },
+              { num: "02", col: "amber", title: "Реагування за 6 кроками", desc: "• <strong>Крок 1:</strong> Ізолювати хост (відключити порт комутатора).<br>• <strong>Крок 2:</strong> Теорія про зворотний SSH-тунель зловмисника.<br>• <strong>Крок 3:</strong> Перевірка процесів командою <code>netstat -ano | findstr :22</code>.<br>• <strong>Крок 4:</strong> Знищення процесу шкідника, блокування IP на фаєрволі.<br>• <strong>Крок 5:</strong> Антивірусне сканування, перевстановлення ОС з чистого образу.<br>• <strong>Крок 6:</strong> Складання звіту Incident Response та оновлення правил фаєрволу." }
+            ],
+            notes: "СЛАЙД 12: Реагування на кіберінцидент. Чому важливо негайно ізолювати хост від мережі, щоб запобігти горизонтальному просуванню атаки."
+          },
+          {
+            badge: "ПРАКТИЧНИЙ КЕЙС 3 // АТАКА НА РІВНІ L2",
+            badgeClass: "purple",
+            title: "Атака ARP-спуфінгу (Двійник / Doppelgänger)",
+            subtitle: "Симптом: Помилки сертифікатів SSL/TLS у браузері та раптове падіння швидкості",
+            layout: "grid-2",
+            cards: [
+              { num: "01", col: "purple", title: "Аналіз таблиці ARP", desc: "Ви виконали команду <code>arp -a</code> на комп'ютері жертви і виявили аномалію:", cli: "Interface: 192.168.1.105 --- 0x3\n  Internet Address      Physical Address      Type\n  192.168.1.1           b8-27-eb-93-11-aa     dynamic  <-- Основний шлюз\n  192.168.1.55          b8-27-eb-93-11-aa     dynamic  <-- Ноутбук студента!", tag: "Діагноз: Атака посередника (Man-in-the-Middle)" },
+              { num: "02", col: "green", title: "Усунення та захист комутатора", desc: "• <strong>Невідкладні дії:</strong> Вимкнути порт комутатора з MAC <code>b8-27-eb-93-11-aa</code>.<br>• <strong>Очищення клієнта:</strong> Скинути кеш ARP: <code>netsh interface ip delete arpcache</code>.<br>• <strong>Крок 5 (Захист L2):</strong> Увімкнути <strong>Dynamic ARP Inspection (DAI)</strong> та <strong>DHCP Snooping</strong> на комутаторах Cisco.<br>• <strong>Крок 6 (Звіт):</strong> Зафіксувати MAC порушника у звіті." }
+            ],
+            notes: "СЛАЙД 13: Отруєння ARP. Якщо дві IP-адреси мають однаковий MAC, у мережі діє атака Man-in-the-Middle! Поясніть захист через DAI."
+          },
+          {
+            badge: "ІНЖЕНЕРНІ СТАНДАРТИ",
+            badgeClass: "cyan",
+            title: "Як побудувати бездоганну блок-схему",
+            subtitle: "Перетворення логіки діагностики на точне дерево прийняття рішень",
+            layout: "grid-3",
+            cards: [
+              { num: "01", col: "cyan", title: "Ромби прийняття рішень", desc: "Кожен тест у блок-схемі має бути <strong>конкретною командою CLI</strong> з двома чіткими виходами: <strong>[УСПІХ → ТАК]</strong> та <strong>[ЗБІЙ → НІ]</strong>.", cli: "[ping 192.168.1.1]\n   /         \\\n [УСПІХ]     [ЗБІЙ]" },
+              { num: "02", col: "amber", title: "Жодних розмитих формулювань", desc: "Ніколи не пишіть <em>'Перевірити ПК'</em> або <em>'Полагодити мережу'</em>. Записуйте чітку команду: <code>ipconfig /flushdns</code> або <code>tracert -d 8.8.8.8</code>.", tag: "Інженерна точність" },
+              { num: "03", col: "green", title: "Кінцеві точки процесів", desc: "Кожна гілка повинна завершуватися одним з результатів:<br><br>• <strong>[ПРОБЛЕМУ ВИРІШЕНО ТА ЗДОКУМЕНТОВАНО]</strong><br>• <strong>[ЕСКАЛАЦІЯ НА РІВЕНЬ 2 / АДМІНІСТРАТОР]</strong>", tag: "Чітке завершення" }
+            ],
+            notes: "СЛАЙД 14: Критерії оцінювання блок-схеми: точність команд, бінарні розгалуження та логічне завершення."
+          },
+          {
+            badge: "ПОЧАТОК ПРАКТИКИ",
+            title: "Перехід до інтерактивної практичної роботи",
+            subtitle: "Відкрийте консоль та перейдіть до робочого зошита лабораторної роботи.",
+            layout: "launch",
+            notes: "СЛАЙД 15: Старт практичної частини. Учні відкривають activity.html та переходять до завдань."
+          }
+        ]
+      }
+    };
+
+    let currentSlide = 1;
+    const totalSlides = 15;
+    let currentLang = 'en';
+
+    function renderSlide() {
+      const db = SLIDES_DB[currentLang] || SLIDES_DB.en;
+      const sData = db.slides[currentSlide - 1];
+      const stage = document.getElementById('stage');
+
+      // Update header UI text
+      document.getElementById('brand-text').textContent = db.brand;
+      document.getElementById('brand-sub').textContent = db.sub;
+      document.getElementById('txt-notes').textContent = db.notes;
+      document.getElementById('txt-fs').textContent = db.fs;
+      document.getElementById('txt-act').textContent = db.act;
+      document.getElementById('btn-prev').innerHTML = db.prev;
+      document.getElementById('btn-next').innerHTML = db.next;
+      document.getElementById('txt-notes-header').textContent = db.notesHeader;
+
+      document.getElementById('hint-prev').innerHTML = `<kbd>&larr;</kbd> ${db.hints.prev}`;
+      document.getElementById('hint-next').innerHTML = `<kbd>&rarr;</kbd> ${db.hints.next}`;
+      document.getElementById('hint-adv').innerHTML = `<kbd>Space</kbd> ${db.hints.adv}`;
+      document.getElementById('hint-notes').innerHTML = `<kbd>N</kbd> ${db.hints.notes}`;
+      document.getElementById('hint-fs').innerHTML = `<kbd>F</kbd> ${db.hints.fs}`;
+
+      let contentHtml = '';
+      const bClass = sData.badgeClass ? ` ${sData.badgeClass}` : '';
+
+      if (sData.layout === 'grid-2' || sData.layout === 'grid-3' || sData.layout === 'grid-6') {
+        const cardHtmls = sData.cards.map(c => `
+          <div class="card" ${c.col ? `style="border-left: 4px solid var(--${c.col});"` : ''}>
+            ${c.num ? `<div class="card-num ${c.col || ''}">${c.num}</div>` : ''}
+            <h2 class="card-title">${c.title}</h2>
+            <div class="card-desc">${c.desc}</div>
+            ${c.cli ? `<div class="cli-box ${c.col || ''}">${c.cli}</div>` : ''}
+            ${c.tag ? `<div class="card-tag" style="color:var(--${c.col || 'green'});">${c.tag}</div>` : ''}
+          </div>
+        `).join('');
+
+        contentHtml = `
+          <div class="slide-badge${bClass}">${sData.badge}</div>
+          <h1 class="slide-title">${sData.title}</h1>
+          <p class="slide-subtitle">${sData.subtitle}</p>
+          <div class="${sData.layout}">
+            ${cardHtmls}
+          </div>
+        `;
+      } else if (sData.layout === 'ladder') {
+        const ladderHtmls = sData.steps.map(st => `
+          <div class="card" style="padding:0.7rem 1.1rem; flex-direction:row; align-items:center; justify-content:space-between;">
+            <div><strong style="color:var(--cyan);">${st.num}. ${st.title}:</strong> <code>${st.cmd}</code></div>
+            <span style="color:var(--text-muted); font-size:0.8rem;">${st.desc}</span>
+          </div>
+        `).join('');
+
+        contentHtml = `
+          <div class="slide-badge${bClass}">${sData.badge}</div>
+          <h1 class="slide-title">${sData.title}</h1>
+          <p class="slide-subtitle">${sData.subtitle}</p>
+          <div style="display:flex; flex-direction:column; gap:0.7rem; flex:1;">
+            ${ladderHtmls}
+          </div>
+        `;
+      } else if (sData.layout === 'sim') {
+        const simLabels = {
+          en: { prompt: "SELECT DIAGNOSTIC COMMAND TO EXECUTE:", loop: "Loopback Adapter", gw: "Default Gateway (LAN)", wan: "External Public IP (WAN)", dns: "Domain Name (DNS)", tel: "Live Diagnostic Telemetry", initial: "Click any command on the left to initiate the binary search protocol..." },
+          ar: { prompt: "اختر أمر الفحص والتشخيص لتنفيذه:", loop: "محول الاسترجاع المحلي (Loopback)", gw: "البوابة الافتراضية (الشبكة المحلية)", wan: "عنوان IP خارجي عام (الإنترنت)", dns: "خادم أسماء النطاقات (DNS)", tel: "شاشة القياسات والنتائج اللحظية", initial: "اضغط على أي أمر من القائمة لتشغيل بروتوكول البحث الثنائي..." },
+          uk: { prompt: "ОБЕРІТЬ КОМАНДУ ДЛЯ ВИКОНАННЯ:", loop: "Локальний стек (Loopback)", gw: "Основний шлюз (LAN)", wan: "Зовнішня IP-адреса (WAN)", dns: "Доменне ім'я (DNS)", tel: "Телеметрія виконання в реальному часі", initial: "Натисніть будь-яку команду ліворуч для запуску бінарного пошуку..." }
+        }[currentLang] || { prompt: "SELECT DIAGNOSTIC COMMAND:", loop: "Loopback", gw: "Gateway", wan: "WAN IP", dns: "DNS", tel: "Telemetry", initial: "Click any command..." };
+
+        contentHtml = `
+          <div class="slide-badge${bClass}">${sData.badge}</div>
+          <h1 class="slide-title">${sData.title}</h1>
+          <p class="slide-subtitle">${sData.subtitle}</p>
+          <div class="grid-2">
+            <div class="sim-container">
+              <div style="font-size:0.85rem; color:var(--text-muted); font-weight:700;">${simLabels.prompt}</div>
+              <div class="osi-ladder">
+                <div class="osi-step" onclick="runSim(1)">
+                  <div class="osi-step-left"><span class="osi-num">01</span><div><div class="osi-name">${simLabels.loop}</div><div class="osi-cmd">ping 127.0.0.1</div></div></div>
+                  <span id="sim-status-1" class="osi-status untested">READY</span>
+                </div>
+                <div class="osi-step" onclick="runSim(2)">
+                  <div class="osi-step-left"><span class="osi-num">02</span><div><div class="osi-name">${simLabels.gw}</div><div class="osi-cmd">ping 192.168.1.1</div></div></div>
+                  <span id="sim-status-2" class="osi-status untested">READY</span>
+                </div>
+                <div class="osi-step" onclick="runSim(3)">
+                  <div class="osi-step-left"><span class="osi-num">03</span><div><div class="osi-name">${simLabels.wan}</div><div class="osi-cmd">ping 8.8.8.8</div></div></div>
+                  <span id="sim-status-3" class="osi-status untested">READY</span>
+                </div>
+                <div class="osi-step" onclick="runSim(4)">
+                  <div class="osi-step-left"><span class="osi-num">04</span><div><div class="osi-name">${simLabels.dns}</div><div class="osi-cmd">nslookup google.com</div></div></div>
+                  <span id="sim-status-4" class="osi-status untested">READY</span>
+                </div>
+              </div>
+            </div>
+            <div class="card" style="justify-content:flex-start;">
+              <h2 class="card-title">${simLabels.tel}</h2>
+              <div id="sim-output" class="cli-box" style="height: 220px; overflow-y: auto;">${simLabels.initial}</div>
+              <div id="sim-verdict" style="margin-top: 0.8rem; font-size: 0.88rem; color: var(--green); font-weight: 700;"></div>
+            </div>
+          </div>
+        `;
+      } else if (sData.layout === 'launch') {
+        const launchLabels = {
+          en: { title: "Today's Lab Directives", items: ["1. Open the Divide & Conquer Lab Activity.", "2. Work through the 5 Progressive Scenarios (Physical → APIPA → DNS → Security Incident → ARP Attack).", "3. Use the built-in Virtual Terminal to test CLI commands.", "4. Construct your Logic Flowchart Trees.", "5. Export your completed work as a PDF for grading!"], ready: "Ready to Begin?", sub: "Launch the interactive student workbench now.", btn: "[ OPEN LAB ACTIVITY HUB ]" },
+          ar: { title: "توجيهات النشاط العملي اليوم", items: ["1. افتح ورقة عمل النشاط العملي (Divide & Conquer Workbench).", "2. شخّص المستويات الخمسة المتدرجة (الطبقة الفيزيائية ← خلل APIPA ← عطل DNS ← حادثة أمنية ← هجوم ARP).", "3. استخدم الطرفية الافتراضية المدمجة لتجربة الأوامر عملياً.", "4. ابنِ مخططات التدفق المنطقي الثنائية.", "5. صدّر عملك المكتمل بصيغة PDF للتقييم والدرجات!"], ready: "جاهز للانطلاق؟", sub: "افتح منصة العمل التفاعلية للطلاب الآن.", btn: "[ فتح منصة النشاط العملي ]" },
+          uk: { title: "Завдання сьогоднішньої практики", items: ["1. Відкрийте практичну роботу (Divide & Conquer Workbench).", "2. Пройдіть 5 послідовних рівнів (Фізичний → APIPA → DNS → Кіберінцидент → Атака ARP).", "3. Використовуйте віртуальний термінал для виконання діагностичних команд.", "4. Побудуйте логічні блок-схеми бінарного пошуку.", "5. Експортуйте готову роботу у формат PDF для оцінювання!"], ready: "Готові розпочати?", sub: "Запустіть інтерактивний робочий простір прямо зараз.", btn: "[ ВІДКРИТИ ПРАКТИЧНУ РОБОТУ ]" }
+        }[currentLang] || { title: "Directives", items: [], ready: "Ready?", sub: "", btn: "Open" };
+
+        contentHtml = `
+          <div class="slide-badge${bClass}">${sData.badge}</div>
+          <h1 class="slide-title">${sData.title}</h1>
+          <p class="slide-subtitle">${sData.subtitle}</p>
+          <div class="grid-2">
+            <div class="card" style="border: 2px solid var(--green);">
+              <h2 class="card-title" style="color:var(--green); font-size:1.3rem;">${launchLabels.title}</h2>
+              <ul style="margin: 0.8rem 0 0 1.2rem; color: var(--text-muted); font-size: 0.9rem; line-height: 2;">
+                ${launchLabels.items.map(it => `<li>${it}</li>`).join('')}
+              </ul>
+            </div>
+            <div class="card" style="justify-content:center; align-items:center; text-align:center; background:rgba(57,255,158,0.03);">
+              <div style="font-size:3rem; margin-bottom:0.8rem;">⚡</div>
+              <h3 style="font-size:1.3rem; color:#fff; font-family:'Space Grotesk';">${launchLabels.ready}</h3>
+              <p style="color:var(--text-muted); font-size:0.85rem; margin:0.6rem 0 1.2rem;">${launchLabels.sub}</p>
+              <a href="activity.html" class="btn-ctrl" style="background:var(--green); color:#000; font-weight:800; font-size:0.9rem; padding:0.7rem 1.6rem; border-radius:6px; text-decoration:none;">
+                ${launchLabels.btn}
+              </a>
+            </div>
+          </div>
+        `;
+      }
+
+      stage.innerHTML = `<section class="slide active">${contentHtml}</section>`;
+
+      // Update counter and progress bar
+      document.getElementById('slide-counter').textContent = `${String(currentSlide).padStart(2, '0')} / ${String(totalSlides).padStart(2, '0')}`;
+      document.getElementById('progress-fill').style.width = `${(currentSlide / totalSlides) * 100}%`;
+
+      // Update presenter notes
+      document.getElementById('presenter-content').textContent = sData.notes || "";
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        currentSlide++;
+        renderSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        currentSlide--;
+        renderSlide();
+      }
+    }
+
+    function toggleNotes() {
+      document.getElementById('presenter-drawer').classList.toggle('open');
+      document.getElementById('btn-notes').classList.toggle('active');
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => alert(err.message));
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'Space' || e.key === 'PageDown') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key.toLowerCase() === 'n') {
+        toggleNotes();
+      } else if (e.key.toLowerCase() === 'f') {
+        toggleFullScreen();
+      } else if (e.key === 'Home') {
+        currentSlide = 1;
+        renderSlide();
+      } else if (e.key === 'End') {
+        currentSlide = totalSlides;
+        renderSlide();
+      }
+    });
+
+    function runSim(step) {
+      const output = document.getElementById('sim-output');
+      const verdict = document.getElementById('sim-verdict');
+      const s1 = document.getElementById('sim-status-1');
+      const s2 = document.getElementById('sim-status-2');
+      const s3 = document.getElementById('sim-status-3');
+      const s4 = document.getElementById('sim-status-4');
+
+      if (step === 1) {
+        s1.className = 'osi-status pass'; s1.textContent = 'PASS';
+        output.textContent = `C:\\> ping 127.0.0.1\n\nPinging 127.0.0.1 with 32 bytes of data:\nReply from 127.0.0.1: bytes=32 time<1ms TTL=128\nReply from 127.0.0.1: bytes=32 time<1ms TTL=128\n\n[+] LOOPBACK OK: Local TCP/IP software stack and NIC driver are 100% functional.`;
+        verdict.textContent = currentLang === 'ar' ? "[+] مكدس البروتوكولات المحلي سليم 100%." : currentLang === 'uk' ? "[+] Локальний стек TCP/IP справний на 100%." : "[+] LOOPBACK OK: Local TCP/IP stack is healthy.";
+      } else if (step === 2) {
+        s2.className = 'osi-status pass'; s2.textContent = 'PASS';
+        output.textContent = `C:\\> ping 192.168.1.1\n\nPinging 192.168.1.1 with 32 bytes of data:\nReply from 192.168.1.1: bytes=32 time=1ms TTL=64\n\n[+] LOCAL LAN LINK UP! Physical cable, wall jack, switch port, and router interface verified.`;
+        verdict.textContent = currentLang === 'ar' ? "[+] تم الوصول للبوابة: الكابل والمحول سليم تماماً! استبعاد 50% من نطاق المشكلة." : currentLang === 'uk' ? "[+] Шлюз доступний: Кабель і комутатор справні! Відсічено 50% проблеми." : "[+] GATEWAY REACHABLE: The problem is NOT your cable or switch! Problem space reduced by 50%.";
+      } else if (step === 3) {
+        s3.className = 'osi-status pass'; s3.textContent = 'PASS';
+        output.textContent = `C:\\> ping 8.8.8.8\n\nPinging 8.8.8.8 with 32 bytes of data:\nReply from 8.8.8.8: bytes=32 time=14ms TTL=117\n\n[+] WAN IP ROUTING OK: Default route, NAT, and ISP modem connection are active!`;
+        verdict.textContent = currentLang === 'ar' ? "[+] اتصال الإنترنت الخارجي سليم: الخلل يكمن حتماً في الطبقة السابعة (DNS أو التطبيق)." : currentLang === 'uk' ? "[+] Зовнішній інтернет працює: Збій гарантовано на рівні 7 (DNS або додаток)." : "[+] WAN REACHABLE: Full external routing active. Problem must be in Layer 7 (DNS/App).";
+      } else if (step === 4) {
+        s4.className = 'osi-status fail'; s4.textContent = 'FAIL';
+        output.textContent = `C:\\> nslookup google.com\n\nServer:  UnKnown\nAddress:  192.168.1.1\n\n*** DNS request to 192.168.1.1 timed out.\n\n[-] ROOT CAUSE PINPOINTED: DNS Resolver timed out! Local IP routing is healthy, but DNS configuration is dead.`;
+        verdict.innerHTML = currentLang === 'ar' ? "<span style='color:var(--red);'>[-] تم تحديد السبب الجذري:</span> عنوان خادم الـ DNS المسجل في إعدادات المحول غير صالح أو متوقف!" : currentLang === 'uk' ? "<span style='color:var(--red);'>[-] ПЕРШОПРИЧИНУ ЗНАЙДЕНО:</span> Невірний або застарілий DNS-сервер у налаштуваннях адаптера!" : "<span style='color:var(--red);'>[-] ROOT CAUSE FOUND:</span> Stale/Incorrect DNS Resolver IP in network adapter settings!";
+      }
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      document.documentElement.dir = (lang === 'ar' || lang === 'fa') ? 'rtl' : 'ltr';
+      localStorage.setItem('presentation_lang', lang);
+
+      document.querySelectorAll('#lang-en, #lang-fa, #lang-ar, #lang-uk').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`lang-${lang}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      renderSlide();
+    }
+
+    const savedLang = localStorage.getItem('presentation_lang') || 'en';
+    setLanguage(savedLang);
+  </script>
+</body>
+</html>
