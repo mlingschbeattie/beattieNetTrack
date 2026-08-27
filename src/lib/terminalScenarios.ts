@@ -51,12 +51,4 @@ const terminalBasics: TerminalScenario = {
 
 export const terminalScenarios: Record<string, TerminalScenario> = {
   'terminal-basics': terminalBasics,
-  'tour-terminal-challenge': {
-    ...terminalBasics,
-    title: 'Tour Terminal Challenge',
-    expectations: [
-      { command: 'help', feedback: 'Open available command list.' },
-      { command: 'pwd', feedback: 'Show your current directory.' },
-    ],
-  },
 };

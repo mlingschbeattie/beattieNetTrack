@@ -2756,65 +2756,6 @@ html[data-theme='light'] .terminal-titlebar {
   background: rgba(0, 0, 0, 0.7);
 }
 
-/* ── Tour Chapter List ─────────────────────────────── */
-.tour-chapter-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.tour-chapter-item {
-  border-radius: var(--radius-md);
-  transition: background 0.2s ease;
-}
-
-.tour-chapter-link {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3);
-  border-radius: var(--radius-md);
-  color: inherit;
-  text-decoration: none;
-  border: 1px solid var(--beattie-border);
-  transition: border-color 0.2s ease, background 0.2s ease;
-}
-
-.tour-chapter-link:hover {
-  border-color: var(--beattie-primary);
-  background: rgba(56, 189, 248, 0.05);
-}
-
-.tour-chapter-num {
-  flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: rgba(56, 189, 248, 0.12);
-  color: var(--beattie-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.tour-chapter-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.tour-chapter-desc {
-  display: block;
-  font-size: var(--text-xs);
-  color: var(--text-muted);
-  line-height: 1.4;
-}
-
 /* ── Lab Layout + Step Tracker ──────────────────────── */
 .lab-layout {
   display: grid;

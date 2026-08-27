@@ -16,14 +16,6 @@ export type LabProgress = {
   xpEarned: number;
 };
 
-export type TourProgress = {
-  completedSteps: string[];
-  totalSteps: number;
-  completed: boolean;
-  lastStep: string | null;
-  updatedAt: string | null;
-};
-
 export type SectionProgress = Record<string, boolean>;
 
 export type GuidedPreferences = {
@@ -42,7 +34,6 @@ export type ProgressState = {
   };
   lessons: Record<string, LessonProgress>;
   labs: Record<string, LabProgress>;
-  tour: Record<string, TourProgress>;
   quizzes: Record<
     string,
     {
@@ -73,7 +64,6 @@ const defaultState = (): ProgressState => ({
   },
   lessons: {},
   labs: {},
-  tour: {},
   quizzes: {},
   lessonSections: {},
   guided: {
@@ -134,7 +124,6 @@ const safeParse = (raw: string | null): ProgressState => {
       },
       lessons: parsed.lessons ?? {},
       labs: normalizedLabs,
-      tour: parsed.tour ?? {},
       quizzes: parsed.quizzes ?? {},
       lessonSections: parsed.lessonSections ?? {},
       guided: {
@@ -483,69 +472,6 @@ export const getQuizStats = (quizSlug: string, storage: StorageLike | null = get
     lastAttemptAt: null,
     lastXpAwardDate: null,
   };
-};
-
-export const getTourProgress = (tourSlug: string, storage: StorageLike | null = getStorage()) => {
-  const state = getProgress(storage);
-  return (
-    state.tour[tourSlug] ?? {
-      completedSteps: [],
-      totalSteps: 0,
-      completed: false,
-      lastStep: null,
-      updatedAt: null,
-    }
-  );
-};
-
-export const markTourStepComplete = (
-  tourSlug: string,
-  stepSlug: string,
-  totalSteps: number,
-  storage: StorageLike | null = getStorage()
-) =>
-  setProgress((state) => {
-    const existing =
-      state.tour[tourSlug] ?? {
-        completedSteps: [],
-        totalSteps: 0,
-        completed: false,
-        lastStep: null,
-        updatedAt: null,
-      };
-    const stepSet = new Set(existing.completedSteps);
-    stepSet.add(stepSlug);
-    const completedSteps = Array.from(stepSet);
-    const completed = totalSteps > 0 && completedSteps.length >= totalSteps;
-    return {
-      ...state,
-      tour: {
-        ...state.tour,
-        [tourSlug]: {
-          completedSteps,
-          totalSteps,
-          completed,
-          lastStep: stepSlug,
-          updatedAt: new Date().toISOString(),
-        },
-      },
-    };
-  }, storage);
-
-export const resetTourProgress = (tourSlug: string, storage: StorageLike | null = getStorage()) =>
-  setProgress((state) => {
-    const nextTour = { ...state.tour };
-    delete nextTour[tourSlug];
-    return {
-      ...state,
-      tour: nextTour,
-    };
-  }, storage);
-
-export const getTourPercent = (tourSlug: string, storage: StorageLike | null = getStorage()) => {
-  const progress = getTourProgress(tourSlug, storage);
-  if (!progress.totalSteps) return 0;
-  return Math.round((progress.completedSteps.length / progress.totalSteps) * 100);
 };
 
 export const getSectionProgress = (

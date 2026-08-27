@@ -21,13 +21,4 @@ export const codeExercises: Record<string, CodeExercise> = {
       'Template literals make output easier: `Total packets: ${total}`.',
     ],
   },
-  'tour-code-challenge': {
-    slug: 'tour-code-challenge',
-    title: 'Tour Code Challenge',
-    description: 'Print the sum of two values to pass this challenge.',
-    language: 'javascript',
-    starterCode: `const a = 7;\nconst b = 5;\n// TODO: print the sum`,
-    expectedOutput: '12',
-    hints: ['Try console.log(a + b).'],
-  },
 };

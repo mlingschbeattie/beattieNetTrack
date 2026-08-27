@@ -21,7 +21,7 @@ interface Props {
   lessonMap?: Record<string, unknown>;
   breadcrumbs?: Array<{ label: string; href?: string }>;
   itemSlug: string;
-  itemType?: 'lesson' | 'lab' | 'quiz' | 'tour' | 'activity';
+  itemType?: 'lesson' | 'lab' | 'quiz' | 'activity';
   quizPassThreshold?: number;
   itemDifficulty?: string;
   itemMinutes?: number;
@@ -244,8 +244,6 @@ if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson' || itemTy
     markLessonComplete,
     markLessonIncomplete,
     recordQuizAttempt,
-    markTourStepComplete,
-    getTourPercent,
     recordActivity,
   } from '../lib/progressStore.ts';
 
@@ -328,11 +326,6 @@ if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson' || itemTy
       setStatus(status.completed ? 'Completed' : 'In progress', status.completed ? 100 : 0);
       return;
     }
-    if (itemType === 'tour') {
-      const percent = getTourPercent('hands-on-tour');
-      setStatus(percent >= 100 ? 'Tour complete' : 'In progress', percent);
-      return;
-    }
     const status = getLessonStatus(itemSlug);
     setStatus(status.completed ? 'Completed' : 'In progress', status.completed ? 100 : 0);
   };
@@ -358,16 +351,6 @@ if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson' || itemTy
           normalizedScore
         );
       }
-      window.dispatchEvent(new CustomEvent('progress-updated'));
-      return;
-    }
-
-    if (itemType === 'tour') {
-      if ((action === 'check' || action === 'submit') && passed) {
-        markTourStepComplete('hands-on-tour', itemSlug, 5);
-      }
-      const percent = getTourPercent('hands-on-tour');
-      setStatus(percent >= 100 ? 'Tour complete' : 'Tour progress', percent);
       window.dispatchEvent(new CustomEvent('progress-updated'));
       return;
     }
@@ -408,7 +391,7 @@ if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson' || itemTy
     );
 
     if (!iframe || !(iframe instanceof HTMLIFrameElement) || !iframe.contentWindow) {
-      if (itemType === 'lesson' || itemType === 'tour' || itemType === 'activity') {
+      if (itemType === 'lesson' || itemType === 'activity') {
         if (action === 'check' || action === 'submit') {
           applyCompletion({ action, passed: true, score: 100 });
         }

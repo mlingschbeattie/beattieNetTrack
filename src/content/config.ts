@@ -244,24 +244,6 @@ const lessons = defineCollection({
     }),
 });
 
-const tour = defineCollection({
-  type: 'content',
-  schema: z.object({
-    title: z.string(),
-    description: z.string().optional().default('Tour step'),
-    slug: z.string().optional(),
-    track: z.string(),
-    moduleId: z.string(),
-    order: z.number().int(),
-    kind: z.enum(['intro', 'terminal', 'quiz', 'code', 'complete']),
-    next: z.string().optional(),
-    ctaLabel: z.string().optional(),
-    terminalScenario: z.string().optional(),
-    quizSlug: z.string().optional(),
-    codeExercise: z.string().optional(),
-  }),
-});
-
 const studyGuides = defineCollection({
   type: 'content',
   schema: z.object({
@@ -282,6 +264,5 @@ export const collections = {
   quizzes,
   activities,
   lessons,
-  tour,
   studyGuides,
 };

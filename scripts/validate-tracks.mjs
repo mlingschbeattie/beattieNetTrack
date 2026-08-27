@@ -9,7 +9,7 @@ const contentRoot = path.join(repoRoot, 'src', 'content');
 const legacyRoot = path.join(repoRoot, 'public', 'legacy');
 
 const requiredCollectionDirs = ['labs', 'quizzes', 'activities', 'lessons'];
-const optionalCollectionDirs = ['terminal', 'code', 'tour', 'tours', 'assessments'];
+const optionalCollectionDirs = ['terminal', 'code', 'assessments'];
 
 const stripQuotes = (value) => value.replace(/^['"]|['"]$/g, '').trim();
 
