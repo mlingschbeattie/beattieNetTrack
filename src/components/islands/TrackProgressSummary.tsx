@@ -48,22 +48,29 @@ export default function TrackProgressSummary({ activitySlugs, lessonSlugs }: Tra
   const message = PROGRESS_MESSAGES[Math.min(completed, PROGRESS_MESSAGES.length - 1)];
 
   return (
-    <div className="track-progress progress-header">
-      <div className="progress-header__info">
-        <div className="progress-header__title" data-testid="track-completed-count">
+    <div className="track-progress-strip">
+      <div className="progress-strip__info">
+        <div className="progress-strip__title" data-testid="track-completed-count">
           {completed} of {total} Activities Completed
         </div>
-        <div className="progress-header__subtitle">{message}</div>
+        <div className="progress-strip__subtitle">{message}</div>
       </div>
-      <div className="progress-header__bar-wrap">
-        <div className="progress-bar-track" aria-hidden="true">
+      <div className="progress-strip__bar-wrap">
+        <div
+          className="progress-bar-track"
+          role="progressbar"
+          aria-valuenow={completed}
+          aria-valuemin={0}
+          aria-valuemax={total}
+          aria-label={`Track progress: ${pct}%`}
+        >
           <div className="progress-bar-fill" style={{ width: `${displayPct}%` }}></div>
         </div>
-        <div className="progress-bar-label" data-testid="track-percent">{pct}% complete</div>
+        <div className="progress-strip__percent" data-testid="track-percent">{pct}%</div>
       </div>
-      <div className="xp-display">
-        <span className="xp-display__value" data-testid="track-xp">+{earnedXp}</span>
-        <span className="xp-display__label">XP</span>
+      <div className="progress-strip__xp">
+        <span className="progress-strip__xp-val" data-testid="track-xp">+{earnedXp}</span>
+        <span className="progress-strip__xp-label">XP</span>
       </div>
     </div>
   );
