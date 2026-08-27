@@ -175,12 +175,18 @@ export default function ContinueLearning({ tracks = [], activityMap = {} }: Cont
 
   if (!recommendation) {
     return (
-      <article className="card continue-learning">
-        <div className="continue-learning__eyebrow">Continue learning</div>
-        <h3>Start here</h3>
-        <p>No progress yet. Pick a track and begin with a clear first step.</p>
-        <a className="btn-link" href="/tracks">Browse tracks →</a>
-      </article>
+      <div className="continue-learning-strip">
+        <div className="continue-learning__left">
+          <div className="continue-learning__icon-badge" aria-hidden="true">✦</div>
+          <div className="continue-learning__text-group">
+            <div className="continue-learning__track-title">Ready to Begin</div>
+            <div className="continue-learning__meta">Pick a certification track to get started.</div>
+          </div>
+        </div>
+        <div className="continue-learning__actions">
+          <a className="btn-link" href="/tracks">Browse tracks →</a>
+        </div>
+      </div>
     );
   }
 
@@ -190,15 +196,21 @@ export default function ContinueLearning({ tracks = [], activityMap = {} }: Cont
   const lastLabel = lastTouched ? humanizeSlug(lastTouched.slug) : 'No completed activity yet';
 
   return (
-    <article className="card continue-learning">
-      <div className="continue-learning__eyebrow">Continue learning</div>
-      <h3>{track.title}</h3>
-      <p>Next step: {humanizeSlug(activity.slug)}</p>
-      <p className="continue-learning__context">Last activity: {lastLabel}</p>
-      <div className="card__footer">
-        <a className="btn-link" href={nextHref}>{nextLabel} →</a>
-        <a className="btn-link" href={`/tracks/${track.slug}`}>Open track →</a>
+    <div className="continue-learning-strip">
+      <div className="continue-learning__left">
+        <div className="continue-learning__icon-badge" aria-hidden="true">▶</div>
+        <div className="continue-learning__text-group">
+          <div className="continue-learning__primary-row">
+            <span className="continue-learning__track-title">{track.title}</span>
+            <span className="continue-learning__step-pill">Next: {humanizeSlug(activity.slug)}</span>
+          </div>
+          <div className="continue-learning__meta">Last completed: {lastLabel}</div>
+        </div>
       </div>
-    </article>
+      <div className="continue-learning__actions">
+        <a className="btn-link" href={nextHref}>{nextLabel} →</a>
+        <a className="btn-ghost btn-sm" href={`/tracks/${track.slug}`} style={{ padding: '6px 14px', borderRadius: 'var(--radius-full)', border: '1px solid var(--beattie-border)', fontSize: '13px', color: 'var(--beattie-text)', textDecoration: 'none' }}>Open track</a>
+      </div>
+    </div>
   );
 }

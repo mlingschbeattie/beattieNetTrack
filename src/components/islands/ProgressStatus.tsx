@@ -29,29 +29,44 @@ export default function ProgressStatus() {
 
   if (!isMounted) {
     return (
-      <div className="progress-status-skeleton">
-        <div className="progress-status-skeleton__pill" />
-        <div className="progress-status-skeleton__pill" />
-        <div className="progress-status-skeleton__pill" />
+      <div className="dashboard-stats-strip dashboard-stats-strip--skeleton" aria-hidden="true">
+        <div className="dash-stat-item-skeleton" />
+        <div className="dash-stat-divider" />
+        <div className="dash-stat-item-skeleton" />
+        <div className="dash-stat-divider" />
+        <div className="dash-stat-item-skeleton" />
       </div>
     );
   }
 
   return (
-    <div className="competency-dash__stats">
-      <div className="competency-dash__stat-card">
-        <span className="competency-dash__stat-num" data-testid="status-level">{status.level}</span>
-        <span className="competency-dash__stat-label">Level</span>
+    <div className="dashboard-stats-strip" role="region" aria-label="Student Progress Summary">
+      <div className="dash-stat-item">
+        <span className="dash-stat-icon dash-stat-icon--level" aria-hidden="true">◈</span>
+        <div className="dash-stat-content">
+          <span className="dash-stat-val" data-testid="status-level">Level {status.level}</span>
+          <span className="dash-stat-lbl">Student Rank</span>
+        </div>
       </div>
-      <div className="competency-dash__stat-card">
-        <span className="competency-dash__stat-num" data-testid="status-xp">{status.xpTotal}</span>
-        <span className="competency-dash__stat-label">XP</span>
+
+      <div className="dash-stat-divider" aria-hidden="true"></div>
+
+      <div className="dash-stat-item">
+        <span className="dash-stat-icon dash-stat-icon--xp" aria-hidden="true">⚡</span>
+        <div className="dash-stat-content">
+          <span className="dash-stat-val" data-testid="status-xp">{status.xpTotal} XP</span>
+          <span className="dash-stat-lbl">Total Earned</span>
+        </div>
       </div>
-      <div className="competency-dash__stat-card">
-        <span className="competency-dash__stat-num" data-testid="status-streak">
-          {status.streak}
-        </span>
-        <span className="competency-dash__stat-label">Day Streak</span>
+
+      <div className="dash-stat-divider" aria-hidden="true"></div>
+
+      <div className="dash-stat-item">
+        <span className="dash-stat-icon dash-stat-icon--streak" aria-hidden="true">🔥</span>
+        <div className="dash-stat-content">
+          <span className="dash-stat-val" data-testid="status-streak">{status.streak} Day{status.streak === 1 ? '' : 's'}</span>
+          <span className="dash-stat-lbl">Activity Streak</span>
+        </div>
       </div>
     </div>
   );
