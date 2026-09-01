@@ -2,6 +2,7 @@
 
 
 import type { AuthUser } from '../lib/auth';
+import AccessibilityPanel from './islands/AccessibilityPanel.tsx';
 
 interface Props {
   activePath?: string;
@@ -16,10 +17,10 @@ type NavItem = {
 
 const { activePath = '/', activeTrackLabel = 'None', user = null } = Astro.props as Props;
 
-const navItems: NavItem[] = [
-  { label: 'Home', href: '/' },
-  { label: 'Learning Tracks', href: '/tracks' },
-  { label: 'Study Hub', href: '/quizzes' },
+const navItems: Array<NavItem & { i18n: string }> = [
+  { label: 'Home', href: '/', i18n: 'nav.home' },
+  { label: 'Learning Tracks', href: '/tracks', i18n: 'nav.tracks' },
+  { label: 'Study Hub', href: '/quizzes', i18n: 'nav.studyHub' },
 ];
 
 const isActive = (href: string) => {
@@ -50,6 +51,7 @@ const isActive = (href: string) => {
           <a
             class={`nav-link${isActive(item.href) ? ' active' : ''}`}
             href={item.href}
+            data-i18n={item.i18n}
           >
             {item.label}
           </a>
@@ -73,6 +75,7 @@ const isActive = (href: string) => {
         <span class="nav-session-dot"></span>
         Active Track: {activeTrackLabel}
       </div>
+      <AccessibilityPanel client:idle />
       <button
         class="theme-toggle"
         type="button"
