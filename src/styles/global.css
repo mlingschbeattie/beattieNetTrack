@@ -2623,18 +2623,16 @@ html.sidebar-ready .sidebar__progress-slot .sidebar__react {
   font-family: var(--font-mono);
   padding: 1px 5px;
   border-radius: 3px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.6);
-  margin-left: 6px;
+  background: var(--beattie-surface-elevated);
+  border: 1px solid var(--beattie-border);
+  /* was rgba(255,255,255,0.6) / rgba(0,0,0,0.5): 3.94:1 in light, under AA
+     for 9px text. Tokenized so both themes clear it. */
+  color: var(--beattie-text-muted);
+  margin-inline-start: 6px;
   vertical-align: middle;
 }
 
-html[data-theme='light'] .kbd-hint {
-  background: rgba(0, 0, 0, 0.06);
-  border-color: rgba(0, 0, 0, 0.15);
-  color: rgba(0, 0, 0, 0.5);
-}
+/* .kbd-hint light override removed: the base rule is tokenized. */
 
 .right-panel {
   position: sticky;
@@ -2731,7 +2729,8 @@ html[data-theme='light'] .kbd-hint {
 .btn-secondary:disabled,
 .btn-ghost:disabled,
 .btn-is-disabled {
-  opacity: 0.52;
+  /* Disabled controls are WCAG-exempt, but 0.52 was needlessly illegible. */
+  opacity: 0.68;
   cursor: not-allowed;
   pointer-events: none;
   filter: saturate(0.8);
