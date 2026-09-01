@@ -16,15 +16,19 @@ export async function getStaticPaths() {
     }));
 }
 
-const { labSlug, trackSlug } = Astro.props as { labSlug: string; trackSlug: string };
+// Astro.props is empty under `output: 'server'` — fall back to route params.
+const props = Astro.props as { labSlug?: string; trackSlug?: string };
+const labSlug = props.labSlug ?? Astro.params.slug;
+const trackSlug = props.trackSlug ?? Astro.params.track;
 const tracks = await getCollection('tracks');
 const labs = await getCollection('labs');
 
 const currentTrack = tracks.find((track) => track.slug === trackSlug);
 const lab = labs.find((entry) => entry.slug === labSlug && entry.data.track === trackSlug);
 
+// Redirect rather than throw: an unknown slug is a bad URL, not a server fault.
 if (!lab || !currentTrack) {
-  throw new Error('Lab route mismatch.');
+  return Astro.redirect('/tracks');
 }
 
 const { Content } = await lab.render();

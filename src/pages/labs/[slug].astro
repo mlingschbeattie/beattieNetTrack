@@ -19,7 +19,17 @@ export async function getStaticPaths() {
     .map((lab) => ({ params: { slug: lab.slug }, props: { lab } }));
 }
 
-const { lab } = Astro.props;
+// With `output: 'server'` getStaticPaths does not run, so Astro.props is empty
+// and the entry has to be looked up from the route param. Same pattern as
+// lessons/[slug].astro and quizzes/[slug].astro.
+const allLabs = await getCollection('labs');
+const paramSlug = Astro.params.slug;
+const lab = Astro.props.lab ?? allLabs.find((entry) => entry.slug === paramSlug);
+
+if (!lab) {
+  return Astro.redirect('/tracks');
+}
+
 const tracks = await getCollection('tracks');
 const { Content } = await lab.render();
 const currentTrack = lab.data.track ? tracks.find((track) => track.slug === lab.data.track) : undefined;

@@ -9,7 +9,13 @@ export async function getStaticPaths() {
     .map((guide) => ({ params: { slug: guide.slug }, props: { guide } }));
 }
 
-const { guide } = Astro.props;
+// Astro.props is empty under `output: 'server'` — resolve from the route param.
+const allGuides = await getCollection('studyGuides');
+const guide = Astro.props.guide ?? allGuides.find((entry) => entry.slug === Astro.params.slug);
+
+if (!guide) {
+  return Astro.redirect('/study-guides');
+}
 
 const breadcrumbs = [
   { label: 'Home', href: '/' },
