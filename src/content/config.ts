@@ -134,7 +134,7 @@ const quizzes = defineCollection({
     title: z.string(),
     description: z.string().optional().default('Quiz workspace'),
     slug: z.string().optional(),
-    type: z.literal('quiz').optional().default('quiz'),
+    type: z.enum(['quiz', 'placement']).optional().default('quiz'),
     track: z.string().trim().min(1, 'track is required for mapped activities'),
     moduleId: z.string().trim().min(1, 'moduleId is required for mapped activities'),
     module: z.string().optional(),
