@@ -43,9 +43,9 @@ body {
 }
 
 html[data-theme='light'] body {
-  background: radial-gradient(circle at top, rgba(14, 165, 233, 0.12), transparent 48%),
-    linear-gradient(180deg, #f8fbff 0%, #f1f6ff 45%, #edf3fb 100%);
-  color: #0f172a;
+  /* Decorative page wash only. Text color comes from --beattie-text. */
+  background: radial-gradient(circle at top, rgba(37, 99, 235, 0.08), transparent 48%),
+    linear-gradient(180deg, #f8fbff 0%, #f1f6ff 45%, var(--beattie-bg) 100%);
 }
 
 a {
@@ -122,9 +122,16 @@ img {
   border-right: 1px solid var(--color-border);
   padding: var(--space-8) var(--space-6);
   position: sticky;
-  top: 0;
-  height: 100vh;
-  overflow: visible;
+  /* Sticks BELOW the sticky header. At top:0 the sidebar brand collided with
+     the nav brand in the same 64px band. */
+  top: var(--siteHeaderH);
+  height: calc(100vh - var(--siteHeaderH));
+  /* A full track is 116 nav items (~7000px) inside a ~656px sticky box. With
+     `overflow: visible` that spilled thousands of pixels down the page and
+     painted over the content column. The list scrolls within the panel. */
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
   transition: transform 0.25s ease;
   z-index: 20;
   scrollbar-gutter: stable;
@@ -181,25 +188,72 @@ img {
   margin: var(--space-3) 0 var(--space-2);
 }
 
+/* Grid: [type badge] [title] [status]. The title wraps to two lines instead of
+   truncating to a stub — a lesson and its quiz previously collapsed to the same
+   ellipsised text with nothing to tell them apart. Logical properties keep the
+   layout correct under dir="rtl" for Arabic and Persian. */
 .sidebar__lesson-link {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--space-2) var(--space-4);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  column-gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
   min-height: 36px;
   border-radius: var(--radius-md);
   color: var(--color-text-soft);
   margin-bottom: var(--space-1);
-  border-left: 2px solid transparent;
   border: 1px solid transparent;
+  border-inline-start: 2px solid transparent;
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .sidebar__lesson-title {
-  flex: 1;
+  min-width: 0;
+  font-size: var(--text-sm);
+  line-height: 1.35;
+  /* Two lines, then ellipsis — enough to disambiguate similar titles. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+}
+
+/* Type affordance: the single change that makes lesson vs quiz legible. */
+.sidebar__lesson-type {
+  flex-shrink: 0;
+  margin-top: 1px;
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: 1px solid currentColor;
+  /* No opacity here: dimming these to 0.75 dropped them to 3.31:1, under the
+     4.5:1 AA floor for text this small. Full-strength tokens clear it. */
+}
+
+.sidebar__lesson-link--lesson .sidebar__lesson-type { color: var(--beattie-primary-text); }
+.sidebar__lesson-link--quiz .sidebar__lesson-type { color: var(--beattie-ai-text); }
+.sidebar__lesson-link--lab .sidebar__lesson-type { color: var(--beattie-success-text); }
+
+.sidebar__lesson-status,
+.sidebar__lesson-lock {
+  flex-shrink: 0;
+  font-size: var(--text-xs);
+  line-height: 1.35;
+}
+
+.sidebar__lesson-link:hover {
+  background: var(--beattie-surface-elevated);
+  color: var(--color-text);
+}
+
+/* Visible keyboard focus (WCAG 2.4.7) — the grid rows are link targets. */
+.sidebar__lesson-link:focus-visible {
+  outline: 2px solid var(--beattie-border-active);
+  outline-offset: 2px;
 }
 
 .sidebar__lesson-check {
@@ -276,6 +330,9 @@ img {
   position: sticky;
   top: 0;
   z-index: 40;
+  /* Enforces --siteHeaderH so the token other sticky elements offset against
+     is truthful rather than merely descriptive. */
+  min-height: var(--siteHeaderH);
   background: var(--beattie-bg);
   border-bottom: 1px solid var(--beattie-border);
 }
@@ -325,7 +382,7 @@ img {
   font-weight: 700;
   font-size: 14px;
   letter-spacing: -0.2px;
-  color: #ffffff;
+  color: var(--beattie-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -383,7 +440,7 @@ img {
 }
 
 .nav-link:hover {
-  color: #ffffff;
+  color: var(--beattie-text);
 }
 
 .nav-link:hover::after {
@@ -477,7 +534,7 @@ img {
 
 .theme-toggle:hover {
   border-color: var(--beattie-border-hover);
-  color: #ffffff;
+  color: var(--beattie-text);
 }
 
 .top-nav__status-slot {
@@ -513,15 +570,13 @@ img {
   pointer-events: none;
 }
 
+/* The light override here used a gradient whose final stop was `transparent`,
+   so the lower third of the sticky header let scrolling content show straight
+   through it. The base rule's `background: var(--beattie-bg)` now themes
+   correctly on its own, so only the accent border is overridden. */
 html[data-theme='light'] .top-nav,
 html.light-mode .top-nav {
-  background: linear-gradient(
-    to bottom,
-    rgba(240, 246, 255, 0.98),
-    rgba(240, 246, 255, 0.92),
-    transparent
-  );
-  border-bottom-color: rgba(0, 135, 90, 0.15);
+  border-bottom-color: rgba(0, 103, 74, 0.18);
 }
 
 html[data-theme='light'] .brand-icon,
@@ -531,7 +586,7 @@ html.light-mode .brand-icon {
 
 html[data-theme='light'] .brand-title,
 html.light-mode .brand-title {
-  color: #00875a;
+  color: #00674a;
   text-shadow: 0 0 10px rgba(0, 135, 90, 0.35);
 }
 
@@ -542,18 +597,13 @@ html.light-mode .nav-session-pill {
   color: #006b48;
 }
 
-html[data-theme='light'] .breadcrumb__current,
-html[data-theme='light'] .page-title,
-html[data-theme='light'] .hero__title,
-html[data-theme='light'] .card__title,
-html[data-theme='light'] h1,
-html[data-theme='light'] h2,
-html[data-theme='light'] h3,
-html[data-theme='light'] h4,
-html[data-theme='light'] h5,
-html[data-theme='light'] h6 {
-  color: #0f172a;
-}
+/* NOTE: a blanket `html[data-theme='light'] h1..h6 { color: #0f172a }` rule
+   lived here. It force-darkened every heading on the page — including headings
+   inside panels whose background had not been converted to light — producing
+   ~1.05:1 contrast (invisible text) in the Guided Walkthrough and anywhere
+   else lacking a hand-written override.
+   Headings now inherit `--beattie-text` from body, which flips with the
+   palette in tokens.css. Do not reintroduce blanket color rules here. */
 
 html[data-theme='light'] .theme-toggle,
 html.light-mode .theme-toggle,
@@ -870,7 +920,7 @@ html[data-theme='light'] .sidebar__lesson-link--active {
 .card__title {
   font-size: 15px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--beattie-text);
   letter-spacing: -0.2px;
   margin: 0;
   line-height: 1.3;
@@ -955,7 +1005,7 @@ html[data-theme='light'] .sidebar__lesson-link--active {
 .quick-action:hover {
   background: var(--beattie-surface-elevated);
   border-color: var(--beattie-border-hover);
-  color: #ffffff;
+  color: var(--beattie-text);
 }
 
 .card__cta {
@@ -2179,7 +2229,7 @@ html[data-theme='light'] .progress-strip__subtitle {
 
 html.light-mode .progress-strip__percent,
 html[data-theme='light'] .progress-strip__percent {
-  color: #00875a;
+  color: #00674a;
 }
 
 html.light-mode .progress-strip__bar-wrap .progress-bar-track,
@@ -2718,7 +2768,8 @@ html[data-theme='light'] .track-section--locked .card {
 
 html[data-theme='light'] .track-section__lock-badge {
   background: rgba(241, 245, 249, 0.9);
-  color: #64748b;
+  /* #64748b on this tint is 4.34:1 — just under AA for 12px text. */
+  color: var(--beattie-text-muted);
   border-color: rgba(148, 163, 184, 0.35);
 }
 
@@ -2897,13 +2948,26 @@ html[data-theme='light'] .terminal-titlebar {
 /* ── Lab Layout + Step Tracker ──────────────────────── */
 .lab-layout {
   display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 20px;
+  grid-template-columns: minmax(180px, 220px) minmax(0, 1fr);
+  gap: var(--space-5);
   align-items: start;
 }
 
+/* minmax(0,1fr) above plus min-width:0 here stop the step card and progress
+   bar from overflowing the right edge of the workspace. */
+.lab-main {
+  min-width: 0;
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (max-width: 720px) {
+  .lab-layout { grid-template-columns: minmax(0, 1fr); }
+  .lab-steps { position: static; }
+}
+
 .lab-steps {
-  background: rgba(2, 5, 16, 0.8);
+  background: var(--beattie-surface-elevated);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 14px 12px;
@@ -3855,3 +3919,498 @@ html.light-mode .continue-learning__meta,
 html[data-theme='light'] .continue-learning__meta {
   color: #475569;
 }
+
+/* ==========================================================================
+   Floating language selector (ESL support)
+   Previously inline-styled with hardcoded dark colors, which beat every
+   stylesheet and locked it to the dark palette. Now fully tokenized.
+   ========================================================================== */
+.beattie-lang-float {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 60;
+  display: flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  background: var(--beattie-surface-glass);
+  border: 1px solid var(--beattie-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(8px);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}
+
+.lang-btn {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--beattie-text-muted);
+  padding: 6px 10px;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.lang-btn:hover {
+  color: var(--beattie-text);
+  background: var(--beattie-surface-elevated);
+}
+
+.lang-btn[aria-pressed='true'] {
+  /* --primary-hover, not --primary: white on the base dark-mode primary
+     (#3b82f6) is only 3.68:1. Hover shade gives 5.2:1 dark / 6.8:1 light. */
+  background: var(--beattie-primary-hover);
+  color: #ffffff;
+  border-color: var(--beattie-primary-hover);
+}
+
+/* ==========================================================================
+   Bidirectional text (RTL: Arabic, Persian)
+   --------------------------------------------------------------------------
+   Lesson and quiz CONTENT is deliberately English (CompTIA exams are English),
+   so it must stay LTR even when the interface shell is RTL. Without this,
+   English sentences render with their punctuation on the wrong side —
+   ".Answer each question in order" instead of "Answer each question in order."
+   Only the translated interface chrome flips direction.
+   ========================================================================== */
+html[dir='rtl'] .lesson-body,
+html[dir='rtl'] .lesson-reading-main,
+html[dir='rtl'] .lesson-header__description,
+html[dir='rtl'] .hero__subtitle,
+html[dir='rtl'] .card__desc,
+html[dir='rtl'] .card__title,
+html[dir='rtl'] .card h2,
+html[dir='rtl'] .card h3,
+html[dir='rtl'] .guided-excerpt,
+html[dir='rtl'] .guided-focus,
+html[dir='rtl'] .guided-head h3,
+html[dir='rtl'] .quiz-question__prompt,
+html[dir='rtl'] .quiz-option__text,
+html[dir='rtl'] .sidebar__lesson-title,
+html[dir='rtl'] .sidebar__group-title,
+html[dir='rtl'] .brand-title,
+html[dir='rtl'] .brand-subtitle,
+html[dir='rtl'] .progress-strip__title,
+html[dir='rtl'] .progress-strip__subtitle,
+html[dir='rtl'] .section-head__title-row,
+html[dir='rtl'] .breadcrumb-row__inner,
+html[dir='rtl'] .workspace-steps,
+html[dir='rtl'] code,
+html[dir='rtl'] pre,
+html[dir='rtl'] .code-runner {
+  direction: ltr;
+  text-align: start;
+}
+
+/* The switcher shows each language in its own script, so let each button
+   render with its own direction rather than the document's. */
+.lang-btn {
+  unicode-bidi: isolate;
+}
+
+/* ==========================================================================
+   Accessibility / sensory preferences
+   --------------------------------------------------------------------------
+   Driven by data-attributes set on <html> from a11yStore.ts. Students reach
+   these through the Accessibility panel in the top nav.
+   ========================================================================== */
+
+/* --- Motion --------------------------------------------------------------
+   'system' defers to the OS. 'reduced' forces calm regardless of OS setting —
+   a student on a shared school machine cannot change the OS preference. */
+html[data-motion='reduced'] *,
+html[data-motion='reduced'] *::before,
+html[data-motion='reduced'] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-motion='system'] *,
+  html[data-motion='system'] *::before,
+  html[data-motion='system'] *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --- Calm mode -----------------------------------------------------------
+   Removes glow, gradients, and saturated fills. Keeps every affordance and
+   all contrast — this lowers stimulation, it does not lower legibility. */
+html[data-calm='on'] {
+  --shadow-soft: none;
+  --shadow-neon-green: none;
+  --shadow-neon-blue: none;
+  --shadow-glow-pink: none;
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --gradient-primary: none;
+}
+
+html[data-calm='on'] body {
+  background-image: none;
+  background-color: var(--beattie-bg);
+}
+
+html[data-calm='on'] .card,
+html[data-calm='on'] .card--glass,
+html[data-calm='on'] .quiz-runner,
+html[data-calm='on'] .code-runner,
+html[data-calm='on'] .guided-root {
+  background-image: none;
+  background-color: var(--beattie-surface);
+  box-shadow: none;
+}
+
+html[data-calm='on'] .card:hover {
+  box-shadow: none;
+}
+
+/* --- Text size -----------------------------------------------------------
+   Scales the rem base, so every token built on rem scales with it. */
+html[data-text-size='large'] { font-size: 112.5%; }
+html[data-text-size='larger'] { font-size: 125%; }
+
+/* --- Readable spacing (dyslexia / tracking support) --------------------- */
+html[data-spacing='readable'] body {
+  line-height: 1.8;
+  letter-spacing: 0.012em;
+  word-spacing: 0.05em;
+}
+
+html[data-spacing='readable'] p,
+html[data-spacing='readable'] li {
+  margin-block-end: 0.9em;
+  max-width: 66ch;
+}
+
+/* --- Underline links (do not rely on color alone, WCAG 1.4.1) ---------- */
+html[data-underline-links='on'] a:not(.btn-link):not(.btn-primary):not(.btn-secondary):not(.btn-ghost):not(.sidebar__link):not(.sidebar__lesson-link):not(.nav-link) {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* --- Accessibility panel ------------------------------------------------ */
+.a11y-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 36px;
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  color: var(--beattie-text-muted);
+  border: 1px solid var(--beattie-border);
+  border-radius: var(--radius-pill);
+  font: inherit;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.a11y-trigger:hover {
+  color: var(--beattie-text);
+  background: var(--beattie-surface-elevated);
+}
+
+.a11y-trigger:focus-visible {
+  outline: 2px solid var(--beattie-border-active);
+  outline-offset: 2px;
+}
+
+@media (max-width: 720px) {
+  .a11y-trigger__text { display: none; }
+}
+
+.a11y-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 90;
+}
+
+.a11y-dialog {
+  position: fixed;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  width: min(30rem, calc(100vw - 2rem));
+  max-height: min(40rem, calc(100vh - 2rem));
+  overflow-y: auto;
+  padding: var(--space-6);
+  background: var(--beattie-surface);
+  border: 1px solid var(--beattie-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  color: var(--beattie-text);
+}
+
+html[dir='rtl'] .a11y-dialog { transform: translate(50%, -50%); }
+
+.a11y-dialog__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.a11y-dialog__head h2 { margin: 0; font-size: var(--text-xl); }
+
+.a11y-dialog__intro {
+  margin: 0 0 var(--space-5);
+  color: var(--beattie-text-muted);
+  font-size: var(--text-sm);
+}
+
+.a11y-close {
+  background: transparent;
+  border: 1px solid var(--beattie-border);
+  border-radius: var(--radius-sm);
+  color: var(--beattie-text-muted);
+  min-width: 36px;
+  min-height: 36px;
+  cursor: pointer;
+  font: inherit;
+}
+
+.a11y-close:hover { color: var(--beattie-text); background: var(--beattie-surface-elevated); }
+
+.a11y-group {
+  margin: 0 0 var(--space-5);
+  padding: var(--space-4);
+  border: 1px solid var(--beattie-border);
+  border-radius: var(--radius-md);
+}
+
+.a11y-group legend {
+  padding: 0 var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--beattie-text-muted);
+}
+
+.a11y-segmented { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-2); }
+
+.a11y-seg {
+  flex: 1 1 auto;
+  min-height: 40px;
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  color: var(--beattie-text-muted);
+  border: 1px solid var(--beattie-border);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.a11y-seg:hover { color: var(--beattie-text); background: var(--beattie-surface-elevated); }
+
+.a11y-seg--on {
+  background: var(--beattie-primary-subtle);
+  border-color: var(--beattie-border-active);
+  color: var(--beattie-text);
+  font-weight: 600;
+}
+
+.a11y-seg:focus-visible,
+.a11y-checkbox:focus-visible {
+  outline: 2px solid var(--beattie-border-active);
+  outline-offset: 2px;
+}
+
+.a11y-row { display: flex; align-items: flex-start; gap: var(--space-3); margin-bottom: var(--space-4); }
+.a11y-row:last-child { margin-bottom: 0; }
+
+.a11y-checkbox { width: 20px; height: 20px; margin-top: 2px; flex-shrink: 0; accent-color: var(--beattie-primary); cursor: pointer; }
+
+.a11y-row__text { min-width: 0; }
+.a11y-row__label { display: block; font-size: var(--text-sm); font-weight: 600; cursor: pointer; }
+.a11y-row__hint { margin: 2px 0 0; font-size: var(--text-xs); color: var(--beattie-text-muted); line-height: 1.45; }
+
+.a11y-dialog__foot { display: flex; justify-content: flex-end; }
+
+.lab-complete__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+/* ==========================================================================
+   Lab step runner — shared chassis for every step-based lab
+   --------------------------------------------------------------------------
+   The answer input previously used a `.input` class that had NO rule anywhere,
+   so it rendered as a raw browser default jammed against its label.
+   ========================================================================== */
+
+.lab-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.lab-progress .progress-bar-track { flex: 1; min-width: 0; }
+
+.lab-progress__count {
+  flex-shrink: 0;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--beattie-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.lab-instruction {
+  padding: var(--space-5);
+  background: var(--beattie-surface-elevated);
+  border: 1px solid var(--beattie-border);
+  border-inline-start: 3px solid var(--beattie-primary);
+  border-radius: var(--radius-md);
+}
+
+.lab-instruction__title {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-lg);
+  color: var(--beattie-text);
+}
+
+.lab-instruction__body {
+  margin: 0;
+  color: var(--beattie-text-muted);
+  line-height: var(--leading-normal);
+}
+
+/* --- The answer field --------------------------------------------------- */
+.lab-field { display: grid; gap: var(--space-2); }
+
+.lab-field__label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--beattie-text);
+}
+
+.lab-field__input {
+  width: 100%;
+  min-height: 44px;
+  padding: var(--space-3) var(--space-4);
+  background: var(--beattie-surface);
+  color: var(--beattie-text);
+  border: 1px solid var(--beattie-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.lab-field__input::placeholder { color: var(--beattie-text-dim); }
+
+.lab-field__input:hover { border-color: var(--beattie-border-hover); }
+
+.lab-field__input:focus {
+  outline: none;
+  border-color: var(--beattie-border-active);
+  box-shadow: 0 0 0 3px var(--beattie-primary-subtle);
+}
+
+.lab-field__input:focus-visible {
+  outline: 2px solid var(--beattie-border-active);
+  outline-offset: 1px;
+}
+
+.lab-field__hint-text {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--beattie-text-dim);
+}
+
+/* --- Action row: one clear primary, one secondary, hint pushed away ------ */
+.lab-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.lab-actions .btn-primary,
+.lab-actions .btn-secondary,
+.lab-actions .btn-ghost {
+  min-height: 44px;
+}
+
+.lab-actions__hint { margin-inline-start: auto; }
+
+.lab-actions .btn-secondary:disabled {
+  /* Disabled controls are exempt from WCAG 1.4.3, but 0.45 was needlessly
+     hard to read. Still unmistakably inactive at 0.62. */
+  opacity: 0.62;
+  cursor: not-allowed;
+}
+
+/* --- Step rail ---------------------------------------------------------- */
+.lab-step {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  min-height: 44px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--beattie-text-muted);
+  font: inherit;
+  font-size: var(--text-sm);
+  text-align: start;
+  cursor: pointer;
+}
+
+.lab-step:hover:not(:disabled) {
+  background: var(--beattie-surface);
+  color: var(--beattie-text);
+}
+
+.lab-step:focus-visible {
+  outline: 2px solid var(--beattie-border-active);
+  outline-offset: 2px;
+}
+
+.lab-step__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: var(--radius-pill);
+  border: 1px solid currentColor;
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.lab-step--active {
+  background: var(--beattie-primary-subtle);
+  border-color: var(--beattie-border-active);
+  color: var(--beattie-text);
+  font-weight: 600;
+}
+
+.lab-step--complete { color: var(--beattie-success-text); }
+.lab-step--complete .lab-step__num { background: var(--beattie-success-subtle); }
+
+.lab-step--locked { opacity: 0.5; cursor: not-allowed; }

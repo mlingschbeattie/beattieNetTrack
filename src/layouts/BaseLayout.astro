@@ -8,7 +8,14 @@ import '../styles/legacy-compat.css';
 // on the top-level `<html>` element so legacy-compat styles (scoped) apply only
 // to that page. Keep this limited to single-page visual testing; do not enable
 // site-wide or persist across sessions.
+import { LANGUAGES, allDictionaries, DEFAULT_LANG } from '../i18n';
+
 const { title = 'Beattie Tech', legacySkin = false } = Astro.props;
+
+// Every dictionary ships once so switching language is instant and offline-safe
+// (no round trip), matching the local-first model the rest of the app uses.
+const dictionaries = allDictionaries();
+const rtlLangs = LANGUAGES.filter((l) => l.dir === 'rtl').map((l) => l.code);
 ---
 
 <!doctype html>
@@ -20,17 +27,38 @@ const { title = 'Beattie Tech', legacySkin = false } = Astro.props;
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
+    <script type="application/json" id="bn-rtl-langs" is:inline set:html={JSON.stringify(rtlLangs)}></script>
+    <script type="application/json" id="bn-i18n" is:inline set:html={JSON.stringify(dictionaries)}></script>
     <script is:inline>
       (() => {
         try {
+          // Explicit choice wins; otherwise follow the OS preference so the
+          // app matches the rest of the user's environment on first visit.
           const stored = window.localStorage.getItem('theme');
-          const theme = stored === 'light' ? 'light' : 'dark';
+          const theme =
+            stored === 'light' || stored === 'dark'
+              ? stored
+              : window.matchMedia('(prefers-color-scheme: light)').matches
+                ? 'light'
+                : 'dark';
           document.documentElement.dataset.theme = theme;
+          document.documentElement.style.colorScheme = theme;
+
+          // Accessibility prefs applied before first paint so a student who
+          // needs calm mode or larger text never sees the unstyled version.
+          const a11y = JSON.parse(window.localStorage.getItem('beattie_a11y_v1') || '{}');
+          const root = document.documentElement;
+          root.dataset.motion = a11y.motion || 'system';
+          root.dataset.calm = a11y.calmMode ? 'on' : 'off';
+          root.dataset.textSize = a11y.textSize || 'default';
+          root.dataset.spacing = a11y.readableSpacing ? 'readable' : 'default';
+          root.dataset.underlineLinks = a11y.underlineLinks ? 'on' : 'off';
 
           const params = new URLSearchParams(window.location.search);
           const lang = params.get('lang') || window.localStorage.getItem('beattienet_lang') || 'en';
+          const rtl = JSON.parse(document.getElementById('bn-rtl-langs').textContent);
           document.documentElement.lang = lang;
-          document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+          document.documentElement.dir = rtl.includes(lang) ? 'rtl' : 'ltr';
         } catch {
           document.documentElement.dataset.theme = 'dark';
         }
@@ -41,10 +69,18 @@ const { title = 'Beattie Tech', legacySkin = false } = Astro.props;
     <slot />
 
     <!-- Floating Global Language Selector for ESL Students -->
-    <div id="beattie-lang-bar" class="beattie-lang-float" role="group" aria-label="Language" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 9999; display: flex; gap: 4px; background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; padding: 4px; backdrop-filter: blur(8px); box-shadow: 0 4px 12px rgba(0,0,0,0.5); font-family: monospace; font-size: 11px;">
-      <button data-set-lang="en" aria-pressed="true" style="background: none; border: none; color: #94a3b8; padding: 6px 10px; min-width: 24px; min-height: 24px; border-radius: 4px; cursor: pointer; font-weight: bold;">EN</button>
-      <button data-set-lang="ar" aria-pressed="false" style="background: none; border: none; color: #94a3b8; padding: 6px 10px; min-width: 24px; min-height: 24px; border-radius: 4px; cursor: pointer; font-weight: bold;">عربي</button>
-      <button data-set-lang="uk" aria-pressed="false" style="background: none; border: none; color: #94a3b8; padding: 6px 10px; min-width: 24px; min-height: 24px; border-radius: 4px; cursor: pointer; font-weight: bold;">УКР</button>
+    <div id="beattie-lang-bar" class="beattie-lang-float" role="group" data-i18n-aria-label="lang.label" aria-label="Language">
+      {LANGUAGES.map((l) => (
+        <button
+          class="lang-btn"
+          data-set-lang={l.code}
+          lang={l.code}
+          aria-pressed={l.code === DEFAULT_LANG ? 'true' : 'false'}
+          title={l.englishName}
+        >
+          {l.nativeName}
+        </button>
+      ))}
     </div>
 
     <script>
@@ -52,22 +88,57 @@ const { title = 'Beattie Tech', legacySkin = false } = Astro.props;
       
       // Floating language selector logic
       const langButtons = document.querySelectorAll('[data-set-lang]');
+      const readJson = (id: string, fallback: any) => {
+        try {
+          const el = document.getElementById(id);
+          return el ? JSON.parse(el.textContent || '') : fallback;
+        } catch {
+          return fallback;
+        }
+      };
+      const DICTS = readJson('bn-i18n', {});
+      const RTL_LANGS: string[] = readJson('bn-rtl-langs', []);
+
+      /**
+       * Applies the active dictionary to every marked node. Elements opt in
+       * with data-i18n (text), data-i18n-aria-label, data-i18n-title, or
+       * data-i18n-placeholder. Anything unmarked keeps its authored English —
+       * which is correct for lesson/quiz CONTENT, deliberately untranslated.
+       */
+      const applyTranslations = (lang: string) => {
+        const dict = DICTS[lang] || DICTS.en || {};
+        document.querySelectorAll('[data-i18n]').forEach((el) => {
+          const key = el.getAttribute('data-i18n');
+          if (key && dict[key]) el.textContent = dict[key];
+        });
+        const attrMap: Array<[string, string]> = [
+          ['data-i18n-aria-label', 'aria-label'],
+          ['data-i18n-title', 'title'],
+          ['data-i18n-placeholder', 'placeholder'],
+        ];
+        attrMap.forEach(([dataAttr, realAttr]) => {
+          document.querySelectorAll('[' + dataAttr + ']').forEach((el) => {
+            const key = el.getAttribute(dataAttr);
+            if (key && dict[key]) el.setAttribute(realAttr, dict[key]);
+          });
+        });
+      };
+
       const updateLangUi = (currentLang: string) => {
         document.documentElement.lang = currentLang;
-        document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.dir = RTL_LANGS.includes(currentLang) ? 'rtl' : 'ltr';
         localStorage.setItem('beattienet_lang', currentLang);
         langButtons.forEach((btn) => {
           const l = btn.getAttribute('data-set-lang');
           const isActive = l === currentLang;
+          // Styling is driven by [aria-pressed] in CSS so it themes with the
+          // palette. Inline styles would beat every stylesheet and lock these
+          // buttons to one theme.
           btn.setAttribute('aria-pressed', String(isActive));
-          if (isActive) {
-            (btn as HTMLElement).style.background = '#0284c7';
-            (btn as HTMLElement).style.color = '#ffffff';
-          } else {
-            (btn as HTMLElement).style.background = 'none';
-            (btn as HTMLElement).style.color = '#94a3b8';
-          }
         });
+        applyTranslations(currentLang);
+        // Islands hydrate after this runs; let them re-apply on mount.
+        window.dispatchEvent(new CustomEvent('beattie:langchange', { detail: { lang: currentLang } }));
       };
 
       const initialLang = document.documentElement.lang || 'en';
@@ -86,6 +157,8 @@ const { title = 'Beattie Tech', legacySkin = false } = Astro.props;
       const applyThemeUi = (theme: 'light' | 'dark') => {
         const isLight = theme === 'light';
         document.documentElement.setAttribute('data-theme', theme);
+        // Keeps form controls, scrollbars and caret in step with the palette.
+        document.documentElement.style.colorScheme = theme;
         if (themeIcon) themeIcon.textContent = isLight ? '☀️' : '🌙';
         if (themeLabel) themeLabel.textContent = isLight ? 'Light' : 'Dark';
         if (themeToggle instanceof HTMLButtonElement) {
