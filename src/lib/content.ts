@@ -61,6 +61,25 @@ const compareOrderTitleSlug = <T extends { order: number; title: string; slug: s
   return a.order - b.order || a.title.localeCompare(b.title) || a.slug.localeCompare(b.slug);
 };
 
+// Pedagogical sequence within a module: learn -> practice -> assess.
+// Lessons must precede the labs/activities that apply them, which in turn
+// precede the quiz that assesses them.
+const ACTIVITY_TYPE_RANK: Record<TrackActivityType, number> = {
+  lesson: 0,
+  lab: 1,
+  activity: 1,
+  quiz: 2,
+};
+
+const compareActivities = (a: TrackActivitySummary, b: TrackActivitySummary) => {
+  return (
+    a.order - b.order ||
+    ACTIVITY_TYPE_RANK[a.type] - ACTIVITY_TYPE_RANK[b.type] ||
+    a.title.localeCompare(b.title) ||
+    a.slug.localeCompare(b.slug)
+  );
+};
+
 const toActivityKey = (activity: { type: TrackActivityType; slug: string }) => `${activity.type}:${activity.slug}`;
 
 const buildPrevNextByKey = (
@@ -196,7 +215,7 @@ export const getTrackDetailData = async (trackSlug: string): Promise<TrackDetail
 
   const modulesWithActivities: TrackModuleSummary[] = [];
   for (const [moduleSlug, activities] of moduleActivityMap.entries()) {
-    const sortedActivities = activities.sort(compareOrderTitleSlug);
+    const sortedActivities = activities.sort(compareActivities);
     const moduleData = moduleMap.get(moduleSlug);
     modulesWithActivities.push({
       slug: moduleSlug,
