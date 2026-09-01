@@ -4413,3 +4413,183 @@ html[dir='rtl'] .a11y-dialog { transform: translate(50%, -50%); }
 .lab-step--complete .lab-step__num { background: var(--beattie-success-subtle); }
 
 .lab-step--locked { opacity: 0.5; cursor: not-allowed; }
+
+/* ==========================================================================
+   Study Hub / quiz catalog
+   --------------------------------------------------------------------------
+   Was 136 cards in one flat 5-column grid, 134 of them repeating the identical
+   default subtitle "Quiz workspace" — an undifferentiated wall with no
+   hierarchy and no way to narrow. Now grouped per track in native <details>,
+   collapsible, filterable, and rendered as compact rows rather than tiles.
+   ========================================================================== */
+
+.qc-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin: var(--space-6) 0 var(--space-3);
+}
+
+.qc-filter { display: grid; gap: var(--space-2); flex: 1 1 18rem; min-width: 0; }
+
+.qc-filter__label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--beattie-text);
+}
+
+.qc-filter__input {
+  width: 100%;
+  min-height: 44px;
+  padding: var(--space-3) var(--space-4);
+  background: var(--beattie-surface);
+  color: var(--beattie-text);
+  border: 1px solid var(--beattie-border);
+  border-radius: var(--radius-md);
+  font: inherit;
+}
+
+.qc-filter__input::placeholder { color: var(--beattie-text-dim); }
+
+.qc-filter__input:focus {
+  outline: none;
+  border-color: var(--beattie-border-active);
+  box-shadow: 0 0 0 3px var(--beattie-primary-subtle);
+}
+
+.qc-toolbar__actions { display: flex; gap: var(--space-2); }
+.qc-toolbar__actions .btn-ghost { min-height: 44px; }
+
+.qc-status {
+  margin: 0 0 var(--space-4);
+  min-height: 1.25em;
+  font-size: var(--text-sm);
+  color: var(--beattie-text-muted);
+}
+
+.qc-groups { display: grid; gap: var(--space-3); }
+
+.qc-group {
+  border: 1px solid var(--beattie-border);
+  border-radius: var(--radius-md);
+  background: var(--beattie-surface);
+  overflow: hidden;
+}
+
+.qc-group__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  min-height: 56px;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 600;
+  color: var(--beattie-text);
+}
+
+.qc-group__summary::-webkit-details-marker { display: none; }
+
+/* Disclosure triangle drawn manually so it can sit at the start in both
+   reading directions. */
+.qc-group__summary::before {
+  content: '';
+  flex-shrink: 0;
+  width: 0;
+  height: 0;
+  border-inline-start: 6px solid currentColor;
+  border-block-start: 5px solid transparent;
+  border-block-end: 5px solid transparent;
+  transition: transform var(--transition-fast);
+}
+
+.qc-group[open] > .qc-group__summary::before { transform: rotate(90deg); }
+
+html[dir='rtl'] .qc-group__summary::before { transform: rotate(180deg); }
+html[dir='rtl'] .qc-group[open] > .qc-group__summary::before { transform: rotate(90deg); }
+
+.qc-group__summary:hover { background: var(--beattie-surface-elevated); }
+
+.qc-group__summary:focus-visible {
+  outline: 2px solid var(--beattie-border-active);
+  outline-offset: -2px;
+}
+
+.qc-group__name { flex: 1; min-width: 0; }
+
+.qc-group__count {
+  flex-shrink: 0;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--beattie-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.qc-list {
+  margin: 0;
+  padding: 0 var(--space-3) var(--space-3);
+  list-style: none;
+  display: grid;
+  gap: 2px;
+}
+
+.qc-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  min-height: 48px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--beattie-text);
+  text-decoration: none;
+}
+
+.qc-card:hover {
+  background: var(--beattie-surface-elevated);
+  border-color: var(--beattie-border);
+}
+
+.qc-card:focus-visible {
+  outline: 2px solid var(--beattie-border-active);
+  outline-offset: -2px;
+}
+
+.qc-card__main { display: grid; gap: 1px; min-width: 0; }
+
+.qc-card__title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.qc-card__module {
+  font-size: var(--text-xs);
+  color: var(--beattie-text-muted);
+}
+
+.qc-card__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.qc-card__count {
+  font-size: var(--text-xs);
+  color: var(--beattie-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.qc-card__score {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--beattie-success-text);
+  border: 1px solid currentColor;
+  border-radius: var(--radius-pill);
+  padding: 1px var(--space-2);
+}

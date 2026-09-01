@@ -1,15 +1,42 @@
 ---
 import { getCollection } from 'astro:content';
 import AppShell from '../../layouts/AppShell.astro';
-import QuizCatalogBadge from '../../components/islands/QuizCatalogBadge.tsx';
-import ActivityCard from '../../components/ActivityCard.astro';
 
 const tracks = await getCollection('tracks');
 const allQuizzes = await getCollection('quizzes');
+const modules = await getCollection('modules');
+
 // Hide quizzes with no questions and no JSON path — they appear broken to students
 const quizzes = allQuizzes.filter(
   (q) => q.data.questions.length > 0 || Boolean(q.data.quizJsonPath)
 );
+
+const moduleTitle = new Map(modules.map((m) => [m.data.moduleId, m.data.title]));
+
+// Group by track. A flat 136-card grid was the core problem: no hierarchy, no
+// way to narrow, and 134 of the cards carried the identical default subtitle
+// "Quiz workspace" — a wall of near-identical tiles.
+const trackOrder = new Map(tracks.map((t) => [t.slug, t.data.order ?? 0]));
+const groups = tracks
+  .filter((t) => !t.data.hidden)
+  .map((track) => {
+    const items = quizzes
+      .filter((q) => q.data.track === track.slug)
+      .map((q) => ({
+        slug: q.slug,
+        title: q.data.title,
+        moduleId: q.data.moduleId ?? q.data.module ?? '',
+        moduleLabel: moduleTitle.get(q.data.moduleId ?? q.data.module ?? '') ?? '',
+        questionCount: q.data.questions.length,
+        order: q.data.order ?? 0,
+      }))
+      .sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
+    return { slug: track.slug, title: track.data.title, icon: track.data.icon, items };
+  })
+  .filter((g) => g.items.length > 0)
+  .sort((a, b) => (trackOrder.get(a.slug) ?? 0) - (trackOrder.get(b.slug) ?? 0));
+
+const totalQuizzes = groups.reduce((sum, g) => sum + g.items.length, 0);
 
 const breadcrumbs = [
   { label: 'Home', href: '/' },
@@ -19,23 +46,127 @@ const breadcrumbs = [
 
 <AppShell title="Quizzes" tracks={tracks} breadcrumbs={breadcrumbs}>
   <section class="hero">
-    <h1 class="hero__title">Quiz Catalog</h1>
-    <p class="hero__subtitle">Pick a module and sharpen your skills with targeted practice.</p>
+    <h1 class="hero__title">Study Hub</h1>
+    <p class="hero__subtitle">
+      Choose a track, then pick a quiz. {totalQuizzes} quizzes across {groups.length} tracks.
+    </p>
   </section>
 
-  <section class="card-grid card-grid--three">
-    {quizzes.map((quiz) => (
-      <ActivityCard class="card--glass">
-        <h2>{quiz.data.title}</h2>
-        <p>{quiz.data.description}</p>
-        <div class="card__meta">
-          <span class="pill">{quiz.data.questions.length} questions</span>
-          <QuizCatalogBadge client:only="react" quizSlug={quiz.slug} />
-        </div>
-        <div class="card__footer">
-          <a class="btn-link" href={`/quizzes/${quiz.slug}`}>Open workspace →</a>
-        </div>
-      </ActivityCard>
+  <div class="qc-toolbar">
+    <label class="qc-filter">
+      <span class="qc-filter__label">Find a quiz</span>
+      <input
+        type="search"
+        id="qc-filter-input"
+        class="qc-filter__input"
+        placeholder="Type to narrow the list…"
+        autocomplete="off"
+        aria-describedby="qc-filter-status"
+      />
+    </label>
+    <div class="qc-toolbar__actions">
+      <button type="button" class="btn-ghost" data-qc-expand>Expand all</button>
+      <button type="button" class="btn-ghost" data-qc-collapse>Collapse all</button>
+    </div>
+  </div>
+
+  <p id="qc-filter-status" class="qc-status" role="status" aria-live="polite"></p>
+
+  <div class="qc-groups">
+    {groups.map((group) => (
+      <details class="qc-group" data-qc-group open>
+        <summary class="qc-group__summary">
+          <span class="qc-group__name">{group.title}</span>
+          <span class="qc-group__count" data-qc-count={group.items.length}>
+            {group.items.length} {group.items.length === 1 ? 'quiz' : 'quizzes'}
+          </span>
+        </summary>
+
+        <ul class="qc-list">
+          {group.items.map((item) => (
+            <li class="qc-item" data-qc-item data-title={item.title.toLowerCase()} data-module={item.moduleLabel.toLowerCase()}>
+              <a class="qc-card" href={`/quizzes/${item.slug}`}>
+                <span class="qc-card__main">
+                  <span class="qc-card__title">{item.title}</span>
+                  {item.moduleLabel && <span class="qc-card__module">{item.moduleLabel}</span>}
+                </span>
+                <span class="qc-card__meta">
+                  <span class="qc-card__count">{item.questionCount} Q</span>
+                  <span class="qc-card__score" data-qc-score={item.slug} hidden></span>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </details>
     ))}
-  </section>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const groups = Array.from(document.querySelectorAll('[data-qc-group]'));
+      const items = Array.from(document.querySelectorAll('[data-qc-item]'));
+      const input = document.getElementById('qc-filter-input');
+      const status = document.getElementById('qc-filter-status');
+
+      // Honour the student's "collapse long lists" accessibility preference so
+      // the page can open small instead of showing everything at once.
+      try {
+        const a11y = JSON.parse(localStorage.getItem('beattie_a11y_v1') || '{}');
+        if (a11y.collapseCatalogs !== false) {
+          groups.forEach((g) => g.removeAttribute('open'));
+        }
+      } catch {}
+
+      // Best-score badges. This previously mounted one React island PER CARD
+      // (136 of them) that mostly rendered null. One pass over storage instead.
+      try {
+        const progress = JSON.parse(localStorage.getItem('beattie_progress_v1') || '{}');
+        const quizzes = progress.quizzes || {};
+        document.querySelectorAll('[data-qc-score]').forEach((el) => {
+          const slug = el.getAttribute('data-qc-score');
+          const best = quizzes[slug] && quizzes[slug].bestScore;
+          if (best) {
+            el.textContent = 'Best ' + best + '%';
+            el.hidden = false;
+          }
+        });
+      } catch {}
+
+      const applyFilter = (raw) => {
+        const q = raw.trim().toLowerCase();
+        let shown = 0;
+        items.forEach((li) => {
+          const hit =
+            !q ||
+            (li.getAttribute('data-title') || '').includes(q) ||
+            (li.getAttribute('data-module') || '').includes(q);
+          li.hidden = !hit;
+          if (hit) shown += 1;
+        });
+        groups.forEach((g) => {
+          const visible = g.querySelectorAll('[data-qc-item]:not([hidden])').length;
+          g.hidden = visible === 0;
+          const count = g.querySelector('[data-qc-count]');
+          if (count) {
+            const total = count.getAttribute('data-qc-count');
+            count.textContent = q ? visible + ' of ' + total : total + (total === '1' ? ' quiz' : ' quizzes');
+          }
+          // Open matching groups while filtering so results are visible.
+          if (q && visible > 0) g.setAttribute('open', '');
+        });
+        if (status) {
+          status.textContent = q ? shown + (shown === 1 ? ' quiz matches' : ' quizzes match') + ' "' + raw.trim() + '"' : '';
+        }
+      };
+
+      input?.addEventListener('input', (e) => applyFilter(e.target.value));
+      document.querySelector('[data-qc-expand]')?.addEventListener('click', () =>
+        groups.forEach((g) => g.setAttribute('open', ''))
+      );
+      document.querySelector('[data-qc-collapse]')?.addEventListener('click', () =>
+        groups.forEach((g) => g.removeAttribute('open'))
+      );
+    })();
+  </script>
 </AppShell>
