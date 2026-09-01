@@ -152,7 +152,7 @@ export default function RightPanel({ routePath, hints = [], checklist = [] }: Pr
 
         <div className="right-panel__body">
           {panelState.activeTab === 'checks' && (
-            <div className="right-panel__checks" data-testid="checks-panel">
+            <div className="right-panel__checks" data-testid="checks-panel" aria-live="polite" aria-atomic="false">
               <article className="card">
                 <h4>Requirement checklist</h4>
                 {requirements.length > 0 ? (

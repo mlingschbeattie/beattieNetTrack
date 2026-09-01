@@ -64,6 +64,7 @@ export default function CodeRunner({ labSlug, exerciseSlug }: CodeRunnerProps) {
   );
   const [code, setCode] = useState(exercise.starterCode);
   const codeRef = useRef(exercise.starterCode);
+  const runButtonRef = useRef<HTMLButtonElement>(null);
   const [output, setOutput] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -200,7 +201,7 @@ export default function CodeRunner({ labSlug, exerciseSlug }: CodeRunnerProps) {
       <div className="code-runner__header">
         <strong>{exercise.title}</strong>
         <div className="code-runner__controls">
-          <button className="btn-secondary" type="button" onClick={() => void run()} data-testid="code-run">Run</button>
+          <button ref={runButtonRef} className="btn-secondary" type="button" onClick={() => void run()} data-testid="code-run">Run</button>
           <button className="btn-primary" type="button" onClick={() => void check()}>Check</button>
           <button className="btn-ghost" type="button" onClick={reset}>Reset</button>
         </div>
@@ -213,9 +214,21 @@ export default function CodeRunner({ labSlug, exerciseSlug }: CodeRunnerProps) {
           codeRef.current = event.target.value;
           setCode(event.target.value);
         }}
+        onKeyDown={(event) => {
+          // WCAG 2.1.2 (No Keyboard Trap): Esc releases focus from the editor
+          // to the controls so keyboard users can always Tab back out.
+          if (event.key === 'Escape') {
+            event.preventDefault();
+            runButtonRef.current?.focus();
+          }
+        }}
         spellCheck={false}
         aria-label="Code editor"
+        aria-describedby="code-runner-editor-hint"
       />
+      <p id="code-runner-editor-hint" className="code-runner__hint">
+        Press <kbd>Esc</kbd> to move focus out of the editor.
+      </p>
       <div className="code-runner__output" data-testid="code-output">
         <h4>Output</h4>
         <pre className="code-runner__output-content">

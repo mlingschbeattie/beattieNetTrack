@@ -216,12 +216,38 @@ export default function LabRunner({
     );
   }
 
+  // Practice labs must be repeatable — cert prep is built on repetition. XP is
+  // guarded by `xpAwarded` in progressStore, so redoing never farms points.
+  const redoLab = () => {
+    setCurrentStepIndex(0);
+    setAnswers({});
+    setCompletedStepIds([]);
+    setIsCompleted(false);
+    setShowHint(false);
+    setFeedback(null);
+    persist({
+      lastStepIndex: 0,
+      completedStepIds: [],
+      completed: false,
+      completedAt: null,
+    });
+    window.dispatchEvent(new CustomEvent('progress-updated'));
+  };
+
   if (isCompleted) {
     return (
       <article className="card" data-testid="lab-complete">
         <h3>{title} complete</h3>
         <p>You earned {xpReward} XP.</p>
-        <a className="btn-link" href={backToTrackHref}>Back to Track →</a>
+        <p className="pc-lab__muted">
+          You can run this lab again to practice. Your XP is already banked and will not change.
+        </p>
+        <div className="lab-complete__actions">
+          <button type="button" className="btn-primary" onClick={redoLab} data-testid="lab-redo">
+            Redo this lab
+          </button>
+          <a className="btn-link" href={backToTrackHref}>Back to Track →</a>
+        </div>
       </article>
     );
   }
@@ -248,15 +274,18 @@ export default function LabRunner({
               disabled={isLocked}
               aria-current={isActive ? 'step' : undefined}
             >
-              <span className="lab-step__num">{isDone ? '' : index + 1}</span>
-              <span>{step.title}</span>
+              {/* Completed steps rendered an empty string here, leaving a blank circle. */}
+              <span className="lab-step__num" aria-hidden="true">{isDone ? '✓' : index + 1}</span>
+              <span className="lab-step__title">{step.title}</span>
+              {isDone && <span className="sr-only">completed</span>}
             </button>
           );
         })}
       </aside>
 
-      <div>
-        <div
+      <div className="lab-main">
+        <div className="lab-progress">
+          <div
             className="progress-bar-track"
             role="progressbar"
             aria-valuenow={currentStepIndex + 1}
@@ -264,53 +293,67 @@ export default function LabRunner({
             aria-valuemax={totalSteps}
             aria-label={`Step ${currentStepIndex + 1} of ${totalSteps}`}
           >
-          <div className="progress-bar-fill" style={{ width: `${progressPercent}%` }} />
+            <div className="progress-bar-fill" style={{ width: `${progressPercent}%` }} />
+          </div>
+          <span className="lab-progress__count" data-testid="lab-step-count">
+            Step {currentStepIndex + 1} of {totalSteps}
+          </span>
         </div>
 
         <div className="lab-instruction">
-          <div className="lab-instruction__eyebrow" data-testid="lab-step-count">
-            Step {currentStepIndex + 1} of {totalSteps}
-          </div>
           <h3 className="lab-instruction__title">{currentStep.title}</h3>
           <div className="lab-instruction__body">{currentStep.prompt}</div>
         </div>
 
-        <label className="u-block u-mb-2" htmlFor={`lab-input-${currentStep.id}`}>
-          {currentStep.inputLabel ?? 'Command'}
-        </label>
-        <input
-          id={`lab-input-${currentStep.id}`}
-          className="input"
-          data-testid="lab-input"
-          type="text"
-          value={currentAnswer}
-          placeholder={currentStep.placeholder ?? 'Type your answer'}
-          onChange={(event) => {
-            const value = event.target.value;
-            setAnswers((prev) => ({ ...prev, [currentStep.id]: value }));
-          }}
-        />
+        <div className="lab-field">
+          <label className="lab-field__label" htmlFor={`lab-input-${currentStep.id}`}>
+            {currentStep.inputLabel ?? 'Command'}
+          </label>
+          <input
+            id={`lab-input-${currentStep.id}`}
+            className="lab-field__input"
+            data-testid="lab-input"
+            type="text"
+            autoComplete="off"
+            spellCheck={false}
+            value={currentAnswer}
+            placeholder={currentStep.placeholder ?? 'Type your answer'}
+            onChange={(event) => {
+              const value = event.target.value;
+              setAnswers((prev) => ({ ...prev, [currentStep.id]: value }));
+            }}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                if (currentStepCompleted) handleNext();
+                else handleSubmit();
+              }
+            }}
+          />
+          <p className="lab-field__hint-text">Press Enter to submit.</p>
+        </div>
 
-        <div className="quiz-runner__actions">
-          <button className="quiz-btn quiz-btn--primary" type="button" data-testid="lab-submit" onClick={handleSubmit}>
+        <div className="lab-actions">
+          <button className="btn-primary" type="button" data-testid="lab-submit" onClick={handleSubmit}>
             Submit
           </button>
           <button
-            className="quiz-btn quiz-btn--ghost"
-            type="button"
-            data-testid="lab-hint"
-            onClick={() => setShowHint((prev) => !prev)}
-          >
-            {showHint ? 'Hide hint' : 'Show hint'}
-          </button>
-          <button
-            className="quiz-btn quiz-btn--primary"
+            className="btn-secondary"
             type="button"
             data-testid="lab-next"
             disabled={!currentStepCompleted}
             onClick={handleNext}
           >
-            Next
+            Next step →
+          </button>
+          <button
+            className="btn-ghost lab-actions__hint"
+            type="button"
+            data-testid="lab-hint"
+            aria-expanded={showHint}
+            onClick={() => setShowHint((prev) => !prev)}
+          >
+            {showHint ? 'Hide hint' : 'Show hint'}
           </button>
         </div>
 

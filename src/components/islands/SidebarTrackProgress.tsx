@@ -136,36 +136,49 @@ export default function SidebarTrackProgress({ sections, activeLesson }: Sidebar
                 const isCompleted = Boolean(completedMap[key]);
                 const href = item.href || (item.type === 'lab' ? `/labs/${item.slug}` : item.type === 'quiz' ? `/quizzes/${item.slug}` : `/lessons/${item.slug}`);
 
+                const itemType = (item.type ?? 'lesson') as 'lesson' | 'quiz' | 'lab';
+                // Without a type marker a lesson and its checkpoint quiz render
+                // as two near-identical truncated strings ("Basics of Computing
+                // ..." / "Basics of Computing"). The type is carried in the data
+                // already — it just was not being shown.
+                const typeLabel = itemType === 'quiz' ? 'Quiz' : itemType === 'lab' ? 'Lab' : 'Lesson';
+
                 if (!isUnlocked) {
                   return (
                     <span
-                      key={item.slug}
-                      className="sidebar__lesson-link sidebar__lesson-link--locked"
+                      key={key}
+                      className={`sidebar__lesson-link sidebar__lesson-link--locked sidebar__lesson-link--${itemType}`}
                       aria-disabled="true"
                       role="link"
                       tabIndex={0}
-                      aria-label={`Locked: ${item.title} — Complete previous section to unlock`}
+                      aria-label={`Locked ${typeLabel}: ${item.title} — Complete previous section to unlock`}
                     >
+                      <span className="sidebar__lesson-type" aria-hidden="true">{typeLabel}</span>
                       <span className="sidebar__lesson-title">{item.title}</span>
-                      <span style={{ fontSize: '11px', opacity: 0.7 }} aria-hidden="true">🔒</span>
+                      <span className="sidebar__lesson-lock" aria-hidden="true">🔒</span>
                     </span>
                   );
                 }
 
                 return (
                   <a
-                    key={item.slug}
-                    className={`sidebar__lesson-link ${isActive ? 'sidebar__lesson-link--active' : ''} ${
+                    key={key}
+                    className={`sidebar__lesson-link sidebar__lesson-link--${itemType} ${isActive ? 'sidebar__lesson-link--active' : ''} ${
                       isCompleted ? 'sidebar__lesson-link--completed' : ''
                     }`}
                     href={href}
+                    aria-current={isActive ? 'page' : undefined}
                   >
+                    <span className="sidebar__lesson-type" aria-hidden="true">{typeLabel}</span>
                     <span className="sidebar__lesson-title">{item.title}</span>
-                    {isCompleted && (
-                      <span className="sidebar__lesson-check" aria-hidden="true">
-                        ✓
-                      </span>
-                    )}
+                    <span className="sidebar__lesson-status">
+                      {isCompleted && (
+                        <>
+                          <span className="sidebar__lesson-check" aria-hidden="true">✓</span>
+                          <span className="sr-only">Completed</span>
+                        </>
+                      )}
+                    </span>
                   </a>
                 );
               })

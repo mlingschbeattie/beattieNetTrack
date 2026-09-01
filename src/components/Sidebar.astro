@@ -118,13 +118,12 @@ const DEFAULT_TRACK_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" fill=
 ---
 
 <aside class="sidebar" id="app-sidebar" aria-label="Track navigation">
-  <div class="sidebar__brand">
-    <span class="sidebar__brand-badge">BN</span>
-    <span class="sidebar__brand-text">Beattie Tech</span>
-  </div>
+  {/* Brand intentionally omitted: the sticky top nav already shows
+      "BeattieNetTrack" directly above this panel. The duplicate here rendered
+      as "BN Beattie Tech", a name the product does not use. */}
 
   <div class="sidebar__section">
-    <div class="sidebar__title">Learning Tracks</div>
+    <div class="sidebar__title" data-i18n="sidebar.learningTracks">Learning Tracks</div>
     {visibleTracks.map((track) => {
       const svg = TRACK_SVGS[track.slug] || DEFAULT_TRACK_SVG;
       return (
@@ -141,20 +140,26 @@ const DEFAULT_TRACK_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" fill=
 
   {hasSidebarItems && (
     <div class="sidebar__section">
-      <div class="sidebar__title">Lessons</div>
+      <div class="sidebar__title" data-i18n="sidebar.lessons">Lessons</div>
       <div class="sidebar__progress-slot" data-sidebar-progress-slot>
         <div class="sidebar__skeleton">
           {sidebarSections?.map((section) => (
             <div class="sidebar__group">
               <div class="sidebar__group-title">{section.title}</div>
-              {section.items.map((item) => (
-                <a
-                  class={`sidebar__lesson-link ${activeLesson === item.slug ? 'sidebar__lesson-link--active' : ''}`}
-                  href={item.href || hrefForItem(item)}
-                >
-                  <span class="sidebar__lesson-title">{item.title || displayTitle(item)}</span>
-                </a>
-              ))}
+              {section.items.map((item) => {
+                const itemType = item.type ?? 'lesson';
+                const typeLabel = itemType === 'quiz' ? 'Quiz' : itemType === 'lab' ? 'Lab' : 'Lesson';
+                return (
+                  <a
+                    class={`sidebar__lesson-link sidebar__lesson-link--${itemType} ${activeLesson === item.slug ? 'sidebar__lesson-link--active' : ''}`}
+                    href={item.href || hrefForItem(item)}
+                  >
+                    <span class="sidebar__lesson-type" aria-hidden="true">{typeLabel}</span>
+                    <span class="sidebar__lesson-title">{item.title || displayTitle(item)}</span>
+                    <span class="sidebar__lesson-status"></span>
+                  </a>
+                );
+              })}
             </div>
           ))}
         </div>
@@ -172,10 +177,10 @@ const DEFAULT_TRACK_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" fill=
   )}
 
   <div class="sidebar__section">
-    <div class="sidebar__title">Navigation</div>
+    <div class="sidebar__title" data-i18n="sidebar.navigation">Navigation</div>
     <a class="sidebar__link" href="/">
       <span class="sidebar__link-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
-      <span>Dashboard</span>
+      <span data-i18n="sidebar.dashboard">Dashboard</span>
     </a>
   </div>
 </aside>
