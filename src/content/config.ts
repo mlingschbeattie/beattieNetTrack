@@ -92,6 +92,8 @@ const labs = defineCollection({
           placeholder: z.string().optional(),
           hint: z.string().optional(),
           validator: z.discriminatedUnion('type', [
+            // Free-text types. Use these when the exact string IS the skill —
+            // typing a command, a path, a syntax form.
             z.object({
               type: z.literal('exact'),
               value: z.string(),
@@ -105,6 +107,16 @@ const labs = defineCollection({
               pattern: z.string(),
               flags: z.string().optional(),
             }),
+            // Selection type. Use this for CONCEPTUAL steps — choosing the right
+            // action, category, or component. Free text there tests whether a
+            // student guessed the author's phrasing, not whether they understand.
+            z.object({
+              type: z.literal('choice'),
+              options: z.array(z.string()).min(2),
+              correctIndex: z.number().int().min(0),
+              /** Shown after answering, so a wrong pick still teaches. */
+              rationale: z.string().optional(),
+            }),
           ]),
           successMessage: z.string().optional(),
         })
@@ -117,7 +129,10 @@ const labs = defineCollection({
     module: z.string().optional(),
     estMinutes: z.number().int().optional(),
     tags: z.array(z.string()).default([]),
-    activity: z.enum(['iframe', 'terminal', 'code']).optional().default('iframe'),
+    // 'steps' = a guided step lab driven by steps[]. These previously fell
+    // through to the 'iframe' default, so the field described them as the
+    // opposite of what they are. Rendering keys off steps.length, not this.
+    activity: z.enum(['iframe', 'terminal', 'code', 'steps']).optional().default('iframe'),
     labPath: z.string().optional(),
     labUrl: z.string().optional(),
     checkLabel: z.string().optional().default('Check'),

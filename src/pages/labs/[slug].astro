@@ -53,7 +53,8 @@ type LabStep = {
   validator:
     | { type: 'exact'; value: string }
     | { type: 'oneOf'; values: string[] }
-    | { type: 'regex'; pattern: string; flags?: string };
+    | { type: 'regex'; pattern: string; flags?: string }
+    | { type: 'choice'; options: string[]; correctIndex: number; rationale?: string };
   successMessage?: string;
 };
 

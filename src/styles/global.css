@@ -4593,3 +4593,67 @@ html[dir='rtl'] .qc-group[open] > .qc-group__summary::before { transform: rotate
   border-radius: var(--radius-pill);
   padding: 1px var(--space-2);
 }
+
+/* --- Lab choice steps (conceptual questions) ---------------------------- */
+.lab-choices {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.lab-choice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  min-height: 44px;
+  background: var(--beattie-surface);
+  border: 1px solid var(--beattie-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.lab-choice:hover {
+  border-color: var(--beattie-border-hover);
+  background: var(--beattie-surface-elevated);
+}
+
+.lab-choice:has(.lab-choice__radio:checked) {
+  border-color: var(--beattie-border-active);
+  background: var(--beattie-primary-subtle);
+}
+
+.lab-choice:has(.lab-choice__radio:focus-visible) {
+  outline: 2px solid var(--beattie-border-active);
+  outline-offset: 2px;
+}
+
+.lab-choice__radio {
+  width: 20px;
+  height: 20px;
+  margin: 1px 0 0;
+  flex-shrink: 0;
+  accent-color: var(--beattie-primary);
+  cursor: pointer;
+}
+
+.lab-choice__text {
+  min-width: 0;
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--beattie-text);
+}
+
+.lab-rationale {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  background: var(--beattie-success-subtle);
+  border-inline-start: 3px solid var(--beattie-success-text);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--beattie-text);
+}

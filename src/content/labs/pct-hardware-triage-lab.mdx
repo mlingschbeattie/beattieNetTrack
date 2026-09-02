@@ -9,57 +9,77 @@ difficulty: Beginner
 estimatedMinutes: 15
 xp: 50
 tags: ["A+", "CompTIA", "hardware", "troubleshooting", "triage"]
+activity: steps
 steps:
   - id: classify-symptom
     title: Classify the symptom
-    prompt: Ticket says "fans spin, no image on monitor." Enter the category that best fits first-pass triage.
+    prompt: 'A ticket reads: "Fans spin up, power LED is on, but the monitor stays black." Before theorising a cause, which symptom category does first-pass triage assign?'
     inputLabel: Symptom category
-    placeholder: "ex: no display"
-    hint: Focus on the visible symptom before naming a root cause.
+    hint: Name only what you can observe. A cause is not a symptom.
     validator:
-      type: oneOf
-      values: ["no display", "display", "video"]
-    successMessage: Correct. You identified the symptom bucket before jumping to conclusions.
+      type: choice
+      options:
+        - "No display output — the system powers on but produces no image"
+        - "Dead system — no power reaching the machine"
+        - "Failed POST — the board reports a beep code"
+        - "Operating system failure — Windows will not load"
+      correctIndex: 0
+      rationale: "Fans and the power LED prove the PSU is delivering power, so this is not a dead system. Nothing yet tells you whether POST completed or the OS loaded — a black screen hides all of it. Recording only the observable symptom, no display output, keeps every cause still on the table."
+    successMessage: Correct. You named the observable symptom without assuming a cause.
   - id: first-check
     title: Choose the first check
-    prompt: Enter the best first action.
-    inputLabel: First check
-    placeholder: "ex: verify cable and input"
-    hint: Start with the fastest external validation.
+    prompt: You have the machine on the bench. Which action should you take first?
+    inputLabel: First diagnostic action
+    hint: Prefer the check that is fastest, reversible, and rules out the most.
     validator:
-      type: oneOf
-      values:
-        - "verify monitor cable and input"
-        - "check monitor cable and input"
-        - "check cable and input"
-    successMessage: Good. You validated external display path first.
+      type: choice
+      options:
+        - "Verify the monitor cable, input source, and that the monitor has power"
+        - "Reseat the CPU and reapply thermal paste"
+        - "Reinstall the operating system from recovery media"
+        - "Order a replacement graphics card"
+      correctIndex: 0
+      rationale: "Start where cost and risk are lowest. A wrong input source or loose cable produces exactly this symptom and takes seconds to rule out. Reseating the CPU is invasive, reinstalling destroys data, and ordering parts spends money — all before you have evidence."
+    successMessage: Good. You validated the external display path before opening the case.
   - id: likely-component
-    title: Identify likely component
-    prompt: If cable/input are correct and integrated output works but discrete output fails, what component is most likely at fault?
+    title: Identify the likely component
+    prompt: The cable and input are correct. Plugging the monitor into the motherboard's video port gives a picture; the discrete card's port stays black. What is most likely at fault?
     inputLabel: Likely failing component
-    placeholder: "ex: gpu"
     validator:
-      type: oneOf
-      values: ["gpu", "graphics card", "video card"]
-    successMessage: Exactly. That symptom pattern points to the discrete GPU path.
+      type: choice
+      options:
+        - "The discrete graphics card or its seating in the PCIe slot"
+        - "The monitor"
+        - "The system RAM"
+        - "The power supply"
+      correctIndex: 0
+      rationale: "Integrated video working proves the monitor, its cable, and the CPU/board video path are all fine. The fault is isolated to what differs between the two tests: the discrete card, its PCIe seating, or its power connector. This is differential diagnosis — change one variable and compare."
+    successMessage: Exactly. Integrated output working isolates the fault to the discrete path.
   - id: thermal-verification
     title: Verify a thermal theory
-    prompt: Enter one monitoring tool you would use to confirm overheating under load.
-    inputLabel: Monitoring tool
-    placeholder: "ex: hwinfo"
+    prompt: You suspect the card overheats under load. Which approach actually confirms that with evidence?
+    inputLabel: Verification method
     validator:
-      type: oneOf
-      values: ["hwinfo", "hwinfo64", "hwmonitor", "core temp"]
-    successMessage: Correct. A temperature monitor validates thermal behavior with evidence.
+      type: choice
+      options:
+        - "Log GPU temperature with a hardware monitor while running a sustained load test"
+        - "Touch the card after shutdown to feel whether it is warm"
+        - "Replace the thermal paste and see if the problem goes away"
+        - "Assume it is thermal because the case has only one fan"
+      correctIndex: 0
+      rationale: "A theory is confirmed by measurement under the conditions that trigger the fault. HWiNFO, HWMonitor, or GPU-Z logging during a load test gives you a temperature curve. Feeling the card is imprecise, swapping paste changes a variable before you have proof, and assuming skips diagnosis entirely."
+    successMessage: Correct. You confirmed the theory with measured evidence, not a guess.
   - id: closure-note
     title: Close the ticket professionally
-    prompt: Write a one-line closure note that includes both words "verified" and "resolved".
+    prompt: 'Write a one-line closure note. It must state that you verified the fix, and use the word "resolved". Example: "Verified GPU temps normal under load after fan replacement; issue resolved."'
     inputLabel: Ticket closure note
-    placeholder: "ex: Verified issue under load, resolved by replacing failed fan."
+    placeholder: "Verified ... ; issue resolved."
+    hint: The next technician must be able to tell what you proved, not just what you swapped.
     validator:
       type: regex
-      pattern: "(?i)^(?=.*\\bverified\\b)(?=.*\\bresolved\\b).+$"
-    successMessage: Strong closeout language. You documented outcome and verification.
+      pattern: '^(?=.*\bverif)(?=.*\bresolv).{20,}$'
+      flags: "i"
+    successMessage: Strong closeout. You documented both the verification and the outcome.
 checklist:
   - Symptom classified before theory
   - First diagnostic action is low risk and high signal

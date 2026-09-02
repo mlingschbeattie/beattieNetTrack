@@ -9,53 +9,66 @@ difficulty: Beginner
 estimatedMinutes: 15
 xp: 50
 tags: ["A+", "CompTIA", "windows", "security", "hardening"]
+activity: steps
 steps:
   - id: isolate-host
     title: Contain first
-    prompt: Enter the first containment action for a suspected active malware incident.
+    prompt: A workstation is beaconing to an unknown external host and Defender has flagged a suspicious process. What is the first action?
     inputLabel: First action
-    placeholder: "ex: isolate from network"
-    hint: Stop command-and-control traffic before cleanup.
+    hint: Think about what the malware is doing right now, not how to clean it.
     validator:
-      type: oneOf
-      values:
-        - "isolate from network"
-        - "disconnect from network"
-        - "remove from network"
-    successMessage: Correct. Containment prevents spread and data exfiltration.
+      type: choice
+      options:
+        - "Isolate the host from the network, keeping it powered on"
+        - "Shut the machine down immediately"
+        - "Run a full antivirus scan while it stays online"
+        - "Reimage the machine straight away"
+      correctIndex: 0
+      rationale: "Isolation stops command-and-control traffic and data exfiltration without destroying evidence. Powering off wipes volatile memory an investigator may need. Scanning while online leaves the channel open. Reimaging destroys the evidence entirely and you never learn how it got in."
+    successMessage: Correct. Containment comes before cleanup, and evidence is preserved.
   - id: defender-status
     title: Re-enable baseline protection
-    prompt: Enter the built-in Windows protection that must be verified as active.
+    prompt: Which built-in Windows protection must you confirm is active and not disabled by the malware?
     inputLabel: Protection control
-    placeholder: "ex: windows defender real-time protection"
     validator:
-      type: oneOf
-      values:
-        - "windows defender real-time protection"
-        - "defender real-time protection"
-        - "real-time protection"
-    successMessage: Correct. Real-time endpoint protection must be active.
+      type: choice
+      options:
+        - "Microsoft Defender Antivirus real-time protection"
+        - "Windows Update delivery optimisation"
+        - "User Account Control prompts"
+        - "Windows Firewall logging"
+      correctIndex: 0
+      rationale: "Disabling real-time protection is one of the first things malware attempts, so verifying it is re-enabled is a baseline recovery step. UAC and the firewall matter, but neither provides continuous on-access malware scanning. Note the current product name is Microsoft Defender Antivirus, not Windows Defender."
+    successMessage: Correct. Real-time on-access protection must be verified active.
   - id: startup-triage
     title: Startup persistence check
-    prompt: Enter one tool to inspect suspicious startup entries.
-    inputLabel: Startup tool
-    placeholder: "ex: task manager startup"
+    prompt: You need to find how the malware survives a reboot. Which tool gives the most complete view of persistence entries?
+    inputLabel: Persistence tool
+    hint: Some tools show only a subset of the places malware can hide.
     validator:
-      type: oneOf
-      values:
-        - "task manager startup"
-        - "task manager"
-        - "autoruns"
-    successMessage: Correct. Startup persistence should be audited early.
+      type: choice
+      options:
+        - "Sysinternals Autoruns, which enumerates services, scheduled tasks, and registry Run keys"
+        - "Task Manager's Startup tab"
+        - "The Startup folder in the Start menu"
+        - "msconfig"
+      correctIndex: 0
+      rationale: "All four show something, but Autoruns is the most complete: it covers registry Run keys, services, drivers, scheduled tasks, and shell extensions. Task Manager's Startup tab and msconfig show only a narrow slice, and the Startup folder covers just one location — malware rarely stops there."
+    successMessage: Correct. Autoruns covers the persistence locations the others miss.
   - id: encryption-policy
     title: Data protection control
-    prompt: Enter the Windows feature that protects data at rest on stolen devices.
+    prompt: Which Windows feature limits the breach impact if this laptop is later lost or stolen?
     inputLabel: Data-at-rest control
-    placeholder: "ex: bitlocker"
     validator:
-      type: oneOf
-      values: ["bitlocker", "bitlocker drive encryption"]
-    successMessage: Correct. BitLocker reduces breach impact after theft.
+      type: choice
+      options:
+        - "BitLocker full-disk encryption"
+        - "A strong Windows sign-in password"
+        - "Encrypting the user's Documents folder with EFS"
+        - "Windows Hello facial recognition"
+      correctIndex: 0
+      rationale: "BitLocker encrypts the whole volume, so pulling the drive and mounting it elsewhere yields nothing readable. A sign-in password and Windows Hello only guard the logon path and are bypassed entirely by removing the disk. EFS protects selected files but leaves the rest of the volume, including temp files, exposed."
+    successMessage: Correct. Full-disk encryption is what protects data at rest.
   - id: closure
     title: Ticket closure standard
     prompt: Write one line that includes both words "verified" and "hardened".
@@ -63,7 +76,8 @@ steps:
     placeholder: "ex: Verified endpoint clean and hardened baseline controls restored."
     validator:
       type: regex
-      pattern: "(?i)^(?=.*\\bverified\\b)(?=.*\\bhardened\\b).+$"
+      pattern: '^(?=.*\bverified\b)(?=.*\bhardened\b).+$'
+      flags: "i"
     successMessage: Strong closeout. You documented both verification and hardening.
 checklist:
   - Host containment performed before remediation

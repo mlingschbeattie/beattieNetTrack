@@ -20,7 +20,14 @@ type RegexValidator = {
   flags?: string;
 };
 
-type StepValidator = ExactValidator | OneOfValidator | RegexValidator;
+type ChoiceValidator = {
+  type: 'choice';
+  options: string[];
+  correctIndex: number;
+  rationale?: string;
+};
+
+type StepValidator = ExactValidator | OneOfValidator | RegexValidator | ChoiceValidator;
 
 type LabStep = {
   id: string;
@@ -43,13 +50,21 @@ type LabRunnerProps = {
   apiUrl?: string;
 };
 
+/** Collapses case and internal whitespace so a correct answer is not rejected
+ *  for being capitalised or double-spaced. `oneOf` previously used a
+ *  case-sensitive Set, so "GPU" failed against ["gpu"]. */
+const normalize = (value: string) => value.trim().toLowerCase().replace(/\s+/g, ' ');
+
 const validateAnswer = (value: string, validator: StepValidator) => {
+  if (validator.type === 'choice') {
+    return Number(value) === validator.correctIndex;
+  }
   if (validator.type === 'exact') {
-    return value === validator.value.trim();
+    return normalize(value) === normalize(validator.value);
   }
   if (validator.type === 'oneOf') {
-    const accepted = new Set(validator.values.map((entry) => entry.trim()));
-    return accepted.has(value);
+    const accepted = new Set(validator.values.map(normalize));
+    return accepted.has(normalize(value));
   }
   try {
     const pattern = new RegExp(validator.pattern, validator.flags);
@@ -305,33 +320,66 @@ export default function LabRunner({
           <div className="lab-instruction__body">{currentStep.prompt}</div>
         </div>
 
-        <div className="lab-field">
-          <label className="lab-field__label" htmlFor={`lab-input-${currentStep.id}`}>
-            {currentStep.inputLabel ?? 'Command'}
-          </label>
-          <input
-            id={`lab-input-${currentStep.id}`}
-            className="lab-field__input"
-            data-testid="lab-input"
-            type="text"
-            autoComplete="off"
-            spellCheck={false}
-            value={currentAnswer}
-            placeholder={currentStep.placeholder ?? 'Type your answer'}
-            onChange={(event) => {
-              const value = event.target.value;
-              setAnswers((prev) => ({ ...prev, [currentStep.id]: value }));
-            }}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter') {
-                event.preventDefault();
-                if (currentStepCompleted) handleNext();
-                else handleSubmit();
-              }
-            }}
-          />
-          <p className="lab-field__hint-text">Press Enter to submit.</p>
-        </div>
+        {currentStep.validator.type === 'choice' ? (
+          <fieldset className="lab-field lab-choices" data-testid="lab-choices">
+            <legend className="lab-field__label">{currentStep.inputLabel ?? 'Choose one'}</legend>
+            {currentStep.validator.options.map((option, index) => {
+              const id = `lab-choice-${currentStep.id}-${index}`;
+              return (
+                <label key={id} className="lab-choice" htmlFor={id}>
+                  <input
+                    id={id}
+                    type="radio"
+                    name={`lab-choice-${currentStep.id}`}
+                    className="lab-choice__radio"
+                    value={index}
+                    checked={currentAnswer === String(index)}
+                    onChange={() =>
+                      setAnswers((prev) => ({ ...prev, [currentStep.id]: String(index) }))
+                    }
+                  />
+                  <span className="lab-choice__text">{option}</span>
+                </label>
+              );
+            })}
+          </fieldset>
+        ) : (
+          <div className="lab-field">
+            <label className="lab-field__label" htmlFor={`lab-input-${currentStep.id}`}>
+              {currentStep.inputLabel ?? 'Command'}
+            </label>
+            <input
+              id={`lab-input-${currentStep.id}`}
+              className="lab-field__input"
+              data-testid="lab-input"
+              type="text"
+              autoComplete="off"
+              spellCheck={false}
+              value={currentAnswer}
+              placeholder={currentStep.placeholder ?? 'Type your answer'}
+              onChange={(event) => {
+                const value = event.target.value;
+                setAnswers((prev) => ({ ...prev, [currentStep.id]: value }));
+              }}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  event.preventDefault();
+                  if (currentStepCompleted) handleNext();
+                  else handleSubmit();
+                }
+              }}
+            />
+            <p className="lab-field__hint-text">Press Enter to submit.</p>
+          </div>
+        )}
+
+        {/* Rationale is shown once the step is answered, so a wrong pick still
+            teaches rather than just failing. */}
+        {currentStep.validator.type === 'choice' &&
+          currentStep.validator.rationale &&
+          currentStepCompleted && (
+            <p className="lab-rationale">{currentStep.validator.rationale}</p>
+          )}
 
         <div className="lab-actions">
           <button className="btn-primary" type="button" data-testid="lab-submit" onClick={handleSubmit}>
