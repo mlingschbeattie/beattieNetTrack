@@ -97,7 +97,14 @@ const sidebarSections = hasModules
     }))
   : currentTrack?.data.sections?.map((section) => ({
       title: section.title,
-      items: section.lessons.map((entry) => normalizeItem(entry as string | { type: 'lesson' | 'lab' | 'quiz'; slug: string })),
+      items: section.lessons
+        .map((entry) => normalizeItem(entry as string | { type: 'lesson' | 'lab' | 'quiz'; slug: string }))
+        .map((entry) => ({
+          type: entry.type,
+          slug: entry.slug,
+          title: displayTitle(entry),
+          href: hrefForItem(entry),
+        })),
     })) ?? [];
 
 const hasSidebarItems = trackSections.length > 0 && trackSections.some((s) => s.lessons.length > 0);
@@ -152,10 +159,10 @@ const DEFAULT_TRACK_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" fill=
                 return (
                   <a
                     class={`sidebar__lesson-link sidebar__lesson-link--${itemType} ${activeLesson === item.slug ? 'sidebar__lesson-link--active' : ''}`}
-                    href={item.href || hrefForItem(item)}
+                    href={item.href}
                   >
                     <span class="sidebar__lesson-type" aria-hidden="true">{typeLabel}</span>
-                    <span class="sidebar__lesson-title">{item.title || displayTitle(item)}</span>
+                    <span class="sidebar__lesson-title">{item.title}</span>
                     <span class="sidebar__lesson-status"></span>
                   </a>
                 );

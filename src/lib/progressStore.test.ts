@@ -48,6 +48,22 @@ test('track progress aggregates XP and completion', () => {
   assert.ok(progress.xpEarned > 0);
 });
 
+test('track progress correctly isolates shared slugs by activity type', () => {
+  const storage = createMemoryStorage();
+  markLessonComplete('tech-plus-1-1-1', { difficulty: 'Beginner', estMinutes: 20 }, storage);
+
+  // tech-plus-1-1-1 has both a lesson and a quiz. Only lesson is completed.
+  const items = [
+    { slug: 'tech-plus-1-1-1', type: 'lesson' as const },
+    { slug: 'tech-plus-1-1-1', type: 'quiz' as const },
+  ];
+
+  const progress = getTrackProgress(items, storage);
+  assert.equal(progress.completed, 1);
+  assert.equal(progress.total, 2);
+  assert.equal(progress.percent, 50);
+});
+
 test('streak increments across days', () => {
   const storage = createMemoryStorage();
   recordActivity(storage, new Date('2026-02-10T10:00:00Z'));

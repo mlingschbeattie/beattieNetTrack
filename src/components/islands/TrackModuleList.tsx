@@ -38,6 +38,96 @@ export function isActivityCompleted(
   return Boolean(state.labs?.[slug]?.completed || state.lessons?.[slug]?.completed);
 }
 
+export interface ConceptUnit {
+  id: string;
+  order: number;
+  title: string;
+  lesson?: TrackActivitySummary;
+  quiz?: TrackActivitySummary;
+  standalone?: TrackActivitySummary;
+}
+
+export function getCoreConceptSlug(slug: string): string {
+  return slug
+    .toLowerCase()
+    .replace(/^(?:tech-plus|net|pct|cfs)-/, '')
+    .replace(/^\d+-\d+(?:-\d+)?-/, '')
+    .replace(/-vs-|-and-|-or-/g, '-')
+    .trim();
+}
+
+export function doActivitiesMatchConcept(
+  lesson: TrackActivitySummary,
+  quiz: TrackActivitySummary
+): boolean {
+  if (lesson.slug === quiz.slug) return true;
+
+  const coreLesson = getCoreConceptSlug(lesson.slug);
+  const coreQuiz = getCoreConceptSlug(quiz.slug);
+
+  if (coreLesson && coreQuiz && coreLesson === coreQuiz) return true;
+
+  if (coreLesson.length > 5 && coreQuiz.length > 5) {
+    if (coreLesson.includes(coreQuiz) || coreQuiz.includes(coreLesson)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+export function groupActivitiesIntoConceptUnits(activities: TrackActivitySummary[]): ConceptUnit[] {
+  const units: ConceptUnit[] = [];
+  const used = new Set<string>();
+
+  for (let i = 0; i < activities.length; i++) {
+    const act = activities[i];
+    const key = `${act.type}:${act.slug}`;
+    if (used.has(key)) continue;
+
+    if (act.type === 'lesson') {
+      // Find matching checkpoint quiz by semantic concept match within the module.
+      // We deliberately avoid naive order === order matching to prevent cross-topic hijacking
+      // when content authors share order values or module checkpoints exist.
+      const matchingQuizIndex = activities.findIndex(
+        (other) =>
+          other.type === 'quiz' &&
+          !used.has(`${other.type}:${other.slug}`) &&
+          doActivitiesMatchConcept(act, other)
+      );
+
+      if (matchingQuizIndex !== -1) {
+        const matchingQuiz = activities[matchingQuizIndex];
+        used.add(key);
+        used.add(`${matchingQuiz.type}:${matchingQuiz.slug}`);
+
+        // Derive concept title cleanly (e.g. "Storage Units — From Bits to Petabytes" -> "Storage Units")
+        const conceptTitle = act.title.split('—')[0]?.trim() || act.title;
+
+        units.push({
+          id: `concept-${act.slug}`,
+          order: act.order,
+          title: conceptTitle,
+          lesson: act,
+          quiz: matchingQuiz,
+        });
+        continue;
+      }
+    }
+
+    // Standalone activity (e.g. lab, standalone quiz, or standalone lesson)
+    used.add(key);
+    units.push({
+      id: `standalone-${act.type}-${act.slug}`,
+      order: act.order,
+      title: act.title,
+      standalone: act,
+    });
+  }
+
+  return units;
+}
+
 export default function TrackModuleList({ modules }: TrackModuleListProps) {
   const [completedMap, setCompletedMap] = useState<Record<string, boolean>>({});
 
@@ -105,6 +195,7 @@ export default function TrackModuleList({ modules }: TrackModuleListProps) {
         const stats = moduleStats[index];
         const prevModule = index > 0 ? modules[index - 1] : null;
         const prevStats = index > 0 ? moduleStats[index - 1] : null;
+        const conceptUnits = groupActivitiesIntoConceptUnits(module.activities);
 
         return (
           <section
@@ -143,13 +234,185 @@ export default function TrackModuleList({ modules }: TrackModuleListProps) {
               </div>
             )}
 
-            <div className="card-grid card-grid--two">
-              {module.activities.map((activity) => {
+            <div className="concept-units-list">
+              {conceptUnits.map((unit) => {
+                if (unit.lesson || unit.quiz) {
+                  const isLessonComplete = unit.lesson
+                    ? Boolean(completedMap[`${unit.lesson.type}:${unit.lesson.slug}`])
+                    : false;
+                  const isQuizComplete = unit.quiz
+                    ? Boolean(completedMap[`${unit.quiz.type}:${unit.quiz.slug}`])
+                    : false;
+                  const unitMastered = isLessonComplete && isQuizComplete;
+
+                  return (
+                    <article
+                      key={unit.id}
+                      className={`card concept-unit-card ${!isUnlocked ? 'card--locked' : ''}`}
+                    >
+                      <div className="concept-unit-header">
+                        <div className="concept-unit-header__badge-row">
+                          <span className="concept-unit-pill">Concept Unit {unit.order}</span>
+                          {unitMastered ? (
+                            <span
+                              className="badge badge--completed"
+                              style={{
+                                background: 'rgba(16, 185, 129, 0.15)',
+                                color: '#10b981',
+                                border: '1px solid rgba(16, 185, 129, 0.3)',
+                              }}
+                            >
+                              ✓ Unit Mastered
+                            </span>
+                          ) : isLessonComplete ? (
+                            <span
+                              className="badge badge--in-progress"
+                              style={{
+                                background: 'rgba(59, 130, 246, 0.12)',
+                                color: '#60a5fa',
+                                border: '1px solid rgba(59, 130, 246, 0.25)',
+                              }}
+                            >
+                              Quiz Ready
+                            </span>
+                          ) : null}
+                        </div>
+                        <h3 className="concept-unit-title">{unit.title}</h3>
+                      </div>
+
+                      <div className="concept-step-flow">
+                        {unit.lesson && (
+                          <div
+                            className={`concept-step-item concept-step-item--lesson ${
+                              isLessonComplete ? 'concept-step-item--complete' : ''
+                            }`}
+                          >
+                            <div className="concept-step-indicator">
+                              <span className="concept-step-number">1</span>
+                              <span className="concept-step-type-label">Core Lesson</span>
+                            </div>
+                            <div className="concept-step-content">
+                              <div className="concept-step-header">
+                                <h4 className="concept-step-title">{unit.lesson.title}</h4>
+                                {isLessonComplete && (
+                                  <span
+                                    className="badge badge--completed"
+                                    style={{
+                                      background: 'rgba(16, 185, 129, 0.15)',
+                                      color: '#10b981',
+                                      border: '1px solid rgba(16, 185, 129, 0.3)',
+                                      fontSize: '11px',
+                                      padding: '2px 8px',
+                                    }}
+                                  >
+                                    ✓ Completed
+                                  </span>
+                                )}
+                              </div>
+                              <p className="concept-step-desc">
+                                {unit.lesson.description ||
+                                  'Study core foundational concepts before taking the checkpoint quiz.'}
+                              </p>
+                            </div>
+                            <div className="concept-step-action">
+                              {isUnlocked ? (
+                                <a className="btn-link" href={unit.lesson.href}>
+                                  <span>Read Lesson</span>
+                                  <span className="icon-directional">→</span>
+                                </a>
+                              ) : (
+                                <span
+                                  className="btn-link btn-is-disabled"
+                                  aria-disabled="true"
+                                  role="status"
+                                  aria-label={`Locked: ${unit.lesson.title} — Complete previous section to unlock`}
+                                  style={{ cursor: 'not-allowed', opacity: 0.6 }}
+                                >
+                                  <span>🔒 Locked</span>
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {unit.quiz && (
+                          <div
+                            className={`concept-step-item concept-step-item--quiz ${
+                              isQuizComplete ? 'concept-step-item--complete' : ''
+                            }`}
+                          >
+                            <div className="concept-step-indicator">
+                              <span className="concept-step-number">2</span>
+                              <span className="concept-step-type-label">Checkpoint Quiz</span>
+                            </div>
+                            <div className="concept-step-content">
+                              <div className="concept-step-header">
+                                <h4 className="concept-step-title">{unit.quiz.title}</h4>
+                                {isQuizComplete ? (
+                                  <span
+                                    className="badge badge--completed"
+                                    style={{
+                                      background: 'rgba(16, 185, 129, 0.15)',
+                                      color: '#10b981',
+                                      border: '1px solid rgba(16, 185, 129, 0.3)',
+                                      fontSize: '11px',
+                                      padding: '2px 8px',
+                                    }}
+                                  >
+                                    ✓ Passed
+                                  </span>
+                                ) : isLessonComplete ? (
+                                  <span
+                                    className="badge"
+                                    style={{
+                                      background: 'rgba(59, 130, 246, 0.12)',
+                                      color: '#60a5fa',
+                                      border: '1px solid rgba(59, 130, 246, 0.25)',
+                                      fontSize: '11px',
+                                      padding: '2px 8px',
+                                    }}
+                                  >
+                                    Ready to Test
+                                  </span>
+                                ) : null}
+                              </div>
+                              <p className="concept-step-desc">
+                                {unit.quiz.description ||
+                                  'Test your understanding of this concept with the checkpoint quiz.'}
+                              </p>
+                            </div>
+                            <div className="concept-step-action">
+                              {isUnlocked ? (
+                                <a className="btn-link" href={unit.quiz.href}>
+                                  <span>Take Checkpoint Quiz</span>
+                                  <span className="icon-directional">→</span>
+                                </a>
+                              ) : (
+                                <span
+                                  className="btn-link btn-is-disabled"
+                                  aria-disabled="true"
+                                  role="status"
+                                  aria-label={`Locked: ${unit.quiz.title} — Complete previous section to unlock`}
+                                  style={{ cursor: 'not-allowed', opacity: 0.6 }}
+                                >
+                                  <span>🔒 Locked</span>
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </article>
+                  );
+                }
+
+                // Standalone activity (e.g. lab sandbox, standalone assessment)
+                const activity = unit.standalone!;
                 const isComplete = Boolean(completedMap[`${activity.type}:${activity.slug}`]);
 
                 return (
                   <article
-                    key={`${activity.type}-${activity.slug}`}
+                    key={unit.id}
                     className={`card card--activity-${activity.type ?? 'lesson'} ${!isUnlocked ? 'card--locked' : ''}`}
                   >
                     <div className="card__header-row">
@@ -163,7 +426,14 @@ export default function TrackModuleList({ modules }: TrackModuleListProps) {
                               : 'Core Lesson'}
                       </span>
                       {isComplete && (
-                        <span className="badge badge--completed" style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+                        <span
+                          className="badge badge--completed"
+                          style={{
+                            background: 'rgba(16, 185, 129, 0.15)',
+                            color: '#10b981',
+                            border: '1px solid rgba(16, 185, 129, 0.3)',
+                          }}
+                        >
                           ✓ Completed
                         </span>
                       )}

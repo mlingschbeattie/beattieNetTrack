@@ -92,6 +92,7 @@ export const validateTrackModuleMappings = () => {
   const errors = [];
   const warnings = [];
   const checkedEntries = [];
+  const moduleOrders = new Map();
 
   for (const collection of collectionsToCheck) {
     const files = listMdxFiles(collection.path).sort((a, b) => a.localeCompare(b));
@@ -133,6 +134,18 @@ export const validateTrackModuleMappings = () => {
         errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} order '${orderRaw}' is not an integer.`);
       }
 
+      // Check for duplicate order values within the same collection and module
+      if (moduleId && typeof orderRaw !== 'undefined' && /^-?\d+$/.test(String(orderRaw))) {
+        const orderKey = `${moduleId}:${collection.name}:${orderRaw}`;
+        if (moduleOrders.has(orderKey)) {
+          const first = moduleOrders.get(orderKey);
+          warnings.push(
+            `[${collection.name}] Duplicate order '${orderRaw}' in module '${moduleId}' between ${path.relative(repoRoot, first)} and ${path.relative(repoRoot, filePath)}.`
+          );
+        } else {
+          moduleOrders.set(orderKey, filePath);
+        }
+      }
 
       const labPath = fm.labPath;
       if (labPath && /^\/legacy\//.test(labPath)) {

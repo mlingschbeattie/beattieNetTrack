@@ -29,13 +29,14 @@ const modules = detail.modules;
 const currentTrack = allTracks.find((entry) => entry.slug === slug);
 
 const hasModules = Boolean(modules && modules.length > 0);
-const activitySlugs = hasModules
-  ? modules.flatMap((m) => m.activities.map((act) => act.slug))
+const activities = hasModules
+  ? modules.flatMap((m) => m.activities.map((act) => ({ slug: act.slug, type: act.type })))
   : currentTrack?.data.sections?.flatMap((section) =>
       (section.lessons ?? [])
-        .map((item) => (typeof item === 'string' ? { type: 'lesson', slug: item } : item))
-        .map((item) => item.slug)
+        .map((item) => (typeof item === 'string' ? { type: 'lesson' as const, slug: item } : item))
+        .map((item) => ({ slug: item.slug, type: item.type }))
     ) ?? [];
+const activitySlugs = activities.map((act) => act.slug);
 ---
 
 <AppShell
@@ -56,7 +57,7 @@ const activitySlugs = hasModules
   </section>
 
   <div class="track-progress__wrap">
-    <TrackProgressSummary client:only="react" activitySlugs={activitySlugs} />
+    <TrackProgressSummary client:only="react" activities={activities} activitySlugs={activitySlugs} />
   </div>
 
   <TrackModuleList client:load modules={modules} />

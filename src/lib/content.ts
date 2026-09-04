@@ -154,6 +154,7 @@ export const getTrackDetailData = async (trackSlug: string): Promise<TrackDetail
 
   for (const entry of labs) {
     if (entry.data.track !== trackSlug) continue;
+    if (entry.data.draft === true || entry.data.active === false) continue;
     const moduleSlug = getActivityModuleSlug(entry.data);
     if (!moduleSlug) continue;
     pushActivity({
@@ -169,8 +170,34 @@ export const getTrackDetailData = async (trackSlug: string): Promise<TrackDetail
 
   for (const entry of quizzes) {
     if (entry.data.track !== trackSlug) continue;
+    if (entry.data.draft === true || entry.data.active === false) continue;
     const moduleSlug = getActivityModuleSlug(entry.data);
     if (!moduleSlug) continue;
+
+    // Architectural scoping:
+    // In 1:1 concept-paired tracks (such as 'tech-plus'), every checkpoint quiz is designed
+    // to reinforce a core lesson. If a checkpoint quiz has no accompanying lesson, it is suppressed
+    // unless explicitly flagged as standalone: true or type: 'placement'.
+    // In other tracks (e.g. 'network-engineer', 'pc-technician'), quizzes may serve as module-level
+    // checkpoints or standalone assessments across multiple topics and are preserved.
+    const isConceptPairedTrack = trackSlug === 'tech-plus';
+    const isStandalone = entry.data.standalone === true || entry.data.type === 'placement';
+
+    if (isConceptPairedTrack && !isStandalone) {
+      const hasAccompanyingLesson = lessons.some(
+        (l) =>
+          l.data.track === trackSlug &&
+          getActivityModuleSlug(l.data) === moduleSlug &&
+          l.data.draft !== true &&
+          l.data.active !== false &&
+          (l.slug === entry.slug || l.data.order === entry.data.order)
+      );
+      if (!hasAccompanyingLesson) {
+        console.warn(`[content] Suppressing orphaned checkpoint quiz '${entry.slug}' in paired track '${trackSlug}'`);
+        continue;
+      }
+    }
+
     pushActivity({
       slug: entry.slug,
       type: 'quiz',
@@ -184,6 +211,7 @@ export const getTrackDetailData = async (trackSlug: string): Promise<TrackDetail
 
   for (const entry of lessons) {
     if (entry.data.track !== trackSlug) continue;
+    if (entry.data.draft === true || entry.data.active === false) continue;
     if (typeof entry.data.order !== 'number') continue;
     const moduleSlug = getActivityModuleSlug(entry.data);
     if (!moduleSlug) continue;
@@ -200,6 +228,7 @@ export const getTrackDetailData = async (trackSlug: string): Promise<TrackDetail
 
   for (const entry of activities) {
     if (entry.data.track !== trackSlug) continue;
+    if (entry.data.draft === true || entry.data.active === false) continue;
     const moduleSlug = getActivityModuleSlug(entry.data);
     if (!moduleSlug) continue;
     pushActivity({

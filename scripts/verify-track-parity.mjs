@@ -10,7 +10,15 @@ if (!appShellFile) {
 }
 
 const appShellUrl = pathToFileURL(path.join(chunksDir, appShellFile)).href;
-const { e: getTrackDetailData } = await import(appShellUrl);
+const appShellMod = await import(appShellUrl);
+const getTrackDetailData =
+  appShellMod.getTrackDetailData ||
+  Object.values(appShellMod).find(fn => typeof fn === 'function' && fn.name === 'getTrackDetailData');
+
+if (!getTrackDetailData) {
+  console.error('getTrackDetailData not found in AppShell chunk');
+  process.exit(1);
+}
 
 const tracks = ['network-engineer', 'tech-plus', 'pc-technician'];
 

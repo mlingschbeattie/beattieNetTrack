@@ -394,28 +394,12 @@ export const recordActivity = (
 ) =>
   setProgress((state) => withRecordedActivity(state, now), storage);
 
-export const getTrackProgress = (
-  lessonSlugs: string[],
-  storage: StorageLike | null = getStorage()
-) => {
-  const state = getProgress(storage);
-  const total = lessonSlugs.length;
-  const completed = lessonSlugs.filter((slug) => {
-    if (state.lessons[slug]?.completed) return true;
-    if (state.labs[slug]?.completed) return true;
-    if ((state.quizzes[slug]?.bestScore ?? 0) >= 70) return true;
-    return false;
-  }).length;
-  const xpEarned = lessonSlugs.reduce((sum, slug) => {
-    const lessonXp = state.lessons[slug]?.xpEarned ?? 0;
-    const labXp = state.labs[slug]?.xpEarned ?? 0;
-    return sum + lessonXp + labXp;
-  }, 0);
-  const percent = total ? Math.round((completed / total) * 100) : 0;
-  return { total, completed, xpEarned, percent };
-};
-
-export const getLevel = (xpTotal: number) => Math.floor(xpTotal / 100) + 1;
+export type TrackProgressItem =
+  | string
+  | {
+      slug: string;
+      type?: 'lesson' | 'lab' | 'quiz' | 'activity';
+    };
 
 const xpForQuiz = (score: number) => {
   let xp = 10;
@@ -423,6 +407,71 @@ const xpForQuiz = (score: number) => {
   if (score === 100) xp += 10;
   return xp;
 };
+
+export const getTrackProgress = (
+  items: TrackProgressItem[],
+  storage: StorageLike | null = getStorage()
+) => {
+  const state = getProgress(storage);
+  const total = items.length;
+  const completed = items.filter((item) => {
+    const slug = typeof item === 'string' ? item : item.slug;
+    const type = typeof item === 'string' ? undefined : item.type;
+
+    if (type === 'quiz') {
+      return (state.quizzes[slug]?.bestScore ?? 0) >= 70;
+    }
+    if (type === 'lesson') {
+      const lessonEntry = state.lessons[slug];
+      if (!lessonEntry?.completed) return false;
+      const sectionChecks = state.lessonSections?.[slug];
+      if (sectionChecks && Object.keys(sectionChecks).length > 0) {
+        return Object.values(sectionChecks).every(Boolean);
+      }
+      return true;
+    }
+    if (type === 'lab') {
+      return Boolean(state.labs[slug]?.completed);
+    }
+    if (type === 'activity') {
+      return Boolean(state.labs[slug]?.completed || state.lessons[slug]?.completed);
+    }
+
+    // Fallback for legacy untyped string entries
+    if (state.lessons[slug]?.completed) return true;
+    if (state.labs[slug]?.completed) return true;
+    if ((state.quizzes[slug]?.bestScore ?? 0) >= 70) return true;
+    return false;
+  }).length;
+
+  const xpEarned = items.reduce((sum, item) => {
+    const slug = typeof item === 'string' ? item : item.slug;
+    const type = typeof item === 'string' ? undefined : item.type;
+
+    if (type === 'quiz') {
+      const quizBest = state.quizzes[slug]?.bestScore ?? 0;
+      return sum + (quizBest >= 70 ? xpForQuiz(quizBest) : 0);
+    }
+    if (type === 'lesson') {
+      return sum + (state.lessons[slug]?.xpEarned ?? 0);
+    }
+    if (type === 'lab') {
+      return sum + (state.labs[slug]?.xpEarned ?? 0);
+    }
+    if (type === 'activity') {
+      return sum + (state.labs[slug]?.xpEarned ?? 0) + (state.lessons[slug]?.xpEarned ?? 0);
+    }
+
+    const lessonXp = state.lessons[slug]?.xpEarned ?? 0;
+    const labXp = state.labs[slug]?.xpEarned ?? 0;
+    return sum + lessonXp + labXp;
+  }, 0);
+
+  const percent = total ? Math.round((completed / total) * 100) : 0;
+  return { total, completed, xpEarned, percent };
+};
+
+export const getLevel = (xpTotal: number) => Math.floor(xpTotal / 100) + 1;
 
 export const recordQuizAttempt = (
   quizSlug: string,

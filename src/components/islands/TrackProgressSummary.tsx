@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { getTrackProgress } from '../../lib/progressStore';
+import { getTrackProgress, type TrackProgressItem } from '../../lib/progressStore';
 
 type TrackProgressSummaryProps = {
+  activities?: TrackProgressItem[];
   activitySlugs?: string[];
   lessonSlugs?: string[];
 };
@@ -17,8 +18,12 @@ const PROGRESS_MESSAGES = [
   "🎉 Track complete! Time to attempt the real exam.",
 ];
 
-export default function TrackProgressSummary({ activitySlugs, lessonSlugs }: TrackProgressSummaryProps) {
-  const items = activitySlugs ?? lessonSlugs ?? [];
+export default function TrackProgressSummary({ activities, activitySlugs, lessonSlugs }: TrackProgressSummaryProps) {
+  const items: TrackProgressItem[] =
+    activities ??
+    (lessonSlugs ? lessonSlugs.map((slug) => ({ slug, type: 'lesson' as const })) : undefined) ??
+    (activitySlugs ? activitySlugs.map((slug) => ({ slug, type: 'activity' as const })) : []) ??
+    [];
   const [percent, setPercent] = useState(0);
   const [completed, setCompleted] = useState(0);
   const [total, setTotal] = useState(items.length);

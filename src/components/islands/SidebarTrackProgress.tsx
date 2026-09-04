@@ -29,8 +29,8 @@ export default function SidebarTrackProgress({ sections, activeLesson }: Sidebar
   });
   const [completedMap, setCompletedMap] = useState<Record<string, boolean>>({});
   const [displayPct, setDisplayPct] = useState(0);
-  const itemSlugs = useMemo(
-    () => sections.flatMap((section) => (section.lessons || []).map((item) => item.slug)),
+  const typedItems = useMemo(
+    () => sections.flatMap((section) => (section.lessons || []).map((item) => ({ slug: item.slug, type: item.type }))),
     [sections]
   );
 
@@ -42,7 +42,7 @@ export default function SidebarTrackProgress({ sections, activeLesson }: Sidebar
 
     const update = () => {
       const state = getProgress();
-      const stats = getTrackProgress(itemSlugs);
+      const stats = getTrackProgress(typedItems);
       setProgress(stats);
 
       const map: Record<string, boolean> = {};
@@ -74,7 +74,7 @@ export default function SidebarTrackProgress({ sections, activeLesson }: Sidebar
     update();
     window.addEventListener('progress-updated', update);
     return () => window.removeEventListener('progress-updated', update);
-  }, [itemSlugs]);
+  }, [typedItems]);
 
   useEffect(() => {
     const t = setTimeout(() => setDisplayPct(progress.percent), 100);
