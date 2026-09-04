@@ -1,0 +1,25 @@
+{
+  "week": 1,
+  "title": "OpSec, Digital Hygiene, and the Sock Puppet Cleanroom",
+  "slug": "w1-opsec-sockpuppet",
+  "estimatedTimeMinutes": 90,
+  "intro": "Welcome to the frontlines of intelligence collection. Before you touch a single terminal command or query a target database, you need to answer one uncomfortable question: when you look into the abyss, what is looking right back at you?",
+  "sections": [
+    {
+      "heading": "1. The Investigator Paradox: You Leak More Than You Think",
+      "content": "Most novice investigators think opening a private browser tab or turning on a $5-a-month consumer VPN makes them an invisible cyber ghost. Let's dismantle that myth immediately.\n\nWhen your browser connects to any web server\u2014whether it's a corporate portal or an illicit forum\u2014it hands over a massive cryptographic fingerprint. Have you ever wondered why ad trackers can follow you across three different devices even when you're logged out?\n\nIt's not magic. It's Canvas Fingerprinting, WebGL shader math, WebRTC local IP enumeration, audio context decay rates, and your installed system font stack. What happens when an adversary monitors their Apache access logs and notices a visitor with a 100% unique GPU shader profile, querying the exact timestamp of their leaked data dump?\n\nThey don't just know someone is watching them. They know *who* is watching them. The moment your research machine touches target infrastructure with personal entropy attached, your operational security (OpSec) is blown."
+    },
+    {
+      "heading": "2. Socratic Checkpoint: Where Does the Leak Come From?",
+      "content": "Pause and consider this scenario:\n\nYou are investigating a ransomware extortion group. You spin up a fresh Firefox browser in Incognito Mode on your Windows workstation. You turn on a VPN server located in Zurich. You navigate to the group's public leak site. Within 48 hours, an alert on your personal LinkedIn profile indicates someone in Eastern Europe viewed your profile.\n\n*Why do you think this happened? What was missing from your isolation strategy?*\n\nDid your browser leak your real internal RFC 1918 IP address via WebRTC STUN requests? Did your browser share existing session cookies stored in local storage? Or did your browser fingerprint match the exact screen resolution, OS build, and graphic drivers of your everyday computer?\n\nIn OSINT, attribution is a two-way street. If you don't control your egress signature, you become the target."
+    },
+    {
+      "heading": "3. The Cleanroom Architecture: Hardware, Hypervisor, and Network",
+      "content": "To conduct non-attributable intelligence operations, professional analysts build what we call a **Sock Puppet Cleanroom**. This is an isolated, single-purpose environment with strict boundaries:\n\n1. **Hardware & Host Layer:** Dedicated hardware (e.g., a secondary laptop wiped to baseline) or a hardened Type-2 hypervisor (VirtualBox/VMware/KVM) running a sanitized Linux distribution (Debian or Fedora) or a live amnesic system (Tails / Whonix).\n2. **Network Egress Layer:** Multi-hop isolation. Never use personal home broadband or campus Wi-Fi directly. We route through dedicated mobile LTE hotspots (paid in cash with zero KYC linkage) or isolated cloud proxy jump boxes (WireGuard to an AWS/DigitalOcean VPS configured with DNS sinkholing).\n3. **Browser Sanitization:** Hardened Firefox with `media.peerconnection.enabled = false` (kills WebRTC leaks), `privacy.resistFingerprinting = true`, and canvas poisoning enabled via extensions like CanvasBlocker or uBlock Origin in hard mode."
+    },
+    {
+      "heading": "4. Persona Engineering: The Art of the Sock Puppet",
+      "content": "A sock puppet is not just a fake username. A poorly built sock puppet screams 'federal agent' or 'student researcher' from ten miles away.\n\nWhat makes a persona authentic? Think about human behavioral patterns. A real person doesn't create an account, upload no photo, add 40 threat intelligence analysts as friends in 10 minutes, and start asking technical questions about botnets.\n\n*Where do we pivot next to build legitimacy?*\n- **Account Aging:** Accounts must be 'seasoned'. They need mundane activity over weeks: joining local photography clubs, following local bakeries, interacting with mundane sports forums.\n- **Non-Attributable Infrastructure:** Disposable VoIP numbers (e.g., silent burner numbers, not Google Voice tied to your master Gmail), non-linked virtual credit cards (Privacy.com or prepaid Visa), and realistic profile imagery (AI-generated via StyleGAN, but manually scrubbed of telltale ear/teeth artifacts).\n\nRemember: your persona is your armor. If it cracks, your investigation is compromised."
+    }
+  ]
+}

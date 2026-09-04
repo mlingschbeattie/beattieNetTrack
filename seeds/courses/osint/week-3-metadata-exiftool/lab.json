@@ -1,0 +1,42 @@
+{
+  "labId": "osint-w3-metadata-exiftool",
+  "title": "Lab 3: ExifTool Forensic Extraction & Document Provenance Audit",
+  "scenario": "A leaked corporate PDF and an associated smartphone JPEG have surfaced on a public whistleblowing repo. Your task is to use command-line ExifTool to extract hidden forensic artifacts, determine the author's internal workstation identity, and locate the physical coordinates where the photograph was captured.",
+  "fields": [
+    {
+      "fieldId": "exif_camera_serial_number",
+      "label": "Camera Serial & Model Identification",
+      "prompt": "Run ExifTool on the evidence file 'evidence_photo.jpg'. Extract the exact Camera Model, Lens Serial Number, and Firmware Version embedded in the MakerNotes.",
+      "expectedFormat": "string",
+      "points": 20
+    },
+    {
+      "fieldId": "exif_gps_decimal_coordinates",
+      "label": "GPS Decimal Coordinates",
+      "prompt": "Extract the GPS Latitude and Longitude from the evidence image. Convert the coordinates into standard decimal degrees format (e.g., 40.542100, -80.012500) ready for mapping.",
+      "expectedFormat": "string",
+      "points": 25
+    },
+    {
+      "fieldId": "internal_author_ad_username",
+      "label": "Internal Author & Hostname Provenance",
+      "prompt": "Run ExifTool against 'internal_memo.pdf'. Extract the embedded Author username, Creator Tool, and original internal file path (if present in XMP metadata).",
+      "expectedFormat": "string",
+      "points": 20
+    },
+    {
+      "fieldId": "creation_modification_delta",
+      "label": "Timestamp Discrepancy Analysis",
+      "prompt": "Compare the CreateDate and ModifyDate timestamps in the PDF header with the date written in the visible memo text. Is there evidence of backdating or post-dated modification? Record the exact time delta.",
+      "expectedFormat": "string",
+      "points": 20
+    },
+    {
+      "fieldId": "forensic_integrity_sha256",
+      "label": "Evidence Hash & Integrity Verification",
+      "prompt": "Compute the SHA-256 hash of the evidence file before and after metadata inspection to prove evidentiary integrity has been preserved. Enter the 64-character hex hash.",
+      "expectedFormat": "hash",
+      "points": 15
+    }
+  ]
+}

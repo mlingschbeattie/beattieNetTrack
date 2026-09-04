@@ -1,0 +1,30 @@
+{
+  "courseId": "osint-practitioner",
+  "moduleId": "osint-w4-geoint-shadow-geometry",
+  "standards": {
+    "nocti": [
+      {
+        "id": "NOCTI-CYBER-101.3",
+        "title": "Geospatial Analysis & Physical Security Correlation",
+        "description": "Correlate open-source imagery and physical indicators to locate critical facilities and evaluate physical perimeter vulnerabilities."
+      }
+    ],
+    "mitreAttack": [
+      {
+        "tacticId": "TA0043",
+        "tacticName": "Reconnaissance",
+        "techniqueId": "T1590",
+        "techniqueName": "Gather Victim Network Information",
+        "subTechniqueId": "T1590.001",
+        "description": "Locate physical facilities, business centers, and operational facilities using open imagery and geolocation."
+      }
+    ],
+    "comptia": [
+      {
+        "exam": "CompTIA Security+ SY0-701",
+        "objective": "2.1",
+        "description": "Analyze physical security controls, perimeter surveillance, and facility vulnerabilities."
+      }
+    ]
+  }
+}

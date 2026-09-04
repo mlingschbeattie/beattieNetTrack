@@ -1,0 +1,40 @@
+{
+  "courseId": "osint-practitioner",
+  "moduleId": "osint-w3-metadata-exiftool",
+  "standards": {
+    "nocti": [
+      {
+        "id": "NOCTI-CYBER-102.3",
+        "title": "File & Document Metadata Analysis",
+        "description": "Extract and interpret EXIF, XMP, IPTC, and filesystem metadata to establish document provenance and geographical context."
+      },
+      {
+        "id": "NOCTI-CYBER-102.5",
+        "title": "Digital Forensics & Artifact Extraction",
+        "description": "Maintain forensic hashes, extract embedded files and thumbnails, and identify evidence tampering."
+      }
+    ],
+    "mitreAttack": [
+      {
+        "tacticId": "TA0043",
+        "tacticName": "Reconnaissance",
+        "techniqueId": "T1590",
+        "techniqueName": "Gather Victim Network Information",
+        "subTechniqueId": "T1590.003",
+        "description": "Adversaries and defenders inspect public documents to extract software versions, internal user accounts, and infrastructure paths."
+      }
+    ],
+    "comptia": [
+      {
+        "exam": "CompTIA Security+ SY0-701",
+        "objective": "4.5",
+        "description": "Explain the basic concepts of digital forensics, hashing, metadata analysis, and integrity verification."
+      },
+      {
+        "exam": "CompTIA CySA+ CS0-003",
+        "objective": "3.4",
+        "description": "Analyze digital forensic artifacts, file headers, and metadata to reconstruct event timelines."
+      }
+    ]
+  }
+}

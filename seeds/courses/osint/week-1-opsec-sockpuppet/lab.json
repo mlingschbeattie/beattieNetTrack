@@ -1,0 +1,42 @@
+{
+  "labId": "osint-w1-sockpuppet-cleanroom",
+  "title": "Lab 1: Cleanroom Isolation Audit & Persona Matrix Construction",
+  "scenario": "You have been assigned to investigate an advanced threat group operating on an underground telegram mirror and clearweb paste site. Before engaging in collection, you must audit your analyst workstation for telemetry leaks and establish a hardened sock puppet persona matrix.",
+  "fields": [
+    {
+      "fieldId": "cleanroom_webrtc_leak_check",
+      "label": "WebRTC Leak Audit",
+      "prompt": "Using browser diagnostic tooling (e.g. browserleaks.com/webrtc or internal test scripts), inspect your collection browser. Does your local network IP (e.g., 10.x.x.x or 192.168.x.x) or public ISP gateway leak through STUN/TURN requests? Enter the exact configuration flag toggled to disable WebRTC in your browser.",
+      "expectedFormat": "string",
+      "points": 20
+    },
+    {
+      "fieldId": "browser_canvas_entropy_score",
+      "label": "Canvas Fingerprint Entropy",
+      "prompt": "Evaluate your browser's canvas and audio fingerprint uniqueness. Record the canvas hash value or entropy uniqueness percentage displayed by your test suite.",
+      "expectedFormat": "string",
+      "points": 20
+    },
+    {
+      "fieldId": "sockpuppet_persona_matrix",
+      "label": "Sock Puppet Persona Specification",
+      "prompt": "Define your operational persona: 1) Chosen synthetic name, 2) Legend/backstory (profession, geographic location, hobbies), 3) Non-attributable verification mechanism (VoIP carrier/SIM provider used), and 4) Account seasoning timeline.",
+      "expectedFormat": "text",
+      "points": 25
+    },
+    {
+      "fieldId": "network_egress_verification",
+      "label": "Egress Geolocation & DNS Audit",
+      "prompt": "Query an external DNS resolver diagnostic (e.g., dnsleaktest.com or dig whoami.akamai.net). Confirm that the egress IP and DNS resolvers do not trace back to your educational institution, home ISP, or personal AS number. Provide the observed Public IP and Autonomous System (AS) number.",
+      "expectedFormat": "string",
+      "points": 20
+    },
+    {
+      "fieldId": "attribution_risk_assessment",
+      "label": "Operational Failure Pivot Analysis",
+      "prompt": "Imagine your sock puppet account is abruptly banned by the forum administrator after 3 days. What are the three most likely digital telemetry points that compromised your persona? Explain how you will remediate each in Phase 2.",
+      "expectedFormat": "text",
+      "points": 15
+    }
+  ]
+}

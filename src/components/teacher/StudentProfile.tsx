@@ -81,6 +81,11 @@ type OverrideModalProps = {
   onSaved: () => void;
 };
 
+function getAcademicYear(): number {
+  const now = new Date();
+  return now.getMonth() >= 7 ? now.getFullYear() + 1 : now.getFullYear();
+}
+
 function OverrideModal({
   studentId, studentUsername, certId, domainCode, apiUrl, onClose, onSaved,
 }: OverrideModalProps) {
@@ -91,6 +96,10 @@ function OverrideModal({
   const handleSave = async () => {
     const num = Number.parseFloat(score);
     if (isNaN(num) || num < 0 || num > 100) return;
+    if (!studentId) {
+      setStatus('error');
+      return;
+    }
     setStatus('saving');
     try {
       const res = await fetch(`${apiUrl}/api/cis/scores/override`, {
@@ -98,10 +107,11 @@ function OverrideModal({
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          studentId: studentId || studentUsername,
+          studentId,
           domainId: domainCode,
-          score: num,
-          reason: reason.trim() || undefined,
+          academicYear: getAcademicYear(),
+          overrideScore: num,
+          reason: reason.trim() || 'Teacher manual override',
         }),
       });
       if (!res.ok) throw new Error(`Override failed: ${res.status}`);
@@ -308,7 +318,7 @@ export default function StudentProfile({ username, apiUrl, isTeacher = false }: 
 
       {override && (
         <OverrideModal
-          studentId={profile?.student?.id || username}
+          studentId={profile?.student?.id}
           studentUsername={username}
           certId={override.certId}
           domainCode={override.domainCode}

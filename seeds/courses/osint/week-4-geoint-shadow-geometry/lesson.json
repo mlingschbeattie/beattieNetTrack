@@ -1,0 +1,21 @@
+{
+  "week": 4,
+  "title": "Geospatial Reconnaissance (GEOINT/IMINT) and Shadow Geometry",
+  "slug": "w4-geoint-shadow-geometry",
+  "estimatedTimeMinutes": 90,
+  "intro": "A single photograph contains infinite environmental clues: the angle of sunlight, the height of a light pole, the gauge of a railroad track, the shape of a mountain ridge. When metadata is stripped, physics and geography take over.",
+  "sections": [
+    {
+      "heading": "1. Turning Pixels into Coordinates: The GEOINT Triangulation Mindset",
+      "content": "Imagine you are handed an image with zero EXIF data. The image shows an industrial building with a white truck parked out front. Amateurs give up. Intelligence analysts look closer.\n\n*Where do we look first?*\n1. **Infrastructure Clues:** Look at power transmission lines. Are the towers lattice steel, single pole, or wooden? Are the electrical sockets inside the building Type A (US), Type C (EU), or Type G (UK)?\n2. **Transportation & Signage:** Look at road markings. Are the lines yellow or white? Which side of the road are cars driving on? What is the font on the highway exit sign?\n3. **Natural Features:** Mountain topography, vegetation biomes (e.g. palm trees vs boreal pines), soil color (red clay vs dark loam).\n\nWhen you combine two distinct landmark bearings\u2014say, a church spire and a radio broadcast tower visible in the background\u2014you can draw lines of sight on Google Earth Pro. Where those lines intersect is the exact camera viewpoint."
+    },
+    {
+      "heading": "2. Chronolocation: Shadow Geometry & SunCalc",
+      "content": "Did you know that shadows are nature's clock and calendar?\n\nIf you know the height of an object (or can estimate it relative to a person or standard door) and measure the length of the shadow it casts on flat ground, you can calculate the **solar elevation angle** using basic trigonometry:\n`tan(Elevation Angle) = Object Height / Shadow Length`.\n\nNow, look at the direction the shadow is pointing. If the shadow points directly North-Northwest, the sun was located South-Southeast (solar azimuth ~150\u00b0).\n\n*Where do we pivot next?*\nWe input the estimated geographic region into tools like **SunCalc** (suncalc.org) or **PeakVisor**. By sliding the time of day and calendar date sliders, you match the exact sun elevation and azimuth to the minute. You have just achieved **Chronolocation**: proving not only where the photo was taken, but the exact hour and season it occurred."
+    },
+    {
+      "heading": "3. Satellite Imagery & Change Detection",
+      "content": "Commercial satellite constellations (Sentinel-2, Planet Labs, Maxar) pass over every square meter of the Earth every few days.\n\nUsing platforms like **Sentinel Hub EO Browser** or **Google Earth historical imagery slider**, analysts perform **Change Detection**:\n- Has a new fence or security checkpoint appeared outside a suspected black site between March and June?\n- Has a trench been dug? Has asphalt been freshly poured?\n- Are thermal signatures or infrared vegetation indices (NDVI) showing stressed crops or underground pipeline heat leaks?\n\nWhen you master GEOINT, the physical world becomes an open book."
+    }
+  ]
+}

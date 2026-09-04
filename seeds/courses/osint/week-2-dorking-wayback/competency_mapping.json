@@ -1,0 +1,42 @@
+{
+  "courseId": "osint-practitioner",
+  "moduleId": "osint-w2-dorking-wayback",
+  "standards": {
+    "nocti": [
+      {
+        "id": "NOCTI-CYBER-102.2",
+        "title": "Passive Information Gathering & Digital Footprinting",
+        "description": "Utilize search engines, advanced boolean operators, and historical archives to discover public, exposed, and deleted technical artifacts."
+      }
+    ],
+    "mitreAttack": [
+      {
+        "tacticId": "TA0043",
+        "tacticName": "Reconnaissance",
+        "techniqueId": "T1594",
+        "techniqueName": "Search Victim-Owned Websites",
+        "description": "Search target-owned web resources and historical mirrors for operational data."
+      },
+      {
+        "tacticId": "TA0043",
+        "tacticName": "Reconnaissance",
+        "techniqueId": "T1593",
+        "techniqueName": "Search Open Websites/Domains",
+        "subTechniqueId": "T1593.002",
+        "description": "Search engines are leveraged to identify leaked documents, configuration files, and staff records."
+      }
+    ],
+    "comptia": [
+      {
+        "exam": "CompTIA Security+ SY0-701",
+        "objective": "1.3",
+        "description": "Explain common reconnaissance techniques including search engine dorking and passive asset discovery."
+      },
+      {
+        "exam": "CompTIA CySA+ CS0-003",
+        "objective": "1.1",
+        "description": "Perform passive reconnaissance and threat intelligence gathering using public archives and specialized search syntax."
+      }
+    ]
+  }
+}

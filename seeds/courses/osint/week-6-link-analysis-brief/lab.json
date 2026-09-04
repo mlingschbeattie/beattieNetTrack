@@ -1,0 +1,42 @@
+{
+  "labId": "osint-w6-link-analysis-brief",
+  "title": "Lab 6: Link Analysis Synthesis & Executive Intelligence Briefing",
+  "scenario": "You have accumulated intelligence across all prior investigations regarding threat group 'AeroDyn Syndicate': phone numbers, domain WHOIS records, a shadow timestamp, an Exif author tag, an exposed origin IP, and a shared Google Analytics ID. In this capstone lab, you will construct a link graph identifying the threat group's central coordinator and author a formal executive intelligence brief.",
+  "fields": [
+    {
+      "fieldId": "central_node_entity_id",
+      "label": "Central Hub Node Identification",
+      "prompt": "Construct a link analysis graph in Maltego, Obsidian, or draw.io connecting all evidence entities. Identify the central pivot entity (email, IP, or username) possessing the highest degree centrality that connects the corporate infrastructure to the threat actor.",
+      "expectedFormat": "string",
+      "points": 20
+    },
+    {
+      "fieldId": "link_cluster_correlation_path",
+      "label": "Adversary Correlation Path",
+      "prompt": "Describe the exact 4-step relational pivot path connecting the deleted archival press release (Week 2) to the unmasked origin IP address (Week 5).",
+      "expectedFormat": "text",
+      "points": 20
+    },
+    {
+      "fieldId": "competing_hypothesis_evaluation",
+      "label": "Analysis of Competing Hypotheses (ACH)",
+      "prompt": "Evaluate two competing hypotheses: H1) The breach was conducted by an external advanced threat group; H2) The breach was conducted by an internal rogue employee. Cite which specific artifact refutes H1 or H2.",
+      "expectedFormat": "text",
+      "points": 20
+    },
+    {
+      "fieldId": "executive_bluf_statement",
+      "label": "Executive BLUF (Bottom Line Up Front)",
+      "prompt": "Write a 3-sentence Executive BLUF statement suitable for the Chief Information Security Officer summarizing the identity of the threat actor, the compromised perimeter component, and the immediate mitigation action.",
+      "expectedFormat": "text",
+      "points": 25
+    },
+    {
+      "fieldId": "intelligence_confidence_score",
+      "label": "ICD 203 Confidence Rating & Justification",
+      "prompt": "Assign a final Confidence Rating (High / Moderate / Low) for your attribution brief and provide an evidentiary justification.",
+      "expectedFormat": "string",
+      "points": 15
+    }
+  ]
+}

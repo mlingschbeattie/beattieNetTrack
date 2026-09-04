@@ -1,0 +1,48 @@
+{
+  "courseId": "osint-practitioner",
+  "moduleId": "osint-w1-sockpuppet-cleanroom",
+  "standards": {
+    "nocti": [
+      {
+        "id": "NOCTI-CYBER-101.1",
+        "title": "Threat Analysis & Operational Security",
+        "description": "Establish operational security protocols, risk mitigation strategies, and defensive non-attribution workflows during digital investigations."
+      },
+      {
+        "id": "NOCTI-CYBER-101.4",
+        "title": "Evidence Handling & Investigator Integrity",
+        "description": "Maintain forensic cleanroom environments to prevent taint of investigator identity and target data."
+      }
+    ],
+    "mitreAttack": [
+      {
+        "tacticId": "TA0043",
+        "tacticName": "Reconnaissance",
+        "techniqueId": "T1590",
+        "techniqueName": "Gather Victim Network Information",
+        "subTechniqueId": "T1590.005",
+        "description": "Adversaries and researchers gather IP and network configuration details to plan engagements."
+      },
+      {
+        "tacticId": "TA0043",
+        "tacticName": "Reconnaissance",
+        "techniqueId": "T1593",
+        "techniqueName": "Search Open Websites/Domains",
+        "subTechniqueId": "T1593.001",
+        "description": "Identify social media and forum accounts used for adversary tracking while maintaining operational cover."
+      }
+    ],
+    "comptia": [
+      {
+        "exam": "CompTIA Security+ SY0-701",
+        "objective": "4.1",
+        "description": "Given a scenario, apply common security operations and non-attribution digital hygiene practices."
+      },
+      {
+        "exam": "CompTIA CySA+ CS0-003",
+        "objective": "1.2",
+        "description": "Analyze intelligence data and maintain operational security during threat intelligence collection."
+      }
+    ]
+  }
+}

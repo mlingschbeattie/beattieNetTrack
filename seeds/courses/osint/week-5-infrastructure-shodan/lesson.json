@@ -1,0 +1,25 @@
+{
+  "week": 5,
+  "title": "Technical Infrastructure Recon (DNS, CT Logs, Shodan)",
+  "slug": "w5-infrastructure-shodan",
+  "estimatedTimeMinutes": 90,
+  "intro": "Before an adversary attacks a network, they map every port, certificate, and DNS record. To defend an organization, you must map their attack surface faster and more thoroughly than they can.",
+  "sections": [
+    {
+      "heading": "1. Passive DNS vs Active Scanning: The Invisible Map",
+      "content": "What is the difference between running `nmap -sS -p- target.com` and querying passive DNS databases?\n\nIf you run Nmap against a corporate firewall, you generate thousands of TCP SYN packets. The SOC's SIEM, Snort IDS, and Next-Gen Firewalls light up like a Christmas tree. Your IP gets auto-banned in 30 seconds.\n\nPassive reconnaissance means querying **third-party telemetry observers** that have already cataloged the target:\n- **Passive DNS (pDNS):** Historical records showing which IP addresses a domain resolved to over the last 10 years (SecurityTrails, Farsight, DNSDumpster).\n- **WHOIS & RDAP:** Registrant organizations, netblocks (CIDR ranges), Autonomous System Numbers (ASNs), and abuse contact emails."
+    },
+    {
+      "heading": "2. Certificate Transparency (CT) Logs: The Subdomain Goldmine",
+      "content": "Whenever any organization issues an SSL/TLS certificate from a public Certificate Authority (Let's Encrypt, DigiCert, Sectigo), that certificate **must** be published to a publicly auditable Certificate Transparency log. If it isn't, Google Chrome and modern browsers reject the certificate with a security warning.\n\n*What does this mean for intelligence analysts?*\nEvery time an internal developer spins up `vpn-test.internal.target.com`, `admin-k8s.target.com`, or `dev-api-v2.target.com`, it gets logged permanently on public servers!\n\nYou can query these instantly via `crt.sh`:\n```bash\ncurl -s \"https://crt.sh/?q=%.target.com&output=json\" | jq -r '.[].name_value' | sort -u\n```\nIn three seconds, you have unmasked the target's entire hidden subdomain infrastructure without sending a single probe to their routers."
+    },
+    {
+      "heading": "3. Hunting the Origin: Bypassing WAFs and Cloudflare CDN",
+      "content": "Target companies love to put their public websites behind Cloudflare, Akamai, or AWS CloudFront. When you `ping target.com`, you only see Cloudflare's Anycast proxy IPs (`104.16.x.x`). Their real origin web server is hidden behind the proxy.\n\n*Where do we pivot to discover the real origin IP?*\n1. **Historical DNS:** What was the target's IP *before* they enabled Cloudflare three years ago? Often, lazy sysadmins leave the actual web server on the original IP.\n2. **Mail Servers (MX Records):** Web traffic might be proxied, but mail traffic rarely is. What IP does `mail.target.com` resolve to? Are both services hosted on the same `/24` subnet?\n3. **Shodan & Censys SSL Hash Matching:** Calculate the Murmur3 hash of the website's favicon or the SHA-256 fingerprint of their SSL certificate. Query Shodan: `ssl.cert.sha256:\"<FINGERPRINT>\"`. Shodan crawls every IP on the entire IPv4 Internet. It will show you the raw, unproxied IP address responding with that exact certificate on port 443!"
+    },
+    {
+      "heading": "4. Shodan & Censys: The Search Engines for Everything Connected",
+      "content": "Shodan does not index web pages; it indexes listening banners on open ports: SCADA systems, power plant PLCs, exposed Elasticsearch databases, unsecured IP cameras, and unpatched VPN appliances.\n\nKey Shodan query filters:\n- `org:\"Target Corporation\"`\n- `ssl.cert.subject.CN:\"*.target.com\"`\n- `http.title:\"Dashboard\" port:\"8080,8443\"`\n- `has_vuln:true product:\"OpenSSH\"`\n\nWhen you master technical reconnaissance, nothing remains hidden."
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "labId": "osint-w4-geoint-shadow-geometry",
+  "title": "Lab 4: Landmark Triangulation & Chronolocation via Shadow Geometry",
+  "scenario": "A threat actor has posted a verification photo outside a secure logistics warehouse to boast of an undetected physical breach. The image has all EXIF stripped. You must use landmark triangulation, mountain topography alignment, and solar shadow calculations to pinpoint the exact facility coordinates and the time of the incident.",
+  "fields": [
+    {
+      "fieldId": "triangulated_facility_coordinates",
+      "label": "Triangulated Facility Coordinates",
+      "prompt": "Using visible environmental landmarks (e.g. radio tower, highway overpass, distinct warehouse roofline), identify the exact geographic location. Provide coordinates in decimal degrees format (Latitude, Longitude).",
+      "expectedFormat": "string",
+      "points": 25
+    },
+    {
+      "fieldId": "shadow_solar_azimuth_angle",
+      "label": "Solar Shadow Azimuth Angle",
+      "prompt": "Measure the shadow cast by the 2.5-meter security fence post in the foreground. Calculate the solar azimuth angle (degrees from true north).",
+      "expectedFormat": "string",
+      "points": 20
+    },
+    {
+      "fieldId": "chronolocation_timestamp_utc",
+      "label": "Chronolocation Timestamp (UTC)",
+      "prompt": "Using SunCalc or equivalent solar astronomical tables for the triangulated location, determine the estimated time of day (UTC) when the photograph was taken. Format: YYYY-MM-DD HH:MM UTC.",
+      "expectedFormat": "string",
+      "points": 25
+    },
+    {
+      "fieldId": "satellite_historical_feature_diff",
+      "label": "Historical Imagery Change Verification",
+      "prompt": "Examine historical satellite imagery for this facility between 2023 and 2026. What physical structural modification was added to the perimeter fence line in late 2024?",
+      "expectedFormat": "string",
+      "points": 15
+    },
+    {
+      "fieldId": "confidence_rating_justification",
+      "label": "Analytic Confidence Assessment",
+      "prompt": "Assign an Analytic Confidence Level (Low, Moderate, High) to your geospatial conclusion based on ICD 203 standards. Justify your rating in 2-3 sentences.",
+      "expectedFormat": "text",
+      "points": 15
+    }
+  ]
+}

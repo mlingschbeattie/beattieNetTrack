@@ -1,0 +1,42 @@
+{
+  "labId": "osint-w5-infrastructure-shodan",
+  "title": "Lab 5: Subdomain Enumeration via CT Logs & Origin IP Unmasking",
+  "scenario": "A target organization, 'Apex FinTech Solutions', has shielded its primary web assets behind a commercial Cloudflare CDN. Your task is to extract hidden subdomains using public Certificate Transparency logs, identify exposed staging environments, and discover the true unproxied origin server IP using SSL fingerprinting on Shodan.",
+  "fields": [
+    {
+      "fieldId": "subdomain_ct_log_extraction",
+      "label": "Certificate Transparency Subdomain Count",
+      "prompt": "Query crt.sh or use an automated CT log scraper for 'apexfintech.local' (or the provided lab target domain). Record the unique staging/internal subdomains identified that are not advertised on their public DNS zone.",
+      "expectedFormat": "string",
+      "points": 20
+    },
+    {
+      "fieldId": "origin_ip_bypass_discovery",
+      "label": "Discovered Origin IP Address",
+      "prompt": "Identify the true unproxied backend origin IP address by correlating historical DNS records and Shodan SSL certificate subject matching. Enter the valid IPv4 address.",
+      "expectedFormat": "ip_address",
+      "points": 25
+    },
+    {
+      "fieldId": "shodan_banner_vulnerability_cve",
+      "label": "Exposed Service & CVE Identification",
+      "prompt": "Inspect the banner on port 8443 of the discovered origin IP via Shodan/Censys. What software service and version is listening, and what critical CVE vulnerability is associated with this outdated build?",
+      "expectedFormat": "string",
+      "points": 20
+    },
+    {
+      "fieldId": "passive_dns_historical_mx",
+      "label": "Historical MX Record Correlation",
+      "prompt": "What was the previous mail exchange (MX) provider utilized by the target prior to migrating to Google Workspace/O365, and on what date did the transition occur?",
+      "expectedFormat": "string",
+      "points": 20
+    },
+    {
+      "fieldId": "attack_surface_vector_summary",
+      "label": "Attack Surface Risk Evaluation",
+      "prompt": "Summarize how an external adversary could leverage the combination of the exposed origin IP and outdated port 8443 service to compromise the perimeter without triggering Cloudflare WAF protections.",
+      "expectedFormat": "text",
+      "points": 15
+    }
+  ]
+}

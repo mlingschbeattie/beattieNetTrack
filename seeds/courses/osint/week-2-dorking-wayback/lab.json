@@ -1,0 +1,42 @@
+{
+  "labId": "osint-w2-dorking-wayback",
+  "title": "Lab 2: Google Dorking & Archival Web Reconstruction",
+  "scenario": "A target organization, 'AeroDyn Global Logistics', recently scrubbed references to an off-the-books subsidiary from their website. You are tasked with using search syntax and the Wayback Machine CDX API to recover the deleted corporate directory, find exposed configuration files, and identify orphaned cloud documents.",
+  "fields": [
+    {
+      "fieldId": "dork_exposed_configuration",
+      "label": "Config File Discovery Query",
+      "prompt": "Construct an advanced search dork that searches specifically for exposed environment or SQL database backup files on a specific corporate domain. Provide the exact query syntax used.",
+      "expectedFormat": "string",
+      "points": 20
+    },
+    {
+      "fieldId": "wayback_cdx_snapshot_timestamp",
+      "label": "Wayback CDX API Query & Snapshot",
+      "prompt": "Using the Internet Archive CDX API or web interface, locate the historical snapshot of the target's '/about/leadership' page from 2022. Record the exact 14-digit timestamp string (YYYYMMDDhhmmss) of the earliest snapshot where the deleted officer was listed.",
+      "expectedFormat": "string",
+      "points": 20
+    },
+    {
+      "fieldId": "deleted_personnel_record",
+      "label": "Recovered Personnel Artifact",
+      "prompt": "From the recovered archival snapshot, identify the full name, title, and corporate email address of the scrubbed Chief Operations Officer.",
+      "expectedFormat": "string",
+      "points": 20
+    },
+    {
+      "fieldId": "s3_bucket_discovery_query",
+      "label": "Cloud Storage Dorking",
+      "prompt": "Construct a dork targeting public Amazon AWS S3, Google Cloud Storage, or Azure Blob containers mentioning the target's corporate slug and confidential documents. Provide the search operator string.",
+      "expectedFormat": "string",
+      "points": 20
+    },
+    {
+      "fieldId": "pivot_analysis_finding",
+      "label": "Pivot Analysis & Next Step",
+      "prompt": "Based on the recovered email address and corporate entity name, what are the next two intelligence pivot steps you will take to identify their current operational footprint?",
+      "expectedFormat": "text",
+      "points": 20
+    }
+  ]
+}

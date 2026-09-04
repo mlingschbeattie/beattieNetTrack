@@ -1,0 +1,25 @@
+{
+  "week": 3,
+  "title": "Metadata Extraction (ExifTool) and Document Provenance",
+  "slug": "w3-metadata-exiftool",
+  "estimatedTimeMinutes": 90,
+  "intro": "When someone shows you a digital file\u2014a PDF report, an image taken on an iPhone, a Word document\u2014what you see on the screen is only half the story. The hidden half is metadata: the digital fingerprints left behind by software, hardware, and human habits.",
+  "sections": [
+    {
+      "heading": "1. What is Metadata and Why Does it Exist?",
+      "content": "Metadata is data about data. When your camera snaps a photo, it doesn't just store pixel RGB values. It records the camera make and model, the lens type, the exact focal length, the shutter speed, the firmware version, the ISO, and\u2014if location services were active\u2014the exact GPS latitude, longitude, and altitude down to the centimeter.\n\nWhen a user saves a Word document or exports a PDF, Microsoft Office or LibreOffice embeds the author's Active Directory username, the corporate computer name, the template path on the internal file share, the total editing time, and the revision number.\n\n*Why do software developers embed this?* Because operating systems and applications need it for indexing, compatibility, and version control. But for an intelligence analyst, this is pure gold."
+    },
+    {
+      "heading": "2. ExifTool: The Swiss Army Knife of Digital Provenance",
+      "content": "Written by Phil Harvey in Perl, `exiftool` is the undisputed industry standard for reading, writing, and manipulating metadata across hundreds of file formats.\n\nLet's look at real command-line execution:\n```bash\n# Inspect all metadata in a suspicious PDF\nexiftool -a -u -g1 invoice_2026.pdf\n\n# Extract only GPS coordinates and format as decimal degrees\nexiftool -c \"%.6f\" -gpslatitude -gpslongitude target_photo.jpg\n\n# Extract embedded thumbnails or hidden preview images\nexiftool -b -ThumbnailImage target_photo.jpg > thumb.jpg\n```\n\n*What's missing when an adversary uploads an image to Twitter or Facebook?*\nNotice that mainstream social media networks (Meta, X, Instagram) automatically strip EXIF metadata upon upload to save bandwidth and protect consumer privacy. But what about images uploaded to personal blogs, corporate intranets, public GitHub repositories, Discord attachments, or leaked email servers? In those environments, metadata is almost always intact."
+    },
+    {
+      "heading": "3. Socratic Checkpoint: The Fraudulent Memo",
+      "content": "A high-profile whistleblower leaks an internal PDF memorandum allegedly proving corporate malfeasance dated 'January 15, 2024'. The document is signed by the VP of Engineering.\n\nYou run `exiftool memo.pdf` and observe the following output:\n- `CreateDate: 2026:01:10 14:22:05-05:00`\n- `ModifyDate: 2026:01:12 09:14:18-05:00`\n- `CreatorTool: Adobe InDesign 2025 (Macintosh)`\n- `Author: bsmith_macbook_pro`\n\n*What questions do you ask immediately? What does this metadata tell you about the document's authenticity?*\n\n1. If the memo is supposed to be from January 2024, why was it created in January 2026?\n2. Why was InDesign 2025 used\u2014a software version that did not exist in early 2024?\n3. Who is `bsmith` on the target organization's IT roster?\n\nYou just proved document tampering in under 30 seconds using raw metadata extraction."
+    },
+    {
+      "heading": "4. Document Provenance & The Machine Identification Code",
+      "content": "Provenance is the chronological record of the ownership, custody, and modification of an artifact.\n\nBeyond digital EXIF, did you know that color laser printers print nearly invisible tracking marks known as **Machine Identification Codes (MIC)** or 'yellow dots'? These microscopic yellow tracking patterns encode the printer serial number, the exact date, and the minute the page was printed!\n\nWhen you combine digital metadata with physical artifact forensics, you create an unbreakable chain of evidence."
+    }
+  ]
+}

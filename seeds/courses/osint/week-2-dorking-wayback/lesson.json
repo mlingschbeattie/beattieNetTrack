@@ -1,0 +1,21 @@
+{
+  "week": 2,
+  "title": "Search Operators, Dorking, and Wayback Forensics",
+  "slug": "w2-dorking-wayback",
+  "estimatedTimeMinutes": 90,
+  "intro": "Google is not a dictionary. It is a massive, automated relational database indexer that indiscriminately crawls whatever web developers forget to lock down. If you only search like an average consumer, you are blind to 99% of the open web.",
+  "sections": [
+    {
+      "heading": "1. The Grammar of Search: Advanced Google & Bing Dorking",
+      "content": "What actually happens when you type `site:target.com filetype:env` into a search engine? You are executing an index query against Google's inverted index without hitting the target server directly.\n\nNotice that distinction: you are querying Google's cache, not sending HTTP traffic to the target. This makes search operator analysis completely passive. The target sysadmin has no idea you are examining their exposed infrastructure.\n\nLet's break down the essential operators:\n- `site:` Restricts results to a top-level domain, domain, or subdomain (e.g. `site:gov.uk`, `site:dev.target.com`).\n- `filetype:` or `ext:` Pinpoints exact file formats: `pdf`, `xlsx`, `docx`, `sql`, `env`, `conf`, `kml`.\n- `intitle:` and `allintitle:` Looks for phrases in the HTML `<title>` tag. Ever seen `intitle:\"index of /\"`? That tells you directory listing is enabled on a web server!\n- `inurl:` Searches inside the URI path string. What happens if you run `inurl:wp-content/uploads/2026/` or `inurl:/phpinfo.php`?\n\n*Why do you think developers leave these online?* Almost always: convenience during staging, overlooked `.gitignore` files, or misconfigured web servers that fail to disable directory indexing."
+    },
+    {
+      "heading": "2. Socratic Scenario: The Disappearing Press Release",
+      "content": "Consider this situation:\n\nYou are investigating a defense supply firm suspected of selling dual-use guidance chips to an embargoed entity. You visit their website: everything looks squeaky clean. Nothing on their news page. Zero mentions of foreign partners.\n\n*Where do we pivot next? Did the data really vanish from the internet?*\n\nThink about how web crawlers work. Just because a company hit 'Delete' on their WordPress admin panel last night does not mean the data was wiped from archival repositories. Where did the cached copies go?\n\n1. **Search Engine Caches:** `cache:target.com/press-releases/partnership`.\n2. **The Wayback Machine (Internet Archive):** Over 800 billion snapshots dating back decades.\n3. **Wayback CDX Server API:** Did you know you don't have to click through the sluggish calendar UI? You can programmatically query the CDX API via `curl` to dump every URL ever recorded for a domain:\n`curl \"http://web.archive.org/cdx/search/cdx?url=*.target.com/*&output=json&fl=original,timestamp,mimetype\"`.\n\nWhat happens when you grep that output for `.pdf`, `.xls`, or `.bak`? You find documents that were uploaded in 2021 and deleted in 2024, preserved forever."
+    },
+    {
+      "heading": "3. The Multi-Engine Cross-Validation Mindset",
+      "content": "Never rely solely on Google. Google actively censors, de-indexes, and applies legal takedowns (e.g., DMCA, Right to be Forgotten, safe search filters).\n\n*Where do we pivot when Google returns zero results?*\n- **Yandex:** Aggressive indexing, particularly for reverse image matching and Eastern European / Central Asian infrastructure where Google crawlers are restricted.\n- **Bing / DuckDuckGo:** Bing's `ip:` and `feed:` operators often surface endpoints Google ignores.\n- **Baidu:** Essential when tracking supply chains, electronics manufacturing, or Pacific-rim domain registrations.\n\nCross-engine verification is the hallmark of an intelligence professional. If a file exists in the index of one search engine, you have a lead."
+    }
+  ]
+}

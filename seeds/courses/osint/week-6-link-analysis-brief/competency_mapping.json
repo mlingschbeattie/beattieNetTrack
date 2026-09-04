@@ -1,0 +1,41 @@
+{
+  "courseId": "osint-practitioner",
+  "moduleId": "osint-w6-link-analysis-brief",
+  "standards": {
+    "nocti": [
+      {
+        "id": "NOCTI-CYBER-101.5",
+        "title": "Reporting, Communication & Actionable Threat Briefing",
+        "description": "Synthesize multi-source digital evidence into clear, objective, executive-level threat intelligence briefs with confidence metrics."
+      }
+    ],
+    "mitreAttack": [
+      {
+        "tacticId": "TA0043",
+        "tacticName": "Reconnaissance",
+        "techniqueId": "T1596",
+        "techniqueName": "Search Open Technical Databases",
+        "description": "Synthesize technical database records into comprehensive adversary intelligence."
+      },
+      {
+        "tacticId": "TA0043",
+        "tacticName": "Reconnaissance",
+        "techniqueId": "T1590",
+        "techniqueName": "Gather Victim Network Information",
+        "description": "Synthesize gathered network, domain, and infrastructure artifacts into holistic relationship graphs."
+      }
+    ],
+    "comptia": [
+      {
+        "exam": "CompTIA Security+ SY0-701",
+        "objective": "5.2",
+        "description": "Explain elements of effective reporting, incident communication, and risk governance."
+      },
+      {
+        "exam": "CompTIA CySA+ CS0-003",
+        "objective": "5.1",
+        "description": "Apply threat intelligence synthesis, link analysis, and structured intelligence dissemination techniques."
+      }
+    ]
+  }
+}

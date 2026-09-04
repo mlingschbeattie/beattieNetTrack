@@ -1,0 +1,46 @@
+{
+  "id": "course-osint-practitioner",
+  "title": "Applied Open-Source Intelligence (OSINT) Practitioner",
+  "slug": "osint-practitioner",
+  "description": "A 6-week hands-on intelligence pipeline covering OPSEC cleanrooms, advanced search syntax, forensic metadata extraction, geospatial analysis, technical infrastructure mapping, and executive intelligence synthesis.",
+  "period": 1,
+  "active": 1,
+  "modules": [
+    {
+      "week": 1,
+      "moduleId": "osint-w1-sockpuppet-cleanroom",
+      "title": "Week 1: OpSec, Digital Hygiene, and the Sock Puppet Cleanroom",
+      "slug": "w1-opsec-sockpuppet"
+    },
+    {
+      "week": 2,
+      "moduleId": "osint-w2-dorking-wayback",
+      "title": "Week 2: Search Operators, Dorking, and Wayback Forensics",
+      "slug": "w2-dorking-wayback"
+    },
+    {
+      "week": 3,
+      "moduleId": "osint-w3-metadata-exiftool",
+      "title": "Week 3: Metadata Extraction (ExifTool) and Document Provenance",
+      "slug": "w3-metadata-exiftool"
+    },
+    {
+      "week": 4,
+      "moduleId": "osint-w4-geoint-shadow-geometry",
+      "title": "Week 4: Geospatial Reconnaissance (GEOINT/IMINT) and Shadow Geometry",
+      "slug": "w4-geoint-shadow-geometry"
+    },
+    {
+      "week": 5,
+      "moduleId": "osint-w5-infrastructure-shodan",
+      "title": "Week 5: Technical Infrastructure Recon (DNS, CT Logs, Shodan)",
+      "slug": "w5-infrastructure-shodan"
+    },
+    {
+      "week": 6,
+      "moduleId": "osint-w6-link-analysis-brief",
+      "title": "Week 6: Link Analysis Synthesis and the Intelligence Brief",
+      "slug": "w6-link-analysis-brief"
+    }
+  ]
+}

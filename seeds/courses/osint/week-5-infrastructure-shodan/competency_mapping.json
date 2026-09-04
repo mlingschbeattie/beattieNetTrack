@@ -1,0 +1,56 @@
+{
+  "courseId": "osint-practitioner",
+  "moduleId": "osint-w5-infrastructure-shodan",
+  "standards": {
+    "nocti": [
+      {
+        "id": "NOCTI-CYBER-103.1",
+        "title": "Network Protocol Identification & Architecture",
+        "description": "Analyze DNS zones, MX routing, reverse lookups, and SSL/TLS certificate chains to map organizational network topology."
+      },
+      {
+        "id": "NOCTI-CYBER-103.4",
+        "title": "Port Scanning & Fingerprinting Evaluation",
+        "description": "Evaluate listening services, service banners, and protocol vulnerabilities across external perimeter infrastructure."
+      }
+    ],
+    "mitreAttack": [
+      {
+        "tacticId": "TA0043",
+        "tacticName": "Reconnaissance",
+        "techniqueId": "T1596",
+        "techniqueName": "Search Open Technical Databases",
+        "subTechniqueId": "T1596.001",
+        "description": "Search DNS records to identify target IP ranges, subdomains, and mail servers."
+      },
+      {
+        "tacticId": "TA0043",
+        "tacticName": "Reconnaissance",
+        "techniqueId": "T1596",
+        "techniqueName": "Search Open Technical Databases",
+        "subTechniqueId": "T1596.003",
+        "description": "Search public Certificate Transparency logs to discover registered domains and hidden subdomains."
+      },
+      {
+        "tacticId": "TA0043",
+        "tacticName": "Reconnaissance",
+        "techniqueId": "T1596",
+        "techniqueName": "Search Open Technical Databases",
+        "subTechniqueId": "T1596.005",
+        "description": "Search scanning engines (Shodan, Censys) to locate listening services and unpatched network components."
+      }
+    ],
+    "comptia": [
+      {
+        "exam": "CompTIA Security+ SY0-701",
+        "objective": "1.4",
+        "description": "Perform vulnerability and asset discovery using passive network scanning and public technical registries."
+      },
+      {
+        "exam": "CompTIA CySA+ CS0-003",
+        "objective": "1.3",
+        "description": "Map an organization's external attack surface using passive DNS, certificate transparency, and banner evaluation."
+      }
+    ]
+  }
+}
