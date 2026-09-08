@@ -2,16 +2,79 @@
 title: Linux CLI Survival Kit
 description: The commands you need to navigate, inspect, and secure a Linux system.
 slug: linux-cli-survival
-draft: true
 track: cybersecurity-foundations
 moduleId: cfs.fundamentals.security-concepts
-order: 3
+order: 4
 difficulty: Beginner
 estMinutes: 30
 tags: ["linux", "cli", "ops"]
 domains:
   - domainId: cyber.foundations
     weight: 1
+sections:
+  - id: permissions
+    title: "Reading and Setting File Permissions"
+    keyPoints:
+      - "Permissions come in three groups — owner, group, others — each with read (4), write (2), and execute (1)."
+      - "Octal notation adds those bits per group, so 755 means rwx for the owner and r-x for everyone else."
+      - "A world-writable file can be modified by any user or process on the system, which is why chmod 777 is a finding."
+    check:
+      - prompt: "An SSH private key should be readable and writable only by its owner. Which mode is correct?"
+        options:
+          - "chmod 777 private.key"
+          - "chmod 600 private.key"
+          - "chmod 755 private.key"
+          - "chmod 644 private.key"
+        correct: 1
+      - prompt: "Why is chmod 777 on a web application directory a security problem?"
+        options:
+          - "It prevents the web server from reading the files"
+          - "It removes the execute bit needed to enter the directory"
+          - "Any user or process on the system can modify the files, including malware"
+          - "It changes the file owner to root"
+        correct: 2
+  - id: pipes-and-redirection
+    title: "Pipes and Redirection Turn Small Commands Into Tools"
+    keyPoints:
+      - "A pipe sends the output of one command into the input of the next, so simple tools combine into one-liners."
+      - "Redirection writes output to a file: > overwrites, >> appends."
+      - "Streams are numbered — 2>/dev/null discards errors, and 2>&1 merges errors into normal output."
+    check:
+      - prompt: "What does 2>/dev/null do at the end of a find command?"
+        options:
+          - "Discards error output so only meaningful results are shown"
+          - "Sends the results to a file called null"
+          - "Limits the search to two directory levels"
+          - "Runs the command in the background"
+        correct: 0
+      - prompt: "You want to count failed SSH logins in a log file. Which construction does that?"
+        options:
+          - "cat auth.log > grep 'Failed password' > wc -l"
+          - "cat auth.log | grep 'Failed password' | wc -l"
+          - "cat auth.log 2>&1 wc -l"
+          - "grep auth.log >> 'Failed password'"
+        correct: 1
+  - id: investigating-a-system
+    title: "Investigating a Running System"
+    keyPoints:
+      - "ps aux lists every running process, which is how unexpected backdoors and cryptominers get spotted."
+      - "tail -f follows a log live, making it the standard tool for watching events during an incident."
+      - "find with -perm -4000 locates SUID binaries, a common privilege escalation target."
+    check:
+      - prompt: "You need to watch an authentication log update in real time during an incident. Which command?"
+        options:
+          - "head -50 /var/log/auth.log"
+          - "cat /var/log/auth.log"
+          - "tail -f /var/log/auth.log"
+          - "less /var/log/auth.log"
+        correct: 2
+      - prompt: "Why does find / -perm -4000 matter to both attackers and defenders?"
+        options:
+          - "It lists every file modified in the last day"
+          - "It finds SUID binaries, which run with the owner's privileges and are a privilege escalation target"
+          - "It shows which processes are consuming the most memory"
+          - "It reveals every world-writable directory on the system"
+        correct: 1
 ---
 
 import Callout from '../../components/Callout.astro';
@@ -265,3 +328,15 @@ id
 - **`2>/dev/null`** suppresses permission errors in scripts; `2>&1` merges error output with normal output
 - **`ps aux` and `find /`** are how defenders spot unexpected processes and files during incident response
 - CLI fluency compounds -- every command you learn makes the next one easier to combine
+
+<Callout type="exam">
+Octal permissions come up constantly, so be able to convert both directions without thinking: read is 4, write is 2, execute is 1, added per group in the order owner, group, others. 755 is rwxr-xr-x, 644 is rw-r--r--, 600 is rw-------. Know that 777 is the classic misconfiguration, that a directory needs the execute bit to be entered at all, and that SUID (mode 4000) makes a binary run with its owner's privileges rather than the caller's.
+</Callout>
+
+<Callout type="warn">
+The response that makes things worse is fixing a permissions error by widening the permissions. Something fails with "Permission denied", chmod 777 makes it work, and the ticket closes — now every user and every process on the box can rewrite that file, and the original problem (usually the wrong owner, or a missing execute bit on a parent directory) is still there underneath. The recursive version, chmod -R 777 on a web root, is how a single upload bug becomes a persistent backdoor. Change the owner with chown, or grant the one bit actually needed, and check the parent directories before touching the file itself.
+</Callout>
+
+## Key Terms
+
+shell · command line · filesystem · absolute path · relative path · working directory · pwd · ls · cd · find · SUID · permissions · owner · group · others · read · write · execute · octal notation · chmod · chown · cat · less · head · tail · tail -f · grep · pipe · redirection · stdout · stderr · /dev/null · ps aux · top · PID · kill · SIGTERM · SIGKILL · whoami · id · privilege escalation

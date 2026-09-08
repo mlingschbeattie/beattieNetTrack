@@ -1,0 +1,138 @@
+---
+title: "Linux CLI Survival Kit"
+slug: "cfs-1-1-4-linux-cli-survival"
+description: "Quiz covering filesystem navigation, permissions, pipes and redirection, and process investigation."
+track: cybersecurity-foundations
+moduleId: cfs.fundamentals.security-concepts
+order: 4
+difficulty: Beginner
+estMinutes: 15
+passThreshold: 70
+tags: ["linux", "cli", "permissions", "cyberpatriot"]
+questions:
+  - id: q1
+    type: single
+    prompt: "Which command prints the directory you are currently working in?"
+    options:
+      - "ls"
+      - "pwd"
+      - "cd"
+      - "whoami"
+    correctIndex: 1
+    explanation: "pwd stands for Print Working Directory. It answers the question of where you are in the filesystem tree."
+  - id: q2
+    type: single
+    prompt: "In the permission string rwxr-xr--, what access does the group have?"
+    options:
+      - "Read, write, and execute"
+      - "Read and write only"
+      - "Read and execute only"
+      - "Read only"
+    correctIndex: 2
+    explanation: "The string splits into three groups of three: owner rwx, group r-x, others r--. The group can read and execute but not write."
+  - id: q3
+    type: single
+    prompt: "Which mode correctly protects an SSH private key?"
+    options:
+      - "chmod 600 private.key"
+      - "chmod 644 private.key"
+      - "chmod 755 private.key"
+      - "chmod 777 private.key"
+    correctIndex: 0
+    explanation: "600 gives the owner read and write, and nobody else any access. SSH refuses to use a private key that is readable by group or others."
+  - id: q4
+    type: single
+    prompt: "What is the octal equivalent of rwxr-xr-x?"
+    options:
+      - "644"
+      - "700"
+      - "755"
+      - "777"
+    correctIndex: 2
+    explanation: "Read is 4, write is 2, execute is 1. Owner rwx is 7, group r-x is 5, others r-x is 5."
+  - id: q5
+    type: single
+    prompt: "Why is chmod 777 on a directory almost always wrong?"
+    options:
+      - "It prevents the owner from writing to the directory"
+      - "It allows any user or process on the system to modify the contents"
+      - "It removes the ability to list the directory"
+      - "It transfers ownership to root"
+    correctIndex: 1
+    explanation: "World-writable means exactly that. Any process, including malware running as an unprivileged user, can add or replace files there."
+  - id: q6
+    type: single
+    prompt: "What does the pipe character do in: cat auth.log | grep 'Failed password' | wc -l"
+    options:
+      - "Saves the output of each command to a separate file"
+      - "Runs the three commands in parallel"
+      - "Sends the output of each command into the input of the next"
+      - "Compares the output of the commands for differences"
+    correctIndex: 2
+    explanation: "Pipes chain simple tools into a single operation. Here the log is filtered to failed logins and then counted."
+  - id: q7
+    type: single
+    prompt: "What is the difference between > and >> when redirecting output?"
+    options:
+      - "> overwrites the file; >> appends to it"
+      - "> appends to the file; >> overwrites it"
+      - "> writes stdout; >> writes stderr"
+      - "There is no difference"
+    correctIndex: 0
+    explanation: "A single > truncates the file first. Using > where you meant >> silently destroys the previous contents."
+  - id: q8
+    type: single
+    prompt: "What does 2>/dev/null accomplish in a find command?"
+    options:
+      - "Limits the search to two levels of directories"
+      - "Discards error output such as permission-denied messages"
+      - "Writes the results to a file named null"
+      - "Runs the search with elevated privileges"
+    correctIndex: 1
+    explanation: "Stream 2 is stderr, and /dev/null discards whatever is written to it. This keeps meaningful results visible amid permission noise."
+  - id: q9
+    type: single
+    prompt: "You need to watch a log file update live during an active incident. Which command?"
+    options:
+      - "cat /var/log/auth.log"
+      - "head -50 /var/log/auth.log"
+      - "tail -f /var/log/auth.log"
+      - "less /var/log/auth.log"
+    correctIndex: 2
+    explanation: "The -f flag follows the file, printing new lines as they are written. It is the standard way to watch events as they happen."
+  - id: q10
+    type: single
+    prompt: "Which command lists every running process with its owner and resource usage?"
+    options:
+      - "ps aux"
+      - "ls -la"
+      - "id"
+      - "find / -type p"
+    correctIndex: 0
+    explanation: "ps aux is how defenders spot unexpected processes such as backdoors or cryptominers during triage."
+  - id: q11
+    type: single
+    prompt: "What does find / -perm -4000 locate, and why does it matter?"
+    options:
+      - "Files modified in the last 4000 minutes, useful for timelines"
+      - "Files larger than 4000 bytes, useful for finding archives"
+      - "World-writable directories, useful for finding drop locations"
+      - "SUID binaries, which run with the owner's privileges and are a privilege escalation target"
+    correctIndex: 3
+    explanation: "A SUID binary executes with its owner's privileges rather than the caller's. Attackers hunt for vulnerable ones; defenders audit for unexpected ones."
+  - id: q12
+    type: single
+    prompt: "How does kill -9 differ from a plain kill?"
+    options:
+      - "It sends SIGKILL, which cannot be caught or ignored and skips cleanup"
+      - "It restarts the process after terminating it"
+      - "It terminates the process only if it is idle"
+      - "It kills every process owned by the current user"
+    correctIndex: 0
+    explanation: "Plain kill sends SIGTERM, which a process can handle and shut down cleanly. SIGKILL is immediate and unblockable, so in-memory data is lost — use it only when SIGTERM fails."
+domains:
+  - domainId: cyber.foundations
+    weight: 1
+---
+
+Quiz for the Linux CLI Survival Kit lesson — covers filesystem navigation, reading and setting permissions, pipes and redirection, and investigating a running system.
