@@ -13,8 +13,73 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: dhcp-config
+    title: "DHCP and DHCP Relay"
+    keyPoints:
+      - "A DHCP pool defines the address range, default gateway, DNS servers, and lease duration handed to clients."
+      - "Addresses used by servers, printers, and network gear must be excluded from the pool or reserved, or DHCP will hand them out twice."
+      - "DHCP discovery uses broadcast, which routers do not forward, so a relay agent is required when the server sits on another subnet."
+    check:
+      - prompt: "Why is a DHCP relay agent needed when the DHCP server is on a different subnet from the clients?"
+        options:
+          - "DHCP discovery is a broadcast, and routers do not forward broadcasts"
+          - "The server can only issue addresses to one subnet at a time"
+          - "Relay agents encrypt the DHCP exchange"
+          - "Clients cannot generate DHCP requests without one"
+        correct: 0
+      - prompt: "What happens if a printer with a static address is not excluded from the DHCP pool?"
+        options:
+          - "DHCP may lease that address to another host, causing an address conflict"
+          - "The printer automatically switches to DHCP"
+          - "The pool shrinks by one address permanently"
+          - "The router blocks the printer"
+        correct: 0
+  - id: dns-config
+    title: "DNS and Split-Horizon"
+    keyPoints:
+      - "DNS resolves names to addresses, and a DNS failure looks like a total outage to users even though routing is fine."
+      - "Split-horizon DNS returns different answers depending on whether the query came from inside or outside the network."
+      - "Internal clients should point at internal DNS servers, which forward externally for anything they do not host."
+    check:
+      - prompt: "A user can ping 8.8.8.8 but no website loads by name. What is the likely fault?"
+        options:
+          - "DNS resolution"
+          - "The default gateway"
+          - "The physical cable"
+          - "Duplex mismatch"
+        correct: 0
+      - prompt: "What does split-horizon DNS do?"
+        options:
+          - "Returns different answers to internal and external queries for the same name"
+          - "Splits the DNS database across two servers for redundancy"
+          - "Caches every record for exactly half its TTL"
+          - "Blocks recursive queries entirely"
+        correct: 0
+  - id: ntp
+    title: "NTP and Why Time Matters"
+    keyPoints:
+      - "NTP keeps device clocks synchronised, and stratum indicates how far a source is from a reference clock."
+      - "Log correlation across devices is impossible when clocks disagree, which makes incident investigation guesswork."
+      - "Kerberos authentication and certificate validation both fail when clock skew exceeds their tolerance."
+    check:
+      - prompt: "Why does accurate time matter for security investigations?"
+        options:
+          - "Logs from different devices cannot be correlated if their clocks disagree"
+          - "Firewalls only log during business hours"
+          - "Encryption keys expire every hour"
+          - "Switches stop forwarding when unsynchronised"
+        correct: 0
+      - prompt: "What does the NTP stratum number describe?"
+        options:
+          - "How many hops the source is from an authoritative reference clock"
+          - "The accuracy of the local quartz oscillator"
+          - "The number of clients the server supports"
+          - "The polling interval in seconds"
+        correct: 0
 ---
 
+import Callout from '../../components/Callout.astro';
 
 ## The Invisible Infrastructure
 
@@ -103,6 +168,10 @@ If the binding table is empty and clients are pulling APIPA addresses, the DHCP 
 
 **`show ip dhcp server statistics`** gives you global DHCP counters — how many Discovers, Offers, Requests, and ACKs the server has processed. A high number of Discovers with a low number of Offers means the server is hearing requests but not responding — usually a pool misconfiguration or exhaustion issue.
 
+<Callout type="exam">
+The classic diagnostic: if pinging an IP address works but pinging a name fails, routing is fine and DNS is the fault. CompTIA words this scenario many ways, and the reasoning is identical every time.
+</Callout>
+
 ## DNS — The Service That Makes Names Work
 
 Configuring a full DNS server is outside the typical Cisco router scope — enterprises run BIND, Unbound, Windows DNS, or cloud-hosted DNS for authoritative name resolution. But the router interacts with DNS in two important ways: as a DNS client (it needs to resolve names itself) and as a DNS forwarder (it can relay DNS queries from clients to upstream resolvers).
@@ -130,6 +199,10 @@ Split-horizon DNS (also called split-brain DNS) is a design concept, not a singl
 Why this matters: without split-horizon, internal clients resolve "mail.company.com" to the public IP and send their traffic out to the internet, through the firewall, and back in — a hairpin turn that wastes bandwidth and complicates firewall rules. With split-horizon, internal traffic stays internal.
 
 You implement split-horizon DNS on the DNS servers themselves, not on the router. BIND uses views, Windows DNS uses policies or separate zones per interface, and cloud DNS services have their own mechanisms. On the Cisco side, the router's role is pointing different client groups to different DNS servers through DHCP options — the internal VLAN's DHCP pool might push the internal DNS server, while a guest VLAN's pool pushes a public resolver. The router doesn't resolve the split; the DNS infrastructure does. But you need to understand the concept because the exam asks about it, and because misconfigured DNS resolution paths are a constant source of "it works from outside but not inside" tickets.
+
+<Callout type="tip">
+Point every device at the same NTP source. When you eventually read logs from a switch, a firewall, and a server side by side during an incident, matching timestamps are the difference between a timeline and a pile of guesses.
+</Callout>
 
 ## NTP — Time Synchronization That Actually Matters
 
@@ -180,3 +253,7 @@ The asterisk (*) marks the currently selected source. The plus (+) marks an acce
 These three services form a dependency chain. DHCP gives clients an address, a gateway, and DNS server addresses. DNS gives those clients the ability to resolve names into IPs. NTP keeps every device on the same clock so the logs make sense when something fails. Misconfigure DHCP and clients can't reach anything. Misconfigure DNS and clients can reach IPs but not names — which means browsers don't work, email doesn't resolve, and users report "the internet is down" when the internet is perfectly fine. Misconfigure NTP and everything works until a certificate expires prematurely, Kerberos fails, or you're reading logs trying to reconstruct the timeline of an outage and the timestamps from your router and your server are twelve minutes apart.
 
 When you're building a new network or troubleshooting an existing one, verify these services in order. Does the client have an IP address? Is it in the right subnet? Can it resolve names? Is the time correct across devices? Three services, three checks, and you've eliminated the most common category of "nothing works" tickets before you even touch the routing table.
+
+## Key Terms
+
+DHCP · DHCP pool · lease · exclusion · reservation · DHCP relay · helper address · DNS · forwarder · split-horizon DNS · recursive query · NTP · stratum · clock skew

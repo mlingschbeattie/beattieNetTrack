@@ -13,7 +13,73 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: bands
+    title: "The Frequency Bands"
+    keyPoints:
+      - "2.4 GHz travels further and penetrates walls better, but is crowded and offers only three non-overlapping channels."
+      - "5 GHz is faster with far more channels, at the cost of range and wall penetration."
+      - "6 GHz adds substantial clean spectrum but requires Wi-Fi 6E or newer hardware at both ends."
+    check:
+      - prompt: "Which three 2.4 GHz channels do not overlap?"
+        options:
+          - "1, 6, and 11"
+          - "1, 5, and 9"
+          - "2, 7, and 12"
+          - "All channels overlap"
+        correct: 0
+      - prompt: "Why might you choose 2.4 GHz over 5 GHz for a device at the far end of a building?"
+        options:
+          - "2.4 GHz has greater range and penetrates walls better"
+          - "2.4 GHz is always faster"
+          - "2.4 GHz has more available channels"
+          - "5 GHz cannot carry data traffic"
+        correct: 0
+  - id: standards
+    title: "The 802.11 Standards"
+    keyPoints:
+      - "802.11n (Wi-Fi 4) was the first to use both bands and introduced MIMO."
+      - "802.11ac (Wi-Fi 5) is 5 GHz only and added wider channels and MU-MIMO downstream."
+      - "802.11ax (Wi-Fi 6) improves performance in dense environments rather than simply raising peak speed."
+    check:
+      - prompt: "Which standard operates only on the 5 GHz band?"
+        options:
+          - "802.11ac"
+          - "802.11n"
+          - "802.11g"
+          - "802.11b"
+        correct: 0
+      - prompt: "What problem was 802.11ax primarily designed to address?"
+        options:
+          - "Performance where many clients share one access point"
+          - "Extending range to several kilometres"
+          - "Removing the need for encryption"
+          - "Eliminating the 5 GHz band"
+        correct: 0
+  - id: throughput-reality
+    title: "Advertised Speed vs Real Throughput"
+    keyPoints:
+      - "Headline rates assume ideal conditions, maximum channel width, and every spatial stream in use."
+      - "Wireless is half duplex and shared, so all clients on an access point divide the available airtime."
+      - "Wider channels raise peak speed but reduce the number of non-overlapping channels, which hurts in dense deployments."
+    check:
+      - prompt: "Why is real wireless throughput always well below the advertised rate?"
+        options:
+          - "The medium is shared and half duplex, and conditions are never ideal"
+          - "Manufacturers measure in different units"
+          - "Encryption halves the speed"
+          - "The access point reserves half its capacity"
+        correct: 0
+      - prompt: "What is the trade-off of using wider channels such as 80 MHz?"
+        options:
+          - "Higher peak speed but fewer non-overlapping channels available"
+          - "Lower speed but longer range"
+          - "It disables MU-MIMO"
+          - "It forces clients onto 2.4 GHz"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 LESSON 2.2.1 — Wireless Standards
 
@@ -30,6 +96,10 @@ Wireless networks operate on radio frequencies, and every Wi-Fi standard uses on
 **5 GHz** became available with 802.11a in 1999 and was adopted widely starting with 802.11n. It offers significantly more channels (up to 25 non-overlapping channels depending on regulatory domain and channel width), much less interference from non-Wi-Fi devices, and higher throughput. The cost is reduced range — higher-frequency signals attenuate faster over distance and don't penetrate walls as well. In a concrete-and-steel building, a 5 GHz signal might not make it two rooms over. In an open office with drywall, it does fine. Most modern enterprise deployments lean heavily on 5 GHz for performance and use 2.4 GHz as a coverage safety net.
 
 **6 GHz** was opened for Wi-Fi use in 2020 and is exclusive to Wi-Fi 6E and Wi-Fi 7 devices. It adds a massive chunk of clean spectrum — 1200 MHz of bandwidth compared to the roughly 500 MHz available in 5 GHz. More spectrum means more channels, wider channels, and less congestion. The tradeoff is the same as 5 GHz but more so: even shorter range, even worse wall penetration. 6 GHz is about raw speed in close-to-medium range — it's ideal for high-density deployments like conference rooms, lecture halls, or stadiums where APs are close to clients and throughput demand is high.
+
+<Callout type="exam">
+Anchor each standard to its band. 802.11b and g are 2.4 GHz only, a and ac are 5 GHz only, n and ax use both. Band alone answers a surprising number of these questions.
+</Callout>
 
 ## The Standards — a, b, g, n, ac, ax
 
@@ -65,6 +135,10 @@ The exam will test this tradeoff: wider channels = more speed per client but few
 
 **MU-MIMO (Multi-User MIMO)** lets the AP use its antenna array to talk to multiple clients at the same time, with each client getting a dedicated stream. Wi-Fi 5 introduced MU-MIMO on the downlink (AP to clients). Wi-Fi 6 added uplink MU-MIMO. The impact is felt in crowded environments — instead of the AP serving thirty clients one after another in rapid succession, it can handle several simultaneously. In a classroom of Chromebooks, MU-MIMO is the reason the network doesn't grind to a halt during test day.
 
+<Callout type="warn">
+Setting 40 MHz channels on 2.4 GHz leaves effectively one usable channel and guarantees interference with neighbouring access points. Keep 2.4 GHz at 20 MHz and put the wide channels on 5 GHz where there is room for them.
+</Callout>
+
 ## Theoretical vs. Real-World Throughput
 
 The marketing numbers on the box represent the combined maximum theoretical throughput across all bands and all spatial streams under perfect lab conditions. Nobody lives in a lab.
@@ -95,3 +169,7 @@ A conference room with 4K video conferencing and wireless screen sharing? Wi-Fi 
 A hospital with a mix of legacy medical devices, staff phones, and patient entertainment? Dual-band deployment with careful channel planning, because some of those medical devices are running 802.11g firmware from 2008 and aren't getting upgraded. Backward compatibility isn't optional when the IV pump won't connect on 5 GHz.
 
 The pattern: match the standard and band to the density, distance, device capabilities, and throughput requirements. Overspending on the latest standard in a low-demand environment is waste. Under-planning AP density in a high-demand environment is failure. The standard is the starting point — the site survey is where deployment actually gets designed.
+
+## Key Terms
+
+2.4 GHz · 5 GHz · 6 GHz · channel · non-overlapping channels · 802.11n · 802.11ac · 802.11ax · Wi-Fi 6 · channel width · MIMO · MU-MIMO · spatial stream · half duplex · throughput

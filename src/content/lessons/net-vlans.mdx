@@ -13,7 +13,73 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: what-vlans-do
+    title: "What a VLAN Actually Is"
+    keyPoints:
+      - "A VLAN splits one physical switch into several logical broadcast domains."
+      - "Devices in different VLANs cannot reach each other without a router, even when plugged into the same switch."
+      - "VLANs are how you separate traffic by function — staff, students, voice, management — without buying separate hardware."
+    check:
+      - prompt: "Two PCs are plugged into the same switch but placed in different VLANs. What is required for them to communicate?"
+        options:
+          - "A router or Layer 3 switch to route between the VLANs"
+          - "Nothing — they can already communicate"
+          - "A crossover cable between the ports"
+          - "A second switch"
+        correct: 0
+      - prompt: "What does creating a VLAN do to broadcast traffic?"
+        options:
+          - "It confines broadcasts to that VLAN only"
+          - "It forwards broadcasts to every VLAN"
+          - "It disables broadcasts on the switch"
+          - "It converts broadcasts to unicast"
+        correct: 0
+  - id: access-and-trunk
+    title: "Access Ports, Trunk Ports, and 802.1Q"
+    keyPoints:
+      - "An access port carries a single VLAN and connects to an end device, which knows nothing about VLANs."
+      - "A trunk port carries many VLANs between switches, tagging each frame with its VLAN ID."
+      - "802.1Q inserts a 4-byte tag into the Ethernet frame. The native VLAN is the one exception, sent untagged."
+    check:
+      - prompt: "Which port type carries traffic for multiple VLANs between two switches?"
+        options:
+          - "A trunk port"
+          - "An access port"
+          - "A console port"
+          - "A loopback port"
+        correct: 0
+      - prompt: "How does 802.1Q identify which VLAN a frame belongs to?"
+        options:
+          - "It inserts a tag containing the VLAN ID into the frame"
+          - "It changes the destination MAC address"
+          - "It appends the VLAN ID to the IP header"
+          - "It sends the frame on a dedicated cable per VLAN"
+        correct: 0
+  - id: vlan-mistakes
+    title: "Common VLAN Misconfigurations"
+    keyPoints:
+      - "A native VLAN mismatch between two trunked switches causes traffic to leak between VLANs."
+      - "Forgetting to allow a VLAN on the trunk means devices in that VLAN work locally but cannot reach the rest of the network."
+      - "Leaving unused ports in the default VLAN 1 is a security weakness, so unused ports should be shut down or moved to an unused VLAN."
+    check:
+      - prompt: "Devices in VLAN 20 work on their local switch but cannot reach VLAN 20 devices on the next switch. What should you check first?"
+        options:
+          - "Whether VLAN 20 is allowed on the trunk between the switches"
+          - "Whether the PCs have the correct wallpaper policy"
+          - "Whether the switches use the same hostname"
+          - "Whether PortFast is enabled"
+        correct: 0
+      - prompt: "Why is a native VLAN mismatch on a trunk a security concern?"
+        options:
+          - "Untagged traffic can cross between VLANs that should be separated"
+          - "It disables the trunk entirely"
+          - "It resets the switch configuration"
+          - "It prevents any tagging from occurring"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## The Network That Needed Walls
 
@@ -41,6 +107,10 @@ The tag is only present on trunk links. When a frame exits an access port destin
 
 The **native VLAN** is a special case on trunk ports. Frames belonging to the native VLAN are sent across the trunk **untagged**. The receiving switch sees an untagged frame on a trunk port and assigns it to its own native VLAN. By default, the native VLAN is VLAN 1 on both sides. If the native VLAN doesn't match between two switches — one side set to VLAN 1 and the other to VLAN 99 — frames end up in the wrong VLAN, causing connectivity issues and potential security vulnerabilities. Native VLAN mismatch is one of the most common trunk misconfigurations, and modern switches will log a warning about it. Best practice: change the native VLAN to something other than VLAN 1 and make sure it matches on both ends of every trunk.
 
+<Callout type="exam">
+VLANs separate broadcast domains, and separated broadcast domains need a Layer 3 device to talk. Router-on-a-stick uses one physical link with subinterfaces per VLAN. A Layer 3 switch does the same routing internally using switched virtual interfaces.
+</Callout>
+
 ## Inter-VLAN Routing — Connecting the Islands
 
 VLANs are isolated by design. A device on VLAN 10 (10.1.10.0/24) can't reach a device on VLAN 20 (10.1.20.0/24) at Layer 2 — the broadcast domains are separate. If they need to communicate (and they usually do — classroom PCs need to reach the admin file server), you need a router to route between the VLANs. Two approaches:
@@ -65,6 +135,10 @@ A **voice VLAN** is configured on the access port alongside the data VLAN. The s
 
 **Document your VLAN scheme.** VLAN IDs, names, subnets, and purposes should be in a centralized document. When someone three years from now needs to add a device and doesn't know what VLAN 37 is, the documentation answers it.
 
+<Callout type="warn">
+The hardest VLAN faults are the ones that half work. A missing VLAN on a trunk, or a native VLAN mismatch, produces local connectivity with no path off the switch — which looks like a cabling or DHCP problem right up until you check the trunk.
+</Callout>
+
 ## Common VLAN Misconfigurations
 
 **Wrong VLAN assignment.** A workstation gets plugged into a port assigned to the wrong VLAN. The device gets a DHCP address from the wrong scope (or no address if there's no DHCP on that VLAN), and the user can't reach their resources. Check `show vlan brief` and verify the port assignment.
@@ -78,3 +152,7 @@ A **voice VLAN** is configured on the access port alongside the data VLAN. The s
 ## Why This Matters in the Field
 
 VLANs are the primary tool for network segmentation in every organization you'll work in. They separate departments, isolate IoT devices, protect management interfaces, prioritize voice traffic, and contain broadcast domains to manageable sizes. You'll create VLANs, assign ports, configure trunks, and troubleshoot inter-VLAN routing on a weekly basis. When security policies require that cameras can't reach workstations and workstations can't reach servers directly, VLANs are how you implement that — same switches, different logical networks. The physical topology doesn't change. The logical topology does. That's the power of the technology, and it's one of the first things you'll configure on any new deployment.
+
+## Key Terms
+
+VLAN · broadcast domain · access port · trunk port · 802.1Q · VLAN tag · native VLAN · VLAN ID · voice VLAN · inter-VLAN routing · router-on-a-stick · SVI · VLAN 1

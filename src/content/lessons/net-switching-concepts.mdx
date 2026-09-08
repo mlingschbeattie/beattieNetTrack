@@ -13,7 +13,73 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: mac-table
+    title: "The MAC Address Table"
+    keyPoints:
+      - "A switch learns by reading the source MAC of every frame and recording which port it arrived on."
+      - "If the destination MAC is known, the switch forwards the frame out that one port. If not, it floods the frame out every port except the one it came in on."
+      - "Entries age out after a timeout, so a device that moves to a different port is relearned rather than permanently misrouted."
+    check:
+      - prompt: "What does a switch do with a frame whose destination MAC is not in its table?"
+        options:
+          - "Floods it out every port except the one it arrived on"
+          - "Drops the frame silently"
+          - "Returns it to the sender"
+          - "Forwards it to the default gateway"
+        correct: 0
+      - prompt: "How does a switch populate its MAC address table?"
+        options:
+          - "By reading the source MAC address of incoming frames"
+          - "By querying the DHCP server"
+          - "By reading destination IP addresses"
+          - "From a table the administrator types in manually"
+        correct: 0
+  - id: domains-and-duplex
+    title: "Collision Domains, Broadcast Domains, and Duplex"
+    keyPoints:
+      - "Every switch port is its own collision domain, which is why switches removed the collisions hubs suffered from."
+      - "A switch is a single broadcast domain by default. Splitting broadcast domains requires VLANs or a router."
+      - "Full duplex sends and receives simultaneously. A duplex mismatch produces a link that works slowly and logs late collisions."
+    check:
+      - prompt: "How many collision domains does an eight-port switch create?"
+        options:
+          - "Eight, one per port"
+          - "One for the whole switch"
+          - "Two"
+          - "None"
+        correct: 0
+      - prompt: "Which device is required to separate broadcast domains without using VLANs?"
+        options:
+          - "A router"
+          - "A hub"
+          - "A repeater"
+          - "A media converter"
+        correct: 0
+  - id: stp
+    title: "Spanning Tree Protocol"
+    keyPoints:
+      - "Redundant links between switches would loop frames endlessly, because Ethernet frames have no TTL to stop them."
+      - "STP blocks redundant paths so exactly one active path exists, and unblocks them automatically if the active path fails."
+      - "PortFast moves an access port straight to forwarding, and should only be applied to ports with end devices — never to a port facing another switch."
+    check:
+      - prompt: "Why is a switching loop more damaging than a routing loop?"
+        options:
+          - "Ethernet frames have no TTL, so looped frames never expire"
+          - "Switches process frames more slowly than routers"
+          - "Switching loops disable the MAC table permanently"
+          - "Routing loops are blocked automatically by ARP"
+        correct: 0
+      - prompt: "On which type of port is PortFast appropriate?"
+        options:
+          - "An access port connected to a single end device"
+          - "A trunk port between two switches"
+          - "An uplink to the core switch"
+          - "Any port, without restriction"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## The Switch That Remembers
 
@@ -32,6 +98,10 @@ When a frame needs to be forwarded, the switch reads the **destination MAC** and
 **Flooding.** The destination MAC is not in the table — the switch has never seen that address before or the entry has aged out. The switch sends the frame out every port except the one it arrived on. This is also how broadcast frames (destination FF:FF:FF:FF:FF:FF) are handled — flooded to all ports. Flooding is expensive in bandwidth terms, which is why the table exists: the more the switch learns, the less it needs to flood.
 
 When you run `show mac address-table` on a managed switch, you see every learned mapping. That table is your Layer 2 map of the network. When a device can't communicate, check if the switch has its MAC in the table and on the correct port.
+
+<Callout type="exam">
+The distinction CompTIA tests: a switch gives you one collision domain per port but a single broadcast domain overall. A router separates broadcast domains. If a question asks how to reduce broadcast traffic, the answer is VLANs or a router, never a bigger switch.
+</Callout>
 
 ## Collision Domains and Broadcast Domains
 
@@ -65,6 +135,14 @@ Redundancy means multiple paths between switches. Multiple paths are good for re
 
 **PortFast** is a Cisco feature (with equivalents on other vendors) that allows a port to skip the Listening and Learning states and transition directly to Forwarding. It's designed for edge ports — ports connected to end devices like workstations and printers, not to other switches. A PortFast-enabled port comes up and forwards traffic immediately, eliminating the 30-second wait. The risk: if someone plugs another switch into a PortFast-enabled port, you could create a temporary loop before STP detects and blocks it. This is why PortFast should only be enabled on access ports where you expect end devices, and why **BPDU Guard** should be enabled alongside it — BPDU Guard shuts down the port immediately if it receives a BPDU, which would indicate a switch was connected where it shouldn't be.
 
+<Callout type="warn">
+Enabling PortFast on a link to another switch defeats the loop protection STP exists to provide. The port starts forwarding immediately, and if that link completes a loop the network floods before STP can react. PortFast belongs on end-device ports only.
+</Callout>
+
 ## Why This Matters in the Field
 
 Switches are the workhorses of every LAN, and understanding their internals is the difference between managing a network and babysitting one. When a broadcast storm takes down a floor, you need to know what STP is doing and why it failed to prevent the loop (usually: someone plugged in an unmanaged switch or a cable created a physical loop on a port with no BPDU Guard). When a workstation can't reach a server on the same VLAN, you check the MAC address table to see if the switch knows where both devices are. When a port is running at 100 Mbps instead of 1 Gbps, you check auto-negotiation and duplex. The MAC table, STP, and duplex settings aren't configuration-once-and-forget items — they're the first three things you check when Layer 2 breaks.
+
+## Key Terms
+
+MAC address table · flooding · aging · collision domain · broadcast domain · half duplex · full duplex · duplex mismatch · late collision · STP · BPDU · root bridge · RSTP · PortFast

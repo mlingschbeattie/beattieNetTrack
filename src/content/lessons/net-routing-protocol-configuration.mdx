@@ -13,8 +13,73 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: ospf-basics
+    title: "Configuring OSPF"
+    keyPoints:
+      - "OSPF is a link-state protocol. Every router builds a map of the topology and calculates its own shortest paths."
+      - "Area 0 is the backbone area, and every other area must connect to it."
+      - "The network statement tells OSPF which interfaces to advertise and which to form adjacencies on."
+    check:
+      - prompt: "Which OSPF area must every other area connect to?"
+        options:
+          - "Area 0"
+          - "Area 1"
+          - "Area 255"
+          - "The area with the lowest router ID"
+        correct: 0
+      - prompt: "What does the OSPF network statement determine?"
+        options:
+          - "Which interfaces participate in OSPF and are advertised"
+          - "The administrative distance of the protocol"
+          - "The encryption key used between neighbours"
+          - "The maximum hop count"
+        correct: 0
+  - id: static-and-default
+    title: "Static, Default, and Floating Static Routes"
+    keyPoints:
+      - "A static route is entered by hand and never changes on its own, which makes it predictable but unmaintained."
+      - "A default route (0.0.0.0/0) is the route of last resort, used when nothing more specific matches."
+      - "A floating static route carries a higher administrative distance so it only takes over when the preferred route disappears."
+    check:
+      - prompt: "What is 0.0.0.0/0 used as?"
+        options:
+          - "A default route, matching anything with no more specific entry"
+          - "A loopback address"
+          - "A broadcast address"
+          - "A reserved multicast group"
+        correct: 0
+      - prompt: "How does a floating static route stay out of the way until it is needed?"
+        options:
+          - "It is configured with a higher administrative distance than the primary route"
+          - "It is disabled until an administrator enables it"
+          - "It only activates during business hours"
+          - "It uses a shorter subnet mask"
+        correct: 0
+  - id: verify-and-troubleshoot
+    title: "Verifying and Troubleshooting Adjacencies"
+    keyPoints:
+      - "show ip route is the single most useful verification command — it shows what the router will actually do with a packet."
+      - "The code letter in the routing table tells you how each route was learned: C connected, S static, O OSPF, D EIGRP."
+      - "OSPF neighbours will not form if area IDs, subnet masks, hello and dead timers, or authentication do not match on both sides."
+    check:
+      - prompt: "In show ip route output, what does a route marked with O indicate?"
+        options:
+          - "It was learned via OSPF"
+          - "It is offline"
+          - "It was entered manually"
+          - "It is an outside route from another autonomous system"
+        correct: 0
+      - prompt: "Two directly connected routers will not form an OSPF adjacency. Which mismatch is a likely cause?"
+        options:
+          - "Their area IDs or timers do not match"
+          - "They have different hostnames"
+          - "They are different physical models"
+          - "One has more interfaces than the other"
+        correct: 0
 ---
 
+import Callout from '../../components/Callout.astro';
 
 ## Theory Is Over. Type the Commands.
 
@@ -196,6 +261,10 @@ The 130 at the end is the administrative distance. Since 130 is higher than OSPF
 
 Floating statics are the simplest form of redundancy. They're common on dual-WAN setups where the primary path runs a dynamic protocol and the backup is a static route through a secondary ISP.
 
+<Callout type="exam">
+Learn the route source codes cold — C for connected, S for static, O for OSPF, D for EIGRP, and the asterisk marking the gateway of last resort. A question that shows routing table output is usually testing whether you can read the first character of the line.
+</Callout>
+
 ## Reading `show ip route` — The Rosetta Stone
 
 The routing table is the single most important output you'll read on a router. Understanding every piece of it prevents misdiagnosis. Here's a typical entry:
@@ -220,6 +289,10 @@ Breaking it down:
 
 When a route you expect is missing, work backward: Is the source protocol running? Is the neighbor up? Is the network being advertised? Is a route with a lower AD winning? When a route is present but traffic isn't flowing, check if the next-hop is reachable and if the return path exists — routing is bidirectional. A packet can reach the destination just fine, but if the destination doesn't have a route back to the source, the return traffic gets dropped and the connection appears dead.
 
+<Callout type="warn">
+When OSPF neighbours will not come up, the fault is almost always a mismatch rather than a fault: area ID, subnet mask, hello and dead timers, MTU, or authentication. Compare both sides before you restart anything.
+</Callout>
+
 ## Troubleshooting Adjacencies — When Neighbors Won't Neighbor
 
 OSPF and EIGRP adjacencies fail for a finite, predictable set of reasons. When `show ip ospf neighbor` or `show ip eigrp neighbors` is empty, walk this list:
@@ -237,3 +310,7 @@ OSPF and EIGRP adjacencies fail for a finite, predictable set of reasons. When `
 **Subnet mismatch.** Two routers on the same link with different subnet masks (one side configured as /24, the other as /30) won't form an OSPF adjacency. OSPF checks the mask in the Hello packet. EIGRP is more forgiving here in some cases, but mismatched subnets are still a problem for actual traffic flow.
 
 Work the list top to bottom. Most adjacency failures are one of these causes, and you can usually identify the culprit within two or three show commands. The exam loves this troubleshooting scenario — a diagram with two routers, a link between them, and a question about why OSPF isn't working. The answer is almost always in this list.
+
+## Key Terms
+
+OSPF · link-state · area 0 · backbone · network statement · adjacency · passive interface · EIGRP · static route · default route · gateway of last resort · floating static · administrative distance · show ip route

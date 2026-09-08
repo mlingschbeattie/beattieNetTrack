@@ -13,8 +13,73 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: router-interfaces
+    title: "Router Interface Configuration"
+    keyPoints:
+      - "Unlike switch ports, router interfaces are administratively shut down by default and must be brought up explicitly."
+      - "Each router interface sits in a different subnet — that separation is what makes it a router."
+      - "An interface with no IP address, or one left shut down, will not appear as a connected route."
+    check:
+      - prompt: "A newly cabled router interface shows down/down and does not appear in the routing table. What is the most likely cause?"
+        options:
+          - "The interface is still administratively shut down"
+          - "The router needs a software licence"
+          - "The interface is in the wrong VLAN"
+          - "OSPF has not converged yet"
+        correct: 0
+      - prompt: "Why must each router interface be in a different subnet?"
+        options:
+          - "Routing happens between subnets, so each interface anchors one"
+          - "To reduce power consumption"
+          - "Because interfaces cannot share a MAC address"
+          - "To allow duplex auto-negotiation"
+        correct: 0
+  - id: router-on-a-stick
+    title: "Router-on-a-Stick"
+    keyPoints:
+      - "One physical router interface can route between many VLANs by using subinterfaces."
+      - "Each subinterface is assigned a VLAN with 802.1Q encapsulation and its own IP address, which becomes that VLAN gateway."
+      - "The switch port facing the router must be a trunk, or the tagged frames will never arrive."
+    check:
+      - prompt: "In a router-on-a-stick setup, how must the switch port connecting to the router be configured?"
+        options:
+          - "As a trunk port carrying the relevant VLANs"
+          - "As an access port in VLAN 1"
+          - "As a console port"
+          - "Shut down until routing converges"
+        correct: 0
+      - prompt: "What does each router subinterface provide for its VLAN?"
+        options:
+          - "The default gateway address for that VLAN"
+          - "A DHCP lease"
+          - "A spanning tree root bridge"
+          - "A MAC address table entry"
+        correct: 0
+  - id: acls
+    title: "Basic Access Control Lists"
+    keyPoints:
+      - "An ACL is an ordered list. The router uses the first rule that matches and stops evaluating."
+      - "Every ACL ends with an implicit deny any, so anything not explicitly permitted is dropped."
+      - "Rule order matters more than rule content — a permit placed after a broad deny will never be reached."
+    check:
+      - prompt: "What happens to traffic that matches no rule in an ACL?"
+        options:
+          - "It is dropped by the implicit deny at the end"
+          - "It is permitted by default"
+          - "It is queued until a rule is added"
+          - "It is forwarded to the default gateway"
+        correct: 0
+      - prompt: "Why does the order of ACL entries matter?"
+        options:
+          - "Evaluation stops at the first match, so an earlier rule can mask a later one"
+          - "The router reads the list from the bottom up"
+          - "Only the last three rules are evaluated"
+          - "Order affects the interface speed"
+        correct: 0
 ---
 
+import Callout from '../../components/Callout.astro';
 
 ## Same Console Cable, Different Box
 
@@ -125,6 +190,10 @@ When a device in VLAN 10 sends a packet to a device in VLAN 20, the packet goes 
 
 The limitation: that single physical link is a bottleneck. If you have heavy inter-VLAN traffic, a Layer 3 switch handles it in hardware at wire speed. Router-on-a-stick routes in software and shares a single gigabit link. For a hundred classroom machines and a few security cameras, the link is fine. For a data center with thousands of east-west flows, it's not. Know the tradeoff.
 
+<Callout type="exam">
+Two ACL facts get tested repeatedly: evaluation stops at the first match, and there is an implicit deny any at the end of every list. Together they mean a list containing only deny statements blocks everything, because nothing is ever explicitly permitted.
+</Callout>
+
 ## Basic ACLs — Controlling Who Goes Where
 
 An **Access Control List** is a set of rules applied to a router interface that permits or denies traffic based on criteria you define. ACLs are the router's bouncer — they inspect packets and decide who gets in and who gets turned away. On the Network+ exam, you need to understand standard and extended ACLs, where to place them, and the basic syntax.
@@ -190,6 +259,10 @@ BLDG1-RTR01# show running-config | section router ospf
 
 **`show access-lists`** displays all configured ACLs with hit counters — how many packets matched each rule. When you're unsure whether an ACL is actually doing anything, the hit counters tell you. Zero hits on a deny rule means either the traffic isn't arriving or the rule isn't matching what you think it's matching.
 
+<Callout type="warn">
+Applying an ACL to the wrong interface or in the wrong direction can lock you out of the device you are configuring. On a remote session, know how you would recover before you press enter.
+</Callout>
+
 ## Saving Configuration — The Same Lesson, Again
 
 ```
@@ -203,3 +276,7 @@ Same as the switch. Running-config is RAM. Startup-config is NVRAM. Power goes o
 You don't need to memorize the exact password recovery procedure for the Network+ exam, but you need to know it exists and how it works conceptually. If you forget the enable secret on a router, you're locked out of privileged mode. The recovery process involves interrupting the boot sequence (sending a break signal during startup), changing the configuration register to tell the router to ignore the startup config on next boot (the register value 0x2142), rebooting, entering the system with no config loaded, copying the startup config to running, changing the password, restoring the configuration register to normal (0x2102), and saving.
 
 The key takeaway: password recovery requires physical access to the console port. This is why physical security of network equipment matters — if someone can touch the console cable, they can reset the password and own the device. In high-security environments, administrators disable password recovery entirely, accepting that a lost password means a factory reset. The tradeoff between recoverability and security is an architectural decision, not a technical one.
+
+## Key Terms
+
+router · subinterface · router-on-a-stick · 802.1Q encapsulation · default gateway · ACL · implicit deny · permit · deny · administratively down · running configuration · password recovery

@@ -13,7 +13,73 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: why-nat
+    title: "Why NAT Exists"
+    keyPoints:
+      - "IPv4 has roughly 4.3 billion addresses and the internet outgrew them, so private ranges plus translation became the workaround."
+      - "Private addresses (RFC 1918) are not routable on the public internet and must be translated before traffic leaves the network."
+      - "NAT is performed by the router at the network edge, rewriting addresses in the IP header as packets pass through."
+    check:
+      - prompt: "Why can a device with a 192.168.1.10 address not communicate directly with a public web server?"
+        options:
+          - "Private addresses are not routable on the public internet and must be translated"
+          - "Private addresses are encrypted and servers cannot read them"
+          - "The address is reserved for wireless clients only"
+          - "Public servers block all addresses starting with 192"
+        correct: 0
+      - prompt: "Where in the network is NAT normally performed?"
+        options:
+          - "On the router at the network edge"
+          - "On each client workstation"
+          - "On the DNS server"
+          - "On the access layer switch"
+        correct: 0
+  - id: nat-flavours
+    title: "Static NAT, Dynamic NAT, and PAT"
+    keyPoints:
+      - "Static NAT maps one private address to one public address permanently — used when a server must be reachable from outside."
+      - "Dynamic NAT draws from a pool of public addresses, assigning them as needed and releasing them afterwards."
+      - "PAT, also called NAT overload, maps many private addresses to one public address by tracking port numbers."
+    check:
+      - prompt: "A home router lets twenty devices share a single public IP address. Which technique is in use?"
+        options:
+          - "PAT (NAT overload)"
+          - "Static NAT"
+          - "Dynamic NAT"
+          - "NAT64"
+        correct: 0
+      - prompt: "Which NAT type would you use to make an internal web server permanently reachable from the internet?"
+        options:
+          - "Static NAT"
+          - "PAT"
+          - "Dynamic NAT"
+          - "SLAAC"
+        correct: 0
+  - id: nat-tradeoffs
+    title: "What NAT Costs You"
+    keyPoints:
+      - "PAT distinguishes sessions by port number, so the NAT table must track every active translation."
+      - "NAT breaks end-to-end addressing, which complicates protocols that embed IP addresses in their payload, such as some VoIP signalling."
+      - "Inbound connections need explicit port forwarding, because the router has no way to know which internal host a new session belongs to."
+    check:
+      - prompt: "What does PAT use to tell one internal session apart from another?"
+        options:
+          - "Port numbers"
+          - "MAC addresses"
+          - "VLAN tags"
+          - "Subnet masks"
+        correct: 0
+      - prompt: "Why does an internal server need port forwarding configured to accept connections from the internet?"
+        options:
+          - "An unsolicited inbound packet has no existing translation entry to match"
+          - "NAT encrypts inbound traffic by default"
+          - "The server cannot have a private address"
+          - "Port forwarding assigns the server a MAC address"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## The Hack That Saved the Internet
 
@@ -48,6 +114,10 @@ This is why dynamic NAT is rare in modern networks. The pool exhaustion problem 
 When device 10.1.1.100 opens a connection to a web server, it uses a random source port — say 52000. The router translates the source address to its public IP (203.0.113.1) and may also change the source port (say to 40001). It records the mapping in a translation table: 10.1.1.100:52000 ↔ 203.0.113.1:40001. When device 10.1.1.101 opens its own connection, the router translates it to 203.0.113.1:40002. Both devices share the same public IP, distinguished only by port number.
 
 Because port numbers are 16-bit values (0–65535), a single public IP address can theoretically support over 65,000 simultaneous translations. In practice, it's lower because some port ranges are reserved, but the point stands: one public IP covers an entire network. Your home router, your school's firewall, the NAT gateway at a company with 5,000 employees — they're all running PAT. The overwhelming majority of NAT deployments in the world are PAT.
+
+<Callout type="exam">
+Know the four address terms and which side each describes. Inside local is the private address on the internal host. Inside global is the public address it is translated to. Outside global is the real public address of the remote host. Outside local is how that remote host appears internally.
+</Callout>
 
 ## The NAT Table — Inside Local, Inside Global, Outside
 
@@ -91,8 +161,16 @@ As IPv6 adoption grows, there are networks that are IPv6-only internally but sti
 
 NAT64 is the transitional bridge that lets organizations deploy IPv6 internally without losing access to the IPv4 internet. Mobile carriers were the first large-scale adopters — T-Mobile, for example, runs NAT64 for most of its subscriber base. You'll encounter it less in enterprise LANs right now, but it's on the exam and it's part of the IPv6 migration path.
 
+<Callout type="tip">
+When an internal service works from inside the building but not from outside, check the translation before you touch the application. A missing port-forward entry produces exactly that symptom and costs nothing to rule out.
+</Callout>
+
 ## Why This Matters in the Field
 
 NAT is on every network you'll manage, and understanding it prevents a whole category of misdiagnoses. When a user says their VoIP phone can make calls but the remote party can't hear them — that's one-way audio caused by NAT not translating the media stream correctly, usually a SIP ALG problem. When someone configures a new server and it works outbound but nobody external can reach it — they forgot the port forwarding or static NAT entry. When the translation table fills up on a busy firewall and new connections start failing — that's PAT exhaustion, and the fix is either increasing the table size, adding a second public IP to the PAT pool, or reducing connection timeouts.
 
 NAT isn't glamorous. It's the duct tape holding IPv4 together while IPv6 finishes its thirty-year rollout. But duct tape you don't understand is duct tape you can't fix when it peels off.
+
+## Key Terms
+
+NAT · PAT · NAT overload · static NAT · dynamic NAT · RFC 1918 · inside local · inside global · outside local · outside global · NAT table · port forwarding · NAT64 · address exhaustion

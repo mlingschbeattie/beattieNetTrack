@@ -13,7 +13,73 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: encryption-evolution
+    title: "WEP to WPA3"
+    keyPoints:
+      - "WEP is broken and recoverable in minutes. It should never appear on a live network."
+      - "WPA2 with AES was the standard for over a decade and remains acceptable where WPA3 is unavailable."
+      - "WPA3 adds Simultaneous Authentication of Equals, which resists the offline dictionary attacks WPA2 allows."
+    check:
+      - prompt: "Which wireless encryption standard should never be used on a production network?"
+        options:
+          - "WEP"
+          - "WPA2"
+          - "WPA3"
+          - "WPA2-Enterprise"
+        correct: 0
+      - prompt: "What advantage does WPA3 have over WPA2?"
+        options:
+          - "It resists offline dictionary attacks against captured handshakes"
+          - "It removes the need for a password entirely"
+          - "It doubles wireless throughput"
+          - "It works without an access point"
+        correct: 0
+  - id: personal-vs-enterprise
+    title: "Personal vs Enterprise"
+    keyPoints:
+      - "Personal mode uses one pre-shared key shared by everyone, so removing one user means changing it for all of them."
+      - "Enterprise mode authenticates each user individually against a RADIUS server using 802.1X."
+      - "Enterprise is the right choice for a school or business, because access can be revoked per person."
+    check:
+      - prompt: "A staff member leaves and their wireless access must be revoked without disrupting anyone else. Which mode makes that possible?"
+        options:
+          - "WPA2/WPA3-Enterprise with 802.1X"
+          - "WPA2-Personal with a pre-shared key"
+          - "WEP with MAC filtering"
+          - "An open network with a captive portal"
+        correct: 0
+      - prompt: "What server role does Enterprise mode depend on?"
+        options:
+          - "RADIUS"
+          - "DHCP"
+          - "NTP"
+          - "DNS"
+        correct: 0
+  - id: airborne-threats
+    title: "Rogue APs and Evil Twins"
+    keyPoints:
+      - "A rogue access point is unauthorised hardware attached to your network, often plugged in by a well-meaning user."
+      - "An evil twin impersonates a legitimate SSID to capture credentials, and does not touch your wiring at all."
+      - "Hiding an SSID is not security — the name still appears in client probe requests and any scanner will reveal it."
+    check:
+      - prompt: "What distinguishes an evil twin from a rogue access point?"
+        options:
+          - "An evil twin impersonates a legitimate SSID to lure clients, rather than being attached to your network"
+          - "An evil twin is always authorised by IT"
+          - "A rogue AP only operates on 5 GHz"
+          - "They are the same thing"
+        correct: 0
+      - prompt: "Why is disabling SSID broadcast a weak security measure?"
+        options:
+          - "The SSID still appears in client probe requests and is trivially discovered"
+          - "It prevents legitimate clients from connecting at all"
+          - "It disables encryption"
+          - "It only works on 2.4 GHz"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 LESSON 2.2.2 — Wireless Security and Configuration
 
@@ -52,6 +118,10 @@ WPA2 is solid, but not perfect. The **KRACK attack** (Key Reinstallation Attack)
 **192-bit security suite** in WPA3-Enterprise provides stronger encryption for environments that handle sensitive data — government, healthcare, finance.
 
 WPA3 adoption is growing but not universal. Older devices don't support it, which means most networks run a **WPA2/WPA3 transition mode** that accepts both. The exam expects you to know the progression: WEP → WPA/TKIP → WPA2/AES → WPA3/SAE, and why each step was necessary.
+
+<Callout type="exam">
+Personal means one shared password for everyone. Enterprise means per-user credentials checked against a RADIUS server over 802.1X. If a question mentions revoking one user, or per-user accountability, the answer is Enterprise.
+</Callout>
 
 ## Personal vs. Enterprise — Who Holds the Key
 
@@ -95,6 +165,10 @@ A **site survey** maps the RF environment before (or after) deploying APs so you
 
 In the real world, you do a predictive survey to design the deployment, install the APs, then run an active/passive survey to validate. Adjustments always follow — more power here, less power there, move this AP six feet to the left because the metal bookshelf is creating a reflection dead zone nobody predicted.
 
+<Callout type="warn">
+Hiding the SSID and filtering MAC addresses are both frequently recommended and neither is a security control. The SSID leaks in probe requests, and MAC addresses can be changed in software in seconds. Encryption and authentication are what actually protect the network.
+</Callout>
+
 ## Rogue APs and Evil Twins — Threats on the Air
 
 A **rogue AP** is any access point connected to your network without authorization. The most common scenario isn't an attacker — it's someone (a well-meaning teacher, a department that doesn't want to submit a ticket) plugging a consumer Wi-Fi router into a network jack because their office coverage is bad. That rogue AP is now bridging your wired network to an uncontrolled wireless network with whatever default security the router shipped with (often WPA2-Personal with "password" as the password, or no security at all). It bypasses your enterprise security, your RADIUS authentication, your VLAN segmentation, and your firewall policies. One unauthorized access point can undo an entire security architecture.
@@ -114,3 +188,7 @@ Take everything from this lesson and the previous one and imagine deploying wire
 You choose Wi-Fi 6 APs with 5 GHz primary service and 2.4 GHz fallback. You run a predictive site survey on the floor plan and place APs for overlapping coverage with no dead zones, then validate with an active survey post-installation. You assign 5 GHz channels using 20 MHz widths to maximize non-overlapping channels, staggering assignments so adjacent APs never share. You configure three SSIDs — STUDENT, STAFF, GUEST — each mapped to a different VLAN. Student and Staff use WPA2-Enterprise with 802.1X authentication against the district's Active Directory via a RADIUS server. Guest uses a captive portal with a daily rotating password posted at the front desk. You disable SSID broadcast on the Staff network for marginal obscurity. You enable rogue AP detection on the wireless controller. You configure WPA3 transition mode for WPA3-capable devices. You document everything — AP locations, channel assignments, power levels, SSID-to-VLAN mappings — in the network documentation.
 
 That's a real deployment. Every decision traces back to a concept from these two lessons: standard selection, band selection, channel planning, encryption protocol, authentication mode, SSID design, and threat mitigation. The hardware is the easy part. The design is where the skill lives.
+
+## Key Terms
+
+WEP · WPA · WPA2 · WPA3 · AES · TKIP · SAE · pre-shared key · WPA-Personal · WPA-Enterprise · 802.1X · RADIUS · SSID · rogue access point · evil twin · site survey

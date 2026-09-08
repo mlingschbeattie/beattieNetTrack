@@ -13,7 +13,73 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: binary-and-masks
+    title: "Binary and the Subnet Mask"
+    keyPoints:
+      - "An IPv4 address is 32 bits, written as four 8-bit octets in dotted decimal. Each octet ranges 0-255."
+      - "The subnet mask marks where the network portion ends and the host portion begins — 1 bits are network, 0 bits are host."
+      - "CIDR notation is just the count of network bits, so /24 means 24 network bits and 8 host bits."
+    check:
+      - prompt: "How many host bits does a /26 network have?"
+        options:
+          - "6"
+          - "26"
+          - "8"
+          - "4"
+        correct: 0
+      - prompt: "What does a 1 bit in the subnet mask indicate?"
+        options:
+          - "That bit is part of the network portion"
+          - "That bit is part of the host portion"
+          - "The address is public"
+          - "The address is reserved for broadcast"
+        correct: 0
+  - id: network-broadcast-usable
+    title: "Network, Broadcast, and Usable Hosts"
+    keyPoints:
+      - "The first address in a subnet is the network address and the last is the broadcast address. Neither can be assigned to a host."
+      - "Usable hosts equal 2^h - 2, where h is the number of host bits — the subtraction accounts for those two reserved addresses."
+      - "A /30 gives 4 addresses and only 2 usable, which is why it is the standard for point-to-point router links."
+    check:
+      - prompt: "How many usable host addresses does a /28 subnet provide?"
+        options:
+          - "14"
+          - "16"
+          - "12"
+          - "30"
+        correct: 0
+      - prompt: "Why are two addresses in every subnet unusable for hosts?"
+        options:
+          - "One is the network address and one is the broadcast address"
+          - "One is reserved for the router and one for DHCP"
+          - "They are reserved for future expansion"
+          - "They are used by the subnet mask"
+        correct: 0
+  - id: vlsm
+    title: "VLSM and Right-Sizing Subnets"
+    keyPoints:
+      - "Variable Length Subnet Masking lets different subnets in the same network use different mask lengths."
+      - "Without VLSM every subnet is the same size, so a link needing 2 addresses wastes as much space as a floor needing 200."
+      - "Allocate largest-first when subnetting by hand, or you will strand address space you cannot reuse."
+    check:
+      - prompt: "What problem does VLSM solve?"
+        options:
+          - "Fixed-size subnets waste addresses on links that need very few"
+          - "It encrypts traffic between subnets"
+          - "It removes the need for a default gateway"
+          - "It converts IPv4 addresses to IPv6"
+        correct: 0
+      - prompt: "Which mask is the conventional choice for a point-to-point link between two routers?"
+        options:
+          - "/30"
+          - "/24"
+          - "/16"
+          - "/8"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## The Skill That Separates You
 
@@ -84,6 +150,10 @@ That's the entire process:
 5. List subnets starting at 0, incrementing by block size.
 6. For each subnet: first address is network, last is broadcast, everything in between is usable.
 
+<Callout type="exam">
+Subnetting questions are the most common place candidates lose time. Memorise the mask-to-host table for /24 through /30 so you are not deriving it under pressure, and practise until you can name usable hosts for any prefix without writing out binary.
+</Callout>
+
 ## The Common Masks — Know These Cold
 
 You'll see these masks constantly. Memorize the usable host counts and block sizes:
@@ -140,8 +210,16 @@ The exam is timed. You don't have twenty minutes per subnet question. These shor
 
 **When in doubt, go binary.** If a problem confuses you in decimal, write out the binary. AND the IP address with the mask — the result is the network address. Flip the mask's 0s to 1s and OR it with the network address — the result is the broadcast. Binary never lies; decimal shortcuts can mislead you if you're not careful with the edge cases.
 
+<Callout type="warn">
+Off-by-one errors on the broadcast address are the classic subnetting mistake. The last address in the range is the broadcast and cannot be assigned. Assign it to a host and that host will appear to work until traffic needs to leave the subnet.
+</Callout>
+
 ## Why This Matters in the Field
 
 Every network you build starts with an addressing plan, and every addressing plan starts with subnetting. When the boss says "we need separate subnets for the office, the warehouse, the guest Wi-Fi, and the security cameras, and we've been allocated 10.50.0.0/22" — your job is to carve that block into appropriately sized pieces using VLSM, document the scheme, and configure it on the routers and DHCP servers. When a help desk ticket says a user can't reach a server, and you realize the user's machine has a /24 mask but the server's subnet is a /25 — and the user's IP falls outside the server's subnet — you just found a misconfigured mask that's causing the machine to route traffic incorrectly. That diagnosis takes seconds when you can do subnet math in your head. It takes forever when you can't.
 
 Subnetting is not a topic you learn for the exam and forget. It's a tool you'll reach for every time you design, expand, troubleshoot, or audit a network. Get fast at it now.
+
+## Key Terms
+
+IPv4 · octet · dotted decimal · binary · subnet mask · CIDR · prefix length · network address · broadcast address · usable hosts · borrowing bits · VLSM · /30 point-to-point

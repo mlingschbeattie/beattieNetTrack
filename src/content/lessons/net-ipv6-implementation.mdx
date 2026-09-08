@@ -13,7 +13,73 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: v6-address-types
+    title: "IPv6 Address Types"
+    keyPoints:
+      - "Global unicast addresses are the routable public addresses, roughly equivalent to a public IPv4 address."
+      - "Link-local addresses begin fe80:: and exist on every IPv6 interface automatically — they never leave the local link."
+      - "IPv6 has no broadcast. Multicast and anycast cover what broadcast used to do, which reduces unnecessary traffic."
+    check:
+      - prompt: "An interface has an address beginning fe80::. What kind of address is it?"
+        options:
+          - "Link-local"
+          - "Global unicast"
+          - "Multicast"
+          - "Anycast"
+        correct: 0
+      - prompt: "What replaced broadcast in IPv6?"
+        options:
+          - "Multicast and anycast"
+          - "Unicast only"
+          - "ARP"
+          - "APIPA"
+        correct: 0
+  - id: v6-assignment
+    title: "How Hosts Get IPv6 Addresses"
+    keyPoints:
+      - "SLAAC lets a host build its own address from the router advertisement prefix plus a locally generated interface ID."
+      - "Stateful DHCPv6 hands out addresses and tracks them, much like DHCP for IPv4."
+      - "EUI-64 derives the interface ID from the MAC address by splitting it and inserting fffe in the middle."
+    check:
+      - prompt: "Which method allows a host to configure its own IPv6 address from a router advertisement, with no server tracking the assignment?"
+        options:
+          - "SLAAC"
+          - "Stateful DHCPv6"
+          - "Static assignment"
+          - "APIPA"
+        correct: 0
+      - prompt: "What does EUI-64 use to build the interface ID?"
+        options:
+          - "The MAC address of the interface"
+          - "The router IP address"
+          - "A random number from the DHCP server"
+          - "The subnet mask"
+        correct: 0
+  - id: v6-coexistence
+    title: "Running IPv6 Alongside IPv4"
+    keyPoints:
+      - "Dual-stack runs both protocols on the same interface and is the most common transition approach."
+      - "Tunnelling carries IPv6 packets inside IPv4 packets so they can cross infrastructure that does not support IPv6."
+      - "NDP replaces ARP, using multicast neighbour solicitation instead of broadcast to resolve link-layer addresses."
+    check:
+      - prompt: "What does dual-stack mean?"
+        options:
+          - "The device runs IPv4 and IPv6 at the same time on the same interface"
+          - "The device has two network cards"
+          - "IPv6 traffic is tunnelled inside IPv4"
+          - "The router holds two routing tables for redundancy"
+        correct: 0
+      - prompt: "Which IPv6 protocol performs the job ARP does in IPv4?"
+        options:
+          - "NDP"
+          - "ICMPv4"
+          - "DHCPv6"
+          - "OSPFv3"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## The Protocol Everyone Talks About and Nobody Finishes Deploying
 
@@ -65,6 +131,10 @@ SLAAC is elegant and zero-infrastructure — no DHCP server to deploy, manage, o
 **Stateful DHCPv6.** The DHCPv6 server assigns the address and all configuration, similar to DHCPv4. The RA has the M flag ("Managed address configuration") set, telling the host to get its address from DHCPv6 instead of generating one via SLAAC. The server tracks which addresses are assigned to which clients, providing the centralized address management that some organizations require for compliance, auditing, or IP address management (IPAM) tools.
 
 The choice depends on the environment. A small office or branch with simple needs? SLAAC is fine — minimal infrastructure, addresses just work. An enterprise with strict IPAM requirements and compliance audits? Stateful DHCPv6 gives you the tracking and control. Most production deployments land on SLAAC + stateless DHCPv6 — self-assigned addresses with centrally managed DNS and other options.
+
+<Callout type="exam">
+Expect a question that gives you an address prefix and asks for the type. fe80:: is link-local, 2000::/3 is global unicast, ff00::/8 is multicast, and ::1 is loopback. Recognising the prefix is usually the whole question.
+</Callout>
 
 ## NDP — The Protocol That Replaced ARP
 
@@ -129,8 +199,16 @@ IPv6 eliminates broadcast entirely. Neighbor discovery uses solicited-node multi
 
 This isn't a theoretical improvement. In a high-density wireless environment — like a school with 500 Chromebooks — the reduction in broadcast traffic from IPv6's multicast-only design measurably improves performance. It's one of the less-glamorous but genuinely impactful differences between the two protocols.
 
+<Callout type="warn">
+On a dual-stack network the operating system generally prefers IPv6. If IPv6 is half-configured — an address present but no working route — connections stall while the host tries IPv6 first and only then falls back. The symptom is slowness, not failure, which is why it goes undiagnosed for a long time.
+</Callout>
+
 ## Why This Matters in the Field
 
 IPv6 implementation isn't a future-state planning exercise anymore. When you configure a Windows server, it has a link-local IPv6 address out of the box. When you set up a firewall and only write IPv4 rules, IPv6 traffic passes through unfiltered — that's a security gap. When Active Directory replication starts using IPv6 because both domain controllers have global unicast addresses and the OS prefers v6, and your monitoring tools only track IPv4 — you're blind to half the traffic.
 
 The practical skill set: configure dual-stack on routers and switches, understand which SLAAC/DHCPv6 mode your environment uses and why, check firewall rules for both protocols, recognize link-local addresses in routing tables and know they're supposed to be there, and be able to read an EUI-64-derived address backward to the source MAC when you're tracking down a device. IPv6 deployment isn't something that happens in one project. It seeps in gradually, and the techs who understand it handle the transition smoothly. The ones who don't spend a lot of time confused about why things work differently than they expected.
+
+## Key Terms
+
+IPv6 · global unicast · link-local · multicast · anycast · SLAAC · DHCPv6 · stateless · stateful · EUI-64 · NDP · neighbour solicitation · dual-stack · tunnelling · prefix

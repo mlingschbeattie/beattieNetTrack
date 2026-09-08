@@ -13,8 +13,73 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: initial-access
+    title: "Initial Setup and Secure Access"
+    keyPoints:
+      - "A switch out of the box has no IP address, so the first connection is over the console cable."
+      - "Telnet sends credentials in clear text. SSH is the only acceptable remote management protocol on a production switch."
+      - "A management IP on a VLAN interface is what makes remote administration possible after the console session ends."
+    check:
+      - prompt: "Why must the first configuration of a new switch be done over a console cable?"
+        options:
+          - "The switch has no IP address yet, so it cannot be reached over the network"
+          - "Console connections are faster than network connections"
+          - "The switch blocks network configuration by default"
+          - "Console is the only port that supports VLANs"
+        correct: 0
+      - prompt: "Why should Telnet be disabled in favour of SSH?"
+        options:
+          - "Telnet transmits credentials in clear text"
+          - "Telnet is slower than SSH"
+          - "Telnet does not support VLANs"
+          - "Telnet requires a licence"
+        correct: 0
+  - id: port-config
+    title: "Interface and VLAN Configuration"
+    keyPoints:
+      - "Port descriptions cost nothing to add and save the next technician from tracing cables."
+      - "An access port is assigned to one VLAN. A trunk port must have the VLANs it carries explicitly allowed."
+      - "Speed and duplex are best left on auto-negotiate unless a specific device requires otherwise, since hardcoding one side causes a mismatch."
+    check:
+      - prompt: "What happens when one side of a link is hardcoded to full duplex and the other is left on auto?"
+        options:
+          - "A duplex mismatch, producing a slow link with errors under load"
+          - "The link fails to come up at all"
+          - "The switch reboots"
+          - "The port is automatically shut down"
+        correct: 0
+      - prompt: "What is the purpose of an interface description on a switch port?"
+        options:
+          - "It documents what the port connects to for whoever works on it next"
+          - "It sets the port speed"
+          - "It assigns the VLAN"
+          - "It enables SSH on that port"
+        correct: 0
+  - id: saving-and-verifying
+    title: "Saving and Verifying"
+    keyPoints:
+      - "The running configuration lives in RAM and is lost on reboot. Saving copies it to the startup configuration in NVRAM."
+      - "Show commands are how you verify rather than assume — show vlan brief, show interfaces status, show running-config."
+      - "Verify after every change, because a configuration that looks right and a configuration that works are not the same thing."
+    check:
+      - prompt: "A switch is configured correctly but loses everything after a power cut. What was missed?"
+        options:
+          - "The running configuration was never saved to the startup configuration"
+          - "The switch needs a licence renewal"
+          - "The VLANs were not tagged"
+          - "The console cable was left connected"
+        correct: 0
+      - prompt: "Which command shows which VLAN each port is assigned to?"
+        options:
+          - "show vlan brief"
+          - "show version"
+          - "show clock"
+          - "show users"
+        correct: 0
 ---
 
+import Callout from '../../components/Callout.astro';
 
 ## The Console Cable Moment
 
@@ -200,6 +265,10 @@ Three things happening here. `switchport mode trunk` forces the port into trunki
 
 On the other switch, the same interface configuration — identical allowed VLANs, identical native VLAN. If they don't match, you'll spend the evening figuring out why half your devices work and the other half don't.
 
+<Callout type="warn">
+Running configuration is in RAM. Startup configuration is in NVRAM. Every technician loses a full afternoon of work to this exactly once — make it a reflex to save immediately after a change you would not want to redo.
+</Callout>
+
 ## Saving Your Configuration — The Copy That Matters
 
 Everything you've typed so far lives in **running-config** — the active configuration in RAM. If the switch loses power or gets rebooted right now, all of it is gone. The running-config is what the switch is doing. The **startup-config** is what the switch will load when it boots. You need to copy the running config to startup:
@@ -215,6 +284,10 @@ BLDG1-SW01# copy run start
 ```
 
 The switch will prompt for a destination filename — just press Enter to confirm. This one command is the difference between a configured switch and an expensive paperweight after a power cycle. Develop the habit of running it after every change session. The horror stories of techs who spent two hours configuring a switch and then lost power without saving are not exaggerations — they are rites of passage.
+
+<Callout type="tip">
+Verify with show commands after every change rather than at the end. When something breaks you then know which single change caused it, instead of bisecting an afternoon of work.
+</Callout>
 
 ## Show Commands — Reading the Switch's Mind
 
@@ -274,3 +347,7 @@ Putting it all together, here's the sequence you'd walk through on a fresh switc
 10. Verify with `show vlan brief`, `show interfaces trunk`, `show running-config`.
 
 That's the foundation. Every managed switch deployment — a 24-port in a classroom closet or a 48-port in a data center rack — starts with this same sequence. The specifics change (port counts, VLAN schemes, uplink types), but the process doesn't. Get comfortable with it now, because you'll do it hundreds of times.
+
+## Key Terms
+
+console cable · running configuration · startup configuration · NVRAM · SSH · Telnet · management VLAN · interface description · access port · trunk · duplex mismatch · show vlan brief · show interfaces status
