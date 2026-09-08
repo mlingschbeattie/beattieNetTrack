@@ -1,0 +1,120 @@
+---
+title: "Incident Response Basics — Checkpoint"
+slug: "sec-incident-response-basics-checkpoint"
+description: "Checkpoint covering order of volatility, forensic imaging, chain of custody, and metadata as evidence."
+track: cybersecurity-engineer
+moduleId: sec.incident.response-basics
+order: 10
+difficulty: Intermediate
+estMinutes: 15
+passThreshold: 70
+tags: ["security+", "SY0-701", "forensics", "incident response", "checkpoint"]
+questions:
+  - id: q1
+    type: single
+    prompt: "A compromised workstation is still powered on. Following order of volatility, what is collected first?"
+    options:
+      - "A full forensic disk image"
+      - "Volatile memory"
+      - "Last night's backup tapes"
+      - "The user's mailbox archive"
+    correctIndex: 1
+    explanation: "Memory is the most volatile evidence that is practical to capture, and it holds running processes, network connections, encryption keys, and fileless malware that never touched disk."
+  - id: q2
+    type: single
+    prompt: "Why is pulling the power cable on a suspected compromise a costly containment choice?"
+    options:
+      - "It corrupts the file system beyond repair"
+      - "It alerts the attacker to the investigation"
+      - "It destroys RAM, which may hold encryption keys and in-memory malware"
+      - "It invalidates the chain of custody automatically"
+    correctIndex: 2
+    explanation: "Powering off is a legitimate containment decision, but it destroys the most valuable evidence. With full-disk encryption, losing the in-memory key can make the seized disk unreadable."
+  - id: q3
+    type: single
+    prompt: "What is the purpose of a write blocker during acquisition?"
+    options:
+      - "It prevents the analysis system from writing to the evidence drive"
+      - "It stops malware on the image from executing"
+      - "It encrypts the drive while it is transported"
+      - "It blocks remote access by the suspect"
+    correctIndex: 0
+    explanation: "Simply attaching a drive can let the operating system mount it and write recovery data or alter timestamps. A write blocker prevents investigator-caused contamination."
+  - id: q4
+    type: single
+    prompt: "Why hash both the original media and the forensic image?"
+    options:
+      - "To compress the image for storage"
+      - "To prove the copy is identical to the source and detect any later modification"
+      - "To encrypt the evidence at rest"
+      - "To index the image for keyword searching"
+    correctIndex: 1
+    explanation: "Matching hashes prove a faithful copy, and re-hashing later proves nothing changed. Use SHA-256 — MD5 is collision-broken and no longer defensible alone."
+  - id: q5
+    type: single
+    prompt: "A drive sat unlogged on a desk for two days between seizure and imaging. What is the consequence?"
+    options:
+      - "None, provided the analysis itself was performed correctly"
+      - "The gap in the chain of custody can make the evidence inadmissible"
+      - "The drive only needs to be re-hashed to resolve the issue"
+      - "Only the report timestamps require correction"
+    correctIndex: 1
+    explanation: "An opposing party need only argue the evidence could have been altered. A break in the documented chain of custody can waste technically sound findings."
+  - id: q6
+    type: single
+    prompt: "A technician reboots a suspicious machine and runs an antivirus scan that deletes the flagged file. What was lost?"
+    options:
+      - "Nothing important, since the malware was removed"
+      - "Only the antivirus log entry"
+      - "Volatile memory, timestamps, unallocated data, and the malware sample itself"
+      - "Only the file's creation date"
+    correctIndex: 2
+    explanation: "The reboot destroys memory and the deletion removes the sample needed to understand the intrusion — while doing nothing about an attacker holding valid credentials or persistence."
+  - id: q7
+    type: single
+    prompt: "A publicly posted photo leads investigators to an exact address. What most likely enabled that?"
+    options:
+      - "Embedded EXIF GPS coordinates written by the camera"
+      - "The filename included the location"
+      - "The upload used an unencrypted connection"
+      - "Facial recognition on the subject"
+    correctIndex: 0
+    explanation: "EXIF metadata is written automatically and travels with the file. It is productive in investigations precisely because people do not know it is there."
+  - id: q8
+    type: single
+    prompt: "An image comment field contains a long Base64 string. What have you found?"
+    options:
+      - "Encrypted data requiring a key"
+      - "Encoded data anyone can decode immediately"
+      - "A digital signature proving authenticity"
+      - "A corrupted image segment"
+    correctIndex: 1
+    explanation: "Base64 is encoding, not encryption — reversible with no key. An out-of-place encoded string in metadata is a standard investigative lead."
+  - id: q9
+    type: single
+    prompt: "How does steganography differ from encryption?"
+    options:
+      - "It is mathematically stronger than encryption"
+      - "It requires a public and private key pair"
+      - "It hides that a message exists rather than making its contents unreadable"
+      - "It works only on plain text files"
+    correctIndex: 2
+    explanation: "Encryption conceals meaning; steganography conceals existence by hiding data inside an ordinary-looking carrier file. Serious use combines both."
+  - id: q10
+    type: single
+    prompt: "Someone blurs a face in a photo, saves it, and publishes the file. What risk remains?"
+    options:
+      - "The blur can always be computationally reversed"
+      - "GPS metadata and an embedded thumbnail of the original may still be present"
+      - "The file will be rejected by most platforms"
+      - "None — editing the image removes all metadata"
+    correctIndex: 1
+    explanation: "A visible edit does not touch EXIF, and the embedded thumbnail is not always regenerated, so the unedited original can survive inside the file. Redaction must remove data, not cover it."
+domains:
+  - domainId: secplus.threats
+    weight: 0.7
+  - domainId: cyber.foundations
+    weight: 0.3
+---
+
+Checkpoint quiz for the Incident Response Basics module — covers order of volatility, imaging and integrity, chain of custody, and metadata as evidence.

@@ -1,0 +1,118 @@
+---
+title: "Risk and Policy — Checkpoint"
+slug: "sec-fundamentals-risk-and-policy-checkpoint"
+description: "Checkpoint covering assets, trust boundaries, the STRIDE categories, and turning a threat model into a prioritized remediation list."
+track: cybersecurity-engineer
+moduleId: sec.fundamentals.risk-and-policy
+order: 10
+difficulty: Beginner
+estMinutes: 15
+passThreshold: 70
+tags: ["security+", "SY0-701", "threat modeling", "STRIDE", "risk", "checkpoint"]
+questions:
+  - id: q1
+    type: single
+    prompt: "Why does threat modeling begin with identifying assets?"
+    options:
+      - "Assets are easier to enumerate than attack techniques"
+      - "Without knowing what causes harm if lost, you cannot judge which threats matter"
+      - "Regulations mandate an asset inventory first"
+      - "Attack techniques change too often to be useful"
+    correctIndex: 1
+    explanation: "An asset is anything whose loss, exposure, or corruption causes harm. Assets give threats their weight, which is what makes prioritization possible."
+  - id: q2
+    type: single
+    prompt: "A web application takes input from the internet and queries an internal database. Where is the critical trust boundary?"
+    options:
+      - "Between the database and its backups"
+      - "Between the untrusted internet and the application forwarding data toward trusted storage"
+      - "Between two employees on the same LAN"
+      - "Between the office Wi-Fi and the printer"
+    correctIndex: 1
+    explanation: "A trust boundary is the line between zones of differing trust. Most attacks occur where untrusted input crosses into a more trusted system."
+  - id: q3
+    type: single
+    prompt: "An attacker replays a stolen session cookie to access another customer's account. Which STRIDE category is this?"
+    options:
+      - "Spoofing"
+      - "Tampering"
+      - "Repudiation"
+      - "Denial of service"
+    correctIndex: 0
+    explanation: "Spoofing is pretending to be someone you are not, and it maps to the authentication control family."
+  - id: q4
+    type: single
+    prompt: "An employee cancels orders and later denies it, and no logs exist to prove otherwise. Which STRIDE category applies?"
+    options:
+      - "Information disclosure"
+      - "Elevation of privilege"
+      - "Repudiation"
+      - "Spoofing"
+    correctIndex: 2
+    explanation: "Repudiation is performing an action and denying it. The control is auditing — append-only logs with reliable timestamps."
+  - id: q5
+    type: single
+    prompt: "A misconfigured storage bucket makes customer records publicly readable. Which STRIDE category is this?"
+    options:
+      - "Information disclosure"
+      - "Tampering"
+      - "Denial of service"
+      - "Spoofing"
+    correctIndex: 0
+    explanation: "Information disclosure exposes data to people who should not see it, and it maps to confidentiality."
+  - id: q6
+    type: single
+    prompt: "A normal user exploits an application bug to obtain database administrator rights. Which STRIDE category is this?"
+    options:
+      - "Tampering"
+      - "Elevation of privilege"
+      - "Repudiation"
+      - "Denial of service"
+    correctIndex: 1
+    explanation: "Elevation of privilege is gaining access beyond what was authorized, and it maps to the authorization control family. Least privilege is the standard mitigation."
+  - id: q7
+    type: single
+    prompt: "How are threats prioritized once they have been identified?"
+    options:
+      - "Alphabetically by STRIDE category"
+      - "By how quickly each can be fixed"
+      - "By likelihood combined with impact"
+      - "By the order they were discovered"
+    correctIndex: 2
+    explanation: "Risk is likelihood times impact. That ordering directs limited effort toward the threats that actually matter most."
+  - id: q8
+    type: single
+    prompt: "What is the practical deliverable of a threat modeling session?"
+    options:
+      - "A certificate confirming the system is secure"
+      - "A prioritized list of threats feeding a remediation backlog"
+      - "An exhaustive list of every vulnerability in the codebase"
+      - "A post-breach incident response plan"
+    correctIndex: 1
+    explanation: "The value is making threats visible and ranked so they can be tracked and fixed. It is not a guarantee of safety or a complete vulnerability inventory."
+  - id: q9
+    type: single
+    prompt: "When should an existing threat model be revisited?"
+    options:
+      - "Only when a regulator requests it"
+      - "Only after a confirmed breach"
+      - "Never — it is a one-time design activity"
+      - "When the system changes, after incidents, and on a regular schedule"
+    correctIndex: 3
+    explanation: "New features, infrastructure changes, and incidents all change the model. For stable systems, annual review is a reasonable minimum."
+  - id: q10
+    type: single
+    prompt: "A password reset workflow asks a security question whose answer is publicly researchable. How is this best categorized?"
+    options:
+      - "Insecure design — the workflow is weak even when functioning exactly as specified"
+      - "A cryptographic failure"
+      - "A vulnerable third-party dependency"
+      - "A server misconfiguration"
+    correctIndex: 0
+    explanation: "Nothing is broken; the control was specified poorly. Flaws like this are found by threat modeling during design, not by scanners, and no patch fixes them."
+domains:
+  - domainId: cyber.foundations
+    weight: 1
+---
+
+Checkpoint quiz for the Risk and Policy module — covers assets, entry points and trust boundaries, the six STRIDE categories, and prioritizing threats into a remediation backlog.

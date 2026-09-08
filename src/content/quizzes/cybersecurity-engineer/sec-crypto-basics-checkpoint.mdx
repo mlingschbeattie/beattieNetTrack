@@ -1,0 +1,120 @@
+---
+title: "Cryptography Basics — Checkpoint"
+slug: "sec-crypto-basics-checkpoint"
+description: "Checkpoint covering encoding vs encryption vs hashing, key directions, password storage, and TLS."
+track: cybersecurity-engineer
+moduleId: sec.crypto.basics
+order: 10
+difficulty: Intermediate
+estMinutes: 15
+passThreshold: 70
+tags: ["security+", "SY0-701", "cryptography", "checkpoint"]
+questions:
+  - id: q1
+    type: single
+    prompt: "A configuration file contains the value dXNlcm5hbWU6cGFzc3dvcmQ=. What protection does this provide?"
+    options:
+      - "Strong encryption that requires the server private key"
+      - "None — it is Base64 encoding, which anyone can reverse instantly"
+      - "One-way hashing that cannot be reversed"
+      - "Integrity protection but not confidentiality"
+    correctIndex: 1
+    explanation: "The trailing = is Base64 padding. Encoding is a format change with no key and no secrecy. Credentials stored this way are stored in plaintext for practical purposes."
+  - id: q2
+    type: single
+    prompt: "You need to send a file so that only Maya can read it. Which key do you encrypt with?"
+    options:
+      - "Maya's public key"
+      - "Maya's private key"
+      - "Your private key"
+      - "A shared symmetric key you post publicly"
+    correctIndex: 0
+    explanation: "Encrypt for someone with their public key; only their matching private key can decrypt it. Signing is the reverse — you sign with your own private key."
+  - id: q3
+    type: single
+    prompt: "Why does TLS use asymmetric cryptography for the handshake but symmetric cryptography for the session?"
+    options:
+      - "Symmetric algorithms are mathematically stronger than asymmetric ones"
+      - "Asymmetric algorithms cannot encrypt data of any kind"
+      - "Asymmetric crypto solves key exchange, and symmetric crypto is fast enough for bulk traffic"
+      - "Browsers only support symmetric encryption after the first request"
+    correctIndex: 2
+    explanation: "Asymmetric crypto solves the delivery problem for a shared key. It is far too slow for page data, so the session switches to AES once the key is agreed."
+  - id: q4
+    type: single
+    prompt: "Two users pick the same password. Their stored hashes are identical. What is missing?"
+    options:
+      - "A longer hash algorithm"
+      - "A unique per-user salt"
+      - "Encryption of the hash column"
+      - "A higher TLS version on the login page"
+    correctIndex: 1
+    explanation: "A unique random salt per user makes identical passwords produce different digests, which defeats rainbow tables and stops an attacker correlating shared passwords."
+  - id: q5
+    type: single
+    prompt: "A team salts passwords but hashes them with SHA-256. What weakness remains?"
+    options:
+      - "Rainbow tables still work against the whole database"
+      - "SHA-256 produces too many collisions to be safe"
+      - "SHA-256 is fast, so offline brute force against individual passwords stays cheap"
+      - "Salted hashes cannot be verified at login"
+    correctIndex: 2
+    explanation: "Salt defeats precomputation. It does not slow a targeted guess. SHA-256 is built for speed, so a GPU tests billions of candidates per second — the fix is a slow algorithm with a work factor."
+  - id: q6
+    type: single
+    prompt: "What does raising the work factor in bcrypt actually change?"
+    options:
+      - "The computational cost of every single hash attempt"
+      - "The length of the stored digest"
+      - "The number of salts applied to each password"
+      - "The strength of the TLS cipher suite"
+    correctIndex: 0
+    explanation: "The work factor is a tunable cost parameter. A quarter-second per login is invisible to a user and catastrophic to an attacker testing billions of guesses."
+  - id: q7
+    type: single
+    prompt: "A phishing page loads over HTTPS with a valid certificate and shows a padlock. What has been verified?"
+    options:
+      - "That the site is legitimate and safe for credentials"
+      - "That the certificate authority scanned the site for malware"
+      - "That the connection is encrypted and the certificate matches the hostname"
+      - "That the operator's business identity was confirmed in person"
+    correctIndex: 2
+    explanation: "A domain-validated certificate proves control of a hostname and protects the channel. It makes no claim about the honesty of the site. Certificates are free and automated, so padlocked phishing is routine."
+  - id: q8
+    type: single
+    prompt: "An attacker intercepts the initial plain HTTP request and keeps the victim on HTTP while talking HTTPS to the real server. What is this called?"
+    options:
+      - "A downgrade of the TLS cipher suite"
+      - "SSL stripping"
+      - "A collision attack"
+      - "Certificate pinning failure"
+    correctIndex: 1
+    explanation: "SSL stripping never attacks TLS itself — it exploits the unencrypted first request. HSTS closes the window by making the browser refuse plain HTTP for that domain."
+  - id: q9
+    type: single
+    prompt: "An application encrypts data with AES-CBC and adds no authentication tag. What risk remains?"
+    options:
+      - "The AES key can be recovered from the ciphertext"
+      - "The data can be read by anyone on the network"
+      - "An attacker can tamper with the ciphertext so it decrypts to different data"
+      - "The ciphertext cannot be decrypted by the legitimate recipient"
+    correctIndex: 2
+    explanation: "Confidentiality is not integrity. Without authentication, bit-flipping attacks alter the decrypted plaintext undetected. Authenticated modes such as AES-GCM encrypt and authenticate together."
+  - id: q10
+    type: single
+    prompt: "A legacy system stores file integrity checksums using MD5. Why is that a finding?"
+    options:
+      - "MD5 requires a key that is often lost"
+      - "MD5 is collision-broken, so two different files can produce the same digest"
+      - "MD5 output is too long for most databases"
+      - "MD5 only works on text files"
+    correctIndex: 1
+    explanation: "Practical collision attacks against MD5 mean a digest match no longer proves the file is unmodified, which destroys its value for integrity. The same applies to SHA-1."
+domains:
+  - domainId: secplus.architecture
+    weight: 0.8
+  - domainId: cyber.foundations
+    weight: 0.2
+---
+
+Checkpoint quiz for the Cryptography Basics module — covers encoding versus encryption versus hashing, key directions, password storage, and how TLS protects a connection.

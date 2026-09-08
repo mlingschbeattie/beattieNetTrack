@@ -1,0 +1,120 @@
+---
+title: "Identity and Access Management — Checkpoint"
+slug: "sec-identity-access-management-checkpoint"
+description: "Checkpoint covering authentication versus authorization, session and token models, session attacks, and the limits of MFA."
+track: cybersecurity-engineer
+moduleId: sec.identity.access-management
+order: 10
+difficulty: Intermediate
+estMinutes: 15
+passThreshold: 70
+tags: ["security+", "SY0-701", "authentication", "sessions", "MFA", "checkpoint"]
+questions:
+  - id: q1
+    type: single
+    prompt: "A logged-in user requests an admin page and is refused. Which control rejected the request?"
+    options:
+      - "Authentication, because identity could not be confirmed"
+      - "Authorization, because identity is known but permission is missing"
+      - "Accounting, because the attempt was logged"
+      - "Encryption, because the page requires TLS"
+    correctIndex: 1
+    explanation: "Authentication proves who you are; authorization decides what you may do. They are separate checks, and authorization must be evaluated on every request."
+  - id: q2
+    type: single
+    prompt: "Why is a stolen session token as valuable to an attacker as a stolen password?"
+    options:
+      - "It can be decrypted to recover the password"
+      - "It contains the user's MFA seed"
+      - "It already represents an authenticated session, so no login is needed"
+      - "Session tokens never expire"
+    correctIndex: 2
+    explanation: "The token is a credential in its own right. Whoever presents it is treated as that user, which is why attackers increasingly target session cookies rather than passwords."
+  - id: q3
+    type: single
+    prompt: "Why is immediate revocation harder with a stateless JWT than with a server-side session?"
+    options:
+      - "The server keeps no record, so it accepts any validly signed token until expiry"
+      - "JWTs are encrypted and cannot be inspected"
+      - "JWTs cannot be removed from the client"
+      - "Revocation requires reissuing the TLS certificate"
+    correctIndex: 0
+    explanation: "There is no record to delete. This is why stateless tokens use short lifetimes paired with a tracked refresh token that restores a revocation point."
+  - id: q4
+    type: single
+    prompt: "What does the signature on a standard JWT prove?"
+    options:
+      - "That the contents are encrypted and unreadable"
+      - "That the claims have not been altered since issuance"
+      - "That the user completed multi-factor authentication"
+      - "That the token is still within its validity window"
+    correctIndex: 1
+    explanation: "A standard JWT is signed, not encrypted. The signature provides integrity and origin, but anyone holding the token can read the claims — so no secrets belong inside it."
+  - id: q5
+    type: single
+    prompt: "An attacker sets a session identifier before the victim logs in, then reuses that identifier afterwards. What is this attack?"
+    options:
+      - "Session hijacking"
+      - "Cross-site request forgery"
+      - "Session fixation"
+      - "Credential stuffing"
+    correctIndex: 2
+    explanation: "In fixation the attacker plants the identifier in advance rather than stealing one. Regenerating the session ID at login makes the planted value worthless."
+  - id: q6
+    type: single
+    prompt: "Why must an application issue a new session ID at the moment of login?"
+    options:
+      - "To reduce the size of the cookie"
+      - "Because an attacker who planted the pre-login ID would otherwise inherit the authenticated session"
+      - "Because browsers reject IDs older than sixty seconds"
+      - "To support logging in from multiple devices"
+    correctIndex: 1
+    explanation: "Regeneration at every privilege change is the specific defense against session fixation."
+  - id: q7
+    type: single
+    prompt: "An application logs users out by deleting the cookie in the browser. What is wrong?"
+    options:
+      - "The session remains valid server-side, so a copied token still works"
+      - "The cookie can be restored from browser history"
+      - "It logs the user out of all devices simultaneously"
+      - "Nothing — this is correct behaviour"
+    correctIndex: 0
+    explanation: "Logout must invalidate the session server-side. On a shared or public machine, the difference between clearing a cookie and destroying the session is the whole point."
+  - id: q8
+    type: single
+    prompt: "Why are session identifiers required to be long and cryptographically random?"
+    options:
+      - "To make them harder to transmit over the network"
+      - "Because predictable identifiers can be guessed, and one valid guess hijacks an account"
+      - "Because short identifiers cannot be stored in a cookie"
+      - "To allow the server to derive the username from the token"
+    correctIndex: 1
+    explanation: "Sequential or timestamp-derived identifiers are guessable. The identifier must come from a cryptographically secure random source."
+  - id: q9
+    type: single
+    prompt: "Which MFA factor resists phishing structurally rather than by user vigilance?"
+    options:
+      - "SMS one-time codes"
+      - "Push approval notifications"
+      - "Email-delivered verification codes"
+      - "A hardware security key or passkey using WebAuthn"
+    correctIndex: 3
+    explanation: "WebAuthn credentials are cryptographically bound to the real site's origin, so they will not authenticate to a lookalike domain. SMS is vulnerable to SIM swapping, and push prompts invite fatigue attacks."
+  - id: q10
+    type: single
+    prompt: "After confirming an account compromise, the team forces a password reset. Why may the attacker still have access?"
+    options:
+      - "The new password is cached in the browser"
+      - "Session tokens issued before the reset remain valid and require no password"
+      - "Password resets take up to an hour to propagate"
+      - "The attacker can read the reset email"
+    correctIndex: 1
+    explanation: "Sessions survive a password change unless explicitly invalidated. Credible response terminates all active sessions and refresh tokens, then resets the password."
+domains:
+  - domainId: secplus.architecture
+    weight: 0.7
+  - domainId: cyber.foundations
+    weight: 0.3
+---
+
+Checkpoint quiz for the Identity and Access Management module — covers authentication versus authorization, session and token models, fixation and hijacking, and what MFA does and does not cover.

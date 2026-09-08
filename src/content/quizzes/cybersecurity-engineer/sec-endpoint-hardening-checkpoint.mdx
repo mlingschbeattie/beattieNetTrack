@@ -1,0 +1,120 @@
+---
+title: "Endpoint Hardening — Checkpoint"
+slug: "sec-endpoint-hardening-checkpoint"
+description: "Checkpoint covering static and dynamic analysis, packing, sandbox evasion, and behavioural versus signature-based detection."
+track: cybersecurity-engineer
+moduleId: sec.endpoint.hardening
+order: 10
+difficulty: Intermediate
+estMinutes: 15
+passThreshold: 70
+tags: ["security+", "SY0-701", "malware analysis", "reverse engineering", "checkpoint"]
+questions:
+  - id: q1
+    type: single
+    prompt: "What distinguishes static analysis from dynamic analysis?"
+    options:
+      - "Static analysis examines the file without executing it; dynamic analysis runs it under observation"
+      - "Static analysis is automated; dynamic analysis is manual"
+      - "Static analysis works only on scripts; dynamic analysis works on binaries"
+      - "Static analysis requires a debugger; dynamic analysis does not"
+    correctIndex: 0
+    explanation: "Static analysis covers strings, headers, imports, and disassembly. Dynamic analysis observes real behaviour in an isolated environment."
+  - id: q2
+    type: single
+    prompt: "A binary contains almost no readable strings and few imports, with high entropy. What does this suggest?"
+    options:
+      - "The file is corrupted and cannot execute"
+      - "It is packed — compressed or encrypted until it unpacks itself at runtime"
+      - "It was compiled with debugging symbols"
+      - "It is a plain text configuration file"
+    correctIndex: 1
+    explanation: "Packing hides the real code on disk. Ironically the emptiness is itself a strong signal, because ordinary software is not shaped that way."
+  - id: q3
+    type: single
+    prompt: "Why does dynamic analysis defeat packing?"
+    options:
+      - "Sandboxes automatically decrypt any packed file"
+      - "Packed files cannot execute inside a virtual machine"
+      - "The sample must unpack itself to run, exposing the real code in memory"
+      - "Packing is removed when a file is copied to a VM"
+    correctIndex: 2
+    explanation: "Whatever the packer does on disk, the code has to be present in memory to execute — and at that point it can be dumped."
+  - id: q4
+    type: single
+    prompt: "Why is embedding a secret API key in a compiled application not real protection?"
+    options:
+      - "Compilers strip string literals during optimization"
+      - "The key must be present at runtime, so it can be recovered from the binary or memory"
+      - "Antivirus software removes hardcoded keys"
+      - "Compiled binaries cannot store keys longer than 16 bytes"
+    correctIndex: 1
+    explanation: "Compilation removes names and comments but not logic or data. Anything the program must do to run can eventually be found by an analyst."
+  - id: q5
+    type: single
+    prompt: "Malware detects a virtual machine and exits without performing any malicious action. What is this called?"
+    options:
+      - "Polymorphism"
+      - "Packing"
+      - "Privilege escalation"
+      - "Sandbox evasion, a form of anti-analysis"
+    correctIndex: 3
+    explanation: "Samples check for VM artifacts, debuggers, or analysis tools. A quiet sandbox report is therefore inconclusive rather than proof the sample is safe."
+  - id: q6
+    type: single
+    prompt: "Why is a file hash a weaker detection than a behavioural rule?"
+    options:
+      - "Hashes are too slow to compute at scale"
+      - "Any change to the file yields a new hash while the behaviour is unchanged"
+      - "Hashes cannot be shared between organizations"
+      - "Behavioural rules never produce false positives"
+    correctIndex: 1
+    explanation: "One recompile defeats a hash signature. A rule describing what the malware does survives recompilation, repacking, and polymorphism."
+  - id: q7
+    type: single
+    prompt: "What are indicators of compromise used for?"
+    options:
+      - "Proving a suspect's intent in court"
+      - "Measuring how fast malware spreads"
+      - "Feeding detection rules, block lists, and threat hunting"
+      - "Encrypting evidence before storage"
+    correctIndex: 2
+    explanation: "IOCs — domains, addresses, file paths, registry keys, hashes — are the defensive output of analysis, answering whether the threat is still present and how to detect it next time."
+  - id: q8
+    type: single
+    prompt: "Malware that rewrites its own code on each infection so no two copies look alike is described as:"
+    options:
+      - "Polymorphic or metamorphic"
+      - "Packed"
+      - "Fileless"
+      - "Persistent"
+    correctIndex: 0
+    explanation: "Changing form on each infection defeats static signatures, which is another reason detection has shifted toward behaviour."
+  - id: q9
+    type: single
+    prompt: "An analyst opens a live malware sample in a VM with a shared folder and bridged networking to the corporate LAN. What is the problem?"
+    options:
+      - "The VM will run too slowly to observe behaviour"
+      - "The isolation is not real, so the malware can reach production systems"
+      - "Shared folders prevent memory capture"
+      - "Bridged networking disables the debugger"
+    correctIndex: 1
+    explanation: "Analysis environments must have no path to anything that matters — no shared folders, no bridged networking, no credentials. Otherwise the responder becomes patient zero."
+  - id: q10
+    type: single
+    prompt: "A sandbox report states no malicious behaviour was observed. What is the correct interpretation?"
+    options:
+      - "The sample is confirmed benign and can be released"
+      - "The result is inconclusive; the sample may have detected the environment"
+      - "The sandbox is misconfigured and must be rebuilt"
+      - "The file is packed and therefore harmless"
+    correctIndex: 1
+    explanation: "Evasive malware behaves harmlessly under analysis. Treat a quiet result as inconclusive and return to static analysis rather than clearing the sample."
+domains:
+  - domainId: secplus.threats
+    weight: 0.8
+  - domainId: cyber.foundations
+    weight: 0.2
+---
+
+Checkpoint quiz for the Endpoint Hardening module — covers static and dynamic analysis, packing, anti-analysis behaviour, and why behavioural detection outlasts signatures.

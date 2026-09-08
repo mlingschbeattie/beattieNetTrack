@@ -1,0 +1,140 @@
+---
+title: "Network Defense Basics — Checkpoint"
+slug: "sec-network-defense-basics-checkpoint"
+description: "Checkpoint covering injection, cross-site scripting, access control, SSRF, and memory-safety fundamentals."
+track: cybersecurity-engineer
+moduleId: sec.network.defense-basics
+order: 10
+difficulty: Intermediate
+estMinutes: 20
+passThreshold: 70
+tags: ["security+", "SY0-701", "OWASP", "web security", "checkpoint"]
+questions:
+  - id: q1
+    type: single
+    prompt: "What is the root cause of SQL injection?"
+    options:
+      - "The database server is missing security patches"
+      - "User input is concatenated into a query, so data is interpreted as code"
+      - "The database connection is not encrypted"
+      - "Database passwords are stored without salting"
+    correctIndex: 1
+    explanation: "The database faithfully executes the statement it was given. The defect is in the application, which allowed user data to become part of the statement structure."
+  - id: q2
+    type: single
+    prompt: "Which control actually eliminates SQL injection rather than making it harder?"
+    options:
+      - "Escaping apostrophes in user input"
+      - "A web application firewall in front of the site"
+      - "Parameterized queries or prepared statements"
+      - "Blocking the keyword SELECT in request parameters"
+    correctIndex: 2
+    explanation: "Parameterization fixes the query structure before input arrives, so input can only ever be a value. Filtering and WAFs are defense in depth and are routinely bypassed by encoding tricks."
+  - id: q3
+    type: single
+    prompt: "An injected payload containing SLEEP(5) delays the response by five seconds, but no data is displayed. What has the attacker confirmed?"
+    options:
+      - "That the injection works, using timing as the output channel"
+      - "That the database is overloaded"
+      - "That a WAF blocked the request"
+      - "That the query returned no rows"
+    correctIndex: 0
+    explanation: "Time-based blind injection leaks one bit per request using response delay. Suppressing error messages slows this down but does not prevent it."
+  - id: q4
+    type: single
+    prompt: "A payload stored in a forum post executes in the browser of every user who views the thread. Which type of XSS is this?"
+    options:
+      - "Reflected XSS"
+      - "Stored XSS"
+      - "DOM-based XSS"
+      - "Server-side request forgery"
+    correctIndex: 1
+    explanation: "Stored XSS is saved on the server and served to every visitor, so it needs no phishing link. Reflected XSS requires a crafted link; DOM-based XSS never reaches the server."
+  - id: q5
+    type: single
+    prompt: "Why is contextual output encoding the correct fix for XSS rather than stripping tags from input?"
+    options:
+      - "Encoding is faster to execute than filtering"
+      - "Encoding removes the need to validate input at all"
+      - "Encoding neutralizes data where it is displayed, instead of trying to predict every dangerous input"
+      - "Filtering only works against stored XSS"
+    correctIndex: 2
+    explanation: "Blacklist filters are bypassed by alternative tags, event handlers, and encoding, while also corrupting legitimate data. Encoding at output is decidable because you know where the data is going."
+  - id: q6
+    type: single
+    prompt: "A session cookie is marked HttpOnly. What does that achieve?"
+    options:
+      - "It prevents XSS from occurring on the page"
+      - "It stops JavaScript from reading the cookie, so a successful XSS cannot steal the session"
+      - "It encrypts the cookie contents in the browser"
+      - "It forces the cookie to be sent only over HTTP"
+    correctIndex: 1
+    explanation: "HttpOnly limits the damage of XSS rather than preventing it. The Secure flag restricts the cookie to HTTPS, and SameSite limits cross-site sending."
+  - id: q7
+    type: single
+    prompt: "Changing an invoice id in a URL from 1043 to 1044 returns another customer's record. What is this?"
+    options:
+      - "Cross-site scripting"
+      - "An insecure direct object reference — broken access control"
+      - "Session fixation"
+      - "Server-side request forgery"
+    correctIndex: 1
+    explanation: "The server confirmed the user is authenticated but never confirmed they are authorized for that specific record. This is the most common serious finding in modern web applications."
+  - id: q8
+    type: single
+    prompt: "An application fetches any URL a user supplies. Why is the cloud instance metadata endpoint a high-value SSRF target?"
+    options:
+      - "It returns temporary credentials for the instance role to anything that asks from inside"
+      - "It contains the application's full source code"
+      - "It disables the firewall for the subnet"
+      - "It stores the TLS private key in plaintext"
+    correctIndex: 0
+    explanation: "SSRF against 169.254.169.254 converts a modest web bug into cloud account access. IMDSv2 mitigates this by requiring a token a naive SSRF cannot obtain."
+  - id: q9
+    type: single
+    prompt: "Why is overwriting a saved return address more serious than corrupting a local variable?"
+    options:
+      - "It permanently damages the executable on disk"
+      - "It leaks the contents of the heap"
+      - "It controls where the CPU jumps when the function returns, redirecting execution"
+      - "It disables ASLR for the process"
+    correctIndex: 2
+    explanation: "The saved return address determines the next instruction after the function ends. Controlling it means controlling execution, which is why this class leads to arbitrary code execution."
+  - id: q10
+    type: single
+    prompt: "An exploit places shellcode on the stack and jumps to it. Which mitigation defeats that directly?"
+    options:
+      - "A stack canary"
+      - "DEP/NX, which marks the stack non-executable"
+      - "ASLR"
+      - "Control-flow integrity"
+    correctIndex: 1
+    explanation: "DEP/NX prevents execution from writable memory, which killed classic shellcode injection and pushed attackers toward return-oriented programming that reuses existing code."
+  - id: q11
+    type: single
+    prompt: "What does a stack canary detect?"
+    options:
+      - "That the guard value before the return address was modified by an overflow"
+      - "That the process is being debugged"
+      - "That code is executing from the heap"
+      - "That an address was leaked to the attacker"
+    correctIndex: 0
+    explanation: "A linear overflow must cross the canary to reach the return address. The function checks it before returning and aborts if it changed, converting many exploits into a crash."
+  - id: q12
+    type: single
+    prompt: "You discover an IDOR exposing customer records on a live production site you were not authorized to test. What is the correct action?"
+    options:
+      - "Extract a sample of records to document the impact before reporting"
+      - "Continue testing to determine how far the access extends"
+      - "Stop immediately and report through the operator's responsible disclosure process"
+      - "Post the finding publicly so users can protect themselves"
+    correctIndex: 2
+    explanation: "Continuing to explore exceeds any authorization and turns a good-faith finding into unauthorized access, with every record touched arguably a reportable breach. Stop and disclose responsibly."
+domains:
+  - domainId: secplus.threats
+    weight: 0.8
+  - domainId: nocti.networking
+    weight: 0.2
+---
+
+Checkpoint quiz for the Network Defense Basics module — covers injection, cross-site scripting, broken access control, SSRF, memory-safety fundamentals, and disclosure ethics.
