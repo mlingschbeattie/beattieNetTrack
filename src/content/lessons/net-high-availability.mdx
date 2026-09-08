@@ -77,6 +77,27 @@ sections:
           - "A hardware warranty"
           - "A network diagram standard"
         correct: 0
+  - id: recovery-sites
+    title: "Recovery Sites — Redundancy at Building Scale"
+    keyPoints:
+      - "A recovery site is an alternate facility used when the primary building is unusable — flood, fire, extended power loss."
+      - "Hot, warm, and cold describe recovery sites the same way they describe standby devices: how much is already running."
+      - "A cold site is space and power only; a hot site is fully equipped and synchronized and can take over in minutes."
+    check:
+      - prompt: "A flood makes the primary building unusable for a week. Which recovery site type restores operations fastest?"
+        options:
+          - "A cold site, because equipment can be delivered there quickly"
+          - "A hot site, because it is already equipped and synchronized"
+          - "A warm site, because it holds the only current backup"
+          - "None — recovery sites address hardware failure, not facility loss"
+        correct: 1
+      - prompt: "What does an organization actually get from a cold site?"
+        options:
+          - "Space, power, and connectivity, with equipment and data still to be brought in"
+          - "A fully running duplicate of production"
+          - "Real-time replication of every server"
+          - "A contractual guarantee of zero downtime"
+        correct: 0
 ---
 
 import Callout from '../../components/Callout.astro';
@@ -201,6 +222,26 @@ The standby model you choose matches the SLA you're targeting, which matches the
 Redundancy that shares a dependency is not redundancy. Two uplinks through the same conduit, two power supplies on one circuit, or two virtual machines on one host all fail together — trace the shared component before calling a design resilient.
 </Callout>
 
+## Recovery Sites — The Same Idea at Building Scale
+
+Everything above assumes the building is still standing. Sometimes it isn't. A burst pipe above the server room, a fire, a multi-day power failure, a hurricane — the hardware is fine or irrelevant, and the problem is that nobody can use the facility.
+
+A **recovery site** is an alternate location the organization moves operations to. The same cold/warm/hot vocabulary applies, and it means the same thing it meant for standby devices: how much is already running when you need it.
+
+**Cold site.** Space, power, and connectivity. That's it. No servers, no data, no configured network. When disaster strikes you ship in hardware, restore from backup, and rebuild. Recovery time: days to weeks. It's the cheapest option by a wide margin — you're renting empty square footage — and it's viable only if the organization can genuinely tolerate being down that long.
+
+**Warm site.** Space with hardware already installed and a network in place, but data that is periodically restored rather than continuously synchronized. You arrive, restore the most recent backup, and bring services up. Recovery time: hours to a couple of days. The middle ground, and the most common choice.
+
+**Hot site.** A fully equipped, fully staffed-capable duplicate with data replicated continuously from production. Staff relocate — or connect remotely — and operations resume in minutes to hours. Recovery time: minutes. It is enormously expensive, because you are paying for a second data center that produces nothing on a normal day.
+
+The decision is the same trade you made for standby devices, scaled up: what does an hour of downtime cost, and how many hours can you survive? A hospital or a payment processor buys a hot site. A school district almost certainly does not — a warm site or a cold site plus solid offsite backups is the honest answer, because the cost of a week's disruption, while real, is not the cost of a week of stopped transactions.
+
+Two things make the plan real rather than theoretical. **Offsite backups** — a backup stored in the same building as the thing it protects is not a backup against fire. And **testing** — an untested recovery plan is a document, not a capability, and the failure mode is always discovering during the actual disaster that the restore doesn't work or nobody knows the procedure.
+
+<Callout type="warn">
+The most common recovery-site failure is a plan that exists on paper and has never been executed. Backups that were never test-restored, a contract for a cold site nobody has visited, a runbook naming staff who left two years ago. The related trap is a hot site that depends on the same power grid, the same ISP, or the same flood plain as the primary — geographic separation is the entire point, and a recovery site twenty minutes away fails in the same regional event.
+</Callout>
+
 ## Graceful Degradation vs. Full Failover
 
 **Full failover** means the backup system takes over completely — all services, all traffic, full functionality. Hot standby with HSRP is a full failover model. When Router A fails, Router B handles everything Router A was handling. No loss of features.
@@ -213,4 +254,4 @@ The design principle: define which services are critical. Ensure those survive a
 
 ## Key Terms
 
-single point of failure · redundancy · link aggregation · EtherChannel · LACP · FHRP · HSRP · VRRP · virtual IP · active-passive · active-active · failover · SLA · uptime · nines · MTTR · MTBF
+single point of failure · redundancy · link aggregation · EtherChannel · LACP · FHRP · HSRP · VRRP · virtual IP · active-passive · active-active · failover · SLA · uptime · nines · MTTR · MTBF · cold standby · warm standby · hot standby · recovery site · cold site · warm site · hot site · offsite backup · geographic separation · disaster recovery

@@ -73,6 +73,27 @@ sections:
           - "Both Confidentiality and Availability"
           - "Integrity only"
         correct: 2
+  - id: three-states-of-data
+    title: "The Triad Across the Three States of Data"
+    keyPoints:
+      - "Data exists in three states: at rest in storage, in transit across a network, and in use in memory on an endpoint."
+      - "Encryption protects data at rest and in transit, but data in use must be decrypted to be used, so it needs different controls entirely."
+      - "Each element of the triad fails differently in each state, so the state determines which control applies."
+    check:
+      - prompt: "A spreadsheet of student records is open on an unlocked workstation in a hallway. Which state is that data in, and why does encryption not help?"
+        options:
+          - "At rest — the file is saved to disk, so BitLocker already covers it"
+          - "In transit — it travelled from the server, so TLS already covers it"
+          - "In use — it is decrypted in memory and on screen, so screen locks and physical control apply instead"
+          - "None — data on a local machine is not in any of the three states"
+        correct: 2
+      - prompt: "An attacker on shared Wi-Fi captures a login as it crosses the network. Which state and which property failed?"
+        options:
+          - "Data in transit; confidentiality"
+          - "Data at rest; availability"
+          - "Data in use; integrity"
+          - "Data in transit; availability"
+        correct: 0
 domains:
   - domainId: "cyber.foundations"
     weight: 1
@@ -132,6 +153,30 @@ Modern ransomware operators don't work that way. When they breach a corporate ne
 
 Only after the data is exfiltrated do they execute the disk-locking payloads across all virtual hypervisors simultaneously, wiping out local hyper-v storage and hitting **Availability**. When the CEO tells the press "we don't need to pay because we have backups," the ransomware cartel emails a sample of the stolen employee Social Security numbers to the local newspaper and threatens to publish the full database online unless the ransom is wired within forty-eight hours. That is double extortion — attacking two legs of the triad to take away your options.
 
+## The Three States of Data
+
+The triad tells you *what* you are protecting. It doesn't tell you *where* the data is when you protect it — and the controls change completely depending on the answer. Data exists in exactly three states, and every one of them needs its own defenses.
+
+**Data at rest** is stored and not currently being accessed — on a disk, in a database, in a backup, on a USB stick in someone's bag. It sits there for months, which is what makes it attractive: an attacker who reaches it gets everything at once. The primary control is **encryption at rest** — BitLocker on a laptop, database-level encryption on a server. Steal the drive and you get ciphertext.
+
+**Data in transit** is moving across a network — a login crossing the school Wi-Fi, a file syncing to cloud storage, a database query travelling between two servers. It is exposed to every device along the path. The primary control is **encryption in transit** — TLS for web traffic, a VPN for remote access, SSH instead of Telnet.
+
+**Data in use** is open in memory on an endpoint, being read, edited, or displayed. This is the hard one, because to be used it has to be decrypted. The password manager holding your vault open, the spreadsheet on screen, the query results in a browser tab — all plaintext in RAM. Encryption cannot help you here, because the whole point is that the data is currently readable. Controls are different in kind: screen locks, endpoint protection, memory protections, and physically not leaving a workstation unlocked in a public area.
+
+### How the states interact with the triad
+
+This is where it gets useful, and it is what the standards actually ask you to explain. Each element of the triad is threatened differently in each state:
+
+| | Data at rest | Data in transit | Data in use |
+|---|---|---|---|
+| **Confidentiality** | Stolen drive or database dump | Sniffed traffic on a shared network | Shoulder surfing, screen capture, memory scraping |
+| **Integrity** | Silent file tampering, bit rot | Man-in-the-middle altering the payload | Malware modifying values in memory |
+| **Availability** | Ransomware encrypting the store | Link failure, DDoS blocking the path | Application crash, resource exhaustion |
+
+Read down a column and you get the control set for that state. Read across a row and you get every place one property can fail. Both readings are worth practising, because a real incident hands you a symptom and expects you to work out which cell you're in.
+
+The practical consequence: a system is only as protected as its weakest state. Full-disk encryption and TLS everywhere still leaves data in use exposed on an unlocked workstation — which is exactly why an attacker who gets physical access to a logged-in machine has already won, regardless of how good the encryption is.
+
 ## When It Breaks — The Technician's Triage Rule
 
 When an incident hits your queue, resist the urge to start changing settings randomly. Stop and categorize the damage:
@@ -146,4 +191,4 @@ Every ticket you touch in your career will trace back to one of these three ques
 
 ## Key Terms
 
-CIA triad · Confidentiality · Integrity · Availability · encryption at rest · encryption in transit · BitLocker · TLS 1.3 · SHA-256 · cryptographic hash · digital signature · checksum · file integrity monitoring · access control list · principle of least privilege · DDoS · SYN flood · double extortion · immutable backup · 3-2-1 rule · air gap · containment · credential stuffing
+CIA triad · Confidentiality · Integrity · Availability · data at rest · data in transit · data in use · three states of data · encryption at rest · encryption in transit · BitLocker · TLS 1.3 · VPN · SHA-256 · cryptographic hash · digital signature · checksum · file integrity monitoring · access control list · principle of least privilege · DDoS · SYN flood · double extortion · immutable backup · 3-2-1 rule · air gap · containment · credential stuffing · shoulder surfing · memory scraping

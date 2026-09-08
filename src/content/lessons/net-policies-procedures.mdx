@@ -77,6 +77,27 @@ sections:
           - "Which vendor supplies the switches"
           - "The syslog retention period"
         correct: 0
+  - id: aup-tos-eula
+    title: "AUP, TOS, and EULA — Telling the Agreements Apart"
+    keyPoints:
+      - "An AUP is written by an organization for its own members and governs use of resources that organization owns."
+      - "A TOS is a contract between an individual and a service provider, governing conduct on the platform and the provider's obligations."
+      - "A EULA is a software licence — it governs what you may do with a copy of a program, not how you behave."
+    check:
+      - prompt: "You install a program and accept an agreement limiting you to three devices and forbidding reverse engineering. Which document is that?"
+        options:
+          - "An Acceptable Use Policy"
+          - "An End User License Agreement"
+          - "A Terms of Service"
+          - "A network security policy"
+        correct: 1
+      - prompt: "Which agreement is written by an organization for the people who use resources it owns, and enforced through that relationship?"
+        options:
+          - "A Terms of Service"
+          - "An End User License Agreement"
+          - "An Acceptable Use Policy"
+          - "A vendor access agreement"
+        correct: 2
 ---
 
 import Callout from '../../components/Callout.astro';
@@ -110,6 +131,30 @@ A school AUP typically covers: no illegal activity, no accessing inappropriate c
 The AUP doesn't need to list every possible violation. It needs to establish clear expectations and consequences, and it needs to be signed. A signed AUP is a documented agreement. An unsigned one is a suggestion.
 
 From the tech side, the AUP drives your technical controls. The policy says "no unauthorized devices"? You implement 802.1X port authentication. The policy says "no inappropriate content"? You deploy web content filtering. The policy says "no personal hotspots"? You configure wireless intrusion detection to flag rogue APs. The policy defines the rule. The technology enforces it.
+
+## AUP, TOS, and EULA — Three Agreements That Are Not the Same Thing
+
+Students meet all three of these and tend to file them together as "the thing you scroll past and click Agree." They are genuinely different instruments, and the useful question to ask about any of them is **who wrote it, and whose interests does it protect?**
+
+**Acceptable Use Policy (AUP).** Written by an *organization* for its own members — a school for its students, an employer for its staff. It governs how you may use resources the organization owns. It protects the organization's network, reputation, and legal position, and it is enforced through that relationship: losing network access, a disciplinary process, termination. You typically cannot negotiate it, but you also did not pay for anything — access is a privilege the organization is granting.
+
+**Terms of Service (TOS).** A contract between an *individual and a service provider* — the agreement you accept to use a social platform, a game, a cloud service. It governs your conduct on their platform and, critically, their obligations to you: what they may do with content you upload, whether they can suspend your account, what happens to your data if the service shuts down. TOS documents are drafted by the provider's lawyers and overwhelmingly favour the provider. This is where clauses about content licensing, arbitration, and unilateral changes live.
+
+**End User License Agreement (EULA).** A software *licence*. It does not primarily govern conduct — it governs what you are permitted to do with a copy of a program. You are not buying the software; you are buying a licence to use it under stated conditions: how many devices, whether you may reverse engineer it, whether commercial use is allowed, whether the licence transfers if you sell the machine.
+
+### Who does each one favour?
+
+Worth being blunt with students here, because the honest answer is uncomfortable. All three are drafted by the party with more power, and all three are presented as take-it-or-leave-it. But they are not equally one-sided:
+
+- An **AUP** is usually the most balanced, because the organization has a duty of care to its members and often a legal obligation to be reasonable — a school cannot write anything it likes into a student AUP.
+- A **TOS** is typically the most provider-favourable, and the most consequential, because it governs data you generate over years.
+- A **EULA** is narrow but absolute: it restricts a specific set of actions and disclaims nearly all liability for what the software does.
+
+The practical skill is not reading all forty pages. It is knowing which three or four clauses actually matter in each type — data ownership and account termination in a TOS, device count and transferability in a EULA, monitoring and consequences in an AUP — and being able to find them.
+
+<Callout type="tip">
+When you agree to a TOS, look for what it says about content you upload. Most grant the provider a broad, royalty-free, transferable licence to use it. That is not necessarily sinister — they need a licence to display your post at all — but the scope varies enormously, and it is the clause students are most often surprised by.
+</Callout>
 
 ## Network Security Policy
 
@@ -205,4 +250,4 @@ The goal isn't to build a prison. It's to build a framework where the network is
 
 ## Key Terms
 
-policy · procedure · standard · guideline · acceptable use policy · AUP · BYOD · MDM · remote access policy · password policy · complexity · rotation · onboarding · offboarding · NDA · SLA
+policy · procedure · standard · guideline · acceptable use policy · AUP · terms of service · TOS · end user license agreement · EULA · software licence · content licensing · BYOD · MDM · remote access policy · password policy · complexity · rotation · onboarding · offboarding · NDA · SLA
