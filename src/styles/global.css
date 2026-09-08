@@ -4904,3 +4904,9 @@ html[dir='rtl'] .qc-group[open] > .qc-group__summary::before { transform: rotate
   line-height: var(--leading-relaxed);
 }
 
+
+/* Lessons with no authored sections have no reading rail, so the content
+   column should take the full width rather than leave the rail's column empty. */
+.lesson-reading-layout--norail {
+  grid-template-columns: minmax(0, 1fr);
+}

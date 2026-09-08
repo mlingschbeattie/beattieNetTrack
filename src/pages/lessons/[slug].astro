@@ -47,31 +47,15 @@ const currentTrack = trackFromParam ?? trackFromFrontmatter ?? trackFromActivity
 const enableLegacy = lesson.slug === 'cryptography';
 
 const authoredSections = lesson.data.sections ?? [];
-const outlineSections = authoredSections.length
-  ? authoredSections
-  : [
-      {
-        id: 'lesson-overview',
-        title: 'Lesson Overview',
-        keyPoints: [
-          `Main topic: ${lesson.data.title}`,
-          'Use Reading view for full lesson details and examples.',
-          'Use this quick check to confirm understanding before moving on.',
-        ],
-        check: [
-          {
-            prompt: `This lesson is titled "${lesson.data.title}".`,
-            options: ['True', 'False', 'Only in labs', 'Only in quizzes'],
-            correct: 0,
-          },
-          {
-            prompt: 'Which view contains the full lesson text and walkthrough?',
-            options: ['Outline view', 'Reading view', 'Track sidebar', 'Module badge'],
-            correct: 1,
-          },
-        ],
-      },
-    ];
+
+// A lesson with no authored sections has nothing to teach in Learn mode. The
+// previous fallback invented a section whose two "check" questions were
+// 'This lesson is titled X' (True/False) and 'Which view contains the full
+// lesson text?' — neither about the subject, one quizzing the LMS's own UI.
+// With Learn as the default tab that meant 39 of 56 network lessons opened on
+// fake questions. Now the Learn tab is simply not offered.
+const hasLearnMode = authoredSections.length > 0;
+const outlineSections = authoredSections;
 ---
 
 <AppShell
@@ -112,37 +96,45 @@ const outlineSections = authoredSections.length
 
   <div class="lesson-view-toggle" data-lesson-toggle>
       <div class="lesson-view-toggle__buttons" role="tablist" aria-label="Lesson view">
-        <button type="button" class="lvt-btn is-active" data-view="outline" role="tab" id="tab-outline" aria-selected="true" aria-controls="panel-outline">
-          <span aria-hidden="true">▤</span> Learn
-        </button>
-        <button type="button" class="lvt-btn" data-view="reading" role="tab" id="tab-reading" aria-selected="false" aria-controls="panel-reading">
+        {hasLearnMode && (
+          <button type="button" class="lvt-btn is-active" data-view="outline" role="tab" id="tab-outline" aria-selected="true" aria-controls="panel-outline">
+            <span aria-hidden="true">▤</span> Learn
+          </button>
+        )}
+        <button type="button" class={`lvt-btn${hasLearnMode ? '' : ' is-active'}`} data-view="reading" role="tab" id="tab-reading" aria-selected={hasLearnMode ? 'false' : 'true'} aria-controls="panel-reading">
           <span aria-hidden="true">≡</span> Read
         </button>
       </div>
-      <div class="lesson-view-toggle__progress" data-outline-indicator>
-        <span data-outline-completed>0</span> of <span data-outline-total={outlineSections.length}>{outlineSections.length}</span> sections complete
-      </div>
+      {hasLearnMode && (
+        <div class="lesson-view-toggle__progress" data-outline-indicator>
+          <span data-outline-completed>0</span> of <span data-outline-total={outlineSections.length}>{outlineSections.length}</span> sections complete
+        </div>
+      )}
     </div>
 
-  <section class="lesson-outline" data-view-pane="outline" role="tabpanel" id="panel-outline" aria-labelledby="tab-outline">
-    <OutlineView
-      client:only="react"
-      lessonSlug={lesson.slug}
-      sections={outlineSections}
-    />
-  </section>
+  {hasLearnMode && (
+    <section class="lesson-outline" data-view-pane="outline" role="tabpanel" id="panel-outline" aria-labelledby="tab-outline">
+      <OutlineView
+        client:only="react"
+        lessonSlug={lesson.slug}
+        sections={outlineSections}
+      />
+    </section>
+  )}
 
-  <section class="lesson-body lesson-body--reading" data-view-pane="reading" role="tabpanel" id="panel-reading" aria-labelledby="tab-reading" hidden>
-    <div class="lesson-reading-layout">
+  <section class="lesson-body lesson-body--reading" data-view-pane="reading" role="tabpanel" id="panel-reading" aria-labelledby="tab-reading" hidden={hasLearnMode}>
+    <div class={`lesson-reading-layout${hasLearnMode ? "" : " lesson-reading-layout--norail"}`}>
       <div class="lesson-reading-main">
         <ReadAloud client:idle />
         <div data-reading-content>
           <Content components={{ Callout, CodeBlock }} />
         </div>
       </div>
-      <aside class="lesson-reading-rail">
-        <ReadingProgressRail client:only="react" lessonSlug={lesson.slug} sections={outlineSections} />
-      </aside>
+      {hasLearnMode && (
+        <aside class="lesson-reading-rail">
+          <ReadingProgressRail client:only="react" lessonSlug={lesson.slug} sections={outlineSections} />
+        </aside>
+      )}
     </div>
   </section>
 
