@@ -20,7 +20,7 @@ if (!getTrackDetailData) {
   process.exit(1);
 }
 
-const tracks = ['network-engineer', 'tech-plus', 'pc-technician'];
+const tracks = ['network-engineer', 'tech-plus', 'pc-technician', 'cybersecurity-foundations'];
 
 console.log('===============================================================');
 console.log('PROGRAMMATIC TRACK MODULE & ACTIVITY COUNT PARITY REPORT');

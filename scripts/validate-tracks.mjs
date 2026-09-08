@@ -134,8 +134,9 @@ export const validateTrackModuleMappings = () => {
         errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} order '${orderRaw}' is not an integer.`);
       }
 
-      // Check for duplicate order values within the same collection and module
-      if (moduleId && typeof orderRaw !== 'undefined' && /^-?\d+$/.test(String(orderRaw))) {
+      // Check for duplicate order values within the same collection and module (ignore drafted/inactive entries)
+      const isDraftOrInactive = fm.draft === 'true' || fm.active === 'false' || fm.isDraft === 'true';
+      if (!isDraftOrInactive && moduleId && typeof orderRaw !== 'undefined' && /^-?\d+$/.test(String(orderRaw))) {
         const orderKey = `${moduleId}:${collection.name}:${orderRaw}`;
         if (moduleOrders.has(orderKey)) {
           const first = moduleOrders.get(orderKey);

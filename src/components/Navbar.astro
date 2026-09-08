@@ -3,6 +3,7 @@
 
 import type { AuthUser } from '../lib/auth';
 import AccessibilityPanel from './islands/AccessibilityPanel.tsx';
+import { LANGUAGES, DEFAULT_LANG } from '../i18n';
 
 interface Props {
   activePath?: string;
@@ -74,6 +75,19 @@ const isActive = (href: string) => {
       <div class="nav-session-pill" title="Your currently active certification track">
         <span class="nav-session-dot"></span>
         Active Track: {activeTrackLabel}
+      </div>
+      <div id="beattie-lang-bar" class="lang-switch" role="group" data-i18n-aria-label="lang.label" aria-label="Language">
+        {LANGUAGES.map((l) => (
+          <button
+            class="lang-btn"
+            data-set-lang={l.code}
+            lang={l.code}
+            aria-pressed={l.code === DEFAULT_LANG ? 'true' : 'false'}
+            title={l.englishName}
+          >
+            {l.nativeName}
+          </button>
+        ))}
       </div>
       <AccessibilityPanel client:idle />
       <button

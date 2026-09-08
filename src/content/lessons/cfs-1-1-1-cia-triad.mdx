@@ -1,0 +1,176 @@
+---
+title: "The CIA Triad — Classifying What Broke"
+description: "Diagnose security incidents by classifying whether an attack targeted Confidentiality, Integrity, or Availability."
+slug: "cfs-1-1-1-cia-triad"
+track: "cybersecurity-foundations"
+moduleId: "cfs.fundamentals.security-concepts"
+order: 1
+difficulty: "Beginner"
+estMinutes: 20
+tags: ["CIA triad", "confidentiality", "integrity", "availability", "incident triage"]
+sections:
+  - id: confidentiality-secrets
+    title: "Confidentiality: Keeping Secrets Secret"
+    keyPoints:
+      - "Confidentiality ensures information is accessible only to authorized entities and processes."
+      - "Breaches include unauthorized exfiltration, accidental exposure, and credential theft."
+      - "Primary controls: strong encryption (at rest & in transit), granular access control (RBAC), and data masking."
+    check:
+      - prompt: "An attacker dumps an unencrypted SQL database containing student Social Security numbers onto a public forum. What core security pillar was directly violated?"
+        options:
+          - "Integrity"
+          - "Availability"
+          - "Confidentiality"
+          - "Non-repudiation"
+        correct: 2
+      - prompt: "Which technical control is the primary defense against confidentiality loss when a backup laptop is stolen from a technician's vehicle?"
+        options:
+          - "Full-disk encryption (FDE)"
+          - "Scheduled antivirus scans"
+          - "Redundant array of independent disks (RAID)"
+          - "Host-based intrusion detection (HIDS)"
+        correct: 0
+  - id: integrity-trust
+    title: "Integrity: Trusting the Data"
+    keyPoints:
+      - "Integrity guarantees data and systems remain accurate, complete, and untampered by unauthorized actors."
+      - "Integrity violations include unauthorized alterations, man-in-the-middle packet manipulation, and malicious code injection."
+      - "Primary controls: cryptographic hash verification (SHA-256), digital signatures, and audit trails."
+    check:
+      - prompt: "A threat actor intercepts an enterprise firmware update file and injects a backdoor before administrators install it on core switches. What security property was violated?"
+        options:
+          - "Confidentiality"
+          - "Integrity"
+          - "Availability"
+          - "Auditability"
+        correct: 1
+      - prompt: "How does a cybersecurity technician mathematically verify that a forensic disk image has not been altered during an investigation?"
+        options:
+          - "By inspecting file creation timestamps in File Explorer"
+          - "By comparing pre- and post-acquisition SHA-256 cryptographic hashes"
+          - "By testing the disk in a virtual machine"
+          - "By scanning the partition with anti-malware software"
+        correct: 1
+  - id: availability-uptime
+    title: "Availability: Keeping Systems Reachable"
+    keyPoints:
+      - "Availability ensures authorized users have timely, reliable access to critical assets and services."
+      - "Threats include volumetric DDoS attacks, ransomware file locking, hardware failures, and environmental disruption."
+      - "Primary controls: load balancing, automated failover clustering, offline backups, and power redundancy (UPS/generators)."
+    check:
+      - prompt: "A botnet floods a regional hospital's DNS resolvers with UDP packets, preventing ambulances from querying patient dispatch records. Which CIA property is compromised?"
+        options:
+          - "Confidentiality"
+          - "Integrity"
+          - "Availability"
+          - "Authorization"
+        correct: 2
+      - prompt: "A modern enterprise ransomware group encrypts local databases and exfiltrates proprietary schematics for double extortion. Which properties of the CIA triad were attacked?"
+        options:
+          - "Only Availability"
+          - "Only Confidentiality"
+          - "Both Confidentiality and Availability"
+          - "Neither; ransomware is strictly an Integrity flaw"
+        correct: 2
+domains:
+  - domainId: "cyber.foundations"
+    weight: 1
+---
+
+import Callout from '../../components/Callout.astro';
+
+When a major breach hits the news, commentators love to throw around dramatic terms like "cyber warfare" or "sophisticated state-sponsored APTs." 
+
+In the security operations center (SOC), professional analysts cut through the noise with a single foundational framework: **The CIA Triad**.
+
+Every security policy, firewall rule, access permission, and incident response playbook exists to defend one (or more) of three fundamental properties: **Confidentiality**, **Integrity**, and **Availability**. 
+
+If you can accurately pinpoint which leg of the triad an adversary is attacking, you instantly know which tools and containment protocols to deploy.
+
+---
+
+## 1. Confidentiality: Restricting Access to Authorized Eyes
+
+**Confidentiality** is about privacy and secrecy. It guarantees that sensitive information is shielded from unauthorized individuals, entities, or automated processes.
+
+```
+       [Authorized User]  ---> (Passes Identity Check) ---> [Read Secret Data]
+       [Adversary / Snooper] -> [Block / Encrypted Ciphertext]
+```
+
+### Real-World Scenarios
+- **The Accidental Leak:** An administrator misconfigures an AWS S3 cloud storage bucket containing 50,000 internal employee payroll PDFs, leaving it open to the public internet without an API key or password.
+- **The Eavesdrop:** A technician connects their workstation to an open coffee shop Wi-Fi network with no VPN. An attacker running Wireshark captures cleartext HTTP session tokens.
+- **The Physical Loss:** A company laptop left in a rideshare trunk is found by someone who mounts the unencrypted NVMe drive onto an external dock and browses customer credit card files.
+
+### Key Defensive Controls
+1. **Encryption at Rest:** AES-256 full disk encryption (BitLocker, LUKS, FileVault). If an attacker steals the physical drive, the data is mathematically unreadable without the key.
+2. **Encryption in Transit:** TLS 1.3 for web traffic, SSHv2 for command-line management, and IPsec/WireGuard for virtual private networks.
+3. **Principle of Least Privilege (PoLP):** Users and service accounts receive only the exact permissions necessary to complete their job—no more, no less.
+
+<Callout type="info">
+**Technician Rule of Thumb:** If data was viewed, downloaded, or copied by someone who wasn't supposed to see it—even if they changed nothing and took nothing offline—**Confidentiality** has failed.
+</Callout>
+
+---
+
+## 2. Integrity: Ensuring Data and Systems Remain Untampered
+
+**Integrity** guarantees that data remains accurate, complete, authentic, and unmodified by unauthorized actors or unexpected errors.
+
+In cybersecurity, bad data can be infinitely more dangerous than missing data. If an attacker turns off a hospital's heart rate monitors (Availability), alarms sound immediately. But if an attacker secretly alters patient drug dosage numbers in a database from 5mg to 500mg without anyone noticing, that is a catastrophic **Integrity** disaster.
+
+```
+       [Source File: kernel.bin]  -- SHA-256 --> [8f4e2a...c019]
+                                                         |  (Match = Clean)
+       [Downloaded File]          -- SHA-256 --> [8f4e2a...c019]
+```
+
+### Real-World Scenarios
+- **The Financial Flip:** A rogue database admin executes an unauthorized `UPDATE accounts SET balance = balance + 100000 WHERE id = 42;`. The system didn't crash; the numbers were corrupted.
+- **Supply Chain Tampering:** Attackers compromise an open-source library repository and slip three lines of reverse-shell code into a software update downloaded by millions of developers worldwide.
+- **Network Spoofing:** An attacker poisons ARP caches on a local LAN switch to redirect financial traffic through their machine, modifying banking destination routing numbers on the fly before forwarding the packets.
+
+### Key Defensive Controls
+1. **Cryptographic Hashes:** One-way mathematical algorithms (such as SHA-256) produce a unique fixed-length digest of a file. If even a single bit of a 10GB ISO file changes, the entire hash changes completely (the avalanche effect).
+2. **Digital Signatures & PKI:** Cryptographic validation using public-key infrastructure proves both *who* authored a file and that it hasn't changed since signing.
+3. **Strict Change Auditing & File Integrity Monitoring (FIM):** Automated agents (e.g., OSSEC, Wazuh, Tripwire) continuously monitor critical system binaries (`/etc/shadow`, `/etc/pam.d`, `system32\drivers`) and alert the instant an unauthorized modification occurs.
+
+---
+
+## 3. Availability: Ensuring Reliable, Timely Access
+
+A system can have impenetrable confidentiality and mathematically pristine integrity, but if your legitimate staff and customers cannot reach it when they need it, the system is useless.
+
+**Availability** ensures that authorized users have prompt, dependable access to operational data, networks, and computing resources.
+
+```
+       [Normal Traffic: 500 req/sec]  ------> [Web Cluster (Online 99.99%)]
+       [DDoS Attack: 2,000,000 req/sec] ---> [Cloud Scrubbing / Rate Limiting]
+```
+
+### Real-World Scenarios
+- **Ransomware Extortion:** Malware executes on an enterprise domain controller, encrypting virtual hard disks (`.vhdx`) across all hypervisors with RSA-4096 keys. The files exist, but cannot be accessed.
+- **Volumetric DDoS:** A compromised IoT botnet blasts 800 Gbps of UDP amplification traffic at an e-commerce company's edge gateway, exhausting all available bandwidth during Black Friday sales.
+- **Hardware & Environmental Failure:** An air conditioning unit in a regional datacenter fails, causing rack temperatures to spike past 110°F. Thermal sensors automatically initiate emergency server shutdowns to prevent permanent silicon damage.
+
+### Key Defensive Controls
+1. **Redundancy & High Availability (HA):** N+1 clustering, redundant power supplies (dual UPS feeds and backup diesel generators), and multi-region cloud load balancers.
+2. **Immutable Offline Backups (3-2-1 Rule):** 3 copies of data, on 2 different media types, with 1 copy stored offline or offsite in an immutable (write-once, read-many) state to survive ransomware attacks.
+3. **DDoS Scrubbing & CDN Caching:** Distributed edge networks (e.g., Cloudflare, Akamai) that absorb and scrub malicious volumetric traffic before it saturates upstream ISP links.
+
+<Callout type="warn">
+**Double Extortion Warning:** Modern ransomware groups rarely attack only one pillar. They first quietly steal hundreds of gigabytes of proprietary documents over several weeks (**Confidentiality Violation**), and then execute disk encryption to shut down your business operations (**Availability Violation**). If you restore from backups, they threaten to publish your confidential data unless you pay the ransom.
+</Callout>
+
+---
+
+## Summary & Field Checklist
+
+| Pillar | Core Question | Primary Attack Example | Primary Defense |
+| :--- | :--- | :--- | :--- |
+| **Confidentiality** | *Can unauthorized people read this?* | Data breach, credential sniffing, eavesdropping | AES-256 encryption, MFA, Least Privilege RBAC |
+| **Integrity** | *Has this been modified or tampered with?* | SQL injection data change, poisoned firmware | SHA-256 checksums, digital signatures, FIM |
+| **Availability** | *Can legitimate users access it right now?* | DDoS attack, ransomware encryption, power outage | Clustering, load balancing, offline 3-2-1 backups |
+
+When you proceed to the checkpoint quiz, read each scenario carefully. Identify the **first** and **primary** point of failure before selecting your classification.

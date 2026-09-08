@@ -8,7 +8,7 @@ import '../styles/legacy-compat.css';
 // on the top-level `<html>` element so legacy-compat styles (scoped) apply only
 // to that page. Keep this limited to single-page visual testing; do not enable
 // site-wide or persist across sessions.
-import { LANGUAGES, allDictionaries, DEFAULT_LANG } from '../i18n';
+import { LANGUAGES, allDictionaries } from '../i18n';
 
 const { title = 'Beattie Tech', legacySkin = false } = Astro.props;
 
@@ -68,20 +68,7 @@ const rtlLangs = LANGUAGES.filter((l) => l.dir === 'rtl').map((l) => l.code);
   <body>
     <slot />
 
-    <!-- Floating Global Language Selector for ESL Students -->
-    <div id="beattie-lang-bar" class="beattie-lang-float" role="group" data-i18n-aria-label="lang.label" aria-label="Language">
-      {LANGUAGES.map((l) => (
-        <button
-          class="lang-btn"
-          data-set-lang={l.code}
-          lang={l.code}
-          aria-pressed={l.code === DEFAULT_LANG ? 'true' : 'false'}
-          title={l.englishName}
-        >
-          {l.nativeName}
-        </button>
-      ))}
-    </div>
+    <!-- Language selector now lives in the top nav (see Navbar.astro). -->
 
     <script>
       document.documentElement.classList.add('js');

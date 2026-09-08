@@ -256,11 +256,6 @@ export default function TrackModuleList({ modules }: TrackModuleListProps) {
                           {unitMastered ? (
                             <span
                               className="badge badge--completed"
-                              style={{
-                                background: 'rgba(16, 185, 129, 0.15)',
-                                color: '#10b981',
-                                border: '1px solid rgba(16, 185, 129, 0.3)',
-                              }}
                             >
                               ✓ Unit Mastered
                             </span>
@@ -297,22 +292,11 @@ export default function TrackModuleList({ modules }: TrackModuleListProps) {
                                 {isLessonComplete && (
                                   <span
                                     className="badge badge--completed"
-                                    style={{
-                                      background: 'rgba(16, 185, 129, 0.15)',
-                                      color: '#10b981',
-                                      border: '1px solid rgba(16, 185, 129, 0.3)',
-                                      fontSize: '11px',
-                                      padding: '2px 8px',
-                                    }}
                                   >
                                     ✓ Completed
                                   </span>
                                 )}
                               </div>
-                              <p className="concept-step-desc">
-                                {unit.lesson.description ||
-                                  'Study core foundational concepts before taking the checkpoint quiz.'}
-                              </p>
                             </div>
                             <div className="concept-step-action">
                               {isUnlocked ? (
@@ -326,7 +310,6 @@ export default function TrackModuleList({ modules }: TrackModuleListProps) {
                                   aria-disabled="true"
                                   role="status"
                                   aria-label={`Locked: ${unit.lesson.title} — Complete previous section to unlock`}
-                                  style={{ cursor: 'not-allowed', opacity: 0.6 }}
                                 >
                                   <span>🔒 Locked</span>
                                 </span>
@@ -351,13 +334,6 @@ export default function TrackModuleList({ modules }: TrackModuleListProps) {
                                 {isQuizComplete ? (
                                   <span
                                     className="badge badge--completed"
-                                    style={{
-                                      background: 'rgba(16, 185, 129, 0.15)',
-                                      color: '#10b981',
-                                      border: '1px solid rgba(16, 185, 129, 0.3)',
-                                      fontSize: '11px',
-                                      padding: '2px 8px',
-                                    }}
                                   >
                                     ✓ Passed
                                   </span>
@@ -376,10 +352,6 @@ export default function TrackModuleList({ modules }: TrackModuleListProps) {
                                   </span>
                                 ) : null}
                               </div>
-                              <p className="concept-step-desc">
-                                {unit.quiz.description ||
-                                  'Test your understanding of this concept with the checkpoint quiz.'}
-                              </p>
                             </div>
                             <div className="concept-step-action">
                               {isUnlocked ? (
@@ -393,7 +365,6 @@ export default function TrackModuleList({ modules }: TrackModuleListProps) {
                                   aria-disabled="true"
                                   role="status"
                                   aria-label={`Locked: ${unit.quiz.title} — Complete previous section to unlock`}
-                                  style={{ cursor: 'not-allowed', opacity: 0.6 }}
                                 >
                                   <span>🔒 Locked</span>
                                 </span>
@@ -428,11 +399,6 @@ export default function TrackModuleList({ modules }: TrackModuleListProps) {
                       {isComplete && (
                         <span
                           className="badge badge--completed"
-                          style={{
-                            background: 'rgba(16, 185, 129, 0.15)',
-                            color: '#10b981',
-                            border: '1px solid rgba(16, 185, 129, 0.3)',
-                          }}
                         >
                           ✓ Completed
                         </span>
@@ -454,7 +420,6 @@ export default function TrackModuleList({ modules }: TrackModuleListProps) {
                           aria-disabled="true"
                           role="status"
                           aria-label={`Locked: ${activity.title} — Complete previous section to unlock`}
-                          style={{ cursor: 'not-allowed', opacity: 0.6 }}
                         >
                           <span>🔒 Locked</span>
                         </span>

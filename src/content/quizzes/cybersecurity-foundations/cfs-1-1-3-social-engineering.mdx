@@ -1,0 +1,75 @@
+---
+title: "Social Engineering & Human Vectors Checkpoint"
+description: "Demonstrate mastery in detecting psychological attack vectors, phishing taxonomy, and human-layer defense protocols."
+slug: "cfs-1-1-3-social-engineering"
+track: "cybersecurity-foundations"
+moduleId: "cfs.fundamentals.security-concepts"
+order: 3
+difficulty: "Beginner"
+estMinutes: 10
+passThreshold: 70
+tags: ["social engineering", "phishing", "checkpoint", "security fundamentals"]
+hints:
+  - "Watch for psychological triggers like urgency, authority, and fear."
+  - "Remember the difference between spear phishing (specific target) and whaling (executives)."
+checklist:
+  - "Analyzed social engineering lures"
+  - "Identified attack vector classifications"
+  - "Applied out-of-band verification principles"
+domains:
+  - domainId: "cyber.foundations"
+    weight: 1
+questions:
+  - id: "q1"
+    type: "single"
+    prompt: "An attacker calls an administrative assistant claiming to be a district superintendent demanding urgent password resets before an impending board audit. What two psychological triggers are being deployed?"
+    options:
+      - "Authority and Urgency"
+      - "Scarcity and Sympathy"
+      - "Consensus and Familiarity"
+      - "Greed and Curiosity"
+    correctIndex: 0
+    explanation: "Impersonating high-ranking executives leverages authority, while imposing a rapid deadline invokes urgency to pressure victims into bypassing protocols."
+  - id: "q2"
+    type: "single"
+    prompt: "Which attack vector specifically describes highly targeted spear phishing directed at high-level executives or board members?"
+    options:
+      - "Smishing"
+      - "Vishing"
+      - "Whaling"
+      - "Baiting"
+    correctIndex: 2
+    explanation: "Whaling is a specialized spear phishing attack crafted specifically to compromise senior executive accounts (C-suite)."
+  - id: "q3"
+    type: "single"
+    prompt: "An adversary uses an automated script to trigger dozens of MFA push alerts on a technician's mobile phone at 3:00 AM until the technician accidentally approves one. What modern attack is this?"
+    options:
+      - "MFA Fatigue (Push Prompt Bombing)"
+      - "Shoulder Surfing"
+      - "Watering Hole Attack"
+      - "Tailgating"
+    correctIndex: 0
+    explanation: "MFA fatigue exploits human exhaustion and frustration by overwhelming the user with repeated push notifications until they approve the login."
+  - id: "q4"
+    type: "single"
+    prompt: "What is the primary technical reason FIDO2 / WebAuthn hardware security keys are immune to reverse-proxy phishing kits like Evilginx?"
+    options:
+      - "They contain a battery that disables radio signals"
+      - "They cryptographically bind authentication tokens to the authentic browser domain URL"
+      - "They scramble the user's password into random characters"
+      - "They notify the police automatically when plugged in"
+    correctIndex: 1
+    explanation: "FIDO2 keys use origin-bound public key cryptography; if the browser is connected to a spoofed proxy domain, the hardware key refuses to release the token."
+  - id: "q5"
+    type: "single"
+    prompt: "An employee receives an email requesting that future direct deposit salary payments be sent to a new bank account. What is the mandatory defensive procedure?"
+    options:
+      - "Reply to the email immediately asking for a scan of their driver's license"
+      - "Update the account immediately to avoid delaying employee compensation"
+      - "Perform out-of-band verification by contacting the employee using a verified phone number from the internal directory"
+      - "Forward the email to all company employees to ask if anyone recognizes the bank"
+    correctIndex: 2
+    explanation: "Out-of-band verification ensures sensitive financial or credential changes are confirmed over an independent, trusted channel rather than trusting the inbound message."
+---
+
+Checkpoint quiz testing your ability to spot social engineering lures and execute human-layer defense procedures.

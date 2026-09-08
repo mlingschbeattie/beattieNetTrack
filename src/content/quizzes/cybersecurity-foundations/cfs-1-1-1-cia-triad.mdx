@@ -1,0 +1,75 @@
+---
+title: "The CIA Triad Checkpoint"
+description: "Demonstrate mastery in classifying cyber incidents and determining defensive controls using the CIA Triad."
+slug: "cfs-1-1-1-cia-triad"
+track: "cybersecurity-foundations"
+moduleId: "cfs.fundamentals.security-concepts"
+order: 1
+difficulty: "Beginner"
+estMinutes: 10
+passThreshold: 70
+tags: ["CIA triad", "checkpoint", "security fundamentals"]
+hints:
+  - "Ask whether data was exposed (Confidentiality), altered (Integrity), or made inaccessible (Availability)."
+  - "Look for what the primary impact is in the scenario."
+checklist:
+  - "Analyzed each breach scenario"
+  - "Selected the primary failure pillar"
+  - "Reviewed corrective explanations"
+domains:
+  - domainId: "cyber.foundations"
+    weight: 1
+questions:
+  - id: "q1"
+    type: "single"
+    prompt: "An adversary uses credential stuffing to gain access to an internal human resources portal and exports the salary history of all enterprise employees. Which CIA property was primarily violated?"
+    options:
+      - "Integrity"
+      - "Availability"
+      - "Confidentiality"
+      - "Non-repudiation"
+    correctIndex: 2
+    explanation: "Confidentiality protects data from unauthorized viewing or disclosure. Exporting salary records without authorization directly violates confidentiality."
+  - id: "q2"
+    type: "single"
+    prompt: "During a routine audit, a systems analyst discovers that the hash of the system authentication binary (/bin/login) does not match the official vendor release hash. What type of security failure does this indicate?"
+    options:
+      - "Integrity violation"
+      - "Availability failure"
+      - "Confidentiality breach"
+      - "Denial of service"
+    correctIndex: 0
+    explanation: "A mismatch in cryptographic hashes proves that the file has been altered or replaced by an untrusted version, which is a direct integrity violation."
+  - id: "q3"
+    type: "single"
+    prompt: "A distributed denial of service (DDoS) SYN flood attacks a bank's public API gateway, causing the service to drop legitimate connection requests from mobile banking apps. What is the impact?"
+    options:
+      - "Loss of Confidentiality — attacker can read customer accounts"
+      - "Loss of Availability — legitimate users cannot access the service"
+      - "Loss of Integrity — transaction amounts are being changed"
+      - "Loss of Authentication — passwords are now exposed"
+    correctIndex: 1
+    explanation: "A denial of service attack targets system availability by exhausting resources so legitimate users cannot reach the application."
+  - id: "q4"
+    type: "single"
+    prompt: "Which technical control provides the strongest defense against loss of Confidentiality if an encrypted backup tape is physically lost during transit to offsite storage?"
+    options:
+      - "AES-256 encryption with securely stored keys"
+      - "A courier tracking number"
+      - "RAID 1 mirror replication"
+      - "MD5 checksum verification"
+    correctIndex: 0
+    explanation: "Encryption at rest renders data completely unreadable to unauthorized parties even if the physical media is lost or stolen."
+  - id: "q5"
+    type: "single"
+    prompt: "An attacker performs a Man-in-the-Middle (MitM) attack and alters DNS response packets so that accounting queries for 'portal.bank.local' resolve to a malicious cloned server. Which primary property was violated during packet alteration?"
+    options:
+      - "Availability"
+      - "Integrity"
+      - "Auditing"
+      - "Confidentiality"
+    correctIndex: 1
+    explanation: "Modifying network packets in transit so that legitimate destinations are changed is an active tampering attack against data integrity."
+---
+
+Checkpoint quiz evaluating your ability to diagnose security incidents against the CIA Triad.

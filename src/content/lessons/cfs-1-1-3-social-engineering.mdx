@@ -1,0 +1,183 @@
+---
+title: "Social Engineering & Human Vectors"
+description: "Analyze how adversaries exploit human psychology to bypass technical controls, and master defensive protocols against phishing, pretexting, and credential harvesting."
+slug: "cfs-1-1-3-social-engineering"
+track: "cybersecurity-foundations"
+moduleId: "cfs.fundamentals.security-concepts"
+order: 3
+difficulty: "Beginner"
+estMinutes: 20
+tags: ["social engineering", "phishing", "pretexting", "human factors", "MFA"]
+sections:
+  - id: psychological-triggers
+    title: "The Human Element: Psychological Exploitation"
+    keyPoints:
+      - "Social engineering is the psychological manipulation of individuals into performing actions or divulging confidential data."
+      - "Adversaries target human cognitive biases: urgency, authority, fear, consensus, and helpfulness."
+      - "Attackers target people because humans are frequently the weakest link in an otherwise hardened perimeter."
+    check:
+      - prompt: "An employee receives an email claiming to be from the CEO marked 'CONFIDENTIAL & URGENT: Wire transfer required within 15 minutes to close acquisition.' Which primary psychological levers are being exploited?"
+        options:
+          - "Authority and Urgency"
+          - "Consensus and Scarcity"
+          - "Familiarity and Sympathy"
+          - "Technical Complexity and Logic"
+        correct: 0
+      - prompt: "Why do threat actors frequently impersonate internal IT help desk technicians when calling employees?"
+        options:
+          - "IT technicians are trusted authorities who routinely ask for technical access"
+          - "IT technicians are legally required to accept all calls"
+          - "Help desk numbers cannot be spoofed by PBX systems"
+          - "Help desk staff have lower network bandwidth limits"
+        correct: 0
+  - id: attack-vectors
+    title: "Phishing Taxonomy and Social Engineering Vectors"
+    keyPoints:
+      - "Phishing vs Spear Phishing: broad, opportunistic scams casting a wide net, versus tailored attacks researched against specific individuals or organizations."
+      - "Whaling: High-stakes spear phishing aimed directly at senior executives or board members."
+      - "Vishing (voice) & Smishing (SMS): Using phone systems and cellular text messaging to deliver lures."
+      - "Baiting & Pretexting: Leaving infected USB drives in parking lots or inventing elaborate false identities."
+    check:
+      - prompt: "An attacker spends two weeks researching a chief financial officer's schedule on LinkedIn before sending a personalized email requesting a vendor payment invoice change. What specific attack vector is this?"
+        options:
+          - "Mass Phishing"
+          - "Whaling"
+          - "Smishing"
+          - "Watering Hole Attack"
+        correct: 1
+      - prompt: "A technician finds three unlabeled USB flash drives scattered in the employee cafeteria. What social engineering tactic is this?"
+        options:
+          - "Pretexting"
+          - "Baiting"
+          - "Vishing"
+          - "Tailgating"
+        correct: 1
+  - id: defensive-protocols
+    title: "Defensive Protocols: Hardening the Human Perimeter"
+    keyPoints:
+      - "Out-of-band verification: Always confirm unexpected requests through an independent, trusted communication channel."
+      - "Phishing-resistant MFA: FIDO2 / WebAuthn hardware security keys protect against reverse-proxy credential harvesting."
+      - "Zero-Trust verification: Never trust; always verify identity and intent, regardless of who claims to be on the other end."
+    check:
+      - prompt: "You receive an urgent phone call from someone claiming to be from Beattie Tech's network operations center asking for your one-time MFA pass code. What is your correct response?"
+        options:
+          - "Provide the code immediately so they can restore network services"
+          - "Refuse, hang up, and call the verified NOC extension listed in the official directory"
+          - "Ask them to spell their name and then give them the code"
+          - "Forward the code in an email instead"
+        correct: 1
+      - prompt: "What makes FIDO2 / WebAuthn hardware security keys superior to SMS or mobile push notifications against modern phishing kits?"
+        options:
+          - "They are made of tamper-proof steel"
+          - "They are cryptographically bound to the authentic domain URL and cannot be phished by proxy sites"
+          - "They never require the user to touch the device"
+          - "They do not require an internet connection to function"
+        correct: 1
+domains:
+  - domainId: "cyber.foundations"
+    weight: 1
+---
+
+import Callout from '../../components/Callout.astro';
+
+Security engineers can deploy next-generation firewalls, isolate networks with zero-trust microsegmentation, and enforce AES-256 encryption. 
+
+Yet, an attacker can bypass billions of dollars in technical defenses with a single 30-second phone call:
+
+> *"Hi, this is Sarah from Executive IT Services. We see unauthorized login attempts on the Vice President's account, and we need your six-digit verification code to reset the domain policy right now, or your department will be locked out of tomorrow's board presentation."*
+
+**Social engineering** is the art of manipulating people into performing actions or divulging confidential information. Rather than finding bugs in code, social engineers exploit bugs in the human operating system.
+
+---
+
+## 1. The Psychological Triggers
+
+Experienced threat actors rarely use random tricks. They weaponize well-documented human psychological instincts:
+
+```
+   [ URGENCY ]     ---> "Your account will be terminated in 30 minutes!"
+   [ AUTHORITY ]   ---> "I am calling on behalf of the Chief Information Officer."
+   [ FEAR ]        ---> "Failure to respond constitutes a direct regulatory compliance violation."
+   [ HELPFULNESS ] ---> "I'm just a junior contractor trying to finish this report before my shift ends."
+   [ CURIOSITY ]   ---> "CONFIDENTIAL: 2026 Staff Layoffs & Salary Restructuring.xlsx"
+```
+
+### Why Do These Work?
+When humans experience urgency or fear, the brain's rational processing centers are suppressed by stress responses. People bypass normal skepticism, skip verification protocols, and act impulsively to relieve the discomfort or avoid punishment.
+
+---
+
+## 2. Attack Vectors and Taxonomy
+
+In the modern enterprise, social engineering takes many forms depending on the target's value and accessibility:
+
+```
+                      +-----------------------------+
+                      | SOCIAL ENGINEERING VECTORS  |
+                      +-----------------------------+
+                                     |
+         +---------------------------+---------------------------+
+         |                           |                           |
+   [ DIGITAL ]                  [ VOICE / CELL ]            [ PHYSICAL ]
+   • Phishing (Mass)           • Vishing (Voice/Deepfake)  • Baiting (USB Drop)
+   • Spear Phishing (Targeted) • Smishing (SMS Lures)      • Pretexting (Impersonation)
+   • Whaling (C-Suite)                                     • Tailgating (Piggybacking)
+```
+
+### 1. Phishing vs. Spear Phishing vs. Whaling
+- **Phishing:** Untargeted bulk emails sent to millions of addresses (e.g., generic fake Amazon delivery notifications or bank account suspension warnings).
+- **Spear Phishing:** Highly customized attacks targeting a specific employee. The attacker researches the victim using open-source intelligence (OSINT)—scraping LinkedIn for job titles, Twitter/X for interests, and corporate websites for current vendor partners.
+- **Whaling:** High-stakes spear phishing directed exclusively at C-level executives (CEO, CFO, CTO) or board members, often attempting to initiate multimillion-dollar fraudulent wire transfers (Business Email Compromise - BEC).
+
+### 2. Modern Lures: Reverse Proxies & MFA Fatigue
+Traditional phishing used to involve clone login pages that captured usernames and passwords. Today, with organizations requiring Multi-Factor Authentication, adversaries have adapted:
+- **Reverse Proxy Phishing (Evilginx):** The attacker sets up a proxy server between the victim and the real service (e.g., Microsoft 365). The victim enters their password and MFA code; the proxy forwards them to Microsoft, gets the valid session token, and steals the authenticated cookie.
+- **MFA Fatigue (Push Notification Prompt Bombing):** An attacker obtains an employee's password and repeatedly triggers dozens of push notifications on the user's phone at 2:00 AM. Exhausted and confused, the victim finally taps "Approve" just to make the alerts stop.
+
+### 3. Physical Vectors: Baiting & Pretexting
+- **Baiting:** An attacker drops branded USB drives labeled `"Executive Bonus Matrix 2026"` in the company parking lot or cafeteria. Human curiosity leads someone to plug it into a networked workstation, instantly executing an autorun payload or malicious macro.
+- **Pretexting:** Inventing an elaborate fake backstory. An attacker dresses in high-visibility clothing, carries a clipboard and a ladder, and claims to be from the telecommunications company to walk straight past security desks into the server room.
+
+---
+
+## 3. The Defensive Playbook: Hardening the Human Layer
+
+Technical tools can filter malicious payloads, but the ultimate defense against social engineering is human verification discipline.
+
+```
+       [Suspicious Request Arrives]
+                    |
+                    v
+    [STEP 1: Check Emotional Pulse]  ---> Feeling rushed, afraid, or unusually flattered? PAUSE.
+                    |
+                    v
+    [STEP 2: Inspect Headers & Links] --> Sender domain spoofed? Typosquatting (e.g., @beattie-tech.org)?
+                    |
+                    v
+    [STEP 3: Out-of-Band Verify]     --> Call sender on a verified, known-good internal directory extension.
+                    |
+                    v
+    [STEP 4: Non-Punitive Reporting]  --> Alert the SOC team immediately via the phishing report button.
+```
+
+### 1. Out-of-Band Verification
+If an email or phone call asks you to change bank routing numbers, divulge passwords, or bypass access controls, **never reply within that same thread or call**. 
+- Hang up. 
+- Look up the person in the company's verified internal employee directory. 
+- Contact them through an independent, verified channel (e.g., direct desk phone or Slack/Teams message) to verify the request.
+
+### 2. Phishing-Resistant MFA (FIDO2 / WebAuthn)
+Standard SMS codes and 6-digit authenticator app numbers can be intercepted by modern reverse-proxy phishing sites. FIDO2 hardware keys (e.g., YubiKeys) use origin-bound public key cryptography: the hardware key only releases authentication tokens to the exact domain registered with the browser. Even if an attacker tricks you into visiting `login.micros0ft.com`, the hardware key refuses to authenticate because the domain name does not match.
+
+<Callout type="info">
+**Cultural Rule in High-Performing SOCs:** Never shame or punish an employee who reports falling for a phishing simulation or incident. If students or employees fear punishment, they will hide breaches until malware has encrypted the entire enterprise. Encourage transparent, instant reporting.
+</Callout>
+
+---
+
+## Summary Checklist
+
+- [ ] Recognize urgency and authority as attack warning flags.
+- [ ] Differentiate between mass phishing, targeted spear phishing, and executive whaling.
+- [ ] Enforce out-of-band verification on all sensitive financial and access requests.
+- [ ] Understand how FIDO2 hardware keys neutralize credential harvesting.
