@@ -12,9 +12,98 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+description: "Why concatenating user input into a query lets an attacker rewrite it, how parameterized queries end the whole vulnerability class, and why input filtering and least privilege are backup controls rather than the fix."
+tags: ["security+", "SY0-701", "SQL injection", "OWASP", "web security", "input validation"]
+sections:
+  - id: why-injection-works
+    title: "Injection Is a Confusion of Data and Code"
+    keyPoints:
+      - "Building a query by gluing strings together lets user input become part of the SQL statement itself."
+      - "A quote character ends the intended string early; everything after it is read as new SQL by the database."
+      - "The comment marker (--) truncates the rest of the statement, which is how a password check gets discarded."
+    check:
+      - prompt: "What is the root cause of SQL injection?"
+        options:
+          - "The database engine is running an outdated version"
+          - "User input is concatenated into a query, so data becomes executable code"
+          - "The connection to the database is not encrypted"
+          - "Passwords are stored without a salt"
+        correct: 1
+      - prompt: "An attacker enters admin' -- as the username. Why does the password check stop mattering?"
+        options:
+          - "The quote escapes the password field into a wildcard"
+          - "The database automatically trusts any admin account"
+          - "The -- comments out the remainder of the statement, including the password condition"
+          - "The apostrophe forces the query to return every row in the table"
+        correct: 2
+  - id: parameterized-queries
+    title: "Parameterized Queries Are the Actual Fix"
+    keyPoints:
+      - "A parameterized query sends the SQL structure and the values separately, so input can never change the statement."
+      - "The database plans the query before it ever sees the parameter, which is why the attack surface disappears."
+      - "With placeholders in place, admin' -- is searched for as a literal username and simply finds nothing."
+    check:
+      - prompt: "Why does a parameterized query stop injection completely rather than just making it harder?"
+        options:
+          - "It strips dangerous characters out of the input before running"
+          - "The SQL statement is fixed before the input arrives, so input is only ever treated as a value"
+          - "It encrypts the input so the database cannot interpret it"
+          - "It runs the query with reduced database privileges"
+        correct: 1
+      - prompt: "With placeholders in use, what happens when someone submits admin' -- as a username?"
+        options:
+          - "The query fails with a syntax error"
+          - "The database logs the user in as admin"
+          - "The application searches for a user literally named admin' -- and finds none"
+          - "The input is silently truncated at the apostrophe"
+        correct: 2
+  - id: defense-in-depth
+    title: "Blind Injection and the Layers Behind the Fix"
+    keyPoints:
+      - "Blind injection extracts data without visible output, using true/false response differences or deliberate time delays."
+      - "Least privilege limits the damage: a web account that cannot DROP tables or read other schemas caps the blast radius."
+      - "Generic error pages deny the attacker the database feedback that makes exploitation fast."
+    check:
+      - prompt: "An injected payload containing SLEEP(5) makes the page take five seconds to respond. What has the attacker learned?"
+        options:
+          - "The database is under heavy load"
+          - "The injection works and the condition evaluated true, even with no data shown"
+          - "The connection timed out and must be retried"
+          - "The query was blocked by the web application firewall"
+        correct: 1
+      - prompt: "Why should the application's database account not own DROP or administrative rights?"
+        options:
+          - "It makes queries run measurably faster"
+          - "It is required before parameterized queries will work"
+          - "It limits what a successful injection can actually do"
+          - "It prevents the attacker from finding the injection point"
+        correct: 2
 ---
 
 import LegacyHtml from '../../components/LegacyHtml.astro';
+import Callout from '../../components/Callout.astro';
+
+## The Database Cannot Tell Your Data From Your Instructions
+
+A login form asks for a username. The code behind it builds a question for the database by pasting what you typed into the middle of a sentence:
+
+```sql
+SELECT * FROM users WHERE username='" + username + "' AND password='" + password + "'
+```
+
+Type `alice` and the database receives a perfectly ordinary query. Type `admin' --` and something different happens. Your apostrophe closes the string early, so the database stops reading your input as a name and starts reading it as SQL. The `--` that follows is a comment marker, which tells the database to ignore the rest of the line — including the entire password check.
+
+The query the database actually runs is:
+
+```sql
+SELECT * FROM users WHERE username='admin' --' AND password='anything'
+```
+
+It finds the admin row, never evaluates the password, and returns a match. Nobody guessed a credential. The attacker rewrote the question.
+
+That is the whole vulnerability, and it is worth being precise about the cause: the database is not broken and it was not tricked. It faithfully executed the statement the application handed it. The application is the thing that let user data become part of that statement.
+
+The demo below runs both a vulnerable and a protected version of the same login. Try the payload against each and watch the query that gets built.
 
 <LegacyHtml html={`<!doctype html>
 <html lang="en">
@@ -334,3 +423,59 @@ Result: If query takes 5+ seconds, condition was true. Data exfiltrated via timi
     <script type="module" src="site.js"></script>
   </body>
 </html>`} />
+
+## What an Attacker Does Next
+
+Bypassing a login is the demonstration. The real damage comes from the techniques built on the same flaw.
+
+**Union-based injection** appends a second query to the first. If a product lookup returns two columns, an attacker who supplies `1' UNION SELECT username, password FROM users --` gets the user table rendered into the product listing. The page is doing exactly what it was told.
+
+**Boolean-based blind injection** works when nothing is displayed. The attacker submits a condition — is the first character of the admin password greater than `m`? — and watches whether the page returns a normal result or an empty one. Each request leaks one bit. Automated, that reconstructs an entire database character by character.
+
+**Time-based blind injection** works when even the response is identical. The payload asks the database to pause: `1' AND SLEEP(5) --`. If the page takes five seconds, the condition was true. If it returns instantly, false. Same one-bit leak, now measured with a stopwatch, and it works against a page that displays nothing at all.
+
+The lesson in the blind variants is that hiding error messages is not a fix. It slows an attacker down. It does not stop one.
+
+## The Fix Is Structural
+
+**Parameterized queries** — also called prepared statements — end this vulnerability class outright:
+
+```python
+cursor.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
+```
+
+The SQL goes to the database as a fixed template with placeholders. The database parses and plans it *before* it has seen a single character of user input. The values arrive afterwards, bound to those placeholders as data. There is no point at which input could become part of the statement, because the statement was already finished.
+
+Now `admin' --` is just a username. The database looks for an account literally called `admin' --`, finds none, and returns nothing. The payload is not blocked or sanitized — it is simply meaningless, because it never reaches a SQL parser.
+
+<Callout type="exam">
+When a question asks for the best defense against SQL injection, the answer is parameterized queries or prepared statements — not input validation, not escaping, not a WAF. Those appear as distractors precisely because they are real controls that do not solve the root cause. An ORM counts as a correct answer when it uses parameterization underneath, which the mainstream ones do.
+</Callout>
+
+## The Layers Behind It
+
+Parameterization is the fix. These reduce what a miss costs you.
+
+**Least privilege.** The account your web application connects with should read and write the tables it needs and nothing else. No `DROP`, no access to other schemas, no administrative rights. When an injection does slip through, this is the difference between one leaked table and a destroyed database.
+
+**Generic error messages.** A stack trace naming the database engine, the table, and the failing column is free reconnaissance. Log the detail server-side; show the user something plain.
+
+**Input validation as a whitelist.** If a field must be a five-digit ZIP code, enforce that. This is genuinely useful — as a data-quality and defense-in-depth measure sitting behind parameterization, never as a substitute for it.
+
+**A web application firewall.** Useful for catching known payload shapes and buying time during patching. Attackers have been evading WAFs with encoding and comment tricks for two decades.
+
+<Callout type="warn">
+The response that makes things worse is fixing injection by filtering the input. Someone strips apostrophes, or blocks the word SELECT, or escapes quotes by hand, and the immediate test payload stops working — so the bug is marked resolved. It is not. Encodings, Unicode variants, double-encoding, and nested keywords all get past hand-rolled filters, and now the vulnerability is still there while everyone believes it was handled. The blacklist also breaks legitimate data: no O'Brien can register. Filtering is guessing at every bad input forever; parameterization removes the possibility. Fix the query construction, then validate input for its own reasons.
+</Callout>
+
+## Why This Matters
+
+SQL injection is decades old, thoroughly documented, and trivially preventable — and it still appears in the OWASP Top 10 because legacy code outlives the people who wrote it. It caused the Heartland and TalkTalk breaches and remains a staple finding in penetration tests. As a defender you will find it in code review by searching for string concatenation near a query, and you will recognise it in logs by the apostrophes and `UNION` keywords in request parameters. The pattern generalizes too: command injection, LDAP injection, and XPath injection are the same mistake in a different interpreter, and they have the same structural fix.
+
+## Ethical Use
+
+Test these techniques only against systems you own or have explicit written authorization to assess — a personal lab, a deliberately vulnerable application such as DVWA or WebGoat, or an engagement with a signed scope. Submitting injection payloads to a site you do not own is unauthorized access and is prosecuted as a crime in most jurisdictions, including under the Computer Fraud and Abuse Act in the United States. Curiosity is not a legal defense.
+
+## Key Terms
+
+SQL injection · concatenation · parameterized query · prepared statement · placeholder · bind variable · ORM · union-based injection · blind injection · boolean-based injection · time-based injection · comment marker · least privilege · input validation · whitelist · web application firewall · OWASP Top 10 · command injection

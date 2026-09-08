@@ -12,9 +12,88 @@ domains:
     weight: 0.8
   - domainId: nocti.security
     weight: 0.2
+description: "Static versus dynamic analysis, why compiled code loses names but never logic, and how malware analysis and anti-analysis tricks shape endpoint defense."
+tags: ["security+", "SY0-701", "reverse engineering", "malware analysis", "static analysis", "sandbox"]
+sections:
+  - id: static-vs-dynamic
+    title: "Static and Dynamic Analysis Answer Different Questions"
+    keyPoints:
+      - "Static analysis examines a file without running it — strings, imports, and disassembly."
+      - "Dynamic analysis runs the sample in an isolated environment and observes what it actually does."
+      - "Static analysis is safe but can be defeated by packing; dynamic analysis is revealing but must be contained."
+    check:
+      - prompt: "An analyst needs to know which domains a suspicious binary contacts, and the strings are obfuscated. What is the appropriate step?"
+        options:
+          - "Run it in an isolated sandbox and observe its network behaviour"
+          - "Execute it on the analyst's workstation and watch the traffic"
+          - "Rename the file and re-scan it with antivirus"
+          - "Conclude the sample is benign because no domains are visible"
+        correct: 0
+      - prompt: "Why can static analysis alone be insufficient for a packed sample?"
+        options:
+          - "Static tools cannot read binary files"
+          - "The real code is compressed or encrypted until runtime, so little is visible on disk"
+          - "Packing encrypts the file with the analyst's public key"
+          - "Static analysis only works on scripts, not executables"
+        correct: 1
+  - id: compiled-code
+    title: "Compilation Discards Names, Not Behaviour"
+    keyPoints:
+      - "Compiling to machine code strips variable names, comments, and structure, but the logic remains fully present."
+      - "A disassembler recovers instructions and a decompiler reconstructs approximate source, neither perfectly."
+      - "Obfuscation raises the cost of understanding code; it never makes the code unreadable."
+    check:
+      - prompt: "Why is embedding a secret key in a compiled application not a real protection?"
+        options:
+          - "Compilers refuse to include string literals"
+          - "The key must be present for the program to run, so it can be recovered from the binary or memory"
+          - "Antivirus removes hardcoded keys automatically"
+          - "Compiled code cannot store keys longer than 16 bytes"
+        correct: 1
+      - prompt: "What is lost when source code is compiled to a native binary?"
+        options:
+          - "The program's logic and control flow"
+          - "The ability to execute the program"
+          - "Variable names, comments, and much of the original structure"
+          - "All string and numeric constants"
+        correct: 2
+  - id: malware-and-defense
+    title: "From Analysis to Detection"
+    keyPoints:
+      - "Malware analysis produces indicators of compromise that feed detection rules and threat hunting."
+      - "Behavioural detection outlasts hash-based signatures, which one recompile defeats."
+      - "Samples must be handled in isolated environments, because a mistake here infects the analyst."
+    check:
+      - prompt: "Why does a file hash make a weaker detection than a behavioural rule?"
+        options:
+          - "Hashes take too long to compute at scale"
+          - "Any change to the file produces a new hash, while the behaviour stays the same"
+          - "Hashes cannot be shared between organizations"
+          - "Behavioural rules never produce false positives"
+        correct: 1
+      - prompt: "Malware detects a virtual machine and exits without doing anything. What is this behaviour called?"
+        options:
+          - "Packing"
+          - "Polymorphism"
+          - "Anti-analysis, or sandbox evasion"
+          - "Privilege escalation"
+        correct: 2
 ---
 
 import LegacyHtml from '../../components/LegacyHtml.astro';
+import Callout from '../../components/Callout.astro';
+
+## Working Out What a Program Does When Nobody Will Tell You
+
+You have a file. No source code, no documentation, and no reason to trust it. It might be malware pulled off an infected laptop, a vendor binary doing something unexpected on your network, or firmware from a device nobody supports any more.
+
+Reverse engineering is how you find out what it does.
+
+The thing worth understanding first is that compiling code does not hide it. A compiler translates source into machine instructions and throws away the parts that were only there for humans — variable names, comments, structure. The **logic survives completely**, because the logic is what the CPU has to execute. Every check, every key, every hardcoded address is still in there. It is just no longer labelled.
+
+That has a consequence people find uncomfortable: anything a program must do to run, an analyst can eventually find. A license check can be located. An embedded API key can be extracted. An obfuscated algorithm can be recovered. Obfuscation raises the cost of understanding. It never reaches zero readability, and for anything valuable enough to matter, someone will pay that cost.
+
+The exercises below walk through the standard workflow, starting with what a file will tell you before you ever run it.
 
 <LegacyHtml html={`<!doctype html>
 <html lang="en">
@@ -244,3 +323,55 @@ import LegacyHtml from '../../components/LegacyHtml.astro';
     <script type="module" src="site.js"></script>
   </body>
 </html>`} />
+
+## Static Analysis — Look Before You Run
+
+Static analysis examines the file without executing it. It is safe, it is fast, and it is always where you start.
+
+**Strings** is the cheapest useful step: pull every readable string out of the binary. URLs, file paths, registry keys, error messages, and occasionally credentials fall straight out. A great deal of triage is done here and nowhere else.
+
+**File type and headers** tell you what you are holding — the real format regardless of extension, the target architecture, the compiler, and the sections present.
+
+**Imports** are often the most revealing part. A binary that imports networking, cryptography, and process injection functions has announced most of its intentions before you read a single instruction.
+
+**Disassembly and decompilation** are the deep end. A disassembler such as Ghidra or IDA turns machine code back into assembly; a decompiler reconstructs approximate C-like source. Neither recovers the original — names and comments are gone for good — but both recover behaviour, which is what you came for.
+
+Static analysis has one significant limit: **packing**. Packed malware ships compressed or encrypted and unpacks itself in memory at runtime. On disk there is almost nothing to see — few strings, few imports, high entropy. Ironically, that emptiness is itself a strong signal, because ordinary software is not shaped like that.
+
+## Dynamic Analysis — Run It Somewhere It Cannot Hurt You
+
+When the file will not give up its secrets at rest, run it and watch. In an **isolated sandbox** — a VM with no route to anything you care about, snapshotted so it can be rolled back — you observe what it actually does: files created, registry keys set, processes spawned, and above all network connections, which reveal command-and-control infrastructure.
+
+Dynamic analysis beats packing outright, because the sample has to unpack itself to run, and at that moment the real code is sitting in memory where it can be dumped.
+
+The trade is containment. You are deliberately executing hostile code, and the isolation has to be real — no shared folders, no bridged networking, no credentials in the VM, and an awareness that VM escapes exist. A debugger adds the ability to stop mid-execution and inspect state, which is how the specific check or the decryption routine finally gives up its answer.
+
+<Callout type="exam">
+Static analysis examines a file without running it; dynamic analysis runs it under observation. Packing is the standard answer for why a binary has almost no readable strings. Sandbox evasion is malware detecting an analysis environment and refusing to act. And know why hash-based signatures are brittle — one recompile changes the hash while the behaviour is unchanged, which is the case for behavioural detection.
+</Callout>
+
+## Anti-Analysis, and What Defenders Do With Any of This
+
+Malware authors know the workflow, so they interfere with it. Samples check whether a debugger is attached, look for VM artifacts such as virtualized hardware names or small disks, watch for analysis tools in the process list, or simply sleep for twenty minutes to outlast an automated sandbox. Some detect the environment and behave harmlessly — the worst outcome, because it produces a confident report of nothing.
+
+**Polymorphic** and **metamorphic** malware go further, changing their own code on each infection so no two copies look alike.
+
+The defensive payoff is the reason all of this matters. Analysis produces **indicators of compromise** — domains, IP addresses, file paths, registry keys, hashes — that go into detection rules, block lists, and threat hunts. It answers the questions an organization actually asks after an incident: what did it do, what did it take, is it still here, and how do we detect it next time.
+
+And it explains why detection has moved toward behaviour. A hash identifies one exact file, so recompiling defeats it. A rule describing what the malware *does* — this process spawning that one, this sequence of registry writes — survives recompilation, repacking, and polymorphism, because the behaviour is the thing the attacker cannot change without changing the goal.
+
+<Callout type="warn">
+The response that makes things worse is analysing a live sample on a machine that matters. It happens under time pressure — the incident is active, spinning up a clean VM feels slow, so someone double-clicks the sample on a workstation "just to see," or opens it in a VM with a shared folder and a bridged network adapter mapped to the corporate LAN. Now the responder is patient zero for the second wave, and the evidence is contaminated. The subtler version is trusting a clean sandbox report: modern malware routinely detects analysis environments and does nothing, so "no malicious behaviour observed" means the sample did not act under those conditions — not that it is safe. Treat a quiet result as inconclusive and go back to static analysis, and never let an analysis environment touch a production network.
+</Callout>
+
+## Why This Matters
+
+Most defenders never fully reverse a binary, and nearly all of them use the first layer of this constantly: running strings on a suspicious attachment, checking a file's real type, submitting a hash to a threat intelligence service, reading a sandbox report and understanding what it did and did not prove. Those skills sit directly on the incident response path. Beyond that it opens genuine specializations — malware analysis, threat intelligence, vulnerability research, firmware and IoT security — and it sharpens ordinary defensive judgement, because knowing how little a compiled binary hides tells you exactly how much to trust client-side checks and embedded secrets.
+
+## Ethical Use
+
+Reverse engineer only software you own, software you have authorization to analyse, or samples handled through a legitimate incident response or research process. Analysing commercial software may also breach its licence terms or circumvention law independently of any security question, so check before you start. Live malware is genuinely dangerous and belongs in an isolated lab environment built for it, never on a production or personal machine — and never redistribute a sample outside a controlled channel, because sharing working malware causes real harm regardless of intent.
+
+## Key Terms
+
+reverse engineering · static analysis · dynamic analysis · strings · file header · imports · disassembler · decompiler · assembly · Ghidra · packing · entropy · unpacking · sandbox · virtual machine isolation · debugger · anti-analysis · sandbox evasion · anti-debugging · polymorphic malware · metamorphic malware · indicator of compromise · IOC · behavioural detection · signature-based detection · command and control

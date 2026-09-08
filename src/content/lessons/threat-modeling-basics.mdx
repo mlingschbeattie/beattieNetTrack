@@ -11,6 +11,70 @@ tags: ["threat modeling", "risk"]
 domains:
   - domainId: cyber.foundations
     weight: 1
+sections:
+  - id: assets-and-boundaries
+    title: "Assets First, Then Trust Boundaries"
+    keyPoints:
+      - "An asset is anything whose loss, exposure, or corruption causes harm — not just servers and databases."
+      - "An entry point is where data or control crosses from one trust zone into another."
+      - "Most attacks happen at trust boundaries, where untrusted input reaches a more trusted system."
+    check:
+      - prompt: "Why does threat modeling start with assets rather than with attacks?"
+        options:
+          - "Assets are easier to count than attacks"
+          - "Without knowing what causes harm if lost, you cannot judge which threats matter"
+          - "Attack techniques change too often to document"
+          - "Regulations require an asset inventory before any other step"
+        correct: 1
+      - prompt: "A web application accepts input from the internet and queries an internal database. Where is the critical trust boundary?"
+        options:
+          - "Between the database and its backup storage"
+          - "Between two employees on the same network"
+          - "Between the untrusted internet and the application that forwards data toward trusted storage"
+          - "Between the office Wi-Fi and the printer"
+        correct: 2
+  - id: stride
+    title: "STRIDE Turns Guesswork Into a Checklist"
+    keyPoints:
+      - "STRIDE covers spoofing, tampering, repudiation, information disclosure, denial of service, and elevation of privilege."
+      - "You apply the six categories to each entry point and asset rather than trying to imagine attacks freely."
+      - "The value is making threats visible so they can be prioritized — not solving all of them at once."
+    check:
+      - prompt: "An employee cancels orders and later denies doing it, and no logs exist to show otherwise. Which STRIDE category is this?"
+        options:
+          - "Repudiation"
+          - "Spoofing"
+          - "Tampering"
+          - "Information disclosure"
+        correct: 0
+      - prompt: "A normal user exploits a web application bug to gain database administrator rights. Which STRIDE category applies?"
+        options:
+          - "Denial of service"
+          - "Elevation of privilege"
+          - "Tampering"
+          - "Spoofing"
+        correct: 1
+  - id: prioritize
+    title: "The Deliverable Is a Prioritized List"
+    keyPoints:
+      - "Threats are ranked by likelihood times impact, so effort goes where risk is greatest."
+      - "The output is a short remediation backlog, not a guarantee of safety or a perfect document."
+      - "A threat model is revisited when the system changes, after incidents, and on a schedule."
+    check:
+      - prompt: "What is the practical output of a threat modeling session?"
+        options:
+          - "A certificate confirming the system is secure"
+          - "A prioritized list of threats that feeds a remediation backlog"
+          - "A complete list of every vulnerability in the codebase"
+          - "An incident response plan for after a breach"
+        correct: 1
+      - prompt: "When should an existing threat model be revisited?"
+        options:
+          - "Only when a regulator requests it"
+          - "Only after a confirmed breach"
+          - "Whenever the system changes, after incidents, and on a regular schedule"
+          - "Never — it is a one-time design activity"
+        correct: 2
 ---
 
 import Callout from '../../components/Callout.astro';
@@ -140,3 +204,11 @@ The goal is not a perfect document. It is a living habit of asking "what could g
 - The output of a threat model is a **prioritized list** of threats -- not a guarantee of safety, but a plan for getting safer
 - Threat modeling **scales to any size** -- a small business or solo project benefits as much as an enterprise
 - Revisit your threat model whenever the system changes, not just once at the start
+
+<Callout type="exam">
+Know STRIDE by its mappings, because that is how it gets tested: spoofing breaks authentication, tampering breaks integrity, repudiation breaks non-repudiation and points at logging, information disclosure breaks confidentiality, denial of service breaks availability, and elevation of privilege breaks authorization. Given a scenario, name the category and the control it calls for.
+</Callout>
+
+## Key Terms
+
+threat modeling · asset · entry point · trust boundary · data flow diagram · DFD · STRIDE · spoofing · tampering · repudiation · information disclosure · denial of service · elevation of privilege · likelihood · impact · risk · mitigation · least privilege · remediation backlog

@@ -12,9 +12,92 @@ domains:
     weight: 0.8
   - domainId: cyber.foundations
     weight: 0.2
+description: "Authentication, authorization, and the session that carries both — how session-based and token-based auth differ, and the fixation, hijacking, and lifecycle flaws that defeat a correct login."
+tags: ["security+", "SY0-701", "authentication", "authorization", "sessions", "MFA", "AAA"]
+sections:
+  - id: authn-authz-session
+    title: "Authentication, Authorization, and the Session Between Them"
+    keyPoints:
+      - "Authentication proves who you are. Authorization decides what you may do. They are separate checks."
+      - "HTTP is stateless, so a session identifier is what lets the server remember you between requests."
+      - "That identifier is a credential — anyone holding it is treated as you, with no password needed."
+    check:
+      - prompt: "A logged-in user requests an admin page and is refused. Which control rejected them?"
+        options:
+          - "Authentication, because their identity could not be confirmed"
+          - "Authorization, because their identity is known but lacks permission"
+          - "Accounting, because the action was logged"
+          - "Encryption, because the page is served over TLS"
+        correct: 1
+      - prompt: "Why is a stolen session token as useful to an attacker as a stolen password?"
+        options:
+          - "The token can be decrypted to reveal the password"
+          - "The token contains the user's MFA seed"
+          - "The token already represents an authenticated session, so no login is required"
+          - "Tokens never expire under any configuration"
+        correct: 2
+  - id: sessions-vs-tokens
+    title: "Session-Based and Token-Based Authentication"
+    keyPoints:
+      - "Session-based auth stores state on the server and gives the client an opaque identifier."
+      - "Token-based auth such as JWT carries signed claims in the token itself, so the server holds no state."
+      - "Stateless tokens are hard to revoke before expiry, which is why short lifetimes and refresh tokens exist."
+    check:
+      - prompt: "Why is immediate revocation harder with a stateless JWT than with a server-side session?"
+        options:
+          - "JWTs cannot be deleted from the client"
+          - "The server keeps no record of the token, so it accepts any valid signature until expiry"
+          - "JWTs are encrypted and cannot be inspected"
+          - "Revocation requires rotating the TLS certificate"
+        correct: 1
+      - prompt: "What does the signature on a JWT actually prove?"
+        options:
+          - "That the claims inside have not been altered since the server issued it"
+          - "That the contents are encrypted and unreadable"
+          - "That the user completed multi-factor authentication"
+          - "That the token has not yet expired"
+        correct: 0
+  - id: session-attacks
+    title: "Fixation, Hijacking, and Lifecycle"
+    keyPoints:
+      - "Session fixation is defeated by issuing a brand-new session identifier at the moment privilege changes."
+      - "Identifiers must be long and cryptographically random, because predictable values can simply be guessed."
+      - "Logout must invalidate the session on the server; clearing the cookie in the browser is not enough."
+    check:
+      - prompt: "Why must a new session ID be issued at login rather than reusing the pre-login one?"
+        options:
+          - "To reduce the size of the cookie sent with each request"
+          - "Because an attacker who planted the earlier ID would otherwise inherit the authenticated session"
+          - "Because browsers reject session IDs older than one minute"
+          - "To allow the user to stay logged in across devices"
+        correct: 1
+      - prompt: "An application logs users out by deleting the cookie in the browser. What is wrong with that?"
+        options:
+          - "The cookie may be restored from browser history"
+          - "It logs the user out of every device at once"
+          - "The session stays valid server-side, so a copied token still works"
+          - "Nothing — this is the correct approach"
+        correct: 2
 ---
 
 import LegacyHtml from '../../components/LegacyHtml.astro';
+import Callout from '../../components/Callout.astro';
+
+## Logging In Is the Easy Part
+
+You type a password once and stay logged in for hours. HTTP has no memory — each request arrives at the server knowing nothing about the last one — so something has to carry your identity across every click after that first one.
+
+That something is the **session**, and it is the part attackers actually go after. Getting the password check right is straightforward. Managing what happens for the next four hours is where the failures live.
+
+Three ideas need to stay distinct:
+
+**Authentication** is proving who you are. Password, passkey, certificate, biometric.
+
+**Authorization** is deciding what you are allowed to do. It happens after authentication, on every request, and it is a separate question — being correctly logged in tells the server nothing about whether you may open the admin panel.
+
+**The session** is what carries that established identity forward, usually as a token in a cookie. And here is what makes it interesting: that token *is* a credential. Anyone who has it is you, as far as the server is concerned. No password required.
+
+The demo below walks through a session-based login and the ways that session can be stolen or abused.
 
 <LegacyHtml html={`<!doctype html>
 <html lang="en">
@@ -222,3 +305,51 @@ Attacker finds old session cookie → Still logged in!</pre>
     <script type="module" src="site.js"></script>
   </body>
 </html>`} />
+
+## Two Ways to Remember a User
+
+**Session-based (stateful).** The server generates a random identifier, stores the session details in its own memory or database, and hands the client the identifier in a cookie. Every subsequent request presents that identifier and the server looks it up. The token is opaque — it means nothing on its own, it is only a key into server-side state.
+
+The advantage is control. Revocation is instant: delete the record and the session is dead on the next request. The cost is that the server must store and share that state, which takes coordination across multiple servers.
+
+**Token-based (stateless).** The server issues a signed token — commonly a **JWT** — that carries the claims itself: who the user is, what roles they hold, when it expires. The server stores nothing. It validates the signature on each request and trusts the contents because tampering would break that signature.
+
+The advantage is scale, which is why APIs and distributed systems favour it. The cost is revocation. There is no record to delete, so a valid token is accepted until it expires. That is why stateless tokens carry short lifetimes — minutes, not hours — paired with a longer-lived **refresh token** that *is* tracked server-side, restoring a revocation point.
+
+One clarification that trips people up: a standard JWT is **signed, not encrypted**. The signature proves integrity and origin. Anyone holding the token can read the claims inside it, so it is not a place for anything sensitive.
+
+## How Sessions Get Broken
+
+**Session hijacking** — stealing a valid token. Over plain HTTP it is read straight off the wire. More commonly it is taken by XSS, since injected JavaScript can read `document.cookie` unless the cookie is `HttpOnly`. The defences are TLS everywhere, `HttpOnly`, and `Secure`.
+
+**Session fixation** — the attacker sets the session ID *before* you log in, gets you to authenticate with it, and then uses the ID they already knew. Notice the attacker never steals anything; they planted the value in advance. The fix is one line of behaviour: issue a brand-new session identifier at every privilege change, especially login. The pre-login ID becomes worthless.
+
+**Predictable identifiers** — sequential or timestamp-derived IDs can simply be guessed, and one valid guess is one hijacked account. Identifiers must come from a cryptographically secure random source and be long enough that guessing is hopeless.
+
+**Broken lifecycle** — sessions that never expire, or a logout that clears the cookie in the browser without invalidating anything server-side. If the token remains valid, anyone who copied it is still logged in after the user believes they left. Logout must destroy the server-side session; on public machines that difference is the whole ballgame.
+
+<Callout type="exam">
+Fixation and hijacking are the pair most often confused: in fixation the attacker sets the identifier before authentication, in hijacking they steal one that already exists. Regenerating the session ID at login is the fixation answer. Also keep the cookie flags straight — HttpOnly blocks JavaScript access, Secure restricts the cookie to HTTPS, and SameSite limits cross-site sending and is a CSRF control.
+</Callout>
+
+## MFA and What It Actually Covers
+
+Multi-factor authentication combines factors of different kinds — something you know, something you have, something you are — and it is the single highest-value control against stolen credentials, because a password alone stops being enough.
+
+Its limits are worth knowing precisely. MFA protects the **login**. It does nothing for a session token stolen afterwards, because that token already represents a completed authentication — which is exactly why attackers now target session cookies rather than passwords. And not all factors are equal: SMS codes are vulnerable to SIM swapping and interception, push notifications invite fatigue attacks where a user eventually approves a prompt to make it stop, while hardware keys and passkeys built on WebAuthn resist phishing structurally because the credential is cryptographically bound to the real site's origin.
+
+<Callout type="warn">
+The response that makes things worse is treating a compromise as a password problem and forcing a password reset. The user resets, everyone relaxes, and the attacker stays logged in — because the session tokens issued before the reset are still valid, and no password is involved in presenting them. The same gap swallows MFA rollouts: enabling MFA on an account whose session was already stolen changes nothing for that session. Any credible credential-compromise response invalidates all active sessions and refresh tokens for the account, then resets the password. If your application has no way to terminate existing sessions, that is a finding worth raising before an incident makes it obvious.
+</Callout>
+
+## Why This Matters
+
+Authentication and session handling produce a large share of real-world findings, and they sit in the OWASP Top 10 for that reason. As a defender you will review these decisions constantly — is the session ID regenerated at login, are the cookie flags set, does logout actually invalidate, how long do tokens live, can we revoke them during an incident. In incident response, "terminate all active sessions" is one of the first containment actions, and it only works if the application was built to allow it. This is also the ground floor for the AAA framework, SSO, SAML, and OAuth, all of which are variations on establishing an identity once and carrying it safely afterwards.
+
+## Ethical Use
+
+Test session handling only against applications you own or are authorized in writing to assess. Capturing, replaying, or forging another person's session token on a live system is unauthorized access, and it is treated as seriously as stealing a password — the fact that the token was visible on a shared network is not a defense. Practise on your own applications or on intentionally vulnerable targets built for it.
+
+## Key Terms
+
+authentication · authorization · accounting · AAA · session · session identifier · cookie · stateless · session-based authentication · token-based authentication · JWT · claims · signature · refresh token · session hijacking · session fixation · session regeneration · HttpOnly · Secure flag · SameSite · CSRF · multi-factor authentication · MFA · SIM swapping · MFA fatigue · WebAuthn · passkey · session invalidation

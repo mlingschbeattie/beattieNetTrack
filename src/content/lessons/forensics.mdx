@@ -12,9 +12,88 @@ domains:
     weight: 0.8
   - domainId: cyber.foundations
     weight: 0.2
+description: "Order of volatility, write blockers and hashed images, and the chain of custody — why digital forensics is a discipline about not destroying what you came to examine."
+tags: ["security+", "SY0-701", "forensics", "incident response", "chain of custody", "evidence"]
+sections:
+  - id: order-of-volatility
+    title: "Collect in Order of Volatility"
+    keyPoints:
+      - "Evidence is collected most-volatile first: CPU and memory, then network state, then disk, then backups."
+      - "Pulling the power destroys RAM, which is where encryption keys and running malware often live."
+      - "Every action on a live system changes it, so document what you did and when."
+    check:
+      - prompt: "A workstation is suspected of running malware and is still powered on. What should be captured first?"
+        options:
+          - "A full disk image"
+          - "Volatile memory, before anything causes the system to lose power"
+          - "The backup tapes from last night"
+          - "The user's email archive"
+        correct: 1
+      - prompt: "Why is pulling the power cable a costly decision on a suspected compromise?"
+        options:
+          - "It corrupts the file system beyond recovery"
+          - "It triggers an alert to the attacker"
+          - "It destroys RAM, which may hold encryption keys and in-memory malware"
+          - "It voids the hardware warranty"
+        correct: 2
+  - id: imaging-and-integrity
+    title: "Work From an Image, Prove It Did Not Change"
+    keyPoints:
+      - "Analysis is performed on a bit-for-bit copy, never on the original media."
+      - "A write blocker prevents the examining system from altering the source drive."
+      - "Hashing the source and the image proves the copy is identical and stays unmodified."
+    check:
+      - prompt: "Why hash the original drive and the forensic image before analysis begins?"
+        options:
+          - "To compress the image so it takes less storage"
+          - "To prove the copy is identical to the source and detect any later change"
+          - "To encrypt the evidence against unauthorized access"
+          - "To speed up searching the image for keywords"
+        correct: 1
+      - prompt: "What is the purpose of a write blocker?"
+        options:
+          - "It stops the suspect from logging in remotely"
+          - "It prevents the analysis machine from writing to the evidence drive"
+          - "It blocks malware on the image from executing"
+          - "It encrypts the drive during transport"
+        correct: 1
+  - id: chain-of-custody
+    title: "Chain of Custody Is What Makes Evidence Usable"
+    keyPoints:
+      - "The chain of custody records who held evidence, when, and what they did with it, without gaps."
+      - "A break in the chain can make technically sound findings inadmissible."
+      - "Documentation and repeatability matter as much as the technical analysis itself."
+    check:
+      - prompt: "An analyst produces solid technical findings, but the drive sat unlogged on a desk for two days. What is the consequence?"
+        options:
+          - "The findings are unaffected because the analysis was correct"
+          - "The gap in the chain of custody can render the evidence inadmissible"
+          - "The drive must simply be re-hashed to resolve it"
+          - "Only the timestamps in the report need correcting"
+        correct: 1
+      - prompt: "Why must a forensic process be repeatable by another examiner?"
+        options:
+          - "So the investigation can be finished faster"
+          - "Because tools produce different results each run"
+          - "Because findings must be independently verifiable to be credible"
+          - "So the original media can be reused"
+        correct: 2
 ---
 
 import LegacyHtml from '../../components/LegacyHtml.astro';
+import Callout from '../../components/Callout.astro';
+
+## The Discipline of Not Destroying the Evidence
+
+A user reports their machine is behaving strangely. The instinct — everyone's instinct — is to start looking. Open Task Manager, browse the file system, check the downloads folder, maybe reboot it to see if that clears things up.
+
+Every one of those actions destroys evidence.
+
+Opening a file changes its access timestamp. Rebooting wipes memory, which is where an in-memory payload and any encryption keys were living. Browsing the disk writes to the page file and overwrites unallocated space where deleted files were still recoverable. By the time you have satisfied your curiosity, the answer may be gone — and if this ever reaches a courtroom or an HR hearing, so is the case.
+
+Forensics is the discipline of extracting what happened without altering it, and then being able to prove you did not alter it. The technical skills matter. But the thing that separates a usable investigation from a wasted one is procedure: collect in the right order, work from a copy, and document everything.
+
+The exercises below walk through that workflow.
 
 <LegacyHtml html={`<!doctype html>
 <html lang="en">
@@ -242,3 +321,60 @@ import LegacyHtml from '../../components/LegacyHtml.astro';
     <script type="module" src="site.js"></script>
   </body>
 </html>`} />
+
+## Order of Volatility
+
+Some evidence disappears in microseconds. Some sits on a backup tape for seven years. Collect the perishable things first.
+
+1. **CPU registers and cache** — gone instantly, rarely collected in practice.
+2. **RAM** — running processes, network connections, decrypted data, encryption keys, and malware that never touched disk. Lost the moment power is.
+3. **Network state** — active connections, ARP cache, routing tables. Ages in seconds to minutes.
+4. **Running processes and temporary files** — the live picture of the system.
+5. **Disk** — the file system, deleted-but-unallocated data, logs.
+6. **Remote logs and backups** — a SIEM or backup set may hold what the endpoint lost, and it survives longest.
+
+The important consequence is that **RAM outranks disk**. Fileless malware exists only in memory. Full-disk encryption keys live in memory while the machine is unlocked — power it off and the disk you seize may be an unreadable brick. "Pull the plug to stop the damage" is a containment decision, and a real one, but it is a trade that destroys the most valuable evidence you had. Capture memory first when you can.
+
+## Imaging and Integrity
+
+You do not investigate the original. You make a **bit-for-bit image** — every sector including deleted and slack space, not a file copy — and analyse that. The original is sealed and stored.
+
+Two controls make the copy trustworthy:
+
+A **write blocker**, hardware or software, sits between the evidence drive and your machine and physically prevents writes. Without it, simply attaching the drive can let the operating system mount it, write recovery data, and alter timestamps — contamination caused by the investigator, before any analysis started.
+
+**Hashing** proves the image is faithful. Hash the source, hash the image, and confirm they match: the copy is identical. Re-hash later and a match proves nothing has changed since. This is why the courtroom question "how do you know this is the same data you seized" has a clean technical answer. Use SHA-256; MD5 still appears in older tooling and is collision-broken, so it is no longer defensible on its own.
+
+## Chain of Custody
+
+The chain of custody is an unbroken record of who had the evidence, when they had it, what they did with it, and who they handed it to. Every transfer is signed. Every access is logged.
+
+It sounds bureaucratic until you see it fail. A drive left unattended on a desk overnight, an undocumented gap between seizure and imaging, an analyst who cannot say who else had access — any of these lets an opposing party argue the evidence could have been altered, and they do not have to prove it was. Technically perfect findings become unusable.
+
+The same reasoning drives **repeatability**. Document your tools, versions, and steps so another examiner can follow them and reach the same result. An investigation nobody else can reproduce is an opinion.
+
+<Callout type="exam">
+Order of volatility is near-certain on the exam, and the point they test is that memory outranks disk. Keep the roles separate too: a write blocker prevents alteration, a hash proves the absence of alteration, and the chain of custody documents possession. Legal hold means preserve and stop deleting; it is not a technical control.
+</Callout>
+
+## Live Response and Its Trade-offs
+
+Sometimes powering down is not an option — the system is critical, or the valuable evidence is only in memory. **Live response** means collecting from a running system, and it means accepting that your own tools change the machine as they run.
+
+That is acceptable when it is deliberate and documented. Use trusted binaries from your own media rather than the ones on a possibly compromised host, record the exact commands and times, and expect to explain the footprint you left. The alternative — an undocumented poke around the file system — is the same contamination with none of the defensibility.
+
+<Callout type="warn">
+The response that makes things worse is the helpful reboot. A user reports something odd, and the first instinct of most technicians is to restart the machine, run an antivirus scan, and delete what it flags. That single sequence destroys volatile memory, overwrites unallocated space, alters timestamps across the file system, and removes the malware sample you needed to understand the intrusion — and it does not evict an attacker with valid credentials or persistence. You have lost the ability to answer what was taken and how they got in, which is what the organization will actually be asked. The other version is imaging without a write blocker "just to look quickly": now the earliest hash no longer matches the drive, and every finding afterwards is arguable. Isolate the machine from the network, leave it powered on, and escalate.
+</Callout>
+
+## Why This Matters
+
+Forensics is not only for law enforcement. Any organization that suffers a breach has to answer what was accessed, when the intrusion began, and whether regulated data left the building — and those answers carry legal notification deadlines. Analysts do this work constantly at a smaller scale: pulling memory from a suspicious endpoint, reconstructing a timeline from logs, determining whether an alert was a real intrusion. Even if you never testify, the habits transfer directly to incident response, because both jobs run on the same rule — understand what happened before you change it.
+
+## Ethical Use
+
+Forensic tools examine other people's data and are correspondingly serious. Use them only on systems you own or under explicit authorization from someone with the authority to grant it — an employer's incident response process, a signed engagement, or your own lab. Imaging a device without authorization is unlawful access and often a privacy violation on top. Evidence handling also carries privacy obligations: you will see personal material irrelevant to the investigation, and looking beyond your scope is a breach of trust and frequently of law.
+
+## Key Terms
+
+digital forensics · order of volatility · volatile memory · RAM capture · fileless malware · live response · forensic image · bit-for-bit copy · slack space · unallocated space · write blocker · hash verification · SHA-256 · chain of custody · repeatability · legal hold · timeline analysis · artifact

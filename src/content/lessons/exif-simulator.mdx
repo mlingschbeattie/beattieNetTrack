@@ -12,9 +12,88 @@ domains:
     weight: 0.8
   - domainId: cyber.foundations
     weight: 0.2
+description: "Metadata as evidence — what EXIF records without being asked, how encoding differs from encryption when hiding data, and why stripping metadata is both an OSINT technique and a privacy control."
+tags: ["security+", "SY0-701", "forensics", "metadata", "EXIF", "OSINT", "privacy"]
+sections:
+  - id: metadata-as-evidence
+    title: "Files Record More Than Their Contents"
+    keyPoints:
+      - "EXIF metadata is written automatically and can include GPS coordinates, timestamps, and device serial numbers."
+      - "The person sharing a file is usually unaware the metadata is there, which is what makes it valuable to an investigator."
+      - "Documents carry the same risk: authors, revision history, and file paths travel with the file."
+    check:
+      - prompt: "A photo posted publicly leads investigators to an exact address. What most likely made that possible?"
+        options:
+          - "The image filename contained the location"
+          - "Embedded EXIF GPS coordinates written by the camera"
+          - "The image was uploaded over an unencrypted connection"
+          - "Facial recognition applied to the subject"
+        correct: 1
+      - prompt: "Why is metadata a recurring privacy problem rather than an occasional one?"
+        options:
+          - "It is deliberately added by most social platforms"
+          - "It can only be removed with specialist forensic tools"
+          - "It is generated automatically, so people share it without knowing it exists"
+          - "It is stored separately from the file and easily intercepted"
+        correct: 2
+  - id: encoding-not-hiding
+    title: "Encoded Is Not Hidden"
+    keyPoints:
+      - "Base64 and hex inside a file are trivially reversible and provide no protection at all."
+      - "Steganography conceals data inside a carrier file, which hides its presence rather than its meaning."
+      - "Finding an unusual encoded string in metadata is a standard investigative lead."
+    check:
+      - prompt: "An image comment field holds a long Base64 string. What have you found?"
+        options:
+          - "Encrypted data that requires a key to read"
+          - "Encoded data that can be decoded immediately by anyone"
+          - "A corrupted section of the image"
+          - "A digital signature proving the photo is authentic"
+        correct: 1
+      - prompt: "How does steganography differ from encryption?"
+        options:
+          - "It hides that a message exists, rather than making its contents unreadable"
+          - "It is mathematically stronger than encryption"
+          - "It requires a public and private key pair"
+          - "It can only be applied to text files"
+        correct: 0
+  - id: stripping-metadata
+    title: "Stripping Metadata Is a Control, Not an Afterthought"
+    keyPoints:
+      - "Organizations should strip metadata from files before publishing them externally."
+      - "Platforms that strip EXIF on upload protect users, but the original file still carries everything."
+      - "The same technique serves both sides: OSINT collection and defensive data minimization."
+    check:
+      - prompt: "A company publishes PDFs without sanitizing them. What is the realistic risk?"
+        options:
+          - "The files will be larger and slower to download"
+          - "Internal usernames, file paths, and revision history may be exposed"
+          - "The documents will fail to open on mobile devices"
+          - "Search engines will refuse to index them"
+        correct: 1
+      - prompt: "A social platform strips EXIF on upload. Why is emailing the original photo still a risk?"
+        options:
+          - "Email compresses images and corrupts the metadata"
+          - "Stripping only removes GPS data and leaves timestamps"
+          - "The original file was never modified, so its metadata is intact"
+          - "Email clients regenerate metadata automatically"
+        correct: 2
 ---
 
 import LegacyHtml from '../../components/LegacyHtml.astro';
+import Callout from '../../components/Callout.astro';
+
+## The Photo Is Not the Only Thing in the File
+
+You take a picture and send it to someone. You think you sent an image. You may also have sent the exact coordinates where you were standing, the second you pressed the shutter, the make, model, and serial number of the camera, and — if it was a phone — very likely the device it came from.
+
+None of that is visible in the picture. It is **EXIF metadata**, written automatically into the file by the camera, and it travels with the image everywhere it goes.
+
+This has ended real cases. Fugitives have been located by a single photograph posted to a forum. Anonymous harassment accounts have been tied to home addresses. Leaked corporate documents have identified their source through the author field. In none of those cases did the person believe they were sharing their location.
+
+Metadata is one of the most productive sources in an investigation precisely because people forget it exists. That makes it two skills at once: a collection technique when you are investigating, and a data-minimization habit when you are defending.
+
+The terminal simulator below has you work through a file the way an investigator would — inspect the metadata, find what is hidden in it, and decode it.
 
 <LegacyHtml html={`<!doctype html>
 <html lang="en">
@@ -462,3 +541,49 @@ import LegacyHtml from '../../components/LegacyHtml.astro';
     <script type="module" src="site.js"></script>
   </body>
 </html>`} />
+
+## What Metadata Actually Holds
+
+**Images (EXIF).** GPS latitude and longitude, timestamp, camera make and model, lens, exposure settings, orientation, software used to edit, and often a thumbnail. That last one is a subtle trap: the embedded thumbnail is not always regenerated when the image is edited, so a cropped or redacted photo can still contain a thumbnail of the *original*. People have exposed exactly what they were trying to remove.
+
+**Documents.** Office files and PDFs carry the author, the organization, creation and modification times, total editing time, the software version, the local file path, and frequently tracked changes and deleted comments. A document that looks final can contain everything the drafts said.
+
+**Everything else.** Audio and video files record device and timing information. Even the container format and encoder version narrow down the tooling in use.
+
+For an investigator this is a timeline and an attribution source. For an organization it is inadvertent disclosure — a published PDF revealing internal usernames and directory structures is genuinely useful reconnaissance for an attacker.
+
+## Encoded Is Not Encrypted
+
+Metadata fields are a common place to find something deliberately tucked away, usually **Base64** — a comment field holding a long string ending in `=`.
+
+That string is encoded, not encrypted. Encoding is a format change with no key, so decoding it is instant and available to anyone. It is worth being blunt about this because the mistake is so common: putting a secret in a comment field in Base64 provides no protection whatsoever. As an investigator, an out-of-place encoded string is a strong lead and costs one command to follow.
+
+**Steganography** is the genuinely different technique. Rather than making a message unreadable, it hides the fact that a message exists — data concealed in the least significant bits of pixel values, or in unused fields, so the carrier file looks completely ordinary. Encryption hides meaning; steganography hides existence. Serious use combines them, encrypting the payload before concealing it.
+
+<Callout type="exam">
+Keep the three ideas apart, because they are written as each other's distractors. Encoding is reversible with no key and provides no confidentiality. Encryption protects contents with a key. Steganography conceals that a message is present at all. Metadata is also the standard example of unintentional data disclosure, and stripping it is the control.
+</Callout>
+
+## Stripping It
+
+Defensively, treat metadata as something to remove before anything leaves the organization.
+
+Sanitize documents before publication — Office and Acrobat both include document inspectors, and `exiftool` strips image metadata in bulk. Bake it into the publishing workflow rather than trusting anyone to remember. For personal privacy, disabling location tagging in the camera app stops the most sensitive field being written in the first place, which is better than removing it later.
+
+Most large social platforms strip EXIF on upload. That is a real protection and it is narrower than people assume: it applies to the copy the platform serves, not to the file on your device. Email that original, hand it over on a drive, or upload it to a service that does not strip, and every field is still there.
+
+<Callout type="warn">
+The response that makes things worse is redacting the picture instead of the file. Someone blurs a face or draws a black box over an address, saves, and publishes — while the GPS coordinates sit untouched in EXIF and the embedded thumbnail may still show the unedited original. The visible edit creates confidence that nothing sensitive remains, which is precisely when people share more widely. The same pattern appears with PDFs: a black rectangle drawn over text is a graphic on top of selectable characters, and the text underneath copies straight out. Redaction has to remove the data, not cover it — strip the metadata, flatten the image, and verify by re-inspecting the file you are actually about to publish.
+</Callout>
+
+## Why This Matters
+
+Metadata analysis is one of the first things done with any file in an investigation, and one of the easiest wins in OSINT work. On the defensive side it belongs in data loss prevention and privacy programs, where sanitizing published files is a low-cost control against a real disclosure path. It also runs through incident response constantly: document metadata attributes a phishing lure to its author's toolchain, and timestamps across a set of files build the timeline that tells you when an intrusion actually began.
+
+## Ethical Use
+
+Metadata analysis reveals real people's locations, devices, and movements, and that makes it a privacy-sensitive capability rather than a neutral one. Extract metadata only from files you own or that are within an authorized investigation. Using these techniques to locate, track, or identify someone without authorization is stalking and harassment, and it is prosecuted as such regardless of how public the source file was. Being technically able to find where a photograph was taken does not make it acceptable to do so.
+
+## Key Terms
+
+metadata · EXIF · GPS coordinates · geotagging · embedded thumbnail · document properties · tracked changes · Base64 · encoding · steganography · least significant bit · carrier file · exiftool · document inspector · metadata stripping · redaction · data minimization · OSINT · unintentional data disclosure · attribution

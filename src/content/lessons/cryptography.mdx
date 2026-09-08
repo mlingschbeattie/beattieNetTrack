@@ -12,9 +12,88 @@ domains:
     weight: 0.8
   - domainId: cyber.foundations
     weight: 0.2
+description: "Encoding, encryption, and hashing are three different operations — what each one is for, why every real protocol uses both symmetric and asymmetric crypto, and where cryptography actually breaks in production."
+tags: ["security+", "SY0-701", "cryptography", "hashing", "encryption"]
+sections:
+  - id: encoding-encryption-hashing
+    title: "Encoding, Encryption, and Hashing Are Three Different Things"
+    keyPoints:
+      - "Encoding (Base64, URL, hex) provides no secrecy at all — it is a format change anyone can reverse without a key."
+      - "Encryption is reversible by design, but only with the key. Confidentiality is the goal."
+      - "Hashing is one-way on purpose. You verify by hashing the input again and comparing, never by reversing the digest."
+    check:
+      - prompt: "You find the string cGFzc3dvcmQxMjM= in a configuration file. What have you actually found?"
+        options:
+          - "An encrypted secret that needs the server private key to read"
+          - "A hash that cannot be reversed"
+          - "Base64-encoded text that anyone can decode instantly"
+          - "A random session identifier with no meaning"
+        correct: 2
+      - prompt: "Why can a system verify your password without ever storing or recovering the original?"
+        options:
+          - "It decrypts the stored value and compares the plaintext"
+          - "It hashes what you typed and compares the two digests"
+          - "It encodes your input in Base64 and compares the strings"
+          - "It sends your password to the certificate authority to check"
+        correct: 1
+  - id: symmetric-vs-asymmetric
+    title: "Symmetric and Asymmetric Cryptography Solve Different Problems"
+    keyPoints:
+      - "Symmetric encryption (AES) uses one shared key. It is fast, which is why it protects the actual data."
+      - "Asymmetric encryption (RSA, ECC) uses a public and private key pair. It is slow, which is why it protects key exchange and signatures."
+      - "Real protocols use both: asymmetric crypto agrees on a symmetric key, then symmetric crypto carries the traffic."
+    check:
+      - prompt: "TLS uses RSA or ECDHE during the handshake but AES for the rest of the session. What drives that split?"
+        options:
+          - "AES is more secure than RSA, so it is used wherever possible"
+          - "Asymmetric crypto solves key exchange; symmetric crypto is fast enough to encrypt bulk traffic"
+          - "RSA cannot encrypt data, only verify certificates"
+          - "The browser and server cannot agree on a single algorithm"
+        correct: 1
+      - prompt: "You want to prove a file came from you and was not altered. Which key do you use?"
+        options:
+          - "Sign with your private key so anyone can verify with your public key"
+          - "Sign with your public key so only you can verify it"
+          - "Encrypt the file with the recipient private key"
+          - "Hash the file with a shared symmetric key you publish"
+        correct: 0
+  - id: how-crypto-fails
+    title: "Cryptography Fails at the Edges, Not in the Math"
+    keyPoints:
+      - "Breaches almost never come from breaking AES. They come from reused keys, hardcoded secrets, and unauthenticated ciphertext."
+      - "A cipher that provides confidentiality does not provide integrity — an attacker can flip bits in ciphertext unless the mode authenticates it."
+      - "Using a broken primitive like MD5 or DES hands an attacker the win before the attack starts."
+    check:
+      - prompt: "An application encrypts session data with AES-CBC and no authentication tag. What can an attacker do that decryption alone would not suggest?"
+        options:
+          - "Recover the AES key directly from the ciphertext"
+          - "Tamper with the ciphertext so it decrypts to different, attacker-influenced data"
+          - "Nothing — encryption alone guarantees the data is unmodified"
+          - "Force the server to downgrade to plaintext HTTP"
+        correct: 1
+      - prompt: "A codebase uses MD5 to protect stored integrity checksums. Why is that a finding?"
+        options:
+          - "MD5 output is too short to store efficiently"
+          - "MD5 is encryption, not hashing, so it needs a key"
+          - "MD5 is collision-broken, so two different files can share one digest"
+          - "MD5 is patented and cannot be used commercially"
+        correct: 2
 ---
 
 import LegacyHtml from '../../components/LegacyHtml.astro';
+import Callout from '../../components/Callout.astro';
+
+## Three Words People Use Interchangeably and Shouldn't
+
+Somebody hands you a string that looks like gibberish and says it is encrypted. Maybe it is. Maybe it is Base64, which is not encryption at all and takes about two seconds to reverse. Maybe it is a SHA-256 digest, which nobody reverses ever. These are three separate operations with three separate purposes, and confusing them is how secrets end up in public repositories.
+
+**Encoding** changes the representation of data so a system can transport it safely. Base64 turns binary into text that survives an email header. Hex turns bytes into readable pairs. There is no key and no secret — encoding is a translation anyone can undo. If you see `=` padding at the end of a string, you are almost certainly looking at Base64, and it is protecting nothing.
+
+**Encryption** turns readable data into ciphertext using a key, and turns it back with a key. The point is that it is reversible for the person holding the key and useless to everyone else. Confidentiality is the goal.
+
+**Hashing** takes any input and produces a fixed-length digest — and there is no way back. That one-way property is the feature. It is how a system checks your password without storing it, and how you prove a 4 GB disk image was not modified by comparing 64 hex characters.
+
+The demo below runs these operations against your own input. Encode something, then decode it. Hash something twice and watch the digest come out identical. Change one character and watch it come out completely different.
 
 <LegacyHtml html={`<!doctype html>
 <html lang="en">
@@ -358,3 +437,43 @@ import LegacyHtml from '../../components/LegacyHtml.astro';
     <script type="module" src="site.js"></script>
   </body>
 </html>`} />
+
+## Symmetric and Asymmetric — Why Every Real Protocol Uses Both
+
+**Symmetric encryption** uses one key for both directions. AES is the standard, and it is fast — a modern CPU has dedicated instructions for it and encrypts gigabytes per second. The problem is delivery. If you and I both need the same key, how does it get from you to me across a network an attacker is already watching?
+
+**Asymmetric encryption** solves exactly that. You hold a key pair: a public key you hand out freely and a private key you never share. Anything encrypted with the public key can only be decrypted with the private key. Now I can encrypt something for you without ever having met you. The trade-off is speed — RSA is orders of magnitude slower than AES and can only encrypt small amounts of data.
+
+So protocols use both. TLS opens with an asymmetric handshake whose only job is to agree on a shared symmetric key. Once both sides hold that key, the connection switches to AES for everything else. Asymmetric crypto for the introduction, symmetric crypto for the conversation.
+
+Signatures invert the key usage. You sign with your **private** key, and anyone verifies with your **public** key. That direction is what makes a signature meaningful — only you could have produced it, and verification proves both who sent the data and that it was not modified in transit.
+
+<Callout type="exam">
+Know the direction of every key operation cold. Encrypt for someone: their public key. Decrypt what you received: your private key. Sign something: your private key. Verify a signature: the sender's public key. Security+ tests this as a scenario, not a definition — you get a situation and have to pick the key.
+</Callout>
+
+## Where Cryptography Actually Breaks
+
+Almost nobody breaks AES. The math holds. Breaches come from everything around the math.
+
+**Keys in the wrong place.** A hardcoded key in source code, a key committed to a repository, a key in an environment variable that an error page dumps to the browser. The cipher is fine. The key is public.
+
+**Broken primitives still in production.** MD5 and SHA-1 are collision-broken — an attacker can construct two different inputs that produce the same digest, which destroys their use for integrity. DES has a 56-bit key that falls to brute force. Both still appear in old code, and both still show up on exams as the wrong answer.
+
+**Confidentiality mistaken for integrity.** This is the subtle one. Encrypting data hides it. It does not stop someone from *changing* it. With a mode like AES-CBC and no authentication tag, an attacker who cannot read your ciphertext can still flip bits in it and cause it to decrypt into different plaintext. That is why authenticated modes like AES-GCM exist — they encrypt and authenticate in one operation, so tampering is detected instead of silently accepted.
+
+<Callout type="warn">
+The response that makes things worse is stacking a second layer of the same broken thing. Hashing a password twice with MD5 does not fix MD5, and re-encrypting an encrypted blob under the same reused key adds no security while doubling the code that can fail. When a primitive is broken, replace it — do not layer it. The same instinct produces "encrypt then hash then encode," which reads as thorough and defends against nothing.
+</Callout>
+
+## Why This Matters
+
+Cryptography shows up in every security role, and almost never as "implement a cipher." You will be asked why a certificate warning appeared, whether a stored password format is acceptable, which algorithm a legacy system uses and whether it has to be replaced, and how a key gets rotated without breaking every client. Those are all questions about the edges. Get the vocabulary exact and the key directions automatic, and the rest of the security curriculum — TLS, PKI, VPNs, signed updates, disk encryption — becomes a set of applications of the same handful of ideas.
+
+## Ethical Use
+
+Everything on this page is for understanding and defending systems you own or have written authorization to test. Decoding, cracking, or tampering with data belonging to anyone else is illegal regardless of how easy the tooling makes it look.
+
+## Key Terms
+
+encoding · Base64 · encryption · ciphertext · plaintext · hashing · digest · collision · symmetric encryption · AES · asymmetric encryption · RSA · ECC · key pair · public key · private key · digital signature · key exchange · AES-GCM · authenticated encryption · MD5 · SHA-1 · DES · key rotation
