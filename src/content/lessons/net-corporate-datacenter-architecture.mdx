@@ -13,11 +13,81 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: three-tier
+    title: "Three-Tier Architecture"
+    keyPoints:
+      - "Access connects end devices, distribution aggregates and applies policy, core switches at high speed."
+      - "Keeping routing and filtering at distribution leaves the core free to move traffic fast."
+      - "A collapsed core merges core and distribution, which suits smaller sites."
+    check:
+      - prompt: "Which layer do end-user devices plug into?"
+        options:
+          - "Access"
+          - "Distribution"
+          - "Core"
+          - "Spine"
+        correct: 0
+      - prompt: "What is a collapsed core design?"
+        options:
+          - "Core and distribution combined into one layer"
+          - "A core switch that has failed"
+          - "A core with no redundancy"
+          - "Two cores in different buildings"
+        correct: 0
+  - id: spine-leaf
+    title: "Spine-Leaf and Traffic Direction"
+    keyPoints:
+      - "Every leaf connects to every spine, so any server is the same number of hops from any other."
+      - "North-south traffic flows in and out of the data centre; east-west flows between servers inside it."
+      - "Modern applications generate mostly east-west traffic, which three-tier designs handle poorly."
+    check:
+      - prompt: "What does spine-leaf guarantee for server-to-server traffic?"
+        options:
+          - "A consistent, predictable hop count between any two leaves"
+          - "That traffic never leaves the rack"
+          - "Encryption between servers"
+          - "That only one path is ever used"
+        correct: 0
+      - prompt: "Traffic between two servers inside the data centre is called what?"
+        options:
+          - "East-west"
+          - "North-south"
+          - "Upstream"
+          - "Backhaul"
+        correct: 0
+  - id: sdn
+    title: "Software-Defined Networking"
+    keyPoints:
+      - "SDN separates the control plane, which decides, from the data plane, which forwards."
+      - "A central controller programs many devices, replacing box-by-box configuration."
+      - "This makes large fabrics consistent, because policy is defined once rather than per switch."
+    check:
+      - prompt: "What does SDN separate?"
+        options:
+          - "The control plane from the data plane"
+          - "Copper from fibre"
+          - "VLANs from subnets"
+          - "Access from distribution"
+        correct: 0
+      - prompt: "What is the main operational benefit of a central SDN controller?"
+        options:
+          - "Policy is defined once and applied consistently across many devices"
+          - "It removes the need for cabling"
+          - "It eliminates the need for VLANs"
+          - "It doubles link bandwidth"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## The Network Behind the Network
 
 You've been working at the edge — workstations, wall jacks, access switches, patch panels. That's where users live and where most tickets originate. But somewhere behind those access switches, the network has structure you haven't needed to think about yet. Traffic from a classroom switch has to reach the server room, the internet uplink, and every other switch in the building. In a school, that might be two or three switches chained together. In a hospital, a university, or a corporate campus, it's hundreds of switches organized into layers, each layer with a specific job, connected in patterns designed to maximize throughput and minimize the blast radius when something fails. Network architecture is how all of that gets organized, and the design choices made at this level determine the speed, reliability, and manageability of everything built on top of it.
+
+<Callout type="exam">
+Match design to scale. Three-tier suits a campus. Collapsed core suits a smaller site. Spine-leaf suits a data centre with heavy east-west traffic. The traffic direction described in the question usually points at the answer.
+</Callout>
 
 ## Three-Tier Architecture — Core, Distribution, Access
 
@@ -71,6 +141,14 @@ SDN is the reason you hear "infrastructure as code" applied to networking. Polic
 
 The advantage is flexibility and cost. Deploying a new firewall instance takes minutes instead of weeks (no hardware to order, ship, rack, and cable). Scaling up means adding more CPU and memory to the VM, not replacing the appliance. NFV pairs naturally with SDN — the controller manages virtual network functions just like physical ones — and it's a core component of modern cloud and service provider networks. The exam tests NFV as a concept: know that it replaces dedicated appliances with software running on commodity hardware, and know that it increases agility at the cost of potentially more complex management and licensing.
 
+<Callout type="warn">
+Three-tier designs were built when most traffic went north-south to a server room. Application tiers that talk constantly to each other push traffic east-west, and a three-tier core can become a bottleneck for traffic that never needed to leave.
+</Callout>
+
 ## Why This Matters in the Field
 
 When you walk into a new environment and someone hands you a network diagram, the architecture tells you everything about how the network was designed to handle traffic, where redundancy exists, and where the single points of failure are. If it's three-tier, you know traffic flows vertically and the core is the backbone. If it's collapsed core, you know the building is modest and those central switches are the most critical devices on the network. If it's spine-leaf, you're in a data center or cloud environment and east-west traffic is the priority. You won't design these architectures in your first year, but you'll work inside them every day, and understanding the structure lets you troubleshoot faster, communicate clearly with senior engineers, and make upgrade recommendations that actually fit the design.
+
+## Key Terms
+
+access layer · distribution layer · core layer · collapsed core · spine-leaf · leaf switch · spine switch · north-south · east-west · top-of-rack · end-of-row · SDN · control plane · data plane · controller

@@ -13,13 +13,83 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: security-vs-connectivity
+    title: "When a Fault Is an Attack"
+    keyPoints:
+      - "Some security incidents present exactly as connectivity faults, which is why they go undiagnosed."
+      - "Intermittent redirection, unexpected gateways, and duplicate addresses all have both innocent and malicious explanations."
+      - "Treating an anomaly as only a fault means the attack continues while you troubleshoot."
+    check:
+      - prompt: "Why can a security incident be mistaken for a connectivity problem?"
+        options:
+          - "Attacks such as ARP poisoning present as intermittent or misrouted traffic"
+          - "Security tools disable network cards"
+          - "Firewalls block ICMP by default"
+          - "Attacks always cause total outages"
+        correct: 0
+      - prompt: "What is the risk of assuming an anomaly is purely a fault?"
+        options:
+          - "An ongoing attack continues while you troubleshoot the symptom"
+          - "The switch loses its configuration"
+          - "DNS records expire"
+          - "The VLAN database resets"
+        correct: 0
+  - id: detecting-l2
+    title: "Detecting Layer 2 Attacks"
+    keyPoints:
+      - "ARP poisoning shows as one MAC address claiming several IP addresses in the ARP table."
+      - "A rogue DHCP server shows as clients receiving addresses or gateways from an unexpected source."
+      - "DHCP snooping and Dynamic ARP Inspection prevent both, and their logs identify the offending port."
+    check:
+      - prompt: "The ARP table shows one MAC address associated with several IP addresses. What does that indicate?"
+        options:
+          - "Possible ARP poisoning"
+          - "Normal switch behaviour"
+          - "A duplex mismatch"
+          - "An exhausted DHCP scope"
+        correct: 0
+      - prompt: "Clients begin receiving addresses in an unexpected subnet with a different gateway. What should you suspect?"
+        options:
+          - "A rogue DHCP server on the network"
+          - "An expired SSL certificate"
+          - "A spanning tree loop"
+          - "A failed uplink transceiver"
+        correct: 0
+  - id: host-and-scan
+    title: "Scans and Compromised Hosts"
+    keyPoints:
+      - "A port scan appears in logs as one source touching many ports or many hosts in quick succession."
+      - "A compromised host often shows unusual outbound traffic, especially at times nobody is working."
+      - "Isolate a suspect host from the network before investigating, so containment precedes analysis."
+    check:
+      - prompt: "Logs show one internal address connecting to hundreds of ports across many hosts in seconds. What is this?"
+        options:
+          - "A port scan"
+          - "Normal DHCP renewal"
+          - "A spanning tree recalculation"
+          - "An NTP synchronisation"
+        correct: 0
+      - prompt: "What should you do first with a host you suspect is compromised?"
+        options:
+          - "Isolate it from the network while leaving it powered on"
+          - "Reimage it immediately"
+          - "Shut it down to stop the activity"
+          - "Run a full backup to the file server"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## The Ticket That Wasn't a Network Problem
 
 A teacher submits a ticket: "My browser keeps redirecting to weird sites when I type in the school portal address." The help desk tech checks the network — connectivity is fine, ping works, traceroute looks normal. They clear the browser cache, reset the homepage, and close the ticket. Next day, same teacher, same problem. The tech reinstalls the browser. Problem comes back. On the third visit, someone finally runs `nslookup portal.school.edu` and gets an IP address that doesn't belong to the school. The DNS server the teacher's laptop is using isn't the school's DNS server. It's an address handed out by a rogue DHCP server that someone plugged into the network — a personal router with DHCP enabled, handing out its own address as the DNS server, redirecting every name resolution through a compromised resolver.
 
 Three tickets. Three visits. The problem was a security issue masquerading as a connectivity problem the entire time. The symptoms overlap. A rogue DHCP server looks like a misconfiguration. DNS hijacking looks like a browser issue. ARP poisoning looks like intermittent network flakiness. If you only know how to troubleshoot connectivity, you'll miss the attacks that hide behind the same symptoms.
+
+<Callout type="exam">
+The distinguishing question is whether the anomaly has an attacker behind it. One MAC claiming many IPs is ARP poisoning. Unexpected DHCP offers indicate a rogue server. A burst of connections across many ports is a scan.
+</Callout>
 
 ## The Overlap Between Security and Connectivity
 
@@ -127,8 +197,16 @@ Escalate when you find evidence of deliberate, targeted activity — ARP poisoni
 
 When you escalate, provide everything you've found: timestamps, affected hosts, MAC and IP addresses, switch ports, log entries, packet captures, and your analysis. A clear, documented handoff saves the incident response team hours of re-investigation. They take it from there — forensics, containment, eradication, and recovery are their domain. Your job was detection and initial isolation, and if you did those well, you've already provided the most valuable contribution possible.
 
+<Callout type="warn">
+Powering off a suspect machine destroys everything held in memory, which is often where the evidence is. Isolate it from the network and leave it running unless there is an active reason to shut it down.
+</Callout>
+
 ## Why This Matters in the Field
 
 The line between network operations and security operations is blurring. Fifteen years ago, the network team and the security team were separate groups with separate tools. Today, the network engineer is often the first person to notice that something is wrong — because the symptoms show up as network anomalies first. The IDS alerts. The firewall logs. The unexplained traffic pattern on the NetFlow dashboard.
 
 You don't need to be a security analyst to be useful in a security incident. You need to know what normal looks like on your network, recognize when something deviates from normal, capture the evidence, and route it to the right people. The ARP table that doesn't match. The DHCP server that isn't yours. The DNS answer that points to the wrong place. These are things a network tech can see with basic tools in under five minutes. Seeing them — and knowing what they mean — is the difference between catching an incident early and discovering it weeks later in a breach report.
+
+## Key Terms
+
+ARP table · ARP poisoning · gratuitous ARP · rogue DHCP · DHCP snooping · Dynamic ARP Inspection · DNS hijacking · port scan · reconnaissance · beaconing · compromised host · isolation · containment · volatile memory

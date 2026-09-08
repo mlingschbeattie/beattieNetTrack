@@ -13,14 +13,83 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: what-it-does
+    title: "What a Load Balancer Does"
+    keyPoints:
+      - "A load balancer sits in front of several servers and distributes incoming requests across them."
+      - "Clients connect to one virtual address, unaware of how many servers sit behind it."
+      - "It provides both scale and availability, since a failed server can be removed from rotation."
+    check:
+      - prompt: "What do clients connect to when a load balancer is in use?"
+        options:
+          - "A single virtual IP that the balancer owns"
+          - "Each backend server in turn"
+          - "The fastest server directly"
+          - "A DNS server acting as a proxy"
+        correct: 0
+      - prompt: "Besides sharing load, what else does a load balancer provide?"
+        options:
+          - "Availability, by removing failed servers from rotation"
+          - "Encryption of stored data"
+          - "Automatic backups"
+          - "VLAN segmentation"
+        correct: 0
+  - id: layer4-7
+    title: "Layer 4 versus Layer 7"
+    keyPoints:
+      - "A Layer 4 balancer decides using IP addresses and ports, without reading the request."
+      - "A Layer 7 balancer reads the request and can route by URL, host header, or content type."
+      - "Layer 7 enables routing rules that Layer 4 cannot express, at higher processing cost."
+    check:
+      - prompt: "Which balancer can send /images to one server pool and /api to another?"
+        options:
+          - "A Layer 7 balancer, because it reads the request"
+          - "A Layer 4 balancer"
+          - "Neither"
+          - "Only a hardware balancer"
+        correct: 0
+      - prompt: "What does a Layer 4 load balancer base its decision on?"
+        options:
+          - "IP addresses and port numbers"
+          - "The URL path"
+          - "The HTTP host header"
+          - "The content type"
+        correct: 0
+  - id: health-persistence
+    title: "Health Checks and Persistence"
+    keyPoints:
+      - "Health checks probe each server and pull failing ones out of rotation automatically."
+      - "Session persistence keeps one client on one server when the application stores state locally."
+      - "Without persistence, a stateful application can log a user out as requests move between servers."
+    check:
+      - prompt: "An application logs users out at random after load balancing is introduced. What is the likely cause?"
+        options:
+          - "Session persistence is not configured and requests are moving between servers"
+          - "The health check interval is too long"
+          - "The balancer is operating at Layer 4"
+          - "The servers have different IP addresses"
+        correct: 0
+      - prompt: "What is the purpose of a health check?"
+        options:
+          - "To detect a failed server and stop sending it traffic"
+          - "To measure client bandwidth"
+          - "To encrypt the session"
+          - "To assign VLANs"
+        correct: 0
 ---
 
+import Callout from '../../components/Callout.astro';
 
 ## The Server That Couldn't
 
 One web server handles a hundred users without breaking a sweat. A thousand users, and response times start climbing. Five thousand, and the server is pegging CPU at 100%, requests are timing out, and your monitoring dashboard looks like a Christmas tree of red alerts. You could buy a bigger server — more CPU, more RAM, faster storage. That's called **scaling up** (vertical scaling), and it works until you hit the ceiling of what a single machine can handle. It's also expensive, and it leaves you with a single point of failure. The server dies, the service dies.
 
 The alternative: buy multiple servers and split the work between them. That's **scaling out** (horizontal scaling), and it's how most production services of any meaningful size operate. Netflix doesn't run on one server. Google doesn't run on one server. Your school's learning management system probably shouldn't run on one server either, if it matters enough that an outage causes problems. The mechanism that splits traffic across multiple servers is a **load balancer**, and it's one of the most important pieces of infrastructure in any high-availability design.
+
+<Callout type="exam">
+Layer 4 sees addresses and ports. Layer 7 sees the request itself. If a question describes routing by URL, hostname, or cookie, the answer is Layer 7 — those fields do not exist at Layer 4.
+</Callout>
 
 ## What a Load Balancer Actually Does
 
@@ -104,6 +173,10 @@ DNS round robin is free, requires no additional infrastructure, and distributes 
 
 DNS round robin is acceptable as a first-pass distribution method for stateless, fault-tolerant services where each server can independently validate clients. It's not acceptable as the sole availability mechanism for anything where a server failure needs to be handled in seconds rather than the minutes-to-hours that DNS TTL expiration takes.
 
+<Callout type="warn">
+A health check that only confirms the port is open will happily keep sending traffic to a server whose application has crashed behind a listening socket. Check something the application actually serves, not just that the port answers.
+</Callout>
+
 ## Global Server Load Balancing — Across Geographies
 
 Standard load balancing distributes traffic across servers in one location. **Global Server Load Balancing (GSLB)** distributes traffic across multiple data centers or geographic regions. A user in New York gets directed to the East Coast data center. A user in London gets directed to the European data center. If the East Coast data center goes down entirely, all traffic shifts to the surviving sites.
@@ -113,3 +186,7 @@ GSLB typically works through DNS — the GSLB system acts as the authoritative D
 CDNs (Content Delivery Networks) like Cloudflare, Akamai, and AWS CloudFront use GSLB concepts extensively — they route users to the nearest healthy edge node to minimize latency and maximize availability. Enterprise GSLB solutions from F5 (DNS) and Citrix (GSLB) provide the same functionality for organizations running their own multi-site infrastructure.
 
 For the exam, know that GSLB extends load balancing beyond a single site using DNS-based traffic steering, that it provides geographic distribution and disaster recovery across data centers, and that it relies on health checks to detect site failures. The implementation details are beyond Network+ scope, but the concept appears in availability and redundancy questions.
+
+## Key Terms
+
+load balancer · virtual IP · backend pool · Layer 4 · Layer 7 · round robin · least connections · weighted · health check · session persistence · sticky session · SSL termination · active-active

@@ -13,13 +13,83 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: layer-order
+    title: "Working Up the Layers"
+    keyPoints:
+      - "Start at Layer 1 because it is fastest to check and the most common cause."
+      - "A link light confirms electrical connection, not that the port is in the right VLAN."
+      - "Each layer confirmed narrows what remains, which is why order beats guessing."
+    check:
+      - prompt: "A workstation has no network access. What should be checked first?"
+        options:
+          - "The physical connection and link light"
+          - "The DNS server configuration"
+          - "The firewall rule order"
+          - "The routing table on the core switch"
+        correct: 0
+      - prompt: "What does a link light actually confirm?"
+        options:
+          - "An electrical connection exists between the port and the device"
+          - "The device is in the correct VLAN"
+          - "DHCP has issued an address"
+          - "The gateway is reachable"
+        correct: 0
+  - id: isolating-dns
+    title: "Separating DNS, Routing, and Filtering"
+    keyPoints:
+      - "Pinging an IP address that works while the name fails isolates the fault to DNS."
+      - "Reaching the gateway but nothing beyond it points at routing or the firewall."
+      - "A connection that opens then stops suggests filtering rather than a broken path."
+    check:
+      - prompt: "A user can ping 8.8.8.8 but cannot open any website by name. What is the fault?"
+        options:
+          - "DNS resolution"
+          - "The default gateway"
+          - "The physical cable"
+          - "The switch port VLAN"
+        correct: 0
+      - prompt: "A host can reach its default gateway but nothing beyond it. What should you suspect?"
+        options:
+          - "Routing or firewall filtering upstream"
+          - "A failed network card"
+          - "An incorrect subnet mask on the switch"
+          - "A duplex mismatch on the client"
+        correct: 0
+  - id: addressing-faults
+    title: "Addressing and VLAN Faults"
+    keyPoints:
+      - "A 169.254 address means DHCP did not answer, so the fault is upstream of the client."
+      - "A wrong subnet mask lets local traffic work while anything off-subnet fails."
+      - "A port in the wrong VLAN produces a client that appears connected but reaches nothing expected."
+    check:
+      - prompt: "A client has a 169.254 address. Where is the fault?"
+        options:
+          - "Upstream — DHCP did not respond"
+          - "On the client network card"
+          - "In the DNS configuration"
+          - "In the firewall rule order"
+        correct: 0
+      - prompt: "A workstation reaches other machines on its own subnet but nothing beyond. What is a likely cause?"
+        options:
+          - "An incorrect subnet mask or default gateway"
+          - "A failed switch port"
+          - "A DNS server outage"
+          - "An expired DHCP lease"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## Three Tickets, One Symptom, Three Causes
 
 The help desk gets three tickets in ten minutes. All three say the same thing: "I can't get to the internet." Ticket one is a workstation with a 169.254.x.x address because DHCP failed. Ticket two is a laptop with a valid IP but a misconfigured DNS server pointing at an address that doesn't exist. Ticket three is a desktop with a perfect configuration on the wrong VLAN — traffic is reaching the gateway, but the gateway has no route to the internet for that subnet because the VLAN was just created and nobody added the NAT rule.
 
 Same symptom. Completely different problems at completely different layers. If you treat every "can't get to the internet" ticket the same way, you'll fix one out of three and waste time on the other two. The skill isn't knowing every possible cause — it's having a systematic process to isolate which one you're dealing with in under two minutes.
+
+<Callout type="exam">
+These questions are testing whether you can isolate rather than guess. The pattern in the symptom names the layer: no link is Layer 1, wrong VLAN is Layer 2, addressing and gateway are Layer 3, name resolution is DNS. Read for what still works.
+</Callout>
 
 ## Start at the Bottom — Layer 1
 
@@ -124,8 +194,16 @@ The scope of a connectivity failure is your strongest diagnostic clue:
 
 Start by defining the scope. One user or many? One destination or all? Internal or external? The answers eliminate categories of causes before you run a single command.
 
+<Callout type="warn">
+A link light plus an IP address makes a machine look connected, and it can still be in the wrong VLAN reaching nothing it should. Confirm the port assignment before concluding the client is fine.
+</Callout>
+
 ## Why This Matters in the Field
 
 "I can't get to the internet" will be the most common ticket you handle in your first year. Maybe your first five years. The users aren't wrong — from their perspective, it's all "the internet." Your job is to translate that into a specific, testable failure at a specific layer and fix the actual cause, not the symptom.
 
 The techs who can do this in five minutes instead of fifty aren't smarter — they've internalized the diagnostic sequence. Gateway ping, external ping, DNS test, port test. Four commands that narrow the entire internet to one broken thing. Practice the sequence until it's automatic. It'll save you more time than any other skill in this course.
+
+## Key Terms
+
+link light · Layer 1 · VLAN assignment · subnet mask · default gateway · DHCP · APIPA · 169.254 · DNS resolution · ping · traceroute · NAT · access port · ipconfig

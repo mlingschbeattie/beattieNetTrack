@@ -13,13 +13,83 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: spof
+    title: "Single Points of Failure"
+    keyPoints:
+      - "A single point of failure is any component whose loss takes the service down."
+      - "Redundancy removes them by duplicating the component and the path to it."
+      - "Two power supplies fed from one circuit is still a single point of failure."
+    check:
+      - prompt: "A server has dual power supplies, both plugged into the same power strip. What remains?"
+        options:
+          - "A single point of failure at the power strip"
+          - "No single point of failure"
+          - "A redundant path"
+          - "A load-balanced supply"
+        correct: 0
+      - prompt: "What is the purpose of identifying single points of failure?"
+        options:
+          - "To find where one component failing takes the whole service down"
+          - "To reduce hardware cost"
+          - "To simplify the network diagram"
+          - "To increase link speed"
+        correct: 0
+  - id: redundancy
+    title: "Link and Gateway Redundancy"
+    keyPoints:
+      - "Link aggregation combines physical links into one logical link for bandwidth and failover."
+      - "FHRPs such as HSRP and VRRP let two routers share one virtual gateway address."
+      - "Without an FHRP, a failed gateway strands every client configured to use it."
+    check:
+      - prompt: "What problem does a first hop redundancy protocol solve?"
+        options:
+          - "Clients are configured with one gateway address that would otherwise be a single point of failure"
+          - "Switches run out of MAC table space"
+          - "Cables exceed 100 metres"
+          - "DNS servers become unreachable"
+        correct: 0
+      - prompt: "What does link aggregation provide?"
+        options:
+          - "Combined bandwidth and automatic failover across bundled links"
+          - "Encryption between switches"
+          - "VLAN separation"
+          - "Longer cable runs"
+        correct: 0
+  - id: slas
+    title: "Availability Targets"
+    keyPoints:
+      - "Availability is expressed in nines — 99.9 percent allows roughly nine hours of downtime a year."
+      - "Each additional nine costs disproportionately more to achieve."
+      - "An SLA is a contractual target with consequences, not a technical guarantee that nothing breaks."
+    check:
+      - prompt: "Roughly how much annual downtime does 99.9 percent availability permit?"
+        options:
+          - "About nine hours"
+          - "About five minutes"
+          - "About four days"
+          - "None"
+        correct: 0
+      - prompt: "What does an SLA actually represent?"
+        options:
+          - "A contractual commitment with defined consequences if missed"
+          - "A guarantee that no outage can occur"
+          - "A hardware warranty"
+          - "A network diagram standard"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## Everything Fails
 
 Hard drives fail. Power supplies fail. Switches fail. Fiber gets cut by a backhoe. Software crashes. Firmware updates brick devices. A janitor unplugs something to plug in a vacuum. A squirrel chews through a cable on the utility pole — this has happened more times than the telecom industry cares to admit. The question isn't whether your network will experience a failure. It's whether the failure takes the network down with it.
 
 High availability is the engineering discipline of designing networks that survive component failures without users noticing. Redundancy is the primary mechanism — duplicate the things that can fail, so that when one fails, the other takes over. The goal is never "nothing ever breaks." The goal is "things break and the network keeps running." The difference between those two goals is everything. The first one is fantasy. The second one is architecture.
+
+<Callout type="exam">
+Know the nines. 99.9 is roughly nine hours of downtime a year, 99.99 about 52 minutes, 99.999 about five minutes. Questions give a percentage and ask for the tolerable downtime, or the reverse.
+</Callout>
 
 ## Single Point of Failure — Finding the Weakness
 
@@ -127,6 +197,10 @@ Not all redundancy is instant. The time it takes for a backup system to become o
 
 The standby model you choose matches the SLA you're targeting, which matches the budget you have, which matches the cost of downtime for that service. The core router serving the entire campus? Hot standby with HSRP. The backup DNS server? Warm standby is fine — queries fail over to the secondary automatically, and a few seconds of DNS timeout is tolerable. The spare access switch for the storage closet? Cold standby on the shelf. Not everything gets the same treatment, and that's by design.
 
+<Callout type="warn">
+Redundancy that shares a dependency is not redundancy. Two uplinks through the same conduit, two power supplies on one circuit, or two virtual machines on one host all fail together — trace the shared component before calling a design resilient.
+</Callout>
+
 ## Graceful Degradation vs. Full Failover
 
 **Full failover** means the backup system takes over completely — all services, all traffic, full functionality. Hot standby with HSRP is a full failover model. When Router A fails, Router B handles everything Router A was handling. No loss of features.
@@ -136,3 +210,7 @@ The standby model you choose matches the SLA you're targeting, which matches the
 Graceful degradation is the realistic outcome of most redundancy designs. True full failover with zero loss of capacity requires identical backup hardware running in parallel — which doubles the cost. Most networks are designed so that a single failure preserves all critical services (user connectivity, email, business applications) while non-critical services (backups, updates, bulk transfers) are temporarily reduced or paused. Users stay productive. The non-critical stuff catches up later.
 
 The design principle: define which services are critical. Ensure those survive a single failure at full capacity. Let everything else degrade gracefully. This is a conversation with the people who use the network, not a unilateral engineering decision. When the principal says "if the internet goes down during standardized testing, that's a catastrophe," that's a requirement for hot standby on the WAN. When the IT director says "if internal file shares are slow for an hour during a switch replacement, that's acceptable," that's a tolerance for graceful degradation at the access layer. Build the network to match the promises.
+
+## Key Terms
+
+single point of failure · redundancy · link aggregation · EtherChannel · LACP · FHRP · HSRP · VRRP · virtual IP · active-passive · active-active · failover · SLA · uptime · nines · MTTR · MTBF

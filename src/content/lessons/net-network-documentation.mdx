@@ -13,8 +13,73 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: diagrams
+    title: "Physical and Logical Diagrams"
+    keyPoints:
+      - "A physical diagram shows what is plugged into what, and where the cable physically runs."
+      - "A logical diagram shows how traffic flows — VLANs, subnets, and routing relationships."
+      - "The two answer different questions, and troubleshooting usually needs both."
+    check:
+      - prompt: "Which diagram would you use to find which subnet a VLAN maps to?"
+        options:
+          - "The logical diagram"
+          - "The physical diagram"
+          - "The rack diagram"
+          - "The cable label schedule"
+        correct: 0
+      - prompt: "What does a physical diagram primarily record?"
+        options:
+          - "Device locations and the cabling between them"
+          - "IP addressing scheme"
+          - "Routing protocol configuration"
+          - "Firewall rule order"
+        correct: 0
+  - id: ipam-and-ports
+    title: "Address and Port Records"
+    keyPoints:
+      - "IP address management records what is assigned, to what, and what remains free."
+      - "Port maps record which switch port serves which room or device."
+      - "Without either, tracing a device means walking the building with a cable tester."
+    check:
+      - prompt: "Why does a port map save significant time during a fault?"
+        options:
+          - "It identifies which switch port serves a location without physical tracing"
+          - "It encrypts switch management traffic"
+          - "It prevents VLAN misconfiguration"
+          - "It replaces the need for monitoring"
+        correct: 0
+      - prompt: "What is the risk of an unmaintained IP address record?"
+        options:
+          - "Duplicate addresses assigned to two devices"
+          - "Slower switch forwarding"
+          - "Loss of VLAN tagging"
+          - "Increased broadcast domain size"
+        correct: 0
+  - id: labelling
+    title: "Labelling and Upkeep"
+    keyPoints:
+      - "Labelling both ends of every run is the cheapest troubleshooting investment available."
+      - "Documentation is only useful if it is updated as part of the change, not afterwards."
+      - "Out-of-date documentation is worse than none, because it is trusted and wrong."
+    check:
+      - prompt: "Why is out-of-date documentation considered worse than no documentation?"
+        options:
+          - "It is trusted and acted on while being wrong"
+          - "It takes up storage space"
+          - "It cannot be printed"
+          - "It slows down the network"
+        correct: 0
+      - prompt: "When should documentation be updated?"
+        options:
+          - "As part of the change itself"
+          - "At the end of the school year"
+          - "Only when an auditor asks"
+          - "When someone has spare time"
+        correct: 0
 ---
 
+import Callout from '../../components/Callout.astro';
 
 ## The 3 AM Phone Call
 
@@ -25,6 +90,10 @@ If the documentation is good, you pull it up on your phone while you're still in
 If the documentation is bad — or doesn't exist — you're standing in front of a rack at 3:15 AM tracing cables by hand, guessing at IP addresses, and calling a coworker who "might remember" how it was set up two years ago. That coworker left the company six months ago.
 
 Documentation is not a school assignment you write to prove you did the work. It's the artifact that lets you — or anyone who comes after you — operate the network without reverse-engineering it every time something breaks. The time you spend documenting is time you save in every future emergency. The industry has a saying: if it's not documented, it doesn't exist. The corollary is harsher: if it's not documented, it'll break at the worst possible time and nobody will know how to fix it.
+
+<Callout type="exam">
+Physical diagrams answer where something is. Logical diagrams answer how traffic flows. Rack diagrams answer what occupies which rack unit. Match the question being asked to the document that answers it.
+</Callout>
 
 ## Physical Diagrams — What's Plugged Into What
 
@@ -94,6 +163,10 @@ Formal change management in enterprise environments includes a change advisory b
 
 The habit starts now. Get comfortable writing down what you did, when you did it, and why. It's not bureaucracy — it's the pattern that separates professionals from amateurs. Every experienced tech has a war story about spending hours troubleshooting a mystery outage only to discover that someone made an undocumented change three days earlier. Write it down. Every time.
 
+<Callout type="warn">
+The most common documentation failure is not absence but drift. A diagram updated at install and never since sends the next technician to the wrong closet with confidence. Treat updating it as part of finishing the work.
+</Callout>
+
 ## Tools of the Trade
 
 **draw.io (diagrams.net)** is free, browser-based, and has built-in networking shape libraries. Physical and logical diagrams, rack layouts, flow charts — all functional and shareable without a software license. For a school lab or small business, draw.io covers 90% of your diagramming needs. Export to PNG, SVG, or PDF for printing and posting.
@@ -105,3 +178,7 @@ The habit starts now. Get comfortable writing down what you did, when you did it
 **Excel/Google Sheets** is where documentation goes to die. It's where it starts, too, because it's accessible and everyone knows how to use it. The trap is that spreadsheets don't validate data, don't enforce consistency, and become unmaintainable as the network grows. Use a spreadsheet as a starting point or a quick reference, not as your primary documentation system. The moment you have more than two VLANs and a dozen static IPs, migrate to a proper tool.
 
 The best documentation tool is the one that actually gets used. A perfectly designed NetBox instance that nobody updates is worse than a Google Sheet that the team maintains religiously. Pick the tool that matches your team's discipline level and grow from there.
+
+## Key Terms
+
+physical diagram · logical diagram · rack diagram · IPAM · port map · VLAN documentation · cable label · ANSI/TIA-606 · asset inventory · baseline · change log · single source of truth

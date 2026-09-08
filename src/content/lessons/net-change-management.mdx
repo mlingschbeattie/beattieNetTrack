@@ -13,13 +13,83 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: request-and-review
+    title: "The Request and the Review"
+    keyPoints:
+      - "A change request records what will change, why, when, and who approved it."
+      - "A change advisory board reviews risk and timing before approval, so one person cannot break production alone."
+      - "Standard changes are pre-approved and low risk; emergency changes bypass the queue and are reviewed afterwards."
+    check:
+      - prompt: "What is the purpose of a change advisory board?"
+        options:
+          - "To review risk and timing before a change is approved"
+          - "To perform the change itself"
+          - "To monitor the network overnight"
+          - "To purchase replacement hardware"
+        correct: 0
+      - prompt: "Which change type is pre-approved because it is routine and low risk?"
+        options:
+          - "A standard change"
+          - "An emergency change"
+          - "A major change"
+          - "An unauthorised change"
+        correct: 0
+  - id: windows-and-testing
+    title: "Maintenance Windows and Testing"
+    keyPoints:
+      - "A maintenance window schedules disruptive work when the fewest users are affected."
+      - "Lab testing proves the change works before it touches production."
+      - "A change that has never been tested is a theory being applied to live systems."
+    check:
+      - prompt: "Why schedule disruptive changes into a maintenance window?"
+        options:
+          - "To limit the number of users affected if something goes wrong"
+          - "To reduce electricity costs"
+          - "Because switches reboot faster at night"
+          - "To avoid needing a rollback plan"
+        correct: 0
+      - prompt: "What does lab testing establish before a production change?"
+        options:
+          - "That the change actually produces the intended result"
+          - "That the hardware is under warranty"
+          - "That the maintenance window is long enough"
+          - "That the CAB approved it"
+        correct: 0
+  - id: rollback
+    title: "Rollback Planning"
+    keyPoints:
+      - "A rollback plan describes how to return to the previous working state, and it is written before the change."
+      - "Backing up the current configuration is the minimum rollback preparation."
+      - "A change without a rollback path is a one-way decision made under time pressure."
+    check:
+      - prompt: "When should the rollback plan be written?"
+        options:
+          - "Before the change is implemented"
+          - "After the change fails"
+          - "During the next maintenance window"
+          - "Only for emergency changes"
+        correct: 0
+      - prompt: "What is the minimum rollback preparation before changing a device configuration?"
+        options:
+          - "Saving a copy of the current working configuration"
+          - "Rebooting the device first"
+          - "Notifying the vendor"
+          - "Disabling monitoring"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## The Outage That Didn't Have to Happen
 
 Friday afternoon. A network engineer decides to "quickly" update the ACL on the core router before leaving for the weekend. No maintenance window. No notification. No rollback plan. The ACL has a typo — a wildcard mask is inverted — and suddenly the entire admin VLAN can't reach the internet. The engineer doesn't realize the mistake because the change looked right in the config. They leave. The help desk doesn't connect the ACL change to the connectivity complaints because nobody told them a change was happening. Three hours of troubleshooting later, someone finally checks the change and finds the error. Five-minute fix. Three-hour outage. All because nobody followed a process.
 
 This is not a hypothetical. This happens in production networks constantly. Not because the engineers are incompetent — the person who made that change probably understood ACLs perfectly. It happened because there was no process to catch the error before it hit production, no communication to alert the team, and no rollback plan to recover quickly. Change management exists to prevent this exact scenario. It's not bureaucracy for its own sake. It's the process that turns individual competence into organizational reliability.
+
+<Callout type="exam">
+Know the sequence and the roles. A request is raised, the CAB assesses risk and approves, the change is tested, implemented in a maintenance window, verified, and documented. Emergency changes invert only the approval step, and are reviewed retrospectively.
+</Callout>
 
 ## The Change Request — Starting the Paper Trail
 
@@ -111,8 +181,16 @@ After the change: confirm completion. "Maintenance complete. All services verifi
 
 The change log — whether it's a field in the ticketing system, a shared document, or a dedicated tool — records the final state. What was changed, when, by whom, and the outcome. This feeds directly back into the documentation discipline from the earlier lesson. The change log is the living history of the network. When something breaks next month and the first question is "what changed?", the log answers it.
 
+<Callout type="warn">
+The step skipped under pressure is the rollback plan, and it is the one that matters when the change fails at 2 AM. Write it while you are calm and have time, not while the network is down.
+</Callout>
+
 ## The Relationship Between Change Management and Documentation
 
 Change management and documentation aren't separate disciplines — they're two sides of the same practice. Documentation tells you what the network looks like now. Change management controls how that picture evolves. Every approved change should result in updated documentation — diagrams, IPAM records, port maps, VLAN tables, whatever the change affected. A change that's implemented but not reflected in the documentation creates a gap between the documented state and the actual state, and that gap grows with every undocumented change until the documentation is so far from reality that nobody trusts it.
 
 The simplest enforcement: the change request isn't closed until the documentation is updated. Make it a checkbox. Make it a required field. Make it someone's responsibility. The specifics don't matter. The habit does.
+
+## Key Terms
+
+change request · change advisory board · CAB · standard change · normal change · emergency change · risk assessment · maintenance window · lab testing · rollback plan · backout · post-implementation review · change log

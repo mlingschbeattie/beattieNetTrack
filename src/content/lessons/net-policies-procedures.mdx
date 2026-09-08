@@ -13,14 +13,83 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: policy-vs-procedure
+    title: "Policy and Procedure"
+    keyPoints:
+      - "A policy states what must happen and why; a procedure states how to do it step by step."
+      - "Policies are approved by leadership and change rarely; procedures change as tools change."
+      - "Confusing the two produces policies nobody can follow and procedures nobody has authorised."
+    check:
+      - prompt: "Which document would contain the exact steps for resetting a user password?"
+        options:
+          - "A procedure"
+          - "A policy"
+          - "An acceptable use agreement"
+          - "A service level agreement"
+        correct: 0
+      - prompt: "What does a policy primarily establish?"
+        options:
+          - "What must happen and the reason for it"
+          - "The specific commands to type"
+          - "The vendor support contract"
+          - "The network diagram"
+        correct: 0
+  - id: aup-and-byod
+    title: "Acceptable Use and BYOD"
+    keyPoints:
+      - "An acceptable use policy defines what users may and may not do on the network."
+      - "A BYOD policy addresses personal devices, covering what the organisation may manage and wipe."
+      - "BYOD raises the question of who owns the data on a personal device, which must be answered in writing before an incident."
+    check:
+      - prompt: "What is the central risk a BYOD policy must address?"
+        options:
+          - "Organisational data sitting on a device the organisation does not own"
+          - "Personal devices using more bandwidth"
+          - "Devices needing more IP addresses"
+          - "Users preferring different operating systems"
+        correct: 0
+      - prompt: "What does an acceptable use policy define?"
+        options:
+          - "What users are permitted and forbidden to do on the network"
+          - "How switches are configured"
+          - "The backup retention schedule"
+          - "The maintenance window"
+        correct: 0
+  - id: access-policies
+    title: "Password and Remote Access Policy"
+    keyPoints:
+      - "A password policy sets length, complexity, reuse, and rotation expectations."
+      - "Current guidance favours length and screening against breached passwords over frequent forced rotation."
+      - "A remote access policy defines who may connect from outside, from what, and with what authentication."
+    check:
+      - prompt: "Why has frequent forced password rotation fallen out of favour?"
+        options:
+          - "It pushes users toward predictable variations that are easier to guess"
+          - "It costs too much to administer"
+          - "It is incompatible with MFA"
+          - "It prevents password managers working"
+        correct: 0
+      - prompt: "What should a remote access policy specify?"
+        options:
+          - "Who may connect remotely, from what devices, and with what authentication"
+          - "The physical rack layout"
+          - "Which vendor supplies the switches"
+          - "The syslog retention period"
+        correct: 0
 ---
 
+import Callout from '../../components/Callout.astro';
 
 ## The Document Nobody Reads
 
 Somewhere in every organization, there's a document that says what you can and can't do on the network. It was probably written years ago, approved by someone in administration, emailed to everyone once, and never read again. Until someone does something that causes a problem — torrents a movie over the school network, installs a rogue wireless AP on their desk, shares their admin credentials with a student worker — and suddenly the question is: "Is there a policy that says they can't do that?"
 
 If the answer is yes and the employee signed it, the organization has standing to act. If the answer is no — or the policy is so vague it could mean anything — the conversation gets difficult fast. Policies aren't just paperwork. They're the written rules that define acceptable behavior on the network, the procedures that enforce consistency, and the legal framework that protects the organization when something goes wrong. You need to know what these policies cover, why they exist, and how they translate into technical controls — because as a network tech, you're the one implementing and enforcing them.
+
+<Callout type="exam">
+The distinction gets tested directly. Policy is the what and the why, approved at a governance level. Procedure is the how, written for whoever performs the task. A question describing numbered steps is describing a procedure.
+</Callout>
 
 ## Policy vs. Procedure — The Distinction
 
@@ -120,6 +189,10 @@ A **vendor access policy** defines: how vendors request access (a formal request
 
 The worst-case scenario: a vendor gets a VPN account during a project, the project ends, and nobody revokes the account. That credential sits active for months or years. If the vendor's own security is compromised, that orphaned account is a direct path into your network. This is how several high-profile breaches happened. Vendor access is always temporary, always scoped, always revoked when done.
 
+<Callout type="warn">
+A policy nobody has read is a document, not a control. The signature on an acceptable use agreement is what makes it enforceable, which is why onboarding is where these actually take effect.
+</Callout>
+
 ## Policy Enforcement — Connecting Words to Controls
 
 A policy without enforcement is a document nobody follows. Every policy should map to technical controls that make compliance the default and violations detectable:
@@ -129,3 +202,7 @@ The AUP says "no unauthorized devices"? → 802.1X authenticates every wired and
 Where technical enforcement isn't possible, detective controls (monitoring, logging, auditing) catch violations after the fact. Where neither is practical, the AUP acknowledgment and the consequences defined in the policy are the enforcement — the user agreed to the rules, and violating them has documented repercussions.
 
 The goal isn't to build a prison. It's to build a framework where the network is secure by default, users understand the boundaries, and when something goes wrong, there's a documented process for handling it. That framework starts with the policies in this lesson and translates into every ACL, every firewall rule, and every authentication configuration you deploy.
+
+## Key Terms
+
+policy · procedure · standard · guideline · acceptable use policy · AUP · BYOD · MDM · remote access policy · password policy · complexity · rotation · onboarding · offboarding · NDA · SLA

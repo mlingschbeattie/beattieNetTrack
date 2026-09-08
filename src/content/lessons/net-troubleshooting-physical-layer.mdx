@@ -13,13 +13,83 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: cable-faults
+    title: "Cable Fault Types"
+    keyPoints:
+      - "An open is a broken conductor; a short is two conductors touching."
+      - "A miswire terminates pins in the wrong order, which may still light the link but corrupt data."
+      - "A cable tester identifies which fault is present far faster than swapping cables."
+    check:
+      - prompt: "A cable links at 100 Mbps instead of 1 Gbps and shows errors. What should you suspect?"
+        options:
+          - "A miswired or damaged pair"
+          - "A failed switch power supply"
+          - "An incorrect VLAN"
+          - "A DNS misconfiguration"
+        correct: 0
+      - prompt: "What distinguishes an open from a short?"
+        options:
+          - "An open is a broken conductor; a short is two conductors in contact"
+          - "An open affects fibre only"
+          - "A short only occurs in patch panels"
+          - "They are the same fault"
+        correct: 0
+  - id: signal-degradation
+    title: "Attenuation, Crosstalk, and EMI"
+    keyPoints:
+      - "Attenuation is signal loss over distance, which is why copper is limited to 100 metres."
+      - "Crosstalk is interference between adjacent pairs, usually from untwisting too much at termination."
+      - "EMI comes from outside the cable — motors, fluorescent ballasts, power runs alongside data."
+    check:
+      - prompt: "A cable run passes alongside fluorescent lighting and shows intermittent errors. What is the likely cause?"
+        options:
+          - "Electromagnetic interference"
+          - "Attenuation"
+          - "A short circuit"
+          - "An incorrect subnet mask"
+        correct: 0
+      - prompt: "Why is copper Ethernet limited to roughly 100 metres?"
+        options:
+          - "Attenuation weakens the signal beyond reliable detection"
+          - "The connectors fail at that length"
+          - "Switches cannot address devices further away"
+          - "VLAN tags expire over distance"
+        correct: 0
+  - id: poe-optics
+    title: "PoE and Optical Faults"
+    keyPoints:
+      - "PoE budget is finite — a switch can exhaust its total power before every port is populated."
+      - "A dirty or damaged fibre end face scatters light and produces loss without any visible break."
+      - "A transceiver mismatched to the fibre type will simply never bring the link up."
+    check:
+      - prompt: "Several PoE devices fail to power on after more are added to a switch. What is the likely cause?"
+        options:
+          - "The switch PoE power budget is exhausted"
+          - "The cables exceed 100 metres"
+          - "The VLAN is misconfigured"
+          - "The devices need static IP addresses"
+        correct: 0
+      - prompt: "A fibre link will not come up between two switches with matching configuration. What should you check?"
+        options:
+          - "That the transceivers match the fibre type and wavelength"
+          - "The DHCP scope"
+          - "The spanning tree priority"
+          - "The syslog server address"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## The Link Light Lied
 
 A tech spends forty minutes chasing a connectivity problem on a workstation. IP configuration is correct. DHCP lease is valid. The switch shows the port at up/up. The link light on the NIC is solid green. Everything looks fine at Layer 2 and above, but the user drops packets constantly — 30% loss on a simple ping to the gateway. The tech swaps the patch cable between the wall jack and the workstation, and the problem vanishes. A perfectly good-looking cable with a solid link light was corrupting every third frame because one of the four pairs had a split fault that passed just enough signal to establish a link but not enough to sustain reliable data transfer.
 
 The physical layer is the most common failure point in networking. Not the most interesting — nobody writes blog posts about broken cables — but the most frequent. Surveys of network outage root causes consistently put physical layer issues at the top. And unlike a misconfigured ACL or a bad routing entry, a physical layer fault can produce symptoms that mimic problems at every other layer. Packet loss that looks like congestion. Intermittent connectivity that looks like a failing switch. Slow transfers that look like a bandwidth problem. Before you troubleshoot anything else, you rule out Layer 1.
+
+<Callout type="exam">
+Match symptom to cause. Distance suggests attenuation. Interference near motors or lighting suggests EMI. Errors after a re-termination suggest crosstalk from excessive untwist. Speed negotiated lower than expected suggests a damaged pair.
+</Callout>
 
 ## Cable Fault Types
 
@@ -105,8 +175,16 @@ Causes include a damaged cable that makes intermittent contact (especially at th
 
 Troubleshooting: check the switch log timestamps to identify the interval pattern. If the interval is regular (every 60 seconds), suspect a protocol timer — spanning tree, keepalive, or UDLD. If it's irregular, suspect a physical fault. Swap the cable first. Then test with a known-good device. Then check the SFP. Then check the switch port itself with a loopback adapter. Work through the physical components systematically until you isolate the faulty one.
 
+<Callout type="warn">
+A link light means the physical layer negotiated, not that the cable is good. A miswired or partially damaged cable will link, pass small traffic, and fail under load — which is why intermittent faults get blamed on applications.
+</Callout>
+
 ## Why This Matters in the Field
 
 Your career will include days where you spend the entire shift on physical layer problems. Running cable, terminating jacks, patching panels, replacing SFPs, cleaning fiber connectors, and chasing intermittent faults that defy normal troubleshooting. These aren't glamorous tasks. They're the foundation of everything else. A misconfigured OSPF area can wait while you think about it. A severed fiber trunk takes down a building immediately.
 
 The techs who succeed long-term are the ones who respect the physical layer. They don't skip the cable test. They don't assume the link light means everything is fine. They check error counters habitually. They clean fiber connectors before insertion every single time. These habits aren't exciting, but they prevent the late-night emergency calls that make this job age you faster than it should.
+
+## Key Terms
+
+open · short · miswire · split pair · cable tester · TDR · attenuation · crosstalk · NEXT · EMI · shielding · 100-metre limit · PoE budget · PoE+ · SFP · transceiver · bend radius · end face contamination

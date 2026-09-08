@@ -13,11 +13,81 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: service-models
+    title: "IaaS, PaaS, and SaaS"
+    keyPoints:
+      - "IaaS gives you virtual machines and networking; you manage the OS and everything above it."
+      - "PaaS gives you a platform to deploy code onto, with the OS and runtime managed for you."
+      - "SaaS gives you finished software, where you manage only your data and users."
+    check:
+      - prompt: "A school uses a web-based email suite it does not host or patch. Which model is that?"
+        options:
+          - "SaaS"
+          - "PaaS"
+          - "IaaS"
+          - "On-premises"
+        correct: 0
+      - prompt: "Which model gives the most control over the operating system?"
+        options:
+          - "IaaS"
+          - "PaaS"
+          - "SaaS"
+          - "None of them"
+        correct: 0
+  - id: deployment
+    title: "Deployment Models"
+    keyPoints:
+      - "A public cloud is shared infrastructure run by a provider; a private cloud is dedicated to one organisation."
+      - "Hybrid links the two so workloads can sit wherever suits cost, control, or regulation."
+      - "Community cloud is shared by organisations with common requirements, such as a group of schools."
+    check:
+      - prompt: "An organisation keeps student records on its own hardware but runs email in a public cloud. What is that?"
+        options:
+          - "A hybrid cloud"
+          - "A private cloud only"
+          - "A community cloud"
+          - "A public cloud only"
+        correct: 0
+      - prompt: "What defines a private cloud?"
+        options:
+          - "Infrastructure dedicated to a single organisation"
+          - "Any cloud service that requires a password"
+          - "A cloud hosted in the same country"
+          - "A free tier of a public cloud"
+        correct: 0
+  - id: shared-responsibility
+    title: "The Shared Responsibility Model"
+    keyPoints:
+      - "The provider secures the infrastructure; the customer secures what they put on it."
+      - "The dividing line moves with the service model — the customer owns most of it under IaaS and least under SaaS."
+      - "Data and access management remain the customer responsibility in every model."
+    check:
+      - prompt: "Under the shared responsibility model, who is responsible for configuring access to your data in a SaaS product?"
+        options:
+          - "The customer"
+          - "The cloud provider"
+          - "Both equally by contract"
+          - "Neither — SaaS handles it automatically"
+        correct: 0
+      - prompt: "How does the responsibility boundary shift from IaaS to SaaS?"
+        options:
+          - "The provider takes on more, and the customer less"
+          - "The customer takes on more"
+          - "It does not change"
+          - "Responsibility is split evenly in both"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## The Server Room That Isn't Yours
 
 Five years ago, the school district ran email on a physical server in the back of the IT office. Someone maintained it, patched it, replaced its hard drives, managed its certificates, and rebooted it at 2 AM when it crashed. Today the district uses Microsoft 365. Email lives in Microsoft's data center — somewhere in Virginia, probably, or maybe Texas. Nobody here maintains a mail server anymore. The district pays a monthly subscription, and Microsoft handles the hardware, the operating system, the patches, the backups, and the uptime. That shift — from owning infrastructure to renting it — is cloud computing. It changed the IT industry permanently, and it changed what network engineers do because now a significant chunk of your organization's traffic is heading to data centers you don't control, over links you need to plan for, secured by a shared responsibility model you need to understand.
+
+<Callout type="exam">
+Work out how much stack the customer manages. IaaS is infrastructure only, so the customer patches the OS. PaaS hands over the platform, so the customer manages just the application. SaaS delivers finished software, so the customer manages only data and users.
+</Callout>
 
 ## Service Models — IaaS, PaaS, SaaS
 
@@ -73,6 +143,14 @@ In SaaS, the provider secures almost everything. Your responsibility narrows to 
 
 The shared responsibility model isn't a handshake agreement — it's a legal and operational boundary. When a breach happens, the first question is which side of the line the failure occurred on. Network engineers need to understand this because misconfigured security groups, open management ports, and missing encryption are all customer-side responsibilities that create the cloud's most common security failures.
 
+<Callout type="warn">
+Moving to the cloud does not move responsibility for your data. Misconfigured public access to cloud storage is one of the most common breach causes, and it sits squarely on the customer side of the line in every service model.
+</Callout>
+
 ## Why This Matters in the Field
 
 Cloud didn't eliminate the network engineer's job — it changed the tools. You're still designing networks, segmenting traffic, writing firewall rules, managing connectivity, and troubleshooting latency. The difference is that some of your switches are virtual, some of your firewalls are security groups, and some of your circuits are dedicated cloud interconnects instead of MPLS lines. When a user can't reach a cloud application, you troubleshoot the path: local network, internet uplink or dedicated connection, cloud virtual network, security group rules, and the application itself. The layers are the same. The location shifted. The engineers who adapt fastest are the ones who stop thinking of cloud as someone else's problem and start treating it as an extension of the network they already manage.
+
+## Key Terms
+
+IaaS · PaaS · SaaS · public cloud · private cloud · hybrid cloud · community cloud · multitenancy · elasticity · shared responsibility model · VPC · direct connect · cloud gateway

@@ -57,9 +57,16 @@ domains:
   - domainId: nocti.networking
     weight: 0.2
 ---
+
+import Callout from '../../components/Callout.astro';
+
 ## The Invisible Conversations
 
 Before your browser ever shows you a webpage, at least four different protocols had entire conversations on your behalf without you knowing. Your machine asked a DHCP server for an IP address. It queried a DNS server to translate the hostname into an IP. It ARPed the local network to find the MAC address of the default gateway. Then it opened an HTTPS session to the web server and started pulling content. All of that happened in the time it took you to press Enter. Each protocol has a specific job, a defined structure, and a predictable failure mode — and when any one of them breaks, the symptom at the surface is usually the same unhelpful "nothing works." The difference between a twenty-minute troubleshooting session and a two-minute one is knowing which conversation failed.
+
+<Callout type="exam">
+Questions describe a behaviour and expect you to name the protocol. Resolving a name to an address is DNS. Handing out addresses automatically is DHCP. Synchronising clocks is NTP. Encrypted remote command line is SSH. Read for the job being described, not the acronym.
+</Callout>
 
 ## ICMP — The Diagnostic Protocol
 
@@ -113,6 +120,14 @@ UDP carries traffic where speed and simplicity beat reliability: DNS queries (sm
 
 Some protocols use both depending on the situation. DNS normally uses UDP, but switches to TCP for zone transfers between DNS servers and for responses that exceed 512 bytes. Knowing which protocol uses TCP or UDP — and why — tells you what kind of traffic you're looking at in a packet capture and what kind of failures to expect. TCP connection fails? Check firewalls, check the handshake, check for RST packets. UDP traffic not arriving? There's no connection to debug — the packets are either getting there or they're not, and you'll need to check for drops at the firewall or routing level.
 
+<Callout type="warn">
+Telnet and FTP still appear in exam questions and in real networks, and both send credentials in clear text. Recognising them is required; recommending them is not. The secure replacements are SSH and SFTP.
+</Callout>
+
 ## Why This Matters in the Field
 
 Every time you troubleshoot a connectivity issue, you're tracing these protocols. Can the machine ping? ICMP. Does it have an IP address? DHCP. Can it resolve names? DNS. Can it reach the web server? HTTP/HTTPS. Can it find devices on the local segment? ARP. These aren't independent topics — they're a sequence that runs every time a device connects to a network, and a break at any point in the sequence produces a different symptom. When you can map a user's complaint to the protocol that failed, you skip the guessing and go straight to the fix. That's what separates a tech who resolves tickets from a tech who reads about the problem for forty-five minutes first.
+
+## Key Terms
+
+protocol · TCP · UDP · handshake · HTTP · HTTPS · TLS · FTP · SFTP · SSH · Telnet · SMTP · POP3 · IMAP · DNS · DHCP · NTP · SNMP · ICMP · ARP

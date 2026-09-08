@@ -13,11 +13,81 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: vector-vs-state
+    title: "Distance Vector and Link State"
+    keyPoints:
+      - "Distance vector routers share their whole table with neighbours and trust what they are told."
+      - "Link state routers flood information about their own links, and each builds a full map independently."
+      - "Link state converges faster and scales further, which is why OSPF displaced RIP in enterprises."
+    check:
+      - prompt: "Which description matches a link-state protocol?"
+        options:
+          - "Each router builds a complete map of the topology and calculates its own paths"
+          - "Routers share their entire routing table with neighbours"
+          - "Routes are entered manually by an administrator"
+          - "Routing decisions are made by the switch"
+        correct: 0
+      - prompt: "Why does RIP scale poorly?"
+        options:
+          - "It is limited to 15 hops and converges slowly"
+          - "It requires fibre connections"
+          - "It cannot route IPv4"
+          - "It only works on a single VLAN"
+        correct: 0
+  - id: ospf-eigrp
+    title: "OSPF and EIGRP"
+    keyPoints:
+      - "OSPF is an open standard link-state protocol organised into areas, with area 0 as the backbone."
+      - "EIGRP is Cisco-developed, converges very quickly, and behaves like a hybrid of both approaches."
+      - "OSPF works in mixed-vendor networks; EIGRP requires Cisco equipment throughout."
+    check:
+      - prompt: "A network uses equipment from three vendors and needs a dynamic routing protocol. Which is appropriate?"
+        options:
+          - "OSPF, because it is an open standard"
+          - "EIGRP, because it converges fastest"
+          - "RIP, because it is simplest"
+          - "BGP, because it is used on the internet"
+        correct: 0
+      - prompt: "Which OSPF area is the backbone that all others must connect to?"
+        options:
+          - "Area 0"
+          - "Area 1"
+          - "Area 100"
+          - "The area with the highest router ID"
+        correct: 0
+  - id: bgp
+    title: "BGP and Protocol Selection"
+    keyPoints:
+      - "BGP exchanges routes between autonomous systems and is what makes the public internet route."
+      - "BGP chooses paths on policy and attributes rather than purely on speed."
+      - "Interior protocols run inside one organisation; BGP runs between organisations."
+    check:
+      - prompt: "Which protocol routes between separate autonomous systems on the internet?"
+        options:
+          - "BGP"
+          - "OSPF"
+          - "EIGRP"
+          - "RIP"
+        correct: 0
+      - prompt: "What primarily drives BGP path selection?"
+        options:
+          - "Policy and path attributes"
+          - "Raw link bandwidth"
+          - "Cable length"
+          - "Hop count alone"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## The Network That Grew Past Static
 
 A small office has two subnets and one router. Two static routes, done. Then the company grows. Three offices, five routers, twelve subnets, two ISP uplinks. Now you need dozens of static routes, and every time a link fails or a subnet changes, you're logging into every router to update them manually. At 3 AM. On a holiday. The routes don't match because you fat-fingered a next-hop address on router three, and half the network is black-holing traffic to accounting. This is the moment every network reaches where static routing stops being simple and starts being dangerous. Routing protocols exist because human-managed route tables don't survive growth, and the protocols that handle it range from simple and slow to complex and fast. The exam tests four of them. The field uses three.
+
+<Callout type="exam">
+Sort them by category first. RIP and BGP are distance/path vector, OSPF is link state, EIGRP is the Cisco hybrid. RIP and OSPF and EIGRP are interior protocols; BGP is the exterior one. Category usually narrows the answer to one option.
+</Callout>
 
 ## Distance Vector vs. Link State
 
@@ -81,6 +151,14 @@ You won't configure BGP in a school network. You will encounter it the moment yo
 
 **BGP** — internet edge, multi-homed connections to ISPs, large-scale networks that need policy-based routing, cloud provider peering. Not for internal routing in small to midsize networks.
 
+<Callout type="warn">
+EIGRP is Cisco-proprietary. It is a reasonable answer only when the question states the network is entirely Cisco. In any mixed-vendor scenario the answer is OSPF, and candidates lose marks by picking EIGRP for its speed.
+</Callout>
+
 ## Why This Matters in the Field
 
 You'll inherit networks running these protocols and need to understand what you're looking at. You'll read OSPF neighbor tables to figure out why two routers aren't exchanging routes. You'll check EIGRP topology tables to see if a feasible successor exists for a critical path. You'll look at BGP peering sessions with your ISP when internet traffic is taking a suboptimal route. The protocols are different, but the troubleshooting pattern is the same: check adjacencies, check the routing table, check the metrics, find the disconnect. Understanding how each protocol makes decisions is what turns a confusing `show` command output into actionable information.
+
+## Key Terms
+
+distance vector · link state · path vector · convergence · RIP · hop count · OSPF · area 0 · LSA · EIGRP · feasible successor · BGP · autonomous system · interior gateway protocol · exterior gateway protocol

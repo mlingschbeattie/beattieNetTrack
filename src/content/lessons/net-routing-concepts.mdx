@@ -13,13 +13,83 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: routing-table
+    title: "The Routing Table"
+    keyPoints:
+      - "A router compares a packet destination against its table and forwards out the matching interface."
+      - "Longest prefix match wins — the most specific route is chosen, regardless of where it came from."
+      - "A packet matching nothing, with no default route, is dropped rather than guessed at."
+    check:
+      - prompt: "A router has routes for 10.0.0.0/8 and 10.1.1.0/24. A packet for 10.1.1.5 arrives. Which is used?"
+        options:
+          - "The /24, because it is the more specific match"
+          - "The /8, because it was learned first"
+          - "Both, load balanced"
+          - "Neither — the packet is dropped"
+        correct: 0
+      - prompt: "What happens to a packet matching no route when no default route exists?"
+        options:
+          - "It is dropped"
+          - "It is broadcast to every interface"
+          - "It is returned to the sender"
+          - "It is held until a route appears"
+        correct: 0
+  - id: static-dynamic
+    title: "Static and Dynamic Routing"
+    keyPoints:
+      - "Static routes are entered by hand — predictable, but they never react to a failure."
+      - "Dynamic protocols learn and adapt automatically, at the cost of more configuration and CPU."
+      - "A default route sends anything unmatched toward the internet edge."
+    check:
+      - prompt: "What is the main drawback of static routing in a growing network?"
+        options:
+          - "Routes do not adapt when a link fails"
+          - "It consumes excessive CPU"
+          - "It requires a dynamic protocol to function"
+          - "It only works on IPv6"
+        correct: 0
+      - prompt: "Which notation represents a default route?"
+        options:
+          - "0.0.0.0/0"
+          - "127.0.0.1/8"
+          - "255.255.255.255/32"
+          - "169.254.0.0/16"
+        correct: 0
+  - id: admin-distance
+    title: "Administrative Distance"
+    keyPoints:
+      - "Administrative distance ranks how much a router trusts each source of a route."
+      - "Lower is more trusted — connected 0, static 1, EIGRP 90, OSPF 110, RIP 120."
+      - "When two protocols offer the same destination, AD decides before metric does."
+    check:
+      - prompt: "OSPF and RIP both offer a route to the same network. Which is installed?"
+        options:
+          - "OSPF, because its administrative distance is lower"
+          - "RIP, because it is simpler"
+          - "Both, load balanced"
+          - "Whichever arrived first"
+        correct: 0
+      - prompt: "What does a lower administrative distance mean?"
+        options:
+          - "The source is more trusted"
+          - "The path is physically shorter"
+          - "The link is faster"
+          - "The route expires sooner"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## The Intersection That Explains Routing
 
 Imagine you're standing at a four-way intersection with no GPS, no phone, and a handwritten note that says "deliver this to 742 Evergreen Terrace, Springfield." You look at the street signs. You know Evergreen Terrace is north of here, so you turn north. At the next intersection, another sign — Evergreen Terrace is two blocks east. You turn east. Each intersection, you make a decision based on what you know at that point, and each decision moves the package closer. You never see the full route from start to finish. You just make the best next hop.
 
 That's routing. A router examines the destination IP address on every packet it receives, consults its routing table — the equivalent of those intersection signs — and forwards the packet out the interface that moves it closest to its destination. The next router does the same. And the next. Each one makes an independent decision with local information, and somehow the packet crosses the internet and arrives at the right server. The fact that this works reliably across billions of devices and millions of networks is one of the genuinely impressive engineering achievements in human history. And the logic behind it is not that complicated once you see how the table works.
+
+<Callout type="exam">
+Two tiebreakers, applied in order. Administrative distance decides between different sources of the same route. Metric decides between routes from the same source. Longest prefix match beats both — a more specific route always wins regardless of AD.
+</Callout>
 
 ## The Routing Table — The Router's Decision Engine
 
@@ -95,6 +165,14 @@ Switches operate at Layer 2 and forward frames based on MAC addresses within a s
 
 The practical distinction: a switch connects devices on the same subnet. A router connects different subnets. When a PC at 10.1.1.50 talks to a server at 10.1.1.100, traffic stays on the switch — same subnet, Layer 2 forwarding. When that same PC talks to a server at 10.2.1.100, the traffic has to cross a router — different subnet, Layer 3 forwarding. The PC sends the packet to its default gateway (the router), the router makes a forwarding decision, and the packet moves to the other network. Multilayer switches blur this line by doing both Layer 2 switching and Layer 3 routing in the same chassis, but the logical distinction holds: switching is local, routing is between networks.
 
+<Callout type="warn">
+A default route makes a router stop dropping unmatched traffic, which can mask a missing specific route. Traffic leaves toward the internet instead of reaching an internal network, and the symptom is a partial outage rather than an obvious failure.
+</Callout>
+
 ## Why This Matters in the Field
 
 Every network beyond a single flat LAN requires routing. Every packet that leaves the building goes through at least one routing decision. When a branch office can't reach headquarters, the first place you look is the routing table — is the route present? Is it pointing to the right next hop? When you add a new subnet, you need every router to know about it — either through a static route or a routing protocol. When an ISP link fails and traffic should reroute through the backup, you need dynamic routing to detect the failure and converge. Understanding how routers think — table lookup, longest prefix match, administrative distance, metrics — is the foundation of every network design, every troubleshooting session, and every architecture discussion you'll ever participate in.
+
+## Key Terms
+
+routing table · longest prefix match · connected route · static route · dynamic route · default route · gateway of last resort · administrative distance · metric · next hop · convergence

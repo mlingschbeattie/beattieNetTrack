@@ -58,9 +58,16 @@ domains:
   - domainId: nocti.networking
     weight: 0.2
 ---
+
+import Callout from '../../components/Callout.astro';
+
 ## The Monday Morning Meltdown
 
 You walk in Monday morning and every machine in the east wing is pulling 169.254.x.x addresses. Forty workstations, dead in the water. Teachers are sending emails from their phones — the one network that still works — telling you the internet is down. The internet is fine. The DHCP server's lease database got corrupted over the weekend and the service crashed silently. Nobody noticed because nobody was here. Now the lease expiration timers have run out across the building and every client is failing the DORA process and falling back to APIPA. You restart the DHCP service, the scopes re-initialize, and machines start pulling valid addresses within minutes. Forty tickets, one root cause, five-minute fix — if you know where to look. DHCP is one of those services that's invisible when it works and catastrophic when it stops. You touched the basics in the protocols lesson. Now you need to understand the server side — the configuration, the design decisions, and the failure modes.
+
+<Callout type="exam">
+Learn the DORA sequence in order — Discover, Offer, Request, Acknowledge. Discover and Request come from the client, Offer and Acknowledge from the server. Questions describe one step and ask which comes next.
+</Callout>
 
 ## Scopes — Defining the Address Pool
 
@@ -108,6 +115,14 @@ In a **hot standby** configuration, one server is primary and handles all reques
 
 The diagnostic commands you'll use: `ipconfig /all` on Windows shows the DHCP-assigned address, the server that issued it, the lease obtained and expiration times, and all the options the server pushed. `ipconfig /release` drops the current lease. `ipconfig /renew` triggers a new DORA cycle. On Linux, `dhclient -v` does the same with verbose output. These commands are your first moves when DHCP is the suspect.
 
+<Callout type="warn">
+A 169.254 address means the client asked for DHCP and heard nothing back. The fault is upstream — an exhausted scope, a dead relay, a broken uplink, or the wrong VLAN. It is a diagnosis handed to you, not a setting to correct on the client.
+</Callout>
+
 ## Why This Matters in the Field
 
 DHCP is the first service that runs when a device connects to a network, and it's the service most people never think about until it breaks. When it breaks, the symptoms look like "the whole network is down" even though switches, routers, and servers are all running fine — the clients just can't get addresses. You'll configure DHCP scopes, manage reservations, troubleshoot exhaustion, hunt rogue servers, and set up relay agents. You'll do it on Windows Server, on Linux, and on the DHCP service embedded in consumer routers. It's invisible infrastructure, and invisible infrastructure is the kind that ends your weekend when nobody's monitoring it.
+
+## Key Terms
+
+DHCP · DORA · Discover · Offer · Request · Acknowledge · scope · pool · lease · reservation · exclusion · DHCP relay · helper address · APIPA · 169.254.0.0/16

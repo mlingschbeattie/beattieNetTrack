@@ -59,11 +59,18 @@ domains:
   - domainId: nocti.networking
     weight: 0.2
 ---
+
+import Callout from '../../components/Callout.astro';
+
 ## The Terminal That Answers Back
 
 A user reports they can't reach the company intranet. You sit down at their workstation, open a command prompt, and type `ping 10.1.50.10`. Four replies come back, 1ms each. The network path is fine. You type `nslookup intranet.company.local` and get a "server not found" response. DNS can't resolve the hostname. The network is working. Name resolution is broken. Two commands. Ten seconds. You've narrowed the problem from "the internet is down" (it isn't) to "DNS resolution is failing for internal names" — a completely different investigation with a completely different fix.
 
 Every tool in this lesson answers a specific question about the network. The trick isn't knowing the tools exist — it's knowing which question to ask and reading the answer correctly.
+
+<Callout type="exam">
+Match the tool to the layer. A cable tester and a tone generator work at Layer 1. ping and traceroute test Layer 3 reachability and path. nslookup and dig test name resolution. A protocol analyser such as Wireshark reads the frame itself. The layer in the question selects the tool.
+</Callout>
 
 ## ping — Is the Destination Reachable?
 
@@ -309,6 +316,10 @@ The tool you pick depends on the question you're trying to answer.
 
 Start simple. Ping before you packet-capture. Check ipconfig before you open Wireshark. The fastest troubleshooters use the lightest tool that answers the question. If ping tells you the host is unreachable and traceroute shows the path dying at hop 3, you don't need a full Wireshark capture to know the problem is at that router. Save the heavy tools for problems that the light tools can't diagnose.
 
+<Callout type="tip">
+ping proves reachability, traceroute shows where the path stops. Run ping first because it is faster, and reach for traceroute the moment ping fails — knowing which hop drops the traffic turns a vague outage into a specific device.
+</Callout>
+
 ## Why This Matters in the Field
 
 You will use ping and traceroute every single day. Not an exaggeration. They're the first two commands a network engineer runs when something breaks — before looking at dashboards, before opening monitoring tools, before checking configs. They answer the "is there a problem and roughly where is it" question in seconds.
@@ -316,3 +327,7 @@ You will use ping and traceroute every single day. Not an exaggeration. They're 
 Wireshark will save you on the hard problems — the intermittent issue that no one can reproduce, the application that works from one subnet but not another, the mystery traffic that shows up at 3 AM. Learning to read packet captures is a career skill that separates network engineers from people who reboot things until they work.
 
 The hardware tools matter when you're running cable, building out wiring closets, or troubleshooting in environments where the physical layer is the problem. Knowing that an OTDR exists and what it does is exam knowledge. Knowing how to use a cable tester is day-one job knowledge. You'll touch both.
+
+## Key Terms
+
+ping · ICMP · traceroute · tracert · pathping · nslookup · dig · ipconfig · ifconfig · ip · netstat · arp · nmap · cable tester · tone generator · loopback plug · protocol analyser · Wireshark · OTDR · light meter

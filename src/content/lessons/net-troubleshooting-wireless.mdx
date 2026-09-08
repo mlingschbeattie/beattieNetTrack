@@ -13,13 +13,83 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: signal
+    title: "Signal Strength and Quality"
+    keyPoints:
+      - "Signal strength measures how loud the signal is; signal-to-noise ratio measures how clearly it stands out."
+      - "A strong signal in a noisy environment still performs badly, which is why strength alone misleads."
+      - "Clients often hold onto a distant access point rather than roaming to a closer one."
+    check:
+      - prompt: "A client shows full signal bars but throughput is poor. What should you examine?"
+        options:
+          - "The signal-to-noise ratio and interference on that channel"
+          - "The switch port speed"
+          - "The DNS server"
+          - "The DHCP lease time"
+        correct: 0
+      - prompt: "What is a sticky client?"
+        options:
+          - "A device that stays associated to a distant AP instead of roaming to a nearer one"
+          - "A device with a static IP address"
+          - "A device that fails DHCP"
+          - "A device on the wrong VLAN"
+        correct: 0
+  - id: interference
+    title: "Channel Interference and Hidden Nodes"
+    keyPoints:
+      - "On 2.4 GHz only channels 1, 6 and 11 do not overlap, so anything else guarantees interference."
+      - "Non-Wi-Fi sources — microwaves, cordless phones, Bluetooth — also occupy 2.4 GHz."
+      - "The hidden node problem occurs when two clients can reach the AP but not each other, so they transmit over one another."
+    check:
+      - prompt: "Two APs in adjacent rooms are on channels 6 and 8. What is the problem?"
+        options:
+          - "The channels overlap and interfere with each other"
+          - "Channel 8 is reserved for 5 GHz"
+          - "They should both use channel 6"
+          - "Adjacent APs cannot share a VLAN"
+        correct: 0
+      - prompt: "What causes the hidden node problem?"
+        options:
+          - "Two clients can reach the AP but cannot hear each other, so they transmit simultaneously"
+          - "The AP has too little power"
+          - "The clients use different encryption"
+          - "The SSID is hidden"
+        correct: 0
+  - id: association
+    title: "Association and Band Issues"
+    keyPoints:
+      - "Association failures are usually credential, certificate, or RADIUS problems rather than radio problems."
+      - "A client that connects but gets no address has associated successfully and failed at DHCP."
+      - "Dual-band clients sometimes prefer 2.4 GHz, which is slower and busier than the 5 GHz band available."
+    check:
+      - prompt: "A laptop associates to the SSID but never receives an IP address. Where is the fault?"
+        options:
+          - "DHCP, since association at the wireless layer already succeeded"
+          - "The wireless encryption key"
+          - "The antenna orientation"
+          - "The signal-to-noise ratio"
+        correct: 0
+      - prompt: "Several users report slow wireless despite a strong signal near a modern AP. What is worth checking?"
+        options:
+          - "Whether their clients are connecting on 2.4 GHz rather than 5 GHz"
+          - "Whether the AP needs a static IP"
+          - "Whether the SSID is hidden"
+          - "Whether the switch supports PoE+"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## The Auditorium Problem
 
 The school's wireless network works perfectly everywhere except the auditorium during assemblies. Three hundred students sit down, pull out their phones, and the network collapses. Not slow — dead. The AP is right there on the ceiling, the signal strength is fine, and the configuration hasn't changed. But the AP that handles thirty simultaneous clients without breaking a sweat can't handle three hundred. The problem isn't coverage. It's capacity. And no amount of rebooting the AP or adjusting the channel will fix it because the AP wasn't designed to serve that many clients simultaneously.
 
 Wireless troubleshooting is harder than wired troubleshooting for one fundamental reason: you can't see the medium. A bad Ethernet cable has a light that goes out. A bad RF environment looks exactly the same as a good one until you pull out diagnostic tools. The signal is invisible, the interference is invisible, and the client's decision about which AP to associate with is largely invisible too. Solving wireless problems means measuring what you can't see and understanding the physics behind it.
+
+<Callout type="exam">
+Split radio problems from network problems. Failure to associate is a radio, credential, or authentication issue. Associating and then failing to work is a DHCP, VLAN, or routing issue. The point of failure names the layer.
+</Callout>
 
 ## Signal Strength vs Signal Quality
 
@@ -109,8 +179,16 @@ AP firmware bugs can cause random disconnections, authentication failures, or me
 
 Client-side Wi-Fi driver issues are equally common and harder to control. A Windows update that ships a new Wi-Fi driver can break roaming behavior, reduce throughput, or cause intermittent disconnections across an entire fleet of laptops. If wireless problems suddenly appear across multiple clients of the same model after an update, the driver is the prime suspect. Rolling back the driver or deploying a known-good version through your management tools is the fix.
 
+<Callout type="warn">
+Turning up transmit power to fix a weak signal usually makes things worse. The client still cannot be heard replying, and the louder AP now interferes with its neighbours. Coverage problems are solved by adding or repositioning access points.
+</Callout>
+
 ## Why This Matters in the Field
 
 Wireless is now the primary network connection for most users. Laptops, phones, tablets, IoT devices — they all connect over Wi-Fi. When wireless fails, it affects more users than a single switch outage. And because users can see that other devices around them are working fine (different bands, different APs, different client hardware), they're convinced the network is broken when it's actually their specific device-to-AP interaction that's the problem.
 
 The techs who solve wireless issues efficiently are the ones who can measure what users can only feel. "It's slow" becomes "the client is associated to a distant AP at -78 dBm on a congested channel with 5 dB SNR." That's a diagnosis you can fix. "It's slow" isn't. Learn the tools, learn the metrics, and learn to translate user frustration into measurable RF conditions. That's the job.
+
+## Key Terms
+
+RSSI · signal-to-noise ratio · noise floor · channel overlap · 1-6-11 · co-channel interference · hidden node · RTS/CTS · association · authentication · RADIUS · band steering · sticky client · roaming · site survey

@@ -57,11 +57,18 @@ domains:
   - domainId: nocti.networking
     weight: 0.2
 ---
+
+import Callout from '../../components/Callout.astro';
+
 ## The Fix That Wasn't
 
 A help desk ticket comes in: users on the second floor can't reach the internet. You walk upstairs, check a workstation, confirm it can't browse. You notice the default gateway is unreachable. The uplink from the second-floor switch to the core — must be the cable. You grab a new patch cable, swap it out, and head back downstairs feeling efficient. Ten minutes later, another ticket: second floor still can't reach the internet. You go back. Same problem. You check the switch — the uplink port is err-disabled because someone plugged a loop into the VLAN an hour ago. The cable was never the problem. You just wasted twenty minutes, a patch cable, and your credibility because you skipped straight from "identify symptoms" to "implement the first fix that popped into your head."
 
 Troubleshooting without a methodology is just guessing with extra steps. The CompTIA Network+ exam tests a specific seven-step process, and the reason it exists isn't because someone wanted to make your life bureaucratic — it's because unstructured troubleshooting costs time, money, and sometimes makes the problem worse.
+
+<Callout type="exam">
+CompTIA tests the seven steps in order and asks you to name the one being described. Identify the problem, establish a theory, test the theory, establish a plan of action, implement, verify full functionality with preventive measures, then document. The order is the answer.
+</Callout>
 
 ## The Seven Steps
 
@@ -173,8 +180,16 @@ Every step skipped is a gamble. Skip Step 1 and you're solving the wrong problem
 
 The most expensive IT mistakes aren't caused by not knowing the technology. They're caused by rushing. A technician who spends ten minutes gathering information and five minutes fixing the problem is faster than one who spends five minutes guessing and forty-five minutes recovering from the three wrong fixes they tried first.
 
+<Callout type="warn">
+Changing several things at once and finding the fault gone tells you the symptom stopped and nothing about the cause. You cannot document it, cannot prevent it, and will not recognise it next time. Change one variable, test, then change the next.
+</Callout>
+
 ## Why This Matters in the Field
 
 Every experienced network engineer has a story about the time they didn't follow the process. They jumped to a conclusion, implemented a change without a rollback plan, and spent the rest of the night cleaning up the mess. The methodology feels slow when you're under pressure. It's not slow — it's the fastest path that doesn't involve backtracking.
 
 Your first job will involve pressure to fix things fast. Managers want systems back online. Users are calling. Everyone wants you to skip the questions and start fixing. The methodology is your anchor. It keeps you from making the problem worse while everyone watches. Follow the steps. Identify, theorize, test, plan, implement, verify, document. Every time. The techs who last in this industry are the ones who solve problems once instead of creating new ones.
+
+## Key Terms
+
+identify the problem · duplicate the problem · establish a theory · probable cause · test the theory · escalate · plan of action · verify functionality · preventive measures · document findings · top-down · bottom-up · divide and conquer

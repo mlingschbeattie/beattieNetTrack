@@ -13,14 +13,83 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: snmp
+    title: "SNMP"
+    keyPoints:
+      - "SNMP lets a management station read counters and status from network devices."
+      - "An OID identifies one value; the MIB is the catalogue describing what those values mean."
+      - "SNMPv3 adds authentication and encryption, which v1 and v2c lack entirely."
+    check:
+      - prompt: "Which SNMP version provides authentication and encryption?"
+        options:
+          - "SNMPv3"
+          - "SNMPv1"
+          - "SNMPv2c"
+          - "All versions equally"
+        correct: 0
+      - prompt: "What does an OID identify?"
+        options:
+          - "A single specific value that can be queried on a device"
+          - "A VLAN number"
+          - "A routing protocol"
+          - "An IP subnet"
+        correct: 0
+  - id: polling-traps
+    title: "Polling, Traps, and Syslog"
+    keyPoints:
+      - "Polling means the manager asks each device on a schedule, so detection waits for the next interval."
+      - "A trap is sent by the device the moment something happens, giving immediate notice."
+      - "Syslog collects log messages centrally, which is what makes correlation across devices possible."
+    check:
+      - prompt: "What is the advantage of a trap over polling?"
+        options:
+          - "The device reports the event immediately rather than waiting for the next poll"
+          - "Traps use less bandwidth in all cases"
+          - "Traps are encrypted by default"
+          - "Traps replace the need for a MIB"
+        correct: 0
+      - prompt: "Why centralise syslog rather than reading logs on each device?"
+        options:
+          - "Events from different devices can be correlated on one timeline"
+          - "Devices cannot store logs locally"
+          - "It reduces the number of log messages"
+          - "It encrypts the log contents"
+        correct: 0
+  - id: baselines
+    title: "Baselines and Thresholds"
+    keyPoints:
+      - "A baseline records what normal looks like, so abnormal becomes recognisable."
+      - "Thresholds should be set against the baseline, not against round numbers that feel right."
+      - "Alerting on everything trains people to ignore alerts, which is worse than not alerting."
+    check:
+      - prompt: "Why is a baseline needed before setting useful alert thresholds?"
+        options:
+          - "Without knowing normal, you cannot tell what is abnormal"
+          - "Baselines are required by SNMP"
+          - "It reduces device CPU load"
+          - "It assigns OIDs automatically"
+        correct: 0
+      - prompt: "What is the practical risk of alerting on too many conditions?"
+        options:
+          - "Staff learn to ignore alerts, including the important ones"
+          - "The monitoring server runs out of disk"
+          - "SNMP stops responding"
+          - "Syslog messages are dropped"
+        correct: 0
 ---
 
+import Callout from '../../components/Callout.astro';
 
 ## The Two Kinds of Network Teams
 
 There are two kinds of network teams. The first kind finds out about problems when users call. "The internet is slow." "I can't print." "My VoIP phone sounds like it's underwater." They react, troubleshoot, fix, repeat. The second kind finds out about problems before users notice. A switch interface hits 85% utilization and an alert fires. A router's CPU spikes at 2 AM and a log entry captures the cause. A WAN link starts dropping packets and the monitoring dashboard turns yellow before a single user complains. Same problems, different timelines. The first team is always putting out fires. The second team is preventing them.
 
 The difference isn't talent. It's infrastructure. Monitoring systems watch the network 24/7, collect data you'd never notice manually, and alert you when something deviates from normal. Management systems let you push configuration, apply updates, and control devices from a central console instead of SSH'ing into each one individually. Together, they turn network operations from guesswork and firefighting into data-driven engineering.
+
+<Callout type="exam">
+Know which tool answers which question. SNMP reads device health counters. Syslog collects event messages. NetFlow shows who is talking to whom and how much. If a question asks about traffic volume between hosts, the answer is flow data, not SNMP.
+</Callout>
 
 ## SNMP — The Protocol That Reads Your Devices' Minds
 
@@ -126,6 +195,10 @@ Monitoring platforms are the central nervous system of network operations. They 
 
 The exam doesn't expect you to configure these platforms. It expects you to know they exist, understand what they're collecting (SNMP data, syslog, flow data, performance metrics), and recognize that monitoring is a proactive discipline — you deploy it before things break, not after.
 
+<Callout type="warn">
+SNMPv1 and v2c send the community string in clear text, and a read-write community string is effectively a device password. If SNMP is enabled on a network you care about, it should be v3.
+</Callout>
+
 ## Monitoring vs. Management — The Distinction
 
 Monitoring is read-only observation. You watch the network, collect data, graph trends, and fire alerts. You don't change anything. Monitoring tells you what's happening.
@@ -135,3 +208,7 @@ Management is control. Network management systems (NMS) let you push configurati
 The distinction matters because the security posture is different. Read-only SNMP monitoring is low-risk — the worst case is that someone sees your interface statistics. Read-write management is high-risk — a compromised management station or a leaked community string could let an attacker reconfigure your entire network. This is why SNMPv3 with authentication and encryption is non-negotiable for management functions, and why management traffic should be isolated on a dedicated management VLAN that's locked down with ACLs.
 
 Monitoring catches problems. Management lets you fix them. You need both, but you should be far more careful about who and what has management access.
+
+## Key Terms
+
+SNMP · SNMPv3 · community string · OID · MIB · polling · trap · syslog · severity level · NetFlow · flow record · baseline · threshold · alert fatigue · SIEM

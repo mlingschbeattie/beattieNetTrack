@@ -57,9 +57,16 @@ domains:
   - domainId: nocti.networking
     weight: 0.2
 ---
+
+import Callout from '../../components/Callout.astro';
+
 ## The Service That Everything Depends On
 
 A sysadmin joke that isn't really a joke: "It's always DNS." When a web application stops loading, when email stops flowing, when a VPN client can't find the server, when a printer disappears from the network — the first suspect is DNS, and it's right more often than any other guess. You covered the resolution process in the protocols lesson: client asks, server finds, answer comes back in milliseconds. Now you need to know what lives inside DNS — the record types that make up the database, the server roles that manage it, and the failures that make grown engineers stare at screens for hours. DNS is a distributed database spread across millions of servers worldwide and it's the most heavily queried service on the internet. Understanding its internals isn't a certification checkbox — it's a survival skill.
+
+<Callout type="exam">
+Know the record types by what they point to. A maps a name to an IPv4 address, AAAA to IPv6, CNAME to another name, MX to a mail server, PTR does the reverse lookup, and TXT holds arbitrary text used for verification records like SPF.
+</Callout>
 
 ## DNS Record Types
 
@@ -117,6 +124,14 @@ This is standard practice in any organization hosting services that need to be r
 
 When DNS misbehaves, these tools tell you whether the problem is the client's configuration (wrong DNS server), the resolver's cache (stale record), the authoritative server's data (incorrect record), or the network path (DNS traffic being blocked). You run the query, read the answer, and either fix the record or fix whatever's standing between the client and the server.
 
+<Callout type="tip">
+The fastest DNS test in the field: ping an IP address and then ping a name. If the address works and the name does not, routing is fine and DNS is the fault. That single comparison eliminates most of the stack in ten seconds.
+</Callout>
+
 ## Why This Matters in the Field
 
 You will configure DNS records for every server, every web application, and every email domain your organization manages. You will troubleshoot DNS caching issues when a migration doesn't propagate on schedule because someone forgot to lower the TTL. You will hunt down a "website doesn't load" ticket that turns out to be a missing A record. You will set up split-horizon so internal users don't hairpin through the firewall. You will explain to a vendor that their MX records are wrong and that's why email delivery is failing. DNS is everywhere, it touches everything, and the techs who understand its internals are the ones who solve problems that look impossible to everyone else.
+
+## Key Terms
+
+DNS · resolver · recursive query · iterative query · root server · TLD · authoritative server · A record · AAAA record · CNAME · MX · PTR · TXT · TTL · zone · forwarder · cache poisoning

@@ -58,9 +58,16 @@ domains:
   - domainId: nocti.networking
     weight: 0.2
 ---
+
+import Callout from '../../components/Callout.astro';
+
 ## The Firewall Rule That Broke Everything
 
 A teacher submits a ticket: "I can't get to the school's website from my classroom, but I can get to Google." You check — the workstation pings the web server fine. DNS resolves the hostname. The server is up. But the browser spins forever. You check the firewall and find a new rule someone added yesterday: block all traffic on port 8080. Turns out the school's internal web server runs on port 8080 instead of the default 80, and whoever wrote that firewall rule didn't know that. One port number, one rule, one broken service for an entire wing of the building. Port numbers are how a single server running multiple services keeps traffic sorted, and knowing which ports belong to which services is the foundation of firewall management, network troubleshooting, and security. This is a memorization topic. There's no way around it. But once these numbers are in your head, you'll read firewall logs, packet captures, and `netstat` output like a language you speak fluently.
+
+<Callout type="exam">
+The port list is pure memorisation and it is worth the effort — these appear on almost every Network+ paper. Prioritise the pairs that differ only by encryption: HTTP 80 against HTTPS 443, FTP 21 against SFTP 22, SMTP 25 against SMTPS 587, IMAP 143 against IMAPS 993, LDAP 389 against LDAPS 636.
+</Callout>
 
 ## How Ports Work
 
@@ -96,6 +103,14 @@ These are non-negotiable. You will be tested on them. You will use them in the f
 
 Knowing port numbers isn't trivia — it's the language of firewall rules. A firewall rule that says "allow TCP 443 inbound to 10.1.1.50" means "let HTTPS traffic reach our web server." A rule that says "deny TCP 3389 from any" means "no remote desktop from the outside." When you review firewall logs and see connection attempts on port 22 from IP addresses you don't recognize, that's someone probing for SSH access. When a server scan shows port 23 open, that's Telnet exposed, and it needs to be shut down or justified. Every open port is a potential entry point, and every blocked port is a service that can't function. Building firewall policies is a balancing act between access and security, and you can't balance what you can't identify.
 
+<Callout type="tip">
+Group them by job rather than learning a flat list. Mail is 25, 110, 143 and their secure variants. Remote access is 22, 23, 3389. Name and address services are 53, 67, 68. Recall is far easier from a category than from a number.
+</Callout>
+
 ## Why This Matters in the Field
 
 Firewall troubleshooting is one of the most common escalation tasks in networking. "The application doesn't work" usually means "the required port is blocked somewhere between the client and the server." If you don't know what port the application uses, you can't write the rule, and you can't diagnose the block. When you run `netstat -an` on a server and see it listening on 0.0.0.0:443 and 0.0.0.0:3306, you instantly know: web server and MySQL database. When a security audit flags open ports, you need to map each one to a running service and decide whether it's necessary or a liability. The port list lives in your head the same way a mechanic knows socket sizes — not because the knowledge is impressive, but because reaching for the reference every time slows you down.
+
+## Key Terms
+
+port · well-known port · registered port · ephemeral port · TCP · UDP · HTTP 80 · HTTPS 443 · FTP 20/21 · SSH 22 · Telnet 23 · SMTP 25 · DNS 53 · DHCP 67/68 · POP3 110 · IMAP 143 · SNMP 161 · LDAP 389 · RDP 3389

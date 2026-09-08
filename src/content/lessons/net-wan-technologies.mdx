@@ -13,11 +13,81 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: switching-types
+    title: "Circuit and Packet Switching"
+    keyPoints:
+      - "Circuit switching dedicates a path for the whole session, whether or not data is flowing."
+      - "Packet switching shares the medium, sending packets independently and reassembling at the far end."
+      - "Nearly all modern data networking is packet switched, because dedicating idle capacity wastes it."
+    check:
+      - prompt: "What distinguishes circuit switching from packet switching?"
+        options:
+          - "Circuit switching reserves a dedicated path for the entire session"
+          - "Circuit switching is always faster"
+          - "Packet switching requires fibre"
+          - "Packet switching cannot carry voice"
+        correct: 0
+      - prompt: "Why is packet switching more efficient for data?"
+        options:
+          - "Capacity is shared rather than reserved while idle"
+          - "It guarantees delivery order"
+          - "It requires no addressing"
+          - "It eliminates latency"
+        correct: 0
+  - id: wan-links
+    title: "Leased Lines, MPLS, and Metro Ethernet"
+    keyPoints:
+      - "A leased line such as a T1 gives dedicated bandwidth at a fixed monthly cost."
+      - "MPLS labels traffic so the carrier can route and prioritise it across its own network."
+      - "Metro Ethernet delivers LAN-like speeds between sites in the same metropolitan area."
+    check:
+      - prompt: "Which technology labels packets so a carrier can apply consistent routing and QoS?"
+        options:
+          - "MPLS"
+          - "DSL"
+          - "Metro Ethernet"
+          - "Dial-up"
+        correct: 0
+      - prompt: "What does a business gain from a leased line over broadband?"
+        options:
+          - "Dedicated, guaranteed bandwidth rather than shared capacity"
+          - "Lower monthly cost"
+          - "Automatic failover"
+          - "Wireless mobility"
+        correct: 0
+  - id: broadband-sdwan
+    title: "Broadband and SD-WAN"
+    keyPoints:
+      - "Cable and DSL are shared, asymmetric services — cheap, with upload far slower than download."
+      - "SD-WAN manages several ordinary internet links as one logical connection, steering traffic by policy."
+      - "SD-WAN is displacing MPLS because it delivers comparable reliability over cheaper circuits."
+    check:
+      - prompt: "What does SD-WAN do with multiple broadband links?"
+        options:
+          - "Combines and steers them by policy as one logical WAN"
+          - "Converts them to a single leased line"
+          - "Encrypts them into an MPLS circuit"
+          - "Disables all but the fastest"
+        correct: 0
+      - prompt: "Why does a video call from home often look worse to the far end than to you?"
+        options:
+          - "Residential broadband upload is far slower than download"
+          - "Cameras compress outgoing video more"
+          - "Download traffic has priority by law"
+          - "Upload uses a different protocol"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## Two Buildings, One Network
 
 The district has a main campus and an admin building three miles away. Both need to be on the same network — shared file servers, shared authentication, shared phone system, shared internet uplink. You can't run an Ethernet cable three miles (even if you could, copper maxes at 100 meters and fiber across public right-of-way requires permits, trenching, and a budget nobody approved). You need a WAN connection — a service from a carrier that bridges the gap. The question isn't whether you need WAN. It's which type, at what speed, at what cost, with what guarantees. WAN technology choices define the performance ceiling for every remote user, every branch office, and every cloud connection in an organization. This is where networking meets budgets, contracts, and service level agreements.
+
+<Callout type="exam">
+Match the technology to the requirement. Guaranteed bandwidth means a leased line. Carrier-managed QoS across sites means MPLS. LAN speeds across a city means Metro Ethernet. Cheap links combined intelligently means SD-WAN.
+</Callout>
 
 ## Circuit Switching vs. Packet Switching
 
@@ -83,6 +153,14 @@ WAN optimization appliances or virtual appliances sit at both ends of the WAN li
 
 The "last mile" is the connection between the carrier's infrastructure and your building — literally the last stretch of cable or fiber that reaches your premises. It's often the bottleneck. A carrier might have a 100 Gbps backbone across the city, but if the last mile to your building is a copper pair delivering 50 Mbps DSL, that's your ceiling. Last mile technology varies: copper pairs for DSL, coax for cable, fiber for FTTP, wireless for fixed wireless access. The last mile also determines installation timelines — running fiber to a building that doesn't have it can take weeks to months. When evaluating WAN options, the last mile available at each location often narrows your choices before you even look at pricing.
 
+<Callout type="warn">
+Broadband is asymmetric and shared. A site with 200 Mbps down and 10 Mbps up will struggle to host anything or run many simultaneous video calls, no matter how fast the advertised figure sounds.
+</Callout>
+
 ## Why This Matters in the Field
 
 Every organization with more than one site needs a WAN, and the technology choice shapes the budget, the performance, and the resilience of the entire network. You'll inherit MPLS circuits and evaluate whether SD-WAN can reduce costs. You'll provision broadband at a new branch and configure the SD-WAN appliance to integrate it. You'll explain to management why the 200/month cable connection can't provide the same guarantees as the2,000/month MPLS circuit — and then show them how SD-WAN bridges the gap. WAN technology is where networking meets finance, and the engineers who understand both sides of that conversation are the ones who get called into planning meetings.
+
+## Key Terms
+
+circuit switching · packet switching · leased line · T1 · T3 · MPLS · label · Metro Ethernet · DSL · cable · asymmetric · SD-WAN · last mile · demarc · CSU/DSU
