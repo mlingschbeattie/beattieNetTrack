@@ -5,7 +5,7 @@ import LessonHeader from '../../components/LessonHeader.astro';
 import Callout from '../../components/Callout.astro';
 import CodeBlock from '../../components/CodeBlock.astro';
 import OutlineView from '../../components/islands/OutlineView.tsx';
-import GuidedView from '../../components/islands/GuidedView.tsx';
+import ReadAloud from '../../components/islands/ReadAloud.tsx';
 import ReadingProgressRail from '../../components/islands/ReadingProgressRail.tsx';
 import { normalizeLessonMeta } from '../../lib/lessonMeta';
 import { getActivityModuleNavigation } from '../../lib/content';
@@ -112,14 +112,11 @@ const outlineSections = authoredSections.length
 
   <div class="lesson-view-toggle" data-lesson-toggle>
       <div class="lesson-view-toggle__buttons" role="tablist" aria-label="Lesson view">
-        <button type="button" class="lvt-btn is-active" data-view="guided" role="tab" id="tab-guided" aria-selected="true" aria-controls="panel-guided">
-          <span aria-hidden="true">▶</span> Guided
-        </button>
-        <button type="button" class="lvt-btn" data-view="outline" role="tab" id="tab-outline" aria-selected="false" aria-controls="panel-outline">
-          <span aria-hidden="true">▤</span> Outline
+        <button type="button" class="lvt-btn is-active" data-view="outline" role="tab" id="tab-outline" aria-selected="true" aria-controls="panel-outline">
+          <span aria-hidden="true">▤</span> Learn
         </button>
         <button type="button" class="lvt-btn" data-view="reading" role="tab" id="tab-reading" aria-selected="false" aria-controls="panel-reading">
-          <span aria-hidden="true">≡</span> Reading
+          <span aria-hidden="true">≡</span> Read
         </button>
       </div>
       <div class="lesson-view-toggle__progress" data-outline-indicator>
@@ -127,15 +124,7 @@ const outlineSections = authoredSections.length
       </div>
     </div>
 
-  <section class="lesson-guided" data-view-pane="guided" role="tabpanel" id="panel-guided" aria-labelledby="tab-guided">
-    <GuidedView
-      client:only="react"
-      lessonSlug={lesson.slug}
-      sections={outlineSections}
-    />
-  </section>
-
-  <section class="lesson-outline" data-view-pane="outline" role="tabpanel" id="panel-outline" aria-labelledby="tab-outline" hidden>
+  <section class="lesson-outline" data-view-pane="outline" role="tabpanel" id="panel-outline" aria-labelledby="tab-outline">
     <OutlineView
       client:only="react"
       lessonSlug={lesson.slug}
@@ -145,8 +134,11 @@ const outlineSections = authoredSections.length
 
   <section class="lesson-body lesson-body--reading" data-view-pane="reading" role="tabpanel" id="panel-reading" aria-labelledby="tab-reading" hidden>
     <div class="lesson-reading-layout">
-      <div class="lesson-reading-main" data-reading-content>
-        <Content components={{ Callout, CodeBlock }} />
+      <div class="lesson-reading-main">
+        <ReadAloud client:idle />
+        <div data-reading-content>
+          <Content components={{ Callout, CodeBlock }} />
+        </div>
       </div>
       <aside class="lesson-reading-rail">
         <ReadingProgressRail client:only="react" lessonSlug={lesson.slug} sections={outlineSections} />
@@ -296,9 +288,6 @@ const outlineSections = authoredSections.length
         padding-right: var(--space-3);
       }
       .lesson-outline {
-        margin-top: var(--space-4);
-      }
-      .lesson-guided {
         margin-top: var(--space-4);
       }
       .lesson-reading-layout {

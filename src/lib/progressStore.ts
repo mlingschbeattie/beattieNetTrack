@@ -126,6 +126,10 @@ const safeParse = (raw: string | null): ProgressState => {
       labs: normalizedLabs,
       quizzes: parsed.quizzes ?? {},
       lessonSections: parsed.lessonSections ?? {},
+      // guided.narrationRate is still used, by the Read-aloud control in
+      // Reading mode. autoReveal / autoSeconds / syncWithReading are legacy:
+      // they belonged to the retired Guided view and no longer drive any UI.
+      // Left in place because this shape is persisted per student.
       guided: {
         autoReveal: Boolean(parsed.guided?.autoReveal),
         autoSeconds:

@@ -4844,3 +4844,44 @@ html[dir='rtl'] .qc-group[open] > .qc-group__summary::before { transform: rotate
   line-height: var(--leading-normal);
   color: var(--beattie-text);
 }
+
+/* --- Read-aloud control (Reading mode) ---------------------------------
+   The surviving piece of the retired Guided view: text-to-speech kept as a
+   single control instead of a mode with its own settings panel. */
+.read-aloud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  background: var(--beattie-surface-elevated);
+  border: 1px solid var(--beattie-border);
+  border-radius: var(--radius-md);
+}
+
+.read-aloud .btn-ghost,
+.read-aloud .btn-secondary {
+  min-height: 44px;
+}
+
+.read-aloud__rate select {
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  background: var(--beattie-surface);
+  color: var(--beattie-text);
+  border: 1px solid var(--beattie-border);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  cursor: pointer;
+}
+
+.read-aloud__rate select:focus-visible {
+  outline: 2px solid var(--beattie-border-active);
+  outline-offset: 2px;
+}
+
+.read-aloud__status {
+  font-size: var(--text-sm);
+  color: var(--beattie-text-muted);
+}
