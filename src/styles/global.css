@@ -3532,6 +3532,7 @@ html[data-theme='light'] .quiz-eli5__toggle {
 
 .pc-lab__panel {
   display: grid;
+  align-content: start;
   gap: var(--space-4);
   min-width: 0;
 }
