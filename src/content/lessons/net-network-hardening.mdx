@@ -13,7 +13,73 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: baseline-hardening
+    title: "Baseline Hardening"
+    keyPoints:
+      - "Default credentials are published in vendor manuals, so an unchanged default password is a documented way in."
+      - "Unused ports should be shut down rather than left enabled, since an enabled port in the default VLAN is an open door."
+      - "Telnet transmits credentials in clear text and should be replaced with SSH everywhere it still exists."
+    check:
+      - prompt: "Why is leaving default credentials on a switch particularly dangerous?"
+        options:
+          - "They are published in vendor documentation and widely known"
+          - "They expire after ninety days"
+          - "They prevent SSH from being enabled"
+          - "They disable logging"
+        correct: 0
+      - prompt: "What is the recommended treatment for switch ports that are not in use?"
+        options:
+          - "Administratively shut them down or move them to an unused VLAN"
+          - "Leave them enabled in VLAN 1 for convenience"
+          - "Configure them as trunk ports"
+          - "Enable PortFast on them"
+        correct: 0
+  - id: layer2-protections
+    title: "Layer 2 Protections"
+    keyPoints:
+      - "Port security limits which MAC addresses may use a port and what happens when an unexpected one appears."
+      - "DHCP snooping marks ports as trusted or untrusted so a rogue DHCP server on a user port is ignored."
+      - "Dynamic ARP Inspection uses the DHCP snooping database to verify ARP replies, which is what actually stops ARP poisoning."
+    check:
+      - prompt: "Which control prevents a rogue DHCP server plugged into a user port from issuing addresses?"
+        options:
+          - "DHCP snooping"
+          - "Port security"
+          - "CDP"
+          - "Control plane policing"
+        correct: 0
+      - prompt: "What does Dynamic ARP Inspection rely on to decide whether an ARP reply is legitimate?"
+        options:
+          - "The DHCP snooping binding database"
+          - "The spanning tree topology"
+          - "The routing table"
+          - "The MAC address table alone"
+        correct: 0
+  - id: management-plane
+    title: "Management and Patching"
+    keyPoints:
+      - "Management access should be restricted to a dedicated VLAN or address range rather than reachable from any user port."
+      - "CDP and LLDP advertise device details and should be disabled on interfaces facing untrusted networks."
+      - "Firmware patching closes known vulnerabilities, and known vulnerabilities are the ones attackers have working tools for."
+    check:
+      - prompt: "Why disable CDP or LLDP on an interface facing an untrusted network?"
+        options:
+          - "They advertise device model, version and identity to anyone listening"
+          - "They consume most of the available bandwidth"
+          - "They prevent VLANs from working"
+          - "They disable SSH access"
+        correct: 0
+      - prompt: "Why are known, published vulnerabilities often more dangerous than undiscovered ones?"
+        options:
+          - "Working exploit tools already exist for them and are widely available"
+          - "They are harder for vendors to patch"
+          - "They only affect wireless equipment"
+          - "They cannot be detected by an IDS"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## The Default Password That Lasted Three Years
 
@@ -111,6 +177,10 @@ interface GigabitEthernet0/1
 
 **Shutdown** is the most secure — the port goes down and stays down until an administrator manually re-enables it with `shutdown` / `no shutdown`. This prevents ongoing attacks but creates a support call for every violation, including accidental ones (a student unplugging a desktop and plugging in a laptop). **Restrict** is a common middle ground — traffic is blocked but the port stays up for the legitimate device, and the violation is logged for review. **Protect** silently drops traffic without logging, which makes troubleshooting painful because nothing in the logs explains why the new device isn't working.
 
+<Callout type="exam">
+Match each Layer 2 control to the attack it stops. Port security limits MAC addresses on a port, DHCP snooping stops rogue DHCP servers, Dynamic ARP Inspection stops ARP poisoning, and IP Source Guard stops address spoofing. The pairing is the question.
+</Callout>
+
 ## DHCP Snooping — Trust Boundaries at Layer 2
 
 DHCP snooping prevents rogue DHCP servers from handing out bogus IP configurations. It works by inspecting DHCP messages and classifying switch ports as **trusted** or **untrusted**.
@@ -206,6 +276,10 @@ The **control plane** processes traffic destined to the switch itself — manage
 
 CoPP is a more advanced configuration that varies by platform, but the concept is exam-relevant: the control plane needs protection from traffic floods just like the data plane needs protection from DDoS.
 
+<Callout type="warn">
+Hardening is not a one-off task. A device hardened two years ago and never patched since is running known-vulnerable firmware. The configuration is still correct and the device is still exposed.
+</Callout>
+
 ## Firmware and Patch Management
 
 A switch running firmware from two years ago has two years of unpatched vulnerabilities. Firmware updates fix security bugs, improve stability, and add features. Skipping them because "it works fine" is accepting risk that compounds over time.
@@ -213,3 +287,7 @@ A switch running firmware from two years ago has two years of unpatched vulnerab
 Patch management for network equipment follows a cadence: monitor vendor advisories (Cisco PSIRT, Juniper security bulletins, vendor-specific CVE notifications). Evaluate patches for criticality — a remote code execution vulnerability on a management interface gets fast-tracked; a minor cosmetic bug in the web GUI can wait. Test the update in a lab or on a non-critical device before deploying to production. Schedule the update during a maintenance window with a rollback plan (keep the previous firmware image on the device's flash). Verify the update with `show version` and validate that services are functioning post-upgrade.
 
 Automated update mechanisms for network equipment are less mature than server patching. Most network gear still gets updated manually or through orchestration tools with human approval. The process matters more than the tooling: know what's running, know what's vulnerable, and have a plan to close the gap before someone else finds it for you.
+
+## Key Terms
+
+default credentials · unused ports · SSH · Telnet · port security · sticky MAC · DHCP snooping · trusted port · Dynamic ARP Inspection · IP Source Guard · CDP · LLDP · management plane · control plane policing · firmware patching

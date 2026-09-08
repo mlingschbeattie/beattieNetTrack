@@ -13,7 +13,73 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: firewall-types
+    title: "Stateless, Stateful, and Next-Generation"
+    keyPoints:
+      - "A stateless firewall judges each packet alone against its rules, with no memory of the conversation."
+      - "A stateful firewall tracks connections, so return traffic for a session it allowed is permitted automatically."
+      - "A next-generation firewall adds application awareness and can distinguish traffic that shares the same port."
+    check:
+      - prompt: "What does a stateful firewall do that a stateless one cannot?"
+        options:
+          - "Track active connections so return traffic is allowed automatically"
+          - "Inspect encrypted payloads"
+          - "Operate at Layer 1"
+          - "Assign IP addresses to clients"
+        correct: 0
+      - prompt: "Why can a next-generation firewall block one application while allowing another on the same port?"
+        options:
+          - "It inspects traffic at the application layer rather than only port numbers"
+          - "It assigns each application a unique port"
+          - "It runs a separate firewall per application"
+          - "It blocks all traffic on shared ports"
+        correct: 0
+  - id: rule-order
+    title: "Rule Order and Implicit Deny"
+    keyPoints:
+      - "Rules are evaluated top to bottom and the first match wins, so a broad rule placed early can hide every rule beneath it."
+      - "An implicit deny sits at the end of the list, meaning anything not explicitly permitted is dropped."
+      - "A rule that appears correct but never matches is usually shadowed by something above it, not misconfigured itself."
+    check:
+      - prompt: "A permit rule is added but has no effect. What is the most likely explanation?"
+        options:
+          - "An earlier rule already matches that traffic and stops evaluation"
+          - "The firewall requires a reboot for every rule"
+          - "Permit rules must be at the bottom of the list"
+          - "The firewall only supports ten rules"
+        correct: 0
+      - prompt: "What happens to traffic matching none of the configured rules?"
+        options:
+          - "It is dropped by the implicit deny"
+          - "It is permitted by default"
+          - "It is logged and forwarded"
+          - "It is queued until a rule matches"
+        correct: 0
+  - id: ids-ips-placement
+    title: "IDS, IPS, and Placement"
+    keyPoints:
+      - "An IDS observes a copy of traffic and alerts, so it cannot stop an attack in progress."
+      - "An IPS sits inline and can drop traffic, which means a false positive blocks legitimate users."
+      - "A DMZ holds internet-facing services so that compromising one does not put the attacker on the internal network."
+    check:
+      - prompt: "What is the fundamental difference between an IDS and an IPS?"
+        options:
+          - "An IPS sits inline and can block traffic; an IDS only observes and alerts"
+          - "An IDS is hardware and an IPS is software"
+          - "An IDS works at Layer 2 and an IPS at Layer 3"
+          - "They are different names for the same device"
+        correct: 0
+      - prompt: "Why are public-facing web servers placed in a DMZ rather than on the internal LAN?"
+        options:
+          - "Compromising the server does not put the attacker directly on the internal network"
+          - "DMZ servers do not require patching"
+          - "The DMZ provides faster internet access"
+          - "Internal networks cannot host web servers"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## The Rule That Did Nothing
 
@@ -61,6 +127,10 @@ If a DMZ server gets compromised, the attacker lands in a segment with limited a
 
 Modern variations use multiple firewalls (one between internet and DMZ, another between DMZ and inside) or firewall zones on a single NGFW. The principle is the same: public-facing services get their own segment with restricted access in both directions.
 
+<Callout type="exam">
+The words give the answer away. Detection observes and alerts. Prevention sits inline and blocks. If a question describes a device that stopped an attack, it is an IPS. If it describes one that reported an attack after the fact, it is an IDS.
+</Callout>
+
 ## IDS vs. IPS — Detection vs. Prevention
 
 An **Intrusion Detection System (IDS)** monitors traffic and generates alerts when it identifies suspicious activity. It's a passive sensor — it watches a copy of the traffic (usually via a mirror/SPAN port or a network tap) and reports findings, but it doesn't block anything. If the IDS detects an attack, someone or something still needs to act on the alert. The IDS is the security camera — it records the break-in but doesn't lock the door.
@@ -70,6 +140,10 @@ An **Intrusion Prevention System (IPS)** sits inline — traffic passes through 
 The placement difference is critical. An IDS connects to a SPAN port or tap and receives a copy of traffic. If the IDS fails, network traffic is unaffected because the IDS isn't in the data path. An IPS sits inline between the firewall and the internal network (or inline on a specific segment). If the IPS fails, traffic either stops (fail-closed, secure but disruptive) or bypasses the IPS entirely (fail-open, available but unprotected). Deciding between fail-open and fail-closed is a risk decision — availability vs. security.
 
 Many organizations deploy both: an IPS inline at the perimeter for active prevention, and IDS sensors on internal segments for detection and visibility. The NGFW typically integrates IPS functionality, collapsing two appliances into one.
+
+<Callout type="warn">
+An inline IPS turns a false positive into an outage. Signature detection misses anything new, anomaly detection generates false positives until it is tuned. Neither is safe to deploy in blocking mode without a monitoring period first.
+</Callout>
 
 ## Signature-Based vs. Anomaly-Based Detection
 
@@ -100,3 +174,7 @@ A firewall at the perimeter between the internet and internal network is the sta
 Internal segmentation firewalls between high-security zones (server VLAN, management VLAN) and lower-trust zones (student VLAN, guest VLAN) enforce least privilege at the network layer. These aren't perimeter firewalls — they're internal barriers that limit blast radius. An attacker who compromises a student Chromebook hits the internal firewall when trying to reach the server VLAN, just like external traffic hits the perimeter firewall.
 
 Every device has a place in the topology, and that place determines what it can see and what it can protect. A firewall that only sees north-south traffic (in and out of the network) can't protect against east-west threats (lateral movement between internal segments). An IDS monitoring only the perimeter misses the insider threat. Security infrastructure placement is an architectural decision, and getting it wrong leaves blind spots that attackers will find before you do.
+
+## Key Terms
+
+stateless firewall · stateful firewall · next-generation firewall · rule order · implicit deny · shadowed rule · DMZ · screened subnet · IDS · IPS · inline · signature-based · anomaly-based · false positive · UTM

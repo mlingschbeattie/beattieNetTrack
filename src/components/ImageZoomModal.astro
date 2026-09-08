@@ -1,0 +1,438 @@
+---
+// ImageZoomModal.astro — Accessible, full-screen click-to-zoom lightbox for LMS lesson diagrams and imagery
+---
+
+<div id="image-zoom-overlay" class="image-zoom-overlay" role="dialog" aria-modal="true" aria-label="Image Zoom Viewer" hidden>
+  <div class="image-zoom-backdrop" data-zoom-close></div>
+
+  <div class="image-zoom-toolbar">
+    <div class="image-zoom-title-wrap">
+      <span class="image-zoom-pill">ZOOM</span>
+      <p id="image-zoom-caption" class="image-zoom-caption"></p>
+    </div>
+    <div class="image-zoom-actions">
+      <button type="button" class="iz-btn" id="iz-btn-out" aria-label="Zoom out" title="Zoom out (-)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+      </button>
+      <button type="button" class="iz-btn" id="iz-btn-reset" aria-label="Fit to screen" title="Reset / Fit (0)">
+        <span id="iz-scale-label">Fit</span>
+      </button>
+      <button type="button" class="iz-btn" id="iz-btn-in" aria-label="Zoom in" title="Zoom in (+)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+      </button>
+      <button type="button" class="iz-btn iz-btn--close" id="iz-btn-close" aria-label="Close image zoom (Escape)" title="Close (Esc)" data-zoom-close>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="image-zoom-viewport" id="image-zoom-viewport">
+    <div class="image-zoom-stage" id="image-zoom-stage">
+      <img id="image-zoom-img" class="image-zoom-img" src="" alt="" draggable="false" />
+    </div>
+  </div>
+
+  <div class="image-zoom-hint">
+    <span>Click image to toggle 100% zoom · Drag to pan · Scroll wheel to zoom · Esc to close</span>
+  </div>
+</div>
+
+<style>
+  .image-zoom-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    background: rgba(6, 10, 18, 0.94);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    opacity: 1;
+    transition: opacity 0.15s ease-out;
+    user-select: none;
+  }
+
+  .image-zoom-overlay[hidden] {
+    display: none;
+    opacity: 0;
+  }
+
+  .image-zoom-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  .image-zoom-toolbar {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.25rem;
+    background: rgba(13, 19, 33, 0.85);
+    border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+    gap: 1rem;
+  }
+
+  .image-zoom-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+  }
+
+  .image-zoom-pill {
+    display: inline-block;
+    padding: 0.15rem 0.45rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #0b1120;
+    background: var(--beattie-primary, #38bdf8);
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .image-zoom-caption {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #e2e8f0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .image-zoom-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+  }
+
+  .iz-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 0.5rem;
+    background: rgba(30, 41, 59, 0.8);
+    color: #f1f5f9;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease, transform 0.1s ease;
+  }
+
+  .iz-btn:hover {
+    background: rgba(51, 65, 85, 0.95);
+    border-color: rgba(56, 189, 248, 0.6);
+    color: #38bdf8;
+  }
+
+  .iz-btn:active {
+    transform: scale(0.96);
+  }
+
+  .iz-btn--close {
+    background: rgba(225, 29, 72, 0.15);
+    border-color: rgba(225, 29, 72, 0.35);
+    color: #fb7185;
+    margin-left: 0.35rem;
+  }
+
+  .iz-btn--close:hover {
+    background: rgba(225, 29, 72, 0.3);
+    border-color: #fb7185;
+    color: #ffffff;
+  }
+
+  .image-zoom-viewport {
+    position: relative;
+    z-index: 5;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: grab;
+  }
+
+  .image-zoom-viewport.is-dragging {
+    cursor: grabbing;
+  }
+
+  .image-zoom-stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    max-height: 100%;
+    transform-origin: center center;
+    transition: transform 0.12s ease-out;
+  }
+
+  .image-zoom-img {
+    display: block;
+    max-width: 90vw;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 6px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: zoom-in;
+    pointer-events: auto;
+  }
+
+  .image-zoom-img.is-zoomed {
+    cursor: zoom-out;
+  }
+
+  .image-zoom-hint {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    background: rgba(13, 19, 33, 0.75);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    letter-spacing: 0.02em;
+  }
+
+  @media (max-width: 640px) {
+    .image-zoom-hint {
+      display: none;
+    }
+    .image-zoom-caption {
+      max-width: 160px;
+    }
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    // Lightbox state
+    let overlay = null;
+    let imgTarget = null;
+    let captionEl = null;
+    let scaleLabel = null;
+    let stage = null;
+    let viewport = null;
+    let lastActiveElement = null;
+
+    let currentScale = 1;
+    let isFit = true;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let translateX = 0;
+    let translateY = 0;
+
+    const MIN_SCALE = 0.5;
+    const MAX_SCALE = 4.0;
+    const SCALE_STEP = 0.35;
+
+    const applyTransform = () => {
+      if (!stage) return;
+      stage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentScale})`;
+      if (scaleLabel) {
+        scaleLabel.textContent = isFit ? 'Fit' : `${Math.round(currentScale * 100)}%`;
+      }
+      if (imgTarget) {
+        imgTarget.classList.toggle('is-zoomed', currentScale > 1.05);
+      }
+    };
+
+    const resetTransform = () => {
+      currentScale = 1;
+      translateX = 0;
+      translateY = 0;
+      isFit = true;
+      applyTransform();
+    };
+
+    const openZoom = (src, alt, triggerEl) => {
+      if (!overlay || !imgTarget) return;
+      lastActiveElement = triggerEl || document.activeElement;
+
+      imgTarget.src = src;
+      imgTarget.alt = alt || 'Enlarged Hardware Reference';
+      if (captionEl) {
+        captionEl.textContent = alt || 'Hardware Component Detail';
+      }
+
+      resetTransform();
+      overlay.hidden = false;
+      document.body.style.overflow = 'hidden';
+
+      const closeBtn = document.getElementById('iz-btn-close');
+      closeBtn?.focus();
+    };
+
+    const closeZoom = () => {
+      if (!overlay) return;
+      overlay.hidden = true;
+      document.body.style.overflow = '';
+      if (imgTarget) imgTarget.src = '';
+      resetTransform();
+      if (lastActiveElement && typeof lastActiveElement.focus === 'function') {
+        lastActiveElement.focus();
+      }
+    };
+
+    const zoomBy = (factor) => {
+      isFit = false;
+      const nextScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, currentScale * factor));
+      currentScale = Math.round(nextScale * 100) / 100;
+      applyTransform();
+    };
+
+    const toggleZoomScale = () => {
+      if (isFit) {
+        currentScale = 1.75;
+        isFit = false;
+      } else {
+        resetTransform();
+      }
+      applyTransform();
+    };
+
+    const initZoomModal = () => {
+      overlay = document.getElementById('image-zoom-overlay');
+      if (!overlay) return;
+
+      imgTarget = document.getElementById('image-zoom-img');
+      captionEl = document.getElementById('image-zoom-caption');
+      scaleLabel = document.getElementById('iz-scale-label');
+      stage = document.getElementById('image-zoom-stage');
+      viewport = document.getElementById('image-zoom-viewport');
+
+      // Close handlers
+      overlay.querySelectorAll('[data-zoom-close]').forEach((el) => {
+        el.addEventListener('click', closeZoom);
+      });
+
+      // Zoom buttons
+      document.getElementById('iz-btn-in')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        zoomBy(1 + SCALE_STEP);
+      });
+
+      document.getElementById('iz-btn-out')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        zoomBy(1 - SCALE_STEP);
+      });
+
+      document.getElementById('iz-btn-reset')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        resetTransform();
+      });
+
+      // Click on image toggles zoom
+      imgTarget?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleZoomScale();
+      });
+
+      // Mouse wheel zoom
+      viewport?.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = e.deltaY < 0 ? 1.15 : 0.87;
+        zoomBy(delta);
+      }, { passive: false });
+
+      // Drag to pan when zoomed
+      viewport?.addEventListener('mousedown', (e) => {
+        if (currentScale <= 1 && isFit) return;
+        isDragging = true;
+        startX = e.clientX - translateX;
+        startY = e.clientY - translateY;
+        viewport.classList.add('is-dragging');
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        translateX = e.clientX - startX;
+        translateY = e.clientY - startY;
+        applyTransform();
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          viewport?.classList.remove('is-dragging');
+        }
+      });
+
+      // Keyboard Esc to close
+      window.addEventListener('keydown', (e) => {
+        if (overlay && !overlay.hidden) {
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            closeZoom();
+          } else if (e.key === '+' || e.key === '=') {
+            e.preventDefault();
+            zoomBy(1 + SCALE_STEP);
+          } else if (e.key === '-' || e.key === '_') {
+            e.preventDefault();
+            zoomBy(1 - SCALE_STEP);
+          } else if (e.key === '0') {
+            e.preventDefault();
+            resetTransform();
+          }
+        }
+      });
+    };
+
+    // Attach click listener to all content images across lessons, labs, and reading panes
+    const attachImageZoomTriggers = () => {
+      const candidates = document.querySelectorAll(
+        '[data-reading-content] img, .prose img, .lesson-body img, .workspace-pane img, figure img, [data-zoomable] img'
+      );
+
+      candidates.forEach((img) => {
+        if (img.getAttribute('data-zoom-initialized')) return;
+        img.setAttribute('data-zoom-initialized', 'true');
+        img.setAttribute('tabindex', '0');
+        img.setAttribute('role', 'button');
+        img.setAttribute('aria-label', `Enlarge image: ${img.alt || 'Hardware diagram'}`);
+
+        img.addEventListener('click', (e) => {
+          e.preventDefault();
+          const fullSrc = img.getAttribute('data-full-src') || img.currentSrc || img.src;
+          openZoom(fullSrc, img.alt, img);
+        });
+
+        img.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            const fullSrc = img.getAttribute('data-full-src') || img.currentSrc || img.src;
+            openZoom(fullSrc, img.alt, img);
+          }
+        });
+      });
+    };
+
+    // Initialize immediately and after Astro client navigation / DOM mutations
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        initZoomModal();
+        attachImageZoomTriggers();
+      });
+    } else {
+      initZoomModal();
+      attachImageZoomTriggers();
+    }
+
+    // Re-bind when view modes toggle or dynamic content mounts
+    const observer = new MutationObserver(() => {
+      attachImageZoomTriggers();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  })();
+</script>

@@ -13,7 +13,73 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: vpn-protocols
+    title: "IPsec and TLS VPNs"
+    keyPoints:
+      - "IPsec operates at the network layer and secures all IP traffic, which suits permanent site-to-site links."
+      - "An SSL/TLS VPN works through a browser or lightweight client and traverses restrictive networks more easily."
+      - "IPsec has two modes — transport encrypts the payload, tunnel encrypts the entire original packet."
+    check:
+      - prompt: "Which VPN type is generally easier to use from a restrictive guest network such as a hotel?"
+        options:
+          - "An SSL/TLS VPN, because it uses ports that are rarely blocked"
+          - "An IPsec tunnel-mode VPN"
+          - "A site-to-site VPN"
+          - "A dial-up connection"
+        correct: 0
+      - prompt: "What does IPsec tunnel mode encrypt?"
+        options:
+          - "The entire original packet, including its headers"
+          - "Only the TCP port numbers"
+          - "Only the payload, leaving headers visible"
+          - "Nothing — it only authenticates"
+        correct: 0
+  - id: topology-and-tunnels
+    title: "Topologies and Split Tunnelling"
+    keyPoints:
+      - "Site-to-site VPNs join two networks permanently, while client-to-site connects one device to the network."
+      - "Full tunnel sends all client traffic through the VPN, giving inspection and control at the cost of bandwidth."
+      - "Split tunnel sends only corporate traffic through the tunnel, which is faster but bypasses your security stack for everything else."
+    check:
+      - prompt: "What is the security trade-off of split tunnelling?"
+        options:
+          - "Non-corporate traffic bypasses organisational inspection and filtering"
+          - "It encrypts traffic twice, slowing the connection"
+          - "It prevents the client from reaching internal resources"
+          - "It requires a static public IP on every client"
+        correct: 0
+      - prompt: "Which topology permanently connects a branch office network to headquarters?"
+        options:
+          - "Site-to-site VPN"
+          - "Client-to-site VPN"
+          - "Split tunnel"
+          - "Captive portal"
+        correct: 0
+  - id: vpn-access-control
+    title: "Authentication and Posture"
+    keyPoints:
+      - "A VPN extends the network to the endpoint, so a compromised laptop becomes a compromised internal host."
+      - "Multi-factor authentication is the single most valuable VPN control, because stolen credentials alone stop being sufficient."
+      - "Posture checking verifies patch level and antivirus state before granting access, rather than trusting the device blindly."
+    check:
+      - prompt: "Why is MFA especially important on a VPN?"
+        options:
+          - "A stolen password alone would otherwise grant an attacker internal network access"
+          - "It speeds up the tunnel negotiation"
+          - "It is required for split tunnelling to work"
+          - "It replaces the need for encryption"
+        correct: 0
+      - prompt: "What does endpoint posture checking verify before allowing a connection?"
+        options:
+          - "That the device meets policy, such as patch level and antivirus status"
+          - "That the user is physically in the office"
+          - "That the tunnel uses IPsec rather than TLS"
+          - "That the ISP supports IPv6"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## The Coffee Shop Problem
 
@@ -67,6 +133,10 @@ A **site-to-site VPN** connects two networks — the main campus to a satellite 
 
 A **client-to-site VPN** (also called remote access VPN) connects a single device — a teacher's laptop, an admin's home workstation — to the network. The user runs VPN client software, authenticates, and receives an IP address on the internal network. The tunnel exists only while the client is connected and typically requires user interaction to initiate (launch the client, enter credentials, accept the MFA prompt).
 
+<Callout type="exam">
+Full tunnel routes everything through the VPN, so all traffic is inspected but the link carries more load. Split tunnel routes only corporate traffic, which is faster and leaves everything else uninspected. Questions frame it as a security-versus-performance choice.
+</Callout>
+
 ## Split Tunnel vs. Full Tunnel
 
 When a remote user connects via VPN, a design decision determines what traffic goes through the tunnel.
@@ -101,6 +171,10 @@ Connecting a VPN doesn't just extend the network — it extends the attack surfa
 
 Posture checks aren't foolproof. A determined attacker can fake compliance indicators. But they catch the accidental cases — the teacher whose antivirus expired three months ago, the admin whose personal laptop hasn't been patched since summer — that represent the vast majority of real-world risk.
 
+<Callout type="warn">
+A VPN does not make an endpoint trustworthy. It gives an untrusted device a route onto your internal network. Without posture checks and MFA, a compromised home laptop is an attacker with a valid tunnel.
+</Callout>
+
 ## Common VPN Misconfigurations
 
 VPNs fail in predictable ways, and attackers know exactly where to look.
@@ -114,3 +188,7 @@ VPNs fail in predictable ways, and attackers know exactly where to look.
 **Stale VPN accounts.** A contractor's VPN account that was never deactivated after the project ended. A former employee whose AD account was disabled but whose local VPN certificate is still valid. Stale accounts are the offboarding failure from the policies lesson applied specifically to remote access — same risk, same fix: documented procedures, regular audits.
 
 **Unpatched VPN concentrators.** VPN gateways are internet-facing by definition — they have to be, to accept incoming connections. Every vulnerability in the VPN software is directly exposed to the internet. Patch promptly. Monitor vendor advisories. The most devastating corporate breaches in recent years have started with exploited vulnerabilities in unpatched VPN appliances — Pulse Secure, Fortinet, Citrix, all hit with critical CVEs that were exploited within days of disclosure. Patching VPN infrastructure isn't a routine maintenance task. It's an emergency response priority.
+
+## Key Terms
+
+VPN · IPsec · transport mode · tunnel mode · IKE · SSL/TLS VPN · site-to-site · client-to-site · split tunnel · full tunnel · VPN concentrator · always-on VPN · MFA · endpoint posture

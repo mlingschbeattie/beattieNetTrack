@@ -13,7 +13,73 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: cia-and-aaa
+    title: "The CIA Triad and AAA"
+    keyPoints:
+      - "Confidentiality keeps data from those who should not see it, integrity keeps it from being altered, availability keeps it reachable."
+      - "Authentication proves who you are, authorisation decides what you may do, accounting records what you did."
+      - "Naming which property failed tells you which control to reach for, so classify the incident before you fix it."
+    check:
+      - prompt: "A ransomware attack encrypts a file server and staff cannot open their documents. Which part of the CIA triad has failed?"
+        options:
+          - "Availability"
+          - "Confidentiality"
+          - "Integrity"
+          - "Authentication"
+        correct: 0
+      - prompt: "Which part of AAA answers the question \"what is this user allowed to do?\""
+        options:
+          - "Authorisation"
+          - "Authentication"
+          - "Accounting"
+          - "Availability"
+        correct: 0
+  - id: least-privilege-depth
+    title: "Least Privilege and Defense in Depth"
+    keyPoints:
+      - "Least privilege grants the minimum access needed for the role, so a compromised account cannot reach everything."
+      - "Defense in depth layers controls so that no single failure exposes the network — the layers assume each other will sometimes fail."
+      - "Segmentation limits lateral movement, turning one compromised host into a contained problem rather than a network-wide one."
+    check:
+      - prompt: "Why does segmentation reduce the damage of a compromised workstation?"
+        options:
+          - "It limits how far an attacker can move laterally from that host"
+          - "It encrypts the workstation hard drive"
+          - "It prevents the workstation from being infected"
+          - "It forces the attacker to use a different protocol"
+        correct: 0
+      - prompt: "What is the principle behind defense in depth?"
+        options:
+          - "Layered controls, because any single control will eventually fail"
+          - "One very strong perimeter firewall is sufficient"
+          - "Security should be hidden from users"
+          - "Every user should have administrator rights for efficiency"
+        correct: 0
+  - id: risk-terms
+    title: "Vulnerability, Threat, and Risk"
+    keyPoints:
+      - "A vulnerability is a weakness, a threat is something that could exploit it, and risk is the likelihood and impact of that happening."
+      - "Zero trust assumes no device or user is trusted by default, even inside the perimeter, and verifies every request."
+      - "Security through obscurity — hiding a name or a port — may slow an attacker but is never a control on its own."
+    check:
+      - prompt: "An unpatched server is exposed to the internet. What is the unpatched software itself?"
+        options:
+          - "A vulnerability"
+          - "A threat"
+          - "A risk"
+          - "An exploit"
+        correct: 0
+      - prompt: "What assumption does a zero trust model make?"
+        options:
+          - "No user or device is trusted by default, including those inside the network"
+          - "Internal traffic is inherently safe"
+          - "Perimeter firewalls make internal controls unnecessary"
+          - "Encryption removes the need for authentication"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## The Unlocked Door
 
@@ -83,6 +149,10 @@ Zero trust implementations typically include: identity-based access (authenticat
 
 Zero trust is a model, not a product. No single vendor sells a "zero trust box." It's an architecture assembled from identity providers, network segmentation, endpoint validation, policy engines, and monitoring — many of which you've already studied. The exam tests the concept and principles, not a specific vendor implementation.
 
+<Callout type="exam">
+CompTIA separates these three deliberately. The weakness is the vulnerability, the actor or event that could exploit it is the threat, and risk combines how likely that is with how badly it would hurt. Questions often describe a scenario and ask you to name which one is being described.
+</Callout>
+
 ## Vulnerability, Threat, Risk — The Terminology That Matters
 
 These three terms get confused constantly, and the exam expects precision.
@@ -95,6 +165,10 @@ A **threat** is something that could exploit a vulnerability. A threat could be 
 
 Applied to a network scenario: your edge switch has a known vulnerability in its web management interface (vulnerability). Script kiddies are actively scanning the internet for that vulnerability (threat). The switch is exposed to the internet because someone enabled the web interface on a public-facing port (risk is high — the threat is real, the vulnerability is present, and the impact is full device compromise). Fix: disable the web interface on the public-facing port. The vulnerability still exists in the firmware, but the risk drops because the attack surface is gone. Patch the firmware too — but triage based on risk.
 
+<Callout type="warn">
+Hiding something is not protecting it. Changing SSH to a non-standard port, hiding an SSID, or using an undocumented URL raises the effort slightly and stops nothing determined. Treat obscurity as a small bonus on top of real controls, never as one of them.
+</Callout>
+
 ## Security Through Obscurity — Necessary but Never Sufficient
 
 Changing the SSH port from 22 to 2222. Hiding the SSID on the wireless network. Using non-standard VLAN numbers. These are examples of **security through obscurity** — making something harder to find rather than harder to exploit.
@@ -102,3 +176,7 @@ Changing the SSH port from 22 to 2222. Hiding the SSID on the wireless network. 
 Obscurity is not worthless. Changing the default SSH port reduces noise from automated scanners hitting port 22. Hiding an SSID keeps casual users from seeing the network. But obscurity alone provides zero real security. An attacker running a port scan finds SSH on 2222 in seconds. A wireless survey tool reveals hidden SSIDs immediately because the network still broadcasts beacons — the SSID field is just empty. A determined attacker is not stopped by non-standard VLAN numbers.
 
 Obscurity is a speed bump, not a barrier. Use it as one layer in a defense-in-depth strategy — not as the strategy itself. The exam asks this directly: security through obscurity is not a sufficient security measure on its own. Pair it with authentication, encryption, access controls, and monitoring. The SSID can be hidden, but the network also needs WPA3-Enterprise, 802.1X, and client isolation. The SSH port can be non-standard, but the service also needs key-based authentication, access restricted by ACL, and failed-login lockout. Obscurity buys time. Real controls provide protection.
+
+## Key Terms
+
+CIA triad · confidentiality · integrity · availability · authentication · authorisation · accounting · AAA · least privilege · defense in depth · segmentation · lateral movement · zero trust · vulnerability · threat · risk · security through obscurity

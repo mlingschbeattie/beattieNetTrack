@@ -13,13 +13,83 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: states-of-data
+    title: "The Three States of Data"
+    keyPoints:
+      - "Data at rest is stored, data in transit is moving across a network, and data in use is open in memory on an endpoint."
+      - "Each state needs a different control — encryption at rest, TLS in transit, and endpoint controls while in use."
+      - "Most DLP failures happen in transit or in use, because at-rest encryption is the part organisations usually get right."
+    check:
+      - prompt: "A staff member emails a spreadsheet of student records to a personal address. Which state of data is involved?"
+        options:
+          - "Data in transit"
+          - "Data at rest"
+          - "Data in use"
+          - "Data in archive"
+        correct: 0
+      - prompt: "Which control protects data at rest?"
+        options:
+          - "Full-disk or file-level encryption"
+          - "TLS"
+          - "A captive portal"
+          - "Port security"
+        correct: 0
+  - id: dlp-mechanics
+    title: "How DLP Decides"
+    keyPoints:
+      - "Content inspection looks at the data itself, matching patterns such as card numbers or national identifiers."
+      - "Context awareness looks at circumstances — who, to where, by what channel — rather than the content alone."
+      - "Classification labels make both work, because a system that does not know what is sensitive cannot protect it selectively."
+    check:
+      - prompt: "A DLP rule blocks any file leaving the network that contains a pattern matching a credit card number. What is this?"
+        options:
+          - "Content inspection"
+          - "Context awareness"
+          - "Classification labelling"
+          - "Endpoint posture"
+        correct: 0
+      - prompt: "Why does effective DLP depend on data classification?"
+        options:
+          - "Without knowing which data is sensitive, the system cannot apply rules selectively"
+          - "Classification encrypts the data automatically"
+          - "Classification is required by the TCP protocol"
+          - "It reduces the bandwidth DLP consumes"
+        correct: 0
+  - id: dlp-limits
+    title: "Where DLP Fails"
+    keyPoints:
+      - "DLP set to monitor rather than block records the incident but does not prevent it."
+      - "Encrypted or personal channels — personal webmail, messaging apps, cloud sync — bypass network DLP entirely unless endpoint agents are deployed."
+      - "Over-aggressive rules generate false positives, and users route around tools that block legitimate work."
+    check:
+      - prompt: "Why can network DLP miss a file uploaded to a personal cloud storage account?"
+        options:
+          - "The traffic is encrypted and does not pass through an inspection point it can read"
+          - "Cloud storage is always permitted by regulation"
+          - "DLP only inspects email"
+          - "Uploads are too fast to inspect"
+        correct: 0
+      - prompt: "What is the practical risk of DLP rules that are too aggressive?"
+        options:
+          - "Users find workarounds that avoid monitoring altogether"
+          - "The DLP system runs out of storage"
+          - "Encryption keys expire early"
+          - "Network latency doubles"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## The Email That Should Never Have Sent
 
 A school district guidance counselor is finishing an end-of-year report. She needs to send a list of students receiving accommodations to a new teacher at another building. She pulls the spreadsheet from the student records share, attaches it to an email, and hits send. The email goes to the teacher's personal Gmail address because the counselor copied it from a text message and didn't notice it wasn't the district account. That spreadsheet now sits in a personal Gmail inbox — outside the district's control, unencrypted, on a server the district has no authority over. It contains names, student IDs, disability classifications, behavioral notes, and accommodation plans for 140 students. That's a FERPA violation. One email, one wrong address, and the district is now in a compliance incident that involves legal counsel, mandatory parent notification, and a report to the Department of Education.
 
 Nobody hacked anything. Nobody broke in. A well-meaning staff member attached the wrong file to the wrong address, and sensitive data left the building through the front door. This is the problem **Data Loss Prevention (DLP)** exists to solve — not the dramatic breach by outside attackers, but the routine, accidental, and occasionally intentional leakage of sensitive data by people who already have legitimate access to it.
+
+<Callout type="exam">
+Learn the three states and their matching control: at rest maps to encryption, in transit maps to TLS or a VPN, in use maps to endpoint controls. Questions describe a scenario and expect you to name the state before naming the fix.
+</Callout>
 
 ## Three States of Data
 
@@ -97,6 +167,10 @@ DLP isn't optional for many organizations — it's a compliance requirement.
 
 These regulations don't specify "you must use DLP technology." They require that organizations protect specific types of data from unauthorized disclosure. DLP is one of the primary technical controls that demonstrates compliance. During an audit, showing that your DLP system monitors and blocks unauthorized disclosure of student records is evidence that you're meeting your FERPA obligations.
 
+<Callout type="warn">
+DLP deployed in monitor-only mode is a reporting tool, not a control. It will tell you a breach happened. Confirm which mode a system is actually running in before treating it as prevention.
+</Callout>
+
 ## Common DLP Failure Modes
 
 DLP isn't magic, and its failure modes matter as much as its capabilities.
@@ -114,3 +188,7 @@ DLP isn't magic, and its failure modes matter as much as its capabilities.
 As a network engineer, DLP is your concern because DLP systems live on your network. The network DLP appliance sits inline at your boundary. The CASB integration requires DNS and proxy configuration. The endpoint agents generate network traffic. When the DLP system blocks a legitimate email, the first call goes to the network team because "the network is blocking my email." When the SSL inspection breaks a cloud application because the decrypted/re-encrypted certificate isn't trusted by the client, that's your ticket.
 
 Understanding what DLP does and how it works lets you troubleshoot it when it misbehaves, configure the network infrastructure it depends on, and have an informed conversation with the security team about policy changes. The technology protects data that someone trusted your organization to keep safe — student records, employee information, financial data. When it works, nobody notices. When it fails, it's on the front page.
+
+## Key Terms
+
+DLP · data at rest · data in transit · data in use · content inspection · context awareness · classification label · endpoint DLP · network DLP · CASB · exfiltration · monitor mode · false positive

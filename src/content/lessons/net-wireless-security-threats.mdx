@@ -13,7 +13,73 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: protocol-history
+    title: "Why the Standards Kept Changing"
+    keyPoints:
+      - "WEP used a short initialisation vector that repeats, allowing the key to be recovered from captured traffic in minutes."
+      - "WPA was a stopgap using TKIP on existing hardware, and inherited weaknesses that WPA2 with AES resolved."
+      - "WPA3 introduces SAE, which prevents an attacker from taking a captured handshake away for offline cracking."
+    check:
+      - prompt: "What specific weakness made WEP recoverable in minutes?"
+        options:
+          - "A short initialisation vector that repeats, leaking key material"
+          - "It transmitted the password in plain text"
+          - "It only supported four-character passwords"
+          - "It disabled encryption on the first packet"
+        correct: 0
+      - prompt: "What attack does WPA3 SAE specifically defeat?"
+        options:
+          - "Offline dictionary attacks against a captured handshake"
+          - "Physical theft of the access point"
+          - "ARP poisoning on the wired side"
+          - "DNS cache poisoning"
+        correct: 0
+  - id: rogue-detection
+    title: "Rogue APs, Evil Twins, and WIDS"
+    keyPoints:
+      - "A rogue AP is unauthorised hardware on your network, often a well-meaning user adding coverage."
+      - "An evil twin impersonates your SSID to harvest credentials and never touches your cabling."
+      - "A WIDS or WIPS monitors the air for unexpected SSIDs and BSSIDs, which is the only reliable way to find either."
+    check:
+      - prompt: "A device broadcasting your school SSID is detected in the car park, unconnected to your network. What is it?"
+        options:
+          - "An evil twin"
+          - "A rogue access point"
+          - "A wireless repeater"
+          - "A captive portal"
+        correct: 0
+      - prompt: "What system is needed to reliably detect unauthorised access points?"
+        options:
+          - "A wireless intrusion detection or prevention system"
+          - "A network firewall"
+          - "DHCP snooping"
+          - "A site survey performed once at installation"
+        correct: 0
+  - id: school-realities
+    title: "Wireless Misconfigurations in Schools"
+    keyPoints:
+      - "A pre-shared key shared with an entire school is effectively public, and cannot be revoked for one person."
+      - "Captive portals often authenticate but do not encrypt, so traffic on that network remains readable."
+      - "Enterprise mode with RADIUS gives per-user credentials and is the only model that supports revoking one account."
+    check:
+      - prompt: "Why is a single shared wireless password unsuitable for a school network?"
+        options:
+          - "It cannot be revoked for one person without changing it for everyone"
+          - "It reduces wireless throughput"
+          - "It is incompatible with WPA2"
+          - "It prevents devices from roaming between access points"
+        correct: 0
+      - prompt: "What common misconception exists about captive portals?"
+        options:
+          - "That authenticating through one means the traffic is encrypted"
+          - "That they require WPA3 hardware"
+          - "That they replace the need for a DHCP server"
+          - "That they only work on 5 GHz"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## The Password on the Whiteboard
 
@@ -42,6 +108,10 @@ TKIP was designed to run on existing WEP-era hardware through a firmware update,
 WPA2 has been the wireless security standard since 2004 and remains acceptable for production networks today. It's what you'll find on the vast majority of enterprise and institutional wireless deployments. When WPA2 is breached, it's virtually never because someone cracked AES. It's because the passphrase was weak (in Personal mode), the authentication infrastructure was misconfigured (in Enterprise mode), or an attack targeted the protocol handshake rather than the encryption itself — KRACK (Key Reinstallation Attack, 2017) exploited a flaw in the four-way handshake to force nonce reuse, not a weakness in AES.
 
 WPA2 can run in two modes, and the mode you choose determines everything about the network's security posture.
+
+<Callout type="exam">
+Personal uses one shared key. Enterprise authenticates each user against a RADIUS server over 802.1X. If a question mentions revoking access for one person, or auditing who connected, the answer is Enterprise every time.
+</Callout>
 
 ## Personal vs. Enterprise — PSK vs. 802.1X
 
@@ -83,6 +153,10 @@ A **WIPS** adds prevention: it can automatically send deauthentication frames to
 
 Detection without someone responding to the alerts is just expensive monitoring. WIDS/WIPS needs to be paired with procedures — who investigates a rogue AP alert, how quickly, and what physical action is taken (find the device and unplug it).
 
+<Callout type="warn">
+A captive portal is an authentication gate, not encryption. Users who accept terms on a portal-protected network routinely assume their traffic is protected, and on an open SSID it is readable by anyone in range.
+</Callout>
+
 ## Captive Portal Weaknesses
 
 A **captive portal** intercepts HTTP traffic from unauthenticated clients and redirects them to a login or acceptance page — the "agree to terms of service" page on public Wi-Fi. Captive portals are common on guest networks and open SSIDs.
@@ -112,3 +186,7 @@ Never updating AP firmware. Access points run software. That software has vulner
 Leaving default SNMP community strings on wireless controllers. The controller manages every AP in the network. Compromising the controller with default credentials gives the attacker control over the entire wireless infrastructure — SSIDs, encryption settings, VLAN assignments, everything. Change the defaults. Use SNMPv3. Restrict management access by IP.
 
 Wireless security isn't a single setting — it's the combination of the encryption standard, the authentication model, the network segmentation, the detection systems, the physical placement, and the ongoing maintenance. Get one wrong and the rest compensate. Get several wrong and you're the school with the staff password on a group chat.
+
+## Key Terms
+
+WEP · initialisation vector · WPA · TKIP · WPA2 · AES · WPA3 · SAE · pre-shared key · 802.1X · RADIUS · rogue access point · evil twin · WIDS · WIPS · captive portal · site survey

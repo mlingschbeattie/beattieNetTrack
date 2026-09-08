@@ -13,7 +13,73 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: physical-access
+    title: "Physical Access Is Total Access"
+    keyPoints:
+      - "Physical access defeats most logical controls — a device that can be removed, rebooted, or console-connected can be taken over."
+      - "Console ports and password recovery procedures assume physical access implies authorisation, so the lock is the control."
+      - "An unlocked wiring closet exposes every device in it, regardless of how well those devices are configured."
+    check:
+      - prompt: "Why is physical access to a switch considered equivalent to administrative access?"
+        options:
+          - "Console access and password recovery procedures assume physical presence means authorisation"
+          - "Switches broadcast their passwords over the console port"
+          - "Physical access disables encryption automatically"
+          - "It is not — physical access grants no additional capability"
+        correct: 0
+      - prompt: "What does an unlocked wiring closet put at risk?"
+        options:
+          - "Every device housed in it, regardless of their own configuration"
+          - "Only the patch panel"
+          - "Only devices without passwords"
+          - "Nothing, provided the switches use SSH"
+        correct: 0
+  - id: entry-controls
+    title: "Entry Controls and Tailgating"
+    keyPoints:
+      - "An access control vestibule releases one door only after the other has closed, which prevents a second person entering unchecked."
+      - "Tailgating follows an authorised person through a door, and works because most people hold doors open to be polite."
+      - "Cameras record and deter but do not prevent entry, so they belong alongside physical barriers rather than instead of them."
+    check:
+      - prompt: "Which control most directly prevents tailgating?"
+        options:
+          - "An access control vestibule that permits one person at a time"
+          - "A camera at the entrance"
+          - "A visitor sign-in sheet"
+          - "A door alarm"
+        correct: 0
+      - prompt: "What is the limitation of relying on cameras for physical security?"
+        options:
+          - "They record and deter but do not physically stop entry"
+          - "They cannot operate at night"
+          - "They interfere with wireless signals"
+          - "They only work in server rooms"
+        correct: 0
+  - id: environment-and-disposal
+    title: "Environment and Asset Disposal"
+    keyPoints:
+      - "Server rooms need controlled temperature and humidity, since heat shortens hardware life and humidity swings cause static or condensation."
+      - "Asset tracking records what exists and where, which is what makes a missing device noticeable at all."
+      - "Decommissioned drives must be wiped or destroyed, because a discarded device carries whatever data was on it."
+    check:
+      - prompt: "Why does humidity that is too low pose a risk in a server room?"
+        options:
+          - "It increases static electricity, which can damage components"
+          - "It causes condensation on the boards"
+          - "It reduces network throughput"
+          - "It interferes with fibre optic signals"
+        correct: 0
+      - prompt: "What must happen to hard drives in decommissioned equipment before disposal?"
+        options:
+          - "They must be securely wiped or physically destroyed"
+          - "They must be reformatted once"
+          - "They must be returned to the vendor unaltered"
+          - "Nothing, provided the device no longer powers on"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## The Wiring Closet Nobody Locked
 
@@ -40,6 +106,10 @@ An **access control vestibule** (sometimes still called a mantrap on older exams
 **Biometric systems** authenticate based on physical characteristics: fingerprint scanners, retinal scanners, facial recognition, hand geometry. Biometrics solve the problem that badges can be lost, stolen, or shared. Your fingerprint can't be left on a bus. The tradeoff is cost, false rejection rates (legitimate users being denied), and privacy concerns. Biometrics are typically deployed at high-security entry points — the server room, the data center — not at every office door.
 
 These systems work in layers. The building entrance uses a badge reader. The server room hallway uses badge plus PIN. The server room itself uses badge plus biometric. Each layer narrows the population of people who can access the next area — defense in depth applied to physical space.
+
+<Callout type="exam">
+CompTIA distinguishes the two by intent. Tailgating is following someone through without their knowledge. Piggybacking is entering with their consent, usually because they held the door. The control for both is the same: a vestibule that admits one person at a time.
+</Callout>
 
 ## Tailgating and Piggybacking
 
@@ -91,6 +161,10 @@ Network equipment has specific environmental requirements, and failing to meet t
 
 **Uninterruptible power supplies (UPS)** provide battery backup during power outages, giving enough time for graceful shutdowns or generator activation. A hard power loss can corrupt file systems, crash databases, and kill active sessions. A UPS paired with a generator provides continuous power through extended outages. Power distribution units (PDUs) manage and monitor power delivery to individual racks.
 
+<Callout type="warn">
+A deleted file is not a destroyed file, and a quick format is not a wipe. Drives leaving the building must be wiped to standard or physically destroyed — recovered school hardware turning up with student data on it is a reportable breach.
+</Callout>
+
 ## Asset Tracking and Disposal
 
 Every piece of network equipment should be tracked from purchase to disposal. **Asset management** maintains a database of every device — serial number, location, configuration, firmware version, warranty status. When a switch goes missing, you need to know immediately so you can revoke its credentials and investigate. When it's time to patch a vulnerability, you need to know every device running the affected firmware.
@@ -116,3 +190,7 @@ Sign-in sheets at building entrances and sensitive areas create an audit trail. 
 Your first IT job will probably not involve configuring access control vestibules or selecting fire suppression systems. But you will be responsible for locking the wiring closet when you leave. You will notice when a door that should be locked is propped open. You will be the person who spots an unfamiliar device cabled into the patch panel and knows that it shouldn't be there.
 
 Physical security failures cause some of the most devastating breaches in the industry, and they're almost always preventable. A locked door, a disabled port, an escort policy that's actually enforced — these aren't glamorous controls. They don't make good conference talks. But they stop the attacks that bypass every piece of security software you own. The best firewall in the world can't stop someone who walks in, plugs into the network, and walks out. That's your job.
+
+## Key Terms
+
+physical security · wiring closet · console port · access control vestibule · mantrap · tailgating · piggybacking · badge reader · biometrics · camera placement · HVAC · humidity · asset tag · secure disposal · degaussing

@@ -13,7 +13,73 @@ domains:
     weight: 0.8
   - domainId: nocti.networking
     weight: 0.2
+sections:
+  - id: layer2-attacks
+    title: "Attacks on Layer 2 Trust"
+    keyPoints:
+      - "ARP has no authentication, so a host can claim any IP address and receive traffic meant for it."
+      - "ARP poisoning puts an attacker on the path between two hosts, enabling interception or modification."
+      - "VLAN hopping abuses trunk negotiation or double tagging to reach a VLAN the attacker should not be able to see."
+    check:
+      - prompt: "Why is ARP poisoning possible in the first place?"
+        options:
+          - "ARP has no authentication, so any host can claim any IP address"
+          - "ARP is encrypted and cannot be inspected"
+          - "ARP only works on wireless networks"
+          - "Switches ignore ARP entirely"
+        correct: 0
+      - prompt: "What is the attacker trying to achieve with VLAN hopping?"
+        options:
+          - "Reaching a VLAN they were not granted access to"
+          - "Disabling the switch power supply"
+          - "Encrypting traffic on the trunk"
+          - "Increasing their own bandwidth"
+        correct: 0
+  - id: availability-attacks
+    title: "Denial of Service"
+    keyPoints:
+      - "A DoS attack comes from one source, while a DDoS uses many compromised hosts at once, which makes blocking by address impractical."
+      - "Amplification attacks send small spoofed requests to servers that reply with far larger responses aimed at the victim."
+      - "DoS targets availability specifically — nothing is stolen or altered, the service is simply made unreachable."
+    check:
+      - prompt: "What makes a DDoS harder to mitigate than a DoS?"
+        options:
+          - "Traffic arrives from many distributed sources, so blocking one address achieves little"
+          - "DDoS traffic is always encrypted"
+          - "DDoS only targets wireless networks"
+          - "DDoS attacks last exactly one hour"
+        correct: 0
+      - prompt: "Which part of the CIA triad does a DoS attack target?"
+        options:
+          - "Availability"
+          - "Confidentiality"
+          - "Integrity"
+          - "Accounting"
+        correct: 0
+  - id: credential-and-onpath
+    title: "On-Path and Credential Attacks"
+    keyPoints:
+      - "An on-path attacker sits between two parties, able to read and potentially alter traffic that both sides believe is private."
+      - "Brute force tries many passwords against one account; credential stuffing reuses passwords leaked from other breaches."
+      - "Account lockout stops brute force but not credential stuffing, because stuffing usually succeeds on the first try per account."
+    check:
+      - prompt: "How does credential stuffing differ from a brute force attack?"
+        options:
+          - "It reuses real passwords leaked from other breaches rather than guessing"
+          - "It only targets administrator accounts"
+          - "It requires physical access to the network"
+          - "It attacks the encryption key rather than the password"
+        correct: 0
+      - prompt: "Why does an account lockout policy offer limited protection against credential stuffing?"
+        options:
+          - "Stuffing often succeeds on the first attempt per account, so lockout never triggers"
+          - "Lockout policies do not apply to remote users"
+          - "Stuffing bypasses authentication entirely"
+          - "Lockout only works for wireless clients"
+        correct: 0
 ---
+
+import Callout from '../../components/Callout.astro';
 
 ## The Packet That Shouldn't Be There
 
@@ -49,6 +115,10 @@ In an **ARP poisoning** (or ARP spoofing) attack, the attacker sends gratuitous 
 
 Detection: watch for multiple MAC addresses claiming the same IP. Static ARP entries for critical infrastructure (the default gateway) prevent overwriting, but don't scale. The real defense is **Dynamic ARP Inspection (DAI)**, which validates ARP packets against the DHCP snooping binding table — a topic covered in the hardening lesson.
 
+<Callout type="exam">
+Group the attacks by what they abuse. ARP poisoning and VLAN hopping abuse Layer 2 trust, DNS poisoning abuses name resolution, DoS abuses capacity, and stuffing abuses password reuse. Naming the mechanism usually names the defence too.
+</Callout>
+
 ## DNS Poisoning — Redirecting Names to Wrong Addresses
 
 DNS is another protocol that was designed for functionality, not security. **DNS poisoning** (or DNS spoofing) corrupts a DNS resolver's cache so that queries for a legitimate domain return an attacker-controlled IP address. A student types `portal.school.edu` and gets sent to a clone of the login page hosted on the attacker's server. They enter their credentials. The attacker now has valid credentials and redirects the victim to the real portal so they never notice anything was wrong.
@@ -83,6 +153,10 @@ A **deauthentication attack** makes evil twins more effective. The attacker send
 
 Defense: wireless intrusion detection/prevention (WIDS/WIPS) systems monitor the RF environment for rogue APs and evil twins. 802.1X on all wired ports prevents rogue APs from gaining network access even if physically connected. Educating users to verify they're connecting to the correct network with the correct certificate helps — though "just be careful" is never a primary control.
 
+<Callout type="warn">
+Password complexity rules do nothing against credential stuffing, because the password being tried is already correct somewhere else. Multi-factor authentication is the control that actually breaks this attack.
+</Callout>
+
 ## Brute Force and Credential Stuffing
 
 A **brute force attack** tries every possible password combination against an authentication system. Short passwords fall quickly — an 8-character lowercase-only password has about 200 billion combinations, which modern hardware can exhaust in minutes. Complexity and length increase the search space exponentially. A 16-character passphrase with mixed case, numbers, and symbols is effectively immune to brute force with current technology.
@@ -96,3 +170,7 @@ Defense: account lockout after a threshold of failed attempts (5–10 attempts, 
 Each of these attacks exploits a specific protocol weakness: ARP has no authentication, DNS has no built-in validation, DTP negotiates trunks automatically, 802.11 management frames are unencrypted in legacy standards, passwords are only as strong as the human choosing them. Understanding the attack means understanding the protocol flaw. Understanding the protocol flaw points directly at the defense: DAI for ARP, DNSSEC for DNS, disabling DTP for VLAN hopping, WPA3 for deauth attacks, MFA for credential attacks.
 
 The exam presents scenarios and asks you to identify the attack or the appropriate defense. If you understand what's happening at the protocol level, the answer follows naturally. If you've only memorized definitions without understanding the mechanism, the scenario-based questions will trip you up. Know the how, not just the what.
+
+## Key Terms
+
+reconnaissance · port scan · DoS · DDoS · amplification · botnet · ARP poisoning · DNS poisoning · VLAN hopping · double tagging · on-path attack · man-in-the-middle · evil twin · rogue AP · brute force · credential stuffing · MFA
