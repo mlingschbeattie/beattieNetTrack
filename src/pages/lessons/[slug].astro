@@ -76,7 +76,7 @@ const outlineSections = authoredSections;
 >
   {lesson.data.domains && lesson.data.domains.length > 0 && apiUrl && (
     <BeaconEmitter
-      client:load
+      client:only="react"
       domains={lesson.data.domains}
       contentId={lesson.slug}
       contentType="lesson"
@@ -125,7 +125,7 @@ const outlineSections = authoredSections;
   <section class="lesson-body lesson-body--reading" data-view-pane="reading" role="tabpanel" id="panel-reading" aria-labelledby="tab-reading" hidden={hasLearnMode}>
     <div class={`lesson-reading-layout${hasLearnMode ? "" : " lesson-reading-layout--norail"}`}>
       <div class="lesson-reading-main">
-        <ReadAloud client:idle />
+        <ReadAloud client:only="react" />
         <div data-reading-content>
           <Content components={{ Callout, CodeBlock }} />
         </div>
