@@ -1,0 +1,75 @@
+---
+title: "Expansion Cards and GPUs Checkpoint"
+description: "Demonstrate mastery of PCIe lane architecture, dedicated GPU power delivery standards, and display output interfaces."
+slug: "pct-expansion-cards-gpus"
+track: "pc-technician"
+moduleId: "pct.hardware.components-identification"
+order: 7
+difficulty: "Beginner"
+estMinutes: 10
+passThreshold: 70
+tags: ["GPU", "PCIe", "expansion card", "DisplayPort", "HDMI", "checkpoint", "hardware"]
+hints:
+  - "Remember: Motherboard PCIe slot supplies 75W; auxiliary 6-pin is 75W, 8-pin is 150W."
+  - "Recall that DisplayPort supports MST daisy-chaining across monitors."
+checklist:
+  - "Evaluated PCIe lane scaling and up-plugging"
+  - "Calculated auxiliary GPU power requirements"
+  - "Differentiated DisplayPort vs HDMI capabilities"
+domains:
+  - domainId: "aplus1.hardware"
+    weight: 1
+questions:
+  - id: "q1"
+    type: "single"
+    prompt: "A high-performance dedicated graphics card draws up to 280 watts under full gaming load. What combination of power sources is required to safely supply this card?"
+    options:
+      - "Motherboard slot power only (75W)"
+      - "75W from the PCIe slot plus two 8-pin PCIe auxiliary power cables (150W each)"
+      - "One 4-pin Molex connector"
+      - "One SATA power cable"
+    correctIndex: 1
+    explanation: "The motherboard PCIe slot provides up to 75W, and two 8-pin PCIe cables supply 150W each (75W + 150W + 150W = 375W capacity), safely covering the 280W draw."
+  - id: "q2"
+    type: "single"
+    prompt: "Which modern graphics card power connector standard delivers up to 600 watts over a single 16-pin cable and includes four sideband sense pins to communicate with the power supply?"
+    options:
+      - "Molex 4-pin"
+      - "EPS 12V 8-pin"
+      - "12VHPWR (ATX 3.0)"
+      - "SATA 15-pin"
+    correctIndex: 2
+    explanation: "The 12VHPWR (or 12V-2x6) 16-pin connector provides up to 600W with 4 sideband pins that negotiate power capacity between the PSU and GPU."
+  - id: "q3"
+    type: "single"
+    prompt: "A workstation requires connecting three independent external monitors, but the graphics card has only one DisplayPort output available. How can this be accomplished without adding another graphics card?"
+    options:
+      - "Use a passive HDMI splitter"
+      - "Daisy-chain the monitors using DisplayPort Multi-Stream Transport (MST)"
+      - "Convert the DisplayPort into USB 2.0"
+      - "Use Bluetooth wireless streaming"
+    correctIndex: 1
+    explanation: "DisplayPort Multi-Stream Transport (MST) allows multiple independent displays to be daisy-chained in sequence from a single DisplayPort output."
+  - id: "q4"
+    type: "single"
+    prompt: "What happens when a technician installs a PCIe x1 network adapter into an unused physical PCIe x16 expansion slot?"
+    options:
+      - "The motherboard blows a capacitor due to over-current"
+      - "The card operates normally because PCIe supports up-plugging, utilizing only the first lane"
+      - "The system fails to complete POST"
+      - "The card operates at 16 times its rated speed"
+    correctIndex: 1
+    explanation: "PCIe supports up-plugging; a smaller lane-count card (x1) works without issues in a physically larger slot (x16), negotiating 1 lane of bandwidth."
+  - id: "q5"
+    type: "single"
+    prompt: "Before pulling a dedicated graphics card upward out of a motherboard PCIe slot, what physical action is required?"
+    options:
+      - "Remove the CPU cooler"
+      - "Release or press down the plastic retention latch located at the rear of the PCIe slot"
+      - "Disconnect the CMOS battery"
+      - "Unsolder the gold contacts"
+    correctIndex: 1
+    explanation: "PCIe x16 slots feature a mechanical retention latch that hooks into the card's PCB tab. The latch must be pressed or slid open before lifting the card to avoid tearing the slot off the board."
+---
+
+Checkpoint quiz evaluating your mastery of PCIe bus architectures, graphics card power delivery, and display standards.

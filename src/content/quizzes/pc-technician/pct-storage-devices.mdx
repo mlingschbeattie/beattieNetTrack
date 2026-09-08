@@ -1,107 +1,125 @@
 ---
-title: "Storage Devices"
+title: "Storage Devices Checkpoint"
+description: "Demonstrate mastery of hard drives, SATA SSDs, M.2 NVMe architecture, RAID redundancy, and filesystem selection."
 slug: "pct-storage-devices"
-track: pc-technician
-moduleId: pct.hardware.components-identification
-order: 3
-difficulty: Beginner
+track: "pc-technician"
+moduleId: "pct.hardware.components-identification"
+order: 5
+difficulty: "Beginner"
 xp: 20
 passThreshold: 70
-tags: ["A+", "CompTIA"]
+tags: ["storage", "HDD", "SSD", "NVMe", "RAID", "A+", "CompTIA"]
+hints:
+  - "Remember: RAID 1 mirrors data across two drives, providing the capacity of one drive."
+  - "Recall that M.2 2280 indicates 22mm width and 80mm length."
+checklist:
+  - "Analyzed mechanical vs flash drive specs"
+  - "Calculated usable RAID array capacity"
+  - "Selected optimal filesystem formats"
+domains:
+  - domainId: "aplus1.hardware"
+    weight: 0.8
+  - domainId: "nocti.hardware"
+    weight: 0.2
 questions:
-  - id: q1
-    type: single
+  - id: "q1"
+    type: "single"
     prompt: "A client has an older desktop with a 5400 RPM hard drive and wants better performance. A technician suggests a 7200 RPM drive. What does the RPM rating indicate?"
     options:
-      - "A. The number of read/write operations per minute the drive can perform"
-      - "B. The rotational speed of the drive platters, which directly affects how quickly data can be accessed"
-      - "C. The number of sectors per minute read during sequential operations"
-      - "D. The drive bus speed in megabits per minute"
+      - "The number of read/write operations per minute the drive can perform"
+      - "The rotational speed of the drive platters, which directly affects how quickly data can be accessed"
+      - "The number of sectors per minute read during sequential operations"
+      - "The drive bus speed in megabits per minute"
     correctIndex: 1
-  - id: q2
-    type: single
+    explanation: "Rotational speed (RPM) determines how quickly magnetic sectors pass underneath the read/write heads; 7200 RPM provides faster read/write access than 5400 RPM."
+  - id: "q2"
+    type: "single"
     prompt: "What does S.M.A.R.T. monitoring do for storage drives?"
     options:
-      - "A. It automatically backs up data to a cloud service"
-      - "B. It monitors drive health metrics and can predict imminent failure before it occurs"
-      - "C. It optimizes the file system layout to improve read performance"
-      - "D. It encrypts drive contents using hardware-level AES encryption"
+      - "It automatically backs up data to a cloud service"
+      - "It monitors drive health metrics and can predict imminent failure before it occurs"
+      - "It optimizes the file system layout to improve read performance"
+      - "It encrypts drive contents using hardware-level AES encryption"
     correctIndex: 1
-  - id: q3
-    type: single
-    prompt: "What is the approximate maximum sequential read/write speed of a SATA SSD?"
+    explanation: "Self-Monitoring, Analysis, and Reporting Technology (S.M.A.R.T.) tracks hardware metrics like reallocated sector counts and read errors to warn of impending mechanical or flash failure."
+  - id: "q3"
+    type: "single"
+    prompt: "What is the approximate maximum sequential read/write speed bottleneck of a 2.5-inch SATA III SSD?"
     options:
-      - "A. 150 MB/s"
-      - "B. 300 MB/s"
-      - "C. 550 MB/s"
-      - "D. 3,500 MB/s"
+      - "150 MB/s"
+      - "300 MB/s"
+      - "550 MB/s"
+      - "3,500 MB/s"
     correctIndex: 2
-  - id: q4
-    type: single
+    explanation: "SATA III has a maximum theoretical bus throughput of 6 Gbps, which caps real-world sequential SSD transfers at roughly 550–600 MB/s."
+  - id: "q4"
+    type: "single"
     prompt: "A technician compares an NVMe SSD to a SATA SSD. Which statement is accurate?"
     options:
-      - "A. NVMe drives are only faster during sequential reads; SATA drives are faster for random access"
-      - "B. NVMe uses the PCIe bus and can reach speeds 5 to 7 times faster than SATA SSDs"
-      - "C. NVMe and SATA SSDs perform identically because they both use flash storage"
-      - "D. SATA SSDs are more reliable than NVMe drives for long-term storage"
+      - "NVMe drives are only faster during sequential reads; SATA drives are faster for random access"
+      - "NVMe uses the high-speed PCIe bus and can reach speeds 5 to 7 times faster than SATA SSDs"
+      - "NVMe and SATA SSDs perform identically because they both use flash storage"
+      - "SATA SSDs are more reliable than NVMe drives for long-term storage"
     correctIndex: 1
-  - id: q5
-    type: single
+    explanation: "NVMe connects directly to PCIe lanes (typically x4), bypassing legacy SATA/AHCI controller bottlenecks and achieving transfers from 3,500 MB/s (Gen 3) to over 7,000 MB/s (Gen 4)."
+  - id: "q5"
+    type: "single"
     prompt: "What do the numbers 2280 refer to in an M.2 2280 drive specification?"
     options:
-      - "A. The drive capacity in gigabytes"
-      - "B. The PCIe lane speed in MB/s"
-      - "C. The physical dimensions: 22mm wide and 80mm long"
-      - "D. The number of NAND chips multiplied by the flash generation"
+      - "The drive capacity in gigabytes"
+      - "The PCIe lane speed in MB/s"
+      - "The physical dimensions: 22mm wide and 80mm long"
+      - "The number of NAND chips multiplied by the flash generation"
     correctIndex: 2
-  - id: q6
-    type: single
+    explanation: "M.2 drive naming encodes dimensions in millimeters: the first two digits represent the width (22mm), and the remaining digits represent the length (80mm)."
+  - id: "q6"
+    type: "single"
     prompt: "A RAID 1 array uses two 2TB drives. How much usable storage does RAID 1 provide?"
     options:
-      - "A. 4TB — both drives combined"
-      - "B. 2TB — because RAID 1 mirrors data across both drives"
-      - "C. 1TB — RAID 1 reserves half of each drive for parity"
-      - "D. 3TB — one drive is used for data and half of the second for redundancy"
+      - "4TB — both drives combined"
+      - "2TB — because RAID 1 mirrors data across both drives"
+      - "1TB — RAID 1 reserves half of each drive for parity"
+      - "3TB — one drive is used for data and half of the second for redundancy"
     correctIndex: 1
-  - id: q7
-    type: single
+    explanation: "RAID 1 mirrors identical data onto both drives simultaneously. Total usable capacity equals the capacity of one drive (2TB), providing 1-drive fault tolerance."
+  - id: "q7"
+    type: "single"
     prompt: "True or False: A properly configured RAID array is an acceptable substitute for a regular data backup."
     options:
-      - "A. True"
-      - "B. False"
+      - "True"
+      - "False"
     correctIndex: 1
-  - id: q8
-    type: single
-    prompt: "A technician needs to format a 4TB external drive so that individual files larger than 4GB can be stored on it. Which file system should be used?"
+    explanation: "RAID protects against hardware drive failure, but does not protect against ransomware, accidental file deletion, or corruption. RAID is fault tolerance, not a backup."
+  - id: "q8"
+    type: "single"
+    prompt: "A technician needs to format a 4TB external drive so that individual files larger than 4GB can be stored on it and accessed on both Windows and macOS. Which file system should be used?"
     options:
-      - "A. FAT32"
-      - "B. FAT16"
-      - "C. NTFS"
-      - "D. exFAT or NTFS"
+      - "FAT32"
+      - "FAT16"
+      - "NTFS"
+      - "exFAT"
     correctIndex: 3
-  - id: q9
-    type: single
-    prompt: "A technician is partitioning a new 3TB drive for a UEFI system. Which partition table type must be used, and why?"
+    explanation: "exFAT supports files larger than 4GB and provides full native read and write capability on both Windows and macOS without third-party drivers."
+  - id: "q9"
+    type: "single"
+    prompt: "A technician is partitioning a new 3TB drive for a modern UEFI system. Which partition table type must be used, and why?"
     options:
-      - "A. MBR, because it is the only format compatible with UEFI"
-      - "B. GPT, because MBR cannot address drives larger than 2TB and does not support UEFI boot"
-      - "C. MBR, because GPT is only supported on server operating systems"
-      - "D. Either GPT or MBR — there is no difference for UEFI systems"
+      - "MBR, because it is the only format compatible with UEFI"
+      - "GPT, because MBR cannot address drives larger than 2TB and does not support UEFI boot"
+      - "MBR, because GPT is only supported on server operating systems"
+      - "Either GPT or MBR — there is no difference for UEFI systems"
     correctIndex: 1
-  - id: q10
-    type: single
+    explanation: "GUID Partition Table (GPT) supports drives larger than 2TB, allows up to 128 primary partitions, and is required for modern UEFI Secure Boot."
+  - id: "q10"
+    type: "single"
     prompt: "What does TBW (Terabytes Written) indicate about an SSD?"
     options:
-      - "A. The maximum file transfer speed the drive can sustain"
-      - "B. The total amount of data that can be written to the drive over its rated lifetime before flash cells may begin to wear out"
-      - "C. The total storage capacity of the drive"
-      - "D. The number of terabytes the drive has written since it was manufactured"
+      - "The maximum file transfer speed the drive can sustain"
+      - "The total amount of cumulative data that can be written to the drive over its rated lifetime before flash cells begin to wear out"
+      - "The total storage capacity of the drive"
+      - "The number of terabytes the drive has written since it was manufactured"
     correctIndex: 1
-domains:
-  - domainId: aplus1.hardware
-    weight: 0.8
-  - domainId: nocti.hardware
-    weight: 0.2
+    explanation: "TBW is a manufacturer endurance rating specifying the total volume of data that can be written to the NAND flash cells before endurance degradation occurs."
 ---
 
-Quiz covering Storage Devices — PC Technician unit pct-storage-devices.
+Checkpoint quiz evaluating your mastery of storage technologies, drive interfaces, RAID arrays, and filesystem partitioning.

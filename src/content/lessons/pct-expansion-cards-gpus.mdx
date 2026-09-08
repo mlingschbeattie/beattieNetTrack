@@ -1,0 +1,175 @@
+---
+title: Expansion Cards and Dedicated GPUs — PCIe Architecture, Power Delivery, and Video Interfaces
+description: Master PCIe expansion slots, dedicated GPU installation, auxiliary power delivery standards (6-pin, 8-pin, 12VHPWR), and video display interfaces.
+slug: pct-expansion-cards-gpus
+track: pc-technician
+moduleId: pct.hardware.components-identification
+order: 7
+difficulty: Beginner
+estMinutes: 25
+tags: ["GPU", "graphics card", "PCIe", "expansion card", "DisplayPort", "HDMI", "12VHPWR", "A+", "Core 1", "CompTIA"]
+sections:
+  - id: pcie-bus-and-expansion-slots
+    title: "The PCIe Bus: Physical Lane Scaling and Slot Retention"
+    keyPoints:
+      - "PCIe slots scale physically and electrically by lane count: x1, x4, x8, and x16"
+      - "The top PCIe x16 slot connects directly to dedicated CPU PCIe lanes for maximum GPU bandwidth"
+      - "PCIe retention latches must be manually unlocked before pulling a card to prevent slot damage"
+      - "PCIe is backwards and forwards compatible; smaller cards operate inside larger physical slots"
+    check:
+      - prompt: "A technician needs to install a PCIe x1 Wi-Fi card, but the motherboard only has an unused PCIe x16 slot available. Will the card function?"
+        options:
+          - "No, installing a smaller card into a larger slot causes an electrical short"
+          - "Yes, PCIe supports up-plugging; a PCIe x1 card functions normally in an x16 physical slot using 1 lane"
+          - "No, the operating system will refuse to load the driver"
+          - "Yes, but only if an external power adapter is connected"
+        correct: 1
+      - prompt: "What physical mechanism secures a heavy discrete graphics card inside the motherboard PCIe x16 slot?"
+        options:
+          - "A magnetic strip inside the slot"
+          - "A plastic or metal retention latch at the rear of the slot that must be pressed to release"
+          - "Solder joints applied during build assembly"
+          - "The CPU cooler mounting bracket"
+        correct: 1
+  - id: gpu-power-and-thermal-demands
+    title: "GPU Power Delivery: Slot Power, 8-Pin, and 12VHPWR"
+    keyPoints:
+      - "The motherboard PCIe x16 slot supplies a maximum of 75 watts of Direct Current power"
+      - "High-draw GPUs require auxiliary power: 6-pin PCIe (75W), 8-pin PCIe (150W), or 12VHPWR (up to 600W)"
+      - "The 12VHPWR 16-pin connector includes four sideband sense pins that negotiate maximum safe wattage"
+      - "Improperly seated 12VHPWR connectors can experience high electrical resistance and thermal melting"
+    check:
+      - prompt: "What is the maximum electrical power delivered to an expansion card directly through the motherboard PCIe x16 slot?"
+        options:
+          - "25 Watts"
+          - "75 Watts"
+          - "150 Watts"
+          - "300 Watts"
+        correct: 1
+      - prompt: "Why must a technician ensure that a modern 12VHPWR (16-pin) GPU power cable is seated completely flush with zero bend radius near the connector?"
+        options:
+          - "Because the cable carries high-frequency radio waves"
+          - "Because high current across poor contact pin connections causes localized thermal resistance and connector melting"
+          - "Because the cable will fall out of the case"
+          - "Because the GPU fan will spin backward"
+        correct: 1
+  - id: video-interfaces-and-add-in-cards
+    title: "Display Interfaces (DisplayPort vs. HDMI) and Add-in Cards"
+    keyPoints:
+      - "DisplayPort uses packetized data transmission and supports Multi-Stream Transport (MST) monitor daisy chaining"
+      - "HDMI is ubiquitous across consumer TVs and monitors, carrying high-definition video and audio with ARC/eARC"
+      - "Monitors must be plugged into the discrete GPU ports rather than motherboard ports when a dedicated card is installed"
+      - "Expansion cards include 10GbE NICs, video capture cards, M.2 carrier cards, and sound cards"
+    check:
+      - prompt: "A client connects their monitor to the motherboard HDMI port on a PC equipped with an NVIDIA RTX 4070. The PC boots, but 3D games render at 5 frames per second. What is wrong?"
+        options:
+          - "The HDMI cable is defective"
+          - "The monitor is running on the weak CPU integrated graphics rather than the high-performance dedicated GPU"
+          - "The GPU fans are spinning too quickly"
+          - "The power supply needs to be replaced"
+        correct: 1
+      - prompt: "Which display standard supports Multi-Stream Transport (MST), allowing a technician to daisy-chain multiple independent monitors from a single port?"
+        options:
+          - "VGA"
+          - "DVI-D"
+          - "HDMI 2.0"
+          - "DisplayPort"
+        correct: 3
+domains:
+  - domainId: aplus1.hardware
+    weight: 0.8
+  - domainId: nocti.hardware
+    weight: 0.2
+---
+
+import Callout from '../../components/Callout.astro';
+
+## The Black Screen Call
+
+A customer builds their first gaming PC, plugs everything in, and hits the power button. The RGB lights illuminate, all five fans spin up, and Windows chimes. But the monitor says "No Signal."
+
+They bring the tower to your repair bench. You glance at the rear I/O shield, see the HDMI cable plugged into the motherboard's top video port, and move the cable five inches down into the dedicated graphics card's DisplayPort. You turn on the monitor — the Windows desktop appears instantly.
+
+That single mistake accounts for more new-build support calls than dead components.
+
+When a computer has a dedicated Graphics Processing Unit (GPU), the motherboard automatically disables the CPU's integrated graphics to prevent driver conflicts. If you don't know where the expansion bus lives and how display signals exit the chassis, you waste hours troubleshooting software when the fix is moving a cable.
+
+![Dedicated GPU with PCIe x16 Connector, Power Headers, and Display Ports](/images/hardware/gpu-pcie-power-ports.jpg)
+
+## The PCIe Bus: Lanes, Bandwidth, and Up-Plugging
+
+The universal highway for internal add-in cards is **Peripheral Component Interconnect Express (PCIe)**.
+
+PCIe is a high-speed, serial, point-to-point architecture. Instead of sharing a single parallel electrical bus where cards compete for bandwidth, every PCIe slot communicates over dedicated full-duplex data lanes.
+
+### Lane Scaling (x1 to x16)
+PCIe slots scale physically by the number of data transmission lanes they provide:
+
+- **PCIe x1:** A short slot carrying a single data lane. Used for internal Wi-Fi/Bluetooth adapters, sound cards, and USB port expansion cards.
+- **PCIe x4:** Mid-length slot with four lanes. Commonly used for dedicated M.2 NVMe carrier cards, 10GbE network cards, and video capture cards.
+- **PCIe x8:** Eight lanes. Used in workstation RAID controller cards and enterprise storage host bus adapters (HBAs).
+- **PCIe x16:** The longest physical slot, featuring sixteen dedicated data lanes. Delivers massive parallel throughput and is reserved primarily for high-performance dedicated graphics cards.
+
+### Direct CPU Lanes vs. Chipset Lanes
+The primary PCIe x16 slot (closest to the CPU socket) routes its sixteen lanes directly into the processor die. This provides direct silicon-to-silicon communication with minimum latency. Secondary PCIe slots route their traces through the motherboard chipset, sharing bandwidth with USB and SATA controllers.
+
+### Up-Plugging and Down-Plugging
+PCIe is dynamically backward and forward compatible. You can install a smaller card into a larger physical slot — known as **up-plugging**. If your motherboard has no free PCIe x1 slots, you can seat a PCIe x1 sound card into an empty PCIe x16 slot. The card negotiates with the motherboard to use only the first lane, operating with zero issues.
+
+<Callout type="warn">
+Before pulling an expansion card out of a PCIe slot, always push down or slide the plastic retention latch located at the rear of the slot. Yanking a card out while the latch is engaged will rip the entire plastic slot off the motherboard PCB.
+</Callout>
+
+## GPU Power Delivery: Moving Beyond Slot Limits
+
+The motherboard PCIe x16 slot delivers Direct Current power through its gold contact pins, but that power is capped at **75 watts**.
+
+Budget graphics cards designed for office workstations (like an NVIDIA T400 or AMD Radeon RX 6400) draw under 75 watts and run entirely off slot power with zero external cables required.
+
+High-performance gaming and AI rendering GPUs consume between 200 and 450+ watts under full workload. To supply that demand, power supplies deliver auxiliary +12V DC power through dedicated cables:
+
+### 6-Pin PCIe Connector
+Supplies an additional **75 watts** of +12V power.
+
+### 8-Pin PCIe Connector
+Features two additional ground/sense pins that allow the power supply to deliver **150 watts** safely. High-end cards frequently require two or three separate 8-pin cables.
+
+### 12VHPWR / 12V-2x6 (ATX 3.0 Standard)
+Modern high-power graphics cards (such as the RTX 4080 and 4090) utilize the compact **12VHPWR 16-pin connector**.
+
+This single cable delivers up to **600 watts** across twelve high-current power terminals and four small "sideband" sense pins located along the bottom. The sideband pins communicate directly between the PSU and GPU to negotiate how much wattage the cable is certified to deliver before the card draws power.
+
+<Callout type="exam">
+When installing a 12VHPWR cable, the connector must be seated completely flush into the GPU socket with zero gap. High electrical current across loose or angled pins increases electrical resistance, creating localized thermal hotspots capable of melting the connector housing.
+</Callout>
+
+## Video Interfaces: DisplayPort vs. HDMI
+
+A graphics card's primary job is converting processed frame buffers into video signals that drive displays:
+
+### DisplayPort (The Technician's Standard)
+DisplayPort transmits video and audio digitally as packetized data, similar to network traffic. Key capabilities:
+
+- **Higher Bandwidth:** DisplayPort standards (1.4 and 2.1) consistently support higher refresh rates at extreme resolutions (4K at 240Hz, 8K at 60Hz).
+- **Multi-Stream Transport (MST):** Allows a technician to daisy-chain multiple independent monitors from a single DisplayPort output on the GPU to the first monitor, and from that monitor's DP-Out port to a second monitor.
+- **Physical Latch:** DisplayPort connectors feature mechanical locking hooks that prevent the cable from being accidentally yanked out of the card.
+
+### HDMI (High-Definition Multimedia Interface)
+Ubiquitous across TVs, projectors, and consumer monitors:
+
+- Carries uncompressed digital video and multi-channel audio on a single cable.
+- **Consumer Electronics Control (CEC):** Allows devices like gaming consoles to turn on the connected TV automatically.
+- **Audio Return Channel (ARC / eARC):** Sends audio back from a TV to an audio receiver or soundbar.
+
+## Expansion Cards Beyond Graphics
+
+While GPUs dominate the x16 slot, technicians routinely install add-in cards (AICs) to expand capabilities:
+
+- **Dedicated Network Interface Cards (NICs):** Adding 10-Gigabit Ethernet (10GbE) or 2.5GbE SFP+ fiber ports for high-speed server links.
+- **M.2 NVMe Carrier Cards:** Add-in cards that house multiple M.2 NVMe SSDs in a single PCIe slot, often configured in high-speed hardware RAID 0 arrays for video production.
+- **Video Capture Cards:** Hardware encoders that capture raw HDMI feeds from cameras or consoles with zero latency.
+- **Legacy Interface Cards:** Adding serial (RS-232) COM ports or parallel ports to modern desktops so clients can operate legacy industrial CNC machinery or lab equipment.
+
+## Key Terms
+
+PCI Express (PCIe) · PCIe lanes (x1, x4, x8, x16) · dedicated GPU · PCIe slot power (75W) · 6-pin PCIe (75W) · 8-pin PCIe (150W) · 12VHPWR (600W) · sideband sense pins · DisplayPort · HDMI · Multi-Stream Transport (MST) · daisy chaining · up-plugging · retention latch · Add-in Card (AIC) · 10GbE NIC · capture card

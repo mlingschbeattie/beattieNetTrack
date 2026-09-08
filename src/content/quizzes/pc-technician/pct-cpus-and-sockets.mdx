@@ -1,0 +1,75 @@
+---
+title: "CPUs and Sockets Checkpoint"
+description: "Demonstrate mastery in socket architectures (LGA vs. PGA), CPU physical alignment, cache hierarchies, and thermal mounting."
+slug: "pct-cpus-and-sockets"
+track: "pc-technician"
+moduleId: "pct.hardware.components-identification"
+order: 3
+difficulty: "Beginner"
+estMinutes: 10
+passThreshold: 70
+tags: ["CPU", "sockets", "LGA", "PGA", "checkpoint", "hardware"]
+hints:
+  - "Remember: LGA puts pins in the socket (flat pads on CPU); PGA puts pins on the CPU chip."
+  - "Look for visual keys: the gold triangle on the corner must match the socket marking."
+checklist:
+  - "Differentiated LGA and PGA mechanics"
+  - "Identified alignment key markings"
+  - "Diagnosed display failures caused by headless CPUs"
+domains:
+  - domainId: "aplus1.hardware"
+    weight: 1
+questions:
+  - id: "q1"
+    type: "single"
+    prompt: "You are unboxing a desktop CPU and observe that the underside has zero pins, featuring only an array of flat gold contact pads. Which socket type does this processor require?"
+    options:
+      - "Pin Grid Array (PGA)"
+      - "Land Grid Array (LGA)"
+      - "Ball Grid Array (BGA)"
+      - "Slot A"
+    correctIndex: 1
+    explanation: "Land Grid Array (LGA) chips have smooth flat contact pads (lands) on the processor, while the spring pins are located in the motherboard socket."
+  - id: "q2"
+    type: "single"
+    prompt: "A technician attempts to place a CPU into an open ZIF socket. The processor does not seat flush and wobbles when touched. What is the mandatory next step?"
+    options:
+      - "Press down firmly on the center of the CPU until it snaps in"
+      - "Tighten the cooler retention bracket to force it flat"
+      - "Lift the CPU straight out, check corner triangle alignment and notch keys, and reseat without force"
+      - "Apply a thick layer of thermal paste to level the surface"
+    correctIndex: 2
+    explanation: "Zero Insertion Force (ZIF) sockets require zero downward pressure. If the processor does not seat completely flush under its own weight, the orientation is misaligned; forcing it will destroy socket pins."
+  - id: "q3"
+    type: "single"
+    prompt: "Which component sits directly between the raw silicon processor die and the copper base of the CPU cooler to protect the die and distribute heat?"
+    options:
+      - "The Integrated Heat Spreader (IHS)"
+      - "The Chipset"
+      - "The CMOS Battery"
+      - "The PCIe Retention Hook"
+    correctIndex: 0
+    explanation: "The Integrated Heat Spreader (IHS) is the flat nickel-plated copper lid on top of the CPU that protects the fragile silicon die and spreads heat across a larger surface area."
+  - id: "q4"
+    type: "single"
+    prompt: "A student builds a new desktop with an Intel Core i5-14400F processor. When connecting the monitor to the motherboard's integrated DisplayPort, the screen remains black. What is the problem?"
+    options:
+      - "The motherboard DisplayPort cable is broken"
+      - "The 'F' suffix designates a CPU without integrated graphics; the monitor must be plugged into a dedicated GPU"
+      - "The CPU cooler fan is spinning too slowly"
+      - "The power supply is missing its 24-pin connector"
+    correctIndex: 1
+    explanation: "Intel processors with an 'F' suffix lack an Integrated Graphics Processing Unit (iGPU), disabling the motherboard's video ports and requiring a dedicated PCIe graphics card."
+  - id: "q5"
+    type: "single"
+    prompt: "Why is thermal paste applied between the CPU Integrated Heat Spreader and the heatsink base before attaching the cooler?"
+    options:
+      - "To permanently bond the cooler to the motherboard"
+      - "To fill microscopic surface imperfections and displace air pockets that insulate heat"
+      - "To provide electrical insulation between the CPU and cooler"
+      - "To cool the CPU through a chemical evaporation reaction"
+    correctIndex: 1
+    explanation: "Microscopic pits and scratches on metal surfaces trap air, which acts as a thermal insulator. Thermal paste fills these voids to create an unbroken conductive heat bridge."
+---
+
+Checkpoint quiz evaluating your practical knowledge of CPU socket architectures, alignment mechanisms, and thermal mounting procedures.

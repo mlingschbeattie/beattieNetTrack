@@ -1,0 +1,177 @@
+---
+title: Central Processing Units (CPUs) and Sockets — Architecture, Mounting, and Sockets
+description: Master CPU socket architecture (LGA vs. PGA), multi-core processing, cache hierarchies, zero-insertion force mounting, and safe thermal installation tradecraft.
+slug: pct-cpus-and-sockets
+track: pc-technician
+moduleId: pct.hardware.components-identification
+order: 3
+difficulty: Beginner
+estMinutes: 25
+tags: ["CPU", "processor", "LGA", "PGA", "sockets", "cache", "A+", "Core 1", "CompTIA"]
+sections:
+  - id: socket-architectures-lga-pga
+    title: "Socket Architectures: LGA vs. PGA vs. BGA"
+    keyPoints:
+      - "LGA places spring-loaded contact pins in the motherboard socket; PGA places gold pins directly on the CPU underside"
+      - "Intel desktop platforms and AMD AM5 use LGA; legacy AMD AM4 platforms use PGA"
+      - "BGA (Ball Grid Array) solders the processor permanently to the motherboard, common in laptops and gaming consoles"
+      - "Zero Insertion Force (ZIF) sockets use a mechanical load arm to secure the CPU without downward force"
+    check:
+      - prompt: "A technician drops a CPU into an LGA socket and finds that several pins inside the motherboard socket are bent. Which manufacturer architecture does this represent?"
+        options:
+          - "An Intel or modern AMD AM5 Land Grid Array (LGA) motherboard"
+          - "An older AMD AM4 Pin Grid Array (PGA) motherboard"
+          - "A soldered Ball Grid Array (BGA) system"
+          - "A Slot 1 legacy cartridge system"
+        correct: 0
+      - prompt: "What does the acronym 'ZIF' signify in CPU socket mechanical design?"
+        options:
+          - "Zero Internal Friction"
+          - "Zero Insertion Force — the processor drops freely into the socket before the lever locks it"
+          - "Zone Isolated Frequency"
+          - "Zinc Insulated Frame"
+        correct: 1
+  - id: cpu-internal-architecture
+    title: "Cores, Threads, Cache, and Integrated Graphics"
+    keyPoints:
+      - "Physical cores execute independent instruction streams; multithreading (SMT/Hyper-Threading) creates two logical threads per core"
+      - "L1, L2, and L3 cache memory provides ultra-low latency data storage directly on the CPU die"
+      - "CPUs with integrated graphics (iGPUs) output video directly through motherboard ports without requiring a discrete graphics card"
+      - "Intel 'F' series and specialized workstation CPUs lack integrated graphics and require a dedicated GPU to display video"
+    check:
+      - prompt: "A custom desktop built with an Intel Core i7-14700F powers on, but the monitor attached to the motherboard HDMI port displays no image. What is the root cause?"
+        options:
+          - "The CPU is overheating"
+          - "The 'F' suffix indicates this CPU has no integrated graphics; video must be connected to a discrete graphics card"
+          - "The HDMI cable is plugged in backward"
+          - "The BIOS requires a password"
+        correct: 1
+      - prompt: "Which level of CPU cache is the largest in capacity and shared across all physical processor cores?"
+        options:
+          - "L1 cache"
+          - "L2 cache"
+          - "L3 cache"
+          - "System RAM"
+        correct: 2
+  - id: cpu-installation-tradecraft
+    title: "Mounting Tradecraft: Alignment Keys and Thermal Paste"
+    keyPoints:
+      - "Gold alignment triangles in one corner of the CPU must match the indicator mark etched into the socket frame"
+      - "Thermal Interface Material (TIM) fills microscopic imperfections between the CPU heat spreader and cooler base"
+      - "Uneven cooler mounting pressure can prevent memory channels from detecting RAM sticks"
+    check:
+      - prompt: "What visual indicator ensures that a square or rectangular CPU is oriented correctly before seating it into a socket?"
+        options:
+          - "A gold triangle printed on one corner of the CPU that aligns with a matching socket mark"
+          - "The barcode on the cooler"
+          - "The orientation of the computer power supply"
+          - "The direction of the SATA cables"
+        correct: 0
+      - prompt: "Why is applying the correct amount of thermal paste between the CPU Integrated Heat Spreader (IHS) and the heatsink critical?"
+        options:
+          - "Thermal paste glues the cooler down permanently"
+          - "Thermal paste eliminates microscopic air pockets that would otherwise act as thermal insulators"
+          - "Thermal paste powers the CPU cooling fan"
+          - "Thermal paste cleans dirt off the silicon"
+        correct: 1
+domains:
+  - domainId: aplus1.hardware
+    weight: 0.8
+  - domainId: nocti.hardware
+    weight: 0.2
+---
+
+import Callout from '../../components/Callout.astro';
+
+## The Bent Pin Disaster
+
+Drop a single screw onto an open motherboard socket and you can destroy a four-hundred-dollar board in half a second. Drop an older AMD processor onto a bench and you bend ten gold pins on the underside of the chip.
+
+The Central Processing Unit (CPU) is the most delicate component you will ever touch in this trade. It executes billions of calculations every second, routes high-speed PCIe lanes directly to your primary storage and graphics cards, and generates enough concentrated thermal energy to boil water within ten seconds if uncooled.
+
+Before you pop a retention lever or apply a dot of thermal paste, you must know what socket architecture you are looking at and how it mechanically protects itself.
+
+![LGA vs. PGA CPU Socket Comparison](/images/hardware/cpu-lga-vs-pga-comparison.jpg)
+
+## LGA vs. PGA vs. BGA: Where Do the Pins Live?
+
+Every processor must make hundreds or thousands of individual electrical connections with the motherboard. Across modern hardware, you will encounter three fundamental socket architectures:
+
+### Land Grid Array (LGA)
+In an LGA design, **the fragile gold spring pins live in the motherboard socket itself**. The underside of the CPU is completely flat, covered only by a grid of smooth, gold contact pads (lands).
+
+Intel has used LGA exclusively for desktop platforms for over twenty years (LGA 1200, LGA 1700, LGA 1851). AMD transitioned its mainstream desktop platform to LGA with Socket AM5 (Ryzen 7000, 8000, and 9000 series), having previously used LGA only on enterprise EPYC and Threadripper chips.
+
+The advantage of LGA is durability for the processor: if an LGA CPU slips out of your fingers onto a soft mat, there are no pins on the chip to bend. The disadvantage is that the motherboard socket is extraordinarily vulnerable. Touching the socket pins with your finger or catching a cotton swab on them will ruin the motherboard.
+
+### Pin Grid Array (PGA)
+In a PGA design, **the gold pins live on the underside of the CPU**. The motherboard socket is a flat plastic grid containing hundreds of tiny receiver holes.
+
+AMD's legendary Socket AM4 (Ryzen 1000 through 5000 series) used PGA. When you lift a PGA processor out of its packaging, you see a dense forest of over one thousand gold pins protruding from the bottom.
+
+PGA chips require extreme care during handling. If a pin bends, a technician must carefully nudge it straight using a mechanical pencil tip or a razor blade under a magnifying lamp. If a pin snaps off, the processor is dead.
+
+### Ball Grid Array (BGA)
+In a BGA design, the processor has no pins and no socket. It is permanently soldered directly onto the motherboard PCB using microscopic balls of solder. BGA is standard in laptops, smartphones, gaming consoles, and ultra-thin compact devices where socket height would make the chassis too thick. When a BGA CPU dies, the entire motherboard gets replaced.
+
+| Socket Type | Pin Location | CPU Underside | Dominant Platforms | Field Replaceable? |
+|:---:|:---:|:---:|:---:|:---:|
+| **LGA** | On the motherboard socket | Flat gold contact pads | Intel Core series, AMD AM5 | Yes (unlatch socket) |
+| **PGA** | On the processor itself | Hundreds of gold pins | AMD AM4, legacy mobile | Yes (lift ZIF lever) |
+| **BGA** | No pins (solder balls) | Soldered directly to PCB | Laptops, tablets, consoles | No (board-level repair) |
+
+## The ZIF Socket and Alignment Keys
+
+Every desktop CPU socket uses a **Zero Insertion Force (ZIF)** mechanism.
+
+When the socket retention arm is lifted, the internal clamping plates slide open. A correctly aligned CPU drops into the socket under its own weight with zero downward force.
+
+If a CPU does not seat completely flush into the socket, **do not push down**. Pushing on an unseated processor will crush LGA socket pins or shear PGA pins instantly.
+
+To guarantee correct orientation, processors and sockets feature mechanical keys:
+1. **The Corner Triangle:** A small gold triangle printed on one corner of the CPU aligns with a matching triangle embossed on the motherboard socket frame.
+2. **Keying Notches:** The edges of the CPU PCB contain semi-circular notches that match plastic tabs inside the socket housing, making backward installation physically impossible without crushing the frame.
+
+<Callout type="warn">
+Never apply downward pressure when placing a CPU into a socket. If the processor rocks or sits at an angle, lift it straight out, verify the gold triangle alignment, and gently drop it in again. It should sit completely flat before you lower the retention arm.
+</Callout>
+
+## Cores, Threads, and Cache Architecture
+
+A modern processor is not a single computing engine; it is a complex cluster of specialized silicon blocks:
+
+### Physical Cores vs. Logical Threads
+A **physical core** is an independent silicon processing unit with its own arithmetic logic units (ALUs), floating-point units, and hardware registers. A 16-core CPU contains sixteen independent processor engines on the die.
+
+**Simultaneous Multi-Threading (SMT)** — branded as **Hyper-Threading** by Intel — allows a single physical core to maintain two separate architectural execution pipelines. When one thread is waiting for data to arrive from system RAM, the core instantly executes instructions from the second thread. This presents each physical core to the operating system as two **logical processors** (e.g., an 8-core CPU with SMT presents as 16 logical threads in Windows Task Manager).
+
+### Cache Hierarchy: L1, L2, and L3
+System RAM is fast, but communicating across motherboard copper traces takes dozens of clock cycles. To keep execution pipelines full, CPUs integrate ultra-fast Static RAM (SRAM) cache directly onto the silicon die:
+
+- **L1 Cache:** The fastest and smallest memory in the computer (typically 32KB to 64KB per core). Operates at the core's clock speed with virtually zero latency. Split into L1 Instruction and L1 Data.
+- **L2 Cache:** Dedicated to each core, larger than L1 (typically 1MB to 2MB per core), providing a high-speed buffer for data that overflows L1.
+- **L3 Cache:** The largest cache tier (typically 32MB to 96MB+), shared dynamically across all cores on the processor die. AMD's "X3D" gaming processors stack an extra 64MB of 3D vertical SRAM directly on top of the CPU core die, drastically cutting memory latency for gaming workloads.
+
+## The Integrated Heat Spreader (IHS) and Thermal Installation
+
+The mirror-finish metal lid on top of a desktop CPU is the **Integrated Heat Spreader (IHS)**. It protects the fragile silicon die underneath and spreads concentrated heat over a broad nickel-plated copper surface.
+
+Even though the IHS and the copper base of a cooler look perfectly flat, at a microscopic level both surfaces are full of pits and scratches. Air trapped inside those microscopic voids acts as a thermal insulator.
+
+Applying a small pea-sized or five-dot pattern of **Thermal Interface Material (TIM / thermal paste)** fills those voids, creating an unbroken bridge of thermal conduction from the IHS to the heatsink.
+
+When tightening CPU cooler screws, always tighten in a diagonal criss-cross (X) pattern, turning each screw two rotations at a time. This applies even pressure across the socket. Uneven mounting pressure can tilt the CPU slightly in an LGA socket, causing spring pins to lose contact with memory traces and making the system fail to detect half your installed RAM.
+
+## Integrated Graphics vs. Headless Processors
+
+Many desktop processors feature an onboard **Integrated Graphics Processing Unit (iGPU)** integrated directly onto the silicon die. When an iGPU is present, the motherboard's rear HDMI and DisplayPort outputs function out of the box without requiring a dedicated graphics card.
+
+However, both major manufacturers sell "headless" processors with the iGPU disabled:
+
+Intel identifies these with an **"F" suffix** (e.g., Core i5-13400F, Core i7-14700F).
+
+If you build an office PC using an "F" series processor and plug the monitor into the motherboard's HDMI port, you get a black screen and a motherboard VGA error LED. A system built with a headless CPU requires a discrete graphics card to display an image.
+
+## Key Terms
+
+Central Processing Unit (CPU) · LGA (Land Grid Array) · PGA (Pin Grid Array) · BGA (Ball Grid Array) · ZIF socket · alignment triangle · keying notch · physical core · logical thread · SMT (Simultaneous Multi-Threading) · Hyper-Threading · L1 cache · L2 cache · L3 cache · Integrated Heat Spreader (IHS) · Thermal Interface Material (TIM) · thermal paste · thermal throttling · integrated GPU (iGPU) · headless CPU

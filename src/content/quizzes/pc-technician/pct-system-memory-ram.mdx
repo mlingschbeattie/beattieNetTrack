@@ -1,0 +1,75 @@
+---
+title: "System Memory (RAM) Checkpoint"
+description: "Demonstrate mastery in identifying DDR generations, notch alignment, pin counts, voltage ratings, and dual-channel memory configurations."
+slug: "pct-system-memory-ram"
+track: "pc-technician"
+moduleId: "pct.hardware.components-identification"
+order: 4
+difficulty: "Beginner"
+estMinutes: 10
+passThreshold: 70
+tags: ["RAM", "DDR3", "DDR4", "DDR5", "checkpoint", "hardware"]
+hints:
+  - "Recall the notch positions: DDR3 is offset toward the side, DDR4 and DDR5 are near center but offset in opposite directions."
+  - "Remember the formula: Transfer Rate (MT/s) multiplied by 8 equals PC Module Bandwidth (MB/s)."
+checklist:
+  - "Identified DDR physical characteristics"
+  - "Calculated module transfer bandwidth"
+  - "Configured dual-channel memory slots"
+domains:
+  - domainId: "aplus1.hardware"
+    weight: 1
+questions:
+  - id: "q1"
+    type: "single"
+    prompt: "You are sorting unmarked RAM modules on a workbench. You notice a 240-pin desktop DIMM with a completely flat bottom contact edge and a key notch strongly offset toward one side. What generation is this stick?"
+    options:
+      - "DDR5"
+      - "DDR4"
+      - "DDR3"
+      - "DDR2"
+    correctIndex: 2
+    explanation: "DDR3 uses 240 pins, a completely flat contact edge (unlike the curved edge of DDR4/DDR5), and a key notch noticeably offset toward one side."
+  - id: "q2"
+    type: "single"
+    prompt: "A technician purchases a memory stick labeled 'PC4-21300'. What is the effective transfer rate of this module?"
+    options:
+      - "DDR4-2133 MT/s"
+      - "DDR4-2666 MT/s"
+      - "DDR4-3200 MT/s"
+      - "DDR4-3600 MT/s"
+    correctIndex: 1
+    explanation: "Divide the PC module bandwidth by 8 bytes: 21,300 / 8 ≈ 2,666 MT/s (DDR4-2666)."
+  - id: "q3"
+    type: "single"
+    prompt: "What is the primary technical function of the key notch cut into the gold edge contacts of a RAM module?"
+    options:
+      - "To provide a grounding pathway for static electricity"
+      - "To mechanically prevent installing the wrong DDR generation or reversing the stick in the socket"
+      - "To allow cooling air to reach the socket pins"
+      - "To lock the stick into place without retention clips"
+    correctIndex: 1
+    explanation: "The key notch aligns with a physical plastic bridge in the motherboard slot, preventing catastrophic electrical shorts from reverse insertion or incompatible voltages."
+  - id: "q4"
+    type: "single"
+    prompt: "When building a new system with a four-slot motherboard and two matching 16GB DDR5 sticks, why should you install the modules in slots 2 and 4 (A2 and B2) rather than slots 1 and 2?"
+    options:
+      - "Slots 1 and 2 cannot supply 1.1 volts"
+      - "Slots 2 and 4 enable dual-channel memory bandwidth across two independent 64-bit channels while optimizing signal trace lengths"
+      - "Slots 1 and 2 are reserved exclusively for optical drives"
+      - "Slots 2 and 4 disable CPU overclocking"
+    correctIndex: 1
+    explanation: "Slots 2 and 4 (A2 and B2) connect to Channels A and B respectively, doubling memory bus width to 128 bits and providing optimal trace signal integrity on daisy-chain boards."
+  - id: "q5"
+    type: "single"
+    prompt: "Which memory generation relocated the voltage regulator module (VRM) from the motherboard directly onto the RAM stick via an onboard Power Management IC (PMIC) operating at 1.1V?"
+    options:
+      - "DDR3"
+      - "DDR4"
+      - "DDR5"
+      - "SDR SDRAM"
+    correctIndex: 2
+    explanation: "DDR5 introduced on-die power management with an onboard PMIC operating at a nominal 1.1V, improving power efficiency and signal purity at high transfer speeds."
+---
+
+Checkpoint quiz evaluating your practical mastery of RAM generations, physical notch identification, and dual-channel architecture.

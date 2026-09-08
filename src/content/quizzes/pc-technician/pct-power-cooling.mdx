@@ -1,107 +1,125 @@
 ---
-title: "Power and Cooling"
+title: "Power and Cooling Checkpoint"
+description: "Demonstrate mastery of power supply rails, 80 PLUS efficiency, modular cabling, thermal paste application, and airflow dynamics."
 slug: "pct-power-cooling"
-track: pc-technician
-moduleId: pct.hardware.components-identification
-order: 4
-difficulty: Beginner
+track: "pc-technician"
+moduleId: "pct.hardware.components-identification"
+order: 6
+difficulty: "Beginner"
 xp: 20
 passThreshold: 70
-tags: ["A+", "CompTIA"]
+tags: ["PSU", "power supply", "cooling", "thermal paste", "airflow", "80 PLUS", "A+", "CompTIA"]
+hints:
+  - "Remember that the +12V rail handles heavy loads like CPUs and GPUs."
+  - "Recall that positive pressure pushes dust out of unfiltered case seams."
+checklist:
+  - "Identified DC power rails"
+  - "Evaluated 80 PLUS efficiency tiers"
+  - "Calculated airflow pressure dynamics"
+domains:
+  - domainId: "aplus1.hardware"
+    weight: 0.8
+  - domainId: "nocti.hardware"
+    weight: 0.2
 questions:
-  - id: q1
-    type: single
+  - id: "q1"
+    type: "single"
     prompt: "Which voltage rail in a power supply delivers the most power and is the primary supply for the CPU and GPU?"
     options:
-      - "A. +3.3V"
-      - "B. +5V"
-      - "C. -12V"
-      - "D. +12V"
+      - "+3.3V"
+      - "+5V"
+      - "-12V"
+      - "+12V"
     correctIndex: 3
-  - id: q2
-    type: single
-    prompt: "A technician is recommending a PSU for a system. The total calculated component power draw is 380W. What is the recommended minimum PSU wattage?"
+    explanation: "The +12V rail handles the heaviest electrical draw in modern systems, delivering dedicated power to the CPU (via EPS 8-pin) and GPU (via PCIe cables)."
+  - id: "q2"
+    type: "single"
+    prompt: "A technician is recommending a PSU for a system with a calculated 380W total component load. What is the recommended minimum PSU wattage to optimize efficiency and headroom?"
     options:
-      - "A. 380W — exactly matching the load is optimal"
-      - "B. 400W — a small 20W buffer is sufficient"
-      - "C. 550W to 650W — components should run at 50-80% of PSU capacity for efficiency and headroom"
-      - "D. 1000W — always use the highest wattage available"
+      - "380W — exactly matching the load is optimal"
+      - "400W — a small 20W buffer is sufficient"
+      - "550W to 650W — components should run at 50% to 80% of capacity for peak efficiency"
+      - "1000W — always use the highest wattage available"
     correctIndex: 2
-  - id: q3
-    type: single
-    prompt: "What is the correct order of 80 PLUS efficiency ratings from lowest to highest?"
+    explanation: "Power supplies achieve peak efficiency and acoustic quietness when operating between 50% and 80% load capacity. A 550W–650W PSU provides adequate overhead for transient power spikes."
+  - id: "q3"
+    type: "single"
+    prompt: "What is the correct sequence of 80 PLUS efficiency certification ratings from lowest efficiency to highest efficiency?"
     options:
-      - "A. White, Bronze, Silver, Gold, Platinum, Titanium"
-      - "B. Bronze, Silver, Gold, Platinum, Titanium, Diamond"
-      - "C. Standard, Basic, Plus, Premium, Elite"
-      - "D. Silver, Gold, Platinum, Titanium, Diamond"
+      - "White (Standard), Bronze, Silver, Gold, Platinum, Titanium"
+      - "Bronze, Silver, Gold, Platinum, Titanium, Diamond"
+      - "Standard, Basic, Plus, Premium, Elite"
+      - "Silver, Gold, Platinum, Titanium, Diamond"
     correctIndex: 0
-  - id: q4
-    type: single
-    prompt: "What is the primary advantage of a fully modular power supply over a non-modular unit?"
+    explanation: "80 PLUS tiers progress from Standard (White, 80%), Bronze (85%), Silver (88%), Gold (90%), Platinum (92%), to Titanium (94% at 50% load)."
+  - id: "q4"
+    type: "single"
+    prompt: "What is the primary operational advantage of a fully modular power supply over a non-modular unit?"
     options:
-      - "A. Modular PSUs deliver higher wattage than non-modular units of the same rating"
-      - "B. All cables are detachable, reducing cable clutter and improving airflow inside the case"
-      - "C. Modular PSUs are more efficient because unused cables do not draw power"
-      - "D. Non-modular PSUs are only compatible with older motherboards"
+      - "Modular PSUs deliver higher wattage than non-modular units of the same rating"
+      - "All cables are detachable, allowing technicians to connect only necessary runs to eliminate clutter and optimize airflow"
+      - "Modular PSUs are more efficient because unused sockets do not draw standby power"
+      - "Non-modular PSUs are only compatible with older legacy motherboards"
     correctIndex: 1
-  - id: q5
-    type: single
-    prompt: "What does the 4-pin or 8-pin EPS connector on a motherboard provide?"
+    explanation: "Fully modular power supplies allow you to plug in only the exact cables required by your hardware, removing rats' nests from the case and improving internal airflow."
+  - id: "q5"
+    type: "single"
+    prompt: "What does the 4-pin or 8-pin EPS connector located near the top corner of a motherboard provide?"
     options:
-      - "A. Power to the PCIe x16 slot for the GPU"
-      - "B. Auxiliary +12V power dedicated to the CPU voltage regulator circuit"
-      - "C. Power to the front panel USB ports"
-      - "D. Backup power to the CMOS circuit when the main PSU is off"
+      - "Power to the PCIe x16 slot for the GPU"
+      - "Auxiliary +12V power dedicated to the CPU voltage regulator circuit"
+      - "Power to the front panel USB ports"
+      - "Backup power to the CMOS battery circuit when AC power is unplugged"
     correctIndex: 1
-  - id: q6
-    type: single
-    prompt: "When applying thermal paste to a CPU, what is the correct amount to apply?"
+    explanation: "The 8-pin EPS (or 4-pin ATX12V) connector delivers dedicated +12V power directly to the motherboard's VRM circuitry supplying the processor."
+  - id: "q6"
+    type: "single"
+    prompt: "When applying thermal paste to a modern desktop CPU before installing a cooler, what is the recommended amount?"
     options:
-      - "A. Cover the entire IHS surface with a thick, even coat"
-      - "B. Apply a pea-sized or rice grain-sized amount in the center of the IHS"
-      - "C. Apply a thin line across the full length of the IHS"
-      - "D. Apply as little as possible — a single drop the size of a pin head"
+      - "Cover the entire IHS surface with a thick, heavy coat"
+      - "Apply a small pea-sized or rice grain-sized dot in the center of the IHS"
+      - "Apply a thin line along the perimeter edges only"
+      - "Apply a drop the size of a pin head"
     correctIndex: 1
-  - id: q7
-    type: single
-    prompt: "How do you determine which direction a case fan will push or pull air?"
+    explanation: "A pea-sized or rice-grain-sized dot in the center spreads evenly across the die under mounting bracket pressure, eliminating air pockets without overflowing onto socket circuits."
+  - id: "q7"
+    type: "single"
+    prompt: "How can a technician physically determine the direction a case fan will blow air without powering on the system?"
     options:
-      - "A. Fans always blow air toward the side with the sticker"
-      - "B. Air flows through the fan frame toward the label side, so the label side indicates the direction air exits"
-      - "C. Air is always drawn from front to back regardless of fan orientation"
-      - "D. The fan direction is always printed as an arrow on the frame"
+      - "Fans always blow air toward the side with the open blades"
+      - "Air flows through the fan frame toward the motor hub and label side, often indicated by an embossed arrow on the frame"
+      - "Air is always drawn from top to bottom regardless of orientation"
+      - "Fan blade color dictates flow direction"
     correctIndex: 1
-  - id: q8
-    type: single
-    prompt: "A system is running fine under light load but shuts down abruptly after a few minutes of gaming. Which condition is most likely causing this?"
+    explanation: "Fans exhaust air toward the structural motor hub struts and label side. Most fan frames also feature embossed arrows showing blade rotation and airflow direction."
+  - id: "q8"
+    type: "single"
+    prompt: "A system runs normally during office tasks but abruptly shuts down after five minutes of heavy 3D rendering. What is the most likely cause?"
     options:
-      - "A. The PSU has too much wattage headroom"
-      - "B. The hard drive is entering emergency read-only mode"
-      - "C. Thermal throttling has failed and the CPU or GPU hit a critical temperature, triggering a protective shutdown"
-      - "D. The RAM has filled and is swapping to disk, causing an overload"
+      - "The PSU has excessive wattage headroom"
+      - "The SSD is entering read-only mode"
+      - "Thermal throttling failed to maintain safe temperatures, triggering an emergency thermal shutdown"
+      - "The RAM has filled and is swapping to disk"
     correctIndex: 2
-  - id: q9
-    type: single
-    prompt: "True or False: A technician should open a failed power supply to inspect or repair internal components."
+    explanation: "Abrupt shutdowns under sustained thermal load occur when the CPU or GPU silicon reaches critical temperature limits (typically 100°C–105°C), forcing hardware shutdown to prevent permanent damage."
+  - id: "q9"
+    type: "single"
+    prompt: "True or False: A technician should open the metal chassis of a failed power supply to inspect or discharge internal capacitors."
     options:
-      - "A. True"
-      - "B. False"
+      - "True"
+      - "False"
     correctIndex: 1
-  - id: q10
-    type: single
-    prompt: "A build has more intake fans than exhaust fans, creating positive pressure inside the case. What is the benefit of positive pressure?"
+    explanation: "High-voltage capacitors inside a power supply store lethal electrical charges even days after being disconnected from AC wall power. Never open a power supply."
+  - id: "q10"
+    type: "single"
+    prompt: "A PC case is configured with three filtered front intake fans and one rear exhaust fan. What operational benefit does this positive pressure create?"
     options:
-      - "A. Components run cooler because more air is being pushed out"
-      - "B. Positive pressure reduces dust accumulation because air exits through filtered intakes rather than being drawn through unfiltered gaps"
-      - "C. Positive pressure increases GPU clock speeds through improved cooling"
-      - "D. There is no practical benefit — fan count should always be balanced equally"
+      - "Components run cooler because more hot air is trapped"
+      - "Positive pressure forces air out through unsealed cracks and seams, preventing unfiltered dust from being drawn in"
+      - "Positive pressure increases GPU clock speeds"
+      - "There is no benefit; fan count must always be equal"
     correctIndex: 1
-domains:
-  - domainId: aplus1.hardware
-    weight: 0.8
-  - domainId: nocti.hardware
-    weight: 0.2
+    explanation: "Positive pressure (more intake CFM than exhaust CFM) forces air outward through seams, screw holes, and port cutouts, keeping dust from being sucked in through unfiltered openings."
 ---
 
-Quiz covering Power and Cooling — PC Technician unit pct-power-cooling.
+Checkpoint quiz evaluating your mastery of power supplies, voltage rails, cooling systems, and chassis airflow dynamics.
