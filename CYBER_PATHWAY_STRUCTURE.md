@@ -245,34 +245,37 @@ Existing lessons cluster hard in Threats and Operations. The gaps:
 
 ---
 
-## 4) The 4514 Performance Component — Highest Priority in This Document
+## 4) The 4514 Performance Component — Deferred
 
 NOCTI 4514 is the credential **students must pass** under CIP 11.0901, and it includes a
 2-hour **performance** assessment carrying its own score. Nothing in the repo targets it.
 
-This is the largest gap in the whole system: the only graded component of the program's
-accountability credential, with zero coverage, in a repo that already has a working
-`steps` lab engine well suited to it.
+**Deferred by instructor decision, 2026-09-08. Do not build against the task list below.**
+
+> ⚠️ **The tasks below are the blueprint's "Sample Job" section from the 2016 document. They
+> are illustrative, not the actual jobs administered.** The instructor, who proctors this
+> assessment, has confirmed the real jobs differ. An earlier draft of this document treated
+> them as the specification and proposed building labs directly against them — that was wrong,
+> and it is exactly the kind of confident inference from a stale public document that should
+> be checked against someone who administers the thing.
+>
+> Before any performance-assessment work: get the current job descriptions from the
+> instructor or from current NOCTI proctor materials, not from this table.
 
 | Job | Weight | Task |
 |---|---|---|
 | 1 | 39% | Select and connect equipment for a simple two-workstation LAN; assign a private IPv4 Class C address and subnet; record results; verify IP connectivity |
 | 2 | 61% | Name workstations; join workgroup `NOCTI`; create users; create folders; create a share; grant permissions; access-test; install a plug-and-play printer, set default, share, and print to verify |
 
-Both map cleanly to the existing `steps` lab shape (`LabRunner` with exact/oneOf/regex/choice
-validators), which the handoff notes is the preferred and most reliable lab type.
+What is still safe to take from this: the *skill areas* the performance component exercises —
+private addressing and subnetting, workgroup membership, user and share creation, NTFS
+permissions, printer installation and verification — are core A+ and Net+ content regardless
+of how the actual jobs are worded. Those belong on `pc-technician` and `network-engineer` on
+their own merits. What must not be inferred is the specific job structure, weighting, or task
+sequence.
 
-Proposed: two labs on `network-engineer`, mirroring the job structure and weighting, plus a
-combined dry-run that runs both under time to rehearse the real sitting.
-
-Every skill here also stands on its own for A+ and Net+ — private addressing and subnetting,
-workgroup membership, user and share creation, NTFS permissions, printer install and
-verification. None of it becomes obsolete when the CIP changes; it simply stops being the
-graded credential. Build it properly.
-
-**Suggested next step for this repo.** Job 2 is worth 61% and is entirely
-Windows-administration work, which `pc-technician` already covers in content but not as a
-graded, timed exercise. Start there.
+When this is picked up: get the real job descriptions first, then build `steps` labs
+(`LabRunner` with exact/oneOf/regex/choice validators) against them.
 
 ---
 
@@ -527,30 +530,76 @@ Best used as **linked practice** rather than ingested content — point students
 challenges from a lesson, so no licensing question arises and the challenges stay maintained
 upstream. Confirm terms before copying any challenge text into the repo.
 
-**Recommendation.** Build cyber content from the NIST and CISA material, which is public
-domain, authoritative, and maps cleanly onto the 4324 areas. Use picoCTF as linked hands-on
-practice. Treat MIT/Harvard as structural reference for how to sequence a topic. Then reconcile
-against CYBER.ORG once the account is back, rather than waiting on it.
+### 8.1 Decision — NIST and CISA (instructor, 2026-09-08)
+
+**Cyber content is sourced from NIST and CISA.** Public domain, authoritative, no licence
+conditions, and maps cleanly onto the 4324 areas. picoCTF is used as *linked* hands-on
+practice rather than ingested content. MIT/Harvard OCW is structural reference only.
+Reconcile against CYBER.ORG once that account is restored, rather than waiting on it.
+
+### 8.2 "NIST framework" means two different things — don't conflate them
+
+This matters for how CYBER.ORG and NIST relate, and the answer is that they are complementary
+rather than duplicative:
+
+**The NICE Framework (NIST SP 800-181r1)** is a workforce *taxonomy* — categories, work roles,
+and Knowledge/Skill statements. Education programs align *to* it. It is a mapping and labelling
+layer that says which job a course prepares a student for. It supplies **no teaching content**.
+
+**NIST CSF 2.0 and the SP 800-series** are an organizational risk framework and technical
+guidance respectively. This is subject matter — the actual substance a lesson teaches.
+
+CISA states that its own courses are aligned to NICE work roles, and CYBER.ORG is CISA-funded,
+so a CYBER.ORG "NIST alignment" claim is very likely a **NICE** mapping. That is a statement
+about which work roles the curriculum targets — not a claim that the courses reproduce SP 800
+guidance.
+
+**Unverified:** CYBER.ORG's standards page returns HTTP 403 to automated fetches and no
+explicit alignment statement surfaced in search. Treat the NICE inference as probable, not
+confirmed, and check `cyber.org/standards` in a browser when convenient.
+
+**So there is no duplication.** Drawing facts from SP 800-86 for a forensics lesson is a
+different activity from tagging that lesson to a NICE work role. Both are worth doing, and
+NICE work-role tags would slot naturally alongside the existing `domains[]` frontmatter as a
+future addition.
+
+### 8.3 Mapping the 4324 areas to specific NIST sources
+
+| 4324 area | Primary NIST/CISA source |
+|---|---|
+| Cybersecurity Fundamentals | NIST CSF 2.0 (Govern/Identify/Protect/Detect/Respond/Recover); SP 800-61 for the IR process |
+| Cryptography | SP 800-175B (using cryptographic standards); FIPS 197 (AES), FIPS 180-4 (SHA), FIPS 186 (signatures) |
+| Risk and Threat Analysis Introduction | SP 800-30 (risk assessment), SP 800-37 (RMF), SP 800-83 (malware incident prevention) |
+| Security Controls | SP 800-53r5 (control catalogue and families), CSF 2.0 Protect function |
+| Identification, Authentication, and Authorization | SP 800-63-3 suite (identity, authenticators, federation), SP 800-162 (ABAC) |
+| Computer Forensics | SP 800-86 (forensics into incident response) — order of volatility, imaging, chain of custody |
+
+SP 800-53r5 is a control *catalogue*, not a lesson — mine it for the control families and
+representative examples rather than trying to teach it. SP 800-63 is written for federal
+identity systems; take the factor model and authenticator assurance concepts, leave the
+federal assurance-level machinery.
 
 ---
 
 
 ## 9) Open Questions
 
-1. ~~**CIP alignment.**~~ **Resolved 2026-09-08** — the program moves to CIP 11.1003 within
-   two years, making NOCTI 4324 the destination credential. 4514 stays live until then; see §0.
-2. **4324 weightings.** Which pairing is correct in §1.1?
-3. **Module ID convention.** Existing modules mix two and three segments
+1. ~~**CIP alignment.**~~ **Resolved 2026-09-08** — CIP 11.0901 now, moving to 11.1003 in about
+   two years. Students must pass NOCTI 4514; cyber is a third-year stretch. See §0.
+2. ~~**Source material.**~~ **Resolved 2026-09-08** — NIST and CISA, per §8.1. picoCTF as linked
+   practice. Reconcile with CYBER.ORG when that account is restored.
+3. ~~**Migration vs additive.**~~ **Resolved 2026-09-08** — progress is keyed on `lessonSlug`
+   in `src/lib/progressStore.ts`, not on `moduleId`, so moving a lesson between modules
+   preserves completion state. Constitution §14 is accurate. Safe to migrate.
+4. ~~**NOCTI performance jobs.**~~ **Withdrawn 2026-09-08** — the sample jobs in the 2016
+   blueprint are not the jobs administered. Performance work deferred; see §4.
+5. **4324 weightings.** Which pairing is correct in §1.1? Needs a look at page 3 of the PDF.
+6. **Module ID convention.** Existing modules mix two and three segments
    (`sec.crypto.basics` vs proposed `sec.threats`). CLAUDE.md specifies
    `{track-slug}.{domain-or-topic}`. Confirm the two-segment form for the new modules.
-4. **Migration vs additive.** §2 and §3.1 move existing lessons between modules. Module IDs
-   are referenced by progress tracking — confirm whether completion state is keyed on
-   `lesson_slug` alone (Constitution §14 says it is) before moving anything.
-5. **Source material.** `public/resources/` has nothing for either cyber track. The NOCTI
-   blueprints give the competency spine but no teaching content. Confirm whether CYBER.ORG
-   243/368/100 material is available to draw facts from.
-
----
+7. **Domain registry.** Blocked on the SSO-gated `/api/cis/domains`; see §5.5. New `cfs.*`
+   modules can proceed meanwhile by using the established `cyber.foundations` id.
+8. **CYBER.ORG standards alignment.** NICE is the probable mapping but is unconfirmed; see §8.2.
 
 ---
 
