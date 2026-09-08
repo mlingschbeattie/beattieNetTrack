@@ -4,10 +4,9 @@ from PIL import Image, ImageDraw, ImageFont
 # Load clean original motherboard image
 src_path = "original_motherboard.jpg"
 if not os.path.exists(src_path):
-    # Fallback to extracting from git if needed
     import subprocess
     with open(src_path, "wb") as f:
-        subprocess.run(["git", "show", "HEAD:public/images/hardware/motherboard-atx-landmarks.jpg"], stdout=f)
+        subprocess.run(["git", "show", "HEAD~1:public/images/hardware/motherboard-atx-landmarks.jpg"], stdout=f)
 
 base = Image.open(src_path).convert("RGBA")
 
@@ -45,9 +44,9 @@ COLORS = {
 draw.text((30, 18), "ATX MOTHERBOARD INTERFACE & HARDWARE LANDMARK MAP", fill=(248, 250, 252), font=font_header)
 draw.text((32, 45), "CompTIA A+ Core 1 physical reference: identifying where each subsystem connects to the system board.", fill=(148, 163, 184), font=font_subhdr)
 
-# Calibrated Callouts with dedicated trace paths
+# Pixel-perfect calibrated callouts & pin-point physical anchors
 callouts = [
-    # Top Left: CPU EPS Power
+    # Top Left: CPU EPS Power (Anchor directly inside 8-pin socket block)
     {
         "category": "POWER",
         "title": "8+8 Pin CPU Power (EPS 12V)",
@@ -56,7 +55,7 @@ callouts = [
         "anchor": (750, 155),
         "path": [(380, 112), (750, 112), (750, 155)],
     },
-    # Top Center: CPU Socket
+    # Top Center: CPU Socket (Anchor dead center on LGA 1700 cover)
     {
         "category": "COMPUTE",
         "title": "CPU Socket (LGA 1700)",
@@ -65,7 +64,7 @@ callouts = [
         "anchor": (950, 420),
         "path": [(950, 70), (950, 420)],
     },
-    # Left 2: Rear I/O Panel
+    # Left 2: Rear I/O Panel (Anchor directly on metal USB/LAN jacks)
     {
         "category": "IO",
         "title": "Rear I/O External Ports",
@@ -74,7 +73,7 @@ callouts = [
         "anchor": (580, 415),
         "path": [(380, 272), (580, 272), (580, 415)],
     },
-    # Left 3: PCIe Expansion Slots
+    # Left 3: PCIe Expansion Slots (Anchor on lower PCIe slot)
     {
         "category": "EXPANSION",
         "title": "PCIe Expansion Slots (x1 / x4)",
@@ -83,7 +82,7 @@ callouts = [
         "anchor": (730, 775),
         "path": [(380, 467), (460, 467), (460, 775), (730, 775)],
     },
-    # Left 4: Front Audio & Case Headers
+    # Left 4: Front Audio & Case Headers (Anchor on bottom-left headers)
     {
         "category": "CHASSIS",
         "title": "Front Panel Audio & USB Headers",
@@ -92,59 +91,59 @@ callouts = [
         "anchor": (740, 810),
         "path": [(380, 692), (430, 692), (430, 810), (740, 810)],
     },
-    # Right 1: DDR5 RAM Slots
+    # Right 1: DDR5 RAM Slots (Anchor dead-center in DDR5 memory slots)
     {
         "category": "COMPUTE",
         "title": "DDR5 Memory Slots (DIMM 1-4)",
         "plugs": "Plugs: System RAM sticks (Dual-Channel Priority A2/B2)",
         "box": (1480, 85, 350, 54),
-        "anchor": (1020, 350),
-        "path": [(1480, 112), (1390, 112), (1390, 350), (1020, 350)],
+        "anchor": (1150, 350),
+        "path": [(1480, 112), (1390, 112), (1390, 350), (1150, 350)],
     },
-    # Right 2: 24-Pin ATX Main Power Header
+    # Right 2: 24-Pin ATX Main Power (Anchor DEAD CENTER inside 24-pin socket)
     {
         "category": "POWER",
         "title": "24-Pin ATX Main Power Header",
         "plugs": "Plugs: Main 24-Pin harness from PSU (powers board & chipset)",
         "box": (1480, 225, 350, 54),
-        "anchor": (1250, 430),
-        "path": [(1480, 252), (1350, 252), (1350, 430), (1250, 430)],
+        "anchor": (1290, 430),
+        "path": [(1480, 252), (1350, 252), (1350, 430), (1290, 430)],
     },
-    # Right 3: M.2 NVMe SSD Slot (Gen 5)
+    # Right 3: M.2 NVMe SSD Slot (Anchor dead-center on primary heatsink)
     {
         "category": "STORAGE",
         "title": "M.2 NVMe PCIe SSD Slot (Gen 5)",
         "plugs": "Plugs: High-speed M.2 2280 NVMe SSD (under heatsink)",
         "box": (1480, 365, 350, 54),
         "anchor": (890, 615),
-        "path": [(1480, 392), (1320, 392), (1320, 615), (890, 615)],
+        "path": [(1480, 392), (1330, 392), (1330, 615), (890, 615)],
     },
-    # Right 4: Primary PCIe 5.0 x16 Slot
+    # Right 4: Primary PCIe 5.0 x16 Slot (Anchor in steel armor GPU slot)
     {
         "category": "GPU",
         "title": "PCIe 5.0 x16 Slot (Steel Armor)",
         "plugs": "Plugs: Dedicated Graphics Card (Discrete GPU)",
         "box": (1480, 505, 350, 54),
         "anchor": (840, 695),
-        "path": [(1480, 532), (1290, 532), (1290, 695), (840, 695)],
+        "path": [(1480, 532), (1310, 532), (1310, 695), (840, 695)],
     },
-    # Right 5: SATA 6Gbps Storage Ports
+    # Right 5: SATA 6Gbps Storage Ports (Anchor DEAD CENTER inside right-angle SATA ports)
     {
         "category": "STORAGE",
         "title": "SATA 6Gbps Storage Ports",
         "plugs": "Plugs: SATA Data cables to 2.5\" SSDs & 3.5\" Hard Drives",
         "box": (1480, 645, 350, 54),
-        "anchor": (1250, 710),
-        "path": [(1480, 672), (1350, 672), (1350, 710), (1250, 710)],
+        "anchor": (1295, 740),
+        "path": [(1480, 672), (1350, 672), (1350, 740), (1295, 740)],
     },
-    # Bottom Right: Front Panel System Header
+    # Bottom Right: Front Panel System Header (Anchor on front panel pins)
     {
         "category": "CHASSIS",
         "title": "Front Panel Switch/LED Header",
         "plugs": "Plugs: Case Power Switch, Reset Button, HDD & Power LEDs",
         "box": (1480, 785, 350, 54),
         "anchor": (1200, 780),
-        "path": [(1480, 812), (1380, 812), (1380, 780), (1200, 780)],
+        "path": [(1480, 812), (1370, 812), (1370, 780), (1200, 780)],
     },
 ]
 
@@ -184,8 +183,8 @@ def draw_trace(draw, c):
         draw.line([p1, p2], fill=col["border"], width=2)
 
     # Target anchor ring directly on the physical hardware port
-    draw.ellipse([ax - 10, ay - 10, ax + 10, ay + 10], fill=col["glow"])
-    draw.ellipse([ax - 6, ay - 6, ax + 6, ay + 6], fill=col["border"], outline=(255, 255, 255, 255), width=2)
+    draw.ellipse([ax - 9, ay - 9, ax + 9, ay + 9], fill=col["glow"])
+    draw.ellipse([ax - 5, ay - 5, ax + 5, ay + 5], fill=col["border"], outline=(255, 255, 255, 255), width=2)
     draw.ellipse([ax - 2, ay - 2, ax + 2, ay + 2], fill=(255, 255, 255, 255))
 
 # Draw all traces first
