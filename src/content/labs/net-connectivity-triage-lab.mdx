@@ -1,0 +1,91 @@
+---
+title: "Triage a Connectivity Outage"
+description: "Work a real outage using the layered method — isolate the fault from the symptoms rather than guessing."
+slug: net-connectivity-triage-lab
+track: network-engineer
+moduleId: net.troubleshooting.methodology
+order: 81
+difficulty: Intermediate
+estMinutes: 15
+xp: 50
+activity: steps
+tags: ["Network+", "N10-009", "troubleshooting", "lab"]
+steps:
+  - id: first-check
+    title: "Start at the bottom"
+    prompt: "You are at the machine. What do you check first?"
+    inputLabel: "First check"
+    hint: "Prefer the check that is fastest and rules out the most."
+    validator:
+      type: choice
+      options:
+        - "The cable seating and the link light on the NIC"
+        - "The DNS server settings in the adapter properties"
+        - "The firewall rules on the edge device"
+        - "The routing table on the core switch"
+      correctIndex: 0
+      rationale: "Layer 1 is checked first because it is seconds of work and it is the most common cause. Everyone else on the floor working already tells you the switch, the VLAN and the uplink are probably fine, which makes this machine physical until proven otherwise."
+    successMessage: "Correct. Cheapest check, most likely cause."
+  - id: apipa
+    title: "Read the address"
+    prompt: "The link light is on. ipconfig shows 169.254.18.7. What does that tell you?"
+    inputLabel: "Diagnosis"
+    validator:
+      type: choice
+      options:
+        - "The client asked for DHCP and got no answer, so the fault is upstream of the machine"
+        - "The machine has a static address configured incorrectly"
+        - "DNS is misconfigured"
+        - "The subnet mask is wrong"
+      correctIndex: 0
+      rationale: "A 169.254 address is APIPA — the client self-assigned after DHCP silently failed. Because Layer 1 is confirmed good, the fault sits between this port and the DHCP service: a wrong VLAN on the port, a dead relay, or an exhausted scope."
+    successMessage: "Correct. APIPA is a diagnosis handed to you."
+  - id: vlan
+    title: "Narrow it further"
+    prompt: "Other machines on the same switch get addresses normally. What is the most likely cause for this one port?"
+    inputLabel: "Likely cause"
+    validator:
+      type: choice
+      options:
+        - "The port is assigned to the wrong VLAN"
+        - "The DHCP scope for the whole building is exhausted"
+        - "The core router has lost its default route"
+        - "The DNS forwarder is unreachable"
+      correctIndex: 0
+      rationale: "If the scope were exhausted or the router were down, the whole floor would be failing, and it is not. A fault affecting exactly one port on a healthy switch points at that port configuration — most often a VLAN assignment changed and never changed back."
+    successMessage: "Correct. One port failing on a healthy switch is a port-level fault."
+  - id: verify
+    title: "Verify the fix"
+    prompt: "You correct the VLAN and the machine gets an address. What confirms the job is finished?"
+    inputLabel: "Verification"
+    validator:
+      type: choice
+      options:
+        - "Test the service the user actually reported — open a website and confirm it loads"
+        - "Confirm the link light is green"
+        - "Check that ipconfig shows an address"
+        - "Ping the switch from your laptop"
+      correctIndex: 0
+      rationale: "An address is not the outcome the user asked for. They reported that the internet was down, so verification means reproducing their task successfully. Stopping at the address is how a ticket gets reopened an hour later."
+    successMessage: "Correct. Verify against the reported symptom, not an intermediate step."
+  - id: document
+    title: "Document the fix"
+    prompt: "Write a one-line note for the ticket. It must name the cause (VLAN) and state that you verified the fix. Use the words \"VLAN\" and \"verified\"."
+    inputLabel: "Ticket note"
+    hint: "The next technician should be able to tell what was wrong and what you proved."
+    placeholder: "Port ... wrong VLAN ... verified ..."
+    validator:
+      type: regex
+      pattern: '^(?=.*\bvlan)(?=.*\bverif).{25,}$'
+      flags: "i"
+    successMessage: "Good note. Cause and verification both recorded."
+domains:
+  - domainId: netplus.troubleshooting
+    weight: 1
+---
+
+A teacher reports "the internet is down" in room 14. One machine. Everyone else on the floor is fine. Work it properly.
+
+## Goal
+
+Move up the layers in order, letting each result narrow the next step, and finish with documentation the next technician can use.

@@ -1,0 +1,90 @@
+---
+title: "Diagnose a Machine That Will Not Boot"
+description: "Work a dead machine from no-power to verified fix, choosing the safest, most informative action at each stage."
+slug: pct-boot-failure-lab
+track: pc-technician
+moduleId: pct.troubleshooting.common-issues
+order: 80
+difficulty: Beginner
+estMinutes: 15
+xp: 50
+activity: steps
+tags: ["A+", "220-1101", "troubleshooting", "lab"]
+steps:
+  - id: no-power
+    title: "Nothing happens at all"
+    prompt: "Pressing the power button does nothing — no fans, no lights. What is the first thing to check?"
+    inputLabel: "First check"
+    hint: "Start outside the case."
+    validator:
+      type: choice
+      options:
+        - "The wall outlet, the power cable, and the PSU voltage switch"
+        - "The RAM seating"
+        - "The CPU cooler mounting"
+        - "The hard drive cable"
+      correctIndex: 0
+      rationale: "Nothing at all means no power is reaching the board. Check the supply chain from outside in — a dead outlet, an unseated kettle lead, or a PSU switched to the wrong voltage costs seconds to rule out and requires no tools."
+    successMessage: "Correct. Confirm power is arriving before opening the case."
+  - id: fans-no-display
+    title: "Fans spin, screen stays black"
+    prompt: "Power is confirmed. Fans spin and the board lights up, but there is no image and no beeps. What is the most useful next step?"
+    inputLabel: "Next step"
+    validator:
+      type: choice
+      options:
+        - "Reseat the RAM and try one stick at a time"
+        - "Replace the power supply"
+        - "Reinstall the operating system"
+        - "Replace the motherboard"
+      correctIndex: 0
+      rationale: "Fans spinning proves the PSU is delivering power, so the fault is past it. Unseated or failed RAM is the most common cause of a POST that produces no display, it costs nothing to test, and testing one stick at a time identifies a specific failed module."
+    successMessage: "Correct. Reseat and isolate before replacing anything."
+  - id: beep-code
+    title: "Read the beep code"
+    prompt: "After reseating, the machine emits a repeating beep pattern on power-up. What does that tell you?"
+    inputLabel: "Meaning"
+    validator:
+      type: choice
+      options:
+        - "POST ran and reported a specific subsystem fault, identified by the pattern"
+        - "The speaker is faulty"
+        - "The machine has overheated"
+        - "The operating system is corrupt"
+      correctIndex: 0
+      rationale: "Beep codes are POST output, which means the board is alive enough to test itself and report. The pattern maps to a subsystem and the mapping is vendor specific — look it up rather than guessing. A machine that beeps is telling you more than one that is silent."
+    successMessage: "Correct. Beeps mean POST ran and has something to report."
+  - id: one-variable
+    title: "Keep the diagnosis honest"
+    prompt: "A colleague suggests swapping the RAM, the PSU and the drive together to save time. Why is that a poor approach?"
+    inputLabel: "Reason"
+    validator:
+      type: choice
+      options:
+        - "If it works you will not know what was wrong, so you cannot document or prevent it"
+        - "It takes longer than testing individually"
+        - "It voids the warranty on all three parts"
+        - "The machine will not POST with new parts"
+      correctIndex: 0
+      rationale: "Changing several variables at once can restore the machine and teaches you nothing. You cannot write a useful ticket note, cannot order the right replacement part, and will not recognise the fault next time. Change one thing, test, then change the next."
+    successMessage: "Correct. One variable at a time, or you learn nothing."
+  - id: close
+    title: "Close the ticket"
+    prompt: "Write a one-line closure note naming the failed component and stating that you tested the machine afterwards. Use the words \"replaced\" and \"tested\"."
+    inputLabel: "Closure note"
+    placeholder: "Replaced ... tested ..."
+    validator:
+      type: regex
+      pattern: '^(?=.*\breplac)(?=.*\btest).{25,}$'
+      flags: "i"
+    successMessage: "Good closeout. Part and verification both recorded."
+domains:
+  - domainId: aplus1.hardware
+    weight: 1
+---
+
+A desktop in the library will not start. Work it on the bench, one variable at a time.
+
+## Goal
+
+Separate "no power" from "powers on but does not POST" from "POSTs but no display", and act on evidence rather than swapping parts.

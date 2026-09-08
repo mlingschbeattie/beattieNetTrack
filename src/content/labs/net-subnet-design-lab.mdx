@@ -1,0 +1,88 @@
+---
+title: "Subnet a School Network"
+description: "Take one /24 and carve it into working subnets for four departments, then prove the addresses you assign are valid."
+slug: net-subnet-design-lab
+track: network-engineer
+moduleId: net.fundamentals.addressing
+order: 80
+difficulty: Intermediate
+estMinutes: 20
+xp: 50
+activity: steps
+tags: ["Network+", "N10-009", "subnetting", "lab"]
+steps:
+  - id: hosts-needed
+    title: "Size the largest subnet"
+    prompt: "The computer suite needs 60 usable host addresses. What is the smallest prefix that fits?"
+    inputLabel: "Prefix length"
+    hint: "Usable hosts is 2^h minus 2. Work up until you clear 60."
+    validator:
+      type: choice
+      options:
+        - "/26 — 64 addresses, 62 usable"
+        - "/27 — 32 addresses, 30 usable"
+        - "/25 — 128 addresses, 126 usable"
+        - "/24 — 256 addresses, 254 usable"
+      correctIndex: 0
+      rationale: "A /26 leaves 6 host bits, giving 64 addresses and 62 usable once the network and broadcast addresses are removed. That clears 60 with room to spare. A /27 gives only 30 and falls short; a /25 works but wastes half the range that the other departments still need."
+    successMessage: "Correct. /26 is the smallest that fits 60 hosts."
+  - id: ptp-link
+    title: "Size the point-to-point link"
+    prompt: "The annexe link connects exactly two router interfaces. Which prefix is conventional?"
+    inputLabel: "Prefix length"
+    validator:
+      type: choice
+      options:
+        - "/30 — 4 addresses, 2 usable"
+        - "/24 — the same as everything else"
+        - "/29 — 8 addresses, 6 usable"
+        - "/32 — a single address"
+      correctIndex: 0
+      rationale: "A /30 gives exactly the two usable addresses a point-to-point link needs. Anything larger strands addresses that no device will ever use, which is the waste VLSM exists to avoid. A /32 has no usable host addresses at all."
+    successMessage: "Correct. /30 is the standard for a two-router link."
+  - id: broadcast
+    title: "Find the broadcast address"
+    prompt: "For the subnet 192.168.10.0/26, enter the broadcast address."
+    inputLabel: "Broadcast address"
+    hint: "A /26 block is 64 addresses. The first is the network address, the last is broadcast."
+    placeholder: "ex: 192.168.10.255"
+    validator:
+      type: oneOf
+      values:
+        - "192.168.10.63"
+    successMessage: "Correct. The block runs .0 to .63, so .63 is the broadcast address."
+  - id: valid-host
+    title: "Spot the invalid assignment"
+    prompt: "A technician assigns 192.168.10.63/26 to a workstation in the first subnet. What happens?"
+    inputLabel: "Result"
+    validator:
+      type: choice
+      options:
+        - "It is the broadcast address for that subnet and cannot be used by a host"
+        - "It works normally"
+        - "It becomes the default gateway automatically"
+        - "It is valid but slower than other addresses"
+      correctIndex: 0
+      rationale: "The last address in any subnet is reserved for broadcast. Assigned to a host it typically appears to work on the local segment and then fails in confusing ways, which is why off-by-one errors at the top of a range are so hard to trace."
+    successMessage: "Correct. The last address in the block is never a host address."
+  - id: next-subnet
+    title: "Find the next subnet"
+    prompt: "After 192.168.10.0/26, enter the network address of the next /26 subnet."
+    inputLabel: "Next network address"
+    hint: "Each /26 block is 64 addresses wide."
+    placeholder: "ex: 192.168.10.128"
+    validator:
+      type: oneOf
+      values:
+        - "192.168.10.64"
+    successMessage: "Correct. Blocks step in 64s, so the next network starts at .64."
+domains:
+  - domainId: netplus.networking_concepts
+    weight: 1
+---
+
+The school has been given 192.168.10.0/24 and four areas that must not share a broadcast domain: a 60-seat computer suite, a 25-machine staff room, a 10-device office, and a point-to-point link to the annexe.
+
+## Goal
+
+Size each subnet to its requirement, pick the right masks, and prove you can identify a valid host address from an invalid one.

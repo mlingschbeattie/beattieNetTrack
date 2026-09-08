@@ -1,0 +1,81 @@
+---
+title: "Work Safely Inside a PC"
+description: "Make the safety calls a technician makes before touching hardware — for the equipment and for yourself."
+slug: pct-safety-and-esd-lab
+track: pc-technician
+moduleId: pct.fundamentals.safety-esd
+order: 81
+difficulty: Beginner
+estMinutes: 12
+xp: 50
+activity: steps
+tags: ["A+", "220-1101", "safety", "ESD", "lab"]
+steps:
+  - id: esd-prep
+    title: "Prepare to work"
+    prompt: "You are about to install RAM in a desktop. What should you do first?"
+    inputLabel: "First action"
+    validator:
+      type: choice
+      options:
+        - "Unplug the machine and put on an anti-static strap connected to a grounding point"
+        - "Leave it plugged in so the machine stays grounded"
+        - "Work quickly so static has no time to build up"
+        - "Touch the RAM to the monitor to equalise charge"
+      correctIndex: 0
+      rationale: "Unplug first, then ground yourself deliberately. The old advice to leave the machine plugged in for grounding is outdated and unsafe on modern supplies, which keep parts of the board live. If you have no strap, touch bare metal on the chassis frequently and stay in contact with it."
+    successMessage: "Correct. Unplug, then ground yourself deliberately."
+  - id: esd-invisible
+    title: "Understand the risk"
+    prompt: "You felt no shock while handling a memory module. What does that tell you about ESD damage?"
+    inputLabel: "Conclusion"
+    validator:
+      type: choice
+      options:
+        - "Nothing — discharges far below what you can feel are enough to damage components"
+        - "No shock means no damage occurred"
+        - "ESD only affects hard drives"
+        - "ESD damage always prevents the machine booting"
+      correctIndex: 0
+      rationale: "You cannot feel a discharge below roughly 3,000 volts, and a few hundred can damage a component. This is why ESD damage so often looks like a faulty part weeks later — the machine works, then fails, and nobody connects it to the handling."
+    successMessage: "Correct. Felt nothing means nothing about whether damage occurred."
+  - id: psu-rule
+    title: "The component you never open"
+    prompt: "A power supply is suspected faulty. What is the correct action?"
+    inputLabel: "Action"
+    validator:
+      type: choice
+      options:
+        - "Replace the unit — never open it, as its capacitors hold a lethal charge"
+        - "Open it and check the fuse"
+        - "Open it and replace the fan"
+        - "Open it after leaving it unplugged for an hour"
+      correctIndex: 0
+      rationale: "PSU capacitors can hold a dangerous charge long after the unit is unplugged, and there is nothing user-serviceable inside. This is the one component where the correct answer is always replacement, regardless of how long it has been disconnected."
+    successMessage: "Correct. A suspect PSU is swapped, never opened."
+  - id: disposal
+    title: "Dispose of the old parts"
+    prompt: "The job leaves a dead lithium battery and an empty toner cartridge. How are they handled?"
+    inputLabel: "Disposal"
+    validator:
+      type: choice
+      options:
+        - "Both go to appropriate recycling under local regulations — neither in general waste"
+        - "Both go in the general waste bin"
+        - "The battery is recycled; the toner goes in general waste"
+        - "Both are returned to the customer"
+      correctIndex: 0
+      rationale: "Batteries and toner are both regulated waste with specific handling requirements, and the manufacturer safety data sheet states them. General waste is not an option for either, and A+ tests this as a compliance question rather than a preference."
+    successMessage: "Correct. Regulated waste goes to appropriate recycling."
+domains:
+  - domainId: aplus1.hardware
+    weight: 0.8
+  - domainId: nocti.hardware
+    weight: 0.8
+---
+
+Before any of the hardware work matters, you have to not damage the machine and not hurt yourself. These are the decisions that come first on every job.
+
+## Goal
+
+Handle components without destroying them, recognise the one part you never open, and dispose of materials correctly.
