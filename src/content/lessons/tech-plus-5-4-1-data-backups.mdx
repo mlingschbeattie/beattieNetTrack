@@ -95,25 +95,14 @@ When disaster strikes, the only thing standing between a company's survival and 
 
 Understanding the mechanics of Full, Incremental, and Differential backups, implementing the **3-2-1 Backup Rule**, and engineering systems to meet **RTO** and **RPO** targets is one of the most critical responsibilities of any IT professional.
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        THE 3-2-1 BACKUP STRATEGY                       │
-├────────────────────────────────────────────────────────────────────────┤
-│                                                                        │
-│   [ 3 TOTAL COPIES OF DATA ]                                           │
-│   ├── Copy 1: Live Production SSD on Server (`C:\Data`)                │
-│   ├── Copy 2: Local On-Premises NAS Storage Appliance (`10.0.0.50`)    │
-│   └── Copy 3: Encrypted Off-Site Cloud Vault (AWS S3 Glacier)          │
-│                                                                        │
-│   [ 2 DIFFERENT STORAGE MEDIA TYPES ]                                  │
-│   ├── Medium A: Flash NVMe SSDs                                        │
-│   └── Medium B: Magnetic RAID Hard Drives / Cloud Object Store         │
-│                                                                        │
-│   [ 1 OFF-SITE GEOGRAPHIC LOCATION ]                                   │
-│   └── Cloud Datacenter 500 Miles Away (Immune to local building fire)  │
-│                                                                        │
-└────────────────────────────────────────────────────────────────────────┘
-```
+<figure>
+  <img 
+    src="/images/tech-plus/backup-3-2-1-rule-rto-rpo.jpg" 
+    alt="Data Backup Architecture and Disaster Recovery Metrics — The 3-2-1 Backup Rule, Full vs Incremental vs Differential Restore Paths, and RTO vs RPO Timeline" 
+    loading="lazy"
+  />
+  <figcaption>Figure 5.1: Enterprise Backup Architecture and Disaster Recovery Metrics — Implementation of the 3-2-1 Rule (3 copies, 2 media types, 1 off-site immutable vault), comparative restoration mechanics across Full/Incremental/Differential schemas, and the critical RTO/RPO business continuity timeline.</figcaption>
+</figure>
 
 ---
 

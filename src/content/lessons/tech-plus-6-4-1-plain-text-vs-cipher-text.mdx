@@ -92,20 +92,14 @@ If you scramble the message into an unreadable puzzle of symbols before mailing 
 
 Understanding the difference between **Plaintext** and **Ciphertext**, how **Symmetric AES** and **Asymmetric RSA** operate, and how **Hybrid TLS** powers the secure internet is essential for all IT and cybersecurity specialists.
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        THE ENCRYPTION LIFECYCLE                        │
-├────────────────────────────────────────────────────────────────────────┤
-│                                                                        │
-│   [ PLAINTEXT ]             [ CIPHERTEXT ]              [ PLAINTEXT ]  │
-│   "Confidential Payroll" ──> `8x#9!kL$2@vP9...` ──────> "Confidential  │
-│   (Human Readable)       ▲   (Unreadable Noise)      ▲   Payroll"      │
-│                          │                           │                 │
-│                 [ ENCRYPTION KEY ]          [ DECRYPTION KEY ]         │
-│                 (Mathematical Lock)         (Mathematical Key)         │
-│                                                                        │
-└────────────────────────────────────────────────────────────────────────┘
-```
+<figure>
+  <img 
+    src="/images/tech-plus/cryptography-symmetric-vs-asymmetric.jpg" 
+    alt="Cryptography Architecture — Symmetric Shared Key AES, Asymmetric Public and Private Key RSA/ECC, and the Hybrid TLS 1.3 HTTPS Handshake" 
+    loading="lazy"
+  />
+  <figcaption>Figure 6.1: Cryptography Architecture & Key Mechanics — Comparison between single shared-secret Symmetric encryption (AES-256), dual-key Asymmetric public-key encryption (RSA/ECC), and the four-stage Hybrid TLS 1.3 key-exchange pipeline powering modern HTTPS.</figcaption>
+</figure>
 
 ---
 

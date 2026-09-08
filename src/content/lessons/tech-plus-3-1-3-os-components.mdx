@@ -111,28 +111,14 @@ When an application wants to write a file to an SSD, play a sound through speake
 
 Instead, the operating system sits in the middle, managing hardware resources, scheduling CPU time, allocating memory, and enforcing security boundaries.
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        OPERATING SYSTEM ARCHITECTURE                   │
-├────────────────────────────────────────────────────────────────────────┤
-│                                                                        │
-│   [ USER MODE / RING 3 ]                                               │
-│   ├── Applications (Chrome, Word, Excel, Games)                        │
-│   └── User Interface / Shell (GUI: Explorer, Finder / CLI: Bash, CMD)  │
-│                                                                        │
-│   ════════════════════ SYSTEM CALL INTERFACE ═══════════════════════   │
-│                                                                        │
-│   [ KERNEL MODE / RING 0 ] (Privileged Hardware Execution)             │
-│   ├── The OS Kernel (Process Scheduler, Memory Manager, File System)   │
-│   ├── Device Drivers (GPU Driver, NIC Driver, Storage Controller)      │
-│   └── Hardware Abstraction Layer (HAL)                                 │
-│                                                                        │
-│   ════════════════════ PHYSICAL HARDWARE ═══════════════════════════   │
-│                                                                        │
-│   [ Silicon Hardware ] (CPU, System RAM, NVMe SSD, GPU, Motherboard)   │
-│                                                                        │
-└────────────────────────────────────────────────────────────────────────┘
-```
+<figure>
+  <img 
+    src="/images/tech-plus/os-architecture-kernel-shell-hardware.jpg" 
+    alt="Operating System Architecture and Abstraction Hierarchy — User Mode Ring 3, System Call Interface, Kernel Mode Ring 0, Hardware Abstraction Layer, and Physical Hardware" 
+    loading="lazy"
+  />
+  <figcaption>Figure 3.1: Operating System Architecture and Abstraction Hierarchy — Structural separation between unprivileged User Mode (Ring 3) applications, the System Call API boundary, privileged Kernel Mode (Ring 0) subsystems, and physical motherboard silicon.</figcaption>
+</figure>
 
 ---
 

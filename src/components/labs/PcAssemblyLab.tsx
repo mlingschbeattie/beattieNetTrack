@@ -568,13 +568,23 @@ export default function PcAssemblyLab({ labSlug = 'pc-assembly' }: Props) {
     if (!activeScenario) return;
     const evaluated = evaluateLab(build, activeScenario);
     setResults(evaluated);
+    // Surface the per-item feedback rather than only the total. The evaluator
+    // already explains every point awarded and withheld — socket match, GPU
+    // tier, storage capacity, cooler TDP, budget — and showing only
+    // 'Build score 75/100' left students with a number and no reason to act on.
+    const gradedChecks = evaluated.feedback.map((item, index) => ({
+      id: `grade-${index}`,
+      label: item.text,
+      pass: item.type === 'pass',
+      message: item.type === 'fail' ? 'Not met' : item.type === 'warn' ? 'Partial credit' : undefined,
+    }));
     setLastResult(labSlug, {
       passed: evaluated.passed,
       score: evaluated.score,
-      checks: requirements,
+      checks: gradedChecks,
       timestamp: Date.now(),
       action: 'submit',
-      message: evaluated.passed ? 'Build passed grading' : `Build score ${evaluated.score}/100`,
+      message: evaluated.passed ? 'Build passed grading' : `Build score ${evaluated.score}/100 — see the checks panel for what to change`,
     });
     emitWorkspaceResult(
       'submit',
