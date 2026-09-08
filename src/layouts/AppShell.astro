@@ -5,6 +5,7 @@ import Navbar from '../components/Navbar.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import RightPanel from '../components/islands/RightPanel.tsx';
 import SearchOverlay from '../components/SearchOverlay.astro';
+import ImageZoomModal from '../components/ImageZoomModal.astro';
 import { getModuleProgressData } from '../lib/content';
 import { getSearchIndexData } from '../lib/searchIndex';
 import { getAuthUser, type AuthUser } from '../lib/auth';
@@ -112,6 +113,7 @@ if (activityNavigation && (activityNavigation as any).trackSlug && (activityNavi
     </main>
   </div>
   <SearchOverlay />
+  <ImageZoomModal />
 </BaseLayout>
 
 <script>

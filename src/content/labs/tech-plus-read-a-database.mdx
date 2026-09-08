@@ -1,0 +1,79 @@
+---
+title: "Read a Database Like a Technician"
+description: "Identify keys, choose the right query, and recognise when a spreadsheet should have been a database."
+slug: tech-plus-read-a-database
+track: tech-plus
+moduleId: tech-plus.databases
+order: 93
+difficulty: Beginner
+estMinutes: 12
+xp: 50
+activity: steps
+tags: ["Tech+", "FC0-U71", "lab"]
+steps:
+  - id: primary-key
+    title: "Find the primary key"
+    prompt: "A student table holds student ID, first name, surname, and form group. Which column is the primary key?"
+    inputLabel: "Primary key"
+    validator:
+      type: choice
+      options:
+        - "Student ID, because it is unique to one student and never repeats"
+        - "Surname, because it identifies the family"
+        - "Form group, because it organises students"
+        - "First name, because it is what people use"
+      correctIndex: 0
+      rationale: "A primary key must be unique and stable. Names repeat, form groups are shared by design, and both can change. A student ID is issued once, belongs to one person, and does not change when they move form."
+    successMessage: "Correct. Unique and stable is what makes a key."
+  - id: query-choice
+    title: "Choose the query"
+    prompt: "You need every student in form 11B. Which database operation is that?"
+    inputLabel: "Operation"
+    validator:
+      type: choice
+      options:
+        - "A query that filters records where form group equals 11B"
+        - "A query that sorts all students alphabetically"
+        - "Deleting the students not in 11B"
+        - "Creating a new table for 11B and retyping the names"
+      correctIndex: 0
+      rationale: "Filtering returns the subset matching a condition and leaves the data untouched. Sorting reorders without narrowing, deleting destroys data, and retyping into a new table creates a second copy that immediately starts drifting out of date."
+    successMessage: "Correct. Filtering answers the question without altering the data."
+  - id: flat-file-problem
+    title: "Name the flat-file problem"
+    prompt: "The clubs spreadsheet repeats each student name on every club row. One student changes surname and is updated in some rows but not others. What is this called?"
+    inputLabel: "The problem"
+    validator:
+      type: choice
+      options:
+        - "A data integrity problem caused by duplicated data"
+        - "A permissions problem"
+        - "A backup problem"
+        - "A network latency problem"
+      correctIndex: 0
+      rationale: "When the same fact is stored in many places, updates have to reach all of them or the copies disagree. A relational design stores each student once and links to them, so a surname change happens in exactly one row."
+    successMessage: "Correct. Duplication is what breaks integrity."
+  - id: backup-need
+    title: "Protect the data"
+    prompt: "The clubs data now lives in a proper database on one server. What is the most important thing to add?"
+    inputLabel: "Next step"
+    validator:
+      type: choice
+      options:
+        - "A tested backup, with a restore that has actually been tried"
+        - "A faster network switch"
+        - "A second monitor for the office"
+        - "More RAM in the workstations"
+      correctIndex: 0
+      rationale: "A single copy on one server is one failure away from gone. A backup nobody has restored from is an assumption rather than a protection — the restore is the part that has to be proven."
+    successMessage: "Correct. An untested backup is only a hope."
+domains:
+  - domainId: techplus.databases
+    weight: 1
+---
+
+A school keeps its clubs register in a spreadsheet. It has started going wrong in the specific ways spreadsheets go wrong when they should have been a database.
+
+## Goal
+
+Read a table structure, identify what makes a record unique, choose an appropriate query, and name the problem a flat file creates.

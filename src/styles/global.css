@@ -1801,8 +1801,8 @@ html[data-theme='light'] .quiz-question__prompt {
   box-shadow: var(--shadow-md);
   width: 100%;
   margin-inline: auto;
-  font-size: var(--text-base);
-  line-height: 1.7;
+  font-size: 1.0625rem;
+  line-height: 1.75;
   overflow-wrap: anywhere;
 }
 
@@ -4877,7 +4877,9 @@ html[dir='rtl'] .qc-group[open] > .qc-group__summary::before { transform: rotate
 }
 
 /* Lesson Media & Hardware Component Photography */
-[data-reading-content] img {
+[data-reading-content] img,
+.prose img,
+.lesson-body img {
   display: block;
   max-width: 100%;
   height: auto;
@@ -4886,6 +4888,15 @@ html[dir='rtl'] .qc-group[open] > .qc-group__summary::before { transform: rotate
   border: 1px solid var(--beattie-border);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
   background: var(--beattie-surface);
+  cursor: zoom-in;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+[data-reading-content] img:hover,
+.prose img:hover,
+.lesson-body img:hover {
+  border-color: var(--beattie-primary, #38bdf8);
+  box-shadow: 0 6px 20px rgba(56, 189, 248, 0.2);
 }
 
 [data-reading-content] figure {
@@ -4898,7 +4909,7 @@ html[dir='rtl'] .qc-group[open] > .qc-group__summary::before { transform: rotate
 }
 
 [data-reading-content] figcaption {
-  font-size: var(--text-sm);
+  font-size: 0.95rem;
   color: var(--beattie-text-muted);
   font-style: italic;
   line-height: var(--leading-relaxed);

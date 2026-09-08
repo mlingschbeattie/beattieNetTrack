@@ -9,6 +9,30 @@ export type CodeExercise = {
 };
 
 export const codeExercises: Record<string, CodeExercise> = {
+  'tech-plus-first-program': {
+    slug: 'tech-plus-first-program',
+    title: 'Your First Program: Grade Average',
+    description: 'Use a variable, a loop, and output to work out a class average.',
+    language: 'javascript',
+    starterCode: `// Five test scores from a class.
+const scores = [72, 85, 90, 64, 79];
+
+let total = 0;
+for (const score of scores) {
+  total = total + score;
+}
+
+// TODO: work out the average and print "Average: <number>"
+// Hint: divide total by scores.length, then use console.log
+`,
+    expectedOutput: 'Average: 78',
+    hints: [
+      'The loop has already added every score into total. You need the average next.',
+      'scores.length gives you how many scores there are — 5 in this case.',
+      'Print with console.log(`Average: ${average}`) using backticks.',
+    ],
+  },
+
   'code-basics': {
     slug: 'code-basics',
     title: 'Code Basics: Packet Counter',

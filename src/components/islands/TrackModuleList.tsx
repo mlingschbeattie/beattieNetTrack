@@ -3,8 +3,9 @@ import { getProgress } from '../../lib/progressStore';
 import type { TrackModuleSummary, TrackActivitySummary } from '../../lib/content';
 
 interface TrackModuleListProps {
-  modules: TrackModuleSummary[];
+  modules: Array<Omit<TrackModuleSummary, 'prevNextByKey'> & { prevNextByKey?: TrackModuleSummary['prevNextByKey'] }>;
 }
+
 
 export function isActivityCompleted(
   activity: TrackActivitySummary,

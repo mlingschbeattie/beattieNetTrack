@@ -9,6 +9,7 @@ import Callout from '../../components/Callout.astro';
 import PcAssemblyLab from '../../components/labs/PcAssemblyLab.tsx';
 import ActivityCard from '../../components/ActivityCard.astro';
 import LabRunner from '../../components/LabRunner.tsx';
+import CodeRunner from '../../components/islands/CodeRunner.tsx';
 import BeaconEmitter from '../../components/BeaconEmitter.tsx';
 import { getActivityModuleNavigation } from '../../lib/content';
 
@@ -176,6 +177,12 @@ if (currentTrack) {
     <Fragment slot="activity-main">
       {lab.slug === 'pc-assembly' ? (
         <PcAssemblyLab client:only="react" labSlug={lab.slug} />
+      ) : lab.data.activity === 'code' ? (
+        /* Code labs were previously only possible via a dedicated page that
+           hardcoded its slugs, which is why exactly one existed. Routing them
+           here makes a code lab authorable from frontmatter: set
+           activity: code and add a matching entry to codeExercises. */
+        <CodeRunner client:only="react" labSlug={lab.slug} exerciseSlug={lab.slug} />
       ) : (
         <LabFrame slug={lab.slug} src={lab.data.labPath} title={lab.data.title} />
       )}

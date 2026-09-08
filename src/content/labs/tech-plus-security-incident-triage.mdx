@@ -1,0 +1,90 @@
+---
+title: "Triage a School Security Incident"
+description: "Work a realistic incident from first report to closure, choosing the right action at each stage."
+slug: tech-plus-security-incident-triage
+track: tech-plus
+moduleId: tech-plus.security
+order: 94
+difficulty: Beginner
+estMinutes: 15
+xp: 50
+activity: steps
+tags: ["Tech+", "FC0-U71", "lab"]
+steps:
+  - id: classify
+    title: "Classify what failed"
+    prompt: "Coursework files are readable by everyone. The files are unaltered and still available to their owners. Which part of the CIA triad has failed?"
+    inputLabel: "CIA category"
+    validator:
+      type: choice
+      options:
+        - "Confidentiality — the data was disclosed to people who should not see it"
+        - "Integrity — the data was changed without authorisation"
+        - "Availability — the data could not be reached"
+        - "All three failed equally"
+      correctIndex: 0
+      rationale: "Nothing was altered, so integrity holds. The owners can still open their files, so availability holds. The single failure is disclosure, and naming it that way points straight at access controls as the fix."
+    successMessage: "Correct. Disclosure without alteration is a confidentiality failure."
+  - id: contain
+    title: "Contain it"
+    prompt: "What should you do first?"
+    inputLabel: "First action"
+    validator:
+      type: choice
+      options:
+        - "Remove the over-broad permission so only the right people can reach the folder"
+        - "Write the incident report for the head of department"
+        - "Rebuild the file server with a hardened configuration"
+        - "Email every student to tell them what happened"
+      correctIndex: 0
+      rationale: "Containment comes first because it stops the exposure continuing. Reporting and notification matter and may be legally required, but neither closes the hole. Rebuilding the server is the correct long-term fix and the slowest possible containment."
+    successMessage: "Correct. Stop the exposure, then investigate."
+  - id: auth-control
+    title: "Choose the control"
+    prompt: "Staff accounts were being shared to save time, which is how the permission was set wrongly. Which control addresses that directly?"
+    inputLabel: "Control"
+    validator:
+      type: choice
+      options:
+        - "Individual accounts with multi-factor authentication, so actions trace to a person"
+        - "A longer minimum password length"
+        - "A faster internet connection"
+        - "Disabling the wireless network"
+      correctIndex: 0
+      rationale: "Shared accounts destroy accountability — nobody can say who made the change. Individual accounts restore the accounting part of AAA, and MFA means a leaked password alone is not enough. Password length does nothing about sharing."
+    successMessage: "Correct. Shared accounts remove accountability; individual ones restore it."
+  - id: awareness
+    title: "Prevent the repeat"
+    prompt: "Which measure most reduces the chance of the same mistake happening again?"
+    inputLabel: "Preventive measure"
+    validator:
+      type: choice
+      options:
+        - "Training staff on permissions, plus a periodic review of folder access"
+        - "Hiding the folder name so it is harder to find"
+        - "Asking staff to be more careful in future"
+        - "Turning off file sharing across the school"
+      correctIndex: 0
+      rationale: "The cause was a person not understanding what a permission did, so training addresses it, and a periodic review catches the next one before a student does. Renaming the folder is obscurity, not a control. Turning off sharing entirely stops the work the school needs to do."
+    successMessage: "Correct. Address the cause and add a check that catches recurrences."
+  - id: closure
+    title: "Close the incident"
+    prompt: "Write a one-line closure note. It must say that you contained the exposure and that access is now restricted. Use the words \"contained\" and \"restricted\"."
+    inputLabel: "Closure note"
+    placeholder: "Contained ... access now restricted ..."
+    hint: "The next person to read this should be able to tell what you proved, not just what you clicked."
+    validator:
+      type: regex
+      pattern: '^(?=.*\bcontain)(?=.*\brestrict).{25,}$'
+      flags: "i"
+    successMessage: "Good closure. You recorded both the action and the resulting state."
+domains:
+  - domainId: techplus.security
+    weight: 1
+---
+
+A student reports that a shared folder of coursework is visible to the whole school. Work it from first report to closure.
+
+## Goal
+
+Classify what failed, contain it before investigating, choose controls that address the cause, and document the outcome.

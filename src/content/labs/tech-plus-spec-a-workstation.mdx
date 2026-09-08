@@ -1,0 +1,93 @@
+---
+title: "Spec a Workstation for the Job"
+description: "Match hardware to three very different workloads and justify each choice against budget and requirements."
+slug: tech-plus-spec-a-workstation
+track: tech-plus
+moduleId: tech-plus.infrastructure
+order: 91
+difficulty: Beginner
+estMinutes: 15
+xp: 50
+activity: steps
+tags: ["Tech+", "FC0-U71", "lab"]
+steps:
+  - id: video-editor
+    title: "The video editing station"
+    prompt: "A media teacher edits 4K video. Which upgrade will make the most difference to their day?"
+    inputLabel: "Priority upgrade"
+    validator:
+      type: choice
+      options:
+        - "More RAM and a fast NVMe SSD"
+        - "A larger monitor"
+        - "A mechanical keyboard"
+        - "A faster network card"
+      correctIndex: 0
+      rationale: "Video editing holds large amounts of footage in memory and reads it constantly from disk. RAM and fast storage are the bottleneck. A bigger monitor helps comfort but not render time, and the network only matters when moving files."
+    successMessage: "Correct. Memory and storage speed drive editing performance."
+  - id: kiosk
+    title: "The reception kiosk"
+    prompt: "A reception kiosk displays a single web page all day. What is the appropriate machine?"
+    inputLabel: "Kiosk spec"
+    validator:
+      type: choice
+      options:
+        - "A low-power thin client or small form factor PC"
+        - "A high-end gaming desktop"
+        - "A rack-mounted server"
+        - "A laptop with a discrete GPU"
+      correctIndex: 0
+      rationale: "The workload is one browser window. A thin client costs less to buy, uses less power running continuously, and has fewer parts to fail. Over-specifying a kiosk wastes budget that another room needs."
+    successMessage: "Correct. Match the machine to the workload, not to the catalogue."
+  - id: storage-choice
+    title: "Choose the storage"
+    prompt: "The school needs to archive years of old coursework that is rarely opened but must be kept. Which storage suits it best?"
+    inputLabel: "Storage type"
+    validator:
+      type: choice
+      options:
+        - "High-capacity hard disk drives, chosen for cost per gigabyte"
+        - "NVMe solid-state drives for maximum speed"
+        - "USB flash drives kept in a drawer"
+        - "Optical discs stored in the server room"
+      correctIndex: 0
+      rationale: "Archived data is written once and read rarely, so speed is nearly irrelevant and capacity per pound is everything. HDDs remain far cheaper per gigabyte than SSDs. Flash drives are too easily lost and not designed for long-term retention."
+    successMessage: "Correct. Cold storage optimises for cost, not speed."
+  - id: connectivity
+    title: "Connect the room"
+    prompt: "A computer room of thirty machines needs reliable connections for exam use. What should they use?"
+    inputLabel: "Connection method"
+    validator:
+      type: choice
+      options:
+        - "Wired Ethernet to each machine"
+        - "Wi-Fi on the 2.4 GHz band"
+        - "Wi-Fi on the 5 GHz band"
+        - "Bluetooth tethering to staff phones"
+      correctIndex: 0
+      rationale: "Thirty machines sharing wireless airtime during an exam is exactly when wireless disappoints. Wired Ethernet gives each machine dedicated bandwidth and removes interference as a variable. Wireless is for mobility, not for a fixed room that must not fail."
+    successMessage: "Correct. Fixed machines that must be reliable get cable."
+  - id: cloud-call
+    title: "Cloud or on-premises"
+    prompt: "The school wants staff to reach shared files from home without running its own server. Which model fits?"
+    inputLabel: "Deployment model"
+    validator:
+      type: choice
+      options:
+        - "A cloud storage service, since access from anywhere is the requirement"
+        - "A server in the wiring closet with no remote access"
+        - "External drives issued to each member of staff"
+        - "Email attachments sent to personal accounts"
+      correctIndex: 0
+      rationale: "The stated requirement is access from outside the building without running hardware. That is what cloud services provide. Issuing drives creates version chaos, and emailing files to personal accounts is the data-protection incident from the security domain."
+    successMessage: "Correct. The requirement named the answer."
+domains:
+  - domainId: techplus.infrastructure
+    weight: 1
+---
+
+Three staff members need machines. They do completely different work, and the right answer for one is a waste of money for another. Spec each one.
+
+## Goal
+
+Choose components based on what the workload actually demands, rather than buying the most expensive option available.

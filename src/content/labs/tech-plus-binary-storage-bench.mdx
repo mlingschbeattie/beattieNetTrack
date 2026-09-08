@@ -1,0 +1,87 @@
+---
+title: "Binary and Storage Bench Test"
+description: "Convert between binary and decimal, size a drive correctly, and work out why a 1 TB disk shows as 931 GB."
+slug: tech-plus-binary-storage-bench
+track: tech-plus
+moduleId: tech-plus.it-concepts
+order: 90
+difficulty: Beginner
+estMinutes: 15
+xp: 50
+activity: steps
+tags: ["Tech+", "FC0-U71", "lab"]
+steps:
+  - id: bin-to-dec
+    title: "Binary to decimal"
+    prompt: "Convert the binary number 1011 to decimal. Enter digits only."
+    inputLabel: "Decimal value"
+    placeholder: "ex: 12"
+    hint: "Place values from the right are 1, 2, 4, 8. Add the ones with a 1 above them."
+    validator:
+      type: oneOf
+      values:
+        - "11"
+    successMessage: "Correct. 8 + 2 + 1 = 11."
+  - id: dec-to-bin
+    title: "Decimal to binary"
+    prompt: "Convert the decimal number 20 to binary. Enter the digits with no spaces."
+    inputLabel: "Binary value"
+    placeholder: "ex: 1100"
+    hint: "Which place values add up to 20? Work down from 16."
+    validator:
+      type: oneOf
+      values:
+        - "10100"
+    successMessage: "Correct. 16 + 4 = 20, so 10100."
+  - id: unit-order
+    title: "Order the units"
+    prompt: "Which list puts the storage units in order from smallest to largest?"
+    inputLabel: "Unit order"
+    validator:
+      type: choice
+      options:
+        - "Kilobyte, megabyte, gigabyte, terabyte"
+        - "Kilobyte, gigabyte, megabyte, terabyte"
+        - "Megabyte, kilobyte, gigabyte, terabyte"
+        - "Terabyte, gigabyte, megabyte, kilobyte"
+      correctIndex: 0
+      rationale: "Each step up is roughly a thousand times the one before. The order runs kilo, mega, giga, tera — the same prefixes you meet again in transfer rates, where they measure bits per second rather than bytes."
+    successMessage: "Correct. Kilo, mega, giga, tera."
+  - id: drive-gap
+    title: "Explain the missing capacity"
+    prompt: "A customer buys a 1 TB drive and Windows reports 931 GB. They think they were short-changed. What actually happened?"
+    inputLabel: "Explanation"
+    validator:
+      type: choice
+      options:
+        - "The manufacturer counts 1 TB as a trillion bytes, while Windows divides by 1024 at each step"
+        - "The missing space is taken by the operating system"
+        - "The drive is faulty and should be returned"
+        - "Windows reserves the difference for virtual memory"
+      correctIndex: 0
+      rationale: "Drive makers use decimal units where 1 TB is 1,000,000,000,000 bytes. Windows reports in binary units, dividing by 1024 three times, which yields about 931. No space is missing — the two sides are counting in different bases. Some space is used for formatting, but that is not what explains a gap this size."
+    successMessage: "Correct. Two different counting systems, not a fault."
+  - id: sizing
+    title: "Size the storage"
+    prompt: "A class needs to store 400 photos at roughly 5 MB each. Which drive is the smallest that comfortably fits?"
+    inputLabel: "Drive size"
+    validator:
+      type: choice
+      options:
+        - "4 GB"
+        - "1 GB"
+        - "500 MB"
+        - "256 MB"
+      correctIndex: 0
+      rationale: "400 multiplied by 5 MB is 2,000 MB, which is about 2 GB. A 1 GB drive is too small and 4 GB leaves working room. Estimating capacity before buying is the everyday version of this skill."
+    successMessage: "Correct. Around 2 GB is needed, so 4 GB is the sensible choice."
+domains:
+  - domainId: techplus.it_concepts
+    weight: 1
+---
+
+You will be asked for exact numbers here, and exact numbers are the point — this is the one place on the Tech+ exam where you either can do the arithmetic or you cannot. Take the conversions slowly. Nobody does these quickly at first.
+
+## Goal
+
+Convert in both directions, apply the storage-unit prefixes correctly, and explain the advertised-versus-actual capacity gap that every technician gets asked about.

@@ -1,0 +1,79 @@
+---
+title: "Choose the Software and the Licence"
+description: "Pick appropriate applications and licensing models for four realistic school requests."
+slug: tech-plus-software-and-licensing
+track: tech-plus
+moduleId: tech-plus.applications
+order: 92
+difficulty: Beginner
+estMinutes: 12
+xp: 50
+activity: steps
+tags: ["Tech+", "FC0-U71", "lab"]
+steps:
+  - id: app-type
+    title: "Match the application type"
+    prompt: "A teacher wants to build a class budget with formulas that update automatically. Which application type is it?"
+    inputLabel: "Application type"
+    validator:
+      type: choice
+      options:
+        - "Spreadsheet software"
+        - "Word processing software"
+        - "Presentation software"
+        - "Database management software"
+      correctIndex: 0
+      rationale: "Automatic recalculation from formulas is the defining feature of a spreadsheet. A database stores and queries structured records but is not built for ad-hoc arithmetic across a grid."
+    successMessage: "Correct. Formulas that recalculate mean a spreadsheet."
+  - id: os-choice
+    title: "Choose the operating system"
+    prompt: "A department needs cheap machines for web-based work with minimal administration. Which fits best?"
+    inputLabel: "Operating system"
+    validator:
+      type: choice
+      options:
+        - "ChromeOS on low-cost hardware"
+        - "A server operating system"
+        - "A specialised embedded OS"
+        - "A trial version of a desktop OS reinstalled each term"
+      correctIndex: 0
+      rationale: "Web-based work with low administrative overhead is the case ChromeOS is designed for. A server OS is built to serve clients, not to be one, and repeatedly reinstalling trial software is both fragile and a licence breach."
+    successMessage: "Correct. Match the OS to how the machine is actually used."
+  - id: licence-model
+    title: "Identify the licence"
+    prompt: "Software is free to use, and its source code can be viewed and modified by anyone. Which model is this?"
+    inputLabel: "Licence model"
+    validator:
+      type: choice
+      options:
+        - "Open source"
+        - "Proprietary"
+        - "Subscription"
+        - "Trial"
+      correctIndex: 0
+      rationale: "Open source grants the right to inspect and modify the source. Proprietary software keeps its source closed regardless of price. Free to download does not by itself make something open source — the source access is the distinguishing feature."
+    successMessage: "Correct. Source availability is what defines it."
+  - id: licence-breach
+    title: "Spot the compliance problem"
+    prompt: "A single-user licence for design software is installed on twelve classroom machines. What is the issue?"
+    inputLabel: "The problem"
+    validator:
+      type: choice
+      options:
+        - "The licence permits one installation, so eleven machines are unlicensed"
+        - "The software will run slowly across twelve machines"
+        - "There is no issue if the machines are in one room"
+        - "The licence only applies to personal, not educational, use"
+      correctIndex: 0
+      rationale: "A single-user licence covers one installation or one named user. Installing it twelve times breaches the agreement regardless of location or intent, and audits do happen. A volume or education licence is the correct route."
+    successMessage: "Correct. Licence terms are counted per installation or per user."
+domains:
+  - domainId: techplus.applications
+    weight: 1
+---
+
+Four requests land in your inbox in one morning. Each needs software, and each needs the right licence — getting the licence wrong is how schools end up with a compliance problem.
+
+## Goal
+
+Match the application type and licensing model to the requirement, and recognise when a licence forbids what is being asked.
