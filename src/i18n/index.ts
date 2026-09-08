@@ -20,9 +20,9 @@ export type LanguageDef = {
  */
 export const LANGUAGES: LanguageDef[] = [
   { code: 'en', nativeName: 'English', short: 'EN', dir: 'ltr', englishName: 'English' },
-  { code: 'ar', nativeName: 'العربية', short: 'ع', dir: 'rtl', englishName: 'Arabic' },
-  { code: 'fa', nativeName: 'فارسی', short: 'فا', dir: 'rtl', englishName: 'Persian' },
-  { code: 'uk', nativeName: 'Українська', short: 'УК', dir: 'ltr', englishName: 'Ukrainian' },
+  { code: 'ar', nativeName: 'العربية', short: 'عربي', dir: 'rtl', englishName: 'Arabic' },
+  { code: 'fa', nativeName: 'فارسی', short: 'فارسی', dir: 'rtl', englishName: 'Persian' },
+  { code: 'uk', nativeName: 'Українська', short: 'УКР', dir: 'ltr', englishName: 'Ukrainian' },
 ];
 
 export const DEFAULT_LANG: LangCode = 'en';

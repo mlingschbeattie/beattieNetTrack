@@ -53,7 +53,8 @@ export const strings = {
   'workspace.expand': { en: 'Expand', ar: 'توسيع', fa: 'باز کردن', uk: 'Розгорнути' },
 
   // --- Lesson view toggle ---
-  'lesson.guided': { en: 'Guided', ar: 'موجّه', fa: 'راهنمایی‌شده', uk: 'Покроково' },
+  'lesson.learn': { en: 'Learn', ar: 'تعلم', fa: 'یادگیری', uk: 'Навчання' },
+  'lesson.readAloud': { en: 'Read aloud', ar: 'قراءة بصوت عالٍ', fa: 'خواندن با صدای بلند', uk: 'Читати вголос' },
   'lesson.outline': { en: 'Outline', ar: 'المخطط', fa: 'رئوس مطالب', uk: 'Огляд' },
   'lesson.reading': { en: 'Reading', ar: 'القراءة', fa: 'خواندن', uk: 'Читання' },
   'lesson.markComplete': { en: 'Mark Complete', ar: 'وضع علامة مكتمل', fa: 'علامت‌گذاری به‌عنوان کامل', uk: 'Позначити виконаним' },

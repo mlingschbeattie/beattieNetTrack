@@ -83,9 +83,10 @@ const isActive = (href: string) => {
             data-set-lang={l.code}
             lang={l.code}
             aria-pressed={l.code === DEFAULT_LANG ? 'true' : 'false'}
-            title={l.englishName}
+            title={l.nativeName}
+            aria-label={l.englishName}
           >
-            {l.nativeName}
+            {l.short}
           </button>
         ))}
       </div>
