@@ -111,25 +111,7 @@ Every component has a specific job, a specific power requirement, and a dedicate
 
 Understanding internal components is where theory turns into hands-on tradecraft.
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        CORE INTERNAL ARCHITECTURE                      │
-├────────────────────────────────────────────────────────────────────────┤
-│                                                                        │
-│   [ Power Supply Unit (PSU) ] ──(+12V, +5V, +3.3V DC Rails)──┐         │
-│                                                              │         │
-│   ┌─────────────────────────── MOTHERBOARD ──────────────────▼─────┐   │
-│   │                                                                │   │
-│   │  [ CPU + Cooler ] <──(High-Speed Bus)──> [ System RAM (DDR5) ] │   │
-│   │         │                                                      │   │
-│   │         └───(PCIe Lanes)───> [ Dedicated GPU (x16 Slot) ]      │   │
-│   │         │                                                      │   │
-│   │    [ CHIPSET ] <───(PCIe/SATA)───> [ M.2 NVMe SSD / SATA HDDs] │   │
-│   │         │                                                      │   │
-│   │         └───(I/O Controllers)───> [ Rear USB, Audio, Ethernet ]│   │
-│   └────────────────────────────────────────────────────────────────┘   │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Motherboard Architecture and Core Internal Interconnects](/images/hardware/motherboard-atx-landmarks.jpg)
 
 ---
 
@@ -154,14 +136,7 @@ When installing a processor into a motherboard, the physical interface must matc
 | **LGA (Land Grid Array)** | Pins are on the **motherboard socket** | Flat gold contact pads | Intel (Core Series), AMD (AM5 / Threadripper) |
 | **PGA (Pin Grid Array)** | Pins are on the **CPU itself** | Hundreds of fragile gold pins | Legacy AMD (AM4), specialized mobile sockets |
 
-```
-      LGA (Socket has pins)               PGA (CPU has pins)
-   ┌─────────────────────────┐         ┌─────────────────────────┐
-   │ [Motherboard with pins] │         │  [Flat socket holes]    │
-   │           ▲             │         │           ▲             │
-   │  [Flat CPU with pads]   │         │ [CPU with gold pins]    │
-   └─────────────────────────┘         └─────────────────────────┘
-```
+![LGA vs PGA CPU Socket Architecture Comparison](/images/hardware/cpu-lga-vs-pga-comparison.jpg)
 
 <Callout type="warn">
 **Technician Caution:** LGA socket pins on a motherboard are microscopic and extremely fragile. Dropping a CPU corner or slipping with a screwdriver will bend pins and permanently destroy a $300 motherboard. Never touch socket pins with your fingers.
@@ -172,6 +147,8 @@ When installing a processor into a motherboard, the physical interface must matc
 ## Volatile RAM vs. Non-Volatile Storage
 
 One of the most important concepts in computing is the difference between working memory and long-term storage:
+
+![RAM Generation Comparison: DDR3, DDR4, and DDR5 Modules](/images/hardware/ram-ddr3-ddr4-ddr5-comparison.jpg)
 
 - **System RAM (Random Access Memory):** High-speed, **volatile** memory. The operating system kernel, open browser tabs, game textures, and active files live here while the computer is powered on. Because RAM is volatile, **every bit of data is wiped the instant electrical power is cut**.
 - **Dual-Channel Memory:** Motherboards group RAM slots into pairs (Channels A and B). Installing two matching RAM sticks in alternating slots (e.g. Slots 2 and 4) doubles the communication bus width between the CPU and memory from 64-bit to 128-bit, significantly boosting performance.
