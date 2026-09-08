@@ -54,11 +54,8 @@ const rtlLangs = LANGUAGES.filter((l) => l.dir === 'rtl').map((l) => l.code);
           root.dataset.spacing = a11y.readableSpacing ? 'readable' : 'default';
           root.dataset.underlineLinks = a11y.underlineLinks ? 'on' : 'off';
 
-          const params = new URLSearchParams(window.location.search);
-          const lang = params.get('lang') || window.localStorage.getItem('beattienet_lang') || 'en';
-          const rtl = JSON.parse(document.getElementById('bn-rtl-langs').textContent);
-          document.documentElement.lang = lang;
-          document.documentElement.dir = rtl.includes(lang) ? 'rtl' : 'ltr';
+          document.documentElement.lang = 'en';
+          document.documentElement.dir = 'ltr';
         } catch {
           document.documentElement.dataset.theme = 'dark';
         }
@@ -73,8 +70,6 @@ const rtlLangs = LANGUAGES.filter((l) => l.dir === 'rtl').map((l) => l.code);
     <script>
       document.documentElement.classList.add('js');
       
-      // Floating language selector logic
-      const langButtons = document.querySelectorAll('[data-set-lang]');
       const readJson = (id: string, fallback: any) => {
         try {
           const el = document.getElementById(id);
@@ -84,7 +79,6 @@ const rtlLangs = LANGUAGES.filter((l) => l.dir === 'rtl').map((l) => l.code);
         }
       };
       const DICTS = readJson('bn-i18n', {});
-      const RTL_LANGS: string[] = readJson('bn-rtl-langs', []);
 
       /**
        * Applies the active dictionary to every marked node. Elements opt in
@@ -111,32 +105,15 @@ const rtlLangs = LANGUAGES.filter((l) => l.dir === 'rtl').map((l) => l.code);
         });
       };
 
-      const updateLangUi = (currentLang: string) => {
-        document.documentElement.lang = currentLang;
-        document.documentElement.dir = RTL_LANGS.includes(currentLang) ? 'rtl' : 'ltr';
-        localStorage.setItem('beattienet_lang', currentLang);
-        langButtons.forEach((btn) => {
-          const l = btn.getAttribute('data-set-lang');
-          const isActive = l === currentLang;
-          // Styling is driven by [aria-pressed] in CSS so it themes with the
-          // palette. Inline styles would beat every stylesheet and lock these
-          // buttons to one theme.
-          btn.setAttribute('aria-pressed', String(isActive));
-        });
-        applyTranslations(currentLang);
-        // Islands hydrate after this runs; let them re-apply on mount.
-        window.dispatchEvent(new CustomEvent('beattie:langchange', { detail: { lang: currentLang } }));
+      const updateLangUi = (_currentLang?: string) => {
+        document.documentElement.lang = 'en';
+        document.documentElement.dir = 'ltr';
+        localStorage.setItem('beattienet_lang', 'en');
+        applyTranslations('en');
+        window.dispatchEvent(new CustomEvent('beattie:langchange', { detail: { lang: 'en' } }));
       };
 
-      const initialLang = document.documentElement.lang || 'en';
-      updateLangUi(initialLang);
-
-      langButtons.forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const target = btn.getAttribute('data-set-lang') || 'en';
-          updateLangUi(target);
-        });
-      });
+      updateLangUi('en');
       const themeToggle = document.querySelector('[data-theme-toggle]');
       const themeIcon = document.querySelector('[data-theme-icon]');
       const themeLabel = document.querySelector('[data-theme-label]');
