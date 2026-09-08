@@ -1,26 +1,25 @@
 import os
 from PIL import Image, ImageDraw, ImageFont
 
-# Load original base photograph
+# Load clean original motherboard image
 src_path = "original_motherboard.jpg"
-base = Image.open(src_path).convert("RGBA")
-base_w, base_h = base.size
+if not os.path.exists(src_path):
+    # Fallback to extracting from git if needed
+    import subprocess
+    with open(src_path, "wb") as f:
+        subprocess.run(["git", "show", "HEAD:public/images/hardware/motherboard-atx-landmarks.jpg"], stdout=f)
 
-# Target canvas: 1860 x 940 gives generous margins on all 4 sides
+base = Image.open(src_path).convert("RGBA")
+
+# Canvas setup: 1860 x 940
 CANVAS_W = 1860
 CANVAS_H = 940
-
-# Offset to center the base image in the canvas
 OFFSET_X = 240
 OFFSET_Y = 85
 
-# Create canvas with sleek dark background matching LMS theme (#0b1120)
 canvas = Image.new("RGBA", (CANVAS_W, CANVAS_H), (11, 17, 32, 255))
-
-# Paste base motherboard image in center
 canvas.paste(base, (OFFSET_X, OFFSET_Y))
 
-# Create drawing layer for lines and badges
 overlay = Image.new("RGBA", (CANVAS_W, CANVAS_H), (0, 0, 0, 0))
 draw = ImageDraw.Draw(overlay)
 
@@ -31,7 +30,7 @@ font_title = ImageFont.truetype("C:/Windows/Fonts/segoeuib.ttf", 13)
 font_subtitle = ImageFont.truetype("C:/Windows/Fonts/segoeui.ttf", 11)
 font_badge = ImageFont.truetype("C:/Windows/Fonts/segoeuib.ttf", 9)
 
-# Colors tailored for high contrast and pedagogical clarity
+# Theme tokens
 COLORS = {
     "COMPUTE":  {"border": (56, 189, 248, 255), "bg": (14, 30, 50, 248),  "accent": (56, 189, 248, 255), "glow": (56, 189, 248, 90)},
     "POWER":    {"border": (251, 191, 36, 255), "bg": (40, 30, 10, 248),  "accent": (251, 191, 36, 255), "glow": (251, 191, 36, 90)},
@@ -42,114 +41,110 @@ COLORS = {
     "CHASSIS":  {"border": (148, 163, 184, 255), "bg": (24, 30, 42, 248), "accent": (148, 163, 184, 255), "glow": (148, 163, 184, 90)},
 }
 
-# Header banner at top
+# Header banner
 draw.text((30, 18), "ATX MOTHERBOARD INTERFACE & HARDWARE LANDMARK MAP", fill=(248, 250, 252), font=font_header)
 draw.text((32, 45), "CompTIA A+ Core 1 physical reference: identifying where each subsystem connects to the system board.", fill=(148, 163, 184), font=font_subhdr)
 
-# Helper to transform board coords to canvas coords
-def to_canvas(bx, by):
-    return (bx + OFFSET_X, by + OFFSET_Y)
-
-# Calibrated callouts
+# Calibrated Callouts with dedicated trace paths
 callouts = [
     # Top Left: CPU EPS Power
     {
         "category": "POWER",
         "title": "8+8 Pin CPU Power (EPS 12V)",
         "plugs": "Plugs: Dedicated 8-Pin CPU 12V power cables from PSU",
-        "anchor": to_canvas(580, 110),
         "box": (30, 85, 350, 54),
-        "side": "right",
+        "anchor": (750, 155),
+        "path": [(380, 112), (750, 112), (750, 155)],
     },
     # Top Center: CPU Socket
     {
         "category": "COMPUTE",
         "title": "CPU Socket (LGA 1700)",
         "plugs": "Plugs: Processor (Intel Core 12th-14th Gen) under ZIF lever",
-        "anchor": to_canvas(710, 370),
         "box": (800, 16, 380, 54),
-        "side": "top_center",
+        "anchor": (950, 420),
+        "path": [(950, 70), (950, 420)],
     },
     # Left 2: Rear I/O Panel
     {
         "category": "IO",
         "title": "Rear I/O External Ports",
         "plugs": "Plugs: Monitors (DP/HDMI), 2.5GbE LAN, USB, Audio",
-        "anchor": to_canvas(290, 330),
         "box": (30, 245, 350, 54),
-        "side": "right",
+        "anchor": (580, 415),
+        "path": [(380, 272), (580, 272), (580, 415)],
     },
     # Left 3: PCIe Expansion Slots
     {
         "category": "EXPANSION",
         "title": "PCIe Expansion Slots (x1 / x4)",
         "plugs": "Plugs: Add-in cards (Wi-Fi, 10GbE NICs, Sound, Capture)",
-        "anchor": to_canvas(490, 690),
         "box": (30, 440, 350, 54),
-        "side": "right",
+        "anchor": (730, 775),
+        "path": [(380, 467), (460, 467), (460, 775), (730, 775)],
     },
     # Left 4: Front Audio & Case Headers
     {
         "category": "CHASSIS",
         "title": "Front Panel Audio & USB Headers",
         "plugs": "Plugs: Case Front USB 2.0/3.2 and HD Audio cables",
-        "anchor": to_canvas(500, 725),
         "box": (30, 665, 350, 54),
-        "side": "right",
+        "anchor": (740, 810),
+        "path": [(380, 692), (430, 692), (430, 810), (740, 810)],
     },
     # Right 1: DDR5 RAM Slots
     {
         "category": "COMPUTE",
         "title": "DDR5 Memory Slots (DIMM 1-4)",
         "plugs": "Plugs: System RAM sticks (Dual-Channel Priority A2/B2)",
-        "anchor": to_canvas(980, 350),
         "box": (1480, 85, 350, 54),
-        "side": "left",
+        "anchor": (1020, 350),
+        "path": [(1480, 112), (1390, 112), (1390, 350), (1020, 350)],
     },
-    # Right 2: 24-Pin ATX Power
+    # Right 2: 24-Pin ATX Main Power Header
     {
         "category": "POWER",
         "title": "24-Pin ATX Main Power Header",
         "plugs": "Plugs: Main 24-Pin harness from PSU (powers board & chipset)",
-        "anchor": to_canvas(1170, 360),
         "box": (1480, 225, 350, 54),
-        "side": "left",
+        "anchor": (1250, 430),
+        "path": [(1480, 252), (1350, 252), (1350, 430), (1250, 430)],
     },
-    # Right 3: M.2 NVMe SSD Slot
+    # Right 3: M.2 NVMe SSD Slot (Gen 5)
     {
         "category": "STORAGE",
         "title": "M.2 NVMe PCIe SSD Slot (Gen 5)",
         "plugs": "Plugs: High-speed M.2 2280 NVMe SSD (under heatsink)",
-        "anchor": to_canvas(650, 535),
         "box": (1480, 365, 350, 54),
-        "side": "left",
+        "anchor": (890, 615),
+        "path": [(1480, 392), (1320, 392), (1320, 615), (890, 615)],
     },
     # Right 4: Primary PCIe 5.0 x16 Slot
     {
         "category": "GPU",
         "title": "PCIe 5.0 x16 Slot (Steel Armor)",
         "plugs": "Plugs: Dedicated Graphics Card (Discrete GPU)",
-        "anchor": to_canvas(660, 610),
         "box": (1480, 505, 350, 54),
-        "side": "left",
+        "anchor": (840, 695),
+        "path": [(1480, 532), (1290, 532), (1290, 695), (840, 695)],
     },
-    # Right 5: SATA 6Gbps Ports
+    # Right 5: SATA 6Gbps Storage Ports
     {
         "category": "STORAGE",
         "title": "SATA 6Gbps Storage Ports",
         "plugs": "Plugs: SATA Data cables to 2.5\" SSDs & 3.5\" Hard Drives",
-        "anchor": to_canvas(1185, 665),
         "box": (1480, 645, 350, 54),
-        "side": "left",
+        "anchor": (1250, 710),
+        "path": [(1480, 672), (1350, 672), (1350, 710), (1250, 710)],
     },
     # Bottom Right: Front Panel System Header
     {
         "category": "CHASSIS",
         "title": "Front Panel Switch/LED Header",
         "plugs": "Plugs: Case Power Switch, Reset Button, HDD & Power LEDs",
-        "anchor": to_canvas(1045, 712),
         "box": (1480, 785, 350, 54),
-        "side": "left",
+        "anchor": (1200, 780),
+        "path": [(1480, 812), (1380, 812), (1380, 780), (1200, 780)],
     },
 ]
 
@@ -175,54 +170,34 @@ def draw_badge(draw, c, box):
     # Subtitle / Plugs text
     draw.text((x + 14, y + 31), c["plugs"], fill=(203, 213, 225), font=font_subtitle)
 
-def draw_leader_line(draw, c):
+def draw_trace(draw, c):
     col = COLORS[c["category"]]
+    points = c["path"]
     ax, ay = c["anchor"]
-    bx, by, bw, bh = c["box"]
-    side = c["side"]
 
-    if side == "right":
-        cx = bx + bw
-        cy = by + bh // 2
-        mid_x = cx + (ax - cx) // 2
-        points = [(cx, cy), (mid_x, cy), (mid_x, ay), (ax, ay)]
-    elif side == "left":
-        cx = bx
-        cy = by + bh // 2
-        mid_x = cx - (cx - ax) // 2
-        points = [(cx, cy), (mid_x, cy), (mid_x, ay), (ax, ay)]
-    elif side == "top_center":
-        cx = bx + bw // 2
-        cy = by + bh
-        points = [(cx, cy), (cx, ay - 40), (ax, ay)]
-    else:
-        cx = bx + bw // 2
-        cy = by
-        points = [(cx, cy), (ax, ay)]
-
-    # Draw glow line
+    # Glow line
     for p1, p2 in zip(points[:-1], points[1:]):
         draw.line([p1, p2], fill=col["glow"], width=5)
 
-    # Draw crisp leader line
+    # Sharp trace line
     for p1, p2 in zip(points[:-1], points[1:]):
         draw.line([p1, p2], fill=col["border"], width=2)
 
-    # Anchor point target ring
+    # Target anchor ring directly on the physical hardware port
     draw.ellipse([ax - 10, ay - 10, ax + 10, ay + 10], fill=col["glow"])
     draw.ellipse([ax - 6, ay - 6, ax + 6, ay + 6], fill=col["border"], outline=(255, 255, 255, 255), width=2)
     draw.ellipse([ax - 2, ay - 2, ax + 2, ay + 2], fill=(255, 255, 255, 255))
 
-# Draw all leader lines
+# Draw all traces first
 for c in callouts:
-    draw_leader_line(draw, c)
+    draw_trace(draw, c)
 
-# Draw all badges
+# Draw all badges on top
 for c in callouts:
     draw_badge(draw, c, c["box"])
 
-# Composite overlay on top of canvas
+# Composite overlay
 final_img = Image.alpha_composite(canvas, overlay).convert("RGB")
 output_path = "public/images/hardware/motherboard-atx-landmarks.jpg"
 final_img.save(output_path, quality=95)
-print(f"Successfully generated diagram to {output_path}")
+print(f"Successfully generated diagram with exact calibrated traces to {output_path}")

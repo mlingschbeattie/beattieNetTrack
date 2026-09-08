@@ -26,6 +26,12 @@ if (!detail) {
 const lessonMap = Object.fromEntries(allLessons.map((entry) => [entry.slug, entry]));
 const track = detail.track;
 const modules = detail.modules;
+
+// prevNextByKey powers server-side activity navigation and is never read by
+// TrackModuleList, but it serialises into the island props — duplicating every
+// activity as both a prev and a next object. On network-engineer that was the
+// bulk of a 114 KB props blob. Strip it before it crosses to the client.
+const modulesForList = modules.map(({ prevNextByKey, ...rest }) => rest);
 const currentTrack = allTracks.find((entry) => entry.slug === slug);
 
 const hasModules = Boolean(modules && modules.length > 0);
@@ -60,5 +66,5 @@ const activitySlugs = activities.map((act) => act.slug);
     <TrackProgressSummary client:only="react" activities={activities} activitySlugs={activitySlugs} />
   </div>
 
-  <TrackModuleList client:load modules={modules} />
+  <TrackModuleList client:load modules={modulesForList} />
 </AppShell>
