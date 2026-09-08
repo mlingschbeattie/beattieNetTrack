@@ -1,0 +1,154 @@
+---
+title: "Your Digital Footprint — What the Internet Already Knows"
+description: "What a digital footprint is made of, why deletion mostly does not work, and how online activity compounds into a record that follows you into college applications and hiring."
+slug: "cfs-1-1-5-digital-footprint"
+track: "cybersecurity-foundations"
+moduleId: "cfs.fundamentals.security-concepts"
+order: 5
+difficulty: "Beginner"
+estMinutes: 25
+tags: ["digital-citizenship", "privacy", "digital-footprint", "9-12.DC.FOOT", "9-12.DC.PPI.1"]
+sections:
+  - id: active-and-passive
+    title: "Active and Passive Footprints"
+    keyPoints:
+      - "An active footprint is what you deliberately publish — posts, comments, uploads, profiles, reviews."
+      - "A passive footprint is collected about you without any deliberate act: location history, browsing behaviour, purchases, device identifiers."
+      - "The passive footprint is usually far larger than the active one, and it is the part people do not know exists."
+    check:
+      - prompt: "You visit a shopping site, do not create an account, and buy nothing. What footprint have you left?"
+        options:
+          - "None, because you did not log in or submit anything"
+          - "A passive footprint — IP address, device fingerprint, pages viewed, and time spent"
+          - "An active footprint, because you chose to visit the site"
+          - "Only a cookie, which is deleted when you close the tab"
+        correct: 1
+      - prompt: "Why is the passive footprint usually the bigger privacy concern?"
+        options:
+          - "It is collected continuously without your awareness, so you cannot judge what exists"
+          - "It is always sold to foreign governments"
+          - "It is stored unencrypted by law"
+          - "It is larger in file size than photos and videos"
+        correct: 0
+  - id: permanence
+    title: "Why Deleting It Does Not Delete It"
+    keyPoints:
+      - "Deleting a post removes your copy, not the copies made by screenshots, archives, caches, and other users."
+      - "Data brokers aggregate scattered public details into a single profile that outlives any one source."
+      - "The practical assumption is that anything published may persist indefinitely and outside your control."
+    check:
+      - prompt: "You delete a post two years after publishing it. What has actually been removed?"
+        options:
+          - "Every copy, because deletion is legally required to propagate"
+          - "Your copy on that platform — screenshots, archives, caches, and reshares are unaffected"
+          - "Nothing at all; deletion is purely cosmetic on every platform"
+          - "Only the text, while images remain public"
+        correct: 1
+      - prompt: "What does a data broker do that makes scattered public details more sensitive?"
+        options:
+          - "It encrypts the details so only paying customers can read them"
+          - "It deletes the originals after copying them"
+          - "It aggregates details from many sources into one profile that reveals more than any single source"
+          - "It reports the details to law enforcement automatically"
+        correct: 2
+  - id: implications
+    title: "Where It Actually Shows Up"
+    keyPoints:
+      - "Employers and admissions offices routinely search applicants, and a footprint can help as well as harm."
+      - "A visible record of real work — projects, contributions, certifications — is an asset in a field that hires on evidence."
+      - "The asymmetry is that a single bad item is easy to find and hard to remove, while a good record takes years to build."
+    check:
+      - prompt: "Why is a digital footprint described as an asymmetric risk?"
+        options:
+          - "Positive and negative content are weighted equally by search engines"
+          - "One damaging item is quickly found and hard to remove, while a positive record takes years to build"
+          - "Only negative content persists; positive content is deleted by platforms"
+          - "Employers are legally barred from viewing positive content"
+        correct: 1
+      - prompt: "For someone entering IT or cybersecurity, which footprint is genuinely useful?"
+        options:
+          - "No footprint at all — total absence is safest for a security role"
+          - "A large follower count on any platform"
+          - "A visible record of real work: projects, write-ups, contributions, and certifications"
+          - "Anonymous accounts only, since employers cannot verify them"
+        correct: 2
+domains:
+  - domainId: "cyber.foundations"
+    weight: 1
+---
+
+import Callout from '../../components/Callout.astro';
+
+## Two Kinds of Trail
+
+Search your own name sometime. Most people are surprised twice — once by what is there, and once by what isn't, because the parts that matter most are the parts no search engine shows you.
+
+Your **digital footprint** is everything the internet holds about you, and it comes in two kinds.
+
+**The active footprint** is what you deliberately put out: posts, comments, photos, videos, reviews, profiles, replies, the account you made in seventh grade and forgot. You chose to publish all of it, which means you at least had a moment to think about it.
+
+**The passive footprint** is collected about you without any deliberate act on your part. Your IP address and rough location. Which pages you visited, in what order, and how long you stayed. Your device's screen size, operating system, installed fonts, and graphics hardware — combined, those are specific enough to identify your particular machine across sites, a technique called **device fingerprinting**. Purchase history. Location history from a phone that has been in your pocket all day.
+
+The passive footprint is almost always the larger of the two, and it is the one people do not know exists. You did not agree to it in any meaningful sense — you clicked Accept on a consent banner once, four years ago, on a different device.
+
+## Permanence — The Part That Surprises People
+
+The instinct, when something goes wrong, is to delete it. That instinct is reasonable and it mostly does not work.
+
+Deleting a post removes **your copy on that platform**. It does not remove:
+
+- **Screenshots.** Somebody already has one. This is the main mechanism, and it is completely outside your control.
+- **Archives.** The Internet Archive and similar services take periodic snapshots of public pages. A deleted page frequently remains readable there.
+- **Caches and indexes.** Search engines keep copies. These do expire, but on their schedule, not yours.
+- **Reshares and quotes.** Once something is reposted, the copy belongs to the reposter.
+- **The platform's own records.** Deleting from your view is not the same as deleting from their storage, and retention periods vary.
+
+Then there are **data brokers** — companies whose business is assembling scattered public details into a single profile. Individually, your school, your rough location, a sports team you follow, and a relative's name are unremarkable. Aggregated, they identify you precisely and can be sold to anyone. Nothing was hacked. Every piece was public. The aggregation is the harm.
+
+<Callout type="warn">
+The response that makes things worse is the panicked mass-delete. Something embarrassing surfaces, and the instinct is to wipe every account at once. This rarely removes the item — copies already exist — and it destroys the context around it: the ordinary posts that made you look like a normal person rather than a single decontextualised screenshot. Deleting an account can also permanently surrender the username, letting someone else register it and post as you. If something genuinely needs removing, use the platform's takedown process for that item, document it, and leave the rest of your record standing. A thin footprint is not a clean one — it is a footprint with nothing to balance the worst thing in it.
+</Callout>
+
+## Where This Actually Shows Up
+
+The abstract version of this lesson is easy to ignore. The concrete version is not.
+
+**Hiring.** Searching candidates is routine, and in cybersecurity specifically it is close to universal — you are applying for a role built on trust and judgment, and employers look. Some run formal background checks that include social media.
+
+**College admissions.** A meaningful minority of admissions officers report searching applicants, most often when something needs verifying or an application seems inconsistent.
+
+**Scholarships, clearances, and licensing.** Security clearances involve serious investigation, and a documented pattern matters more than any single post. If you are considering government or defense work — a realistic path from this program — this is not hypothetical.
+
+**Relationships and reputation, over long spans.** Something posted at fifteen can be found at twenty-five by someone with no context for who you were.
+
+### The asymmetry, stated plainly
+
+One bad item is fast to find and slow to remove. A good record is slow to build and easy to overlook. That is an uncomfortable trade and pretending otherwise would be dishonest.
+
+But the conclusion people draw from it is usually wrong. The answer is not to have no footprint. For this field, an absent candidate is a candidate with nothing to show.
+
+**A positive footprint is a professional asset**, and in IT it is unusually legible: a GitHub profile with real commits, a home lab you documented, a write-up of a CTF challenge you solved, a certification badge, a technical blog post that is merely competent. Hiring managers in this field check whether you actually do the work. A visible record of doing it is worth more than a polished résumé, because it is evidence rather than a claim.
+
+<Callout type="exam">
+Know the vocabulary precisely: an **active** footprint is what you publish deliberately, a **passive** footprint is collected about you without deliberate action, and **data aggregation** is the process that makes individually harmless public details sensitive when combined. Digital permanence is the assumption that published data may persist indefinitely regardless of deletion — CompTIA and the K-12 standards both frame this as a data-lifecycle and privacy issue, not a behaviour lecture.
+</Callout>
+
+## What Actually Helps
+
+Not a purity campaign. Four habits that hold up:
+
+**Assume publication is permanent.** Before posting, assume it may be read in ten years by someone who does not like you and has no context. Most things pass that test. The ones that do not are worth another minute of thought.
+
+**Audit deliberately, once or twice a year.** Search your own name in a logged-out browser. Review the privacy settings on accounts you actually use. Close accounts you abandoned — dormant accounts leak data through breaches long after you stop thinking about them.
+
+**Separate identities on purpose.** A professional presence under your real name and a personal one that is not linked to it is a legitimate, normal structure. Keep the boundary deliberate rather than accidental.
+
+**Build the record you want found.** This is the only part of the problem you fully control, and it is the part most people neglect. Every project you document is a search result competing with everything else about you.
+
+## Why This Matters
+
+You are entering a field that runs on trust. Employers hand technicians administrative credentials, physical access to server rooms, and visibility into other people's data — and they check who they are handing that to. Understanding how footprints are built, why they persist, and how aggregation turns harmless details into a profile is professional knowledge, not a safety talk. It is also directly the skill you will use on the other side of the desk: the same aggregation that profiles you is what an attacker performs against a target before a social engineering campaign, and what you will learn to defend against.
+
+## Key Terms
+
+digital footprint · active footprint · passive footprint · device fingerprinting · metadata · data aggregation · data broker · digital permanence · web archive · cache · takedown request · privacy settings · dormant account · account takeover · social identity · professional presence · OSINT

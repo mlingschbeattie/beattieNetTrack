@@ -44,11 +44,14 @@ Note `COMP` appears twice with different meanings: `CS.COMP` is *Network Compone
 
 | Status | CS (12) | DC (9) | SEC (10) | Total (31) |
 |---|---|---|---|---|
-| ✅ Covered | 8 | 1 | 9 | **18** |
-| ⚠️ Partial | 3 | 2 | 0 | **5** |
-| ❌ Gap | 1 | 6 | 1 | **8** |
+| ✅ Covered | 8 | 4 | 10 | **22** |
+| ⚠️ Partial | 3 | 3 | 0 | **6** |
+| ❌ Gap | 1 | 2 | 0 | **3** |
 
-*Updated 2026-09-08 after closing `CS.LOSS`, `SEC.CIA`, and `DC.AUP` — see §8.*
+*Updated 2026-09-08. Closed `CS.LOSS`, `SEC.CIA`, `DC.AUP`, `DC.THRT`, `DC.FOOT` and `DC.PPI.1`;
+corrected `SEC.ACC` (was wrongly a gap — fully covered on tech-plus), and `DC.LAW` / `DC.IP`
+from gap to partial. Only three genuine gaps remain, all in the Online Safety and Software
+strands. See §8.*
 
 This inverts the assumption in `CYBER_PATHWAY_STRUCTURE.md`. That document treated cyber as a
 large greenfield build. Against *these* standards the technical content is mostly there — it
@@ -89,13 +92,13 @@ district review is most likely to ask about.
 | Code | Standard | Status | Existing content |
 |---|---|---|---|
 | `9-12.DC.CYBL` | Prepare a plan to raise awareness of the effects of cyberbullying. | ❌ | **Gap.** Nothing |
-| `9-12.DC.FOOT` | Examine the implications of both positive and negative digital footprints. | ❌ | **Gap.** Nothing |
-| `9-12.DC.PPI.1` | Explain the importance of social identity and the implications of online activity regarding private data, long-term career impacts, and the permanence of digital data. | ❌ | **Gap.** `tech-plus-6-1-4-privacy` is adjacent but does not cover permanence or career impact |
+| `9-12.DC.FOOT` | Examine the implications of both positive and negative digital footprints. | ✅ | **Closed 2026-09-08.** New lesson `cfs-1-1-5-digital-footprint` covers active vs passive footprints, permanence, and ethical, societal and career implications — including the positive case, which the standard explicitly asks for |
+| `9-12.DC.PPI.1` | Explain the importance of social identity and the implications of online activity regarding private data, long-term career impacts, and the permanence of digital data. | ✅ | **Closed 2026-09-08.** `cfs-1-1-5-digital-footprint` covers digital permanence, data aggregation, hiring and admissions, and separating professional from personal identity |
 | `9-12.DC.PPI.2` | Explain the individual risks of a data breach to an organization housing personal data. | ⚠️ | `tech-plus-6-1-4-privacy` partially |
-| `9-12.DC.THRT` | Analyze the motives of threat actors. | ❌ | **Gap.** Also a Security+ SY0-701 objective (2.1 threat actors and motivations) — one lesson serves both |
+| `9-12.DC.THRT` | Analyze the motives of threat actors. | ✅ | **Corrected then closed 2026-09-08.** `cfs-1-1-2-threat-vulnerability-risk` already had a Threat Actor Taxonomy (script kiddies, organised crime, APTs, insiders), so this was a partial, not a gap. Added a motive-centric section — financial, political, ideological, malice — since the standard asks students to analyse *motives*, not enumerate actor types |
 | `9-12.DC.ETH` | Discuss the role that cyber ethics plays in current society. | ⚠️ | The Ethical Use sections added to the twelve `cybersecurity-engineer` lessons cover authorization, not ethics as a societal topic |
-| `9-12.DC.LAW` | Compare and contrast local, state, federal, and international cyber laws and regulations for individuals and businesses. | ❌ | **Gap.** Clarification names **COPPA** and **GDPR** |
-| `9-12.DC.IP` | Debate the importance of intellectual property laws. | ❌ | **Gap.** Nothing |
+| `9-12.DC.LAW` | Compare and contrast local, state, federal, and international cyber laws and regulations for individuals and businesses. | ⚠️ | **Corrected from gap.** COPPA, GDPR, HIPAA and FERPA appear across `cfs-1-1-2`, `net-cloud-concepts`, `net-data-loss-prevention` and `net-policies-procedures`; CFAA appears in `sql-injection` and `web-exploitation`. Scattered and never *compared* across jurisdictions, which is what the standard asks |
+| `9-12.DC.IP` | Debate the importance of intellectual property laws. | ⚠️ | **Corrected from gap.** `tech-plus-6-1-1-confidentiality-concerns` covers intellectual property as an asset class and `tech-plus-6-2-3-device-use-best-practices` covers copyright. The *debate* verb is unserved — see the activity-shape note below |
 | `9-12.DC.AUP` | Differentiate between the various agreements that protect individuals and organizations in their digital environments. | ✅ | **Closed 2026-09-08.** Added an AUP / TOS / EULA section to `net-policies-procedures` contrasting all three on who wrote it and whose interests it protects, plus which clauses actually matter in each — the differentiation the standard asks for, which no single lesson previously did |
 
 **Note the verbs.** DC standards ask students to *prepare a plan*, *debate*, *examine*,
@@ -112,7 +115,7 @@ lessons that quietly convert "debate the importance of IP law" into a multiple-c
 | Code | Standard | Status | Existing content |
 |---|---|---|---|
 | `9-12.SEC.CIA` | Explain various interactions between the CIA Triad and the three states of data. | ✅ | **Closed 2026-09-08.** Added a Three States of Data section to `cfs-1-1-1-cia-triad` covering at rest, in transit and in use, with a 3x3 matrix of how each triad property fails in each state — which is the *interaction* the standard asks students to explain |
-| `9-12.SEC.ACC` | Compare and contrast access control principles, access control modules, and the principle of least privilege. | ❌ | **Gap.** Clarification names **MAC, RBAC, DAC**. `auth-demo` covers authn/authz but not the models |
+| `9-12.SEC.ACC` | Compare and contrast access control principles, access control modules, and the principle of least privilege. | ✅ | **Corrected 2026-09-08 — was wrongly marked a gap.** `tech-plus-6-1-6-aaa-authorization` is titled *AAA Framework — Authorization and Access Control Models* and has authored sections on RBAC vs DAC vs MAC vs ABAC and on least privilege and separation of duties. `tech-plus-6-1-5-aaa-authentication` supplies the identify/authenticate half. Fully covered, on the tech-plus track |
 | `9-12.SEC.DATA` | Formulate a plan to apply security measures to protect data in all three states. | ✅ | **Corrected from a gap.** `net-data-loss-prevention` covers data at rest, in transit, and in use, with protections for each |
 | `9-12.SEC.INFO` | Distinguish the different types of attacks that affect information security for individuals and organizations. | ✅ | `cfs-1-1-2-threat-vulnerability-risk`, `net-common-network-attacks` |
 | `9-12.SEC.CRYP` | Analyze how modern advancements in computing have impacted encryption. | ✅ | `cryptography`, `tech-plus-6-4-1-plain-text-vs-cipher-text`, `password-hashing` |
@@ -176,11 +179,26 @@ lesson, as estimated.
 
 Remaining, in the same order:
 
-4. **Author `9-12.SEC.ACC`** — MAC, DAC, RBAC, and least privilege. One lesson, also
-   Security+ 4.6 material, so it earns its place twice.
-5. **Author `9-12.DC.THRT`** — threat actor motives. Also Security+ 2.1. Earns its place twice.
-6. **Author `9-12.CS.PROG`** — scripting in attack and defense. Pairs naturally with the
-   existing `linux-cli-survival`.
-7. **The remaining six DC standards** — cyberbullying, digital footprint, PPI.1, ethics, law,
-   intellectual property. These need the activity-shape decision in §7 item 2 first.
+4. ✅ **Corrected 2026-09-08 — not needed.** `9-12.SEC.ACC` was already fully covered by
+   `tech-plus-6-1-6-aaa-authorization`. Authoring it would have duplicated existing content.
+5. ✅ **Done 2026-09-08.** `9-12.DC.THRT` turned out to be a partial rather than a gap —
+   `cfs-1-1-2` already had an actor taxonomy — so it was closed with a motive-centric section
+   rather than a new lesson.
+6. ✅ **Done 2026-09-08.** New lesson `cfs-1-1-5-digital-footprint` closed both `9-12.DC.FOOT`
+   and `9-12.DC.PPI.1`, which are the same subject from two angles.
+
+Remaining:
+
+7. **Author `9-12.CS.PROG`** — scripting in attack and defense. Pairs naturally with the
+   existing `linux-cli-survival`. The last non-DC gap.
+8. **`9-12.DC.CYBL`** — cyberbullying. Needs the activity-shape decision in §7 item 2, since
+   the standard asks students to *prepare a plan*.
+9. **`9-12.DC.LAW` and `9-12.DC.IP`** — both partials with material scattered across tracks.
+   `DC.IP` asks students to *debate*, so it hits the same activity-shape question.
+
+**A caution learned the hard way.** Four of the original gap assessments were wrong because
+coverage was judged against cyber-track lessons for cyber-shaped standards, despite §2 of this
+document stating that coverage is cross-track. Before authoring anything against a standard,
+grep the whole of `src/content/` for its key terms first. Two of the four would have produced
+duplicate lessons.
 
