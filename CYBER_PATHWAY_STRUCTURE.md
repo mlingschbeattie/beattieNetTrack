@@ -268,32 +268,116 @@ on top inherits the fault. `CIS_DOMAIN_BENCHMARKS` in `src/components/teacher/Cl
 is the dashboard's source of truth; content frontmatter and `scripts/tag-competency-domains.mjs`
 both diverge from it.
 
-| Benchmark ID (dashboard) | Content frontmatter uses | Tagging script emits | Status |
+### 5.1 Correction to an earlier draft of this section
+
+The first version of this table was wrong in three rows, and the error is worth recording so it
+is not repeated. The inventory was gathered with the pattern `domainId: [a-z0-9.]+`, which
+excludes underscores and therefore silently **truncated** ids at the first underscore —
+`netplus.networking_concepts` was counted as `netplus.networking`, and
+`aplus2.operational_procedures` as `aplus2.operational`. Always include `_` when inventorying
+these ids.
+
+The corrected conclusion reverses part of the original claim: **the tagging script agrees with
+the content.** `CIS_DOMAIN_BENCHMARKS` is the outlier.
+
+### 5.2 Where the authority actually lives
+
+`CIS_DOMAIN_BENCHMARKS` in `ClassRoster.tsx` is **not** the system of record. It is a static
+array rendered as a read-only reference grid on the "Curriculum Domains" tab. Nothing joins it
+to student progress.
+
+The real registry is served by the external CIS API and fetched at runtime:
+
+- `CompetencyMapView.tsx` → `GET {PUBLIC_API_URL}/api/cis/domains`
+- `StudentProfile.tsx` → per-student cert/domain data from the same API
+- Content `domains[]` → `src/lib/events.ts` → `POST {PUBLIC_API_URL}/api/events`
+
+`PUBLIC_API_URL` is `https://api.beattietech.local`, and `/api/cis/domains` returns **302 to
+`auth.beattietech.local`** — it is SSO-gated and cannot be read from a build session.
+
+**Consequence: do not mass-rename content `domainId`s from this repo alone.** Whether
+`netplus.networking_concepts` or `netplus.networking` is correct is decided by the server
+registry, not by the local display table. Renaming to match `CIS_DOMAIN_BENCHMARKS` could break
+rollups that currently work. The earlier "never rolls up" wording overstated what was verified:
+the local table and the content disagree, but the actual join happens server-side against a
+registry this repo cannot see.
+
+### 5.3 Verified state
+
+Content ids, with true counts (underscores included):
+
+| Content domainId | Uses | In local benchmark table? |
+|---|---|---|
+| `nocti.networking` | 123 | yes |
+| `netplus.networking_concepts` | 45 | no — table has `netplus.networking` |
+| `aplus1.hardware` | 34 | yes |
+| `techplus.security` | 31 | no — no `techplus` cert track at all |
+| `nocti.hardware` | 29 | yes |
+| `techplus.infrastructure` | 27 | no |
+| `aplus2.os` | 27 | yes |
+| `netplus.security` | 22 | yes |
+| `techplus.applications` | 21 | no |
+| `cyber.foundations` | 21 | no |
+| `netplus.infrastructure` | 20 | yes |
+| `netplus.troubleshooting` | 19 | yes |
+| `techplus.concepts` | 16 | no |
+| `techplus.software` | 14 | no |
+| `netplus.operations` | 14 | no — table has `netplus.ops` |
+| `techplus.databases` | 11 | no |
+| `nocti.os` | 11 | yes |
+| `aplus1.troubleshooting` | 9 | no — table has `aplus1.hardware_troubleshooting` |
+| `secplus.threats` | 7 | yes |
+| `secplus.architecture` | 6 | yes |
+| `web.frontend` | 4 | no |
+| `secplus.operations` | 3 | no — table has `secplus.ops` |
+| `aplus2.operational_procedures` | 3 | no — table has `aplus2.ops` |
+| `nocti.security` | 3 | no |
+| `aplus2.security` | 1 | yes |
+
+Benchmark ids with **zero** content: `aplus1.mobile`, `aplus1.networking`,
+`aplus1.virtualization`, `aplus1.hardware_troubleshooting`, `aplus2.ops`,
+`aplus2.software_troubleshooting`, `netplus.networking`, `netplus.ops`, `nocti.devices`,
+`nocti.management`, `nocti.media`, `nocti.safety`, `nocti.tools`, `nocti.troubleshooting`,
+`secplus.governance`, `secplus.implementation`, `secplus.ops`.
+
+`CIS_DOMAIN_BENCHMARKS` also describes **SY0-601** domains (Threats / Architecture /
+Implementation / Operations / Governance) while the seeds and CLAUDE.md target **SY0-701**.
+
+Note: a `domainId: z.string` "use" appears if you grep `src/content/` naively — that is the
+schema definition in `src/content/config.ts`, not content. Weights above 1.0 in a single
+`domains[]` block are also **not** a defect: `events.ts` documents weight as "how strongly this
+event maps to this domain", a per-domain strength rather than a share, so `0.9 + 0.8` is valid.
+
+### 5.4 Done — internal consistency only
+
+Three single-use ids deviated from a convention used 14–31 times elsewhere in the same modules.
+Fixed, no server knowledge required:
+
+| File | Was | Now | Evidence |
 |---|---|---|---|
-| `secplus.ops` | `secplus.operations` | `secplus.operations` | **never rolls up** |
-| `netplus.ops` | `netplus.operations` | — | **never rolls up** |
-| `netplus.networking` | `netplus.networking` | `netplus.networking_concepts` | script wrong |
-| `aplus2.ops` | `aplus2.operational` | `aplus2.operational_procedures` | **all three differ** |
-| `aplus1.hardware_troubleshooting` | `aplus1.troubleshooting` | `aplus1.troubleshooting` | **never rolls up** |
-| `secplus.implementation` | — | — | benchmark unused |
-| `secplus.governance` | — | — | benchmark unused |
-| — | `cyber.foundations` (21 uses) | yes | **no benchmark exists** |
-| — | `techplus.*` (100+ uses) | yes | **no benchmark, no cert track** |
-| — | `nocti.security` (2 uses) | yes | **no benchmark exists** |
-| — | `secops.basics` (1 use) | — | orphan, likely a typo |
+| `labs/tech-plus-first-program.mdx` | `techplus.software_dev` | `techplus.software` | module is `tech-plus.software-dev`; its 14 lessons all use `techplus.software` |
+| `labs/tech-plus-binary-storage-bench.mdx` | `techplus.it_concepts` | `techplus.concepts` | module is `tech-plus.it-concepts`; its 16 lessons all use `techplus.concepts` |
+| `labs/cfs-security-baseline-lab.mdx` | `secops.basics` | `nocti.security` | orphan with no benchmark and no other use; the parallel `pct-windows-security-hardening-lab` pairs a cert domain with a `nocti.*` domain in exactly this slot |
 
-Additionally, `CIS_DOMAIN_BENCHMARKS` describes **SY0-601** domains (Threats / Architecture /
-Implementation / Operations / Governance). The seeds and CLAUDE.md target **SY0-701**, whose
-five domains are listed in §3. The benchmark table needs replacing, not patching.
+### 5.5 Blocked — needs the server registry
 
-Recommended order of work:
+Everything below requires knowing what `/api/cis/domains` actually returns. **Get that list
+first** (sign in at `https://api.beattietech.local/api/cis/domains`, or export it from the CIS
+backend) and record it in this repo as the source of truth.
 
-1. Replace the `secplus.*` benchmarks with the SY0-701 five.
-2. Add `nocti.cyber.*` benchmarks for the six 4324 areas.
-3. Add a `techplus` cert track and its six domains.
-4. Reconcile the `.ops` / `.operations` and `aplus1.troubleshooting` id mismatches in one pass
-   across benchmarks, content frontmatter, and the tagging script.
-5. Retire `secops.basics`.
+Then, in one pass:
+
+1. Decide direction per id — server registry wins over both the content and the local table.
+2. Reconcile `netplus.networking_concepts` / `netplus.networking`,
+   `netplus.operations` / `netplus.ops`, `secplus.operations` / `secplus.ops`,
+   `aplus2.operational_procedures` / `aplus2.ops`,
+   `aplus1.troubleshooting` / `aplus1.hardware_troubleshooting`.
+3. Replace the `secplus.*` benchmarks with the SY0-701 five (§3).
+4. Add benchmarks for `cyber.foundations`, `nocti.security`, `web.frontend`, and a `techplus`
+   cert track with its six domains — 100+ tagged entries currently have no benchmark.
+5. Add `nocti.cyber.*` benchmarks for the six 4324 areas (§1.2).
+6. Align `scripts/tag-competency-domains.mjs` last, once the target ids are settled. Note that
+   running it today would rewrite content ids — treat it as dormant until this is resolved.
 
 ---
 
@@ -301,7 +385,8 @@ Recommended order of work:
 
 | Phase | Work | Depends on |
 |---|---|---|
-| 1 | Fix domain taxonomy (§5) | nothing |
+| 0 | ✅ Retire the three orphan domain ids (§5.4) | done |
+| 1 | Fix domain taxonomy (§5.5) | **the server registry** |
 | 2 | Confirm 4324 weightings from the PDF chart (§1.1) | nothing |
 | 3 | Create 6 `cfs.*` modules, migrate 4 existing lessons + 5 quizzes | 1 |
 | 4 | Add `sharedWith` for the 4 cross-track lessons (§2.2) | 3 |
