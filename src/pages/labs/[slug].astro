@@ -16,22 +16,19 @@ import { getActivityModuleNavigation } from '../../lib/content';
 export async function getStaticPaths() {
   const labs = await getCollection('labs');
   return labs
-    .filter((lab) => !lab.data.hidden && lab.slug !== 'code-basics')
+    .filter((lab) => !lab.data.draft && lab.data.active !== false && lab.slug !== 'code-basics')
     .map((lab) => ({ params: { slug: lab.slug }, props: { lab } }));
 }
 
 // With `output: 'server'` getStaticPaths does not run, so Astro.props is empty
 // and the entry has to be looked up from the route param. Same pattern as
 // lessons/[slug].astro and quizzes/[slug].astro.
-// The fallback must apply the SAME exclusions as getStaticPaths, or hidden
-// labs (and code-basics, which is reached through its own route) become
-// reachable here that the static path list deliberately omits.
 const allLabs = await getCollection('labs');
 const paramSlug = Astro.params.slug;
 const lab =
   Astro.props.lab ??
   allLabs.find(
-    (entry) => entry.slug === paramSlug && !entry.data.hidden && entry.slug !== 'code-basics'
+    (entry) => entry.slug === paramSlug && entry.slug !== 'code-basics'
   );
 
 if (!lab) {
