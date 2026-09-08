@@ -16,21 +16,28 @@ created or moved from this document.*
 | NOCTI Cybersecurity Fundamentals | 4324 | **11.1003** | Written only, 98q / 2h | `cybersecurity-foundations` |
 | CompTIA Security+ | SY0-701 | — | Written | `cybersecurity-engineer` |
 
-**The program is CIP 11.0901 today and is moving to CIP 11.1003 within two years**
-(instructor decision, 2026-09-08). 11.0901 is stamped on the *networking* blueprint (4514);
-11.1003 is stamped on the *cybersecurity* blueprint (4324).
+**The program is CIP 11.0901. Students must pass NOCTI 4514 — that is the accountability
+measure, now and for the foreseeable future.** The program is formally two years: **A+ and
+Net+**. Cybersecurity is a **third-year stretch** — going beyond the required scope for
+students who want it, and futureproofing ahead of a planned move to CIP 11.1003 within about
+two years (instructor, 2026-09-08).
 
-That decision settles the target and sets the sequencing:
+That ordering drives everything below:
 
-1. **4324 Cybersecurity Fundamentals is the destination credential.** Building
-   `cybersecurity-foundations` against its six areas (§2) is the right long-term investment
-   and should proceed now — it takes more than two years of authoring to fill anyway.
-2. **4514 remains the live credential during the transition window.** It is a Job Ready
-   assessment with a **performance component** (2 hours, 2 hands-on jobs) that nothing in
-   the repo targets. See §4. This is time-boxed work with a closing window, not permanent
-   infrastructure — scope it accordingly.
-3. **Cyber content is assessed under both codes.** 4514 carries a Security duty area of its
-   own, so foundations content earns its keep before the CIP change lands, not only after.
+1. **4514 Computer Networking Fundamentals is the graded requirement.** It is a Job Ready
+   assessment with a **performance component** — 2 hours, two hands-on jobs, scored separately
+   from the written test. **Nothing in the repo targets it.** See §4. This is the highest
+   priority item in this document, not a transitional one.
+2. **The two-year core is `pc-technician` and `network-engineer`.** Those tracks carry the
+   credential students are actually measured on. 4514's own competency list spans PC
+   principles, addressing, routing/switching, troubleshooting, security and network design —
+   all of it landing on those two tracks.
+3. **Cyber is year-three enrichment.** `cybersecurity-foundations` and
+   `cybersecurity-engineer` are worth building and are *not* on the critical path. Build them
+   as capacity allows, ahead of the 11.1003 move.
+4. **4324 becomes the destination credential only after the CIP changes.** Structuring
+   `cybersecurity-foundations` against its six areas (§2) is the right shape to build toward,
+   on a multi-year horizon rather than this term.
 
 ---
 
@@ -238,10 +245,14 @@ Existing lessons cluster hard in Threats and Operations. The gaps:
 
 ---
 
-## 4) The 4514 Performance Component — Currently Unserved
+## 4) The 4514 Performance Component — Highest Priority in This Document
 
-NOCTI 4514 is the credential aligned to CIP 11.0901 and includes a 2-hour **performance**
-assessment worth its own score. Nothing in the repo targets it.
+NOCTI 4514 is the credential **students must pass** under CIP 11.0901, and it includes a
+2-hour **performance** assessment carrying its own score. Nothing in the repo targets it.
+
+This is the largest gap in the whole system: the only graded component of the program's
+accountability credential, with zero coverage, in a repo that already has a working
+`steps` lab engine well suited to it.
 
 | Job | Weight | Task |
 |---|---|---|
@@ -251,13 +262,17 @@ assessment worth its own score. Nothing in the repo targets it.
 Both map cleanly to the existing `steps` lab shape (`LabRunner` with exact/oneOf/regex/choice
 validators), which the handoff notes is the preferred and most reliable lab type.
 
-Proposed: two labs on `network-engineer`, mirroring the job structure and weighting.
+Proposed: two labs on `network-engineer`, mirroring the job structure and weighting, plus a
+combined dry-run that runs both under time to rehearse the real sitting.
 
-With the CIP moving to 11.1003 (§0), this work has a closing window — it serves students
-sitting 4514 between now and the change, then stops mattering for credentialing. Two `steps`
-labs is the right size for it. Do not build performance-assessment infrastructure beyond that;
-the hands-on skills themselves (addressing, shares, permissions, printers) stay valuable on
-`pc-technician` regardless of which credential is current.
+Every skill here also stands on its own for A+ and Net+ — private addressing and subnetting,
+workgroup membership, user and share creation, NTFS permissions, printer install and
+verification. None of it becomes obsolete when the CIP changes; it simply stops being the
+graded credential. Build it properly.
+
+**Suggested next step for this repo.** Job 2 is worth 61% and is entirely
+Windows-administration work, which `pc-technician` already covers in content but not as a
+graded, timed exercise. Start there.
 
 ---
 
@@ -385,26 +400,142 @@ Then, in one pass:
 
 | Phase | Work | Depends on |
 |---|---|---|
-| 0 | ✅ Retire the three orphan domain ids (§5.4) | done |
-| 1 | Fix domain taxonomy (§5.5) | **the server registry** |
-| 2 | Confirm 4324 weightings from the PDF chart (§1.1) | nothing |
-| 3 | Create 6 `cfs.*` modules, migrate 4 existing lessons + 5 quizzes | 1 |
-| 4 | Add `sharedWith` for the 4 cross-track lessons (§2.2) | 3 |
-| 5 | Author `cfs` lessons, module by module, heaviest NOCTI weight first | 2, 3 |
-| 6 | Build the two 4514 performance labs (§4) — closing window, time-box it | 1 |
-| 7 | Create 5 `sec.*` SY0-701 modules, remap the existing 12 lessons | 1 |
-| 8 | Author `sec` lessons, domain by domain, 4.0 first at 28% | 7 |
-| 9 | Placement exams for both tracks | 5, 8 |
+Ordered by what students are actually measured on.
 
-Phases 1, 2 and 6 are independent of each other and of the authoring work.
+**Tier 1 — serves the credential students must pass (CIP 11.0901 / NOCTI 4514)**
 
-With 11.1003 confirmed as the destination, phase 5 (`cfs` authoring against the 4324
-competencies) is the critical path — it is the largest body of work and the credential it
-serves is the one the program is moving to.
+| # | Work | Depends on |
+|---|---|---|
+| 1 | Build the 4514 performance labs (§4), Job 2 first at 61% | nothing |
+| 2 | Audit `network-engineer` + `pc-technician` coverage against the 4514 written competency list (§7) | nothing |
+| 3 | Close whatever gaps that audit finds | 2 |
+
+**Tier 2 — repo health, unblocks everything else**
+
+| # | Work | Depends on |
+|---|---|---|
+| 4 | ✅ Retire the three orphan domain ids (§5.4) | done |
+| 5 | Fix domain taxonomy (§5.5) | **the server registry** |
+| 6 | Audit the 21 `assessment-1-x-x` pc-technician quizzes (opaque slugs, scattered modules) | nothing |
+
+**Tier 3 — year-three cyber, build as capacity allows**
+
+| # | Work | Depends on |
+|---|---|---|
+| 7 | Confirm 4324 weightings from the PDF chart (§1.1) | nothing |
+| 8 | Create 6 `cfs.*` modules, migrate 4 existing lessons + 5 quizzes | 5 |
+| 9 | Add `sharedWith` for the 4 cross-track lessons (§2.2) | 8 |
+| 10 | Author `cfs` lessons, module by module, heaviest NOCTI weight first | 7, 8 |
+| 11 | Create 5 `sec.*` SY0-701 modules, remap the existing 12 lessons | 5 |
+| 12 | Author `sec` lessons, domain by domain, 4.0 first at 28% | 11 |
+| 13 | Placement exams for all tracks | 3, 10, 12 |
+
+Items 1, 2, 6 and 7 are independent of each other and of everything else.
+
+**The critical path is Tier 1.** An earlier draft of this document put `cfs` authoring on the
+critical path; that was wrong. Cyber is a third-year stretch for a two-year A+/Net+ program,
+and no cyber content affects whether students pass the credential the program is accountable for.
 
 ---
 
-## 7) Open Questions
+## 7) NOCTI Computer Networking Fundamentals (4514) — The Credential That Counts
+
+Job Ready credential. CIP **11.0901**. Written 194 questions / 3 hours, plus the 2-hour
+performance component in §4. Copyright 2016, Version 01. Revision team: GA, NY, OK, PA.
+
+Eleven duty areas. **Weightings carry the same chart-pairing caveat as §1.1** — the published
+percentages are 11 · 10 · 6 · 5 · 6 · 10 · 7 · 12 · 10 · 12 · 11, but they cannot be paired to
+their labels by text extraction. Confirm from page 3 of the blueprint.
+
+**PC Principles** — physical and equipment safety and maintenance · storage methods · memory ·
+eSATA, Bluetooth, USB · processor types and standards · client operating systems
+
+**Network Connections** — NICs · physical and logical characteristics of connections ·
+remote access · wired and wireless communications and standards
+
+**Physical Connection Types** — cable components and uses, twisted pair and fiber ·
+signal characteristics and transmission across media types
+
+**Network Standards and Devices** — OSI model layers · TCP/IP model · IEEE and EIA/TIA
+standards and common port numbers · wired network devices · wireless network devices
+
+**Network Troubleshooting** — ping, ipconfig, tracert, netstat · maintain and troubleshoot
+cabling · local and remote loopback · troubleshooting methodologies · packet capture
+
+**Routing and Switching** — static, dynamic, default and gateway routes · WAN connection types ·
+basic router operations and configuration · switch operations and configuration ·
+routed vs routing protocols · collision vs broadcast domains
+
+**Network Terminology** — protocol and architecture terminology · DHCP and DNS ·
+network operating systems · network types
+
+**Network Architecture** — physical and logical topologies · LAN, MAN, PAN, WLAN, WAN topologies
+
+**Network Addressing** — IP network addressing · classful vs classless · MAC addressing ·
+binary, hexadecimal and decimal conversion · creating subnets from a network address
+
+**Security** — organizational and acceptable use policies · device security procedures ·
+defense in depth · network security attacks and breaches · viruses, worms and malware ·
+firewalls including NAT · general cryptography concepts
+
+**Network Planning and Design** — analysis and planning concepts · logical vs physical design ·
+power protection, backups and UPS · thin clients · installing and troubleshooting physical and
+wireless networks to spec · access methods · virtualization
+
+### 7.1 Two observations
+
+**PC Principles is a networking-assessment duty area.** Hardware, storage, memory, processors
+and client OS all sit inside 4514. `pc-technician` content therefore serves this credential
+directly — the two tracks are not separable for 4514 purposes.
+
+**The Security duty area is served by existing `network-engineer` content**, which already
+covers defense in depth, common attacks, hardening, firewalls and wireless security. Cyber-track
+work is not required to satisfy it.
+
+---
+
+## 8) Source Material While CYBER.ORG Is Unavailable
+
+`public/resources/` holds nothing for either cyber track, and the CYBER.ORG account is pending
+a reset. The NOCTI and CompTIA blueprints give the competency spine but no teaching content.
+
+Per VOICE_AND_TONE.md, external material is a source of **facts, topic coverage, and objective
+mapping only** — never prose. Everything is rewritten in the beattieNetTrack voice. That
+sidesteps most licensing friction, but attribution for structure and figures is still good
+practice, and worth getting right in a school setting.
+
+**Unambiguously free — US government works, public domain, no licence conditions.** These are
+the strongest option and map directly onto 4324's competency areas:
+
+- **NIST SP 800-61** (incident handling) → 4324 "Communicate incident handling and the response process"
+- **NIST SP 800-86** (forensics into IR) → the entire Computer Forensics area, including order of volatility and chain of custody
+- **NIST SP 800-63** (digital identity) → Identification, Authentication, and Authorization
+- **NIST SP 800-30 / 800-37** (risk) → Risk and Threat Analysis Introduction
+- **NIST CSF 2.0** → a clean framing for Security Controls
+- **CISA** advisories, Secure by Design material, and free training → current, concrete examples
+
+**Open courseware — usable, but check the licence per item.** MIT OpenCourseWare and Harvard's
+CS50 both publish under Creative Commons variants that are typically **BY-NC-SA**: attribution
+required, non-commercial only, and derivatives must be shared under the same terms. Classroom
+use is squarely non-commercial, but the share-alike condition matters if material is ever
+redistributed beyond the school. Confirm the licence on each specific course page rather than
+assuming it applies across the institution.
+
+**picoCTF (Carnegie Mellon).** The primer and picoGym are built for exactly this audience and
+are an excellent fit for the offensive-technique lessons already on `cybersecurity-engineer`.
+Best used as **linked practice** rather than ingested content — point students at picoGym
+challenges from a lesson, so no licensing question arises and the challenges stay maintained
+upstream. Confirm terms before copying any challenge text into the repo.
+
+**Recommendation.** Build cyber content from the NIST and CISA material, which is public
+domain, authoritative, and maps cleanly onto the 4324 areas. Use picoCTF as linked hands-on
+practice. Treat MIT/Harvard as structural reference for how to sequence a topic. Then reconcile
+against CYBER.ORG once the account is back, rather than waiting on it.
+
+---
+
+
+## 9) Open Questions
 
 1. ~~**CIP alignment.**~~ **Resolved 2026-09-08** — the program moves to CIP 11.1003 within
    two years, making NOCTI 4324 the destination credential. 4514 stays live until then; see §0.
@@ -418,6 +549,8 @@ serves is the one the program is moving to.
 5. **Source material.** `public/resources/` has nothing for either cyber track. The NOCTI
    blueprints give the competency spine but no teaching content. Confirm whether CYBER.ORG
    243/368/100 material is available to draw facts from.
+
+---
 
 ---
 
