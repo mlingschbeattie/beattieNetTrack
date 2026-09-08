@@ -58,6 +58,9 @@ domains:
   - domainId: nocti.networking
     weight: 0.2
 ---
+
+import Callout from '../../components/Callout.astro';
+
 ## The Drawer Full of Cables
 
 Every IT shop has one. A drawer, a bin, maybe an entire shelf — stuffed with cables and adapters accumulated over a decade. Some are labeled. Most aren't. You reach in looking for a patch cable and pull out something with a connector you don't recognize. Is it network? Serial? Telephone? Legacy garbage from 2009? If you can identify connectors on sight, you grab what you need in seconds and move on. If you can't, you stand there plugging things into ports that don't fit while your ticket queue grows. Connector identification is not glamorous knowledge, but it's the kind that saves you five minutes fifty times a year, and the exam tests it with images.
@@ -75,6 +78,10 @@ RJ-11 is the telephone connector — six positions, usually two or four conducto
 **BNC (Bayonet Neill-Concelman)** is a twist-lock coaxial connector. Push it on, give it a quarter turn, and it locks. Reverse to disconnect. BNC was the standard for 10BASE2 Thinnet Ethernet and still shows up on some video equipment, test instruments, and legacy CCTV systems. If you see BNC on network equipment, you're looking at something very old or very specialized.
 
 **F-type** is the threaded coaxial connector from your cable TV line. Screw it on, screw it off. It connects coax to cable modems, television tuners, and broadband splitters. Every DOCSIS cable internet installation terminates with F-type connectors at the modem. Unlike BNC's positive locking mechanism, F-type relies on threading, which means a loose connection is common and causes the kind of intermittent signal issues that drive people to blame their ISP when the fix is a half-turn of a connector.
+
+<Callout type="exam">
+RJ-45 has eight pins and carries Ethernet. RJ-11 has four or six and carries telephone. RJ-11 will physically slot into an RJ-45 port and do nothing at all, which is exactly the scenario CompTIA likes to describe without naming the connector.
+</Callout>
 
 ## Fiber Connectors — LC, SC, ST, and MPO
 
@@ -98,6 +105,14 @@ You covered these in the fiber lesson, but here's the quick-recognition version 
 
 A Small Form-factor Pluggable transceiver is a hot-swappable module that slides into a port on a switch, router, or firewall and provides the physical interface. SFP supports up to 1 Gbps. SFP+ supports up to 10 Gbps. QSFP+ and QSFP28 push 40 Gbps and 100 Gbps respectively. The genius of the design is modularity — the same switch port can accept a fiber transceiver for a long-distance single-mode link, a different fiber transceiver for a short multimode link, or a copper transceiver for an RJ-45 connection. You buy the transceiver for the medium you need, slot it in, and connect. This means a single switch model can serve multiple cable types without dedicated port hardware for each one. Vendors like Cisco sell their own branded transceivers at premium prices and will sometimes log warnings when you use third-party modules, but compatible third-party transceivers from companies like FS.com work fine in practice and cost a fraction of the price. The exam won't test brand politics, but the field will.
 
+<Callout type="tip">
+SFP modules are hot-swappable, so you can change media on a live switch without downing the device. Match the transceiver to the fibre type and wavelength — an SFP built for single-mode will not work over multimode, and the link light simply never comes up.
+</Callout>
+
 ## Why This Matters in the Field
 
 Connector identification is a filter. When you can look at a patch panel and immediately read which ports are Ethernet, which are fiber, which are phone, and which are dead legacy serial — you skip the guessing phase and start working. When you're ordering parts for a new installation, knowing the difference between LC and SC means the cables you order actually fit the hardware you bought. When a switch port accepts SFP+ and you need to connect it to a multimode fiber run, you grab the right transceiver, the right LC duplex cable, and you're done in sixty seconds. Every minute you don't spend staring at a connector trying to figure out what it is goes to actually solving the problem.
+
+## Key Terms
+
+RJ-45 · RJ-11 · BNC · F-type · LC · SC · ST · MPO · DB-9 · DB-25 · SFP · SFP+ · QSFP · transceiver · pinout · T568A · T568B

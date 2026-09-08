@@ -58,6 +58,9 @@ domains:
   - domainId: nocti.networking
     weight: 0.2
 ---
+
+import Callout from '../../components/Callout.astro';
+
 ## The Cable Run That Teaches You Everything
 
 A teacher wants a new workstation at the back of her classroom. You trace the drop from the wall jack to the patch panel in the wiring closet — and there's no cable. Someone labeled the panel port, but the run was never pulled. So you grab a box of Cat6 from the supply room, route it through the ceiling, terminate both ends with RJ-45 jacks, and patch it into the switch. The workstation comes up at 1 Gbps, full duplex. Then a week later, the night custodian bumps the ceiling tile and kinks the cable. Link drops to 100 Mbps. Then someone across the hall is getting intermittent disconnects and you discover the cable running parallel to a fluorescent light ballast for fifteen feet. Three different problems, three different copper cable lessons, all in the same hallway. Copper cabling is the most hands-on, most testable, most "you will actually do this" topic in the entire Network+ curriculum.
@@ -65,6 +68,10 @@ A teacher wants a new workstation at the back of her classroom. You trace the dr
 ## UTP vs. STP — Shielding and When It Matters
 
 Unshielded Twisted Pair is the standard Ethernet cable in almost every LAN on the planet. Inside the jacket, four pairs of copper wires twist around each other at different rates. The twist is the engineering trick — it cancels out electromagnetic interference (EMI) by ensuring that any noise induced on one wire in a pair is equally induced on the other wire, and the receiving end subtracts it out. It works astonishingly well for how simple it is. Shielded Twisted Pair adds a foil or braided shield around individual pairs, around all the pairs, or both. The notation tells you the shielding configuration: F/UTP means an overall foil shield with unshielded pairs. S/FTP means a braided overall shield with foil-shielded individual pairs. STP is better at rejecting interference, which matters in environments packed with motors, power lines, or industrial equipment. The tradeoff is cost, thicker cable diameter, and the requirement that the shield must be properly grounded at both ends — otherwise it actually makes interference worse by acting as an antenna. In a typical school or office environment, UTP handles the job. In a factory floor or hospital with heavy electrical equipment nearby, STP earns its price.
+
+<Callout type="exam">
+Know the category ladder cold: Cat5e carries 1 Gbps, Cat6 carries 10 Gbps to 55 metres, Cat6a carries 10 Gbps to the full 100 metres, and Cat8 reaches 40 Gbps over short data-centre runs. CompTIA asks which category a stated speed and distance requires.
+</Callout>
 
 ## Cable Categories — The Speed Ladder
 
@@ -98,6 +105,10 @@ A crossover cable swaps the transmit and receive pairs — one end is wired T-56
 
 A rollover cable (also called a console cable) reverses all eight pins — Pin 1 to Pin 8, Pin 2 to Pin 7, and so on. It's the light blue cable that ships with Cisco routers and switches, and it connects your laptop's serial port (or USB-to-serial adapter) to the device's console port for initial configuration. You cannot configure a managed switch out of the box over the network because it has no IP address yet. The console cable is always the first cable you connect.
 
+<Callout type="warn">
+Shielded cable grounded at only one end, or at neither, is worse than no shielding at all. The shield stops draining interference and starts acting as an antenna. If you install STP, ground it properly or install UTP instead.
+</Callout>
+
 ## The 100-Meter Rule
 
 Copper Ethernet has a hard distance limit: 100 meters (328 feet) from the device to the switch, total. That's measured as the entire channel — the horizontal run from the patch panel to the wall jack, plus the patch cables on both ends. The TIA/EIA standard budgets 90 meters for the permanent link and 10 meters for patch cables. Go past 100 meters and the signal attenuates enough that you get errors, speed drops, or the link fails entirely. This is not negotiable and not something you can band-aid with a better cable category. If the run is longer than 100 meters, you either add a switch in the middle to regenerate the signal or you switch to fiber. Every cable run you ever plan starts with this number.
@@ -105,3 +116,7 @@ Copper Ethernet has a hard distance limit: 100 meters (328 feet) from the device
 ## Why This Matters in the Field
 
 You will pull cable. You will terminate cable. You will test cable with a cable certifier and find out that one of your eight crimps is bad and redo it. You will trace an intermittent network problem to a cable that's been smashed by a filing cabinet for three years. You will argue with a building contractor about plenum ratings. Copper cabling is where networking meets the physical world, and physical world problems — heat, distance, interference, building codes, and someone's decision to run Cat5e in 2003 — are the problems you'll solve most often in your first years on the job.
+
+## Key Terms
+
+UTP · STP · F/UTP · S/FTP · twisted pair · EMI · crosstalk · Cat5e · Cat6 · Cat6a · Cat8 · coaxial · RG-6 · plenum · riser · PVC · straight-through · crossover · rollover · 100-metre rule · attenuation

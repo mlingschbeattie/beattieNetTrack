@@ -57,6 +57,9 @@ domains:
   - domainId: nocti.networking
     weight: 0.2
 ---
+
+import Callout from '../../components/Callout.astro';
+
 ## The Outage That Draws Itself
 
 You get pulled into a network outage at a small office. Twelve people, nobody can reach the internet, nobody can print, nobody can hit the file share. You check the server rack and find one switch dead — the power supply gave out. One device failed and it took down the entire network. That tells you something about how this network is designed before you even look at a diagram. Every device connected back to that single switch like spokes on a wheel, and when the hub of the wheel broke, so did everything. You just diagnosed a topology problem. The word "topology" sounds academic, but it describes something very practical: the shape of how devices connect. That shape determines what fails, how it fails, and how bad it gets when it does.
@@ -81,6 +84,10 @@ A mesh topology gives each device multiple paths to reach other devices. In a fu
 
 Almost no real network is a pure anything. A hybrid topology combines two or more topologies into a single design. The textbook example: a star-bus hybrid where multiple star networks (each centered on a switch) connect to a common backbone. Corporate campuses are typically star topologies inside each building with mesh or ring topologies connecting buildings to each other. A school district might have a star topology in every classroom closet, a partial mesh between buildings on a campus, and a WAN link back to a district data center. When someone hands you a network diagram on the job, you'll see a hybrid — your job is to recognize which topology pattern applies to each segment so you know what breaks and how.
 
+<Callout type="exam">
+Physical topology is the cabling you can see. Logical topology is the path data actually takes. CompTIA writes questions where the two differ on purpose — old Ethernet wired as a physical star that behaved as a logical bus is the classic example. Read carefully to see which one is being asked about.
+</Callout>
+
 ## Physical vs. Logical — The Shape You See vs. the Shape Data Takes
 
 Physical topology is the actual layout of cables and devices — what you'd see if you traced every wire. Logical topology is the path data actually follows, which doesn't always match the physical layout. Classic example: a Token Ring network could be physically wired in a star pattern, with every device cabled back to a central hub called a MAU (Multistation Access Unit), but logically the data still traveled in a ring because the MAU connected the ports in a loop internally. In modern networks, VLANs create this same disconnect. Two devices might be plugged into the same physical switch — same rack, same patch panel — but if they're on different VLANs, they can't talk to each other without a router. Physically they're in the same star. Logically they're on separate networks. When you troubleshoot, you need to think about both.
@@ -89,6 +96,14 @@ Physical topology is the actual layout of cables and devices — what you'd see 
 
 These aren't topologies in the same sense as star or mesh — they describe connection types. A point-to-point link connects exactly two devices, with nothing in between. A WAN circuit between two routers is point-to-point. A direct cable between your PC and a switch port is point-to-point. Simple, dedicated, and predictable. A multipoint (also called multidrop) connection allows multiple devices to share a single communication link. Old serial bus networks were multipoint. Modern wireless networks are multipoint — all devices in range share the same radio channel through the access point. The exam treats these as fundamental connection models that can show up inside any topology.
 
+<Callout type="tip">
+When you inherit a network with no documentation, draw the topology before you troubleshoot anything. Ten minutes with a whiteboard tells you where the single points of failure are, and a surprising number of outages become obvious the moment the shape is on paper.
+</Callout>
+
 ## Why This Matters in the Field
 
 Topology isn't something you think about once during design and forget. Every time you trace an outage, plan a network expansion, or figure out why traffic between two buildings takes a weird path, you're reasoning about topology. When a single switch failure takes out a floor, that's a star topology with no redundancy at the center — and the fix is adding redundancy, not changing the topology. When a WAN link goes down but traffic reroutes automatically, that's mesh doing its job. The shape of the network dictates the blast radius of every failure, the bandwidth available to every user, and the options you have when something needs to change. Read the shape. Fix the shape.
+
+## Key Terms
+
+topology · bus · ring · star · mesh · hybrid · physical topology · logical topology · point-to-point · multipoint · single point of failure · token passing · full mesh · partial mesh · backbone

@@ -57,6 +57,9 @@ domains:
   - domainId: nocti.networking
     weight: 0.2
 ---
+
+import Callout from '../../components/Callout.astro';
+
 ## Every Day You've Used Five Different Networks
 
 Think about what happened between waking up and getting to school today. Your phone talked to Bluetooth earbuds on your nightstand — that's a network. It connected to your home Wi-Fi to load notifications — different network. You got in a car that synced to your phone over Bluetooth again while the car's GPS pulled map data over a cellular WAN. You walked into the building and your phone jumped to the school's WLAN. You sat down at a workstation connected to the school's wired LAN, which reaches the internet through the district's WAN. Five different network types, all before first period. The networking industry sorts these by geographic scope, transport technology, and architecture — and the exam expects you to know each one cold.
@@ -76,6 +79,10 @@ A Metropolitan Area Network spans a city or large campus — bigger than a LAN, 
 ## WLAN — LAN Without the Cables
 
 A Wireless LAN uses radio frequencies instead of copper or fiber, typically over the 802.11 (Wi-Fi) standards. It provides the same LAN connectivity — same IP addressing, same access to local resources — but without running cable to every device. Every phone, tablet, and laptop in this building is on the WLAN right now. The tradeoff versus wired: wireless is shared-medium and half-duplex in practice, signal degrades with distance and obstacles, and it's inherently less secure because the signal doesn't stay inside a cable. You manage a WLAN through access points, wireless controllers, and a lot of channel planning to keep neighboring APs from stepping on each other's frequencies. A WLAN is not a separate type of network architecturally — it's a LAN delivered wirelessly. The exam separates them because the technology and troubleshooting are different enough to warrant it.
+
+<Callout type="exam">
+The network types come down to geographic scale. PAN is around one person, LAN is one building, CAN spans a campus, MAN covers a city, WAN crosses cities or countries. If a question describes distance or who owns the link, it is asking you to name the type.
+</Callout>
 
 ## MPLS — The Carrier's Private Highway
 
@@ -97,6 +104,14 @@ A SOHO network is a small network — typically under a dozen devices — built 
 
 Internet of Things networks connect devices that aren't computers — thermostats, security cameras, smart light bulbs, industrial sensors, medical devices, vending machines. These devices are typically low-power, low-bandwidth, and headless (no screen, no keyboard). They communicate over protocols like Zigbee, Z-Wave, Bluetooth Low Energy, or Wi-Fi, often through a hub or gateway that bridges them to the main LAN. The networking consideration isn't bandwidth — a thermostat sends maybe a few bytes per minute. The consideration is security. IoT devices ship with default credentials, get firmware updates rarely or never, and create attack surface that's hard to monitor because nobody's logging into a smart light bulb to check for malware. Best practice is network segmentation: put IoT devices on their own VLAN or subnet, isolated from the production LAN, so a compromised camera can't reach the file server. The exam expects you to know this, and the field will remind you when you find a botnet running on someone's smart fridge.
 
+<Callout type="info">
+SD-WAN is steadily displacing MPLS in new deployments because it delivers similar reliability over ordinary broadband at a fraction of the cost. Plenty of MPLS circuits are still in service on long contracts, so you will meet both in the field for years yet.
+</Callout>
+
 ## Why This Matters in the Field
 
 When a project manager says "we need to connect the new building," the first question is network type — LAN extension, CAN fiber link, WAN circuit? When a branch office complains about slow application performance, you need to know whether they're on MPLS or commodity broadband and whether SD-WAN is an option. When a home user calls about their printer not showing up, understanding SOHO flat networks saves you thirty minutes of overthinking. These classifications aren't just exam vocabulary. They define the budget, the technology, the vendor, and the troubleshooting playbook for every project you'll touch.
+
+## Key Terms
+
+LAN · WAN · MAN · CAN · PAN · WLAN · SAN · MPLS · SD-WAN · client-server · peer-to-peer · SOHO · IoT · bandwidth · latency

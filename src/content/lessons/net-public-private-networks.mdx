@@ -58,6 +58,9 @@ domains:
   - domainId: nocti.networking
     weight: 0.2
 ---
+
+import Callout from '../../components/Callout.astro';
+
 ## The Address That Goes Nowhere
 
 You're troubleshooting a workstation that can't reach the internet. You open a command prompt and run `ipconfig`. The IP address reads 169.254.47.118. You don't need to check anything else yet — that number alone tells you DHCP failed. The machine tried to get an address from a DHCP server, got no response, and assigned itself an address from a specific range that is guaranteed to go absolutely nowhere beyond the local link. You've just read a diagnostic from an IP address without running a single test. That's the power of understanding address types. Not all IP addresses are created equal, and knowing which range you're looking at tells you where the traffic can go, where it came from, and sometimes exactly what broke.
@@ -82,6 +85,10 @@ Port Address Translation (PAT), also called NAT overloading, is the specific fla
 
 NAT also provides a side effect that people sometimes mistake for security: devices on the private side can initiate connections outward, but unsolicited inbound connections from the internet can't reach private devices because the router has no translation entry to match them to. It's not a firewall — it doesn't inspect traffic or enforce policy — but it does hide internal addresses from the outside world.
 
+<Callout type="exam">
+Memorise the RFC 1918 ranges exactly: 10.0.0.0/8, 172.16.0.0/12, and 192.168.0.0/16. The 172 range is the one candidates get wrong — it runs 172.16 through 172.31, not the whole 172 block.
+</Callout>
+
 ## APIPA — The Self-Assigned Cry for Help
 
 Automatic Private IP Addressing kicks in when a device is configured for DHCP but can't reach a DHCP server. The device assigns itself an address in the 169.254.0.0/16 range (169.254.0.1 through 169.254.255.254), picks one at random, ARPs to make sure no other device on the segment grabbed the same one, and uses it. APIPA addresses are link-local only — they can communicate with other APIPA devices on the same network segment, but they can't reach a gateway, can't be routed, and can't access the internet or any remote network.
@@ -98,6 +105,14 @@ The entire /8 block is reserved — 127.0.0.1 through 127.255.255.254 — but in
 
 Every address you see during troubleshooting carries information before you run a single diagnostic tool. A 10.x or 192.168.x address means the device is behind NAT on a private network. A 169.254.x address means DHCP failed. A 127.x address means you're testing locally. A public IP on a workstation — rare in most environments — means that machine is directly exposed to the internet, which is either intentional (a server in a DMZ) or a serious misconfiguration. The ability to glance at an IP address and immediately know what kind of network you're dealing with is foundational. Everything else in network troubleshooting builds on top of it.
 
+<Callout type="tip">
+A 169.254 address is a diagnosis, not a configuration. It means the host asked for DHCP and heard nothing back, so the fault is upstream — dead DHCP scope, broken uplink, wrong VLAN. Read the address and you have already narrowed the problem.
+</Callout>
+
 ## Why This Matters in the Field
 
 You will work on networks behind NAT every single day. Understanding the private-to-public boundary is the difference between knowing why a device can reach the internet and knowing why it can't. When a help desk ticket says "user can reach internal sites but not external," your first thought should be NAT or default gateway. When a device pulls a 169.254 address on a production network, you don't waste time checking DNS — you go straight to DHCP. When a remote user gives you their IP and it starts with 192.168, you know you're seeing their private address behind a home router and you need a different approach to reach their machine. These aren't exam tricks. They're the first three seconds of every troubleshooting call.
+
+## Key Terms
+
+public address · private address · RFC 1918 · NAT · PAT · port forwarding · APIPA · link-local · loopback · default gateway · DHCP · address exhaustion

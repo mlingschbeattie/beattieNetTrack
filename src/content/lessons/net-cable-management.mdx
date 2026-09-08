@@ -57,6 +57,9 @@ domains:
   - domainId: nocti.networking
     weight: 0.2
 ---
+
+import Callout from '../../components/Callout.astro';
+
 ## The Closet That Teaches the Lesson
 
 You open a network closet for the first time and see this: a 42U rack, switches mounted clean with uniform patch cables routed through horizontal cable managers, every port on the patch panel labeled, a printed diagram taped inside the door matching port numbers to room numbers. You need to find the drop for Room 214? Check the diagram, find port 214-A on the patch panel, trace the patch cable to switch port Gi1/0/12. Done in thirty seconds.
@@ -75,6 +78,10 @@ A patch panel is a passive device — no electronics, no power — that terminat
 
 **Cable trays** are the highway system above the drop ceiling or below a raised floor. They're open or enclosed metal troughs that support horizontal cable runs from the wiring closet to the work areas. J-hooks, ladder racks, and wire basket trays all serve the same purpose: keeping cables organized, supported, and accessible along their route. Cables dumped loosely on top of ceiling tiles will eventually sag, get pinched by tiles, or become a nightmare when someone needs to add a run. Trays prevent all of that.
 
+<Callout type="warn">
+An overtightened zip tie deforms the twisted pairs inside the jacket and changes the cable's electrical characteristics. The link often still comes up, then throws intermittent errors under load — one of the hardest faults to trace because nothing looks broken. Use velcro, and never cinch it tight.
+</Callout>
+
 ## Cable Ties vs. Velcro — This Matters More Than You Think
 
 Zip ties (cable ties) are cheap, strong, and permanent. They're also the enemy of network cable. Over-tighten a zip tie on a bundle of Cat6 and you deform the cable, changing the geometry of the twisted pairs inside. That deformation causes crosstalk and attenuation — and the worst part is that it might not show up immediately. The cable certifies fine at install, then starts throwing errors six months later as the jacket slowly creeps under the constant pressure. In structured cabling, velcro wraps (hook-and-loop straps) are the standard. They hold bundles firmly without crushing the cable, they're reusable, and they can be opened and repositioned when you add or remove cables. Zip ties have their place — securing cable bundles to trays, anchoring conduit, bundling power cables — but for data patch cables and horizontal runs, velcro is the professional choice. This is one of those "nobody told me" things that separates a first-day tech from a second-year tech.
@@ -91,6 +98,14 @@ Network equipment mounts in standard 19-inch racks, and vertical space is measur
 
 Every port assignment, every VLAN mapping, every cable run should be documented and kept current. This means a physical layer diagram showing which patch panel ports connect to which rooms, a logical diagram showing switch port configurations and VLAN assignments, and a change log that records when modifications were made. Documentation lives in a shared location — a wiki, a network management tool, a spreadsheet that the whole team can access. Not in one person's head. Not in a notebook in a desk drawer. When you're troubleshooting an outage at 11 PM and the person who built the closet is unreachable, documentation is the only thing standing between a thirty-minute fix and a three-hour guessing game. Maintaining documentation is tedious. Skipping it is expensive. Every experienced tech has a story about the undocumented network that cost them a weekend.
 
+<Callout type="exam">
+ANSI/TIA-606 is the labelling standard CompTIA expects you to name. The detail that matters in practice: label both ends of every run, and label the port rather than the cable, because cables get replaced and ports do not.
+</Callout>
+
 ## Why This Matters in the Field
 
 Cable management isn't an aesthetic preference and it isn't something you do after the "real work" is done. It is the real work. A properly managed closet is faster to troubleshoot, easier to expand, safer (no cables blocking airflow or covering power connections), and cheaper to maintain over its lifetime. The industry norm is clear: if you hand off a closet that looks like a tornado hit it, you've failed the install regardless of whether all the links are up. The first closet you build on the job will tell your team everything they need to know about how you work. Make it the clean one.
+
+## Key Terms
+
+patch panel · punchdown block · 110 block · cable tray · cable manager · velcro · zip tie · ANSI/TIA-606 · rack unit · service loop · labelling · documentation · bend radius
