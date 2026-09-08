@@ -7,14 +7,15 @@ moduleId: "cfs.fundamentals.security-concepts"
 order: 1
 difficulty: "Beginner"
 estMinutes: 20
-tags: ["CIA triad", "confidentiality", "integrity", "availability", "incident triage"]
+tags: ["security+", "cia-triad", "secops", "SY0-701 1.1"]
 sections:
-  - id: confidentiality-secrets
-    title: "Confidentiality: Keeping Secrets Secret"
+  - id: classifying-the-failure
+    title: "Classifying the Failure"
     keyPoints:
-      - "Confidentiality ensures information is accessible only to authorized entities and processes."
-      - "Breaches include unauthorized exfiltration, accidental exposure, and credential theft."
-      - "Primary controls: strong encryption (at rest & in transit), granular access control (RBAC), and data masking."
+      - "The CIA triad is a technician's framework for diagnosing which rule an attacker broke"
+      - "Confidentiality protects data from unauthorized viewing"
+      - "Integrity guarantees data has not been altered or tampered with"
+      - "Availability ensures authorized users have timely access to resources"
     check:
       - prompt: "An attacker dumps an unencrypted SQL database containing student Social Security numbers onto a public forum. What core security pillar was directly violated?"
         options:
@@ -23,54 +24,54 @@ sections:
           - "Confidentiality"
           - "Non-repudiation"
         correct: 2
-      - prompt: "Which technical control is the primary defense against confidentiality loss when a backup laptop is stolen from a technician's vehicle?"
+      - prompt: "A teacher reports they cannot access grades because a ransomware payload encrypted the hard drive. Which property failed first?"
         options:
-          - "Full-disk encryption (FDE)"
-          - "Scheduled antivirus scans"
-          - "Redundant array of independent disks (RAID)"
-          - "Host-based intrusion detection (HIDS)"
-        correct: 0
-  - id: integrity-trust
-    title: "Integrity: Trusting the Data"
+          - "Confidentiality"
+          - "Availability"
+          - "Integrity"
+          - "Authentication"
+        correct: 1
+  - id: integrity-vs-confidentiality
+    title: "Integrity vs. Confidentiality"
     keyPoints:
-      - "Integrity guarantees data and systems remain accurate, complete, and untampered by unauthorized actors."
-      - "Integrity violations include unauthorized alterations, man-in-the-middle packet manipulation, and malicious code injection."
-      - "Primary controls: cryptographic hash verification (SHA-256), digital signatures, and audit trails."
+      - "Confidentiality breaches reveal information; integrity breaches corrupt information"
+      - "Cryptographic hashes like SHA-256 verify integrity without disclosing contents"
+      - "Altering a number by one digit is an integrity violation that firewalls cannot detect"
     check:
-      - prompt: "A threat actor intercepts an enterprise firmware update file and injects a backdoor before administrators install it on core switches. What security property was violated?"
+      - prompt: "A rogue database administrator executes an unauthorized script that modifies account balances. What security property was violated?"
         options:
           - "Confidentiality"
           - "Integrity"
           - "Availability"
           - "Auditability"
         correct: 1
-      - prompt: "How does a cybersecurity technician mathematically verify that a forensic disk image has not been altered during an investigation?"
+      - prompt: "How does a technician mathematically verify that an operating system update ISO has not been modified in transit?"
         options:
-          - "By inspecting file creation timestamps in File Explorer"
-          - "By comparing pre- and post-acquisition SHA-256 cryptographic hashes"
-          - "By testing the disk in a virtual machine"
-          - "By scanning the partition with anti-malware software"
+          - "By checking the file size in Windows Explorer"
+          - "By comparing the published SHA-256 hash against the downloaded file hash"
+          - "By opening the file in a text editor"
+          - "By scanning the file with Windows Defender"
         correct: 1
-  - id: availability-uptime
-    title: "Availability: Keeping Systems Reachable"
+  - id: availability-and-tradeoffs
+    title: "Availability and Security Trade-offs"
     keyPoints:
-      - "Availability ensures authorized users have timely, reliable access to critical assets and services."
-      - "Threats include volumetric DDoS attacks, ransomware file locking, hardware failures, and environmental disruption."
-      - "Primary controls: load balancing, automated failover clustering, offline backups, and power redundancy (UPS/generators)."
+      - "Every security control adds friction that can threaten availability"
+      - "Double extortion hits both confidentiality through exfiltration and availability through encryption"
+      - "Redundancy, clustering, and offline immutable backups defend availability"
     check:
-      - prompt: "A botnet floods a regional hospital's DNS resolvers with UDP packets, preventing ambulances from querying patient dispatch records. Which CIA property is compromised?"
+      - prompt: "A botnet floods an edge DNS resolver with UDP packets, preventing ambulances from querying patient dispatch records. Which property failed?"
         options:
           - "Confidentiality"
           - "Integrity"
           - "Availability"
           - "Authorization"
         correct: 2
-      - prompt: "A modern enterprise ransomware group encrypts local databases and exfiltrates proprietary schematics for double extortion. Which properties of the CIA triad were attacked?"
+      - prompt: "A modern enterprise ransomware group steals proprietary schematics and then encrypts the production cluster. Which properties were attacked?"
         options:
-          - "Only Availability"
-          - "Only Confidentiality"
+          - "Availability only"
+          - "Confidentiality only"
           - "Both Confidentiality and Availability"
-          - "Neither; ransomware is strictly an Integrity flaw"
+          - "Integrity only"
         correct: 2
 domains:
   - domainId: "cyber.foundations"
@@ -79,98 +80,70 @@ domains:
 
 import Callout from '../../components/Callout.astro';
 
-When a major breach hits the news, commentators love to throw around dramatic terms like "cyber warfare" or "sophisticated state-sponsored APTs." 
+## The 8:00 AM Call That Teaches You the Triad
 
-In the security operations center (SOC), professional analysts cut through the noise with a single foundational framework: **The CIA Triad**.
+You're ten minutes into your shift in the school NOC when the radio crackles: "The grading server is down." You pull up the console. The server is responding to pings, the CPU is idling at two percent, and the network link light is solid green. Windows says the service is running. But when the assistant principal logs in, every student record has been renamed to `.locked` and an unreadable text file sits on the desktop demanding two Bitcoin.
 
-Every security policy, firewall rule, access permission, and incident response playbook exists to defend one (or more) of three fundamental properties: **Confidentiality**, **Integrity**, and **Availability**. 
+The server isn't down. The hardware is fine. The operating system is fine. But your data is completely inaccessible. That's an Availability failure wrapped in an encryption lock.
 
-If you can accurately pinpoint which leg of the triad an adversary is attacking, you instantly know which tools and containment protocols to deploy.
+Next day, opposite problem: the attendance server is online, files are open, nobody demanded a ransom. But a student worker noticed that three seniors with seventy unexcused absences suddenly show perfect attendance in the database. Nothing crashed. Nobody got locked out. But the data cannot be trusted. That's an Integrity failure.
 
----
+Both times, someone ran down the hall shouting "we've been hacked." The reason you don't panic is that you have a mental checklist. You isolate which property failed before you touch a keyboard. In security operations, that framework is the CIA Triad — Confidentiality, Integrity, and Availability. Every firewall rule, encryption algorithm, access control list, and backup schedule exists to defend one of these three walls.
 
-## 1. Confidentiality: Restricting Access to Authorized Eyes
+## Confidentiality: Keeping Secrets Secret
 
-**Confidentiality** is about privacy and secrecy. It guarantees that sensitive information is shielded from unauthorized individuals, entities, or automated processes.
+Confidentiality means only authorized entities can read the data. If someone views, copies, or downloads information they aren't supposed to see — even if they change nothing and leave the server online — confidentiality has failed.
 
-```
-       [Authorized User]  ---> (Passes Identity Check) ---> [Read Secret Data]
-       [Adversary / Snooper] -> [Block / Encrypted Ciphertext]
-```
+Think of confidentiality like an armored courier pouch. You seal payroll records inside. If an attacker intercepts the van, slices the pouch open, takes photos of every employee's salary on their phone, and puts the papers right back into the pouch, the company still has the papers. Operations continue. But the secret is out in the wild.
 
-### Real-World Scenarios
-- **The Accidental Leak:** An administrator misconfigures an AWS S3 cloud storage bucket containing 50,000 internal employee payroll PDFs, leaving it open to the public internet without an API key or password.
-- **The Eavesdrop:** A technician connects their workstation to an open coffee shop Wi-Fi network with no VPN. An attacker running Wireshark captures cleartext HTTP session tokens.
-- **The Physical Loss:** A company laptop left in a rideshare trunk is found by someone who mounts the unencrypted NVMe drive onto an external dock and browses customer credit card files.
+In enterprise networks, confidentiality fails through misconfigured permissions and sloppy transport. An administrator leaves an AWS S3 cloud storage bucket set to "Public Read," exposing fifty thousand applicant resumes to any web scraper that scans the IP range. A technician tests an internal API over raw HTTP instead of HTTPS, sending cleartext passwords across the local coffee shop Wi-Fi where anyone running Wireshark can harvest them in real time. Full-disk encryption (FDE) with BitLocker or LUKS protects data at rest when a laptop is stolen from a car; TLS 1.3 protects data in transit across the wire.
 
-### Key Defensive Controls
-1. **Encryption at Rest:** AES-256 full disk encryption (BitLocker, LUKS, FileVault). If an attacker steals the physical drive, the data is mathematically unreadable without the key.
-2. **Encryption in Transit:** TLS 1.3 for web traffic, SSHv2 for command-line management, and IPsec/WireGuard for virtual private networks.
-3. **Principle of Least Privilege (PoLP):** Users and service accounts receive only the exact permissions necessary to complete their job—no more, no less.
-
-<Callout type="info">
-**Technician Rule of Thumb:** If data was viewed, downloaded, or copied by someone who wasn't supposed to see it—even if they changed nothing and took nothing offline—**Confidentiality** has failed.
+<Callout type="exam">
+CompTIA loves testing the difference between encryption at rest and encryption in transit. If a stolen laptop has BitLocker enabled, the data is protected at rest. If an attacker intercepts web traffic on an open wireless network, TLS protects the data in transit. Know the controls for both.
 </Callout>
 
----
+## Integrity: Trusting What You Read
 
-## 2. Integrity: Ensuring Data and Systems Remain Untampered
+Integrity guarantees that information and systems remain accurate, complete, and untampered by unauthorized actors. A system with broken integrity is often more dangerous than a system that crashed completely — because you keep making decisions based on poisoned data.
 
-**Integrity** guarantees that data remains accurate, complete, authentic, and unmodified by unauthorized actors or unexpected errors.
+Consider an infusion pump in a hospital room. If an attacker cuts power to the pump, alarms ring immediately and nurses switch to manual IV bags — an Availability failure that announces itself loudly. But if an attacker quietly alters the firmware configuration on the pump so that every five-milligram dosage of medication is delivered as fifty milligrams, no alarm sounds. The machine reports that everything is operating normally while delivering lethal overdoses. That is the horror of an unmonitored Integrity failure.
 
-In cybersecurity, bad data can be infinitely more dangerous than missing data. If an attacker turns off a hospital's heart rate monitors (Availability), alarms sound immediately. But if an attacker secretly alters patient drug dosage numbers in a database from 5mg to 500mg without anyone noticing, that is a catastrophic **Integrity** disaster.
-
-```
-       [Source File: kernel.bin]  -- SHA-256 --> [8f4e2a...c019]
-                                                         |  (Match = Clean)
-       [Downloaded File]          -- SHA-256 --> [8f4e2a...c019]
-```
-
-### Real-World Scenarios
-- **The Financial Flip:** A rogue database admin executes an unauthorized `UPDATE accounts SET balance = balance + 100000 WHERE id = 42;`. The system didn't crash; the numbers were corrupted.
-- **Supply Chain Tampering:** Attackers compromise an open-source library repository and slip three lines of reverse-shell code into a software update downloaded by millions of developers worldwide.
-- **Network Spoofing:** An attacker poisons ARP caches on a local LAN switch to redirect financial traffic through their machine, modifying banking destination routing numbers on the fly before forwarding the packets.
-
-### Key Defensive Controls
-1. **Cryptographic Hashes:** One-way mathematical algorithms (such as SHA-256) produce a unique fixed-length digest of a file. If even a single bit of a 10GB ISO file changes, the entire hash changes completely (the avalanche effect).
-2. **Digital Signatures & PKI:** Cryptographic validation using public-key infrastructure proves both *who* authored a file and that it hasn't changed since signing.
-3. **Strict Change Auditing & File Integrity Monitoring (FIM):** Automated agents (e.g., OSSEC, Wazuh, Tripwire) continuously monitor critical system binaries (`/etc/shadow`, `/etc/pam.d`, `system32\drivers`) and alert the instant an unauthorized modification occurs.
-
----
-
-## 3. Availability: Ensuring Reliable, Timely Access
-
-A system can have impenetrable confidentiality and mathematically pristine integrity, but if your legitimate staff and customers cannot reach it when they need it, the system is useless.
-
-**Availability** ensures that authorized users have prompt, dependable access to operational data, networks, and computing resources.
-
-```
-       [Normal Traffic: 500 req/sec]  ------> [Web Cluster (Online 99.99%)]
-       [DDoS Attack: 2,000,000 req/sec] ---> [Cloud Scrubbing / Rate Limiting]
-```
-
-### Real-World Scenarios
-- **Ransomware Extortion:** Malware executes on an enterprise domain controller, encrypting virtual hard disks (`.vhdx`) across all hypervisors with RSA-4096 keys. The files exist, but cannot be accessed.
-- **Volumetric DDoS:** A compromised IoT botnet blasts 800 Gbps of UDP amplification traffic at an e-commerce company's edge gateway, exhausting all available bandwidth during Black Friday sales.
-- **Hardware & Environmental Failure:** An air conditioning unit in a regional datacenter fails, causing rack temperatures to spike past 110°F. Thermal sensors automatically initiate emergency server shutdowns to prevent permanent silicon damage.
-
-### Key Defensive Controls
-1. **Redundancy & High Availability (HA):** N+1 clustering, redundant power supplies (dual UPS feeds and backup diesel generators), and multi-region cloud load balancers.
-2. **Immutable Offline Backups (3-2-1 Rule):** 3 copies of data, on 2 different media types, with 1 copy stored offline or offsite in an immutable (write-once, read-many) state to survive ransomware attacks.
-3. **DDoS Scrubbing & CDN Caching:** Distributed edge networks (e.g., Cloudflare, Akamai) that absorb and scrub malicious volumetric traffic before it saturates upstream ISP links.
+Defenders verify integrity mathematically using cryptographic hash functions like SHA-256. A hash function takes any input — a single word, a photo, or a five-gigabyte Linux installer ISO — and runs it through a one-way mathematical meat grinder to produce a fixed-length string of characters. If even one bit of that five-gigabyte file changes from a zero to a one, the resulting hash changes completely. When software vendors publish an installer, they publish the SHA-256 hash next to it. You run `sha256sum` on your downloaded copy. If the strings match down to the last character, the file is authentic. If one letter is off, the file was corrupted or injected with malware.
 
 <Callout type="warn">
-**Double Extortion Warning:** Modern ransomware groups rarely attack only one pillar. They first quietly steal hundreds of gigabytes of proprietary documents over several weeks (**Confidentiality Violation**), and then execute disk encryption to shut down your business operations (**Availability Violation**). If you restore from backups, they threaten to publish your confidential data unless you pay the ransom.
+Students consistently confuse confidentiality and integrity. Encryption gives you confidentiality — it keeps people from reading the message. Hashes give you integrity — they prove nobody tampered with the message. Encrypting a file does not stop an attacker from deleting random bytes out of the middle of it. You need both.
 </Callout>
 
----
+## Availability: Ensuring Systems Are Reachable When Needed
 
-## Summary & Field Checklist
+Availability means authorized users can reach the systems, networks, and data they need to do their jobs without arbitrary disruption. If your email server is mathematically impenetrable and your databases have never been altered, but your edge router is dropping ninety-nine percent of incoming packets because an external botnet is blasting it with UDP amplification traffic, your security score is zero.
 
-| Pillar | Core Question | Primary Attack Example | Primary Defense |
-| :--- | :--- | :--- | :--- |
-| **Confidentiality** | *Can unauthorized people read this?* | Data breach, credential sniffing, eavesdropping | AES-256 encryption, MFA, Least Privilege RBAC |
-| **Integrity** | *Has this been modified or tampered with?* | SQL injection data change, poisoned firmware | SHA-256 checksums, digital signatures, FIM |
-| **Availability** | *Can legitimate users access it right now?* | DDoS attack, ransomware encryption, power outage | Clustering, load balancing, offline 3-2-1 backups |
+Availability is defended with architecture, not passwords. You build N+1 redundancy into server power supplies so a blown capacitor doesn't crash a hypervisor. You deploy cloud load balancers that distribute incoming web requests across four redundant virtual machines instead of one fragile desktop under a desk. And you enforce the immutable 3-2-1 backup rule: three total copies of your data, stored on two different media types, with at least one copy kept completely offline or air-gapped where network ransomware cannot touch it.
 
-When you proceed to the checkpoint quiz, read each scenario carefully. Identify the **first** and **primary** point of failure before selecting your classification.
+<Callout type="tip">
+When you write backup scripts, remember that automated network shares are vulnerable to ransomware. If your backup server is mapped as a drive letter on your domain controller, the ransomware will encrypt your backups thirty seconds after it encrypts the server. True availability requires immutable, offline, or write-once storage.
+</Callout>
+
+## The Modern Attack: Double Extortion
+
+Ransomware used to be purely an Availability attack. A technician clicked a malicious macro in an email attachment, the malware encrypted local files, and an on-screen note demanded fifty dollars in prepaid cards to restore access. If you had good nightly tape backups, you wiped the machine, restored the drive, and lost half a day of work.
+
+Modern ransomware operators don't work that way. When they breach a corporate network, they spend three weeks quietly moving laterally through your switches, mapping domain controllers, and copying hundreds of gigabytes of proprietary customer records, financial spreadsheets, and employee personnel files out to a remote server in another country — a massive **Confidentiality** theft.
+
+Only after the data is exfiltrated do they execute the disk-locking payloads across all virtual hypervisors simultaneously, wiping out local hyper-v storage and hitting **Availability**. When the CEO tells the press "we don't need to pay because we have backups," the ransomware cartel emails a sample of the stolen employee Social Security numbers to the local newspaper and threatens to publish the full database online unless the ransom is wired within forty-eight hours. That is double extortion — attacking two legs of the triad to take away your options.
+
+## When It Breaks — The Technician's Triage Rule
+
+When an incident hits your queue, resist the urge to start changing settings randomly. Stop and categorize the damage:
+
+If someone saw something they shouldn't have, that is Confidentiality — your immediate response is containment: revoke credentials, kill active sessions, rotate API keys, and isolate the compromised host from the network.
+
+If data was changed, corrupted, or backdoored, that is Integrity — your response is verification: pull clean forensic images, compare cryptographic hashes against known-good baselines, and trace unauthorized database transactions in the audit logs.
+
+If the service is unreachable or locked down, that is Availability — your response is restoration: verify failover clusters, initiate DDoS scrubbing, and validate your immutable offline backup sets before spinning up replacement infrastructure.
+
+Every ticket you touch in your career will trace back to one of these three questions. The techs who advance into senior engineering roles aren't the ones who memorized every syntax flag; they're the ones who recognize which rule broke and deploy the right control without wasting time.
+
+## Key Terms
+
+CIA triad · Confidentiality · Integrity · Availability · encryption at rest · encryption in transit · BitLocker · TLS 1.3 · SHA-256 · cryptographic hash · digital signature · checksum · file integrity monitoring · access control list · principle of least privilege · DDoS · SYN flood · double extortion · immutable backup · 3-2-1 rule · air gap · containment · credential stuffing

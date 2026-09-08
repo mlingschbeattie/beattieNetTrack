@@ -13,92 +13,104 @@ tags: ["CIA", "risk", "security fundamentals"]
 questions:
   - id: q1
     type: single
-    prompt: "A shared drive with student records is publicly accessible online. Which CIA property is primarily impacted first?"
+    prompt: "A shared drive with student records is publicly accessible online without authentication. Which CIA property is primarily impacted first?"
     options:
-      - "A. Integrity"
-      - "B. Availability"
-      - "C. Confidentiality"
-      - "D. Non-repudiation"
+      - "Integrity"
+      - "Availability"
+      - "Confidentiality"
+      - "Non-repudiation"
     correctIndex: 2
+    explanation: "Confidentiality prevents unauthorized disclosure. Exposing private records to the public without authentication breaks confidentiality immediately."
   - id: q2
     type: single
-    prompt: "An attacker changes grade values in a database without authorization. Which property is primarily violated?"
+    prompt: "An attacker changes grade values in an administrative database without authorization. Which property is primarily violated?"
     options:
-      - "A. Integrity"
-      - "B. Availability"
-      - "C. Confidentiality"
-      - "D. Accountability"
+      - "Integrity"
+      - "Availability"
+      - "Confidentiality"
+      - "Accountability"
     correctIndex: 0
+    explanation: "Integrity guarantees data remains untampered and accurate. Silently altering database values poisons the integrity of the data."
   - id: q3
     type: single
-    prompt: "A ransomware event makes systems inaccessible during school operations. Which CIA property is most directly affected?"
+    prompt: "A ransomware payload encrypts virtual disks, locking staff out of systems during school operations. Which CIA property is most directly affected?"
     options:
-      - "A. Confidentiality"
-      - "B. Availability"
-      - "C. Integrity"
-      - "D. Authenticity"
+      - "Confidentiality"
+      - "Availability"
+      - "Integrity"
+      - "Authenticity"
     correctIndex: 1
+    explanation: "Availability means authorized users can reach the systems and data they need. Denying access to operational systems is an availability failure."
   - id: q4
     type: single
-    prompt: "What best defines a vulnerability?"
+    prompt: "What best defines a vulnerability in an enterprise environment?"
     options:
-      - "A. Any malicious actor"
-      - "B. A weakness that can be exploited"
-      - "C. The estimated damage after an incident"
-      - "D. A control used to prevent phishing"
+      - "Any malicious adversary with an exploit tool"
+      - "A flaw or weakness in software, hardware, or policy"
+      - "The estimated financial damage after an incident"
+      - "A technical control used to block phishing"
     correctIndex: 1
+    explanation: "A vulnerability is the passive weakness or hole in the fence. Threat actors exploit vulnerabilities to cause impact."
   - id: q5
     type: single
-    prompt: "Which statement best describes risk in cybersecurity?"
+    prompt: "Which statement accurately describes risk in cybersecurity operations?"
     options:
-      - "A. Risk is the same as threat"
-      - "B. Risk is vulnerability only"
-      - "C. Risk combines likelihood and impact"
-      - "D. Risk is impossible to reduce"
+      - "Risk is identical to threat"
+      - "Risk is another name for an unpatched vulnerability"
+      - "Risk balances threat likelihood against operational impact"
+      - "Risk cannot be calculated or reduced"
     correctIndex: 2
+    explanation: "Risk is the product of Threat, Vulnerability, and Impact. It measures how likely an exploit is and how badly it will hurt."
   - id: q6
     type: single
-    prompt: "What is the goal of defense in depth?"
+    prompt: "What is the primary goal of a defense-in-depth architecture?"
     options:
-      - "A. Depend on one strong perimeter control"
-      - "B. Add multiple security layers so one failure does not collapse protection"
-      - "C. Eliminate all residual risk"
-      - "D. Replace monitoring with prevention"
+      - "Rely on a single enterprise perimeter firewall"
+      - "Deploy layered controls so that the failure of one does not collapse overall defense"
+      - "Completely eliminate all residual risk from the network"
+      - "Replace real-time monitoring with automated prevention"
     correctIndex: 1
+    explanation: "Defense in depth layers physical, network, endpoint, and administrative controls so that an attacker who bypasses one layer is still stopped by the next."
   - id: q7
     type: single
-    prompt: "A service account with unnecessary admin rights is an example of what issue?"
+    prompt: "A service account configured with Domain Admin privileges when it only reads an inventory log violates which fundamental security concept?"
     options:
-      - "A. Least-privilege success"
-      - "B. Attack surface reduction"
-      - "C. Excessive privilege increasing risk"
-      - "D. Proper segmentation"
+      - "Defense in depth"
+      - "Attack surface reduction"
+      - "Principle of least privilege"
+      - "Network microsegmentation"
     correctIndex: 2
+    explanation: "Least privilege requires giving accounts only the exact permissions needed to do their job and nothing more. Granting full admin rights to a log reader is an accident waiting to happen."
   - id: q8
     type: single
-    prompt: "Which action most directly reduces attack surface?"
+    prompt: "Which action most directly reduces an organization's attack surface?"
     options:
-      - "A. Enabling all optional services"
-      - "B. Disabling unused ports and accounts"
-      - "C. Increasing password reuse"
-      - "D. Turning off logs to save storage"
+      - "Enabling all optional services for convenience"
+      - "Disabling unused ports, default accounts, and legacy protocols"
+      - "Allowing shared administrative accounts across IT staff"
+      - "Disabling system logging to conserve disk space"
     correctIndex: 1
+    explanation: "Attack surface is the total sum of entry points an attacker can target. Shutting down unused ports and services removes those doors entirely."
   - id: q9
     type: single
-    prompt: "True or False: Most organizations must prioritize practical controls against opportunistic attacks before modeling nation-state scenarios."
+    prompt: "Why must IT teams prioritize basic hygiene (patching, MFA, closing open ports) over defending against nation-state zero-days?"
     options:
-      - "A. True"
-      - "B. False"
+      - "Opportunistic cybercriminals exploit known, unpatched holes in over 80% of breaches"
+      - "Nation-state threat actors never target high schools or small businesses"
+      - "Zero-day vulnerabilities cannot be mitigated with software updates"
+      - "Firewalls automatically block all advanced persistent threats"
     correctIndex: 0
+    explanation: "Real-world adversaries take the path of least resistance. Solid cyber hygiene stops the overwhelming majority of automated scans and opportunistic attacks."
   - id: q10
     type: single
-    prompt: "If controls are applied and some risk still remains, what is that called?"
+    prompt: "After applying firewalls, multi-factor authentication, and patches, what is the leftover risk that cannot be eliminated called?"
     options:
-      - "A. Eliminated risk"
-      - "B. Residual risk"
-      - "C. Impossible risk"
-      - "D. Deferred threat"
+      - "Eliminated risk"
+      - "Residual risk"
+      - "Unmitigated threat"
+      - "Deferred impact"
     correctIndex: 1
+    explanation: "No security architecture achieves 100% safety. The remaining risk after all controls are deployed is residual risk, which leadership must accept, transfer, or mitigate further."
 domains:
   - domainId: "cyber.foundations"
     weight: 1
