@@ -79,6 +79,8 @@ domains:
     weight: 0.2
 ---
 
+import Callout from '../../components/Callout.astro';
+
 ## Why Motherboards Matter More Than Any Other Component
 
 Every compatibility decision in a PC build flows through the motherboard. You cannot put any CPU in any board. You cannot use any RAM in any slot. You cannot install any GPU in any case. The motherboard defines what's possible — its socket, chipset, form factor, and slot configuration determine every other component you can use.
@@ -99,6 +101,10 @@ Form factor describes the physical dimensions of the motherboard and where its m
 The mounting hole pattern for each form factor is standardized — an ATX case has holes for ATX, Micro-ATX, and Mini-ITX boards. Cases list which form factors they support.
 
 **For the exam:** Know ATX, Micro-ATX, and Mini-ITX dimensions and characteristics. ATX is the standard; Mini-ITX is the smallest common consumer form factor.
+
+<Callout type="exam">
+Socket compatibility is the single hardest rule in a build and A+ tests it directly. The CPU must match the socket exactly — LGA1700, AM5 and so on — and no adapter exists. If a question describes a CPU that will not fit, socket mismatch is almost always the answer.
+</Callout>
 
 ## CPU Sockets — The Compatibility Chokepoint
 
@@ -230,6 +236,10 @@ Motherboard manufacturers release BIOS updates to add CPU support, fix bugs, and
 
 **Critical warning:** Never interrupt a BIOS flash. Power loss during a flash can brick the motherboard. Some boards have a dual-BIOS feature (backup chip) for recovery from a failed flash.
 
+<Callout type="warn">
+A machine that loses its time and BIOS settings every time it is unplugged has a dead CMOS battery, not a failing motherboard. It is a two-pound part and a five-minute fix, and it gets misdiagnosed as a board replacement more often than any other fault on this list.
+</Callout>
+
 ## CMOS Battery
 
 The small coin cell battery (CR2032) on the motherboard maintains BIOS settings and the real-time clock when the system is unplugged. When this battery dies:
@@ -265,3 +275,7 @@ A client wants to upgrade their i7-8700 system with a new CPU. You check: it's o
 Another scenario: a client's system randomly resets every time they try to run RAM at 3600MHz. You check BIOS — XMP is disabled, so the system is running the RAM at 2133MHz base spec, but the board is unstable at the manually set 3600MHz without the XMP profile. Enable XMP, problem solved.
 
 Motherboard knowledge prevents expensive mistakes and enables fast, confident upgrades.
+
+## Key Terms
+
+form factor · ATX · micro-ATX · mini-ITX · CPU socket · LGA · PGA · chipset · northbridge · southbridge · PCIe lane · DIMM slot · BIOS · UEFI · CMOS battery · POST

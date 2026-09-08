@@ -100,6 +100,8 @@ domains:
     weight: 0.5
 ---
 
+import Callout from '../../components/Callout.astro';
+
 ## Before You Touch Anything
 
 You can memorize the name of every component in a PC and still be a bad technician. What separates the techs who fix problems from the ones who swap parts until something works is a mental model — an understanding of how the pieces interact. Once you have that model, symptoms tell you stories. A system that boots but crashes under load tells you something different than one that won't POST at all. A machine that runs fine for an hour then throttles tells you something different than one that's slow from the first second.
@@ -164,6 +166,10 @@ Current systems use DDR4 or DDR5 SDRAM. The DDR generation must match what the m
 
 Most consumer motherboards have 2 or 4 RAM slots. Installing RAM in matched pairs in the correct slots (check the motherboard manual) enables dual-channel mode, effectively doubling the memory bandwidth. A system with 2x8GB in dual channel significantly outperforms the same 16GB in a single stick.
 
+<Callout type="warn">
+RAM and storage get confused constantly, and the confusion causes real diagnostic errors. RAM is volatile working space that empties on power loss. Storage is persistent and keeps its contents. A customer saying they need more memory because their drive is full is describing a storage problem, not a RAM one.
+</Callout>
+
 ## Storage — Long-Term Memory
 
 Storage holds data permanently — programs, the operating system, documents, everything that survives a power cycle.
@@ -212,8 +218,16 @@ When you double-click a program icon, here's what actually happens:
 
 Every component in that chain has a performance ceiling. The slowest component limits the whole system — this is the concept of a bottleneck. Identifying bottlenecks is a core diagnostic skill.
 
+<Callout type="exam">
+A+ Core 1 tests the four functions — input, processing, output, storage — by describing a component and asking which function it serves. Anchor each part to its function once and the questions answer themselves.
+</Callout>
+
 ## Why This Matters in the Field
 
 A client calls and says their computer is slow. Without a mental model, you run a virus scan and hope. With it, you ask: slow at what, exactly? Slow to start (storage)? Slow when many programs are open (RAM)? Slow under sustained load (thermal throttling)? Slow for specific tasks like video editing (CPU or GPU)? 
 
 Each answer points to a different component, a different test, and a different solution. The mental model is the difference between guessing and diagnosing.
+
+## Key Terms
+
+input · processing · output · storage · CPU · RAM · volatile · non-volatile · motherboard · power supply · bus · peripheral

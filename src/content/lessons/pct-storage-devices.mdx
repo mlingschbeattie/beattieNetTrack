@@ -79,6 +79,8 @@ domains:
     weight: 0.2
 ---
 
+import Callout from '../../components/Callout.astro';
+
 ## Storage Is Where Everything Lives
 
 The operating system, every application, every file, every photo — all of it lives on storage. When storage fails, clients lose everything. When storage is slow, every operation the computer performs is slower. When storage is misconfigured, systems fail to boot or lose data silently.
@@ -183,6 +185,10 @@ For the exam: know that optical drives exist and use SATA, but don't expect heav
 
 **CompactFlash / CFexpress** — professional camera storage formats, much faster than SD.
 
+<Callout type="exam">
+Know the common levels by what they trade. RAID 0 stripes for speed with no redundancy — one drive lost means everything lost. RAID 1 mirrors for redundancy at half the usable capacity. RAID 5 stripes with parity and survives one drive failure. RAID 10 combines mirroring and striping.
+</Callout>
+
 ## RAID — Redundant Array of Independent Disks
 
 RAID combines multiple drives to provide redundancy, performance, or both. Common RAID levels for the A+ exam:
@@ -215,6 +221,10 @@ A file system defines how data is organized and stored on a drive. The OS must s
 
 **For technicians:** Windows drives are NTFS. USB drives for cross-platform use should be exFAT. A Mac-formatted drive won't be readable in Windows without third-party software.
 
+<Callout type="warn">
+RAID is not a backup. It protects against a drive failing, not against deletion, ransomware or fire — those are replicated to every disk in the array instantly. A customer who says they are covered because they run RAID 1 has redundancy and no backup.
+</Callout>
+
 ## Partitioning — MBR vs GPT
 
 Before a file system is created, a drive must be partitioned. Two partitioning schemes:
@@ -242,3 +252,7 @@ A client's computer takes 3 minutes to boot and applications take forever to ope
 Another scenario: a client reports that their server "lost a drive" and they're worried. You check — it's RAID 5 with one failed drive. The array is degraded but still running. You replace the dead drive and the RAID rebuilds. No data lost. Then you explain that they still need a backup, because if a second drive fails during the rebuild, they lose everything.
 
 Storage knowledge is directly tied to data safety. Get it right.
+
+## Key Terms
+
+HDD · SSD · NVMe · SATA · M.2 · RPM · optical drive · flash storage · RAID 0 · RAID 1 · RAID 5 · RAID 10 · parity · NTFS · FAT32 · exFAT · MBR · GPT · partition

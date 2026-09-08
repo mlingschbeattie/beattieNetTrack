@@ -100,6 +100,8 @@ domains:
     weight: 0.5
 ---
 
+import Callout from '../../components/Callout.astro';
+
 ## The Rule Nobody Teaches First (But Should)
  
 Before you open a case, before you touch a component, before you do anything inside a computer — you need to understand two things that can end your career as a technician before it starts: electricity that can hurt you, and electricity that can hurt the hardware. They are not the same problem, and they don't have the same solution.
@@ -130,6 +132,10 @@ Always power off and unplug the system before working inside it — but understa
  
 After unplugging, press the power button once. This drains residual charge from the capacitors on the board.
  
+<Callout type="warn">
+You cannot feel a discharge below about 3,000 volts, and a few hundred is enough to damage a component. That is why ESD damage is so often blamed on a faulty part — the machine works, then fails weeks later, and nobody connects it to the person who handled the RAM without a strap.
+</Callout>
+
 ## ESD — The Invisible Threat
  
 ### What Electrostatic Discharge Is
@@ -172,6 +178,10 @@ When transporting components — from the parts shelf to the bench, from one roo
  
 Stack components carefully. Never stack motherboards or cards directly on top of each other. Never place components on metal surfaces without antistatic protection.
  
+<Callout type="exam">
+A+ tests disposal by material. Batteries and toner cartridges go to specialist recycling, never in general waste, and you follow local regulations plus the manufacturer's guidance. If a question mentions an MSDS or SDS, it is asking about safe handling and disposal of that specific material.
+</Callout>
+
 ## Component Disposal
  
 Computers and their components contain hazardous materials: lead solder, mercury in older displays, cadmium in batteries, and various heavy metals in circuit boards. Improper disposal — throwing components in regular trash — is illegal in most jurisdictions under environmental regulations.
@@ -183,3 +193,7 @@ Proper disposal options include manufacturer recycling programs, certified e-was
 ESD failures are insidious. A technician who works without a wrist strap may go months without an obvious failure — and then be blamed when a client's system starts having intermittent crashes three weeks after service. Latent ESD damage is nearly impossible to prove after the fact.
  
 The technicians who build reputations for reliable work are not necessarily the ones with the most technical knowledge. They are the ones with the best habits. A wrist strap takes three seconds to put on. Antistatic bags take five seconds to use properly. These habits cost nothing and protect everything. Build them now, before you develop the bad habits that are much harder to break.
+
+## Key Terms
+
+ESD · electrostatic discharge · anti-static strap · anti-static mat · grounding · surge · PSU capacitor · MSDS · SDS · component disposal · self-grounding

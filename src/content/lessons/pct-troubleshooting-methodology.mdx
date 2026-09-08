@@ -100,11 +100,17 @@ domains:
     weight: 0.2
 ---
 
+import Callout from '../../components/Callout.astro';
+
 ## The Technician Who Skipped Step One
 
 A student was convinced his laptop had a hardware problem. The fan made a new noise, performance was slow, and the display flickered occasionally. He spent forty minutes pulling RAM and reseating the heatsink before anyone asked: "When did this start?" The answer was: yesterday afternoon, after he installed a graphics driver update. Revert the driver. All three symptoms gone.
 
 He had the technical skills to do the hardware work. What he lacked was a process — a defined starting point that gathers information before tools come out. Troubleshooting without a methodology is guessing with extra steps. CompTIA's seven-step process is not bureaucracy. It's the sequence professionals have converged on because skipping steps consistently creates more work, not less.
+
+<Callout type="exam">
+CompTIA tests the seven steps in order and expects you to name the step being described. Identify the problem, establish a theory, test the theory, establish a plan, verify functionality and add prevention, then document. Questions frequently describe a technician who skipped one and ask what went wrong.
+</Callout>
 
 ## Overview: The Seven Steps
 
@@ -221,6 +227,10 @@ A proper record includes:
 
 Use a ticketing system if your organization has one. If not, even a shared spreadsheet or email trail is better than nothing. The format matters less than the habit.
 
+<Callout type="warn">
+The step most often skipped is the last one. Documentation feels like paperwork after the fix, and it is the only reason the next technician does not repeat your twenty minutes of diagnosis. An undocumented fix is a fix that will be found again from scratch.
+</Callout>
+
 ## Applying the Method Under Pressure
 
 Real-world troubleshooting is rarely as linear as the seven steps suggest. You'll sometimes skip from step one directly to an obvious fix, circle back from step four to step two, or be interrupted between steps by a second problem. The methodology isn't a rigid checklist — it's a mental framework that keeps you from going in random circles.
@@ -242,3 +252,7 @@ Clients don't come to technicians because they want someone to try random things
 The methodology also protects you professionally. A documented sequence of diagnosis shows you acted competently and deliberately. If something goes wrong later — if a machine that was working when you left develops a different problem the next day — having documentation shows exactly what you did and what state the machine was in when you finished.
 
 CompTIA tests the methodology because it's the foundation of everything else. The hardware-specific troubleshooting in the lessons that follow this one will make much more sense with this framework established.
+
+## Key Terms
+
+identify the problem · establish a theory · probable cause · test the theory · plan of action · escalate · verify functionality · preventive measures · document findings · reproduce · backup before changes

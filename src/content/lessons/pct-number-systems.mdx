@@ -79,6 +79,8 @@ domains:
     weight: 0.5
 ---
 
+import Callout from '../../components/Callout.astro';
+
 ## Why a Technician Needs to Know This
 
 Number systems feel like math class. They're not. They're the language computers use to represent everything — memory addresses, IP addresses, MAC addresses, error codes, color values, file permissions. When you see a blue screen stop code like `0x0000007E`, that `0x` prefix tells you it's hexadecimal. When you subnet a network, you're doing binary math. When you read a MAC address like `A4:C3:F0:85:7D:22`, every pair is a hex byte.
@@ -158,6 +160,10 @@ Subnet masks work entirely in binary. The mask /24 (255.255.255.0) in binary is:
 11111111 11111111 11111111 00000000
 ```
 The 1s mark the network portion; the 0s mark the host portion. This is why you cannot understand subnetting without binary — the math is fundamentally binary AND and OR operations.
+
+<Callout type="tip">
+Hex exists because four binary digits map to exactly one hex character. That is the whole reason it is used — it compresses long binary strings without losing the bit boundaries. Once you see 1111 as F, MAC addresses and colour codes stop looking random.
+</Callout>
 
 ## Hexadecimal — Base 16
 
@@ -252,6 +258,10 @@ Note that storage manufacturers use decimal (1 KB = 1,000 bytes) while operating
 
 **Bits vs bytes in bandwidth:** Network speeds are measured in bits per second (Mbps, Gbps). File sizes are in bytes. A 100 Mbps connection transfers 100 megabits — about 12.5 megabytes — per second. Forgetting to divide by 8 is the source of endless confusion when download speeds "seem slow."
 
+<Callout type="exam">
+Expect conversion between binary, decimal and hex without a calculator. The place values are the whole skill: 128, 64, 32, 16, 8, 4, 2, 1 for a byte. Write them down at the start of the exam and the conversions become addition.
+</Callout>
+
 ## Practice Problems
 
 Work these without a calculator. Check your answers at the bottom.
@@ -274,3 +284,7 @@ Work these without a calculator. Check your answers at the bottom.
 You will encounter binary and hex constantly — in IP addressing, network troubleshooting, BIOS settings, error codes, and hardware identifiers. Technicians who can't read these values have to look everything up. Technicians who can read them fluently diagnose faster, communicate more precisely, and look competent in front of clients.
 
 The binary-to-hex conversion table is worth memorizing. The rest follows from understanding how positional notation works. Spend 20 minutes with the practice problems and this becomes second nature.
+
+## Key Terms
+
+decimal · binary · hexadecimal · base · bit · byte · nibble · place value · most significant bit · least significant bit · conversion

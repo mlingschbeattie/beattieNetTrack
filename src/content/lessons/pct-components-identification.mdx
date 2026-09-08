@@ -58,6 +58,8 @@ domains:
     weight: 0.2
 ---
 
+import Callout from '../../components/Callout.astro';
+
 ## The Technician's First Skill
 
 Before you can troubleshoot anything, you need to know what you're looking at. A client hands you a tower that won't boot. You open the side panel and see a board full of chips, cables, fans, and slots. If you can name every piece and tell it apart from everything else, you're a technician. If you can't, you're guessing.
@@ -89,6 +91,10 @@ Key landmarks on any motherboard:
 **Front panel headers** — small pin clusters near the bottom of the board for power button, reset button, and front-panel LEDs.
 
 **I/O shield area** — the back edge of the board, which aligns with the rear port panel of the case.
+
+<Callout type="exam">
+Component identification questions often show a photograph or describe a physical trait. Learn the visual cues: the CPU sits under a heatsink in a socket, RAM stands in long thin slots near it, the GPU occupies the top PCIe slot and has its own fans, and the PSU is the boxed unit with the cable bundle.
+</Callout>
 
 ## The CPU — The Processor
 
@@ -203,6 +209,10 @@ Sits directly on top of the CPU, secured by a mounting bracket or push-pins. Two
 
 Additional fans mounted in the case for airflow. Usually 80mm, 120mm, or 140mm. Connect to fan headers on the motherboard (3-pin or 4-pin) or directly to PSU Molex connectors.
 
+<Callout type="tip">
+Rear ports are the ones soldered to the motherboard's I/O panel. Front ports run from the case to a header on the board. When a front USB port fails but the rear ones work, suspect the header cable before the motherboard.
+</Callout>
+
 ## Ports — Front and Rear
 
 ### Rear I/O (Motherboard)
@@ -235,3 +245,7 @@ Laptops use the same components but in smaller, integrated form. Key differences
 A client says "my computer is making a grinding noise." You need to know immediately that grinding = mechanical = HDD or fan. You visually locate the HDD and the fans, listen for which one. You don't open a ticket and wait for a parts order before you've even looked.
 
 Identification is the foundation of speed. The technician who can look at an open case and immediately inventory it — brand of PSU, CPU generation, RAM configuration, storage layout — diagnoses twice as fast as the one who has to look up every part. Build this skill by looking at as many systems as you can.
+
+## Key Terms
+
+motherboard · CPU · heatsink · RAM · DIMM · GPU · PCIe · SSD · HDD · PSU · case fan · front panel header · rear I/O · SATA · M.2

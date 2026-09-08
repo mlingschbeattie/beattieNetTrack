@@ -79,6 +79,8 @@ domains:
     weight: 0.2
 ---
 
+import Callout from '../../components/Callout.astro';
+
 ## Power and Heat: The Two Realities of Every Computer
 
 Every calculation performed by a CPU or GPU requires electricity, and every watt of electricity consumed is ultimately converted into heat. If a computer does not receive clean, stable power, it crashes, corrupts data, or fails to boot. If a computer cannot dissipate the heat it generates, it throttles performance or shuts down automatically to prevent physical destruction.
@@ -151,6 +153,10 @@ Higher efficiency means less electricity wasted as heat, lower operating tempera
 
 ---
 
+<Callout type="warn">
+Never open a power supply. Its capacitors hold a lethal charge long after the unit is unplugged, and there is nothing serviceable inside. A suspect PSU is swapped, not repaired — this is the one component where the correct action is always replacement.
+</Callout>
+
 ## Thermal Management and Cooling
 
 Silicon semiconductors generate intense heat in microscopic spaces. If that heat is not transferred away immediately, transistors degrade or permanently fuse.
@@ -205,6 +211,10 @@ Case fans almost always blow air **toward the side with the plastic frame and mo
 
 ---
 
+<Callout type="exam">
+A machine that runs fine briefly then slows under sustained load is describing thermal throttling. The CPU is protecting itself by reducing clock speed. Check dust, fan operation and thermal paste before suspecting the processor itself.
+</Callout>
+
 ## Thermal Throttling and Diagnostics
 
 Modern CPUs and GPUs incorporate internal thermal sensors that continuously monitor junction temperatures.
@@ -218,3 +228,7 @@ Modern CPUs and GPUs incorporate internal thermal sensors that continuously moni
   4. Dust accumulation blocking heatsink fins or radiator mesh.
   5. AIO pump failure (detected by checking pump RPM in BIOS or listening for pump rattle/silence).
   6. Fans spinning backwards against the case airflow direction.
+
+## Key Terms
+
+PSU · wattage · rail · 80 Plus · modular · 24-pin ATX · 8-pin EPS · heatsink · thermal paste · air cooling · liquid cooling · case airflow · positive pressure · thermal throttling · TDP

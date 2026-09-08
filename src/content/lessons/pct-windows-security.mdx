@@ -177,6 +177,10 @@ Recognizing malware taxonomy allows technicians to choose the correct diagnostic
 
 ---
 
+<Callout type="exam">
+The remediation order is tested directly, and two steps are the ones candidates reverse. Disable System Restore before you remediate, or you leave infected restore points to reinfect from. Re-enable and create a clean restore point only at the end, once the system is verified clean.
+</Callout>
+
 ## 3. The CompTIA 7-Step Malware Remediation Process
 
 When an infection is discovered, execute this exact standard operating procedure:
@@ -199,6 +203,10 @@ When an infection is discovered, execute this exact standard operating procedure
    - Explain how the infection entered (e.g., clicking a fake email tracking link) to prevent repeat incidents.
 
 ---
+
+<Callout type="warn">
+BitLocker without a saved recovery key is a way to lose data permanently. A firmware update or board replacement can change the TPM measurements and trigger recovery, and with no key the drive is unrecoverable. Record the key before enabling encryption, never after.
+</Callout>
 
 ## 4. Hardware-Rooted Disk Encryption: BitLocker & TPM
 

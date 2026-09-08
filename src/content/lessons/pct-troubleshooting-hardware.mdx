@@ -79,6 +79,8 @@ domains:
     weight: 0.2
 ---
 
+import Callout from '../../components/Callout.astro';
+
 ## The Machine That Does Nothing
 
 You press the power button. Nothing happens. Not a fan spin, not an LED, not a beep — nothing. Before you start substituting components at random, there's a structured sequence for narrowing down where the failure is. Hardware troubleshooting is a process of elimination guided by symptom interpretation. Different failure modes produce different symptoms, and the symptoms point toward the failed component when you know how to read them.
@@ -106,6 +108,10 @@ If the power source is confirmed good, test the power supply unit. The simplest 
 If you have a PSU tester, use it instead. PSU testers measure each voltage rail: +3.3V, +5V, +12V, and -12V. The +12V rail powers the CPU and most drives; the +5V powers USB and storage controllers; the +3.3V supplies RAM. Rails that read significantly out of spec indicate a failing PSU even if it can produce some power.
 
 If the PSU checks out, the problem moves to the motherboard. Common signs of a dead motherboard: a burned capacitor (bulging or leaking top), a POST indicator code on the motherboard debug LED display (most mid-range and higher motherboards now include a two-digit hex display showing POST progress codes), or simply no response with a known-good PSU. Substitute motherboards are the only definitive test when no visible damage is present.
+
+<Callout type="exam">
+Match the symptom to the stage. No fans and no lights points at power. Fans spinning with no display points at video, RAM or the CPU. Beep codes mean POST ran and something failed — the pattern identifies which subsystem, and the pattern is vendor specific.
+</Callout>
 
 ## POST Failures and Beep Codes
 
@@ -159,6 +165,10 @@ Hard drives and SSDs fail differently but both require attention to early warnin
 
 **When diagnostic tools show failures**: that drive needs to be replaced, not reformatted and returned to service. Reformatting hides the S.M.A.R.T. errors in log files but doesn't fix the physical sectors. The drive will fail again.
 
+<Callout type="warn">
+Change one thing at a time. Swapping the RAM, the PSU and the drive together and finding it works tells you the machine is fixed and nothing about what was wrong — so you cannot prevent it, document it, or recognise it next time.
+</Callout>
+
 ## Intermittent and Hard-to-Reproduce Issues
 
 Some of the most challenging hardware problems are intermittent: the system works fine during your diagnosis session and fails when the user has it. Strategies for intermittent problems:
@@ -184,3 +194,7 @@ If you're presenting this lesson live, run the sequence exactly like a real serv
 3. Finish at /quizzes/pct-troubleshooting-hardware to check retention and readiness.
 
 That progression shows the full instructional arc: instruction, guided practice, hands-on execution, and measured review.
+
+## Key Terms
+
+POST · beep code · no power · reseat · thermal throttling · overheating · memory failure · MemTest · SMART · bad sector · intermittent fault · known good component · swap testing
