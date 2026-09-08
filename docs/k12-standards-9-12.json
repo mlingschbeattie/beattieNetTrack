@@ -1,0 +1,188 @@
+[
+  {
+    "code": "9-12.CS.COMM",
+    "topic": "Network Communication (COMM)",
+    "statement": "Explain layers within the OSI networking model.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of the seven layers of the OSI model. In addition, students should be able to explain the roles of various network layers."
+  },
+  {
+    "code": "9-12.CS.COMP",
+    "topic": "Network Components (COMP)",
+    "statement": "Create a diagram of a network utilizing appropriate network components.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of diagrams that include various network components such as access points, hubs/switches, routers, and user devices."
+  },
+  {
+    "code": "9-12.CS.CC",
+    "topic": "Cloud Computing (CC)",
+    "statement": "Evaluate the risks and benefits of cloud computing.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of various risks and benefits of cloud computing. Examples of cloud computing include various \"aaS\" (as a service) references, such as IaaS (infrastructure as a service), PaaS (platform as a service), and SaaS (software as a service). Examples of benefits of cloud computing can include distributed storage to prevent data loss from environmental disasters, easily working with peers over long distances, and the ability to save costs by not purchasing servers that are not utilized (i.e. only pay for what is needed). Examples of risks of cloud computing can include unauthorized access through breach of cloud provider, permissions incorrectly granted to users, and data being inadvertently shared publicly."
+  },
+  {
+    "code": "9-12.CS.PROT.1",
+    "topic": "Protocols (PROT)",
+    "statement": "Compare and contrast the ports and protocols used for different services available online.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of the various online protocols associated with TCP and UDP. Examples of TCP include HTTP, HTTPS (web), IMAP, and POP3 (email). Examples of UDP include audio/voice, DNS, DHCP, and gaming."
+  },
+  {
+    "code": "9-12.CS.PROT.2",
+    "topic": "Protocols (PROT)",
+    "statement": "Identify the risks associated with the different services available online.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of the risks that various online protocols pose, including TCP and UDP."
+  },
+  {
+    "code": "9-12.CS.LOSS",
+    "topic": "Data Loss (LOSS)",
+    "statement": "Develop a plan for risk mitigation that implements redundancy.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of redundancy such as backups and auxiliary power sources as tools to mitigate risk, along with the use of hot sites and cold sites in the event of an environmental disaster affecting operations."
+  },
+  {
+    "code": "9-12.CS.HARD",
+    "topic": "Network Hardware Components (HARD)",
+    "statement": "Identify methods of mitigating risk associated with connecting devices.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of risk such as compromised network security or data loss due to malicious incidents."
+  },
+  {
+    "code": "9-12.CS.IOT",
+    "topic": "Internet of Things (IOT)",
+    "statement": "Analyze the vulnerabilities of Internet of Things devices.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of IoT devices and the vulnerabilities associated with the connection and use of those devices."
+  },
+  {
+    "code": "9-12.CS.OS",
+    "topic": "Operating Systems (OS)",
+    "statement": "Create a plan for hardening an operating system.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of how hardening an operating system can include shutting down unnecessary services and ports, installing updates and/ or patches, removing unused programs, and reviewing user privileges."
+  },
+  {
+    "code": "9-12.CS.SOFT",
+    "topic": "Software Updates (SOFT)",
+    "statement": "Compare the advantages and disadvantages of patching systems in real time.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of operating system patches such as those that are provided regularly to devices running Windows, MacOS, Linux, iOS, and Android."
+  },
+  {
+    "code": "9-12.CS.PROG",
+    "topic": "Programming and Scripting (PROG)",
+    "statement": "Describe the role of scripting in cyber attacks and cyber defense.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of the programming and/or scripting languages that can propagate a cyber attack and the defenses that are available to mitigate cyber attacks."
+  },
+  {
+    "code": "9-12.CS.APPS",
+    "topic": "Applications (APPS)",
+    "statement": "Discuss how software that exists on and across various platforms can be used to monitor, collect, and analyze information from those platforms.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate software examples such as firewalls, packet sniffers and analyzers, and network monitors. Discussions may also include SIEM (security information and event management) software."
+  },
+  {
+    "code": "9-12.DC.CYBL",
+    "topic": "Cyberbullying (CYBL)",
+    "statement": "Prepare a plan to raise awareness of the effects of cyberbullying.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of actions that can serve to reduce and/or prevent cyberbullying."
+  },
+  {
+    "code": "9-12.DC.FOOT",
+    "topic": "Digital Footprint (FOOT)",
+    "statement": "Examine the implications of both positive and negative digital footprints.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of ethical, societal, and financial implications."
+  },
+  {
+    "code": "9-12.DC.PPI.1",
+    "topic": "Personally Identifiable Information (PII)",
+    "statement": "Explain the importance of social identity and the implications of online activity regarding private data, long-term career impacts, and the permanence of digital data.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of the possible impacts of data-sharing in such areas as college admissions, cancel culture, careers, and relationships."
+  },
+  {
+    "code": "9-12.DC.PPI.2",
+    "topic": "Personally Identifiable Information (PII)",
+    "statement": "Explain the individual risks of a data breach to an organization housing personal data.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of understanding that if an organization gets hacked, it can still harm the individual whose data was stolen."
+  },
+  {
+    "code": "9-12.DC.THRT",
+    "topic": "Threat Actors (THRT)",
+    "statement": "Analyze the motives of threat actors.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of motives of threat actors such as financial, political, ideological, or simple malice. This analysis may occur in a variety of forms, such as supplying a scenario or case study from current events."
+  },
+  {
+    "code": "9-12.DC.ETH",
+    "topic": "Ethical Integrity (ETH)",
+    "statement": "Discuss the role that cyber ethics plays in current society.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of how integrity and reputation can be affected by actions that are taken online."
+  },
+  {
+    "code": "9-12.DC.LAW",
+    "topic": "Rules, Laws, and Regulations (LAW)",
+    "statement": "Compare and contrast local, state, federal, and international cyber laws and regulations for individuals and businesses.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of local, state, federal, and international cyber laws and regulations, such as those mentioned above, as well as Children's Online Privacy Protection Rule (COPPA) and General Data Protection Regulation (GDPR)."
+  },
+  {
+    "code": "9-12.DC.IP",
+    "topic": "Intellectual Property (IP)",
+    "statement": "Debate the importance of intellectual property laws.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of ideas around who owns content on video games with transferrable goods, copyright when content is remixed or parodied, and how fair use can help protect an author/ creator's rights while promoting the sharing of ideas."
+  },
+  {
+    "code": "9-12.DC.AUP",
+    "topic": "Usage and User Agreements (AUP)",
+    "statement": "Differentiate between the various agreements that protect individuals and organizations in their digital environments.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of global documents such as AUPs, TOSs, EULAs, and security policies. Do some documents favor the individual over the corporation and vice versa?"
+  },
+  {
+    "code": "9-12.SEC.CIA",
+    "topic": "CIA Triad (CIA)",
+    "statement": "Explain various interactions between the CIA Triad and the three states of data.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of interactions and how people, processes, and technology support those interactions. In addition, the three states of data refer to \"data in use\" (currently being accessed), \"data at rest\" (waiting to be accessed), and \"data in motion\" (moving from one location to another)."
+  },
+  {
+    "code": "9-12.SEC.ACC",
+    "topic": "Access Control (ACC)",
+    "statement": "Compare and contrast the concepts presented by access control principles, access control modules, and the principle of least privilege access.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of the concepts of identify, authenticate, and authorize as access control principles, as well as MAC, RBAC, and DAC as access control modules."
+  },
+  {
+    "code": "9-12.SEC.DATA",
+    "topic": "Data Security (DATA)",
+    "statement": "Formulate a plan to apply security measures to protect data in all three states.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of protecting data in its three states."
+  },
+  {
+    "code": "9-12.SEC.INFO",
+    "topic": "Threats and Vulnerabilities (INFO)",
+    "statement": "Distinguish the different types of attacks that affect information security for individuals and organizations.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as authentic, grade-appropriate examples of malware, malicious users, hacks, and poor security policies."
+  },
+  {
+    "code": "9-12.SEC.CRYP",
+    "topic": "Cryptography (CRYP)",
+    "statement": "Analyze how modern advancements in computing have impacted encryption.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of modern advancements in encryption, such as symmetric vs. asymmetric, public key vs. private key, and encryption algorithms. Where appropriate, discussions may touch on how methods for encoding data, such as binary (base-2), decimal (base-10), and hexadecimal (base-16), can benefit encryption. NOTE: Not all encoding methods are appropriate for all grade levels."
+  },
+  {
+    "code": "9-12.SEC.AUTH",
+    "topic": "Authentication (AUTH)",
+    "statement": "Evaluate authentication and authorization methods and the risks associated with failure.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of authentication and authorization methods, such as certificate, token- based, two-factor, multifactor, and biometric."
+  },
+  {
+    "code": "9-12.SEC.COMP",
+    "topic": "Securing Network Components (COMP)",
+    "statement": "Evaluate Defense in Depth strategies that can protect simple networks.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of layered strategies, such as firewalls, allow and block lists, changes to default passwords, access points, and network segmentation."
+  },
+  {
+    "code": "9-12.SEC.NET",
+    "topic": "Threats and Vulnerabilities (NET)",
+    "statement": "Analyze the different types of attacks that affect network security.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of attacks, such as malware, hacks, malicious users, and poor security policies. In addition, risk analysis and management can be introduced through discussions around monitoring and logging of attacks."
+  },
+  {
+    "code": "9-12.SEC.PHYS",
+    "topic": "Threats and Vulnerabilities (PHYS)",
+    "statement": "Analyze the different types of attacks that affect physical security.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of physical security attacks, such as social engineering, poor security policies, and malicious actors."
+  },
+  {
+    "code": "9-12.SEC.CTRL",
+    "topic": "Security Controls (CTRL)",
+    "statement": "Justify the use of Defense in Depth and the need for physical access controls.",
+    "clarification": "At this level, student discussions should focus on previous standards as well as grade-appropriate examples of various physical access controls, such as proximity badges, PIN codes, and man traps."
+  }
+]
