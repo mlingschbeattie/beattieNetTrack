@@ -7,7 +7,6 @@ import RightPanel from '../components/islands/RightPanel.tsx';
 import SearchOverlay from '../components/SearchOverlay.astro';
 import ImageZoomModal from '../components/ImageZoomModal.astro';
 import { getModuleProgressData } from '../lib/content';
-import { getSearchIndexData } from '../lib/searchIndex';
 import { getAuthUser, type AuthUser } from '../lib/auth';
 
 const {
@@ -29,8 +28,6 @@ const {
 const { legacySkin = false } = Astro.props;
 const activePath = Astro.url.pathname;
 const user = userProp !== undefined ? userProp : getAuthUser(Astro.request.headers);
-const searchIndexData = await getSearchIndexData();
-const searchIndexJson = JSON.stringify(searchIndexData);
 let moduleProgress = null;
 if (activityNavigation && (activityNavigation as any).trackSlug && (activityNavigation as any).moduleSlug) {
   try {
@@ -43,7 +40,6 @@ if (activityNavigation && (activityNavigation as any).trackSlug && (activityNavi
 
 <BaseLayout title={title} legacySkin={legacySkin}>
   <a class="skip-link" href="#main-content">Skip to main content</a>
-  <script id="__SEARCH_INDEX__" type="application/json" is:inline set:html={searchIndexJson}></script>
   <Navbar activePath={activePath} activeTrackLabel={currentTrack?.data.title ?? 'None'} user={user} />
   <Breadcrumbs items={breadcrumbs} />
   <div class="app-shell">
@@ -122,19 +118,32 @@ if (activityNavigation && (activityNavigation as any).trackSlug && (activityNavi
     const overlay = document.getElementById('global-search-overlay');
     const input = document.getElementById('global-search-input') as HTMLInputElement | null;
     const results = document.getElementById('global-search-results');
-    const raw = document.getElementById('__SEARCH_INDEX__')?.textContent ?? '[]';
     type SearchResultItem = {
       type: 'track' | 'lesson' | 'lab' | 'quiz';
       title: string;
       description: string;
       slug: string;
       href: string;
+      track?: string;
+      keywords?: string;
     };
 
-    const parsed: unknown = JSON.parse(raw);
-    const index: SearchResultItem[] = Array.isArray(parsed)
-      ? (parsed as SearchResultItem[])
-      : [];
+    // Fetched once, on first open, rather than inlined into every page.
+    let index: SearchResultItem[] = [];
+    let indexPromise: Promise<void> | null = null;
+
+    const loadIndex = () => {
+      if (indexPromise) return indexPromise;
+      indexPromise = fetch('/search-index.json')
+        .then((res) => (res.ok ? res.json() : []))
+        .then((data: unknown) => {
+          index = Array.isArray(data) ? (data as SearchResultItem[]) : [];
+        })
+        .catch(() => {
+          index = [];
+        });
+      return indexPromise;
+    };
 
     let flatLinks: HTMLAnchorElement[] = [];
     let activeIndex = -1;
@@ -170,13 +179,30 @@ if (activityNavigation && (activityNavigation as any).trackSlug && (activityNavi
         return;
       }
 
-      const filtered = index
-        .filter((item: SearchResultItem) => {
-          const title = (item.title ?? '').toLowerCase();
-          const description = (item.description ?? '').toLowerCase();
-          return title.includes(q) || description.includes(q);
-        })
-        .slice(0, 8);
+      // Keywords carry tags and Key Terms, which is what finds a lesson that
+      // teaches a topic without naming it in the title.
+      const matched = index.filter((item: SearchResultItem) => {
+        const title = (item.title ?? '').toLowerCase();
+        const description = (item.description ?? '').toLowerCase();
+        const keywords = item.keywords ?? '';
+        return title.includes(q) || description.includes(q) || keywords.includes(q);
+      });
+
+      // Title hits first — they are what the searcher most likely meant.
+      matched.sort((a, b) => {
+        const aTitle = (a.title ?? '').toLowerCase().includes(q) ? 0 : 1;
+        const bTitle = (b.title ?? '').toLowerCase().includes(q) ? 0 : 1;
+        return aTitle - bTitle || (a.title ?? '').localeCompare(b.title ?? '');
+      });
+
+      // Cap per group rather than overall, so one crowded type cannot bury the rest.
+      const PER_GROUP = 8;
+      const seen: Record<string, number> = {};
+      const filtered = matched.filter((item) => {
+        seen[item.type] = (seen[item.type] ?? 0) + 1;
+        return seen[item.type] <= PER_GROUP;
+      });
+      const totalMatches = matched.length;
 
       if (!filtered.length) {
         results.innerHTML = '<p class="search-overlay__empty">No matches found.</p>';
@@ -200,10 +226,16 @@ if (activityNavigation && (activityNavigation as any).trackSlug && (activityNavi
         parts.push('<ul class="search-overlay__list">');
         for (const item of entries) {
           parts.push(
-            `<li class="search-overlay__item"><a class="search-overlay__link" href="${item.href}" data-search-result-link><span class="search-overlay__title">${item.title}</span><span class="search-overlay__meta">${item.slug}</span></a></li>`
+            `<li class="search-overlay__item"><a class="search-overlay__link" href="${item.href}" data-search-result-link><span class="search-overlay__title">${item.title}</span><span class="search-overlay__meta">${item.track ? `${item.track} · ` : ''}${item.slug}</span></a></li>`
           );
         }
         parts.push('</ul>');
+      }
+
+      if (totalMatches > filtered.length) {
+        parts.push(
+          `<p class="search-overlay__empty">Showing ${filtered.length} of ${totalMatches} matches — refine your search to narrow it.</p>`
+        );
       }
 
       results.innerHTML = parts.join('');
@@ -219,6 +251,11 @@ if (activityNavigation && (activityNavigation as any).trackSlug && (activityNavi
       if (input instanceof HTMLInputElement) {
         window.setTimeout(() => input.focus(), 0);
       }
+      // Warm the index while the user is still reaching for the keyboard, and
+      // re-render once it lands in case they typed before it arrived.
+      void loadIndex().then(() => {
+        if (input instanceof HTMLInputElement && input.value) renderResults(input.value);
+      });
     };
 
     document.addEventListener('keydown', (event) => {
@@ -235,7 +272,9 @@ if (activityNavigation && (activityNavigation as any).trackSlug && (activityNavi
     });
 
     if (input instanceof HTMLInputElement) {
-      input.addEventListener('input', () => renderResults(input.value));
+      input.addEventListener('input', () => {
+        void loadIndex().then(() => renderResults(input.value));
+      });
       input.addEventListener('keydown', (event) => {
         if (!flatLinks.length) return;
         if (event.key === 'ArrowDown') {

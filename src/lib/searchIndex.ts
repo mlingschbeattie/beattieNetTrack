@@ -6,6 +6,34 @@ export type SearchIndexItem = {
   description: string;
   slug: string;
   href: string;
+  /** Track title, shown on a result so overlapping topics stay distinguishable. */
+  track?: string;
+  /**
+   * Extra matchable text: frontmatter tags plus the lesson's `## Key Terms`
+   * line. Both are curated topic lists, which makes them far better search
+   * fodder than raw body text — a lesson that teaches binary conversion names
+   * it in Key Terms even when the title says "Number Systems".
+   */
+  keywords?: string;
+};
+
+/** Terms only, `·` separated, per the authoring standard. Capped so one long list cannot dominate the payload. */
+const KEY_TERMS_CAP = 600;
+
+const extractKeyTerms = (body: string | undefined): string => {
+  if (!body) return '';
+  const match = /^##\s+Key Terms\s*$/m.exec(body);
+  if (!match) return '';
+  const after = body.slice(match.index + match[0].length);
+  // Stop at the next heading; Key Terms is normally the final section.
+  const end = after.search(/^##\s+/m);
+  const block = (end === -1 ? after : after.slice(0, end)).trim();
+  return block.replace(/\s+/g, ' ').slice(0, KEY_TERMS_CAP);
+};
+
+const buildKeywords = (tags: unknown, body?: string): string => {
+  const tagText = Array.isArray(tags) ? tags.join(' ') : '';
+  return [tagText, extractKeyTerms(body)].filter(Boolean).join(' ').toLowerCase();
 };
 
 const compareSearchItems = (a: SearchIndexItem, b: SearchIndexItem) => {
@@ -22,6 +50,8 @@ export const getSearchIndexData = async (): Promise<SearchIndexItem[]> => {
   ]);
 
   const trackTitleBySlug = new Map(tracks.map((track) => [track.slug, track.data.title]));
+  const titleForTrack = (slug: string | undefined) =>
+    slug ? trackTitleBySlug.get(slug) ?? slug : undefined;
 
   const items: SearchIndexItem[] = [];
 
@@ -35,15 +65,16 @@ export const getSearchIndexData = async (): Promise<SearchIndexItem[]> => {
     });
   }
 
-  // Include module content in the global index while preserving the required item shape.
+  // Modules ride in the track group so they stay findable without a group of their own.
   for (const module of modules) {
-    const trackTitle = trackTitleBySlug.get(module.data.track) ?? module.data.track;
+    const trackTitle = titleForTrack(module.data.track) ?? module.data.track;
     items.push({
       type: 'track',
       title: module.data.title,
       description: module.data.description ? `${module.data.description} (Module in ${trackTitle})` : `Module in ${trackTitle}`,
       slug: module.slug,
       href: `/tracks/${module.data.track}`,
+      track: trackTitle,
     });
   }
 
@@ -54,6 +85,8 @@ export const getSearchIndexData = async (): Promise<SearchIndexItem[]> => {
       description: lesson.data.description ?? '',
       slug: lesson.slug,
       href: `/lessons/${lesson.slug}`,
+      track: titleForTrack(lesson.data.track),
+      keywords: buildKeywords(lesson.data.tags, lesson.body),
     });
   }
 
@@ -64,6 +97,8 @@ export const getSearchIndexData = async (): Promise<SearchIndexItem[]> => {
       description: lab.data.description ?? '',
       slug: lab.slug,
       href: `/labs/${lab.slug}`,
+      track: titleForTrack(lab.data.track),
+      keywords: buildKeywords(lab.data.tags, lab.body),
     });
   }
 
@@ -74,6 +109,8 @@ export const getSearchIndexData = async (): Promise<SearchIndexItem[]> => {
       description: quiz.data.description ?? '',
       slug: quiz.slug,
       href: `/quizzes/${quiz.slug}`,
+      track: titleForTrack(quiz.data.track),
+      keywords: buildKeywords(quiz.data.tags, quiz.body),
     });
   }
 
