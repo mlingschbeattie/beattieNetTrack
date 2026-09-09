@@ -6,9 +6,10 @@
 
 ## Read these first
 
-`CLAUDE.md` (session brief, track registry, build phases) · `VOICE_AND_TONE.md` (lesson
-voice standard) · `CONSTITUTION.md` · `src/content/config.ts` (schema authority) ·
-`scripts/validate-tracks.mjs`.
+`CLAUDE.md` (session brief, track registry, build phases) · **`VOICE_AND_TONE.md` (the
+authoring standard — lesson voice *and* the binding rules for questions, quizzes, and
+labs; read it before authoring any assessment)** · `CONSTITUTION.md` ·
+`src/content/config.ts` (schema authority) · `scripts/validate-tracks.mjs`.
 
 ---
 

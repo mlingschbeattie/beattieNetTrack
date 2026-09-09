@@ -1,6 +1,8 @@
-# beattieNetTrack — Lesson Voice & Tone Guide
+# beattieNetTrack — Authoring Standard
 *Add this to CLAUDE.md or reference it in the Code tab before Phase B.*
 *Every lesson body must be written to this standard — not the CYBER.ORG source material's voice.*
+*Sections 1–7 cover lesson prose. Sections 8–10 cover questions, quizzes, and labs, and are
+binding on every assessment in the repo.*
 
 ---
 
@@ -159,6 +161,125 @@ Before Phase B, add this to the ingestion prompt:
 > Never copy sentences from the PDF. Extract the concepts, then teach them from scratch."
 
 ---
+
+---
+
+## Questions — The Atom
+
+Every question in this repo is graded the same way and carries the same obligation:
+**a wrong answer must teach.** The schema supports an `explanation` on every question,
+and `QuizRunner` shows it only when the student gets it wrong. A question without one
+wastes the single best teaching moment the format offers.
+
+**Every question requires an `explanation`.** No exceptions. Write it as the sentence you
+would say to a student who just picked wrong — name why their answer was tempting and
+what distinguishes the right one. Not a restatement of the correct option.
+
+**Test mechanism, not vocabulary.** "What does DHCP stand for?" is worthless. "A laptop
+gets 169.254.x.x after a reboot — what failed?" tests whether they understand what DHCP
+*does*. If a question can be answered by someone who memorised a glossary and understands
+nothing, rewrite it.
+
+**Distractors must be diagnostic.** Every wrong option should correspond to a specific,
+real misconception — the mistake an actual student actually makes. If you are inventing
+filler options to reach four, you have not thought hard enough about how people get this
+wrong. Filler distractors make a question easier, not fairer.
+
+**Choose the type by what the student must produce:**
+
+| Type | Use it when | Example |
+|---|---|---|
+| `single` | Judgement between competing plausible actions | "Which do you fix first?" |
+| `multi` | Completeness matters — partial knowledge should fail | "Select every port that must be open" |
+| `short` | The literal string *is* the skill | A command, a port, a broadcast address, a binary value |
+
+`multi` grades as an exact set match — miss one correct option or add one wrong one and it
+is marked wrong. That is deliberate. It is the only type that cannot be beaten by
+elimination, so use it wherever "knowing most of it" should not be a pass.
+
+`short` removes the options entirely. Use it for anything the student should be able to
+produce cold: `chmod 640`, `255.255.255.0`, `587`, `11010110`. Put every reasonable
+spelling in `acceptedAnswers` — the grader normalises punctuation and spacing, not synonyms.
+
+**Never write:**
+- "All of the above" / "None of the above" — they test test-taking, not knowledge
+- Negation traps — "Which is NOT..." reads as a trick and fails students who understood
+- Questions whose answer is given verbatim in a nearby option
+- Two options that are defensibly correct
+
+---
+
+## Quizzes — Checkpoints and Reviews
+
+There are two kinds and they do different jobs.
+
+**Lesson checkpoint** — sits at the same `order` as its lesson, immediately after it.
+**10–15 questions.** Covers that lesson only.
+
+**Module review** — sits at the end of a module, after every lesson and lab in it.
+**15–20 questions, drawn across the whole module.** This is the one that produces
+retention: a student who crammed one lesson and dumped it cannot pass a review that
+reaches back three lessons.
+
+**Both require a mix of types.** A quiz that is 100% `single` is a recognition test, and a
+student can pass a 70% threshold on four-option questions with partial knowledge and decent
+elimination instincts. Target roughly:
+
+- **60% `single`** — scenarios and judgement
+- **25% `multi`** — where completeness matters
+- **15% `short`** — exact recall of things that must be produced from memory
+
+Five questions is not an assessment. Nobody learns a topic by answering five multiple-choice
+questions, and nobody demonstrates mastery of one either.
+
+`passThreshold` stays at 70 unless there is a specific reason. Add `hints` for a quiz a
+student may reasonably get stuck on, and a `checklist` where the quiz has a workflow.
+
+---
+
+## Labs — Performance, Not Recognition
+
+**A lab is where the student does the thing.** If every step is a `choice` validator, it is
+a quiz wearing a lab costume — and most of the labs in this repo currently are. That is the
+single biggest quality gap in the curriculum.
+
+**Hard rule: no more than half a lab's steps may use `choice`.** A lab that cannot meet
+that is either mis-scoped or should have been a quiz.
+
+**Reach for a typed validator whenever the student can produce the artifact:**
+
+| Validator | Use it for |
+|---|---|
+| `exact` | One correct string — a command, a value, a flag |
+| `oneOf` | Several equally correct forms — `chmod 640` or `chmod u=rw,g=r,o=` |
+| `regex` | A structured answer with variable content — a finding that must name two things |
+
+`choice` is legitimate for a genuine judgement call where free text would test phrasing
+rather than understanding — "which do you contain first?" — and every `choice` step **must**
+carry a `rationale`, so a wrong pick still teaches.
+
+**8–12 steps.** Four or five steps is a warm-up, not a lab. An `estimatedMinutes` of 20 with
+five multiple-choice steps is a lie; the student is done in three.
+
+**Steps must build.** A lab is a scenario that progresses — the value computed in step 3 is
+used in step 6, the decision in step 4 changes what step 7 asks. Independent steps in a list
+are a quiz with extra formatting. This is what makes it a lab.
+
+**Every step carries:** a `prompt` with enough context to act on, a `hint` for the step
+where students predictably stall, and a `successMessage` that confirms *why* it was right
+rather than just saying "Correct."
+
+**End with production, not selection.** The last step should have the student write
+something — a closure note, a finding, a command they would run next — validated with
+`regex`. It is the closest this format gets to asking them to think in their own words.
+
+---
+
+## Applying This to Existing Content
+
+Content authored before this standard does not meet it. When you touch an existing quiz or
+lab, bring it up to standard rather than matching what is already there — otherwise the
+drift that produced 1,346 `single` questions out of 1,348 simply continues.
 
 *This guide applies to all tracks. Adjust warmth by difficulty level but never adjust
 directness, concreteness, or respect for the student's intelligence.*
