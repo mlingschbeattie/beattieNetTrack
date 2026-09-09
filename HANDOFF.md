@@ -39,9 +39,9 @@ Measured 2026-09-09 against the compliance definition below.
 | Track | Lessons (compliant) | Quizzes | Labs |
 |---|---|---|---|
 | tech-plus | **59 / 59** | 58 | 6 |
-| pc-technician | **18 / 18** | 39 | 6 |
+| pc-technician | **18 / 18** | 19 | 6 |
 | network-engineer | **51 / 51** | 61 | 4 |
-| cybersecurity-engineer | **12 / 12** | 6 (one checkpoint per module — complete) | **0** |
+| cybersecurity-engineer | **12 / 12** | 6 (one checkpoint per module — complete) | **7** |
 | cybersecurity-foundations | **5 / 5** | 6 | 1 |
 | web-developer | 0 / 4 | 0 | 1 |
 | python-developer | 0 / 0 | 0 | 0 |
@@ -54,7 +54,8 @@ contiguous 1–16 on both sides.
 
 **cybersecurity-engineer's quiz count is not a gap.** It uses one checkpoint quiz per module,
 all six modules covered, each at order 10 so it lands after that module's lessons. Six
-quizzes for twelve lessons is the design, not a shortfall. Its real gap is **labs: zero**.
+quizzes for twelve lessons is the design, not a shortfall. Its lab gap was closed on 09-09:
+seven labs, one per module plus a memory-safety lab, all using the `steps` shape.
 
 ### Counting caveat — utility pages live in the lessons collection
 
@@ -103,15 +104,13 @@ address, a closure note). Everything conceptual uses the `choice` validator with
 
 ## Suggested next work, in order
 
-1. **Redeploy and verify in production.** Everything below is unverified live.
-2. **⚠️ Decide what to do with the 20 `assessment-*` stubs on pc-technician.** See the audit
-   below — this is a live student-facing quality problem and it needs Mr. Beattie's call.
-3. **Labs for cybersecurity-engineer.** Twelve compliant lessons, six checkpoint quizzes,
-   and **zero labs** — the widest genuine content gap in the repo. The working legacy
-   interactive demos (sql-injection, xss-demo, cryptography, forensics, binary-exploitation,
-   reverse-engineering) are lab material waiting to be wrapped. Prefer the `steps` lab shape.
-4. **web-developer** — 4 lessons, none compliant. Phase E, not urgent.
-5. **⚠️ ar / fa / uk translations in `src/i18n/strings.ts` are Claude-drafted and
+1. **Redeploy and verify in production.** Everything below is unverified live, and that now
+   includes seven new labs and two tracks that changed shape.
+2. **Fix or delete the `intro-to-cybersecurity` draft** — see the foundations note above. It
+   is one order collision and a set of pasted-in OSI sections away from shipping broken if
+   anyone ever clears `draft: true`.
+3. **web-developer** — 4 lessons, none compliant. Phase E, not urgent.
+4. **⚠️ ar / fa / uk translations in `src/i18n/strings.ts` are Claude-drafted and
    unreviewed.** Flagged in the file header. Mr. Beattie's students are the only fluent
    speakers available and are the intended reviewers — this is deliberate, not an oversight.
 
@@ -123,6 +122,13 @@ address, a closure note). Everything conceptual uses the `choice` validator with
   passes with **zero warnings**.
 - **cybersecurity-foundations** — was never incomplete; the apparent gap was a draft file
   plus five nav pages.
+- **The 20 `assessment-*` stubs on pc-technician** — audited and removed, along with their 20
+  JSON files. The manifest and `scripts/ingest-assessments-from-manifest.mjs` were kept, so a
+  real ingest can regenerate them once the `.docx` banks exist. pc-technician now has 19
+  quizzes, all with authored questions. See the audit section below for the reasoning.
+- **cybersecurity-engineer labs** — went from zero to seven, one per module at order 5 plus a
+  memory-safety lab at order 6 in the web defense module. All use the `steps` shape. **This
+  was the widest content gap in the repo and it is now closed.**
 
 ---
 
@@ -163,14 +169,12 @@ Three further facts:
 They sit at orders 101–120, so they trail their modules and collide with nothing. That is the
 only good news: **they are student-visible activities that award XP for one trivial question.**
 
-**Options, for Mr. Beattie to choose:**
-1. Hide them (`draft: true`) until the real `.docx` banks are ingested — reversible, removes
-   them from students now, keeps the scaffolding.
-2. Delete the 20 `.mdx` and 20 `.json` — the topics are already covered better by the `pct-*`
-   quizzes. The manifest and ingest script would stay for a future real ingest.
-3. Ingest the real questions — needs the 40 `.docx` files, which are not in the repo.
-
-Do **not** quietly leave them live on the assumption they are harmless.
+**Resolved 2026-09-09: deleted.** Mr. Beattie chose removal over hiding. The 20 `.mdx` and
+their 20 `.json` files are gone; `scripts/assessment-manifest.techplus.json` and
+`scripts/ingest-assessments-from-manifest.mjs` were deliberately kept so a real ingest can
+regenerate them if the `.docx` banks ever turn up. Nothing referenced the slugs outside the
+files themselves, and the removed routes now 302 to `/quizzes`, which is how the app already
+handled any unknown quiz slug.
 
 ---
 
@@ -217,7 +221,7 @@ npm run validate:tracks && npm run lint && npm run test:unit
 ```
 
 Baseline confirmed 2026-09-09: validate passes with **zero warnings** ·
-11 tracks, 72 modules, 353 entries · lint **0 errors, 0 warnings, 7 hints** · **14/14 tests**.
+11 tracks, 72 modules, 340 entries · lint **0 errors, 0 warnings, 7 hints** · **14/14 tests**.
 
 The duplicate-order warnings are gone — treat any new one as a regression, not as noise.
 
