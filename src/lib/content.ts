@@ -9,6 +9,8 @@ export interface TrackSummary {
   description: string;
   order: number;
   icon?: string;
+  /** Visible on the index but not enterable yet. See tracks schema in config.ts. */
+  comingSoon: boolean;
 }
 
 export interface TrackActivitySummary {
@@ -55,6 +57,7 @@ const toTrackSummary = (track: CollectionEntry<'tracks'>): TrackSummary => ({
   description: track.data.description ?? '',
   order: track.data.order ?? 0,
   icon: track.data.icon,
+  comingSoon: track.data.comingSoon ?? false,
 });
 
 const compareOrderTitleSlug = <T extends { order: number; title: string; slug: string }>(a: T, b: T) => {

@@ -20,6 +20,13 @@ const tracks = defineCollection({
     slug: z.string().optional(),
     order: z.number().int().default(0),
     hidden: z.boolean().optional().default(false),
+    /**
+     * Shown on the index but not yet enterable. Forces the Coming Soon badge
+     * and disables the Explore Track control, regardless of activity count —
+     * use it for a track that has some content but is not ready for students.
+     * `hidden` removes a track entirely; this keeps it visible as a signpost.
+     */
+    comingSoon: z.boolean().optional().default(false),
     level: z.string().optional(),
     icon: z.string().optional(),
     estimatedHours: z.number().int().optional(),

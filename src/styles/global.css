@@ -2193,6 +2193,17 @@ html[data-theme='light'] .quiz-question__prompt {
   transform: translateY(-1px);
 }
 
+/* Coming Soon: a non-interactive stand-in for the Explore Track link.
+   Rendered as a <span>, so there is no href and nothing to focus or click. */
+.btn-link--disabled,
+.btn-link--disabled:hover {
+  background: transparent;
+  border: 1px dashed var(--border-subtle);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  transform: none;
+}
+
 .progress {
   height: 10px;
   background: rgba(255, 255, 255, 0.08);

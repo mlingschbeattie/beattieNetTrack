@@ -66,7 +66,11 @@ const DEFAULT_ICON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none
 import { getAuthUser } from '../lib/auth';
 
 const user = getAuthUser(Astro.request.headers);
-const isAvailable = (slug: string) => (activityMap[slug]?.length ?? 0) > 0;
+// Enterable only when the track has activities AND is not flagged comingSoon.
+// The flag exists for tracks holding some content that are not ready for
+// students, so activity count alone cannot decide this.
+const isAvailable = (track: { slug: string; data: { comingSoon?: boolean } }) =>
+  (activityMap[track.slug]?.length ?? 0) > 0 && !track.data.comingSoon;
 ---
 
 <AppShell
@@ -109,8 +113,8 @@ const isAvailable = (slug: string) => (activityMap[slug]?.length ?? 0) > 0;
           <article class="card card--track">
             <div class="card__header-row">
               <div class="card__icon-badge" aria-hidden="true" set:html={svgIcon}></div>
-              <span class={`track-badge track-badge--${isAvailable(track.slug) ? 'available' : 'coming-soon'}`}>
-                {isAvailable(track.slug) ? 'Curriculum Ready' : 'Coming Soon'}
+              <span class={`track-badge track-badge--${isAvailable(track) ? 'available' : 'coming-soon'}`}>
+                {isAvailable(track) ? 'Curriculum Ready' : 'Coming Soon'}
               </span>
             </div>
             <h3>{track.data.title}</h3>
@@ -122,10 +126,16 @@ const isAvailable = (slug: string) => (activityMap[slug]?.length ?? 0) > 0;
               )}
             </div>
             <div class="card__footer">
-              <a class="btn-link" href={`/tracks/${track.slug}`}>
-                <span>Explore Track</span>
-                <span class="icon-directional">→</span>
-              </a>
+              {isAvailable(track) ? (
+                <a class="btn-link" href={`/tracks/${track.slug}`}>
+                  <span>Explore Track</span>
+                  <span class="icon-directional">→</span>
+                </a>
+              ) : (
+                <span class="btn-link btn-link--disabled" aria-disabled="true">
+                  <span>Coming Soon</span>
+                </span>
+              )}
             </div>
           </article>
         );
