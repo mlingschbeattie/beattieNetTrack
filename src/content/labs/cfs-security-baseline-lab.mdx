@@ -1,49 +1,40 @@
 ---
 title: Security Baseline Lab
-description: Build a practical security baseline by mapping incidents to controls and prioritizing remediation.
+description: Work an exposed-share incident end to end — classify the failure, find the port, contain it, choose a risk treatment, and write a finding somebody else can act on.
 slug: cfs-security-baseline-lab
 track: cybersecurity-foundations
 moduleId: cfs.fundamentals.security-concepts
 order: 4
 difficulty: Beginner
-estimatedMinutes: 15
+estimatedMinutes: 30
 xp: 50
-tags: ["cybersecurity", "baseline", "cia", "risk", "defense in depth"]
+tags: ["cybersecurity", "baseline", "cia", "risk", "incident response", "defense in depth"]
 activity: steps
 steps:
-  - id: cia-map
-    title: Classify the impact
-    prompt: A misconfigured file share has made student records readable by anyone on the internet. The data is intact and the share is still online. Which part of the CIA triad has failed?
-    inputLabel: Primary CIA category
+  - id: classify
+    title: Classify the failure
+    prompt: "A misconfigured file share has made student records readable by anyone on the internet. The files are unaltered and the share is still online. Name the CIA property that has failed. One word."
+    inputLabel: CIA property
+    placeholder: "ex: integrity"
     hint: Ask what was actually lost, not what could happen next.
     validator:
-      type: choice
-      options:
-        - "Confidentiality — data was disclosed to people who should not see it"
-        - "Integrity — data was altered without authorisation"
-        - "Availability — data could not be reached when needed"
-        - "All three failed equally"
-      correctIndex: 0
-      rationale: "Nothing was changed, so integrity holds. The share is still reachable, so availability holds. The single failure is disclosure to unauthorised parties, which is confidentiality. Naming the specific failure drives which controls you reach for."
-    successMessage: Correct. Exposure without alteration or downtime is a confidentiality failure.
-  - id: risk-priority
-    title: Prioritise the risk
-    prompt: The exposed records contain student names, dates of birth, and home addresses, and the share is reachable from the public internet. How should this be prioritised?
-    inputLabel: Risk level
+      type: exact
+      value: confidentiality
+    successMessage: Correct. Nothing was changed and nothing went offline — the failure is disclosure, which is confidentiality.
+  - id: identify-port
+    title: Identify the exposed service
+    prompt: "The share is a Windows SMB file share reachable from the public internet. Which TCP port is almost certainly open to the world? Enter the number only."
+    inputLabel: TCP port
+    placeholder: "ex: 22"
+    hint: This is the port modern Windows file sharing listens on — not the legacy NetBIOS ports.
     validator:
-      type: choice
-      options:
-        - "Critical — regulated personal data is exposed to an unbounded audience"
-        - "Low — no evidence anyone has accessed it yet"
-        - "Medium — it can wait for the next scheduled maintenance window"
-        - "Informational — log it for the quarterly review"
-      correctIndex: 0
-      rationale: "Risk combines impact with likelihood of exposure. Minors' PII carries legal and safeguarding obligations, and internet-facing means the potential audience is everyone. Absence of evidence of access is not evidence of no access — with no logging you simply cannot tell, which argues for urgency, not comfort."
-    successMessage: Correct. Regulated PII plus unbounded exposure is a top-priority incident.
-  - id: first-control
-    title: First control action
-    prompt: Which action should you take first to reduce the blast radius?
-    inputLabel: Immediate control
+      type: exact
+      value: "445"
+    successMessage: Correct. SMB listens on TCP 445, and it should never be reachable from the internet.
+  - id: first-action
+    title: Contain it
+    prompt: "You have confirmed the exposure. What is your first action?"
+    inputLabel: Immediate action
     hint: Containment comes before investigation and before permanent redesign.
     validator:
       type: choice
@@ -53,11 +44,46 @@ steps:
         - "Rebuild the file server with a hardened configuration"
         - "Email all affected students to warn them"
       correctIndex: 0
-      rationale: "Stop the bleeding first: revoking public access ends the exposure in seconds. Reporting and notification matter and are often legally required, but they do not close the hole. Rebuilding the server is the right long-term fix and the slowest possible containment."
+      rationale: "Stop the bleeding first — revoking public access ends the exposure in seconds. Reporting and notification matter and are often legally required, but neither closes the hole. Rebuilding the server is the correct long-term fix and the slowest possible containment."
     successMessage: Correct. Containment first, then investigation, then permanent fixes.
-  - id: layered-defense
-    title: Defense-in-depth check
-    prompt: Access is now restricted. Which additional layer would most improve your ability to detect a repeat of this incident?
+  - id: risk-formula
+    title: State the risk
+    prompt: "Your report must justify the priority. Risk is the combination of two factors — name them both, separated by a space or the word and."
+    inputLabel: The two factors
+    placeholder: "ex: cost and effort"
+    hint: One is how likely it is to happen. The other is how bad it is when it does.
+    validator:
+      type: regex
+      pattern: '^(?=.*\blikelihood\b)(?=.*\bimpact\b).+$'
+      flags: "i"
+    successMessage: Correct. Likelihood and impact. A finding without both cannot be ranked against anything else.
+  - id: prioritise
+    title: Rank it
+    prompt: "The records contain names, dates of birth, and home addresses, and the share is reachable from the public internet. How should this be prioritised?"
+    inputLabel: Risk level
+    validator:
+      type: choice
+      options:
+        - "Critical — regulated personal data exposed to an unbounded audience"
+        - "Low — no evidence anyone has accessed it yet"
+        - "Medium — it can wait for the next maintenance window"
+        - "Informational — log it for the quarterly review"
+      correctIndex: 0
+      rationale: "Minors' personal data carries legal and safeguarding obligations, and internet-facing means the potential audience is everyone. Absence of evidence of access is not evidence of no access — with no logging you simply cannot tell, which argues for urgency rather than comfort."
+    successMessage: Correct. Regulated data plus unbounded exposure is top priority.
+  - id: treatment
+    title: Name the risk treatment
+    prompt: "You are fixing the misconfiguration rather than buying insurance, ignoring it, or shutting the service down. Which of the four risk treatments is that? One word."
+    inputLabel: Risk treatment
+    placeholder: "ex: transfer"
+    hint: The four are mitigate, transfer, accept, and avoid.
+    validator:
+      type: oneOf
+      values: ["mitigate", "mitigation", "mitigating"]
+    successMessage: Correct. Reducing the likelihood or impact of a risk by applying a control is mitigation.
+  - id: detection-gap
+    title: Find the detection gap
+    prompt: "Access is now restricted. Which additional layer would most improve your ability to detect a repeat of this?"
     inputLabel: Additional layer
     validator:
       type: choice
@@ -67,37 +93,56 @@ steps:
         - "A second firewall in front of the existing one"
         - "Annual security awareness training"
       correctIndex: 0
-      rationale: "The reason you could not answer 'has anyone read this?' is that nothing was recording access. Logging and alerting close that gap directly. The other three are all legitimate controls, but none of them would tell you that a share had been exposed or who reached it."
-    successMessage: Correct. Detection is the layer that was missing here.
+      rationale: "The reason you could not answer 'has anyone read this?' is that nothing was recording access. Logging and alerting closes that gap directly. The other three are all legitimate controls and none of them would have told you a share had been exposed or who reached it."
+    successMessage: Correct. Detection is the layer that was missing.
+  - id: permissions
+    title: Set the permission
+    prompt: "The share also has a Linux-hosted export directory. Set it so the owner can read and write, the group can read only, and everyone else has no access. Give the numeric chmod command for the directory named export."
+    inputLabel: Command
+    placeholder: "ex: chmod 777 export"
+    hint: Read is 4, write is 2, execute is 1. Add them per column, owner first.
+    validator:
+      type: oneOf
+      values: ["chmod 640 export", "chmod 640 ./export", "chmod 0640 export"]
+    successMessage: Correct. 6 is read plus write for the owner, 4 is read for the group, 0 is nothing for everyone else.
+  - id: notify
+    title: Decide on notification
+    prompt: "Legal asks whether affected families must be told. What determines the answer?"
+    inputLabel: Determining factor
+    validator:
+      type: choice
+      options:
+        - "Whether regulation covering this data class requires disclosure, and within what deadline"
+        - "Whether the technical team believes the data was actually downloaded"
+        - "Whether the exposure lasted more than 24 hours"
+        - "Whether the organisation carries cyber insurance"
+      correctIndex: 0
+      rationale: "Breach notification is a legal obligation driven by the data class and the jurisdiction, not by the technical team's confidence about what was taken. Belief that nobody downloaded it is exactly the judgement regulators do not leave to the breached organisation — and insurance changes who pays, not who must be told."
+    successMessage: Correct. Regulation and data class drive notification, not internal confidence.
   - id: closure-note
-    title: Analyst closure note
-    prompt: Write one line containing both words "contained" and "monitored".
+    title: Write the closure note
+    prompt: "Write one line an auditor could read cold. It must state that the exposure was contained and that the share is now monitored — include both the words contained and monitored."
     inputLabel: Closure note
-    placeholder: "ex: Contained public exposure and monitored for repeat access attempts."
+    placeholder: "ex: Contained public exposure on the records share and monitored for repeat access."
     validator:
       type: regex
-      pattern: '^(?=.*\bcontained\b)(?=.*\bmonitored\b).+$'
+      pattern: '^(?=.*\bcontained\b)(?=.*\bmonitored\b).{25,}$'
       flags: "i"
-    successMessage: Excellent. Your closure note reflects both action and follow-through.
-checklist:
-  - Incident mapped to correct CIA category
-  - Risk level prioritized before mitigation
-  - Immediate containment control selected
-  - Additional defense layer identified
-  - Closure note documents containment and monitoring
-hints:
-  - Choose controls that can be executed immediately.
-  - Treat high-impact data exposure as urgent.
-  - Always pair a fix with monitoring.
-domains:
-  - domainId: cyber.foundations
-    weight: 0.9
-  - domainId: nocti.security
-    weight: 0.8
+    successMessage: Good. A closure note that names the containment and the ongoing control is what makes the finding auditable.
 ---
 
-This lab turns CIA triad theory into a repeatable incident prioritization workflow.
+import Callout from '../../components/Callout.astro';
 
-## Completion Standard
+## The Share That Was Open All Year
 
-Pass all checks and submit a closure note that proves the incident was contained and monitored.
+A misconfigured file share has been serving student records to anyone on the internet. Nobody attacked anything — a permission was set for convenience and never set back.
+
+This lab walks the whole response: classify what failed, find the service, contain it, justify the priority, fix the permission, and write the finding. Each step feeds the next, the way a real incident does.
+
+<Callout type="exam">
+Classification drives response, and that is why it comes first. A confidentiality failure drives containment and disclosure obligations. An availability failure drives restoration. An integrity failure drives verification against known-good copies. Get the classification wrong and every subsequent decision is aimed at the wrong problem.
+</Callout>
+
+<Callout type="warn">
+The tempting move is to notify families immediately, because it feels like the responsible thing and it is visibly *doing something*. Done before containment, it announces a live exposure to an audience that now includes anyone who reads the message — while the share is still open. Contain first, then notify on the timeline regulation actually requires. Being fast and being first are not the same thing.
+</Callout>

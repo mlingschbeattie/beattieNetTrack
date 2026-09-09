@@ -6,15 +6,17 @@ track: "cybersecurity-foundations"
 moduleId: "cfs.fundamentals.security-concepts"
 order: 1
 difficulty: "Beginner"
-estMinutes: 10
+estMinutes: 20
 passThreshold: 70
 tags: ["CIA triad", "checkpoint", "security fundamentals"]
 hints:
   - "Ask whether data was exposed (Confidentiality), altered (Integrity), or made inaccessible (Availability)."
   - "Look for what the primary impact is in the scenario."
+  - "For select-all questions, a single missed or extra option marks the whole answer wrong."
 checklist:
   - "Analyzed each breach scenario"
   - "Selected the primary failure pillar"
+  - "Recalled the pillars without prompts"
   - "Reviewed corrective explanations"
 domains:
   - domainId: "cyber.foundations"
@@ -29,7 +31,7 @@ questions:
       - "Confidentiality"
       - "Non-repudiation"
     correctIndex: 2
-    explanation: "Confidentiality protects data from unauthorized viewing or disclosure. Exporting salary records without authorization directly violates confidentiality."
+    explanation: "Nothing was altered and the portal stayed online, so integrity and availability both held. The single failure is disclosure to someone unauthorised, which is confidentiality. Non-repudiation is not part of the triad."
   - id: "q2"
     type: "single"
     prompt: "During a routine audit, a systems analyst discovers that the hash of the system authentication binary (/bin/login) does not match the official vendor release hash. What type of security failure does this indicate?"
@@ -39,37 +41,107 @@ questions:
       - "Confidentiality breach"
       - "Denial of service"
     correctIndex: 0
-    explanation: "A mismatch in cryptographic hashes proves that the file has been altered or replaced by an untrusted version, which is a direct integrity violation."
+    explanation: "A hash mismatch proves the file's bytes changed since the vendor signed it. Whether anyone read it is a separate question — the demonstrated failure is that the data is no longer what it should be, which is integrity."
   - id: "q3"
+    type: "short"
+    prompt: "A ransomware crew encrypts a school's file server. Staff can reach the server but cannot open a single document. In one word, which CIA property has primarily failed?"
+    acceptedAnswers: ["availability", "availabilty"]
+    explanation: "Availability. The data still exists and has not been disclosed, but it is unusable to the people entitled to use it — that is exactly what availability protects. Modern ransomware often steals a copy first, which adds a confidentiality failure on top, but the reason work stopped is availability."
+  - id: "q4"
     type: "single"
     prompt: "A distributed denial of service (DDoS) SYN flood attacks a bank's public API gateway, causing the service to drop legitimate connection requests from mobile banking apps. What is the impact?"
     options:
-      - "Loss of Confidentiality — attacker can read customer accounts"
-      - "Loss of Availability — legitimate users cannot access the service"
-      - "Loss of Integrity — transaction amounts are being changed"
-      - "Loss of Authentication — passwords are now exposed"
+      - "Confidentiality breach"
+      - "Availability failure"
+      - "Integrity violation"
+      - "Privilege escalation"
     correctIndex: 1
-    explanation: "A denial of service attack targets system availability by exhausting resources so legitimate users cannot reach the application."
-  - id: "q4"
-    type: "single"
-    prompt: "Which technical control provides the strongest defense against loss of Confidentiality if an encrypted backup tape is physically lost during transit to offsite storage?"
-    options:
-      - "AES-256 encryption with securely stored keys"
-      - "A courier tracking number"
-      - "RAID 1 mirror replication"
-      - "MD5 checksum verification"
-    correctIndex: 0
-    explanation: "Encryption at rest renders data completely unreadable to unauthorized parties even if the physical media is lost or stolen."
+    explanation: "Nothing is read and nothing is changed — customers simply cannot reach a service they are entitled to reach. Denial of service attacks target availability by definition."
   - id: "q5"
-    type: "single"
-    prompt: "An attacker performs a Man-in-the-Middle (MitM) attack and alters DNS response packets so that accounting queries for 'portal.bank.local' resolve to a malicious cloned server. Which primary property was violated during packet alteration?"
+    type: "multi"
+    prompt: "Select EVERY control below whose primary purpose is protecting confidentiality."
     options:
-      - "Availability"
-      - "Integrity"
-      - "Auditing"
-      - "Confidentiality"
+      - "Full disk encryption on staff laptops"
+      - "Role-based access control on the student records share"
+      - "Nightly off-site backups"
+      - "Cryptographic hashing of a downloaded installer"
+    correctIndices: [0, 1]
+    explanation: "Encryption keeps data unreadable to anyone without the key, and access control decides who may see it — both are confidentiality controls. Backups exist so data can be restored, which is availability. Hashing proves a file has not been altered, which is integrity."
+  - id: "q6"
+    type: "single"
+    prompt: "Which technical control provides the strongest defense against loss of confidentiality if an encrypted laptop is physically stolen?"
+    options:
+      - "A strong BIOS password"
+      - "Full disk encryption with a TPM-bound key"
+      - "A cable lock securing the laptop to the desk"
+      - "Antivirus software with real-time scanning"
     correctIndex: 1
-    explanation: "Modifying network packets in transit so that legitimate destinations are changed is an active tampering attack against data integrity."
+    explanation: "The thief already has the hardware, so anything that guards the running machine is bypassed by removing the drive. Full disk encryption means the bytes on that drive are meaningless without the key. A BIOS password stops the machine booting, not the drive being read elsewhere."
+  - id: "q7"
+    type: "single"
+    prompt: "An attacker performs a machine-in-the-middle attack and alters DNS responses so that users resolving the school portal are sent to a lookalike site. Which property failed first?"
+    options:
+      - "Availability, because the real portal became unreachable"
+      - "Integrity, because the DNS response was altered in transit"
+      - "Confidentiality, because credentials were later captured"
+      - "Non-repudiation, because the attacker denied the action"
+    correctIndex: 1
+    explanation: "Credentials being captured is the consequence, and it is a real confidentiality loss — but the question asks what failed first. The attack works because the DNS answer was modified en route, which is an integrity failure in transit. The real portal stayed up, so availability held."
+  - id: "q8"
+    type: "multi"
+    prompt: "A hospital must keep patient records both private and reliably reachable during an outage. Select EVERY statement that correctly describes a trade-off they will face."
+    options:
+      - "Stricter access controls can slow clinicians reaching records in an emergency"
+      - "Off-site replication improves availability but widens where the data physically exists"
+      - "Encrypting backups removes the need to control who can restore them"
+      - "Longer session timeouts improve availability but increase exposure on shared workstations"
+    correctIndices: [0, 1, 3]
+    explanation: "Security controls trade against each other constantly, and the first, second and fourth are all real tensions between confidentiality and availability. The third is false and dangerous: encryption protects the backup at rest, but whoever can perform a restore can read the data, so restore rights still need controlling."
+  - id: "q9"
+    type: "short"
+    prompt: "Data being actively processed in a server's RAM is in which of the three states of data? Give the state only."
+    acceptedAnswers: ["in use", "in-use", "use"]
+    explanation: "In use. The three states are at rest (stored on disk), in transit (moving across a network), and in use (loaded into memory and being processed). In use is the hardest to protect, because the data must be decrypted for the processor to work with it."
+  - id: "q10"
+    type: "single"
+    prompt: "A technician says a nightly backup protects the confidentiality of student records. Why is that wrong?"
+    options:
+      - "Backups protect availability — they restore data after loss, and do nothing to stop unauthorised reading"
+      - "Backups only protect integrity, because they preserve the original bytes"
+      - "It is correct, because backups are stored in a locked room"
+      - "Backups protect all three properties equally"
+    correctIndex: 0
+    explanation: "A backup answers 'can we get the data back', which is availability. Left unencrypted it makes confidentiality worse rather than better, because it creates a second copy to steal — which is why backup media is a common breach source."
+  - id: "q11"
+    type: "single"
+    prompt: "An insider with legitimate access quietly changes a handful of grades in the student information system. Which property failed, and why is this hard to detect?"
+    options:
+      - "Confidentiality, because the insider read records they should not have"
+      - "Availability, because the correct grades are no longer obtainable"
+      - "Integrity, and it is hard to detect because the change was made through authorised access and looks like normal use"
+      - "Integrity, and it is hard to detect because the system does not store grades"
+    correctIndex: 2
+    explanation: "The data was altered without authorisation, so integrity failed. Detection is hard precisely because nothing anomalous happened at the access layer — a permitted account did a permitted operation. This is why integrity controls lean on audit logging and hashing rather than access control alone."
+  - id: "q12"
+    type: "multi"
+    prompt: "Select EVERY situation below that represents an availability failure."
+    options:
+      - "A fibre cut isolates the campus from the internet for six hours"
+      - "A misconfigured firewall rule blocks staff from the payroll system"
+      - "An attacker copies the student database and posts it publicly"
+      - "A failed RAID array takes the file server offline"
+    correctIndices: [0, 1, 3]
+    explanation: "Availability is about authorised people being able to reach what they are entitled to reach, and it fails for boring reasons far more often than malicious ones — cut cables, bad rules, dead hardware. The database being copied and published is a confidentiality breach; the data remained perfectly available throughout."
+  - id: "q13"
+    type: "single"
+    prompt: "You are triaging a live incident and can only establish one thing in the first two minutes. Which question most usefully narrows your response?"
+    options:
+      - "Which of the three properties has actually failed"
+      - "Which threat actor category is most likely responsible"
+      - "Whether the organisation carries cyber insurance"
+      - "How the attacker's tooling was written"
+    correctIndex: 0
+    explanation: "Classifying the failure tells you what to do next: a confidentiality loss drives containment and disclosure obligations, an availability loss drives restoration, an integrity loss drives verification against known-good copies. Attribution, insurance and tooling all matter later and none of them change the first move."
 ---
 
-Checkpoint quiz evaluating your ability to diagnose security incidents against the CIA Triad.
+Use this checkpoint to confirm you can classify a real incident by which property failed, recall the pillars and data states without prompting, and reason about the trade-offs between them.
