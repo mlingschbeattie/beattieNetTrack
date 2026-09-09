@@ -1,0 +1,88 @@
+---
+title: "AAA Accounting"
+slug: "tech-plus-6-1-7-aaa-accounting"
+track: tech-plus
+moduleId: tech-plus.security
+order: 7
+difficulty: Beginner
+passThreshold: 70
+tags: ["Tech+", "FC0-U71", "CompTIA"]
+questions:
+  - id: q1
+    type: single
+    prompt: "A user clicks a folder and receives an 'Access Denied' message. A week later, an auditor asks who opened that folder last Tuesday. Which A of AAA handled each event?"
+    options:
+      - "A. Both were accounting, because both involve a file being accessed"
+      - "B. The denial was authorization; the auditor's question is answered by accounting"
+      - "C. The denial was accounting; the auditor's question is answered by authorization"
+      - "D. Both were authentication, because the user had to sign in first"
+    correctIndex: 1
+  - id: q2
+    type: single
+    prompt: "Which log entry is usable as evidence in an investigation?"
+    options:
+      - "A. 'A file was deleted from the file server.'"
+      - "B. 'Account jmartin deleted HR/reviews-2026.xlsx on the file server at 02:14:37 on March 9.'"
+      - "C. 'Deletion activity was detected this month.'"
+      - "D. 'A user with delete permission accessed the HR share at some point.'"
+    correctIndex: 1
+  - id: q3
+    type: single
+    prompt: "Across fifty servers, each records exactly one failed login. Every individual server log looks completely unremarkable. What makes this visible as a password-spraying attack?"
+    options:
+      - "A. Raising the log retention period so older entries are kept longer"
+      - "B. Enabling account lockout after three failed attempts on each server"
+      - "C. A SIEM correlating events across all fifty logs at once"
+      - "D. Increasing the logging verbosity on each individual server"
+    correctIndex: 2
+  - id: q4
+    type: single
+    prompt: "An attacker gains administrative control of a server. Why does forwarding that server's logs to a separate collector still protect the investigation?"
+    options:
+      - "A. Forwarded logs are compressed, so more history fits on disk"
+      - "B. The attacker can edit the logs stored locally, but the copy already sent to the collector is out of their reach"
+      - "C. Logs cannot be read on the same system that generated them"
+      - "D. Forwarding encrypts the logs so the attacker cannot read what they contain"
+    correctIndex: 1
+  - id: q5
+    type: single
+    prompt: "Two servers logged the same intrusion, but one says it began at 14:02 and the other says 13:51. The analyst cannot establish which event came first. What is the underlying failure?"
+    options:
+      - "A. The retention policy is too short to cover the incident"
+      - "B. The logs were never forwarded to a central collector"
+      - "C. The servers' clocks are not synchronized, so NTP was not configured or is not working"
+      - "D. The logs are stored on write-once media and cannot be reordered"
+    correctIndex: 2
+  - id: q6
+    type: single
+    prompt: "What does immutable logging on write-once (WORM) storage guarantee that ordinary file permissions do not?"
+    options:
+      - "A. Only members of the security team can read the log entries"
+      - "B. Entries are encrypted at rest so they cannot be understood if stolen"
+      - "C. No one can alter or delete an entry after it is written — including an administrator"
+      - "D. Log files are automatically duplicated to a second data center"
+    correctIndex: 2
+  - id: q7
+    type: single
+    prompt: "A hospital investigates a suspected records breach that occurred 45 days ago, but its audit logs are kept for only 30 days. Beyond the lost evidence, what is the additional problem?"
+    options:
+      - "A. Nothing further — short retention is a storage decision, not a compliance matter"
+      - "B. HIPAA requires six years of audit record retention, so the missing logs are themselves a violation"
+      - "C. PCI DSS requires six years of retention, so the hospital has breached payment card rules"
+      - "D. The logs must now be reconstructed from backups before the investigation can proceed"
+    correctIndex: 1
+  - id: q8
+    type: single
+    prompt: "You suspect a server has been compromised. Which action does the most damage to the investigation?"
+    options:
+      - "A. Collecting and forwarding the existing logs to a separate collector before touching the system"
+      - "B. Rebooting the machine and signing in with a domain administrator account to take a quick look"
+      - "C. Isolating the server from the network while preserving it powered on"
+      - "D. Documenting the time the suspicious behavior was first noticed"
+    correctIndex: 1
+domains:
+  - domainId: techplus.security
+    weight: 1
+---
+
+Quiz covering AAA Accounting — Tech+ unit tech-plus-6-1-7-aaa-accounting.
