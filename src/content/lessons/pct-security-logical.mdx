@@ -1,0 +1,155 @@
+---
+title: "Logical Security — Least Privilege, MFA, and Access Lists"
+description: "The controls that decide what an authenticated account may actually do: least privilege, multifactor authentication and its token types, access control lists, and why an account nobody disabled is a live door."
+slug: pct-security-logical
+track: pc-technician
+moduleId: pct.security.access-control
+order: 2
+objective: "CompTIA A+ 220-1102 (Core 2) 2.1"
+xp: 20
+difficulty: Beginner
+estMinutes: 25
+tags: ["A+", "Core 2", "CompTIA", "least privilege", "MFA", "ACL", "hard token", "soft token", "offboarding"]
+sections:
+  - id: least-privilege
+    title: "Least Privilege"
+    keyPoints:
+      - "Least privilege means an account gets the minimum access needed to do its job, and nothing spare."
+      - "It limits blast radius — a compromised account can only reach what it was entitled to reach."
+      - "Permissions should be granted to groups by role rather than to individuals one at a time."
+      - "Privilege accumulates as people change roles unless something removes the old access."
+    check:
+      - prompt: "Why does least privilege reduce the damage from a successful phishing attack?"
+        options:
+          - "It prevents the credentials from being stolen in the first place"
+          - "The attacker inherits only that account's limited access, rather than reaching everything on the network"
+          - "It forces the attacker to use multifactor authentication"
+          - "It encrypts the data the account can reach"
+        correct: 1
+      - prompt: "An employee has moved through three departments in five years and can still access all three departments' file shares. What has happened?"
+        options:
+          - "Privilege creep — access accumulated with each move because the old permissions were never removed"
+          - "The account was compromised"
+          - "Group membership expired and defaulted to full access"
+          - "This is correct, since prior experience justifies continued access"
+        correct: 0
+  - id: mfa
+    title: "Multifactor Authentication and Tokens"
+    keyPoints:
+      - "MFA requires factors of different types, not two things of the same type."
+      - "Two passwords are not MFA; a password plus a code from a device is."
+      - "A hard token is dedicated physical hardware — a key fob or security key."
+      - "A soft token is software generating codes on a device you already own, such as a phone app."
+    check:
+      - prompt: "A system requires a password and then a security question. Is that multifactor authentication?"
+        options:
+          - "Yes, because two separate challenges are presented"
+          - "No — both are something you know, so it is two instances of the same factor"
+          - "Yes, provided the security question answer is long enough"
+          - "No, because security questions are not an authentication method"
+        correct: 1
+      - prompt: "What distinguishes a hard token from a soft token?"
+        options:
+          - "A hard token uses longer codes"
+          - "A hard token works offline while a soft token requires internet access"
+          - "A hard token is dedicated physical hardware; a soft token is software running on a device the user already has"
+          - "A hard token is issued by the user and a soft token by the organisation"
+        correct: 2
+  - id: acls-and-offboarding
+    title: "Access Lists and Leavers"
+    keyPoints:
+      - "An access control list states which users or groups may do what to a specific resource."
+      - "Explicit deny normally overrides allow, which is how one wrong group membership blocks legitimate access."
+      - "Disabling an account preserves data and audit trails; deleting it can orphan both."
+      - "Offboarding is a security control — an account nobody disabled is a working way in."
+    check:
+      - prompt: "A user belongs to a group with read access and another with an explicit deny on the same folder. What is the effective result?"
+        options:
+          - "Access is granted, because allow entries take priority"
+          - "Access is denied, because an explicit deny normally overrides an allow"
+          - "Access alternates depending on which group is evaluated first"
+          - "The user receives read access but cannot open files"
+        correct: 1
+      - prompt: "Why is disabling a departing employee's account usually preferred to deleting it immediately?"
+        options:
+          - "Disabled accounts continue receiving email for the manager"
+          - "Deletion is irreversible and can orphan file ownership and audit history, while disabling stops access immediately and preserves both"
+          - "Disabled accounts still count towards the licence total"
+          - "Deletion requires approval that disabling does not"
+        correct: 1
+domains:
+  - domainId: aplus2.security
+    weight: 0.8
+  - domainId: nocti.security
+    weight: 0.2
+---
+
+import Callout from '../../components/Callout.astro';
+
+## The Account That Kept Working
+
+An organisation reviews its systems and finds an active account belonging to someone who left fourteen months ago. It has a valid password, it is a member of the finance file share, and the audit log shows it signing in twice in the last year — from an address nobody recognises.
+
+Nothing was breached in any dramatic sense. Somebody left, IT was told on the Friday, and the ticket to disable the account was never closed.
+
+Physical security decides who gets into the building. **Logical security decides what an account may do once it is inside**, and it fails in this same quiet way far more often than it fails to an attack.
+
+## Least Privilege
+
+**The principle of least privilege** is that an account receives the minimum access required for its job and nothing beyond it. Not what might be handy one day, not what a colleague has, not administrator "so we don't have to keep asking".
+
+Its value is about **blast radius**. Accounts get compromised — someone will eventually enter their password into a convincing fake login page, and no amount of training reduces that to zero. What least privilege decides is what the attacker gets **afterwards**. A compromised account with access to one departmental share is an incident. The same compromise on an account with domain administrator rights is a very different week.
+
+Two practices make it workable:
+
+**Grant to groups, not individuals.** Permissions attach to a role — Finance, Year 10 Students, Helpdesk — and people are added to and removed from that role. Granting to individuals one at a time produces a permission set nobody can audit within a year.
+
+**Remove access when roles change**, not only when people leave. Otherwise you get **privilege creep**: someone moves from support to finance to management, gains access at every step, loses it at none, and after five years holds a set of permissions that no single job could justify. Nothing went wrong at any individual step, which is exactly why it goes unnoticed.
+
+## Multifactor Authentication
+
+MFA requires evidence from **different categories** — something you know, something you have, something you are.
+
+The distinction that catches people is that **two things of the same type are not multifactor**. A password followed by a security question is two pieces of knowledge; anyone who phished the first can usually phish or research the second. A password plus a code from your phone is genuinely two factors, because stealing the password does not put the phone in the attacker's hand.
+
+Tokens come in two forms:
+
+**Hard token** — dedicated physical hardware. A key fob showing a rotating number, or a USB security key. Its strength is that it does one job and cannot be compromised by malware on a general-purpose device.
+
+**Soft token** — software producing codes on a device the user already carries, typically a phone authenticator app. Cheaper and easier to deploy at scale, with the trade-off that its security depends on the phone's security.
+
+MFA is the single most effective control against stolen credentials, because it breaks the attacker's business model: the password alone stops being enough.
+
+<Callout type="exam">
+Two points recur. First, **multifactor requires different factor types** — expect a scenario offering two passwords, or a password and a PIN, and asking whether it qualifies. It does not. Second, **least privilege** is the answer whenever a scenario describes damage that spread further than it should have, or an account holding access it does not need.
+</Callout>
+
+## Access Control Lists
+
+An **ACL** states which users or groups may do what to a specific resource — this folder, this share, this device.
+
+The behaviour worth internalising is that **an explicit deny normally overrides an allow**. If a user is in one group granted read access and another group explicitly denied, the result is denied. This is deliberate — deny is how you carve an exception out of a broad permission — and it produces one of the most common access puzzles you will troubleshoot: a user who "should" have access by every list you can see, blocked by a single deny inherited from a group nobody remembered they were in.
+
+When someone cannot reach something they should, check **every group they belong to**, not just the one that grants the access.
+
+## Leavers Are a Security Control
+
+Offboarding is where logical security is most often left undone, because it is administrative rather than technical and nobody is inconvenienced when it is skipped.
+
+**Disable rather than delete**, at least initially. Disabling stops access immediately while preserving file ownership, mailbox contents, and audit history. Deleting can orphan files whose owner no longer exists and destroy the trail you would need if something surfaces later.
+
+Then work outward from the account: shared credentials that person knew, badge access, VPN certificates, application accounts that do not use central sign-in, and anything with a personal API key.
+
+<Callout type="warn">
+The habit that causes the most harm here is granting administrator rights temporarily and never taking them back. It always starts reasonably — an installation needs elevation, the user is blocked, it is 4pm, so they get local admin "until this is sorted". Nobody schedules the removal, nothing visibly changes, and the account keeps rights it stopped needing that afternoon. Months later that account is phished and the attacker inherits administrator on a workstation. If you must elevate, write the removal into the same ticket before you grant it — a temporary permission with no end date is a permanent one.
+</Callout>
+
+## Why This Matters in the Field
+
+Most of what a technician does with logical security is small and repetitive: adding someone to a group, working out why a share is inaccessible, disabling a leaver, resetting MFA for a lost phone.
+
+Done consistently, that work is the control. Done inconsistently, it produces the fourteen-month-old account that still opens the finance share.
+
+## Key Terms
+
+Logical security · Principle of least privilege · Blast radius · Role-based access · Security group · Privilege creep · Elevation · Local administrator · Multifactor authentication · Authentication factor · Hard token · Soft token · Authenticator application · Security key · Access control list · ACL · Explicit deny · Permission inheritance · Effective permissions · Account disabling · Offboarding · Orphaned data · Audit trail

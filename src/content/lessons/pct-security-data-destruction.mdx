@@ -1,0 +1,149 @@
+---
+title: "Data Destruction and Disposal — Making Sure It Is Actually Gone"
+description: "Why deleting and formatting leave data recoverable, which sanitisation method suits which medium, and why SSDs and certificates of destruction change the answer."
+slug: pct-security-data-destruction
+track: pc-technician
+moduleId: pct.security.hardening
+order: 4
+objective: "CompTIA A+ 220-1102 (Core 2) 2.8"
+xp: 20
+difficulty: Beginner
+estMinutes: 25
+tags: ["A+", "Core 2", "CompTIA", "data destruction", "wiping", "degaussing", "shredding", "SSD", "certificate of destruction"]
+sections:
+  - id: delete-is-not-gone
+    title: "Deleting and Formatting Do Not Remove Data"
+    keyPoints:
+      - "Deleting a file removes its directory entry; the contents stay on disk until overwritten."
+      - "A standard quick format rewrites the file system structure, not the data area."
+      - "Freely available recovery tools reconstruct files from drives that were deleted and formatted."
+      - "Sanitisation means the data cannot be reconstructed, which requires overwriting or destroying it."
+    check:
+      - prompt: "A school formats laptops before donating them. Why is this insufficient?"
+        options:
+          - "Formatting takes too long to complete properly on large drives"
+          - "A standard format rewrites file system structures while leaving the underlying data intact and recoverable"
+          - "Formatting only removes files created by the current user"
+          - "It is sufficient provided the drive is then defragmented"
+        correct: 1
+      - prompt: "What does deleting a file actually do on a traditional drive?"
+        options:
+          - "Overwrites the file contents with zeroes"
+          - "Moves the data to a reserved area of the disk"
+          - "Removes the directory entry and marks the space reusable, leaving the contents until something overwrites them"
+          - "Encrypts the file so it cannot be opened"
+        correct: 2
+  - id: methods
+    title: "Choosing a Method"
+    keyPoints:
+      - "Wiping overwrites the whole drive and allows the hardware to be reused."
+      - "Degaussing destroys magnetic media with a strong field and does not work on SSDs."
+      - "Physical destruction — shredding, drilling, incinerating — is the most certain and ends reuse."
+      - "The method must match both the medium and the sensitivity of the data."
+    check:
+      - prompt: "Why is degaussing ineffective on a solid state drive?"
+        options:
+          - "SSDs are shielded against magnetic fields"
+          - "SSDs store data in flash memory cells rather than magnetically, so a magnetic field does not erase them"
+          - "Degaussers cannot generate sufficient field strength"
+          - "It works but requires longer exposure"
+        correct: 1
+      - prompt: "A hospital is disposing of drives holding patient records and requires certainty over reuse. What is appropriate?"
+        options:
+          - "A single-pass overwrite followed by donation"
+          - "Quick format and physical storage in a locked cabinet"
+          - "Physical destruction such as shredding, with a certificate of destruction retained as evidence"
+          - "Degaussing, then reuse of the drives internally"
+        correct: 2
+  - id: ssd-and-paperwork
+    title: "SSDs, Encryption, and Proving It Happened"
+    keyPoints:
+      - "SSD wear levelling spreads writes, so an overwrite may not reach every cell holding old data."
+      - "The manufacturer's secure erase command is the correct software method for an SSD."
+      - "Full disk encryption from day one makes disposal simpler, since destroying the key destroys access."
+      - "A certificate of destruction records what was destroyed, how, and when — evidence for audit."
+    check:
+      - prompt: "Why is a conventional multi-pass overwrite unreliable on an SSD?"
+        options:
+          - "SSDs are too fast for overwrite software to track"
+          - "Wear levelling distributes writes across cells, so the overwrite may not reach every location holding old data"
+          - "SSDs reject repeated write commands"
+          - "Overwriting an SSD damages it permanently"
+        correct: 1
+      - prompt: "What is the value of a certificate of destruction?"
+        options:
+          - "It transfers legal liability to the disposal vendor entirely"
+          - "It documents what was destroyed, by what method, and when — providing evidence that the obligation was met"
+          - "It is required before a drive can be degaussed"
+          - "It certifies the drive was working before destruction"
+        correct: 1
+domains:
+  - domainId: aplus2.security
+    weight: 0.6
+  - domainId: aplus2.operational_procedures
+    weight: 0.4
+---
+
+import Callout from '../../components/Callout.astro';
+
+## Thirty Laptops and a Recovery Tool
+
+A school replaces thirty laptops and donates the old ones to a community group. Before they go, a member of staff formats each drive and reinstalls Windows. Reasonable, thorough, and what most people would do.
+
+Months later someone in the community group runs a free file-recovery tool out of curiosity and recovers safeguarding records, staff correspondence, and scanned passports.
+
+Nothing failed. Formatting a drive was never what anyone assumed it was.
+
+## Why Deleting Does Not Delete
+
+On a traditional drive, deleting a file **removes its directory entry** and marks the space as available. The contents stay exactly where they were until something happens to write over them, which may be next week or never.
+
+A standard **quick format** does something similar at a larger scale: it rewrites the file system's structures so the drive appears empty, without touching the data area. The files are all still there; only the index describing them is gone.
+
+Free recovery tools reconstruct files from deleted and formatted drives routinely. This is not a specialist attack — it is the same software used legitimately every day to recover from accidental deletion.
+
+**Sanitisation** is the word for making data genuinely unrecoverable, and it requires either **overwriting** every location or **destroying** the medium.
+
+## Choosing a Method
+
+**Wiping** (overwriting) writes patterns across the entire drive, replacing the data. Its advantage is that the **hardware survives and can be reused**, which matters for cost and for waste. It takes time proportional to drive size.
+
+**Degaussing** applies a strong magnetic field that destroys the magnetic structure of the medium — effective on hard drives and tapes, and it destroys the drive as a working device. **It does nothing to an SSD**, because flash memory does not store data magnetically. This distinction is examined directly and is a genuine field mistake.
+
+**Physical destruction** — shredding, drilling, crushing, incinerating — is the most certain method and ends any possibility of reuse. It is the normal answer for highly sensitive or regulated data, where certainty outweighs the value of the hardware.
+
+The choice depends on **the medium** and **the sensitivity of the data**. Wiping a drive holding ordinary business files before reuse is proportionate. Wiping a drive holding health or safeguarding records and then donating it usually is not — those go to destruction.
+
+## SSDs Change the Answer
+
+Solid state drives complicate wiping. **Wear levelling** deliberately spreads writes across cells to prolong the drive's life, and it keeps spare capacity in reserve. An overwrite therefore cannot guarantee it reached **every** cell that once held data — some of it may sit in blocks the controller has retired from the addressable pool, untouched by anything the operating system can write.
+
+The correct software approach for an SSD is the manufacturer's **secure erase** (or sanitise) command, which instructs the drive's own controller to clear all cells including the reserved ones. Where the data is sensitive enough, physical destruction remains the certain answer.
+
+**Full disk encryption changes the problem usefully.** If a drive has been encrypted since it was first deployed, destroying the encryption key renders everything on it unreadable regardless of what remains in the cells — sometimes called crypto-erase. This is a strong argument for encrypting devices from day one rather than at disposal: the decision made at deployment is what makes retirement simple.
+
+<Callout type="exam">
+Two facts do most of the work. **Formatting and deleting do not remove data** — expect scenarios where they were relied upon and the answer is that files remain recoverable. And **degaussing works only on magnetic media**, not SSDs. Match method to medium and to sensitivity: wiping for reuse, degaussing for magnetic media being retired, physical destruction for regulated or highly sensitive data.
+</Callout>
+
+## Proving It Happened
+
+Where a third party carries out destruction, a **certificate of destruction** records what was destroyed, by which method, and when — usually with serial numbers.
+
+This is the evidence that the obligation was met. Regulations covering health, financial, and student data require the disposal to have happened, and "we sent them to a recycler" is not a defensible answer without documentation. Keep the certificates with your asset records.
+
+An **asset inventory** is what makes the whole process work. You can only prove you destroyed the drives you know about, and the machine that quietly went into a cupboard three years ago is the one that turns up on an auction site.
+
+<Callout type="warn">
+The most expensive assumption in disposal is that a formatted drive is an empty drive. It survives because it looks completely convincing — the drive is genuinely blank in every way a normal person can check, and the person doing it is being conscientious rather than lazy. Donated school laptops, resold office machines, and returned leased equipment have all leaked serious personal data this way, sometimes years later and always publicly. Before any drive leaves your control, decide deliberately: wipe with a tool that overwrites, run secure erase on an SSD, or destroy it. Formatting is not on that list.
+</Callout>
+
+## Why This Matters in the Field
+
+Disposal is the last thing anyone thinks about and one of the easiest ways for an organisation to end up in the news. It is also entirely preventable with a routine: every drive leaving the building is wiped, secure-erased, or destroyed, and the decision is recorded against the asset.
+
+The technician usually owns that routine, because the technician is the last person to touch the hardware.
+
+## Key Terms
+
+Data sanitisation · File deletion · Directory entry · Quick format · Full format · Data recovery · Overwriting · Disk wiping · Multi-pass overwrite · Degaussing · Magnetic media · Physical destruction · Shredding · Drilling · Incineration · Solid state drive · Flash memory · Wear levelling · Over-provisioning · Secure erase · Sanitise command · Full disk encryption · Crypto-erase · Certificate of destruction · Chain of custody · Asset inventory · Regulatory retention

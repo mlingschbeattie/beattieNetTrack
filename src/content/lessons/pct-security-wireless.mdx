@@ -1,0 +1,147 @@
+---
+title: "Wireless Security — WPA3, AES, and the Network That Only Looks Protected"
+description: "Wireless encryption standards from WEP to WPA3, why TKIP and AES are not interchangeable, enterprise authentication with RADIUS, and the evil twin that a password does nothing to stop."
+slug: pct-security-wireless
+track: pc-technician
+moduleId: pct.security.access-control
+order: 3
+objective: "CompTIA A+ 220-1102 (Core 2) 2.2"
+xp: 20
+difficulty: Beginner
+estMinutes: 25
+tags: ["A+", "Core 2", "CompTIA", "WPA2", "WPA3", "AES", "TKIP", "RADIUS", "evil twin", "WPS"]
+sections:
+  - id: standards
+    title: "The Encryption Standards, In Order"
+    keyPoints:
+      - "WEP is broken and must never be used — it can be cracked in minutes."
+      - "WPA improved on WEP using TKIP, which is itself now deprecated."
+      - "WPA2 introduced AES-based encryption and remains acceptable where WPA3 is unavailable."
+      - "WPA3 is current, strengthening the handshake so captured traffic cannot be attacked offline."
+    check:
+      - prompt: "A site survey finds an access point still configured for WEP. What is the correct assessment?"
+        options:
+          - "Acceptable if the passphrase is long and complex"
+          - "WEP is fundamentally broken and can be cracked regardless of passphrase — it must be replaced with WPA2 or WPA3"
+          - "Acceptable for guest traffic only"
+          - "Secure provided MAC filtering is also enabled"
+        correct: 1
+      - prompt: "Which pairing represents the strongest configuration among these?"
+        options:
+          - "WPA2 with TKIP"
+          - "WPA with TKIP"
+          - "WPA3 with AES"
+          - "WEP with a 128-bit key"
+        correct: 2
+  - id: personal-vs-enterprise
+    title: "Personal and Enterprise Modes"
+    keyPoints:
+      - "Personal mode uses one shared passphrase for everyone connecting."
+      - "A shared passphrase cannot identify individuals and must be changed for everyone when one person leaves."
+      - "Enterprise mode authenticates each user individually against a RADIUS server."
+      - "RADIUS, TACACS+, and Kerberos are authentication services, not wireless encryption standards."
+    check:
+      - prompt: "A school wants staff to connect to Wi-Fi with their own network accounts so access can be revoked individually. Which configuration is required?"
+        options:
+          - "WPA2-Personal with a long passphrase"
+          - "WPA2-Enterprise or WPA3-Enterprise, authenticating each user against a RADIUS server"
+          - "An open network with MAC filtering"
+          - "WPA3-Personal with a per-device passphrase"
+        correct: 1
+      - prompt: "What is the operational weakness of WPA2-Personal in an organisation?"
+        options:
+          - "It cannot use AES encryption"
+          - "It supports only a limited number of simultaneous devices"
+          - "Everyone shares one passphrase, so it identifies nobody and must be changed for all users whenever one person should lose access"
+          - "It requires a certificate on every client"
+        correct: 2
+  - id: evil-twin
+    title: "The Network That Is Not Yours"
+    keyPoints:
+      - "An evil twin is a rogue access point broadcasting a legitimate network's name."
+      - "Clients may connect automatically because the SSID matches one they trust."
+      - "Encryption on your real network does nothing to stop a client joining an impostor."
+      - "WPS should be disabled — its PIN can be brute-forced regardless of passphrase strength."
+    check:
+      - prompt: "An attacker in a café runs an access point broadcasting the café's own SSID with a stronger signal. What is this and why does it work?"
+        options:
+          - "An evil twin — clients trust and may auto-join a network by name, so the attacker's access point receives their traffic"
+          - "A denial of service, because it overwhelms the real access point"
+          - "A deauthentication attack, which requires no rogue access point"
+          - "MAC spoofing, which duplicates the client's hardware address"
+        correct: 0
+      - prompt: "Why should WPS be disabled even on a network with a long WPA2 passphrase?"
+        options:
+          - "WPS reduces wireless range"
+          - "WPS is incompatible with AES encryption"
+          - "The WPS PIN is short enough to be brute-forced, which yields the passphrase no matter how strong it is"
+          - "WPS prevents guest network isolation"
+        correct: 2
+domains:
+  - domainId: aplus2.security
+    weight: 0.7
+  - domainId: nocti.networking
+    weight: 0.3
+---
+
+import Callout from '../../components/Callout.astro';
+
+## A Password Nobody Needed
+
+A café offers Wi-Fi with a password printed on the receipt. A customer connects, checks their bank balance, and thinks nothing of it. The connection is encrypted, the network required a password, and the padlock is showing.
+
+Their traffic went through a laptop in the corner of the room. It was broadcasting the same network name as the café, with a stronger signal, and their phone joined it automatically because it recognised the name from last week.
+
+The café's encryption was configured correctly the entire time. It simply had nothing to do with the question of **which access point the phone was talking to**.
+
+## The Standards, In Order
+
+Wireless encryption has a clear historical progression, and A+ expects you to place them:
+
+**WEP** — Wired Equivalent Privacy. The original, and **thoroughly broken**. Flaws in how it uses its keys let an attacker recover the key in minutes by passively collecting traffic. Passphrase length is irrelevant. WEP on a live network is a finding to escalate, not a setting to strengthen.
+
+**WPA** — the interim replacement, built around **TKIP**. It was designed to run on WEP-era hardware via firmware update, and that compatibility constraint left it weaker than a clean design would have been. Also now deprecated.
+
+**WPA2** — introduced **AES**-based encryption (CCMP) and served as the standard for well over a decade. Still acceptable where WPA3 is unavailable. Its known weakness is that an attacker who captures the connection handshake can attack it **offline** — grinding through candidate passphrases on their own hardware, without touching the network again.
+
+**WPA3** — current. Its main improvement is a redesigned handshake that closes that offline attack, so capturing the handshake no longer yields anything to work on. It also improves protection on open networks.
+
+**TKIP and AES are not interchangeable**, and configurations mixing them exist for backwards compatibility. **WPA2 with AES** is the correct modern setting; WPA2 with TKIP drags the older algorithm forward and weakens the result.
+
+## Personal and Enterprise
+
+Every WPA version comes in two modes, and the difference is about identity rather than strength.
+
+**Personal (PSK)** uses **one shared passphrase**. Everyone types the same string. It is simple and correct for a home, and it has two properties that make it awkward in an organisation: it **identifies nobody** — logs show a device, not a person — and revoking access for one individual means **changing it for everyone**, which is why the passphrase in most workplaces has not changed since installation and is known to every former employee.
+
+**Enterprise** authenticates **each user individually** against a **RADIUS** server, typically using their existing network account. Access is granted and revoked per person, the logs name people, and a leaver is handled by disabling their account like everything else.
+
+**RADIUS**, **TACACS+**, and **Kerberos** are authentication services rather than wireless encryption standards — a distinction the exam tests directly. They answer *who is this user*; WPA2 and WPA3 answer *how is this traffic encrypted*.
+
+<Callout type="exam">
+Order the standards **WEP → WPA → WPA2 → WPA3**, and pair them correctly: WPA with **TKIP**, WPA2 and WPA3 with **AES**. Know that **Personal** uses a shared passphrase and **Enterprise** uses per-user authentication via **RADIUS**. When a question asks for the most secure option, choose the newest standard offered with AES — and never choose WEP, whatever else the option says about it.
+</Callout>
+
+## Rogue Access Points and Evil Twins
+
+A **rogue access point** is any unauthorised access point on or near your network — sometimes malicious, often an employee who plugged in a cheap router to get better signal at their desk.
+
+An **evil twin** is the deliberate version: an attacker's access point broadcasting a **legitimate network's SSID**. Devices identify networks largely by name, and they remember networks they have joined. Put up an access point called the same thing with a stronger signal, and nearby phones and laptops will connect to it — often automatically, with nobody choosing anything.
+
+This is the part worth being precise about: **your network's encryption cannot prevent this.** WPA3 protects traffic between a client and *your* access point. It has no say over a client that has associated with a different access point altogether. The client is not under attack in a technical sense — it is doing exactly what it was configured to do, with the wrong radio.
+
+**WPS** deserves a specific mention. Wi-Fi Protected Setup exists to make joining easy via a button or an eight-digit PIN, and that PIN is validated in a way that reduces the search space enough to be brute-forced in hours. Recovering the PIN reveals the passphrase — **so a 40-character WPA2 passphrase is worth nothing on a router with WPS enabled**. Disable it.
+
+<Callout type="warn">
+The reassurance that gets people hurt is "the network asked for a password, so it is safe." It sounds like exactly the right instinct — password means encrypted, encrypted means private — and it collapses entirely against an evil twin, where the attacker simply configures their access point with the same password everyone already knows from the receipt. The user sees a familiar name, a padlock, and no warning of any kind. On any network you do not control, the password tells you nothing about who is running the access point. Treat public Wi-Fi as hostile regardless: use a VPN, and check that sites are HTTPS rather than trusting the network beneath them.
+</Callout>
+
+## Why This Matters in the Field
+
+Wireless configuration is routine technician work, and the defaults are frequently wrong. You will find WPS enabled, TKIP left on for a device retired years ago, guest networks that are not isolated from the internal network, and a passphrase that has been the same since the router was installed.
+
+Fixing those is quick. The harder and more valuable part is explaining to users why the padlock on a café network is not the reassurance they think it is.
+
+## Key Terms
+
+WEP · WPA · WPA2 · WPA3 · TKIP · AES · CCMP · Pre-shared key · WPA2-Personal · WPA2-Enterprise · RADIUS · TACACS+ · Kerberos · Authentication server · SSID · Rogue access point · Evil twin · Handshake capture · Offline attack · WPS · Wi-Fi Protected Setup · PIN brute force · Guest network isolation · MAC filtering · VPN

@@ -1,0 +1,147 @@
+---
+title: "Windows Permissions — NTFS, Share, and Why Access Was Denied"
+description: "Users and groups, NTFS permissions against share permissions, how inheritance works, and the most-restrictive rule that explains almost every access-denied call you will troubleshoot."
+slug: pct-security-windows-permissions
+track: pc-technician
+moduleId: pct.security.hardening
+order: 1
+objective: "CompTIA A+ 220-1102 (Core 2) 2.5"
+xp: 20
+difficulty: Beginner
+estMinutes: 25
+tags: ["A+", "Core 2", "CompTIA", "NTFS", "share permissions", "inheritance", "effective permissions", "groups"]
+sections:
+  - id: users-and-groups
+    title: "Users, Groups, and Why Groups Win"
+    keyPoints:
+      - "Permissions assigned to groups scale; permissions assigned to individuals do not."
+      - "A user's effective access is the combination of every group they belong to."
+      - "Standard user accounts should be the default, with administrator rights used deliberately."
+      - "An access problem is usually a group membership problem."
+    check:
+      - prompt: "Why should file permissions be granted to groups rather than to individual users?"
+        options:
+          - "Group permissions are evaluated faster by the operating system"
+          - "Access becomes a matter of adding and removing membership, which stays auditable as staff change roles"
+          - "Individual permissions expire automatically"
+          - "Groups allow permissions that individuals cannot receive"
+        correct: 1
+      - prompt: "A user cannot open a folder despite being in a group that grants access. What should you check first?"
+        options:
+          - "Whether the drive has enough free space"
+          - "Every other group they belong to, since combined membership determines effective access"
+          - "Whether their password has expired"
+          - "Whether the folder is compressed"
+        correct: 1
+  - id: ntfs-vs-share
+    title: "NTFS and Share Permissions Are Two Separate Gates"
+    keyPoints:
+      - "Share permissions apply only to access arriving over the network."
+      - "NTFS permissions apply both locally and over the network."
+      - "When both apply, the effective result is the most restrictive of the two."
+      - "A common configuration is a permissive share with NTFS doing the real work."
+    check:
+      - prompt: "A share grants Read to Everyone; NTFS grants Modify to the Finance group. What can a Finance member do over the network?"
+        options:
+          - "Modify, because NTFS is the more specific permission"
+          - "Read only, because the most restrictive of the share and NTFS permissions applies"
+          - "Full control, because the two permissions combine"
+          - "Nothing, because the permissions conflict"
+        correct: 1
+      - prompt: "A user has Modify over the network but only Read when signed in at the machine itself. What explains this?"
+        options:
+          - "Share permissions apply only over the network; locally just NTFS applies, and NTFS grants Read"
+          - "Local sign-in always reduces permissions by one level"
+          - "NTFS permissions apply only over the network"
+          - "The account is being throttled by group policy"
+        correct: 0
+  - id: inheritance
+    title: "Inheritance and the Deny That Wins"
+    keyPoints:
+      - "Child folders inherit permissions from their parent by default."
+      - "Inheritance can be broken so a subfolder carries its own permissions."
+      - "An explicit deny normally overrides any allow the user receives elsewhere."
+      - "Effective permissions tools resolve the combination faster than reading each list by hand."
+    check:
+      - prompt: "A user is in a group granted Modify and another group with an explicit deny on the same folder. What is the result?"
+        options:
+          - "Modify, because allow entries take precedence"
+          - "Denied, because an explicit deny overrides allow permissions"
+          - "Read only, as a compromise between the two"
+          - "The most recently applied permission wins"
+        correct: 1
+      - prompt: "One subfolder in a share needs to be restricted to managers while the rest stays open to the department. What must be done?"
+        options:
+          - "Move the subfolder outside the share"
+          - "Break inheritance on that subfolder and apply its own permissions"
+          - "Apply the manager permissions to the parent folder"
+          - "Create a second share pointing at the same location"
+        correct: 1
+domains:
+  - domainId: aplus2.security
+    weight: 0.6
+  - domainId: aplus2.os
+    weight: 0.4
+---
+
+import Callout from '../../components/Callout.astro';
+
+## "It Works From My Desk But Not From Home"
+
+A teacher reports that a shared folder behaves differently depending on where they are. In the staff room they can edit documents. Connecting from home over VPN, the same folder opens but every save fails.
+
+Nothing is broken and nothing is intermittent. They are passing through **two different sets of gates** depending on how they arrive, and only one of those sets applies when they sit at the machine.
+
+Windows permissions confuse people because there are two systems with similar names doing related jobs, and the interaction between them decides the outcome.
+
+## Users and Groups
+
+Permissions can be granted to an individual account or to a **group**. In practice, grant to groups.
+
+The reason is maintenance. Assign to individuals and within a year nobody can answer "who can read this?" without reading every entry. Assign to groups — Finance, Year 10, Helpdesk — and access becomes membership, which is visible, auditable, and revocable in one action when someone changes role.
+
+A user's access is the **combination of every group they are in**. That is why the first question for any access problem is not "what does this folder allow?" but **"what groups is this person actually in?"** — and the answer regularly includes one nobody remembered.
+
+Day to day, people should work as **standard users**. Administrator rights are for a specific task, taken deliberately.
+
+## Two Gates, Not One
+
+This is the part that produces the confusion:
+
+**Share permissions** apply **only to access arriving over the network**. Sit down at the machine and sign in locally, and share permissions are not consulted at all.
+
+**NTFS permissions** apply **always** — locally and over the network. They live on the file system itself, travel with the folder, and are far more granular.
+
+When someone connects over the network, **both** apply, and the effective result is **the most restrictive of the two**. A share offering Read and NTFS offering Modify produces Read. It does not matter which is more specific or which was set last; the tighter one wins.
+
+That resolves the opening story. Locally, only NTFS applies and it grants Modify — editing works. Over VPN, the share permission is also consulted, it grants Read, and Read is more restrictive. Two gates, one of which is bypassed when you are sitting at the machine.
+
+The common professional configuration follows directly: **set the share permissively and do the real work in NTFS.** One place holds the access rules, it applies consistently whether someone is local or remote, and troubleshooting has one list to read instead of two.
+
+<Callout type="exam">
+Two facts carry most of the questions. **Share permissions apply only over the network; NTFS applies everywhere.** And **when both apply, the most restrictive wins**. Expect a scenario giving you one of each and asking for effective access — take the tighter. A user with different access locally than remotely is the classic tell that share permissions are involved.
+</Callout>
+
+## Inheritance, and the Deny That Wins
+
+By default a new folder **inherits** its parent's permissions. Set the department share once and everything created inside follows, which is what keeps large structures manageable.
+
+When one subfolder needs to differ — a managers-only area inside an otherwise open share — you **break inheritance** on that folder and give it its own permissions. Done deliberately this is correct; done accidentally it creates an island that no longer follows the parent and quietly drifts.
+
+Then there is **explicit deny**, which **overrides allow**. A user in a group granted Modify and another group carrying a deny gets denied, full stop. Deny exists so you can carve one exception out of a broad grant, and it produces the most frustrating access puzzle in Windows: a user who by every list you have checked should have access, blocked by a deny inherited from a group they have belonged to since induction.
+
+Windows exposes an **effective permissions** view that resolves the whole combination for a given user. Use it. Reading lists by hand and reasoning about the interaction is slower and less reliable.
+
+<Callout type="warn">
+The fix that seems to work and quietly removes the control is granting Everyone Full Control to clear an access problem. It resolves the ticket instantly, which is exactly why it happens under pressure — and it opens the folder to every account in the organisation, including any that later gets compromised. Worse, it hides the real fault: the user was missing a group, or was caught by a deny, and now nobody will find that out. Nothing looks wrong afterwards, so the setting survives audits for years. Diagnose with the effective permissions view and fix the membership. If you must widen access to restore service, put the ticket to correct it in the same breath.
+</Callout>
+
+## Why This Matters in the Field
+
+Access-denied is among the most common tickets you will ever handle, and it is quick once you have a routine: check the user's group memberships, check whether the problem differs locally and remotely, look for an explicit deny, and read effective permissions rather than reasoning about the lists.
+
+That sequence resolves the large majority of them, and it resolves them without loosening anything.
+
+## Key Terms
+
+User account · Standard user · Administrator account · Security group · Group membership · Share permission · NTFS permission · Most restrictive wins · Effective permissions · Read · Write · Modify · Full Control · List folder contents · Inheritance · Breaking inheritance · Explicit allow · Explicit deny · Deny overrides allow · Everyone group · Principle of least privilege · Access denied

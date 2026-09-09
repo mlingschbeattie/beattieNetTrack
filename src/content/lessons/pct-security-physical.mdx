@@ -1,0 +1,145 @@
+---
+title: "Physical Security — Locks, Badges, and the Door Somebody Held Open"
+description: "Physical access controls from bollards to biometrics, the access control vestibule that defeats tailgating, and why the strongest technical security ends at an unlocked server room door."
+slug: pct-security-physical
+track: pc-technician
+moduleId: pct.security.access-control
+order: 1
+objective: "CompTIA A+ 220-1102 (Core 2) 2.1"
+xp: 20
+difficulty: Beginner
+estMinutes: 25
+tags: ["A+", "Core 2", "CompTIA", "physical security", "biometrics", "badge reader", "tailgating", "access control vestibule"]
+sections:
+  - id: layers
+    title: "Physical Security Is Layered Too"
+    keyPoints:
+      - "Perimeter controls — fencing, bollards, lighting — stop or slow approach before anyone reaches a door."
+      - "Entry controls — badge readers, locks, guards — decide who passes through."
+      - "Interior controls — server room locks, cable locks, privacy screens — protect specific assets."
+      - "Physical access to a machine defeats most software controls, which is why the door matters as much as the password."
+    check:
+      - prompt: "Why is physical access to a computer treated as such a serious compromise?"
+        options:
+          - "Software security controls can generally be bypassed by someone with hands on the hardware — booting external media or removing the drive"
+          - "Physical access allows the attacker to read the screen"
+          - "It voids the manufacturer warranty"
+          - "It is not serious if the operating system password is strong"
+        correct: 0
+      - prompt: "A row of short concrete posts outside a building entrance serves what security purpose?"
+        options:
+          - "Interior asset protection"
+          - "Perimeter control — bollards prevent a vehicle being driven into the building"
+          - "Entry authentication"
+          - "Surveillance"
+        correct: 1
+  - id: authentication-at-the-door
+    title: "Proving Who You Are at a Door"
+    keyPoints:
+      - "Badges and key fobs are something you have, and can be lost, lent, or cloned."
+      - "PINs and keypad codes are something you know, and get shared and shoulder-surfed."
+      - "Biometrics are something you are — fingerprint, retina, facial recognition — and cannot be handed to a colleague."
+      - "Combining factors at a door is multifactor authentication in exactly the same sense as at a login."
+    check:
+      - prompt: "A data centre requires a badge swipe and a fingerprint before the door opens. Why is this stronger than either alone?"
+        options:
+          - "Two readers are physically harder to break"
+          - "It combines something you have with something you are, so a stolen badge alone is not enough"
+          - "Biometrics cancel out the weaknesses of electronics"
+          - "It creates two separate audit logs"
+        correct: 1
+      - prompt: "What is the practical weakness of a shared keypad code on a server room door?"
+        options:
+          - "Keypads fail more often than badge readers"
+          - "Codes cannot be changed once set"
+          - "A code is knowledge — it gets shared, observed, and stays valid after someone leaves, and it identifies nobody"
+          - "Keypads cannot be used with multifactor authentication"
+        correct: 2
+  - id: tailgating
+    title: "The Control That Defeats a Held-Open Door"
+    keyPoints:
+      - "Tailgating is following an authorised person through a door without presenting credentials."
+      - "It defeats badge readers completely, because the door was opened legitimately."
+      - "An access control vestibule — two interlocking doors admitting one person at a time — is the structural answer."
+      - "Social pressure is the attack: politeness makes people hold doors, so policy has to make it acceptable not to."
+    check:
+      - prompt: "An attacker carrying two coffees waits by a secure door and is let in by a helpful employee. Which control would have prevented entry?"
+        options:
+          - "A stronger badge encryption standard"
+          - "An access control vestibule, which admits one person at a time and cannot be held open for a second"
+          - "A longer keypad code"
+          - "More frequent password rotation"
+        correct: 1
+      - prompt: "Why do badge readers alone fail to stop tailgating?"
+        options:
+          - "Badge readers can be cloned with inexpensive equipment"
+          - "The reader authorises the badge holder, and the open door then admits anyone walking through behind them"
+          - "Readers do not log entry times"
+          - "Badges expire too slowly"
+        correct: 1
+domains:
+  - domainId: aplus2.security
+    weight: 0.8
+  - domainId: nocti.security
+    weight: 0.2
+---
+
+import Callout from '../../components/Callout.astro';
+
+## Two Coffees and a Smile
+
+A man walks up to a secure office door carrying two takeaway coffees and a laptop bag under one arm. An employee badges in ahead of him, sees his full hands, and holds the door. He thanks her warmly and walks into a building he has no authorisation to enter.
+
+Nothing was hacked. The badge reader worked flawlessly and logged a legitimate entry. What let him in was a door that stayed open and a person who did the polite thing.
+
+Physical security is where a great deal of otherwise strong security quietly ends. **A machine an attacker can touch is a machine they can usually own** — boot it from a USB stick, pull the drive and read it elsewhere, plug something into it. Every technical control assumes that the hardware is where you left it and that only the right people have stood in front of it.
+
+## The Layers
+
+Physical security is layered exactly like network security, and the layers are worth naming because the exam names them:
+
+**Perimeter.** Fencing, **bollards** — the short posts that stop a vehicle being driven through a frontage — lighting, and cameras. These work before anyone reaches a door.
+
+**Entry.** **Badge readers**, **key fobs**, **keypads**, locks, guards, and reception desks. This is where a decision about a person gets made.
+
+**Interior.** Locked server rooms and racks, **cable locks** that tether a laptop to a desk, **privacy screens** that stop a passer-by reading a display, and locking drawers for backup media.
+
+Each layer assumes the ones outside it will be beaten eventually. That is the point of having several.
+
+## What a Door Asks You
+
+The same three authentication factors apply at a door as at a login:
+
+**Something you have** — a badge or fob. Convenient, auditable, and *transferable*, which is the problem. A badge can be lost, lent to a colleague "just this once", or cloned.
+
+**Something you know** — a keypad code. The trouble is that knowledge spreads. Codes get shared for convenience, observed over a shoulder, written on a nearby whiteboard, and remain valid long after someone leaves. Worse, a code **identifies nobody**: the log records that the correct code was entered, not who entered it.
+
+**Something you are** — **biometrics**: fingerprint, retina or iris, facial recognition. The strength is that it cannot be handed to someone else. The weaknesses are practical rather than theoretical — readers reject legitimate people with wet or damaged fingers, and a compromised biometric cannot be reissued the way a badge can.
+
+Combining two of these at a door is **multifactor authentication**, and it means precisely what it does at a keyboard. A badge plus a fingerprint means a stolen badge on its own opens nothing.
+
+<Callout type="exam">
+Match the control to the threat it addresses. **Bollards** stop vehicles. **An access control vestibule** stops tailgating. **A cable lock** stops opportunistic laptop theft. **A privacy screen** stops shoulder surfing. And classify authentication at a door by the same three factors used everywhere else — a badge is *something you have*, a code is *something you know*, a fingerprint is *something you are*.
+</Callout>
+
+## Tailgating, and the Only Thing That Stops It
+
+**Tailgating** — following an authorised person through a door without presenting credentials — defeats badge readers entirely, because the reader was never asked. The door opened for someone legitimate, and it does not know or care how many people walk through.
+
+The structural answer is an **access control vestibule** (older material calls it a mantrap): two interlocking doors forming a small chamber, where the outer door must close before the inner one will open, admitting **one person at a time**. It cannot be held open for a second person, because the physics of the room do not allow it.
+
+Where a vestibule is impractical, the control is policy plus culture — and culture is the hard part. Tailgating is a **social** attack, not a technical one. It works because refusing to hold a door for someone with full hands feels rude, and most people would rather risk a security incident than be rude to a stranger. Policy has to explicitly make it acceptable to say "sorry, you'll need to badge in" — otherwise you are asking employees to be impolite on their own initiative, and most will not.
+
+<Callout type="warn">
+The response that quietly makes an organisation less safe is treating a tailgating incident as an individual failure. It is tempting: someone held the door, so remind that person to be more careful. What it actually teaches everyone watching is that the consequence of a security incident is being blamed, so the next person who lets someone in simply does not report it — and you lose the visibility that would have told you the door is a recurring weak point. Fix the door, not the employee. If people keep being let through, the building needs a vestibule or a staffed reception, because politeness is not a control you can patch.
+</Callout>
+
+## Why This Matters in the Field
+
+A technician is frequently the person who notices. You are in the server room, the corridors, and the back offices more than most staff. You see the rack door propped open with a chair for airflow, the code written on the frame, the workstation left logged in and unattended in a public area.
+
+Those are findings worth reporting, and they are often more consequential than anything on the network.
+
+## Key Terms
+
+Physical security · Perimeter control · Bollard · Fencing · Lighting · Surveillance camera · Badge reader · Key fob · Keypad · Access control vestibule · Mantrap · Tailgating · Piggybacking · Shoulder surfing · Privacy screen · Cable lock · Server room access · Locking rack · Biometrics · Fingerprint reader · Retina scan · Facial recognition · Authentication factor · Something you have · Something you know · Something you are · Multifactor authentication

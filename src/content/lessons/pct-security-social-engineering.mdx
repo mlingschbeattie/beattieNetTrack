@@ -1,0 +1,155 @@
+---
+title: "Social Engineering — Attacking the Person, Not the System"
+description: "Phishing and its variants, the psychological levers that make them work, and why urgency and authority are the two signals worth training people to notice."
+slug: pct-security-social-engineering
+track: pc-technician
+moduleId: pct.security.threats
+order: 1
+objective: "CompTIA A+ 220-1102 (Core 2) 2.4"
+xp: 20
+difficulty: Beginner
+estMinutes: 25
+tags: ["A+", "Core 2", "CompTIA", "phishing", "vishing", "whaling", "social engineering", "impersonation", "MFA fatigue"]
+sections:
+  - id: the-variants
+    title: "One Idea, Several Delivery Routes"
+    keyPoints:
+      - "Phishing is a fraudulent message at scale, usually email, seeking credentials or action."
+      - "Spear phishing is targeted and researched; whaling targets senior figures specifically."
+      - "Vishing arrives by voice call and smishing by text message."
+      - "The delivery route changes; the underlying request — act now, without checking — does not."
+    check:
+      - prompt: "A finance clerk receives a personalised email that names their manager, their project, and a real supplier, asking them to redirect a payment. What is this?"
+        options:
+          - "Generic phishing, since it arrived by email"
+          - "Spear phishing — targeted and researched for this specific recipient"
+          - "Whaling, because it concerns finance"
+          - "Vishing, because it impersonates a person"
+        correct: 1
+      - prompt: "What distinguishes whaling from other phishing?"
+        options:
+          - "It is sent to very large numbers of recipients at once"
+          - "It targets senior executives, whose authority and access make a successful attack far more valuable"
+          - "It always arrives by telephone"
+          - "It uses malware attachments rather than links"
+        correct: 1
+  - id: levers
+    title: "Why It Works"
+    keyPoints:
+      - "Urgency removes the pause in which someone would have checked."
+      - "Authority discourages questioning — few people challenge a message that appears to come from a senior figure."
+      - "Familiarity and helpfulness are exploited, not overcome — the victim is being cooperative, not careless."
+      - "Fear of consequences makes people act to avoid trouble rather than to verify."
+    check:
+      - prompt: "Why do social engineering messages so often insist the matter is extremely urgent?"
+        options:
+          - "Urgent messages are more likely to bypass spam filters"
+          - "Urgency removes the pause during which the recipient would have verified the request through another channel"
+          - "It allows the attacker to send fewer messages overall"
+          - "Urgent requests are automatically escalated to administrators"
+        correct: 1
+      - prompt: "An employee is criticised for falling for a convincing phishing email. Why is this response counterproductive?"
+        options:
+          - "It has no effect on future behaviour"
+          - "Blame discourages reporting, so the next person who clicks stays silent and the organisation loses the early warning"
+          - "The employee is likely to leave the organisation"
+          - "It implies the email filter was at fault"
+        correct: 1
+  - id: verification
+    title: "The One Defence That Generalises"
+    keyPoints:
+      - "Verify unexpected requests through a separate channel you chose, not one the message supplied."
+      - "Never use the contact details contained in the suspicious message itself."
+      - "Repeated MFA prompts the user did not trigger mean someone already holds the password."
+      - "Reporting is a control — the sooner an organisation knows, the smaller the incident."
+    check:
+      - prompt: "An email appearing to come from a supplier asks to change their bank details, and gives a phone number to confirm. What is the correct action?"
+        options:
+          - "Call the number given, since verifying by phone confirms the request"
+          - "Reply to the email asking for written confirmation"
+          - "Contact the supplier using details already on file from before this message arrived"
+          - "Make the change and monitor the account for unusual activity"
+        correct: 2
+      - prompt: "A user's phone shows repeated MFA approval prompts at night that they did not initiate. What does this mean and what should they do?"
+        options:
+          - "The authenticator app is faulty and should be reinstalled"
+          - "An attacker already has the password and is pushing prompts hoping for an accidental approval — deny them, report immediately, and change the password"
+          - "The account has been locked and is retrying automatically"
+          - "Approve one prompt to clear the queue, then change the password"
+        correct: 1
+domains:
+  - domainId: aplus2.security
+    weight: 0.8
+  - domainId: nocti.security
+    weight: 0.2
+---
+
+import Callout from '../../components/Callout.astro';
+
+## The Email From the Head Teacher
+
+An office administrator receives an email from the head teacher. It uses their name, refers to a meeting that genuinely happened yesterday, and explains that a supplier invoice needs paying today because the account is about to go on hold. The tone is slightly clipped, as it often is when they are busy. It asks her to handle it quickly and not to chase them, because they are in interviews all afternoon.
+
+She pays it. Everything about the message was researched and nothing about it was true.
+
+No software was exploited. The attacker used the organisation's own website, a public meeting agenda, and a plausible tone — and asked a helpful person to do her job slightly faster than usual.
+
+## The Variants
+
+The delivery route changes; the idea does not.
+
+**Phishing** — fraudulent messages at scale, typically email, seeking credentials, payment, or an action. Volume compensates for low success rates.
+
+**Spear phishing** — targeted and researched for one recipient or small group. Real names, real projects, real suppliers. Far more convincing, and increasingly cheap to produce.
+
+**Whaling** — spear phishing aimed at **senior figures**. Executives have authority, access, and assistants accustomed to acting on their instructions, which makes one success disproportionately valuable.
+
+**Vishing** — by **voice** call. Often impersonating IT support or a bank, and effective because a live human can improvise and apply pressure in real time.
+
+**Smishing** — by **SMS**. Short, urgent, with a link, exploiting the fact that phones show little context.
+
+Alongside these sit **impersonation** in person, **shoulder surfing**, and **dumpster diving** for discarded information. All the same principle: the person is the interface being attacked.
+
+## Why It Works
+
+It is worth being precise, because the usual explanation — people are careless — is wrong and leads to useless responses.
+
+**Urgency.** Almost every attack insists on speed. The reason is mechanical: it removes the **pause** in which someone would have checked. Nobody verifies a request they believe there is no time to verify.
+
+**Authority.** Messages appear to come from senior figures, IT departments, banks, or government. Most people do not interrogate instructions from authority, especially in workplaces where questioning upward is uncomfortable.
+
+**Familiarity.** Names, projects, and events the victim recognises. The message passes the only test most people apply — *does this look like it belongs here?*
+
+**Fear.** An account closing, a fine, a missed deadline. Fear produces action aimed at avoiding a consequence rather than at establishing whether the consequence is real.
+
+Notice that the victim in the opening story was being **conscientious**. She acted quickly on an instruction from her employer to avoid a supplier problem. Social engineering does not exploit stupidity; it exploits cooperation, and cooperation is what organisations spend the rest of their time encouraging.
+
+<Callout type="exam">
+Distinguish the variants by delivery and target. **Phishing** is broad email; **spear phishing** is researched and targeted; **whaling** targets executives; **vishing** is voice; **smishing** is SMS. Expect scenarios describing a message and asking for the specific term — the tells are how personalised it is and which medium carried it.
+</Callout>
+
+## The Defence That Generalises
+
+You cannot teach people to recognise every variant, and attacks now arrive without the spelling errors that once gave them away. What does generalise is one habit:
+
+**Verify unexpected requests through a channel you chose yourself.**
+
+Any request to move money, change bank details, share credentials, or bypass a normal process gets confirmed through contact details you **already had** — the number in your own records, an internal directory, walking to their desk.
+
+The critical detail is that you **never use the contact details in the suspicious message**. A phone number in a phishing email reaches the attacker, who will confirm the request warmly and professionally. Calling it feels like diligence and is the opposite.
+
+**MFA fatigue** deserves its own note, because it is now common. An attacker who already has a password triggers repeated approval prompts, betting the user will eventually approve one to make it stop — at 2am, half asleep, that bet frequently pays. **Unrequested MFA prompts mean the password is already compromised.** Deny them, report it immediately, and change the password. Approving one to clear the queue hands over the account.
+
+<Callout type="warn">
+The organisational response that does lasting damage is blaming the person who fell for it. It feels like accountability, and it reliably produces silence. The employee who clicked and got shouted at tells nobody; the next one, watching, decides to quietly delete the email and hope. What an organisation loses is the thing that actually limits the damage — the fifteen-minute head start between a click and a report, which is the difference between resetting one password and rebuilding a domain. Thank people for reporting, including when they already clicked. The report is the control.
+</Callout>
+
+## Why This Matters in the Field
+
+Technicians are targets, because your accounts open more doors than most. You will also be the person users call when something feels wrong — and how you respond to that call determines whether they call again next time.
+
+Make verification normal and make reporting safe. Both are cultural, and both matter more than any filter.
+
+## Key Terms
+
+Social engineering · Phishing · Spear phishing · Whaling · Vishing · Smishing · Impersonation · Pretexting · Shoulder surfing · Dumpster diving · Tailgating · Urgency · Authority · Familiarity · Fear · Out-of-band verification · Known-good contact details · Business email compromise · MFA fatigue · Push bombing · Incident reporting · Blameless reporting

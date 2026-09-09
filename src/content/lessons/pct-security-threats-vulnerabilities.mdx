@@ -1,0 +1,143 @@
+---
+title: "Threats and Vulnerabilities — What Attacks Look Like From the Helpdesk"
+description: "Denial of service, on-path interception, spoofing, zero-days, and insider threat — recognised by the symptoms a technician actually sees rather than by textbook definition."
+slug: pct-security-threats-vulnerabilities
+track: pc-technician
+moduleId: pct.security.threats
+order: 2
+objective: "CompTIA A+ 220-1102 (Core 2) 2.4"
+xp: 20
+difficulty: Beginner
+estMinutes: 25
+tags: ["A+", "Core 2", "CompTIA", "DDoS", "on-path", "spoofing", "zero-day", "insider threat", "unpatched"]
+sections:
+  - id: availability-attacks
+    title: "Attacks on Availability"
+    keyPoints:
+      - "A denial of service attack makes a service unreachable rather than stealing from it."
+      - "A distributed attack comes from many compromised machines at once, which is why blocking one address fails."
+      - "The symptom is indistinguishable from overload at first — the service is simply unavailable."
+      - "Mitigation happens upstream at the provider, not on the affected server."
+    check:
+      - prompt: "A school's website becomes unreachable under enormous traffic from thousands of different addresses worldwide. What is happening?"
+        options:
+          - "A distributed denial of service attack, using many compromised machines so blocking single addresses is ineffective"
+          - "An on-path attack intercepting requests"
+          - "A zero-day exploit in the web server"
+          - "DNS spoofing redirecting visitors"
+        correct: 0
+      - prompt: "Why can a DDoS rarely be stopped on the targeted server itself?"
+        options:
+          - "The server's firewall cannot be configured during an attack"
+          - "The traffic has already consumed the network link before reaching the server, so filtering must happen upstream at the provider"
+          - "The attack encrypts its traffic"
+          - "Server operating systems have no filtering capability"
+        correct: 1
+  - id: interception-and-spoofing
+    title: "Interception and Impersonation"
+    keyPoints:
+      - "An on-path attack places the attacker between two parties who believe they are talking directly."
+      - "Public and untrusted networks are the usual setting, which is why a VPN matters there."
+      - "Spoofing means falsifying an identifier — an address, a sender, a caller ID — to appear as something trusted."
+      - "Certificate warnings are frequently the only visible symptom of interception."
+    check:
+      - prompt: "A user on public Wi-Fi receives a certificate warning for a site that normally loads without one. What should they assume?"
+        options:
+          - "The site has let its certificate expire and it is safe to continue"
+          - "Their device clock is wrong, which is the only cause of such warnings"
+          - "The connection may be intercepted — the warning means identity could not be verified, so they should not proceed or enter credentials"
+          - "The browser needs updating"
+        correct: 2
+      - prompt: "What does spoofing describe?"
+        options:
+          - "Overwhelming a service with traffic"
+          - "Falsifying an identifier such as a source address, email sender, or caller ID to appear as a trusted party"
+          - "Exploiting a vulnerability with no available patch"
+          - "Encrypting files and demanding payment"
+        correct: 1
+  - id: patching-and-insiders
+    title: "Zero-Days, Unpatched Systems, and Insiders"
+    keyPoints:
+      - "A zero-day exploits a vulnerability with no patch available yet."
+      - "Far more breaches come from known vulnerabilities left unpatched than from zero-days."
+      - "Patching is unglamorous and is the single highest-value routine security task."
+      - "Insider threat may be malicious or simply careless, and legitimate access makes it hard to detect."
+    check:
+      - prompt: "Which represents the greater practical risk to a typical organisation?"
+        options:
+          - "Zero-day vulnerabilities, because no patch exists"
+          - "Known vulnerabilities left unpatched for months, which are widely exploited and require no novel research by the attacker"
+          - "Insider threat, which is always malicious"
+          - "Spoofing, which cannot be detected"
+        correct: 1
+      - prompt: "Why is insider threat particularly difficult to detect?"
+        options:
+          - "Insiders always use administrator accounts"
+          - "The activity uses legitimate credentials and permitted access, so it does not look like an intrusion"
+          - "Insiders operate only outside working hours"
+          - "Monitoring employees is technically impossible"
+        correct: 1
+domains:
+  - domainId: aplus2.security
+    weight: 0.7
+  - domainId: nocti.security
+    weight: 0.3
+---
+
+import Callout from '../../components/Callout.astro';
+
+## The Breach Nobody Had to Invent
+
+An organisation is compromised through a vulnerability that was published, patched by the vendor, and documented in detail — eighteen months earlier. The attacker did not discover anything. They scanned the internet for systems that had not applied the update, found one, and used a tool somebody else wrote.
+
+This is the shape of most real incidents, and it is worth holding onto, because security coverage tends to focus on the exotic. The dramatic attack is not the common one. **The common one is a known problem that nobody got round to fixing.**
+
+## Attacks on Availability
+
+**Denial of service** attacks do not steal anything. They make a service **unreachable**, which for a school on results day or a business at month end can be as damaging as theft.
+
+**Distributed denial of service** — DDoS — sends that traffic from **many compromised machines at once**, often tens of thousands. The distribution is the whole point: there is no single source to block, and the traffic is individually indistinguishable from real visitors.
+
+Two practical consequences matter at the helpdesk:
+
+The **early symptom is ambiguous**. A site under attack looks exactly like a site that has become popular or a server that is failing. You cannot tell from the outside, and the first useful question is whether traffic volume is abnormal.
+
+**You cannot fix it on the server.** By the time traffic reaches the machine it has already filled the network link. Mitigation happens **upstream** — at the internet provider or a specialist scrubbing service. A technician's job is to recognise it, escalate it, and resist the temptation to spend the outage tuning the web server.
+
+## Interception and Impersonation
+
+**On-path attacks** (older material says man-in-the-middle) place the attacker **between** two parties who each believe they are talking directly to the other. Traffic passes through, can be read, and can be modified.
+
+The natural habitat is a network the attacker controls or shares — public Wi-Fi, a compromised router, an evil twin. That is precisely why a **VPN** matters there: it encrypts everything between the device and a trusted endpoint, so a position in the middle yields nothing readable.
+
+The visible symptom is often a **certificate warning**. Interception usually requires presenting a certificate for a site the attacker does not own, and the browser objects. Users are trained by years of expired certificates on internal systems to click through, which is why this signal is worth teaching explicitly: **a certificate warning means the identity of the far end could not be verified**, and on an untrusted network that is exactly what interception looks like.
+
+**Spoofing** means falsifying an identifier to appear as something trusted — a source IP address, an email sender, a caller ID, a MAC address. It underpins a great deal else: the phishing email spoofs a sender, the evil twin spoofs an SSID, the fraudulent call spoofs a bank's number.
+
+## Zero-Days and the Unglamorous Truth
+
+A **zero-day** exploits a vulnerability the vendor does not yet have a patch for. There is no fix to apply, which is what makes it alarming and newsworthy.
+
+It is also, for a typical organisation, **not the main risk**. Zero-days are expensive to find and tend to be spent on high-value targets. What actually breaches ordinary organisations is the **known vulnerability left unpatched** — published, fixed by the vendor, exploited by automated tools, and still present because a reboot was inconvenient or a server was forgotten.
+
+Which makes **patching** the highest-value routine security task there is. It is dull, it interrupts people, nobody thanks you for it, and it prevents more incidents than any product you could buy.
+
+**Insider threat** is the last category and the hardest. It ranges from the malicious — someone taking data on their way out — to the entirely careless, such as copying a client list to a personal drive to work at home. What makes it hard is that the activity uses **legitimate credentials doing permitted things**. There is no intrusion to detect. This is where least privilege and logging earn their keep: limiting what any one account can reach, and recording what it did.
+
+<Callout type="exam">
+Match the term to the described symptom. **Many sources overwhelming a service** is DDoS. **An attacker positioned between two parties** is on-path. **A falsified identifier** is spoofing. **No patch available** is a zero-day. And note the exam's preference for the realistic answer: when a scenario describes a breach through an old, known flaw, the failure is **patch management**, not a sophisticated attacker.
+</Callout>
+
+<Callout type="warn">
+The instinct that costs organisations most is deferring patches because the update is disruptive. It is genuinely reasonable in the moment — the server is busy, the reboot needs a window, the update once broke something, so it waits. What that reasoning never accounts for is that the vulnerability became *more* dangerous the day it was published, because disclosure tells every attacker exactly where to look, and working exploit tools follow within days. A patch deferred for a quiet weekend is fine. A patch deferred indefinitely because no weekend is ever quiet is how the eighteen-month-old vulnerability in the opening story was still there. Schedule the window rather than waiting for one to appear.
+</Callout>
+
+## Why This Matters in the Field
+
+You will rarely identify an attack from first principles. You will notice that something does not fit — a site down with no deployment behind it, a certificate warning that was not there yesterday, an account touching files it has never touched.
+
+Knowing the categories turns those observations into a report somebody can act on. And keeping systems patched quietly removes the most likely cause before it is ever used.
+
+## Key Terms
+
+Denial of service · DoS · Distributed denial of service · DDoS · Botnet · Upstream mitigation · On-path attack · Man-in-the-middle · Interception · Certificate warning · VPN · Spoofing · Source address spoofing · Email spoofing · Caller ID spoofing · MAC spoofing · Vulnerability · Exploit · Zero-day · Patch management · Unpatched system · Vulnerability disclosure · Insider threat · Malicious insider · Negligent insider · Least privilege · Logging

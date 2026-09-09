@@ -1,0 +1,145 @@
+---
+title: "SOHO Network Security — Hardening the Box Everyone Forgets"
+description: "Securing a small office or home router: default credentials, firmware, guest network isolation, disabling WPS and remote management, and why port forwarding is the setting that most often exposes a network."
+slug: pct-security-soho-network
+track: pc-technician
+moduleId: pct.security.hardening
+order: 3
+objective: "CompTIA A+ 220-1102 (Core 2) 2.9"
+xp: 20
+difficulty: Beginner
+estMinutes: 25
+tags: ["A+", "Core 2", "CompTIA", "SOHO", "router", "firmware", "guest network", "port forwarding", "UPnP", "remote management"]
+sections:
+  - id: first-five-minutes
+    title: "The First Five Minutes on a New Router"
+    keyPoints:
+      - "Change the administrator password before anything else — defaults are published online."
+      - "Update the firmware, since routers ship with builds that are already months old."
+      - "Disable remote management from the internet unless it is genuinely required."
+      - "Disable WPS, whose PIN can be brute-forced regardless of passphrase strength."
+    check:
+      - prompt: "What is the single most important change to make when deploying a new SOHO router?"
+        options:
+          - "Change the wireless network name to something non-obvious"
+          - "Change the default administrator password, since default credentials for every model are published"
+          - "Set a static IP address on the WAN interface"
+          - "Reduce the transmit power to limit range"
+        correct: 1
+      - prompt: "Why should remote management over the internet normally be disabled?"
+        options:
+          - "It slows the router's processor"
+          - "It exposes the administration interface to the entire internet, where it will be found and attacked automatically"
+          - "It conflicts with the guest network"
+          - "It prevents firmware updates from installing"
+        correct: 1
+  - id: segmentation
+    title: "Guest Networks and Segmentation"
+    keyPoints:
+      - "A guest network gives visitors internet access without reaching internal devices."
+      - "Isolation must actually be enabled — a separate SSID alone does not separate traffic."
+      - "Smart devices and cameras belong on the guest or a separate network, not beside the file server."
+      - "Segmentation limits how far a single compromised device can reach."
+    check:
+      - prompt: "A small office creates a second SSID for visitors but leaves client isolation off. What is the consequence?"
+        options:
+          - "Guests receive slower speeds than staff"
+          - "Guest devices can still reach internal devices, because a separate network name does not by itself separate the traffic"
+          - "The guest network will not obtain internet access"
+          - "Staff devices will roam onto the guest network automatically"
+        correct: 1
+      - prompt: "Why place smart devices such as cameras and thermostats on a separate network?"
+        options:
+          - "They require a different wireless standard"
+          - "They are rarely updated and often insecure, so isolating them limits what a compromised device can reach"
+          - "They consume too much bandwidth on the main network"
+          - "It is required for them to receive firmware updates"
+        correct: 1
+  - id: exposure
+    title: "Port Forwarding and Ways In"
+    keyPoints:
+      - "Port forwarding deliberately opens a path from the internet to an internal device."
+      - "Every forwarded port is a service exposed to automated scanning within minutes."
+      - "UPnP lets applications open ports themselves, without anyone approving it."
+      - "A VPN into the network is almost always safer than forwarding a management port."
+    check:
+      - prompt: "A user forwards the remote desktop port to their office PC so they can work from home. What is the risk?"
+        options:
+          - "Remote desktop will be slow over the internet"
+          - "The service is now exposed to the whole internet, where automated scanners will find it within minutes and begin guessing credentials"
+          - "The router cannot forward that port"
+          - "Only one device can use remote desktop at a time"
+        correct: 1
+      - prompt: "Why is UPnP often recommended to be disabled?"
+        options:
+          - "It prevents guest network isolation from working"
+          - "It allows applications on the network to open ports through the firewall themselves, with no administrator approval or visibility"
+          - "It is incompatible with modern firmware"
+          - "It reduces wireless throughput"
+        correct: 1
+domains:
+  - domainId: aplus2.security
+    weight: 0.6
+  - domainId: nocti.networking
+    weight: 0.4
+---
+
+import Callout from '../../components/Callout.astro';
+
+## The Router Nobody Has Logged Into Since Installation
+
+A small business is compromised. The investigation finds the entry point quickly: the router's administration interface was reachable from the internet, still using the manufacturer's default password, running firmware from four years earlier with a documented vulnerability.
+
+Nobody had touched it since the engineer set it up. It was working, so there was nothing to do.
+
+The SOHO router is the least-maintained device on most networks and the one with the largest exposure. It faces the internet directly, and everything else sits behind it.
+
+## The First Five Minutes
+
+Whenever you deploy or inherit a SOHO router, four things come first:
+
+**Change the administrator password.** Default credentials for every consumer model are published in searchable lists. This is the single highest-value change and it takes thirty seconds.
+
+**Update the firmware.** Routers ship with builds already months old, and vendors patch real vulnerabilities. Check at deployment and periodically after — most devices will not tell you an update exists.
+
+**Disable remote management** from the internet unless it is genuinely needed. This is the setting that turns a misconfiguration into a breach: an administration interface reachable from anywhere will be found by automated scanning, and then it is only a question of the password. Where remote access is truly required, put it behind a VPN.
+
+**Disable WPS.** Its PIN can be brute-forced in hours, and recovering it yields the wireless passphrase — so WPS silently nullifies however strong that passphrase is.
+
+Then set **WPA2 or WPA3 with AES** and a long passphrase, and change the default SSID if it names the manufacturer or model, since that tells an attacker which vulnerabilities to try.
+
+## Guest Networks and Segmentation
+
+A **guest network** gives visitors internet access without reaching internal devices — no file shares, no printers, no cameras, no NAS.
+
+The detail that gets missed: **a separate SSID does not by itself separate anything.** Many routers will happily broadcast a second network name that lands on the same internal network. **Client isolation** or guest isolation is the setting that actually enforces it, and it needs checking rather than assuming.
+
+The same logic applies to **smart devices** — cameras, thermostats, televisions, doorbells. They are frequently built cheaply, rarely updated, and often reachable in ways their owners never intended. They belong on the guest network or their own segment, not sitting beside the machine holding the accounts. If one is compromised, segmentation decides whether that is an annoyance or an incident.
+
+<Callout type="exam">
+Know the SOHO hardening list as a set: **change default credentials**, **update firmware**, **disable WPS**, **disable remote management**, **use WPA2/WPA3 with AES**, **enable guest network isolation**, and **disable UPnP**. Expect scenarios describing a compromised small-office network where the answer is one of these being left at its default.
+</Callout>
+
+## Port Forwarding and UPnP
+
+**Port forwarding** deliberately opens a path from the internet to a specific internal device — a game server, a camera, a remote desktop.
+
+Every forwarded port is a service **published to the entire internet**. Automated scanners sweep the whole address space continuously, and a newly exposed service is typically found within minutes, not weeks. From that point it is being probed for known vulnerabilities and weak credentials, permanently.
+
+That does not make port forwarding wrong; it makes it a decision. Forwarding a port to a properly patched service with strong authentication is a considered risk. Forwarding **remote desktop or a router's management interface** is how a large share of small-network breaches begin, and it is nearly always avoidable — a **VPN into the network** gives the same access while exposing only the VPN endpoint.
+
+**UPnP** deserves a specific warning. Universal Plug and Play lets applications on the network **open ports through the firewall themselves**, with no administrator approval and usually no visibility. It exists for convenience — games and consoles use it — and it means the firewall's configuration is being decided by software rather than by anyone. Malware on an internal machine can use it to open a path inward. Disable it unless something genuinely requires it.
+
+<Callout type="warn">
+The change that most often creates a serious exposure is a helpful one: a user cannot reach their office PC from home, so the technician forwards the remote desktop port and the problem is solved in two minutes. Everyone is pleased, and the service is now on the internet being credential-guessed around the clock by machines that never get bored. It survives because nothing appears to go wrong — until an account with a weak password gives way, and remote desktop hands the attacker a working session on an internal machine. If someone needs access from outside, put in a VPN. It takes longer, and it does not publish the inside of the network to do it.
+</Callout>
+
+## Why This Matters in the Field
+
+Small offices, schools, and homes rarely have anyone whose job is the network. The technician who visits for something unrelated is often the only person who will ever look at the router.
+
+It is worth ten minutes: log in, change the password if it is still default, check the firmware, confirm remote management and WPS are off, look at what is being forwarded and why. That is frequently the most valuable work done on the visit.
+
+## Key Terms
+
+SOHO router · Default credentials · Administrator interface · Firmware update · Remote management · WPS · SSID · Default SSID · WPA2 · WPA3 · AES · Guest network · Client isolation · Network segmentation · IoT device · Smart device · Port forwarding · Exposed service · Automated scanning · UPnP · Universal Plug and Play · VPN · Firewall · Content filtering · MAC filtering

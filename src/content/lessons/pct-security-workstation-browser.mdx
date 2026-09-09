@@ -1,0 +1,143 @@
+---
+title: "Workstation and Browser Hardening"
+description: "The baseline that makes a workstation defensible: account and password policy, screen locks, disabling autorun, and the browser settings and extensions that decide how much of the internet reaches the user."
+slug: pct-security-workstation-browser
+track: pc-technician
+moduleId: pct.security.hardening
+order: 2
+objective: "CompTIA A+ 220-1102 (Core 2) 2.6, 2.7"
+xp: 20
+difficulty: Beginner
+estMinutes: 25
+tags: ["A+", "Core 2", "CompTIA", "hardening", "password policy", "screen lock", "autorun", "browser extensions", "pop-up blocker"]
+sections:
+  - id: account-baseline
+    title: "The Account Baseline"
+    keyPoints:
+      - "Rename or disable default accounts, and never leave a default password in place."
+      - "Length matters more than forced complexity — long passphrases beat short scrambled strings."
+      - "Account lockout limits online guessing, though it does nothing against a correct stolen password."
+      - "Automatic screen lock protects the unattended machine, which is the most common real exposure."
+    check:
+      - prompt: "Why does account lockout do little against credential stuffing with passwords leaked from another site?"
+        options:
+          - "Lockout applies only to administrator accounts"
+          - "The attacker already has the correct password, so no failed attempts occur to trigger a lockout"
+          - "Credential stuffing bypasses the authentication system entirely"
+          - "Lockout thresholds reset too quickly to matter"
+        correct: 1
+      - prompt: "A workstation in a shared open-plan office is frequently left signed in while its user is away. What is the most effective control?"
+        options:
+          - "A longer password"
+          - "A shorter automatic screen lock timeout, so the session locks itself when unattended"
+          - "Disabling USB ports"
+          - "More frequent password changes"
+        correct: 1
+  - id: removable-media
+    title: "Removable Media and Autorun"
+    keyPoints:
+      - "Autorun and autoplay execute content from removable media without the user choosing to."
+      - "Disabling them removes an entire class of automatic infection from inserted devices."
+      - "Found USB drives are a genuine and effective attack, not a hypothetical one."
+      - "Where policy allows removable media at all, it should be scanned before use."
+    check:
+      - prompt: "Why is disabling autorun a standard hardening step?"
+        options:
+          - "It prevents removable media from being mounted at all"
+          - "It stops content on inserted media from executing without the user deliberately opening it"
+          - "It encrypts data written to removable drives"
+          - "It prevents the drive from being formatted accidentally"
+        correct: 1
+      - prompt: "A member of staff finds a USB drive in the car park and plugs it into their workstation to identify the owner. Why is this a problem?"
+        options:
+          - "The drive may be formatted for an incompatible file system"
+          - "Deliberately dropped drives are a common attack, and inserting one can execute hostile content or present itself as a keyboard"
+          - "It will exhaust the port's power budget"
+          - "It is only a problem if the drive is unencrypted"
+        correct: 1
+  - id: browser
+    title: "The Browser Is the Real Attack Surface"
+    keyPoints:
+      - "Most user exposure now arrives through the browser rather than through installed software."
+      - "Install extensions only from official stores, and only ones that are actually needed."
+      - "Extensions can read and modify every page, so a compromised one sees everything the user does."
+      - "Keep pop-up blocking on, and treat certificate warnings as a stop rather than a prompt."
+    check:
+      - prompt: "Why does an extension with permission to read and change data on all sites represent a serious risk?"
+        options:
+          - "It consumes excessive memory"
+          - "It can see and alter every page the user visits, including banking and webmail, and updates silently"
+          - "It prevents other extensions from functioning"
+          - "It disables the browser's own security updates"
+        correct: 1
+      - prompt: "A user asks to click through a certificate warning on a banking site over public Wi-Fi. What is correct?"
+        options:
+          - "Proceed, since banks frequently have certificate issues"
+          - "Proceed only if the padlock still appears"
+          - "Do not proceed — the warning means the site's identity could not be verified, which is what interception looks like"
+          - "Proceed after clearing the browser cache"
+        correct: 2
+domains:
+  - domainId: aplus2.security
+    weight: 0.7
+  - domainId: aplus2.os
+    weight: 0.3
+---
+
+import Callout from '../../components/Callout.astro';
+
+## The Extension That Read Everything
+
+A user installs a browser extension that converts pages to PDF. It works well and they forget about it. Eighteen months later it is sold to a new developer, who pushes an update — silently, as extensions update — that adds code reading the content of every page the user visits and sending it elsewhere.
+
+Nothing was installed. No warning appeared. No antivirus alerted, because nothing on disk was malicious. The permission to read every page was granted at install time, and the extension simply started using it.
+
+Workstation hardening is the routine, unglamorous work of removing this kind of exposure before it is used. Very little of it is difficult; most of it is just not done.
+
+## The Account Baseline
+
+**Default accounts and passwords.** Anything left at a manufacturer default is documented publicly. Rename or disable default accounts, and change every default password before a device goes into service.
+
+**Password policy.** The guidance has shifted and A+ has followed it. **Length beats complexity.** A long passphrase is stronger and more memorable than a short string of substituted symbols, and forced complexity rules reliably produce `Password1!` and its relatives. Forced frequent rotation has likewise fallen out of favour: it pushes people toward predictable increments and writing passwords down. Change on suspicion of compromise, not on a calendar.
+
+**Account lockout** limits online guessing by locking after a number of failed attempts. Know its boundary: it does nothing against **credential stuffing**, where the attacker is trying a password leaked from another site. That password is **correct**, so there are no failed attempts and no lockout. MFA is what covers that gap.
+
+**Automatic screen lock** is the most underrated control on this list, because the most common real-world exposure is not an attacker at all — it is an unattended, unlocked machine in a room other people can walk through. A short timeout plus the habit of locking on standing up removes it.
+
+## Removable Media
+
+**Autorun** and **autoplay** execute content from inserted media without the user choosing to open anything. Disabling them is standard hardening and removes an entire class of automatic infection.
+
+**Found USB drives are a real attack.** Dropping drives in a car park works often enough to remain a standard technique, and modern versions are worse than a malicious file: a device can present itself as a **keyboard** and type commands the moment it is connected, which no file-scanning control will catch.
+
+Where removable media is permitted at all, scan before use. Where it is not needed, disabling the ports by policy is a legitimate option.
+
+## The Browser Is the Attack Surface
+
+For most users nearly all exposure now arrives through the browser. Hardening it is high-value:
+
+**Keep it updated.** Browsers patch actively exploited flaws frequently, and they update themselves if allowed to.
+
+**Extensions are software with deep access.** An extension permitted to "read and change all your data on the websites you visit" can see every page — webmail, banking, internal systems — and modify what is displayed. Install only from official stores, only what is genuinely needed, and **remove what is not used**. An extension that is no longer needed is pure risk, and, as the opening story shows, its ownership can change without the user ever knowing.
+
+**Pop-up blocking** stays on. Beyond nuisance, pop-ups deliver fake warnings and fraudulent support prompts.
+
+**Certificate warnings are a stop.** Users learn to click through them because internal systems have expired certificates for months at a time — which is precisely how the habit that defeats them gets trained.
+
+<Callout type="exam">
+Current guidance favours **length over complexity**, and A+ reflects it — expect long passphrases to be the correct answer over short complex strings, and expect forced frequent rotation not to be. Know that **account lockout** counters online guessing but **not** a correct stolen password, that **autorun should be disabled**, and that **browser extensions** are a significant attack surface because of the permissions they hold.
+</Callout>
+
+<Callout type="warn">
+The advice that quietly makes things worse is telling users to change passwords frequently and make them complex. It sounds rigorous, and it is what most people expect to hear. What it produces is `Summer2026!` becoming `Autumn2026!`, sticky notes under keyboards, and one password reused everywhere because remembering many rotating complex strings is genuinely impossible. You end up with weaker, more predictable, more widely reused credentials than if you had asked for one long passphrase and left it alone. Ask for length, stop forcing rotation without cause, and put the effort into enabling MFA — which defeats the stolen password that rotation was pretending to address.
+</Callout>
+
+## Why This Matters in the Field
+
+Hardening is a checklist you run on every machine you touch, and the value is cumulative rather than dramatic. Nobody notices the incident that did not happen because autorun was off, the screen locked, or an unused extension had been removed.
+
+Do it as part of imaging and handover rather than as a separate project, and it gets done.
+
+## Key Terms
+
+Hardening · Baseline configuration · Default account · Default password · Password policy · Passphrase · Password length · Complexity requirement · Password rotation · Account lockout · Credential stuffing · Multifactor authentication · Screen lock · Session timeout · Autorun · Autoplay · Removable media policy · Malicious USB device · Keystroke injection · Browser update · Browser extension · Extension permissions · Official extension store · Pop-up blocker · Certificate warning
