@@ -1,0 +1,147 @@
+---
+title: "Laptop Hardware — What You Can Actually Replace"
+description: "Field-replaceable laptop components and the ones that are not: batteries, SODIMM memory, M.2 and 2.5-inch storage, wireless cards, keyboards, and the soldered parts that turn a repair into a replacement."
+slug: pct-mobile-laptop-hardware
+track: pc-technician
+moduleId: pct.mobile.devices
+order: 1
+objective: "CompTIA A+ 220-1101 (Core 1) 1.1"
+xp: 20
+difficulty: Beginner
+estMinutes: 25
+tags: ["A+", "Core 1", "CompTIA", "laptop", "mobile", "SODIMM", "M.2", "battery", "field replaceable"]
+sections:
+  - id: what-is-replaceable
+    title: "Replaceable, Or Soldered On"
+    keyPoints:
+      - "A laptop is not a small desktop — many components are soldered to the board and cannot be swapped at any price."
+      - "Commonly replaceable: battery, storage, wireless card, keyboard, and in many models the memory."
+      - "Commonly soldered: CPU, and on thin models the RAM and storage as well."
+      - "Check the specific model before quoting a repair — two laptops from the same maker in the same year can differ."
+    check:
+      - prompt: "A customer wants the CPU in their laptop upgraded to a faster model. What is the realistic answer?"
+        options:
+          - "Order a faster mobile CPU and swap it like a desktop chip"
+          - "In nearly all modern laptops the CPU is soldered to the board, so the upgrade means a new laptop"
+          - "Any laptop CPU can be upgraded if the socket type matches"
+          - "Upgrade the BIOS first and the CPU will run faster"
+        correct: 1
+      - prompt: "Before quoting a memory upgrade on a specific laptop, what should you confirm?"
+        options:
+          - "Whether that exact model has SODIMM slots or soldered memory"
+          - "That the customer has a backup, since memory upgrades erase the drive"
+          - "That the battery is fully charged"
+          - "Only the total capacity the operating system supports"
+        correct: 0
+  - id: memory-and-storage
+    title: "Memory and Storage Are Not Desktop Parts"
+    keyPoints:
+      - "Laptop memory is SODIMM — physically shorter than a desktop DIMM and not interchangeable with it."
+      - "Storage is usually M.2 or a 2.5-inch drive; M.2 is a form factor, not an interface."
+      - "An M.2 slot may speak NVMe, SATA, or both — the keying notch and the model documentation tell you which."
+      - "Fitting a drive physically does not mean the slot will talk to it."
+    check:
+      - prompt: "You have a desktop DIMM in hand and a laptop that needs memory. What is the problem?"
+        options:
+          - "The DIMM will work but runs at a reduced speed"
+          - "Laptops use SODIMM modules, which are physically shorter — a DIMM will not fit the slot"
+          - "The DIMM needs a firmware update before a laptop accepts it"
+          - "Nothing — DIMM and SODIMM are the same module with different names"
+        correct: 1
+      - prompt: "An M.2 SSD fits the slot but the laptop does not detect it. What is the most likely cause?"
+        options:
+          - "The drive needs to be formatted before the firmware can see it"
+          - "M.2 drives require an external power connector"
+          - "The slot supports only SATA and the drive is NVMe, or the reverse — the keying and interface do not match"
+          - "The drive is too large in capacity for the laptop"
+        correct: 2
+  - id: battery-and-safety
+    title: "Battery Work and the Order of Operations"
+    keyPoints:
+      - "Disconnect the battery before servicing internal components — a laptop with the battery attached is still powered."
+      - "Lithium-ion batteries swell as they fail, and a swollen battery is a fire and injury hazard."
+      - "Never puncture, crush, or attempt to flatten a swollen battery."
+      - "Swollen batteries go to proper disposal, not the bin, and the device should stop being charged."
+    check:
+      - prompt: "You open a laptop to replace the wireless card. What should you do first?"
+        options:
+          - "Disconnect the battery, because internal rails stay live while it is connected"
+          - "Boot the laptop to confirm the card is failing"
+          - "Remove the storage drive so data is not lost"
+          - "Nothing — shutting down the operating system removes all power"
+        correct: 0
+      - prompt: "A customer's laptop has a trackpad bulging upward and the case no longer closes flat. What is happening and what do you do?"
+        options:
+          - "The chassis is warped from heat; clamp it flat and continue using it"
+          - "The trackpad ribbon has come loose; reseat it"
+          - "The battery is swelling; stop charging the device, do not press or puncture it, and replace and dispose of the battery properly"
+          - "The keyboard is water damaged; dry it and retest"
+        correct: 2
+domains:
+  - domainId: aplus1.mobile
+    weight: 0.8
+  - domainId: nocti.hardware
+    weight: 0.2
+---
+
+import Callout from '../../components/Callout.astro';
+
+## "Can You Just Put a Better Processor In It?"
+
+A student brings in a four-year-old laptop that has got slow. They have read that the fix is a faster CPU, and they want to know what it costs. On a desktop that is a real conversation — check the socket, check the board, order the chip. On this laptop the answer is that the processor is soldered to the motherboard, and the only way to change it is to change the entire laptop.
+
+That is the difference that matters in mobile hardware. A desktop is a collection of parts that happen to be in a box together. A laptop is one dense assembly where a handful of things are meant to come out and the rest were never intended to.
+
+## What Comes Out, What Does Not
+
+Across most laptops, this is the split:
+
+**Usually replaceable.** The **battery**, the **storage drive**, the **wireless card** (Wi-Fi and Bluetooth, usually one M.2 card), the **keyboard**, and often the **memory**. On business-class machines a service panel exposes several of these without a full teardown.
+
+**Usually not.** The **CPU** is soldered on essentially every modern laptop. The **GPU** is soldered when it is discrete at all. On thin-and-light models the **memory** and increasingly the **storage** are soldered too, which means the configuration purchased on day one is the configuration for the life of the machine.
+
+The important professional habit is that none of this is a rule you can apply from memory. Two laptops from the same manufacturer, released the same year, in the same product family, will differ — one with two SODIMM slots, the next with 16 GB soldered and no slot at all. **Look up the specific model before you quote a price or promise a repair.** The service manual or the maker's parts lookup answers it in under a minute, and the cost of guessing is an order for a part that cannot be installed.
+
+## Memory: SODIMM, Not DIMM
+
+Laptop memory is **SODIMM** — Small Outline DIMM. It is physically shorter than the desktop DIMM, has a different notch position, and the two are not interchangeable in either direction. A desktop stick will not seat in a laptop slot, and this is deliberate rather than an inconvenience: the keying stops you from forcing a module into a slot that would not run it.
+
+SODIMMs install at an angle. Slide the module into the slot at roughly 30 degrees, seat it fully, then press it down flat until the retention clips on both sides snap over the notches. A module that is powered on while only partly seated is the most common cause of a laptop that will not POST after a memory upgrade — the machine either does nothing or beeps, and the fix is to reseat rather than to order another stick.
+
+## Storage: M.2 Is a Shape, Not a Language
+
+Modern laptop storage is usually **M.2** — a bare circuit board that screws flat to the motherboard — or, on older and budget machines, a **2.5-inch drive** in a caddy.
+
+The trap with M.2 is that **the form factor and the interface are separate things**. An M.2 slot may carry **SATA**, may carry **NVMe** over PCI Express, and may carry either. NVMe is dramatically faster, but a slot wired only for SATA will not run an NVMe drive no matter how well it fits. The **keying** — the position of the notch in the connector — is the physical hint, and the model documentation is the confirmation.
+
+This is why "it fits, so it works" is the wrong instinct in a laptop. The drive can screw down perfectly, look completely correct, and be invisible to firmware because the slot does not speak its protocol.
+
+<Callout type="exam">
+A+ tests laptop components as recognition and compatibility rather than as a teardown procedure. Know that laptop memory is **SODIMM** and desktop memory is **DIMM**; that **M.2** is a form factor which may carry either **SATA** or **NVMe**; and that a **wireless card** in a laptop typically provides Wi-Fi and Bluetooth on one module. Expect scenarios where a part physically fits but is not supported.
+</Callout>
+
+## Power Comes Off First
+
+Shutting down the operating system does not de-energize a laptop. As long as the battery is connected, rails on the board stay live, and working on a live board is how a slipped screwdriver becomes a dead motherboard. **Disconnect the battery before you touch anything internal** — on modern machines that means unplugging the battery connector from the board, not merely removing an external pack, because most batteries are now internal.
+
+Combine that with standard ESD practice: anti-static strap connected to an unpainted metal part of the chassis, components in anti-static bags, work on a hard non-carpeted surface.
+
+## When a Battery Starts to Swell
+
+Lithium-ion cells fail by swelling. The visible symptoms arrive before any warning on screen: the **trackpad rises** and stops clicking properly, the **case will not close flat**, the bottom panel bows, or the laptop rocks on a flat table. Inside, the cell is generating gas, and the pressure is what you are seeing.
+
+A swollen battery is a genuine fire and injury hazard. It must be removed, the device must stop being charged, and the battery goes to proper lithium-ion disposal — not the general waste bin, where a crushed cell can ignite in a truck.
+
+<Callout type="warn">
+The dangerous instinct is to make the symptom go away. Nobody sets out to destroy a battery, but people do clamp the case shut, press the bulge down, or work the swollen pack out with a screwdriver because it has become a tight fit. Puncturing or crushing a lithium-ion cell can start a fire that water will not put out, and it happens in your hands. Equally bad is the reassuring version — "it still works, just keep it plugged in" — which continues charging a cell that is already failing. Stop charging it, remove it without force, dispose of it properly.
+</Callout>
+
+## Why This Matters in the Field
+
+The value you add on mobile hardware is usually the accurate answer, delivered before money is spent. Telling a customer that their memory is soldered and the upgrade is not possible is a better outcome than ordering a part, booking the bench time, and discovering it on the day. Telling them that the bulge under the trackpad is a battery rather than a warped case turns a puzzling annoyance into a safety issue handled correctly.
+
+Look up the model. Take the power off first. Treat a swelling battery as a hazard rather than a fit problem.
+
+## Key Terms
+
+Field-replaceable unit · FRU · SODIMM · DIMM · Memory slot keying · Reseating · M.2 · M.2 keying · 2.5-inch drive · NVMe · SATA · PCI Express · Form factor vs interface · Wireless card · Soldered component · Service manual · Battery connector · Lithium-ion · Battery swelling · Thermal runaway · Lithium-ion disposal · ESD strap · Anti-static bag

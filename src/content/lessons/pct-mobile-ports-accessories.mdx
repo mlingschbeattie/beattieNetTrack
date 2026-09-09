@@ -1,0 +1,144 @@
+---
+title: "Mobile Ports and Docking — One Shape, Many Capabilities"
+description: "USB-C and Lightning, why two identical-looking cables behave differently, NFC and Bluetooth accessories, and the real difference between a port replicator and a docking station."
+slug: pct-mobile-ports-accessories
+track: pc-technician
+moduleId: pct.mobile.devices
+order: 3
+objective: "CompTIA A+ 220-1101 (Core 1) 1.3"
+xp: 20
+difficulty: Beginner
+estMinutes: 25
+tags: ["A+", "Core 1", "CompTIA", "USB-C", "Lightning", "Thunderbolt", "NFC", "docking station", "port replicator"]
+sections:
+  - id: connectors
+    title: "Connectors and Their Capabilities"
+    keyPoints:
+      - "USB-C is a connector shape — it says nothing on its own about speed, video, or charging capability."
+      - "The same USB-C port may carry USB 2.0 speeds, or 40 Gbps Thunderbolt, or DisplayPort video, depending on what is wired behind it."
+      - "Lightning is Apple's proprietary connector, used on older iPhones and accessories before their move to USB-C."
+      - "Cables differ as much as ports — a charge-only USB-C cable carries no data at all."
+    check:
+      - prompt: "A user plugs a USB-C monitor cable into their laptop's USB-C port and gets no picture, though the same cable works on a colleague's machine. What is the most likely explanation?"
+        options:
+          - "The cable is faulty and works intermittently"
+          - "That particular USB-C port does not support DisplayPort video output, even though the connector fits"
+          - "The monitor needs a firmware update"
+          - "USB-C cannot carry video and the colleague is using an adapter"
+        correct: 1
+      - prompt: "A customer's phone charges from a USB-C cable but the computer never sees the device. What should you suspect first?"
+        options:
+          - "The phone's charging port is damaged"
+          - "The computer needs a driver for the phone"
+          - "The cable is charge-only and has no data conductors"
+          - "The phone battery is too low to permit data transfer"
+        correct: 2
+  - id: wireless-accessories
+    title: "Bluetooth and NFC"
+    keyPoints:
+      - "Bluetooth is for ongoing connections to accessories — headsets, keyboards, mice, speakers — over a few metres."
+      - "Pairing a Bluetooth device means enabling pairing mode, selecting it on the host, and confirming a code where prompted."
+      - "NFC works at a few centimetres and is used for tap actions: contactless payment, transit, and pairing handoffs."
+      - "NFC's extremely short range is a security property, not a limitation to work around."
+    check:
+      - prompt: "Which task is NFC designed for rather than Bluetooth?"
+        options:
+          - "Streaming audio to a wireless speaker across a room"
+          - "Connecting a wireless keyboard to a tablet for daily use"
+          - "Tapping a phone against a terminal to make a contactless payment"
+          - "Transferring a large video file between two laptops"
+        correct: 2
+      - prompt: "Why is NFC's range of a few centimetres considered a security advantage?"
+        options:
+          - "Short range uses less battery, so the radio can be left on safely"
+          - "An attacker must be physically touching distance away, which rules out interception from across a room"
+          - "Short-range radio waves cannot be recorded"
+          - "It forces the use of encryption, which longer-range radios lack"
+        correct: 1
+  - id: docking
+    title: "Port Replicators and Docking Stations"
+    keyPoints:
+      - "A port replicator adds ports — more USB, video, wired Ethernet — and little else."
+      - "A docking station is the fuller version, often adding power delivery, multiple displays, and audio through one connection."
+      - "Modern docks connect over USB-C or Thunderbolt rather than a proprietary underside connector."
+      - "A dock's capability is limited by the laptop port it plugs into — a Thunderbolt dock on a non-Thunderbolt port runs reduced."
+    check:
+      - prompt: "A user connects a Thunderbolt dock driving two 4K monitors to a laptop whose USB-C port is data-only. What happens?"
+        options:
+          - "Both monitors run normally, because the dock supplies its own video"
+          - "The dock refuses to power on until a Thunderbolt port is used"
+          - "The laptop is damaged by the higher bandwidth"
+          - "The dock runs with reduced capability and the displays do not work, because the port lacks the video and bandwidth support the dock needs"
+        correct: 3
+      - prompt: "What most clearly distinguishes a docking station from a simple port replicator?"
+        options:
+          - "A docking station typically also delivers power to charge the laptop and supports multiple displays"
+          - "A port replicator connects wirelessly while a docking station is wired"
+          - "A docking station works only with desktops"
+          - "A port replicator supports more devices than a docking station"
+        correct: 0
+domains:
+  - domainId: aplus1.mobile
+    weight: 0.8
+  - domainId: nocti.hardware
+    weight: 0.2
+---
+
+import Callout from '../../components/Callout.astro';
+
+## Two Cables That Look Identical
+
+A user has two USB-C cables in a drawer. They are the same length, the same colour, and the plugs are indistinguishable. One of them charges the phone and shows up instantly on the laptop. The other charges the phone and does absolutely nothing else, no matter which port it goes into.
+
+Neither cable is broken. They were built to do different jobs, and nothing on the outside says which is which.
+
+That is the defining problem of modern mobile connectivity: **the connector shape has been standardised, and the capability behind it has not.** Once you understand that, a whole category of baffling support calls becomes routine.
+
+## USB-C Is a Shape
+
+USB-C describes a physical connector — small, oval, reversible. It tells you the plug will fit. It tells you nothing about:
+
+- **Speed.** A USB-C port may run at USB 2.0 speeds or at 40 Gbps over Thunderbolt, and every step between.
+- **Video.** Some USB-C ports carry DisplayPort video. Many do not.
+- **Power.** Some deliver enough to charge a laptop; some supply only enough for a phone.
+- **Thunderbolt.** Thunderbolt uses the USB-C connector but is a distinct, higher-capability standard. Every Thunderbolt port is USB-C; most USB-C ports are not Thunderbolt.
+
+Manufacturers mark the difference with tiny icons beside the port — a lightning bolt for Thunderbolt, a display glyph for video output, a battery or higher wattage for charging. Those icons are the documentation, and they are the first thing to look at when a device that "should just work" does not.
+
+**Cables carry the same ambiguity.** A charge-only cable has power conductors and no data lines, which is why a phone charges happily and never appears on the computer.
+
+**Lightning** is Apple's proprietary connector, standard on iPhones and many accessories before Apple's shift to USB-C. It is not interchangeable with USB-C in either direction, and an adapter does not add capabilities that the port lacks.
+
+<Callout type="exam">
+The distinction A+ leans on is that **USB-C is a connector, not a capability**. Expect scenarios where a cable fits but something does not work, and the correct answer is that the port or the cable does not support that specific function — video output, high-speed data, or charging power. Also know that **Thunderbolt uses the USB-C connector** but is a separate standard, so USB-C and Thunderbolt are not synonyms.
+</Callout>
+
+## Bluetooth and NFC Solve Different Problems
+
+**Bluetooth** maintains an ongoing connection to an accessory over a few metres — headsets, keyboards, mice, speakers, car audio. Pairing follows a consistent sequence: put the accessory into pairing mode, make it discoverable, select it on the host device, and confirm a code if one is displayed. When a device will not appear, it is almost always still connected to the last host it saw, or never entered pairing mode.
+
+**NFC** — Near Field Communication — works at a few centimetres and is built for a tap rather than a session: contactless payment, transit cards, badge reads, and handing a Bluetooth pairing off so the user does not have to run the pairing sequence manually.
+
+That tiny range is the point. An attacker cannot skim an NFC transaction from across the room, because the physics do not reach. Range that would be a defect in Bluetooth is a security control in NFC.
+
+## Port Replicators and Docking Stations
+
+Both exist so that a laptop becomes a desktop when it reaches the desk, with one connection instead of six.
+
+A **port replicator** adds ports — extra USB, a video output, wired Ethernet. That is broadly the whole of it.
+
+A **docking station** is the fuller product: the ports, plus **power delivery** to charge the laptop, support for **multiple displays**, audio, and sometimes wired networking with its own MAC address for management. One cable in the morning connects everything.
+
+Modern docks attach over USB-C or Thunderbolt rather than a proprietary underside connector, which brings back the capability problem in a more expensive form. **A dock cannot exceed what the laptop's port supports.** Plug a Thunderbolt dock built for two 4K displays into a data-only USB-C port and it will not deliver those displays. The dock is fine, the laptop is fine, and the combination will never do what the box promised.
+
+<Callout type="warn">
+The response that wastes the most time here is treating a dock failure as a driver problem. It presents like one — displays do not come up, Ethernet does not appear — so people reinstall dock drivers, update firmware, and try other USB-C ports for an hour. If the laptop's port does not carry DisplayPort or Thunderbolt, no driver will create that capability, because the wiring behind the connector is not there. Check the port's icons and the laptop's specification **before** touching drivers. The fix is a different port or a different dock, not different software.
+</Callout>
+
+## Why This Matters in the Field
+
+A large share of mobile support calls are compatibility rather than failure. Nothing is broken; something simply cannot do what was assumed. The technician who reads the port icons, checks whether a cable carries data, and confirms what a laptop's USB-C port actually supports resolves these in minutes — and, importantly, gives the user an answer that stays true rather than a fix that stops working next week.
+
+## Key Terms
+
+USB-C · USB-A · Lightning · Thunderbolt · Connector vs capability · DisplayPort Alt Mode · USB Power Delivery · Charge-only cable · Data cable · Port icon · Bluetooth · Pairing · Pairing mode · Discoverable · NFC · Near Field Communication · Contactless payment · Tap to pair · Port replicator · Docking station · Multiple display support · Wired Ethernet · Adapter

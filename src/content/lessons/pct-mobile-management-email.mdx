@@ -1,0 +1,149 @@
+---
+title: "Mobile Management and Corporate Email"
+description: "Configuring corporate mail on a personal phone: IMAP against POP3, the ports and encryption that actually matter, and what MDM enrolment lets an employer do to a device it does not own."
+slug: pct-mobile-management-email
+track: pc-technician
+moduleId: pct.mobile.devices
+order: 5
+objective: "CompTIA A+ 220-1101 (Core 1) 1.4"
+xp: 20
+difficulty: Beginner
+estMinutes: 25
+tags: ["A+", "Core 1", "CompTIA", "MDM", "BYOD", "IMAP", "POP3", "SMTP", "corporate email", "remote wipe"]
+sections:
+  - id: imap-vs-pop3
+    title: "IMAP and POP3 Are Different Models"
+    keyPoints:
+      - "IMAP keeps mail on the server and synchronises state, so every device sees the same mailbox."
+      - "POP3 downloads mail to one device and traditionally removes it from the server."
+      - "IMAP is the correct choice whenever a user reads mail on more than one device."
+      - "SMTP handles sending for both — it is not an alternative to either."
+    check:
+      - prompt: "A user reads mail on a phone and a laptop. Messages read on the phone still show unread on the laptop, and some are missing entirely. Which setup would fix this?"
+        options:
+          - "Switch the account from POP3 to IMAP so mailbox state is held on the server and synchronised"
+          - "Configure a second SMTP server on the laptop"
+          - "Reduce the mailbox size limit on the phone"
+          - "Enable POP3 on both devices so they download identically"
+        correct: 0
+      - prompt: "What role does SMTP play in an email configuration?"
+        options:
+          - "It retrieves mail from the server to the client"
+          - "It encrypts the mailbox at rest on the server"
+          - "It sends outgoing mail, and is configured alongside either IMAP or POP3"
+          - "It synchronises calendar and contacts"
+        correct: 2
+  - id: secure-ports
+    title: "Ports and Encryption"
+    keyPoints:
+      - "Secure configurations are the default expectation: IMAP over TLS on 993, POP3 over TLS on 995, SMTP submission on 587."
+      - "The legacy plaintext ports — 143 for IMAP, 110 for POP3, 25 for SMTP — carry credentials unprotected."
+      - "Port 25 is widely blocked by consumer providers to limit spam relaying."
+      - "If a mail client will not connect, the port and encryption pairing is the first thing to verify."
+    check:
+      - prompt: "Which pairing describes a correctly secured incoming mail configuration?"
+        options:
+          - "IMAP on port 143 with no encryption"
+          - "IMAP on port 993 over TLS"
+          - "SMTP on port 25 over TLS"
+          - "POP3 on port 110 over TLS"
+        correct: 1
+      - prompt: "A user's mail client sends nothing from their home internet connection, though receiving works. Which cause fits best?"
+        options:
+          - "The account is configured for IMAP rather than POP3"
+          - "The mailbox is full on the server"
+          - "The outgoing server is set to port 25, which their provider blocks — submission port 587 is required"
+          - "The device clock is incorrect"
+        correct: 2
+  - id: mdm
+    title: "What Enrolment Actually Grants"
+    keyPoints:
+      - "MDM manages the whole device; MAM manages only the corporate applications and their data."
+      - "Enrolment lets an organisation enforce passcodes, encryption, and configuration, and remotely wipe."
+      - "On personal devices under BYOD, a full remote wipe can remove personal data alongside corporate data."
+      - "Users should be told what enrolment permits before they enrol, not after a wipe."
+    check:
+      - prompt: "An organisation wants to protect corporate mail on employees' personal phones without controlling the whole device. Which approach fits?"
+        options:
+          - "MDM, enrolling each personal device for full device management"
+          - "MAM, managing only the corporate applications and the data inside them"
+          - "Requiring employees to use only company-owned phones"
+          - "Disabling email access on mobile devices entirely"
+        correct: 1
+      - prompt: "An employee leaves and IT issues a remote wipe against their enrolled personal phone. What is the risk that should have been addressed beforehand?"
+        options:
+          - "The wipe may fail if the device is powered off permanently"
+          - "A full device wipe removes the employee's personal photos and data along with corporate data, which needed to be disclosed and agreed at enrolment"
+          - "Remote wipe cannot be performed on personal devices"
+          - "The wipe will invalidate the device warranty"
+        correct: 1
+domains:
+  - domainId: aplus1.mobile
+    weight: 0.6
+  - domainId: aplus2.security
+    weight: 0.4
+---
+
+import Callout from '../../components/Callout.astro';
+
+## The Phone That Wiped Itself
+
+An employee leaves a company on ordinary terms. A week later their personal phone — the one they had used for work email — resets itself to factory condition in the middle of the afternoon. Years of family photographs are gone. Nobody did anything malicious. IT ran the standard offboarding procedure, which included a remote wipe of the enrolled device, and the enrolment had been for the **whole phone** rather than for the corporate applications on it.
+
+Everything technical worked exactly as designed. What failed was that nobody told the employee, on the day they typed their work password into their own phone, what they were agreeing to.
+
+Mobile email and device management is where technical configuration meets somebody's personal property, and the second half is the part that gets people hurt.
+
+## IMAP or POP3
+
+Two protocols retrieve mail, and they represent genuinely different models.
+
+**IMAP** keeps messages **on the server** and synchronises state to every client. Read something on your phone and it is read on your laptop. Move it to a folder and the folder moves everywhere. The server is the authority and the devices are views onto it.
+
+**POP3** **downloads** messages to one device and, in its traditional configuration, deletes them from the server afterwards. It was designed for a world of one computer and expensive connections.
+
+For anyone who reads mail on more than one device — which is nearly everyone — **IMAP is the correct choice**, and POP3 produces exactly the symptoms you would expect from its design: messages that exist on one device only, unread counts that never agree, mail that vanishes from the webmail because a phone collected it first.
+
+**SMTP** is not an alternative to either. It sends outgoing mail, and is configured alongside whichever retrieval protocol you choose.
+
+## Ports and Encryption
+
+The secure pairings are worth committing to memory, because a mail client that will not connect is almost always a port and encryption mismatch:
+
+| Purpose | Protocol | Secure port | Legacy plaintext |
+|---|---|---|---|
+| Incoming, synchronised | IMAP | **993** (TLS) | 143 |
+| Incoming, download | POP3 | **995** (TLS) | 995's counterpart, 110 |
+| Outgoing | SMTP submission | **587** | 25 |
+
+The legacy ports carry credentials in the clear, which on any shared or public network means handing over a username and password to anyone listening.
+
+**Port 25** deserves its own note. It is the port mail servers use to relay to each other, and consumer internet providers block it almost universally to stop compromised machines becoming spam relays. This produces one of the most recognisable support symptoms in email: **receiving works, sending fails, and only from home.** The account is configured for outgoing port 25, the office network permitted it, and the home provider does not. Submission port **587** is the fix.
+
+<Callout type="exam">
+Learn the secure ports as a set: **IMAP 993**, **POP3 995**, **SMTP submission 587**, with 143, 110, and 25 as their unencrypted predecessors. The exam favours scenarios over recall — the giveaway for POP3 is mail appearing on only one device, and the giveaway for a port 25 problem is outgoing mail failing on a specific network while incoming works fine.
+</Callout>
+
+## MDM and MAM
+
+**Mobile Device Management** manages the **whole device**. Enrolment lets the organisation enforce a passcode policy, require encryption, push configuration and certificates, restrict features, install and remove applications, locate the device, and **remotely wipe** it.
+
+**Mobile Application Management** manages **only the corporate applications and their data**. Work mail lives in a managed container that IT can configure and erase, and the rest of the phone is untouched and invisible to them.
+
+For **BYOD** — where the employee owns the hardware — MAM is usually the proportionate answer. It protects what the organisation is actually responsible for, which is corporate data, without claiming authority over a device it does not own. MDM makes sense on company-owned hardware, where full control is legitimate.
+
+The distinction matters most at the two moments people forget: **when someone leaves**, and **when a phone is lost**. Both trigger a wipe, and the scope of that wipe was decided months earlier at enrolment.
+
+<Callout type="warn">
+The failure here is not technical, and it is one a technician can prevent single-handedly. Enrolling a personal phone in full MDM takes about ninety seconds, the user taps Accept without reading, and email starts working — everyone is satisfied. The consequence surfaces months later as a factory reset that takes someone's photographs with it. Say it out loud at the time: this enrolment lets the company erase this entire phone, and if that is not acceptable, we should be using application management instead. A user who understood the trade-off and chose it has been served properly. A user who found out during the wipe has not.
+</Callout>
+
+## Why This Matters in the Field
+
+Configuring mobile mail is a five-minute job that you will do constantly. Choose IMAP unless there is a specific reason not to. Use the encrypted ports. When sending fails on one network only, look at port 25 before you look at anything else.
+
+And when the device belongs to the person in front of you, treat enrolment as a conversation rather than a checkbox. The technical part is easy. Making sure they know what they agreed to is the part that matters later.
+
+## Key Terms
+
+IMAP · POP3 · SMTP · Submission port · Port 993 · Port 995 · Port 587 · Port 143 · Port 110 · Port 25 · TLS · Plaintext authentication · Mailbox synchronisation · Server-side mailbox · MDM · Mobile Device Management · MAM · Mobile Application Management · Enrolment · Managed container · BYOD · Corporate-owned device · Passcode policy · Remote wipe · Selective wipe · Device encryption · Offboarding

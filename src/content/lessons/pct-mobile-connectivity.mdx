@@ -1,0 +1,141 @@
+---
+title: "Mobile Connectivity — Cellular, Wi-Fi, and Hotspots"
+description: "How a phone chooses between cellular and Wi-Fi, what airplane mode really switches off, tethering and hotspots, and the settings behind the most common no-signal support calls."
+slug: pct-mobile-connectivity
+track: pc-technician
+moduleId: pct.mobile.devices
+order: 4
+objective: "CompTIA A+ 220-1101 (Core 1) 1.4"
+xp: 20
+difficulty: Beginner
+estMinutes: 25
+tags: ["A+", "Core 1", "CompTIA", "cellular", "hotspot", "tethering", "airplane mode", "Wi-Fi", "roaming"]
+sections:
+  - id: radios
+    title: "A Phone Has Several Radios"
+    keyPoints:
+      - "Cellular, Wi-Fi, Bluetooth, GPS, and NFC are separate radios that can be enabled and fail independently."
+      - "Airplane mode switches all radios off at once, but Wi-Fi and Bluetooth can then be re-enabled individually."
+      - "A device on Wi-Fi generally prefers it over cellular for data, which is why some faults appear only away from the office."
+      - "Toggling airplane mode on and off forces every radio to reconnect, which is why it resolves so many transient faults."
+    check:
+      - prompt: "A user reports mobile data does not work at home but is fine everywhere else. What is the most likely cause?"
+        options:
+          - "The phone prefers the home Wi-Fi, which is connected but has no working internet"
+          - "The cellular radio has failed and only works when moving"
+          - "The SIM card is loose and reseats itself in the car"
+          - "The carrier blocks data at the user's home address"
+        correct: 0
+      - prompt: "What does enabling airplane mode do?"
+        options:
+          - "Disables cellular only, leaving Wi-Fi and Bluetooth active"
+          - "Disables all wireless radios at once, after which Wi-Fi and Bluetooth may be turned back on individually"
+          - "Puts the device into a low-power sleep state"
+          - "Blocks incoming calls while leaving data connected"
+        correct: 1
+  - id: cellular-basics
+    title: "SIMs, Carriers, and Roaming"
+    keyPoints:
+      - "The SIM — physical or embedded eSIM — identifies the subscriber to the carrier network."
+      - "No SIM, a damaged SIM, or an unactivated line produces no cellular service regardless of signal strength."
+      - "Roaming means using another carrier's network, and can carry significant cost when international."
+      - "Signal bars indicate reception strength, not whether the account is active or data is permitted."
+    check:
+      - prompt: "A phone shows full signal bars but cannot make calls or use data, and displays a SIM warning. What does this indicate?"
+        options:
+          - "The area has a network outage despite the bars"
+          - "The device is receiving a tower signal but the SIM is missing, damaged, or not activated, so it cannot register on the network"
+          - "The battery is too low to permit transmission"
+          - "Airplane mode is enabled"
+        correct: 1
+      - prompt: "A traveller returns from abroad with an unexpectedly large bill. Which setting most likely caused it?"
+        options:
+          - "Wi-Fi calling was left enabled"
+          - "Bluetooth remained on throughout the trip"
+          - "Data roaming was enabled, so the device used a foreign carrier's network at roaming rates"
+          - "The phone was left in airplane mode"
+        correct: 2
+  - id: hotspot
+    title: "Hotspots and Tethering"
+    keyPoints:
+      - "A mobile hotspot shares the phone's cellular connection with other devices over Wi-Fi."
+      - "Tethering is the same idea over USB or Bluetooth instead of Wi-Fi."
+      - "Hotspot use consumes the phone's cellular data allowance and drains its battery quickly."
+      - "Many plans cap hotspot data separately from phone data, so a hotspot can stop working while the phone still browses fine."
+    check:
+      - prompt: "A user's laptop connected via hotspot has slowed to a crawl, yet the phone itself still browses normally. What is the likely explanation?"
+        options:
+          - "The laptop's Wi-Fi adapter is failing"
+          - "The plan's separate hotspot data allowance has been exhausted and throttled, while phone data continues"
+          - "The hotspot supports only one device at a time"
+          - "The phone has switched to airplane mode"
+        correct: 1
+      - prompt: "A user needs to share their phone's connection with a laptop but is in a crowded area with heavy Wi-Fi interference. What is the better option?"
+        options:
+          - "USB tethering, which carries the connection over the cable and avoids the congested Wi-Fi band"
+          - "Increasing the hotspot's transmit power"
+          - "Switching the hotspot to a hidden SSID"
+          - "Enabling airplane mode to clear the radios"
+        correct: 0
+domains:
+  - domainId: aplus1.mobile
+    weight: 0.8
+  - domainId: nocti.networking
+    weight: 0.2
+---
+
+import Callout from '../../components/Callout.astro';
+
+## "My Data Doesn't Work — But Only at Home"
+
+A user reports that mobile data is broken. It works at the shops, works at their friend's flat, works in the car. At home, nothing loads.
+
+Nothing is wrong with the cellular connection. Their home router has lost its internet feed, and the phone — behaving exactly as designed — connects to the familiar home Wi-Fi and prefers it for data. The phone is dutifully sending every request down a network that goes nowhere, and never falls back to the cellular connection that is working perfectly.
+
+Almost every confusing mobile connectivity call comes from the same root: **a phone has several radios, they are chosen by rules the user cannot see, and the symptom rarely names the radio at fault.**
+
+## The Radios
+
+A modern phone carries **cellular**, **Wi-Fi**, **Bluetooth**, **GPS**, and usually **NFC**. They are separate hardware, separately switchable, and they fail separately. GPS can be perfect while cellular is dead. Wi-Fi can be connected while the internet behind it is gone.
+
+**Airplane mode** switches all of them off in one action. What surprises people is that Wi-Fi and Bluetooth can then be switched back on individually while cellular stays off — which is why it works on a flight offering Wi-Fi.
+
+Airplane mode is also the most effective first troubleshooting step in mobile support, and it is worth understanding *why* rather than treating it as superstition. Toggling it off and on forces every radio to drop its connection and re-register from scratch — a fresh tower attachment, a fresh Wi-Fi association, new addressing. A large share of transient faults are stale connection state, and that is precisely what the toggle clears.
+
+## The SIM Identifies the Subscriber
+
+Signal bars show how well the phone hears a tower. They say nothing about whether the phone is *allowed* to use it.
+
+The **SIM** — physical, or an embedded **eSIM** — identifies the subscriber to the carrier. Without a valid, activated SIM, the phone can sit under a tower with five bars and still make no calls, because it cannot register on the network. That is why "full bars, no service" is a coherent and common symptom rather than a contradiction, and why the SIM is the thing to check when it appears.
+
+**Roaming** means using a carrier other than your own. Domestically it is often included; internationally it can be expensive, which is why data roaming is a separate switch. Turning it off abroad is the difference between an ordinary bill and a memorable one.
+
+## Hotspots and Tethering
+
+A **mobile hotspot** turns the phone into a small Wi-Fi access point sharing its cellular connection. **Tethering** does the same over **USB** or **Bluetooth** rather than Wi-Fi.
+
+Three practical consequences follow:
+
+- It consumes the phone's **cellular data**, which users forget once a laptop starts downloading updates.
+- It **drains the battery** hard, because the phone is running two radios at full duty. A hotspot session should be on charge.
+- Many plans meter **hotspot data separately** from phone data. When that separate allowance runs out, the hotspot is throttled or stopped while the phone itself keeps browsing normally — producing the odd report that "the hotspot is broken but my phone is fine."
+
+**USB tethering** is the underrated option. It avoids congested Wi-Fi entirely, is usually faster and more stable in crowded places, and charges the phone while it works.
+
+<Callout type="exam">
+A+ tests these as scenario recognition. Anchor on three facts: **airplane mode disables all radios**, after which Wi-Fi and Bluetooth can be re-enabled individually. **Full signal bars with no service** points at the SIM or activation, not reception. And a **hotspot** shares cellular over Wi-Fi while **tethering** shares it over USB or Bluetooth — different transport, same idea.
+</Callout>
+
+<Callout type="warn">
+The instinct that causes real damage is escalating to the carrier or replacing the SIM before checking what the device is actually connected to. It looks decisive, and it starts a slow process — a replacement SIM, a support ticket, sometimes a re-provisioned line — for a phone whose cellular radio was never the problem. Before any of that, look at whether the device is sitting on a Wi-Fi network that has no working internet, and toggle airplane mode to force a clean reconnect. Those two checks cost fifteen seconds and resolve a large share of "no data" calls outright.
+</Callout>
+
+## Why This Matters in the Field
+
+Users describe mobile problems by outcome — "the internet doesn't work" — and the outcome is identical across half a dozen unrelated causes. Your job is to find the radio.
+
+Ask where it fails and where it works, because location patterns point straight at Wi-Fi preference. Check whether Wi-Fi is connected to something broken. Confirm the SIM is present and the line active before trusting the bars. Then toggle airplane mode and let everything re-register.
+
+## Key Terms
+
+Cellular radio · Wi-Fi radio · Bluetooth · GPS · NFC · Airplane mode · Radio re-registration · SIM card · eSIM · Subscriber identity · Network registration · Activation · Signal strength · Roaming · Data roaming · Mobile hotspot · Tethering · USB tethering · Bluetooth tethering · Data allowance · Throttling · Wi-Fi preference · Captive portal

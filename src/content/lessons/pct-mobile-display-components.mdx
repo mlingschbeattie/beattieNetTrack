@@ -1,0 +1,151 @@
+---
+title: "Mobile Displays — What Is Behind the Glass"
+description: "The layers of a laptop and phone display: LCD panel types against OLED, backlights and their failure modes, the digitizer that senses touch, and the antennas and camera that live in the lid."
+slug: pct-mobile-display-components
+track: pc-technician
+moduleId: pct.mobile.devices
+order: 2
+objective: "CompTIA A+ 220-1101 (Core 1) 1.2"
+xp: 20
+difficulty: Beginner
+estMinutes: 25
+tags: ["A+", "Core 1", "CompTIA", "display", "LCD", "OLED", "IPS", "digitizer", "backlight", "antenna"]
+sections:
+  - id: panel-types
+    title: "LCD Panel Types and OLED"
+    keyPoints:
+      - "LCD panels do not emit light — a backlight behind the panel provides it, and the panel filters it."
+      - "IPS gives the best colour and viewing angles; TN is cheapest and fastest but shifts colour off-axis; VA sits between with strong contrast."
+      - "OLED emits light per pixel, so black pixels are simply off — giving true black and no backlight at all."
+      - "Because OLED pixels age with use, a static image displayed for very long periods can burn in."
+    check:
+      - prompt: "A user complains their laptop screen looks washed out and colours shift when they tilt it. Which panel type is this most characteristic of?"
+        options:
+          - "IPS"
+          - "TN"
+          - "OLED"
+          - "VA"
+        correct: 1
+      - prompt: "Why can an OLED display show true black while an LCD cannot?"
+        options:
+          - "OLED uses a stronger backlight that can be switched off in regions"
+          - "OLED applies a darker polarizing filter over the panel"
+          - "Each OLED pixel emits its own light, so a black pixel is simply turned off — there is no backlight leaking through"
+          - "OLED refreshes faster, so black frames persist longer"
+        correct: 2
+  - id: backlight-and-digitizer
+    title: "Backlight, Inverter, and Digitizer"
+    keyPoints:
+      - "A dim image that is still readable under a bright torch points at the backlight, not the panel."
+      - "Older CCFL backlights needed an inverter to step voltage up; modern LED backlights do not."
+      - "The digitizer is the touch-sensing layer, separate from the panel that displays the image."
+      - "A cracked digitizer can break touch while the image stays perfect, and a dead panel can leave touch working invisibly."
+    check:
+      - prompt: "A laptop screen appears black, but shining a bright light at an angle reveals the desktop faintly. What has most likely failed?"
+        options:
+          - "The backlight or its power circuit — the panel is still producing an image"
+          - "The GPU, which has stopped sending video"
+          - "The digitizer, which has shorted the panel"
+          - "The operating system, which has failed to load a display driver"
+        correct: 0
+      - prompt: "A tablet displays everything perfectly but no longer responds to touch anywhere on the screen. Which layer is the suspect?"
+        options:
+          - "The backlight"
+          - "The LCD panel"
+          - "The inverter"
+          - "The digitizer"
+        correct: 3
+  - id: whats-in-the-lid
+    title: "The Other Things Living in the Lid"
+    keyPoints:
+      - "Wi-Fi and Bluetooth antennas typically run up the sides of the display bezel, because the lid sits high and clear of the body."
+      - "The webcam and microphone are in the lid assembly and route through the same hinge cable bundle."
+      - "Hinge cables flex every time the laptop opens, which makes them a wear item."
+      - "A fault that changes as the lid moves is a cable or hinge problem, not a component failure."
+    check:
+      - prompt: "Why are a laptop's Wi-Fi antennas routed into the display bezel rather than the base?"
+        options:
+          - "The lid is cooler, and antennas are heat sensitive"
+          - "The lid sits higher and away from the metal and components of the base, giving better reception"
+          - "It shortens the cable run to the wireless card"
+          - "Regulations require antennas to be above the keyboard"
+        correct: 1
+      - prompt: "A laptop's screen flickers and sometimes goes blank, but only at certain lid angles. What does that pattern indicate?"
+        options:
+          - "A failing backlight nearing end of life"
+          - "A GPU overheating under load"
+          - "A damaged display cable flexing through the hinge"
+          - "An incorrect refresh rate in display settings"
+        correct: 2
+domains:
+  - domainId: aplus1.mobile
+    weight: 0.8
+  - domainId: nocti.hardware
+    weight: 0.2
+---
+
+import Callout from '../../components/Callout.astro';
+
+## The Screen That Was Not Broken
+
+A laptop comes in with a black screen. It powers on, the fans spin, the keyboard backlight glows, and Windows makes its startup sound — but the display shows nothing. The obvious diagnosis is a dead screen, and the obvious quote is a new display assembly.
+
+Then you angle a torch at the panel and see the desktop, faintly, exactly where it should be. The panel is working perfectly. What has failed is the light behind it.
+
+That is the whole reason to understand a display as layers rather than as one part. Almost every display fault you will meet is a fault in one specific layer, and the symptoms tell you which one — but only if you know the layers are there.
+
+## The Layers
+
+From back to front, a typical laptop LCD is a **backlight**, then the **LCD panel** that filters that light into an image, and on touch devices a **digitizer** bonded over the front that senses fingers. Around the edges sit the **bezel**, the **webcam and microphone**, and the **Wi-Fi antennas**. Everything connects to the main board through a cable bundle passing through the **hinge**.
+
+An LCD does not produce light. It produces a mask. Without the backlight there is a perfect image with nothing illuminating it — which is exactly what the torch revealed.
+
+## Panel Types and What They Cost You
+
+Three LCD technologies show up in the exam and on spec sheets:
+
+**TN** — Twisted Nematic. Cheapest, fastest response, and the worst colour. Its signature is that the image shifts and washes out as soon as you look at it off-axis, which is why a TN laptop looks wrong to the person sitting beside you.
+
+**IPS** — In-Plane Switching. Best colour accuracy and the widest viewing angles, which is why it dominates anything sold for design work or simply for looking pleasant. Historically slower and pricier, though that gap has largely closed.
+
+**VA** — Vertical Alignment. Sits between the two, with notably strong contrast and deeper blacks than either, at the cost of some response time.
+
+**OLED** is a different technology, not a kind of LCD. Every pixel generates its own light, so there is no backlight in the stack at all. A black pixel is off — producing true black rather than the grey glow of a backlight leaking through a closed LCD shutter. The trade-off is that emitting pixels age, so an image left static for very long periods can leave a faint permanent ghost, which is **burn-in**.
+
+<Callout type="exam">
+A+ asks you to match a panel type to a described symptom or requirement. The reliable tells: **colour shifting badly off-angle** is TN. **Wide viewing angles and accurate colour** is IPS. **True black with no backlight** is OLED, and **burn-in** is an OLED-only concern. Also know that an **inverter** belongs to older **CCFL** backlights — modern **LED**-backlit panels have no inverter, so an inverter cannot be the answer on a current laptop.
+</Callout>
+
+## Reading the Symptom Back to the Layer
+
+Because the layers are independent, the failure modes separate cleanly:
+
+**Very dim but visible under a torch** — the backlight or its power circuit. The panel and the video path are fine.
+
+**No image at all, no image under a torch** — the panel, the display cable, or the video source. Connecting an external monitor splits this in one step: if the external display works, the laptop's video output is healthy and the fault is in the panel or its cable.
+
+**Image perfect, touch dead** — the digitizer. It is a separate layer and it fails separately, which is why a phone can display flawlessly and ignore every tap.
+
+**Touch works, no image** — the reverse, and users find it unnerving because the device is clearly responding to invisible taps.
+
+**Symptoms that change as the lid moves** — the display cable flexing through the hinge. Every open and close bends that bundle, and after a few thousand cycles a conductor cracks. Flicker, colour bands, or blanking that correlates with lid angle is close to diagnostic.
+
+## Why the Antennas Are in the Lid
+
+The Wi-Fi card sits on the motherboard in the base, but its **antennas** run up into the display bezel. The lid is the highest point on the machine and is clear of the metal chassis, battery, and board that would otherwise block the signal. Two thin antenna wires therefore travel through the hinge alongside the display and camera cables.
+
+This has a practical consequence during repair: replacing a display assembly means routing antenna cables, and a laptop that comes back from a screen replacement with dramatically worse Wi-Fi range usually has a pinched or unreconnected antenna lead rather than a network problem.
+
+<Callout type="warn">
+The misleading move here is replacing the whole display assembly on a black-screen call. It is the expensive part, it is the obvious suspect, and swapping it does sometimes fix the symptom — which is exactly what makes it a trap. If the real fault was a hinge cable or a backlight circuit on the board, you have spent the customer's money on a part that was never broken and the fault returns. Spend the two minutes first: shine a torch at the panel, and plug in an external monitor. Those two checks separate backlight from panel from video source before anything is ordered.
+</Callout>
+
+## Why This Matters in the Field
+
+Displays are among the costliest parts on a laptop and among the easiest to misdiagnose, because every fault in the stack presents as "the screen is broken." A technician who can say *the panel is fine, the backlight has failed* is offering a different and much cheaper repair than one who quotes an assembly.
+
+Two tools do most of the work: a torch and an external monitor.
+
+## Key Terms
+
+LCD · Backlight · LED backlight · CCFL · Inverter · TN · IPS · VA · Viewing angle · OLED · True black · Burn-in · Digitizer · Touchscreen · Display panel · Display assembly · Bezel · Hinge cable · Flex cable · Wi-Fi antenna · Antenna routing · Webcam · Microphone · External monitor test
