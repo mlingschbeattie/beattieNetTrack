@@ -1,0 +1,93 @@
+---
+title: Threat Model a Student Portal
+description: Work a threat model end to end — name the assets, find the trust boundary, apply STRIDE to a real data flow, and turn the findings into a prioritized backlog.
+slug: sec-threat-model-student-portal
+track: cybersecurity-engineer
+moduleId: sec.fundamentals.risk-and-policy
+order: 5
+difficulty: Intermediate
+estimatedMinutes: 20
+xp: 50
+tags: ["cybersecurity", "threat modeling", "STRIDE", "trust boundary", "risk"]
+activity: steps
+steps:
+  - id: name-the-asset
+    title: Name the asset
+    prompt: "A school runs a portal where students view grades and teachers enter them. It runs on a leased server, uses a third-party login provider, and emails report cards to parents. You are starting a threat model. What is the asset you are protecting?"
+    inputLabel: Primary asset
+    hint: An asset is the thing that has value if lost. It is rarely the equipment.
+    validator:
+      type: choice
+      options:
+        - "The grade records and the student and parent identities attached to them"
+        - "The leased server the portal runs on"
+        - "The third-party login provider"
+        - "The email system that sends report cards"
+      correctIndex: 0
+      rationale: "Threat modeling starts with what has value, not what has hardware. The server can be rebuilt in an afternoon and the login provider can be swapped. Grade records are regulated student data, and once disclosed or altered they cannot be un-disclosed or trusted again. Naming the asset correctly is what makes every later step point somewhere useful — model the server instead and you will spend the exercise on patching and miss the data entirely."
+    successMessage: Correct. The data and the identities attached to it are the asset; everything else is infrastructure around it.
+  - id: trust-boundary
+    title: Find the trust boundary
+    prompt: "You are drawing a data flow diagram. A teacher's browser sends a grade change to the portal application, which writes it to the database. Where does the trust boundary sit?"
+    inputLabel: Boundary location
+    hint: A trust boundary is where data crosses from somewhere you do not control into somewhere you do.
+    validator:
+      type: choice
+      options:
+        - "Between the browser and the application, because input arriving from the browser is not under your control"
+        - "Between the application and the database, because the database holds the sensitive data"
+        - "Around the whole system, because everything inside the school network is trusted"
+        - "There is no boundary, because the teacher is an authorized user"
+      correctIndex: 0
+      rationale: "The boundary is where control changes hands, and you do not control a browser. An authorized teacher's session can still deliver attacker-controlled input — through a compromised machine, a hijacked session, or a crafted request that never came from your form at all. Treating authorization as trust is the mistake here: authentication tells you whose session it is, not that the bytes arriving are safe. The database sits inside your control, so the application-to-database hop is not the boundary."
+    successMessage: Correct. The boundary is where data crosses from a system you do not control into one you do.
+  - id: stride-category
+    title: Apply STRIDE to the flow
+    prompt: "On that same flow, a teacher changes a grade and later denies having done it. The application writes no record of who submitted which change. Which STRIDE category does this fall under?"
+    inputLabel: STRIDE category
+    validator:
+      type: choice
+      options:
+        - "Repudiation — the system cannot prove who performed the action"
+        - "Tampering — the grade data was modified"
+        - "Spoofing — the teacher pretended to be someone else"
+        - "Elevation of privilege — the teacher acted beyond their permissions"
+      correctIndex: 0
+      rationale: "The grade change itself was authorized, so nothing was tampered with in the STRIDE sense and no privilege was exceeded. The failure is that the system cannot attribute the action afterwards, which is exactly what repudiation names. STRIDE earns its place here by forcing this distinction — without the checklist, most people label anything involving a changed value as tampering and never reach the logging gap that is the actual finding."
+    successMessage: Correct. An action that cannot be attributed afterwards is repudiation, and the fix is an audit record.
+  - id: prioritize
+    title: Prioritize the backlog
+    prompt: "Your model produced four findings. Which belongs at the top of the remediation backlog?"
+    inputLabel: Highest priority
+    hint: Risk combines how likely something is with how much damage it does. Rank on both, not either alone.
+    validator:
+      type: choice
+      options:
+        - "Grade records are reachable by changing a numeric id in the URL, with no ownership check"
+        - "The portal allows passwords of ten characters rather than twelve"
+        - "An administrator could theoretically alter the database directly on the server"
+        - "The login page reveals whether a username exists"
+      correctIndex: 0
+      rationale: "The id-in-the-URL finding is trivially likely — anyone with a browser can try it, no tooling required — and its impact is full disclosure of regulated records. That combination puts it first. The password length and username enumeration findings are real but each needs a much longer chain to cause harm. The administrator scenario has high impact but low likelihood and is already covered by hiring and audit controls; ranking it first is the classic threat-modeling error of chasing the scariest story rather than the most probable one."
+    successMessage: Correct. Likelihood and impact together, not the most dramatic scenario.
+  - id: backlog-entry
+    title: Write the backlog entry
+    prompt: "Record the finding so it can be prioritized by someone who was not in the room. Write one line containing both the words likelihood and impact."
+    inputLabel: Backlog entry
+    placeholder: "ex: Missing ownership check on grade lookup — likelihood high, impact full disclosure of student records."
+    validator:
+      type: regex
+      pattern: '^(?=.*\blikelihood\b)(?=.*\bimpact\b).+$'
+      flags: "i"
+    successMessage: Good. A finding without likelihood and impact cannot be ranked, and an unranked backlog gets worked in the order things were found.
+---
+
+import Callout from '../../components/Callout.astro';
+
+Threat modeling goes wrong in two predictable ways. Some people model the infrastructure and never reach the data. Others generate a long list of scary scenarios with no way to decide which one to fix on Monday.
+
+This lab walks one flow of a school grade portal through the whole sequence — asset, trust boundary, STRIDE, priority — and ends where a real threat model ends: a written finding somebody else can rank.
+
+<Callout type="warn">
+The tempting failure here is ranking findings by how alarming they sound. A rogue administrator with database access makes a better story than a number in a URL, and it is the wrong thing to fix first. Likelihood is half of risk, and an attack that needs no tools and no credentials will always outrank one that needs both.
+</Callout>

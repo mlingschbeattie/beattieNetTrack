@@ -1,0 +1,101 @@
+---
+title: Choose the Right Cryptographic Primitive
+description: Decide between encoding, encryption, and hashing for four real requirements — then store passwords correctly and read a certificate warning for what it actually means.
+slug: sec-choose-the-right-primitive
+track: cybersecurity-engineer
+moduleId: sec.crypto.basics
+order: 5
+difficulty: Intermediate
+estimatedMinutes: 20
+xp: 50
+tags: ["cybersecurity", "cryptography", "hashing", "tls", "certificates", "password storage"]
+activity: steps
+steps:
+  - id: encoding-vs-encryption
+    title: Encoding is not protection
+    prompt: "A developer says the API keys in the config file are safe because they are Base64 encoded. What is the accurate response?"
+    inputLabel: Assessment
+    hint: Ask what a reader would need in order to recover the original value.
+    validator:
+      type: choice
+      options:
+        - "Base64 is a reversible representation with no key, so anyone who can read the file can recover the keys"
+        - "Base64 is weak encryption and should be replaced with a longer key"
+        - "Base64 is adequate provided the file permissions are correct"
+        - "Base64 is a hash, so the keys cannot be recovered from it"
+      correctIndex: 0
+      rationale: "Encoding changes how bytes are represented so that systems can carry them safely. It takes no key and is designed to be reversed by anyone, which means it provides exactly zero confidentiality. Calling it weak encryption is the more dangerous phrasing of the two, because weak implies a difficulty setting that could be turned up, and there is nothing to turn up. Encryption needs a key. Hashing is one-way and cannot be reversed at all. Base64 is neither."
+    successMessage: Correct. No key, fully reversible, no protection.
+  - id: password-storage
+    title: Store passwords correctly
+    prompt: "You are choosing how to store user passwords. Which approach is right?"
+    inputLabel: Storage approach
+    validator:
+      type: choice
+      options:
+        - "A slow, memory-hard hash such as Argon2id or bcrypt, with a unique salt per user"
+        - "AES encryption, so the passwords can be decrypted if a user forgets theirs"
+        - "SHA-256, because it is a modern cryptographic hash and is not broken"
+        - "SHA-256 applied twice, to double the work an attacker must do"
+      correctIndex: 0
+      rationale: "Password storage is a hashing problem, not an encryption problem — if you can decrypt a password, so can whoever steals the key, and a system that can email you your old password has already told you it is storing them recoverably. SHA-256 is not broken, but it is fast by design, and fast is the wrong property here: commodity hardware computes billions per second, so a stolen table of SHA-256 hashes falls quickly. Hashing twice barely doubles that. Argon2id and bcrypt are deliberately slow and take a tunable work factor, and a per-user salt means the attacker cannot attack every account at once with one precomputed table."
+    successMessage: Correct. Slow, memory-hard, and salted per user.
+  - id: what-salt-defeats
+    title: Know what a salt actually defeats
+    prompt: "You add a unique random salt to every password hash. What does that specifically prevent?"
+    inputLabel: What salting defeats
+    hint: Salting and slowness solve two different problems. This step is about the first.
+    validator:
+      type: choice
+      options:
+        - "Precomputation — one rainbow table can no longer crack many accounts at once, and identical passwords no longer produce identical hashes"
+        - "Brute force against a single targeted account"
+        - "Credential stuffing using passwords leaked from another site"
+        - "An attacker reading the password as it travels over the network"
+      correctIndex: 0
+      rationale: "A salt makes each hash unique to its account, so precomputed tables are useless and an attacker must attack each password separately rather than all of them together. What it does not do is slow down the attack on any one password — that is the work factor's job, and this is the distinction that gets missed. Credential stuffing is untouched by anything you do to your own storage, because there the password is already correct and was leaked somewhere else. Protecting the password in transit is TLS."
+    successMessage: Correct. Salt defeats precomputation and reuse across accounts; the work factor is what makes each guess expensive.
+  - id: symmetric-or-asymmetric
+    title: Match the primitive to the problem
+    prompt: "Two systems that have never communicated before need to agree on a shared key over a network an attacker can read. Which approach solves this?"
+    inputLabel: Approach
+    validator:
+      type: choice
+      options:
+        - "Asymmetric cryptography to exchange or agree the key, then symmetric encryption for the data itself"
+        - "Symmetric encryption throughout, with the key sent first"
+        - "Hashing the key before sending it, so it cannot be read in transit"
+        - "Encoding the key so it survives transmission intact"
+      correctIndex: 0
+      rationale: "This is the key distribution problem, and it is the reason asymmetric cryptography exists. Sending the symmetric key first only moves the problem — an attacker reading the channel reads the key too. Hashing is one-way, so the far end receives something it can never turn back into a key. Encoding protects nothing. The real answer is the hybrid every TLS session uses: asymmetric operations to establish a shared secret, then fast symmetric encryption for the bulk of the traffic."
+    successMessage: Correct. Asymmetric to establish the secret, symmetric to move the data.
+  - id: certificate-warning
+    title: Read the certificate warning
+    prompt: "A browser warns that a certificate does not match the hostname. A colleague says it is fine because the connection is still encrypted. Are they right?"
+    inputLabel: Verdict
+    hint: TLS makes three promises. Ask which one just failed.
+    validator:
+      type: choice
+      options:
+        - "No — the traffic is encrypted, but you have no proof of who you are encrypting it to, which is exactly what a machine-in-the-middle looks like"
+        - "Yes — encryption is the point, and the hostname is only a convenience check"
+        - "Yes — the warning only appears on self-signed certificates used in testing"
+        - "No — a hostname mismatch means the encryption itself has failed and the traffic is in plaintext"
+      correctIndex: 0
+      rationale: "TLS provides confidentiality, integrity, and authentication, and only the third one just failed — which is the one that makes the other two worth anything. An encrypted channel to an attacker is still an encrypted channel; they hold the key at their end, read everything, and forward it on. The last option overstates it in the other direction: the cryptography is working fine. That is precisely what makes this warning so easy to click through, and clicking through it is how a machine-in-the-middle stays undetected."
+    successMessage: Correct. Encryption without authentication tells you nothing about who is on the other end.
+---
+
+import Callout from '../../components/Callout.astro';
+
+Cryptography rarely fails because someone broke the mathematics. It fails because the wrong primitive was chosen for the job, or because a warning about identity got treated as a warning about inconvenience.
+
+This lab is five decisions of that kind — the ones that show up in code review, in incident calls, and on the exam.
+
+<Callout type="exam">
+Encoding, encryption, and hashing get tested as a three-way distinction, and the reliable tell is the key. Encoding uses no key and anyone can reverse it. Encryption uses a key and is reversible with it. Hashing uses no key and is reversible by nobody. If a question describes recovering the original value without mentioning a key, it is describing encoding.
+</Callout>
+
+<Callout type="warn">
+The response that makes things worse here is clicking through a certificate warning because the padlock story still sounds mostly fine. A hostname mismatch is the one signal you get that the encrypted tunnel may terminate somewhere you did not intend, and dismissing it hands an interceptor a fully working connection that looks secure to the user for the rest of the session.
+</Callout>

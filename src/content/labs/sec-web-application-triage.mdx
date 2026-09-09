@@ -1,0 +1,101 @@
+---
+title: Web Application Triage
+description: Triage four findings from a web application assessment — separate injection from access control, pick the fix that actually closes the hole, and rank what to remediate first.
+slug: sec-web-application-triage
+track: cybersecurity-engineer
+moduleId: sec.network.defense-basics
+order: 5
+difficulty: Intermediate
+estimatedMinutes: 25
+xp: 50
+tags: ["cybersecurity", "sql injection", "xss", "access control", "ssrf", "owasp"]
+activity: steps
+steps:
+  - id: classify-the-finding
+    title: Classify the finding
+    prompt: "A logged-in student changes the number at the end of /reports/4192 to /reports/4193 and sees another student's report. The application checked that they were signed in, but never checked whether the report belonged to them. What class of flaw is this?"
+    inputLabel: Vulnerability class
+    hint: Ask which of the two questions the application failed to ask.
+    validator:
+      type: choice
+      options:
+        - "Broken access control — an insecure direct object reference"
+        - "SQL injection, because a database lookup was involved"
+        - "Cross-site scripting, because it happened in the browser"
+        - "A session management flaw, because the student was logged in"
+      correctIndex: 0
+      rationale: "The application answered who are you correctly and never asked what may you see. That gap is broken access control, and this specific shape — a resource named by a guessable identifier with no ownership check — is an insecure direct object reference. No attacker-controlled data reached an interpreter, so nothing was injected. The session worked exactly as designed, which is why session hardening would not touch this at all."
+    successMessage: Correct. Authentication succeeded and authorization never happened.
+  - id: injection-fix
+    title: Pick the real fix for injection
+    prompt: "Elsewhere, a search box builds its query by concatenating user input into a SQL string. Which change actually fixes it?"
+    inputLabel: Remediation
+    validator:
+      type: choice
+      options:
+        - "Use a parameterized query so the input is bound as data and never parsed as SQL"
+        - "Escape single quotes in the input before concatenating it"
+        - "Reject any input containing the words SELECT, UNION, or DROP"
+        - "Put a web application firewall in front of the application"
+      correctIndex: 0
+      rationale: "Injection is a confusion of data and code, so the only real fix is a mechanism that keeps them separate — parameterization sends the query structure and the values on different channels, and the value is never parsed as SQL no matter what it contains. Escaping and keyword blocklists are attempts to sanitize input that is still going to be concatenated, and both have been bypassed for as long as they have existed. A WAF is a useful layer in front of the flaw, but the flaw is still there and a WAF is a filter someone will eventually get past."
+    successMessage: Correct. Separate the channels; do not try to sanitize your way out of concatenation.
+  - id: xss-context
+    title: Encode for the right context
+    prompt: "A comment field is vulnerable to stored XSS. The team adds HTML entity encoding on output. The payload still fires, because the value is written into a JavaScript variable inside a script tag rather than into page text. What does this show?"
+    inputLabel: Lesson
+    hint: The question is not whether they encoded, but what they encoded for.
+    validator:
+      type: choice
+      options:
+        - "Encoding must match the context the value lands in — HTML, attribute, JavaScript, and URL each need different treatment"
+        - "Stored XSS cannot be fixed by output encoding and requires a Content Security Policy instead"
+        - "The input should have been sanitized on the way in rather than encoded on the way out"
+        - "HTML entity encoding was the wrong choice and URL encoding should be used everywhere"
+      correctIndex: 0
+      rationale: "HTML entity encoding is correct for a value rendered as page text and does nothing for one dropped into a script block, where the escape characters that matter are entirely different. This is why contextual encoding is the phrasing that appears in the guidance — encoding is not one operation you apply once. CSP is a genuine and valuable second layer, but it mitigates rather than fixes. Input sanitization fails because the same stored value may be rendered into several different contexts, and you cannot know at input time which ones."
+    successMessage: Correct. Encode on output, for the specific context the value lands in.
+  - id: ssrf-target
+    title: Reason about SSRF
+    prompt: "The application fetches a URL supplied by the user to generate a link preview. An attacker supplies a URL pointing at the cloud provider's instance metadata address. Why is this dangerous?"
+    inputLabel: The risk
+    validator:
+      type: choice
+      options:
+        - "The request originates from the server, so it reaches internal addresses a browser never could and can return credentials"
+        - "The preview image will be too large and exhaust server memory"
+        - "The user will see a broken preview and learn the application is misconfigured"
+        - "It is not dangerous, because metadata addresses are only reachable over HTTPS"
+      correctIndex: 0
+      rationale: "Server-side request forgery matters because of where the request comes from. The server sits inside the trust boundary, so a URL it fetches on your behalf reaches internal services, private ranges, and cloud metadata endpoints that no outside browser can touch. Metadata services commonly hand back temporary credentials to anything on the instance that asks, which converts a link-preview feature into credential theft. Blocking a list of bad hostnames is the usual first attempt and the usual failure — redirects, alternate IP encodings, and DNS entries pointing at private addresses all defeat it."
+    successMessage: Correct. The server's network position is the vulnerability, not the URL itself.
+  - id: rank-remediation
+    title: Rank the remediation
+    prompt: "All four findings are confirmed. Which do you fix first?"
+    inputLabel: First fix
+    hint: Weigh what an attacker needs in order to use each one.
+    validator:
+      type: choice
+      options:
+        - "The missing ownership check, because any logged-in user can read every record by editing a number"
+        - "The stored XSS, because it is the most technically interesting"
+        - "The SSRF, because cloud credentials are involved"
+        - "The SQL injection, because injection is always the top of the OWASP list"
+      correctIndex: 0
+      rationale: "Every one of these needs fixing, so the question is only about order. The ownership check requires no tooling, no payload, and no special knowledge — a student with an account and a browser reads every record in the system, and that is almost certainly already happening. Injection and SSRF are more severe in the abstract but need crafted input and some understanding of the backend. Ranking by category reputation rather than by what an attacker needs today is how the easiest real breach gets scheduled behind the most impressive-sounding one."
+    successMessage: Correct. Lowest attacker effort against live regulated data goes first.
+---
+
+import Callout from '../../components/Callout.astro';
+
+Four findings land on your desk from an assessment of a school web application. They are all real, and the assessment report lists them in the order they were discovered, which is no order at all.
+
+This lab is the triage pass: name what each flaw actually is, choose the fix that closes it rather than hides it, and decide what gets worked first.
+
+<Callout type="exam">
+Security+ leans hard on telling access control apart from injection. The tell is whether attacker-controlled data reached an interpreter. If it did, it is injection. If the application simply never checked whether this user was allowed to touch this object, it is broken access control — no matter that a database was involved somewhere behind it.
+</Callout>
+
+<Callout type="warn">
+The misleading fix in this set is the web application firewall. Putting one in front of an injection flaw makes the finding disappear from the next scan while leaving the vulnerability exactly where it was. Filters get bypassed, and a bypassed filter in front of an unfixed flaw is worse than no filter, because the team has already moved the ticket to done.
+</Callout>

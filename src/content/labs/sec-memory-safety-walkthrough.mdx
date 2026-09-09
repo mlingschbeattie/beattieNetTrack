@@ -1,0 +1,113 @@
+---
+title: Memory Safety Walkthrough
+description: Trace a buffer overflow from the missing bounds check to the overwritten return address, then reason about what each mitigation actually costs an attacker.
+slug: sec-memory-safety-walkthrough
+track: cybersecurity-engineer
+moduleId: sec.network.defense-basics
+order: 6
+difficulty: Advanced
+estimatedMinutes: 20
+xp: 50
+tags: ["cybersecurity", "buffer overflow", "memory safety", "ASLR", "DEP", "stack canary"]
+activity: steps
+steps:
+  - id: the-bug
+    title: Name the bug
+    prompt: "A C function declares a 64-byte buffer and fills it using strcpy with data taken from the network. The input is 200 bytes. Where is the defect?"
+    inputLabel: The defect
+    validator:
+      type: choice
+      options:
+        - "strcpy copies until it finds a terminator and never checks the destination size, so the write runs past the end of the buffer"
+        - "The buffer is too small and should have been declared larger"
+        - "The network data should have been encrypted before being copied"
+        - "C cannot safely handle data larger than 64 bytes"
+      correctIndex: 0
+      rationale: "The bug is the missing bounds check, not the size of the buffer. Enlarging it to 256 bytes only moves the boundary — attacker-controlled input has no fixed length, so the next input is 300 bytes and you are back where you started. strcpy and gets copy until a terminator appears and consult the destination's capacity never, which is why they are replaced with length-limited equivalents. Encryption is unrelated: decrypted hostile input overflows exactly as well as plaintext hostile input."
+    successMessage: Correct. The defect is the absent length check, and no buffer size fixes that.
+  - id: why-return-address
+    title: Understand why this is exploitable
+    prompt: "Overflowing a local buffer is dangerous specifically because of what sits next to it on the stack. What is it?"
+    inputLabel: What gets overwritten
+    hint: Ask what the CPU consults when the function finishes.
+    validator:
+      type: choice
+      options:
+        - "The saved return address — the location execution jumps to when the function returns"
+        - "The heap, which holds all dynamically allocated memory"
+        - "The program's source code, which is stored alongside its data"
+        - "The operating system kernel, which shares the same stack"
+      correctIndex: 0
+      rationale: "A stack frame stores local variables and the return address in the same region, with the return address sitting past the end of the locals. Write far enough beyond a local buffer and you reach it, and the moment the function returns the CPU jumps wherever that value now points — so a data-handling bug becomes control of execution. The heap is a separate region with its own distinct bug classes. Source code is not present at runtime, and the kernel maintains its own stack in its own address space."
+    successMessage: Correct. Data and the return address share a frame, which is what turns an overflow into control of execution.
+  - id: dep
+    title: Reason about DEP
+    prompt: "The system enables DEP, marking the stack non-executable. The attacker's shellcode is written to the stack as before. What happens, and what do attackers do about it?"
+    inputLabel: Effect and response
+    validator:
+      type: choice
+      options:
+        - "The shellcode cannot execute, so attackers reuse code already present in the process — return-oriented programming"
+        - "The overflow no longer occurs, because writes to the stack are blocked"
+        - "The program refuses to start until the bug is fixed"
+        - "Nothing changes, because DEP only applies to the heap"
+      correctIndex: 0
+      rationale: "DEP separates writable from executable, so a region you can write to is one the CPU refuses to run. It does not stop the overflow — the write still happens and the return address is still overwritten — it stops that particular payload from executing. Attackers responded by not injecting code at all: return-oriented programming chains together fragments of the program's own legitimate, already-executable instructions to build the desired behaviour. This is the pattern worth internalising, because every mitigation here follows it. The cost went up; the game did not end."
+    successMessage: Correct. DEP invalidates injected shellcode, and ROP is the answer attackers found.
+  - id: aslr
+    title: Reason about ASLR
+    prompt: "ASLR randomises where things are loaded in memory on each run. Which single attacker capability most reliably defeats it?"
+    inputLabel: What defeats ASLR
+    validator:
+      type: choice
+      options:
+        - "An information leak that discloses one real runtime address, from which the rest of the layout can be derived"
+        - "Running the exploit repeatedly until the addresses happen to match"
+        - "Disabling DEP, since the two mitigations depend on each other"
+        - "Nothing — ASLR cannot be bypassed"
+      correctIndex: 0
+      rationale: "ASLR is protecting a secret: where things are. Any bug that discloses a single genuine runtime address — a format string, an uninitialised read, an over-long response that returns adjacent memory — usually gives up the whole layout, because modules are relocated as units and everything inside one keeps its relative offsets. This is why a seemingly minor information disclosure is rated far more seriously in a hardened process than it looks in isolation. Brute forcing works only where the entropy is low and crashes go unnoticed, and the two mitigations are independent."
+    successMessage: Correct. ASLR keeps a secret, and one leaked address usually gives up the rest.
+  - id: canary
+    title: Reason about stack canaries
+    prompt: "A stack canary is a known value placed between the local variables and the saved return address, checked before the function returns. What does it detect, and what is its blind spot?"
+    inputLabel: Detection and blind spot
+    validator:
+      type: choice
+      options:
+        - "It detects a sequential overflow that runs through it, but not a write that targets the return address directly at an offset"
+        - "It detects every possible memory corruption bug in the program"
+        - "It prevents the overflow from occurring in the first place"
+        - "It encrypts the return address so it cannot be modified"
+      correctIndex: 0
+      rationale: "The canary sits in the path of a contiguous overflow, so a straightforward run-off-the-end write clobbers it and the mismatch is caught before the function returns. Its blind spot follows from that placement: a bug allowing a write at a chosen offset can step over the canary entirely and land on the return address, leaving the guard value untouched. It is also a detection mechanism rather than a prevention one — the corruption already happened, and the check turns a potential compromise into a controlled crash. Nothing here is encrypted."
+    successMessage: Correct. It catches contiguous overflows and misses targeted writes — detection, not prevention.
+  - id: real-fix
+    title: Identify the durable fix
+    prompt: "DEP, ASLR, and canaries are all enabled and the code still ships the same strcpy. What is the actual remedy?"
+    inputLabel: Remedy
+    validator:
+      type: choice
+      options:
+        - "Fix the bounds check, and prefer memory-safe languages or length-checked functions so the class of bug cannot occur"
+        - "Add a fourth mitigation, since three were not enough"
+        - "Increase the buffer size so realistic inputs fit"
+        - "Rely on the mitigations, since exploitation is now impractical"
+      correctIndex: 0
+      rationale: "Mitigations raise the cost of exploiting a bug that is still there, and each one in this lab has a known answer. They are defence in depth and worth every one, but they are not a fix. The bug class disappears only when the bounds check exists — through length-checked functions, or by using a language that will not compile an unchecked write in the first place, which is the argument behind memory-safe languages such as Rust. Trusting the mitigations is how a known-vulnerable function stays in a codebase for a decade."
+    successMessage: Correct. Mitigations buy time; the bounds check is the fix.
+---
+
+import Callout from '../../components/Callout.astro';
+
+Memory corruption is the oldest vulnerability class still in active use, and it is the one where the attacker and defender arms race is easiest to see. Each mitigation in this lab was introduced to close a specific technique, and each was answered.
+
+This walkthrough follows one overflow from the missing check to the overwritten return address, then examines what each defence actually buys.
+
+<Callout type="exam">
+Know what each mitigation does rather than only its name. DEP separates writable memory from executable memory. ASLR randomises the layout so addresses cannot be known in advance. A stack canary detects that a contiguous overflow has already happened. None of the three removes the underlying bug.
+</Callout>
+
+<Callout type="warn">
+The reasoning that causes real harm is treating a stack of enabled mitigations as a fix and deprioritising the code change. Every one of them has a documented bypass, they compose worse than teams assume, and an information leak elsewhere in the process can collapse several at once. The vulnerable call stays in the codebase because three green checkboxes made the ticket look optional.
+</Callout>

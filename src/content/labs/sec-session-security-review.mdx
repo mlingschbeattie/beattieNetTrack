@@ -1,0 +1,95 @@
+---
+title: Session Security Review
+description: Review how an application handles sessions — spot fixation, choose the cookie flags that matter, and decide what actually happens when a user logs out.
+slug: sec-session-security-review
+track: cybersecurity-engineer
+moduleId: sec.identity.access-management
+order: 5
+difficulty: Intermediate
+estimatedMinutes: 20
+xp: 50
+tags: ["cybersecurity", "sessions", "authentication", "cookies", "session fixation"]
+activity: steps
+steps:
+  - id: the-session-gap
+    title: Understand what the session is for
+    prompt: "HTTP is stateless, so the server forgets you between requests. After a successful login, what does the session identifier actually represent?"
+    inputLabel: What the session id is
+    validator:
+      type: choice
+      options:
+        - "Proof that this browser already authenticated, presented on every later request in place of the password"
+        - "An encrypted copy of the user's password, sent with each request"
+        - "A record of what the user is permitted to do"
+        - "A unique identifier for the user account, the same on every device"
+      correctIndex: 0
+      rationale: "Authentication happens once; the session is what carries the result forward across a protocol that remembers nothing. That is why a stolen session identifier is as good as the password and often better — it skips authentication entirely and sidesteps multi-factor, which was checked at login and is not rechecked per request. It is not the password in any form, it is not the permission set, and it must be unique per session rather than per account, or one leaked value would follow the user everywhere forever."
+    successMessage: Correct. It stands in for the password on every subsequent request, which is exactly why it is worth stealing.
+  - id: fixation
+    title: Spot session fixation
+    prompt: "An application accepts a session identifier supplied in the URL, and keeps that same identifier after the user logs in. An attacker emails a student a link containing an identifier the attacker already knows. What happens?"
+    inputLabel: The outcome
+    hint: Follow which identifier is valid after the login completes.
+    validator:
+      type: choice
+      options:
+        - "The student authenticates onto the identifier the attacker already holds, so the attacker is now inside an authenticated session — session fixation"
+        - "Nothing, because the attacker never learns the student's password"
+        - "The login fails, because the session identifier does not match the account"
+        - "The attacker is logged out when the student logs in"
+      correctIndex: 0
+      rationale: "Fixation works precisely because the attacker never needs the password. They set the identifier in advance, the victim supplies the authentication, and the application promotes that same identifier to authenticated without changing it — so the attacker's copy is promoted too. The fix is one line of behaviour: regenerate the session identifier at the moment the privilege level changes, which invalidates the pre-login value and leaves the attacker holding something dead."
+    successMessage: Correct. The victim authenticates the attacker's identifier for them.
+  - id: cookie-flags
+    title: Choose the flag that blocks script theft
+    prompt: "You want to ensure that even if an XSS flaw executes script on your page, the script cannot read the session cookie. Which flag does that?"
+    inputLabel: Cookie flag
+    validator:
+      type: choice
+      options:
+        - "HttpOnly — the cookie is sent by the browser but is not readable from JavaScript"
+        - "Secure — the cookie is only sent over HTTPS"
+        - "SameSite — the cookie is not sent on cross-site requests"
+        - "Path — the cookie is only sent to a specific URL prefix"
+      correctIndex: 0
+      rationale: "Each of these flags closes a different door and they are frequently mixed up. HttpOnly is the one that puts the cookie out of reach of document.cookie, so injected script cannot read and exfiltrate it. Secure stops it crossing an unencrypted connection. SameSite is aimed at cross-site request forgery, not at script running on your own origin — which is where XSS runs. Set all of them; just do not expect SameSite to help with a payload executing inside your own page."
+    successMessage: Correct. HttpOnly is the flag aimed at script reading the cookie.
+  - id: logout-behaviour
+    title: Decide what logout must do
+    prompt: "A user clicks Log out. The application deletes the cookie from the browser but leaves the session valid on the server. Why is that a problem?"
+    inputLabel: The problem
+    validator:
+      type: choice
+      options:
+        - "Anyone who already captured that identifier can keep using it, because the server still honours it"
+        - "The user will be unable to log back in until the session expires"
+        - "The browser will send the deleted cookie anyway on the next request"
+        - "It is not a problem, because without the cookie nobody can reach the session"
+      correctIndex: 0
+      rationale: "Deleting the cookie only tidies up the browser that asked. The authority is the server's session store, and if the identifier is still valid there, a copy taken earlier — from a shared machine, a proxy log, or an XSS payload — keeps working exactly as before. Logging out is the moment a user believes they are safe, which makes a client-side-only logout worse than no logout button at all. Invalidate on the server; removing the cookie is the cleanup, not the control."
+    successMessage: Correct. Logout has to invalidate server-side, or it is only a suggestion.
+  - id: incident-note
+    title: Write the finding
+    prompt: "Record the fixation finding for the development team. Write one line containing both the words regenerate and login."
+    inputLabel: Finding
+    placeholder: "ex: Application must regenerate the session identifier at login to prevent fixation."
+    validator:
+      type: regex
+      pattern: '^(?=.*\bregenerat)(?=.*\blogin\b).+$'
+      flags: "i"
+    successMessage: Good. The fix is specific and testable — a reviewer can confirm the identifier changes across the login boundary.
+---
+
+import Callout from '../../components/Callout.astro';
+
+Almost everything an attacker wants from an account is reachable through its session. The password is protected, hashed, and often behind a second factor. The session identifier is a string in a header, and it is accepted without any of that being rechecked.
+
+This lab reviews one application's session handling from login through logout.
+
+<Callout type="exam">
+Fixation and hijacking are tested as a pair and are easy to swap. In fixation the attacker sets the identifier before the victim logs in. In hijacking the attacker steals an identifier the victim already had. The single control that answers fixation is regenerating the identifier when the privilege level changes.
+</Callout>
+
+<Callout type="warn">
+The failure that misleads is a logout that only clears the cookie. Every visible signal tells the user they are safe — the page returns to the login screen, the cookie is gone from the browser — while the identifier a shared library machine or a proxy log captured ten minutes ago still authenticates fine. A control that produces the appearance of safety without the substance is worse than an absent one, because nobody goes looking for it.
+</Callout>

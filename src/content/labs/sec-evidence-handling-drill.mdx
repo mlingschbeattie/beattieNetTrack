@@ -1,0 +1,100 @@
+---
+title: Evidence Handling Drill
+description: Work a suspected compromise as an examiner — collect in order of volatility, image before you analyse, prove the image did not change, and keep the chain of custody intact.
+slug: sec-evidence-handling-drill
+track: cybersecurity-engineer
+moduleId: sec.incident.response-basics
+order: 5
+difficulty: Intermediate
+estimatedMinutes: 25
+xp: 50
+tags: ["cybersecurity", "forensics", "order of volatility", "chain of custody", "hashing", "metadata"]
+activity: steps
+steps:
+  - id: first-action
+    title: Decide the first action
+    prompt: "A workstation is suspected of running malware. It is powered on, logged in, and connected to the network. What do you do first?"
+    inputLabel: First action
+    hint: One of these choices destroys evidence that exists nowhere else.
+    validator:
+      type: choice
+      options:
+        - "Capture the contents of memory before anything else, then work down the order of volatility"
+        - "Shut the machine down cleanly so nothing further is written to disk"
+        - "Run an antivirus scan to identify what is present"
+        - "Reboot into safe mode to stop the malware executing"
+      correctIndex: 0
+      rationale: "Memory holds what exists nowhere else — running processes, network connections, injected code, and encryption keys — and fileless malware may leave no disk artefact at all. Every other option destroys it. A clean shutdown and a reboot both clear RAM, and safe mode does so while presenting itself as the cautious choice. An antivirus scan is the subtlest mistake: it writes to disk, changes timestamps across the file system, and may quarantine the very sample you needed to analyse. Collect in order of volatility, most volatile first."
+    successMessage: Correct. Memory first — it is the only evidence that disappears when you touch the power.
+  - id: image-not-original
+    title: Work from an image
+    prompt: "Disk acquisition is next. Why do examiners analyse a forensic image rather than the original drive?"
+    inputLabel: Reason
+    validator:
+      type: choice
+      options:
+        - "Analysis modifies what it touches, so the original is preserved untouched and every examination runs against a copy"
+        - "Images are smaller than the original drive and faster to search"
+        - "The original drive cannot be read more than once"
+        - "Imaging removes the malware so the copy is safe to open"
+      correctIndex: 0
+      rationale: "Opening a file changes its access time. Mounting a volume can replay a journal and write to it. Any examination leaves traces, and traces on the original are indefensible in a report or a courtroom. A forensic image is a bit-for-bit copy — the same size, not smaller, and including slack and unallocated space where deleted data still lives — taken through a write blocker so the acquisition itself cannot alter the source. It is a faithful copy, malware included; nothing about imaging cleans anything."
+    successMessage: Correct. Preserve the original, work the copy, and never analyse the only instance of your evidence.
+  - id: hash-verification
+    title: Prove the image did not change
+    prompt: "You hash the source drive and the image, and both produce the same SHA-256 digest. What has this established?"
+    inputLabel: What the hash proves
+    validator:
+      type: choice
+      options:
+        - "The image is a faithful copy, and any later change to it will produce a different digest"
+        - "The image is encrypted and cannot be tampered with"
+        - "The evidence is admissible in court"
+        - "No malware is present on the image"
+      correctIndex: 0
+      rationale: "A matching hash establishes integrity, and only integrity — the copy is identical to the source at the moment of acquisition, and because any alteration produces a different digest, you can demonstrate later that nothing changed since. It says nothing about confidentiality, so it is not encryption, and nothing about content, so it certainly does not mean the image is clean. Admissibility is a legal judgement that depends on the whole handling process, of which this hash is one supporting piece rather than the conclusion."
+    successMessage: Correct. Integrity, and a way to prove it later.
+  - id: chain-of-custody
+    title: Keep the chain intact
+    prompt: "An analyst borrows the evidence drive overnight to continue working at home and returns it the next morning. Nothing on it was altered. What is the consequence?"
+    inputLabel: Consequence
+    hint: Ask what can now be demonstrated, not what actually happened.
+    validator:
+      type: choice
+      options:
+        - "The chain of custody is broken — there is an unaccounted period, and the evidence can no longer be shown to have been controlled throughout"
+        - "No consequence, because a hash check will confirm nothing changed"
+        - "No consequence, provided the analyst is authorised to examine the evidence"
+        - "The evidence must be re-imaged from the original drive"
+      correctIndex: 0
+      rationale: "Chain of custody documents who held the evidence, when, and why, without gaps. The problem is not that something was altered — most likely nothing was. The problem is that for one unlogged night nobody can demonstrate what was or was not possible, and demonstrating control is the entire function of the chain. A hash proves the bytes match; it cannot prove the drive was never out of a locked cabinet, never connected to an unknown machine, and never out of sight. Authorisation to examine is not the same as documented custody."
+    successMessage: Correct. The break is in what can be proven, not necessarily in what happened.
+  - id: metadata-finding
+    title: Read the metadata
+    prompt: "Among the recovered files is a photograph the suspect shared publicly. Its EXIF data contains GPS coordinates and a capture timestamp. Why does this matter to the investigation?"
+    inputLabel: Significance
+    validator:
+      type: choice
+      options:
+        - "Files carry more than their visible contents — the metadata places a device at a location and time the sender never intended to disclose"
+        - "The photograph must have been edited, because original photographs contain no metadata"
+        - "GPS coordinates in EXIF are always inserted by the platform the file was uploaded to"
+        - "Metadata is not evidence, because it can be edited"
+      correctIndex: 0
+      rationale: "Cameras and phones record capture conditions by default, and geotagging writes coordinates that survive every copy, share, and re-download unless someone deliberately strips them. That is the whole point of metadata as an investigative source, and it is equally the reason metadata stripping is a control worth applying to anything you publish. The fact that metadata can be edited makes it evidence to corroborate rather than evidence to dismiss — the same is true of nearly everything on a disk."
+    successMessage: Correct. Files record more than their contents, and nobody meant to send it.
+---
+
+import Callout from '../../components/Callout.astro';
+
+The difference between an incident write-up and usable evidence is almost never the analysis. It is whether the first responder did the right things in the right order during the twenty minutes before anyone senior arrived.
+
+This drill walks a suspected compromise from the moment you reach the machine to the point where a finding is defensible.
+
+<Callout type="exam">
+Order of volatility is examinable as a sequence, and the ranking is by how fast the data disappears: CPU registers and cache, then memory, then network state and running processes, then the disk, then backups and archives. Anything that survives a power cycle ranks below everything that does not.
+</Callout>
+
+<Callout type="warn">
+The instinct that does the most damage is the helpful one — running a scan, or shutting the machine down cleanly to stop things getting worse. Both feel like containment and both destroy the volatile evidence first. A scan additionally rewrites timestamps across the file system and may quarantine the sample, so the responder ends up having removed both the malware and the ability to explain what it did.
+</Callout>
