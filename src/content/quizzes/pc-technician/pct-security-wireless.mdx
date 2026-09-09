@@ -1,0 +1,91 @@
+---
+title: "Wireless Security Review Check"
+slug: "pct-security-wireless"
+track: pc-technician
+moduleId: pct.security.access-control
+order: 3
+difficulty: Beginner
+xp: 35
+passThreshold: 70
+tags: ["A+", "CompTIA", "Core 2", "WPA3", "wireless"]
+questions:
+  - id: q1
+    type: single
+    prompt: "A site survey finds an access point still configured for WEP. What is the correct assessment?"
+    options:
+      - "A. Acceptable if the passphrase is long and complex"
+      - "B. WEP is fundamentally broken regardless of passphrase and must be replaced with WPA2 or WPA3"
+      - "C. Acceptable for guest traffic only"
+      - "D. Secure provided MAC filtering is also enabled"
+    correctIndex: 1
+  - id: q2
+    type: single
+    prompt: "Which configuration is strongest?"
+    options:
+      - "A. WPA2 with TKIP"
+      - "B. WPA with TKIP"
+      - "C. WEP with a 128-bit key"
+      - "D. WPA3 with AES"
+    correctIndex: 3
+  - id: q3
+    type: single
+    prompt: "What is the main improvement WPA3 offers over WPA2?"
+    options:
+      - "A. It increases maximum wireless range"
+      - "B. A redesigned handshake, so a captured handshake cannot be attacked offline"
+      - "C. It removes the need for a passphrase"
+      - "D. It supports more simultaneous clients"
+    correctIndex: 1
+  - id: q4
+    type: single
+    prompt: "A school wants staff to connect using their own network accounts so access can be revoked individually. What is required?"
+    options:
+      - "A. WPA2-Personal with a long passphrase"
+      - "B. WPA2-Enterprise or WPA3-Enterprise, authenticating each user against a RADIUS server"
+      - "C. An open network with MAC filtering"
+      - "D. WPA3-Personal with a per-device passphrase"
+    correctIndex: 1
+  - id: q5
+    type: single
+    prompt: "What is the operational weakness of WPA2-Personal in an organisation?"
+    options:
+      - "A. It cannot use AES encryption"
+      - "B. It supports a limited number of devices"
+      - "C. Everyone shares one passphrase, so it identifies nobody and must be changed for all when one person loses access"
+      - "D. It requires a certificate on every client"
+    correctIndex: 2
+  - id: q6
+    type: single
+    prompt: "Which of these is an authentication service rather than a wireless encryption standard?"
+    options:
+      - "A. WPA2"
+      - "B. AES"
+      - "C. RADIUS"
+      - "D. TKIP"
+    correctIndex: 2
+  - id: q7
+    type: single
+    prompt: "An attacker in a café runs an access point broadcasting the café's own SSID with a stronger signal. What is this?"
+    options:
+      - "A. An evil twin — clients trust the network by name and may join automatically, sending traffic through the attacker"
+      - "B. A denial of service against the real access point"
+      - "C. A deauthentication attack"
+      - "D. MAC spoofing"
+    correctIndex: 0
+  - id: q8
+    type: single
+    prompt: "Why should WPS be disabled even on a network with a 40-character WPA2 passphrase?"
+    options:
+      - "A. WPS reduces wireless range"
+      - "B. WPS is incompatible with AES"
+      - "C. The WPS PIN can be brute-forced, and recovering it reveals the passphrase however strong it is"
+      - "D. WPS prevents guest network isolation"
+    correctIndex: 2
+domains:
+  - domainId: aplus2.security
+    weight: 0.7
+  - domainId: nocti.networking
+    weight: 0.3
+---
+
+Use this review to confirm you can order the wireless standards, pair them with the right encryption, and explain why a password on a public network proves nothing about who runs the access point.

@@ -1,0 +1,91 @@
+---
+title: "Mobile Connectivity Review Check"
+slug: "pct-mobile-connectivity"
+track: pc-technician
+moduleId: pct.mobile.devices
+order: 4
+difficulty: Beginner
+xp: 35
+passThreshold: 70
+tags: ["A+", "CompTIA", "Core 1", "cellular", "hotspot"]
+questions:
+  - id: q1
+    type: single
+    prompt: "A user reports mobile data fails at home but works everywhere else. What is the most likely cause?"
+    options:
+      - "A. The cellular radio only functions while the device is moving"
+      - "B. The phone prefers the home Wi-Fi, which is connected but has no working internet"
+      - "C. The carrier blocks data at that address"
+      - "D. The SIM reseats itself while travelling"
+    correctIndex: 1
+  - id: q2
+    type: single
+    prompt: "What does enabling airplane mode do?"
+    options:
+      - "A. Disables cellular only, leaving Wi-Fi and Bluetooth active"
+      - "B. Places the device in a low-power sleep state"
+      - "C. Disables all wireless radios at once, after which Wi-Fi and Bluetooth may be re-enabled individually"
+      - "D. Blocks incoming calls while keeping data connected"
+    correctIndex: 2
+  - id: q3
+    type: single
+    prompt: "Why does toggling airplane mode resolve so many transient connectivity faults?"
+    options:
+      - "A. It clears the device's browser cache"
+      - "B. It forces every radio to drop and re-register from scratch, clearing stale connection state"
+      - "C. It reinstalls the network drivers"
+      - "D. It resets the device's IP address to a static value"
+    correctIndex: 1
+  - id: q4
+    type: single
+    prompt: "A phone shows full signal bars but cannot call or use data, and displays a SIM warning. What does this indicate?"
+    options:
+      - "A. A network outage in the area despite the bars"
+      - "B. The battery is too low to permit transmission"
+      - "C. The device hears a tower but the SIM is missing, damaged, or unactivated, so it cannot register"
+      - "D. Airplane mode is enabled"
+    correctIndex: 2
+  - id: q5
+    type: single
+    prompt: "A traveller returns from abroad with a very large bill. Which setting most likely caused it?"
+    options:
+      - "A. Wi-Fi calling was left enabled"
+      - "B. Data roaming was enabled, so the device used a foreign carrier at roaming rates"
+      - "C. Bluetooth remained on throughout"
+      - "D. The phone was left in airplane mode"
+    correctIndex: 1
+  - id: q6
+    type: single
+    prompt: "What is the difference between a mobile hotspot and tethering?"
+    options:
+      - "A. A hotspot shares the cellular connection over Wi-Fi; tethering shares it over USB or Bluetooth"
+      - "B. A hotspot works only with laptops; tethering only with tablets"
+      - "C. Tethering uses the carrier's network; a hotspot uses Wi-Fi only"
+      - "D. They are two names for the same feature"
+    correctIndex: 0
+  - id: q7
+    type: single
+    prompt: "A laptop on a hotspot has slowed to a crawl while the phone itself still browses normally. What explains this?"
+    options:
+      - "A. The laptop's Wi-Fi adapter is failing"
+      - "B. The hotspot supports only one device at a time"
+      - "C. The plan's separate hotspot allowance has been exhausted and throttled, while phone data continues"
+      - "D. The phone has entered airplane mode"
+    correctIndex: 2
+  - id: q8
+    type: single
+    prompt: "A user must share their phone's connection with a laptop in a crowded area with heavy Wi-Fi interference. What is the better option?"
+    options:
+      - "A. Raise the hotspot's transmit power"
+      - "B. USB tethering, which carries the connection over cable and avoids the congested band"
+      - "C. Switch the hotspot to a hidden SSID"
+      - "D. Enable airplane mode to clear the radios"
+    correctIndex: 1
+domains:
+  - domainId: aplus1.mobile
+    weight: 0.8
+  - domainId: nocti.networking
+    weight: 0.2
+---
+
+Use this review to confirm you can identify which radio is at fault from the pattern of where a problem occurs, before escalating to a carrier.

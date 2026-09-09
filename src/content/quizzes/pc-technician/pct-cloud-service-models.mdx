@@ -1,0 +1,91 @@
+---
+title: "Cloud Service Models Review Check"
+slug: "pct-cloud-service-models"
+track: pc-technician
+moduleId: pct.cloud.virtualization
+order: 1
+difficulty: Beginner
+xp: 35
+passThreshold: 70
+tags: ["A+", "CompTIA", "Core 1", "cloud"]
+questions:
+  - id: q1
+    type: single
+    prompt: "A school rents virtual servers and installs and patches Windows Server on them itself. Which service model is this?"
+    options:
+      - "A. SaaS"
+      - "B. PaaS"
+      - "C. IaaS"
+      - "D. A private cloud, which is one of the service models"
+    correctIndex: 2
+  - id: q2
+    type: single
+    prompt: "Staff use a web-based email and document suite with no servers of their own. Which model is that?"
+    options:
+      - "A. SaaS"
+      - "B. IaaS"
+      - "C. PaaS"
+      - "D. Hybrid"
+    correctIndex: 0
+  - id: q3
+    type: single
+    prompt: "A development team deploys application code to a managed platform and never touches an operating system. Which model?"
+    options:
+      - "A. IaaS"
+      - "B. PaaS"
+      - "C. SaaS"
+      - "D. On-premises virtualization"
+    correctIndex: 1
+  - id: q4
+    type: single
+    prompt: "Files stored with a cloud provider are exposed publicly because a storage container allowed anonymous access. Who was responsible?"
+    options:
+      - "A. The provider, since the data sat on their infrastructure"
+      - "B. The customer, because access configuration of their own data is their responsibility in every service model"
+      - "C. Neither — this is an accepted risk of cloud storage"
+      - "D. The provider, unless a security add-on had been purchased"
+    correctIndex: 1
+  - id: q5
+    type: single
+    prompt: "Which responsibility remains with the customer even under SaaS?"
+    options:
+      - "A. Patching the operating system beneath the application"
+      - "B. Maintaining the physical data centre"
+      - "C. Managing user accounts, permissions, and who can see which data"
+      - "D. Upgrading the application to new versions"
+    correctIndex: 2
+  - id: q6
+    type: single
+    prompt: "In the shared responsibility model, what is the provider responsible for?"
+    options:
+      - "A. Security of the cloud — the facilities, hardware, and virtualization layer"
+      - "B. All security, once the customer has subscribed"
+      - "C. The customer's account permissions"
+      - "D. Classifying which of the customer's data is sensitive"
+    correctIndex: 0
+  - id: q7
+    type: single
+    prompt: "A small school with one part-time technician needs email for 400 students. Which model best fits?"
+    options:
+      - "A. IaaS, for full control of the mail server configuration"
+      - "B. PaaS, so the school can deploy its own mail application"
+      - "C. SaaS, so no servers, operating systems, or mail software need maintaining"
+      - "D. An on-premises server, since cloud email cannot scale to 400 users"
+    correctIndex: 2
+  - id: q8
+    type: single
+    prompt: "Why might an organisation choose IaaS despite the additional work?"
+    options:
+      - "A. IaaS is always cheaper than SaaS"
+      - "B. They run legacy or specialised software requiring specific operating system configuration"
+      - "C. IaaS requires no security configuration"
+      - "D. SaaS cannot be reached over the internet"
+    correctIndex: 1
+domains:
+  - domainId: aplus1.virtualization
+    weight: 0.8
+  - domainId: nocti.os
+    weight: 0.2
+---
+
+Use this review to confirm you can identify a service model from what the customer manages, and that you know which responsibilities never transfer to a provider.

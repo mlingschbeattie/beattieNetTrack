@@ -1,0 +1,91 @@
+---
+title: "Client-Side Virtualization Review Check"
+slug: "pct-client-side-virtualization"
+track: pc-technician
+moduleId: pct.cloud.virtualization
+order: 3
+difficulty: Beginner
+xp: 35
+passThreshold: 70
+tags: ["A+", "CompTIA", "Core 1", "virtualization", "hypervisor"]
+questions:
+  - id: q1
+    type: single
+    prompt: "A student installs virtualization software on their Windows laptop to run Linux in a window. Which hypervisor type is that?"
+    options:
+      - "A. Type 1, because it creates virtual machines"
+      - "B. Type 2, because it runs as an application on top of an existing operating system"
+      - "C. Neither — running an OS in a window is emulation"
+      - "D. Type 1, because Linux runs directly on the hardware"
+    correctIndex: 1
+  - id: q2
+    type: single
+    prompt: "Why does a type 1 hypervisor generally outperform a type 2 for server workloads?"
+    options:
+      - "A. It compresses virtual machine memory automatically"
+      - "B. It supports more guest operating systems"
+      - "C. It runs directly on the hardware, with no host operating system consuming resources beneath it"
+      - "D. It does not require CPU virtualization support"
+    correctIndex: 2
+  - id: q3
+    type: single
+    prompt: "What distinguishes a type 1 hypervisor?"
+    options:
+      - "A. It runs directly on the hardware with no host operating system"
+      - "B. It can only run one virtual machine at a time"
+      - "C. It requires a graphical desktop to operate"
+      - "D. It is installed from within Windows"
+    correctIndex: 0
+  - id: q4
+    type: single
+    prompt: "A laptop with 8 GB of RAM runs Windows plus a VM assigned 6 GB. What is the likely result?"
+    options:
+      - "A. The VM runs well because it has priority"
+      - "B. The host is left too little memory, so host and guest both swap heavily and everything becomes slow"
+      - "C. The hypervisor compresses the excess with no impact"
+      - "D. The VM refuses to start until more RAM is fitted"
+    correctIndex: 1
+  - id: q5
+    type: single
+    prompt: "Virtual machines will not start, or run extremely slowly, on otherwise capable hardware. What should you check in firmware?"
+    options:
+      - "A. That Secure Boot is disabled"
+      - "B. That the virtual disk is first in the boot order"
+      - "C. That hardware virtualization support is enabled in BIOS or UEFI"
+      - "D. That the TPM has been cleared"
+    correctIndex: 2
+  - id: q6
+    type: single
+    prompt: "Why is a virtual machine the appropriate place to open a suspicious file for analysis?"
+    options:
+      - "A. Virtual machines cannot execute malicious code"
+      - "B. The VM is isolated from the host, so damage is contained, and a snapshot restores it instantly afterwards"
+      - "C. Antivirus is more effective inside a VM"
+      - "D. Malware cannot detect that it is running in a VM"
+    correctIndex: 1
+  - id: q7
+    type: single
+    prompt: "A technician runs a hostile sample in a VM that has a shared folder mapped to the host and a bridged network adapter. What is wrong?"
+    options:
+      - "A. Nothing, provided a snapshot was taken first"
+      - "B. The shared folder is a writable path back to the host and the bridged adapter puts the sample on the office network — the isolation has been bypassed by configuration"
+      - "C. The VM needs more RAM to contain the sample"
+      - "D. Snapshots should be taken after the test"
+    correctIndex: 1
+  - id: q8
+    type: single
+    prompt: "What does a snapshot provide?"
+    options:
+      - "A. A backup stored independently of the host"
+      - "B. A captured VM state that can be restored in seconds, though it lives on the same host and is not a backup"
+      - "C. A compressed copy of the guest operating system for distribution"
+      - "D. Protection against host hardware failure"
+    correctIndex: 1
+domains:
+  - domainId: aplus1.virtualization
+    weight: 0.8
+  - domainId: aplus2.security
+    weight: 0.2
+---
+
+Use this review to confirm you can place a hypervisor by what sits beneath it, and that you treat VM isolation as a configuration rather than a guarantee.

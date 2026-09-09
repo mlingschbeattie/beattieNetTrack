@@ -1,0 +1,91 @@
+---
+title: "Windows Permissions Review Check"
+slug: "pct-security-windows-permissions"
+track: pc-technician
+moduleId: pct.security.hardening
+order: 1
+difficulty: Beginner
+xp: 35
+passThreshold: 70
+tags: ["A+", "CompTIA", "Core 2", "NTFS", "permissions"]
+questions:
+  - id: q1
+    type: single
+    prompt: "A share grants Read to Everyone; NTFS grants Modify to the Finance group. What can a Finance member do over the network?"
+    options:
+      - "A. Modify, because NTFS is more specific"
+      - "B. Read only, because the most restrictive of the share and NTFS permissions applies"
+      - "C. Full Control, because the permissions combine"
+      - "D. Nothing, because the permissions conflict"
+    correctIndex: 1
+  - id: q2
+    type: single
+    prompt: "A user has Modify over the network but only Read when signed in at the machine itself. Why?"
+    options:
+      - "A. Share permissions apply only over the network; locally only NTFS applies, and NTFS grants Read"
+      - "B. Local sign-in always reduces permissions by one level"
+      - "C. NTFS permissions apply only over the network"
+      - "D. The account is throttled by group policy"
+    correctIndex: 0
+  - id: q3
+    type: single
+    prompt: "Which statement about share and NTFS permissions is correct?"
+    options:
+      - "A. Share permissions apply everywhere; NTFS applies only locally"
+      - "B. Share permissions apply only to network access; NTFS applies both locally and over the network"
+      - "C. Both apply only over the network"
+      - "D. NTFS permissions override share permissions in all cases"
+    correctIndex: 1
+  - id: q4
+    type: single
+    prompt: "A user is in a group granted Modify and another group with an explicit deny on the same folder. What is the effective result?"
+    options:
+      - "A. Modify, because allow takes precedence"
+      - "B. Denied, because an explicit deny overrides allow"
+      - "C. Read only, as a compromise"
+      - "D. The most recently applied permission wins"
+    correctIndex: 1
+  - id: q5
+    type: single
+    prompt: "One subfolder in a share must be restricted to managers while the rest stays open to the department. What is required?"
+    options:
+      - "A. Move the subfolder outside the share"
+      - "B. Break inheritance on that subfolder and apply its own permissions"
+      - "C. Apply the manager permissions to the parent folder"
+      - "D. Create a second share pointing at the same path"
+    correctIndex: 1
+  - id: q6
+    type: single
+    prompt: "A user cannot open a folder despite being in a group that grants access. What should you check first?"
+    options:
+      - "A. Whether the drive has free space"
+      - "B. Every other group they belong to, since combined membership determines effective access"
+      - "C. Whether their password has expired"
+      - "D. Whether the folder is compressed"
+    correctIndex: 1
+  - id: q7
+    type: single
+    prompt: "What is the fastest reliable way to determine why a specific user is being denied access?"
+    options:
+      - "A. Read each permission list and reason about the interaction"
+      - "B. Use the effective permissions view, which resolves the whole combination for that user"
+      - "C. Recreate the user account"
+      - "D. Reset inheritance on the parent folder"
+    correctIndex: 1
+  - id: q8
+    type: single
+    prompt: "Under time pressure, a technician sets Everyone to Full Control to clear an access ticket. Why is this a poor fix?"
+    options:
+      - "A. It slows file server performance"
+      - "B. It opens the folder to every account in the organisation and hides the real fault, and nothing later looks wrong enough to prompt review"
+      - "C. It prevents inheritance from working"
+      - "D. It only applies to local access"
+    correctIndex: 1
+domains:
+  - domainId: aplus2.security
+    weight: 0.6
+  - domainId: aplus2.os
+    weight: 0.4
+---
+
+Use this review to confirm you can resolve an access-denied call by combining share and NTFS permissions correctly, rather than widening access to make the symptom go away.

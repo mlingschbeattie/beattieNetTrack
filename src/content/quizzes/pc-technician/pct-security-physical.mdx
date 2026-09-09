@@ -1,0 +1,91 @@
+---
+title: "Physical Security Review Check"
+slug: "pct-security-physical"
+track: pc-technician
+moduleId: pct.security.access-control
+order: 1
+difficulty: Beginner
+xp: 35
+passThreshold: 70
+tags: ["A+", "CompTIA", "Core 2", "physical security"]
+questions:
+  - id: q1
+    type: single
+    prompt: "Why is physical access to a computer treated as such a serious compromise?"
+    options:
+      - "A. It voids the manufacturer warranty"
+      - "B. Software controls can generally be bypassed with hands on the hardware — booting external media or removing the drive"
+      - "C. It allows the attacker to read the screen"
+      - "D. It is not serious if the account password is strong"
+    correctIndex: 1
+  - id: q2
+    type: single
+    prompt: "A row of short concrete posts outside a building entrance serves what purpose?"
+    options:
+      - "A. Entry authentication"
+      - "B. Interior asset protection"
+      - "C. Perimeter control — bollards prevent a vehicle being driven into the building"
+      - "D. Surveillance"
+    correctIndex: 2
+  - id: q3
+    type: single
+    prompt: "A data centre requires a badge swipe and a fingerprint. Why is this stronger than either alone?"
+    options:
+      - "A. Two readers are physically harder to break"
+      - "B. It combines something you have with something you are, so a stolen badge alone is insufficient"
+      - "C. Biometrics cancel out the weaknesses of electronics"
+      - "D. It produces two separate audit logs"
+    correctIndex: 1
+  - id: q4
+    type: single
+    prompt: "What is the practical weakness of a shared keypad code on a server room door?"
+    options:
+      - "A. Keypads fail more often than badge readers"
+      - "B. Codes cannot be changed once set"
+      - "C. A code is knowledge — it spreads, is observed, stays valid after people leave, and identifies nobody"
+      - "D. Keypads cannot form part of multifactor authentication"
+    correctIndex: 2
+  - id: q5
+    type: single
+    prompt: "An attacker carrying two coffees waits at a secure door and is let in by a helpful employee. What is this called?"
+    options:
+      - "A. Tailgating"
+      - "B. Shoulder surfing"
+      - "C. Spoofing"
+      - "D. Dumpster diving"
+    correctIndex: 0
+  - id: q6
+    type: single
+    prompt: "Which control structurally prevents that entry?"
+    options:
+      - "A. A stronger badge encryption standard"
+      - "B. An access control vestibule, which admits one person at a time and cannot be held open"
+      - "C. A longer keypad code"
+      - "D. More frequent password rotation"
+    correctIndex: 1
+  - id: q7
+    type: single
+    prompt: "Why do badge readers alone fail to stop tailgating?"
+    options:
+      - "A. Badges can be cloned with inexpensive equipment"
+      - "B. Readers do not log entry times"
+      - "C. The reader authorises the badge holder, and the open door then admits anyone following behind"
+      - "D. Badges expire too slowly"
+    correctIndex: 2
+  - id: q8
+    type: single
+    prompt: "Staff repeatedly let unbadged people through a secure door. What is the most effective response?"
+    options:
+      - "A. Discipline the individuals involved so others take it seriously"
+      - "B. Treat it as a design problem — install a vestibule or staff the entrance — since politeness is not a control you can patch"
+      - "C. Increase the frequency of security awareness emails"
+      - "D. Remove the badge readers, since they are clearly ineffective"
+    correctIndex: 1
+domains:
+  - domainId: aplus2.security
+    weight: 0.8
+  - domainId: nocti.security
+    weight: 0.2
+---
+
+Use this review to confirm you can match a physical control to the threat it addresses, and that you treat repeated tailgating as a design fault rather than an individual one.

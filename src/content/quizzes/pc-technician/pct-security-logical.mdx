@@ -1,0 +1,91 @@
+---
+title: "Logical Security Review Check"
+slug: "pct-security-logical"
+track: pc-technician
+moduleId: pct.security.access-control
+order: 2
+difficulty: Beginner
+xp: 35
+passThreshold: 70
+tags: ["A+", "CompTIA", "Core 2", "least privilege", "MFA"]
+questions:
+  - id: q1
+    type: single
+    prompt: "Why does least privilege reduce the damage from a successful phishing attack?"
+    options:
+      - "A. It prevents credentials being stolen in the first place"
+      - "B. The attacker inherits only that account's limited access rather than reaching everything"
+      - "C. It forces the attacker to use multifactor authentication"
+      - "D. It encrypts the data the account can reach"
+    correctIndex: 1
+  - id: q2
+    type: single
+    prompt: "An employee has moved through three departments and can still reach all three file shares. What is this called?"
+    options:
+      - "A. Privilege creep — access accumulated because old permissions were never removed"
+      - "B. Account compromise"
+      - "C. Permission inheritance"
+      - "D. Correct practice, since prior experience justifies access"
+    correctIndex: 0
+  - id: q3
+    type: single
+    prompt: "A system requires a password and then a security question. Is that multifactor authentication?"
+    options:
+      - "A. Yes, because two separate challenges are presented"
+      - "B. No — both are something you know, so it is two instances of one factor"
+      - "C. Yes, if the answer is long enough"
+      - "D. No, because security questions are not an authentication method"
+    correctIndex: 1
+  - id: q4
+    type: single
+    prompt: "What distinguishes a hard token from a soft token?"
+    options:
+      - "A. A hard token uses longer codes"
+      - "B. A hard token works offline while a soft token needs internet access"
+      - "C. A hard token is dedicated physical hardware; a soft token is software on a device the user already has"
+      - "D. A hard token is issued by the user, a soft token by the organisation"
+    correctIndex: 2
+  - id: q5
+    type: single
+    prompt: "A user is in one group granted Modify and another with an explicit deny on the same folder. What is the result?"
+    options:
+      - "A. Modify, because allow entries take priority"
+      - "B. Denied, because an explicit deny normally overrides an allow"
+      - "C. Access alternates depending on evaluation order"
+      - "D. Read only, as a compromise"
+    correctIndex: 1
+  - id: q6
+    type: single
+    prompt: "Why is disabling a departing employee's account usually preferred to deleting it immediately?"
+    options:
+      - "A. Disabled accounts continue forwarding email to the manager"
+      - "B. Deletion is irreversible and can orphan file ownership and audit history, while disabling stops access and preserves both"
+      - "C. Disabled accounts do not consume a licence"
+      - "D. Deletion requires approval that disabling does not"
+    correctIndex: 1
+  - id: q7
+    type: single
+    prompt: "Why should permissions be granted to groups rather than individuals?"
+    options:
+      - "A. Group permissions are evaluated faster"
+      - "B. Access becomes membership, which stays auditable and revocable as staff change roles"
+      - "C. Individual permissions expire automatically"
+      - "D. Groups allow rights individuals cannot receive"
+    correctIndex: 1
+  - id: q8
+    type: single
+    prompt: "A user needs local administrator rights to complete one installation. What is the correct practice?"
+    options:
+      - "A. Grant it permanently, since they will likely need it again"
+      - "B. Grant it and schedule the removal in the same ticket, because a temporary permission with no end date becomes permanent"
+      - "C. Give them the shared administrator password instead"
+      - "D. Add their account to the Domain Admins group for the day"
+    correctIndex: 1
+domains:
+  - domainId: aplus2.security
+    weight: 0.8
+  - domainId: nocti.security
+    weight: 0.2
+---
+
+Use this review to confirm you can distinguish genuine multifactor authentication from two of the same factor, and that you treat elevation as something with an end date.

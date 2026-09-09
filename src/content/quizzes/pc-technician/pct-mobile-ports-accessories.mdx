@@ -1,0 +1,91 @@
+---
+title: "Mobile Ports and Docking Review Check"
+slug: "pct-mobile-ports-accessories"
+track: pc-technician
+moduleId: pct.mobile.devices
+order: 3
+difficulty: Beginner
+xp: 35
+passThreshold: 70
+tags: ["A+", "CompTIA", "Core 1", "USB-C", "docking"]
+questions:
+  - id: q1
+    type: single
+    prompt: "A USB-C monitor cable produces no picture on one laptop but works on a colleague's identical-looking port. What is the most likely cause?"
+    options:
+      - "A. The cable is failing intermittently"
+      - "B. That USB-C port does not support DisplayPort video output, even though the connector fits"
+      - "C. The monitor requires a firmware update"
+      - "D. USB-C cannot carry video without an adapter"
+    correctIndex: 1
+  - id: q2
+    type: single
+    prompt: "A phone charges from a USB-C cable but never appears on the computer. What should you suspect first?"
+    options:
+      - "A. The cable is charge-only and has no data conductors"
+      - "B. The phone's port is damaged"
+      - "C. The computer is missing a driver"
+      - "D. The battery is too low to permit data transfer"
+    correctIndex: 0
+  - id: q3
+    type: single
+    prompt: "Which statement about Thunderbolt and USB-C is correct?"
+    options:
+      - "A. They are two names for the same standard"
+      - "B. Thunderbolt uses the USB-C connector but is a separate, higher-capability standard"
+      - "C. Every USB-C port supports Thunderbolt"
+      - "D. Thunderbolt uses a proprietary connector incompatible with USB-C"
+    correctIndex: 1
+  - id: q4
+    type: single
+    prompt: "Which task is NFC designed for rather than Bluetooth?"
+    options:
+      - "A. Streaming audio to a speaker across a room"
+      - "B. Connecting a wireless keyboard for daily use"
+      - "C. Transferring a large video file between laptops"
+      - "D. Tapping a phone against a terminal for contactless payment"
+    correctIndex: 3
+  - id: q5
+    type: single
+    prompt: "Why is NFC's few-centimetre range considered a security property?"
+    options:
+      - "A. Short-range radio waves cannot be recorded"
+      - "B. An attacker must be within touching distance, ruling out interception from across a room"
+      - "C. It forces the use of encryption"
+      - "D. It uses less battery, so the radio can be left on"
+    correctIndex: 1
+  - id: q6
+    type: single
+    prompt: "What most clearly distinguishes a docking station from a port replicator?"
+    options:
+      - "A. A docking station typically also delivers charging power and supports multiple displays"
+      - "B. A port replicator connects wirelessly"
+      - "C. A docking station works only with desktops"
+      - "D. A port replicator supports more devices"
+    correctIndex: 0
+  - id: q7
+    type: single
+    prompt: "A Thunderbolt dock driving two 4K monitors is connected to a laptop whose USB-C port is data-only. What is the result?"
+    options:
+      - "A. Both displays work, since the dock supplies its own video"
+      - "B. The laptop is damaged by the excess bandwidth"
+      - "C. The dock operates with reduced capability and the displays do not work, because the port lacks video support"
+      - "D. The dock refuses to power on"
+    correctIndex: 2
+  - id: q8
+    type: single
+    prompt: "A dock's displays and Ethernet will not work. The technician has spent an hour reinstalling dock drivers. What should have been checked first?"
+    options:
+      - "A. Whether the laptop's USB-C port actually supports DisplayPort or Thunderbolt, since no driver can add missing wiring"
+      - "B. Whether the monitors are set to the correct input"
+      - "C. Whether the dock firmware is current"
+      - "D. Whether the operating system needs a restart"
+    correctIndex: 0
+domains:
+  - domainId: aplus1.mobile
+    weight: 0.8
+  - domainId: nocti.hardware
+    weight: 0.2
+---
+
+Use this review to confirm you treat USB-C as a connector shape rather than a guarantee of capability, and that you check port support before troubleshooting software.

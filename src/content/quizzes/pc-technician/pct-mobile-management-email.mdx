@@ -1,0 +1,91 @@
+---
+title: "Mobile Management and Email Review Check"
+slug: "pct-mobile-management-email"
+track: pc-technician
+moduleId: pct.mobile.devices
+order: 5
+difficulty: Beginner
+xp: 35
+passThreshold: 70
+tags: ["A+", "CompTIA", "Core 1", "MDM", "email"]
+questions:
+  - id: q1
+    type: single
+    prompt: "A user reads mail on a phone and a laptop. Messages read on one still show unread on the other, and some are missing entirely. What fixes this?"
+    options:
+      - "A. Configure a second SMTP server on the laptop"
+      - "B. Switch the account from POP3 to IMAP, so mailbox state is held on the server and synchronised"
+      - "C. Reduce the mailbox size limit on the phone"
+      - "D. Enable POP3 on both devices so they download identically"
+    correctIndex: 1
+  - id: q2
+    type: single
+    prompt: "What role does SMTP play in an email configuration?"
+    options:
+      - "A. It retrieves mail from the server"
+      - "B. It synchronises calendar and contacts"
+      - "C. It sends outgoing mail, alongside either IMAP or POP3 for retrieval"
+      - "D. It encrypts the mailbox at rest"
+    correctIndex: 2
+  - id: q3
+    type: single
+    prompt: "Which pairing describes a correctly secured incoming mail configuration?"
+    options:
+      - "A. IMAP on port 993 over TLS"
+      - "B. IMAP on port 143 with no encryption"
+      - "C. POP3 on port 110 over TLS"
+      - "D. SMTP on port 25 over TLS"
+    correctIndex: 0
+  - id: q4
+    type: single
+    prompt: "A user's mail client receives fine but sends nothing from their home connection. What is the most likely cause?"
+    options:
+      - "A. The mailbox is full on the server"
+      - "B. The account uses IMAP rather than POP3"
+      - "C. The outgoing server is set to port 25, which their provider blocks — submission port 587 is required"
+      - "D. The device clock is incorrect"
+    correctIndex: 2
+  - id: q5
+    type: single
+    prompt: "Which port is used for secure POP3?"
+    options:
+      - "A. 110"
+      - "B. 587"
+      - "C. 993"
+      - "D. 995"
+    correctIndex: 3
+  - id: q6
+    type: single
+    prompt: "An organisation wants to protect corporate mail on employees' personal phones without controlling the whole device. Which approach fits?"
+    options:
+      - "A. MDM, enrolling each personal device for full device management"
+      - "B. MAM, managing only the corporate applications and the data inside them"
+      - "C. Requiring company-owned phones for all staff"
+      - "D. Blocking mobile email access entirely"
+    correctIndex: 1
+  - id: q7
+    type: single
+    prompt: "What does enrolling a device in full MDM allow an organisation to do?"
+    options:
+      - "A. Read the user's personal messages directly"
+      - "B. Enforce passcode and encryption policy, push configuration, and remotely wipe the device"
+      - "C. Only manage the corporate email application"
+      - "D. Prevent the device from being used outside working hours"
+    correctIndex: 1
+  - id: q8
+    type: single
+    prompt: "An employee leaves and IT remotely wipes their enrolled personal phone, destroying family photos. What should have happened beforehand?"
+    options:
+      - "A. The wipe should have been scheduled outside working hours"
+      - "B. The employee should have been told at enrolment that it permitted a wipe of the entire device, with MAM offered as the alternative"
+      - "C. Nothing — a remote wipe cannot affect personal data"
+      - "D. The device should have been factory reset by the employee first"
+    correctIndex: 1
+domains:
+  - domainId: aplus1.mobile
+    weight: 0.6
+  - domainId: aplus2.security
+    weight: 0.4
+---
+
+Use this review to confirm you can configure mobile mail correctly and explain what device enrolment actually grants before a user agrees to it.

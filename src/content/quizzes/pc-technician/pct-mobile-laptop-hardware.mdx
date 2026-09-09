@@ -1,0 +1,91 @@
+---
+title: "Laptop Hardware Review Check"
+slug: "pct-mobile-laptop-hardware"
+track: pc-technician
+moduleId: pct.mobile.devices
+order: 1
+difficulty: Beginner
+xp: 35
+passThreshold: 70
+tags: ["A+", "CompTIA", "Core 1", "mobile"]
+questions:
+  - id: q1
+    type: single
+    prompt: "A customer asks you to fit a faster processor in their two-year-old ultrabook. What is the accurate response?"
+    options:
+      - "A. Order a mobile CPU matching the socket and swap it as you would in a desktop"
+      - "B. In nearly all modern laptops the CPU is soldered to the board, so the upgrade is not possible"
+      - "C. Any laptop CPU can be changed once the cooling assembly is removed"
+      - "D. Update the firmware first, which unlocks higher CPU multipliers"
+    correctIndex: 1
+  - id: q2
+    type: single
+    prompt: "You have a desktop DIMM and a laptop needing more memory. Why will this not work?"
+    options:
+      - "A. The DIMM will fit but run at half speed"
+      - "B. Laptops require ECC memory, which desktop DIMMs lack"
+      - "C. Laptops use SODIMM modules, which are physically shorter and keyed differently — a DIMM will not seat"
+      - "D. It works only if the laptop has two free slots"
+    correctIndex: 2
+  - id: q3
+    type: single
+    prompt: "An M.2 SSD screws into the slot correctly but firmware never detects it. What is the most likely cause?"
+    options:
+      - "A. The drive must be formatted before firmware can see it"
+      - "B. The slot supports only SATA and the drive is NVMe, or the reverse — the interface behind the connector does not match"
+      - "C. M.2 drives need a separate power connector"
+      - "D. The drive capacity exceeds what the laptop supports"
+    correctIndex: 1
+  - id: q4
+    type: single
+    prompt: "Before replacing a laptop's wireless card, what should be done first?"
+    options:
+      - "A. Boot the machine to confirm the fault"
+      - "B. Remove the storage drive to protect data"
+      - "C. Disconnect the battery, because internal rails remain live while it is connected"
+      - "D. Nothing, since shutting down Windows removes all power"
+    correctIndex: 2
+  - id: q5
+    type: single
+    prompt: "A laptop's trackpad has risen, it rocks on a flat desk, and the lid will not close flush. What is happening?"
+    options:
+      - "A. The chassis has warped from heat and should be clamped flat"
+      - "B. The battery is swelling — stop charging, remove it without force, and dispose of it as lithium-ion waste"
+      - "C. The trackpad ribbon cable has detached and is pushing upward"
+      - "D. The bottom panel screws have been overtightened"
+    correctIndex: 1
+  - id: q6
+    type: single
+    prompt: "Why is it unsafe to press a swollen battery flat or lever it out with a screwdriver?"
+    options:
+      - "A. It voids the manufacturer warranty"
+      - "B. It can damage the motherboard beneath"
+      - "C. Puncturing or crushing a lithium-ion cell can start a fire that water will not extinguish"
+      - "D. It releases a liquid electrolyte that damages the keyboard"
+    correctIndex: 2
+  - id: q7
+    type: single
+    prompt: "A laptop fails to POST immediately after a memory upgrade. What should you check first?"
+    options:
+      - "A. That the SODIMM is fully seated and both retention clips have snapped over the notches"
+      - "B. Whether the operating system supports the new capacity"
+      - "C. That the BIOS has been updated to recognise the module"
+      - "D. Whether the storage drive was disconnected during the work"
+    correctIndex: 0
+  - id: q8
+    type: single
+    prompt: "Why should you look up the specific laptop model before quoting a memory upgrade?"
+    options:
+      - "A. To confirm the warranty has not expired"
+      - "B. Because two models from the same maker and year can differ — one with SODIMM slots, the next with soldered memory"
+      - "C. To determine which anti-static precautions apply"
+      - "D. Because memory prices vary between models"
+    correctIndex: 1
+domains:
+  - domainId: aplus1.mobile
+    weight: 0.8
+  - domainId: nocti.hardware
+    weight: 0.2
+---
+
+Use this review to confirm you can tell replaceable laptop components from soldered ones, and that you recognise a swelling battery as a safety issue rather than a fit problem.

@@ -1,0 +1,91 @@
+---
+title: "SOHO Network Security Review Check"
+slug: "pct-security-soho-network"
+track: pc-technician
+moduleId: pct.security.hardening
+order: 3
+difficulty: Beginner
+xp: 35
+passThreshold: 70
+tags: ["A+", "CompTIA", "Core 2", "SOHO", "router"]
+questions:
+  - id: q1
+    type: single
+    prompt: "What is the single most important change when deploying a new SOHO router?"
+    options:
+      - "A. Change the wireless network name to something non-obvious"
+      - "B. Change the default administrator password, since defaults for every model are published"
+      - "C. Set a static WAN IP address"
+      - "D. Reduce transmit power to limit range"
+    correctIndex: 1
+  - id: q2
+    type: single
+    prompt: "Why should remote management over the internet normally be disabled?"
+    options:
+      - "A. It slows the router's processor"
+      - "B. It exposes the administration interface to the whole internet, where automated scanning will find and attack it"
+      - "C. It conflicts with the guest network"
+      - "D. It prevents firmware updates installing"
+    correctIndex: 1
+  - id: q3
+    type: single
+    prompt: "Why does router firmware need checking at deployment?"
+    options:
+      - "A. Firmware controls the wireless channel selection"
+      - "B. Routers ship with builds already months old, and vendors patch real vulnerabilities"
+      - "C. Firmware updates increase wireless range"
+      - "D. The warranty requires it"
+    correctIndex: 1
+  - id: q4
+    type: single
+    prompt: "A small office creates a second SSID for visitors but leaves client isolation off. What is the consequence?"
+    options:
+      - "A. Guests get slower speeds than staff"
+      - "B. Guest devices can still reach internal devices, because a separate network name does not separate traffic"
+      - "C. The guest network will not obtain internet access"
+      - "D. Staff devices roam onto the guest network"
+    correctIndex: 1
+  - id: q5
+    type: single
+    prompt: "Why place smart devices such as cameras and thermostats on a separate network?"
+    options:
+      - "A. They need a different wireless standard"
+      - "B. They are rarely updated and often insecure, so isolation limits what a compromised device can reach"
+      - "C. They consume too much bandwidth"
+      - "D. It is required for firmware updates"
+    correctIndex: 1
+  - id: q6
+    type: single
+    prompt: "A user forwards the remote desktop port to their office PC so they can work from home. What is the risk?"
+    options:
+      - "A. Remote desktop will be slow over the internet"
+      - "B. The service is now exposed to the whole internet, where scanners find it within minutes and begin guessing credentials"
+      - "C. The router cannot forward that port"
+      - "D. Only one user can connect at a time"
+    correctIndex: 1
+  - id: q7
+    type: single
+    prompt: "What is the better way to give that user access from outside?"
+    options:
+      - "A. A VPN into the network, which exposes only the VPN endpoint"
+      - "B. Forwarding the port but changing it to a non-standard number"
+      - "C. Enabling UPnP so the application manages it"
+      - "D. Placing the PC in the router's DMZ"
+    correctIndex: 0
+  - id: q8
+    type: single
+    prompt: "Why is UPnP commonly recommended to be disabled?"
+    options:
+      - "A. It prevents guest isolation from working"
+      - "B. It allows applications on the network to open firewall ports themselves, with no administrator approval or visibility"
+      - "C. It is incompatible with modern firmware"
+      - "D. It reduces wireless throughput"
+    correctIndex: 1
+domains:
+  - domainId: aplus2.security
+    weight: 0.6
+  - domainId: nocti.networking
+    weight: 0.4
+---
+
+Use this review to confirm you can harden a small-office router from defaults, and that you reach for a VPN rather than forwarding a management port.

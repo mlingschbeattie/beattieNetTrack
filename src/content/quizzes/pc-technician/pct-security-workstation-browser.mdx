@@ -1,0 +1,91 @@
+---
+title: "Workstation and Browser Hardening Review Check"
+slug: "pct-security-workstation-browser"
+track: pc-technician
+moduleId: pct.security.hardening
+order: 2
+difficulty: Beginner
+xp: 35
+passThreshold: 70
+tags: ["A+", "CompTIA", "Core 2", "hardening", "browser"]
+questions:
+  - id: q1
+    type: single
+    prompt: "Why does account lockout do little against credential stuffing using passwords leaked from another site?"
+    options:
+      - "A. Lockout applies only to administrator accounts"
+      - "B. The attacker already has the correct password, so no failed attempts occur to trigger a lockout"
+      - "C. Credential stuffing bypasses authentication entirely"
+      - "D. Lockout thresholds reset too quickly"
+    correctIndex: 1
+  - id: q2
+    type: single
+    prompt: "Which password guidance reflects current practice?"
+    options:
+      - "A. Short strings with mandatory symbol substitution, rotated monthly"
+      - "B. Long passphrases, changed on suspicion of compromise rather than on a schedule"
+      - "C. Eight characters maximum for memorability"
+      - "D. A different complex password for every system, rotated weekly"
+    correctIndex: 1
+  - id: q3
+    type: single
+    prompt: "Why does forcing frequent complex password changes often weaken security?"
+    options:
+      - "A. It increases load on the authentication server"
+      - "B. It produces predictable increments, written-down passwords, and reuse across systems"
+      - "C. It prevents multifactor authentication from working"
+      - "D. It causes lockouts that disable accounts"
+    correctIndex: 1
+  - id: q4
+    type: single
+    prompt: "A workstation in a shared open-plan office is often left signed in and unattended. What is the most effective control?"
+    options:
+      - "A. A longer password"
+      - "B. A short automatic screen lock timeout, so the session locks itself"
+      - "C. Disabling USB ports"
+      - "D. More frequent password changes"
+    correctIndex: 1
+  - id: q5
+    type: single
+    prompt: "Why is disabling autorun a standard hardening step?"
+    options:
+      - "A. It prevents removable media being mounted at all"
+      - "B. It stops content on inserted media executing without the user deliberately opening it"
+      - "C. It encrypts data written to removable drives"
+      - "D. It prevents accidental formatting"
+    correctIndex: 1
+  - id: q6
+    type: single
+    prompt: "A member of staff plugs in a USB drive found in the car park to identify its owner. Why is this a problem?"
+    options:
+      - "A. The drive may use an incompatible file system"
+      - "B. Deliberately dropped drives are a common attack, and a device can execute content or present itself as a keyboard typing commands"
+      - "C. It will exhaust the port's power budget"
+      - "D. It is only a problem if the drive is unencrypted"
+    correctIndex: 1
+  - id: q7
+    type: single
+    prompt: "Why does a browser extension permitted to read and change data on all sites represent a serious risk?"
+    options:
+      - "A. It consumes excessive memory"
+      - "B. It can see and alter every page including banking and webmail, and it updates silently — potentially under new ownership"
+      - "C. It prevents other extensions functioning"
+      - "D. It disables the browser's security updates"
+    correctIndex: 1
+  - id: q8
+    type: single
+    prompt: "A user asks to click through a certificate warning on a banking site over public Wi-Fi. What is correct?"
+    options:
+      - "A. Proceed, since banks often have certificate issues"
+      - "B. Proceed if the padlock still appears"
+      - "C. Do not proceed — the warning means the site's identity could not be verified, which is what interception looks like"
+      - "D. Proceed after clearing the cache"
+    correctIndex: 2
+domains:
+  - domainId: aplus2.security
+    weight: 0.7
+  - domainId: aplus2.os
+    weight: 0.3
+---
+
+Use this review to confirm you can apply a workstation baseline and explain why length beats forced complexity and rotation.

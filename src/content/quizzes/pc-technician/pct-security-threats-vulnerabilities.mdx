@@ -1,0 +1,91 @@
+---
+title: "Threats and Vulnerabilities Review Check"
+slug: "pct-security-threats-vulnerabilities"
+track: pc-technician
+moduleId: pct.security.threats
+order: 2
+difficulty: Beginner
+xp: 35
+passThreshold: 70
+tags: ["A+", "CompTIA", "Core 2", "DDoS", "zero-day"]
+questions:
+  - id: q1
+    type: single
+    prompt: "A school website becomes unreachable under enormous traffic from thousands of different addresses worldwide. What is happening?"
+    options:
+      - "A. A distributed denial of service attack, using many compromised machines so blocking single addresses fails"
+      - "B. An on-path attack intercepting requests"
+      - "C. A zero-day exploit in the web server"
+      - "D. DNS spoofing redirecting visitors"
+    correctIndex: 0
+  - id: q2
+    type: single
+    prompt: "Why can a DDoS rarely be stopped on the targeted server itself?"
+    options:
+      - "A. Server firewalls cannot be reconfigured during an attack"
+      - "B. The traffic has already saturated the network link before reaching the server, so filtering must happen upstream"
+      - "C. The attack traffic is encrypted"
+      - "D. Server operating systems have no filtering capability"
+    correctIndex: 1
+  - id: q3
+    type: single
+    prompt: "An attacker positions themselves between two parties who believe they are communicating directly. What is this?"
+    options:
+      - "A. Spoofing"
+      - "B. An on-path attack"
+      - "C. A zero-day"
+      - "D. A denial of service"
+    correctIndex: 1
+  - id: q4
+    type: single
+    prompt: "A user on public Wi-Fi gets a certificate warning for a site that normally loads cleanly. What should they assume?"
+    options:
+      - "A. The certificate has expired and it is safe to continue"
+      - "B. Their device clock is wrong, the only cause of such warnings"
+      - "C. The connection may be intercepted — identity could not be verified, so they should not proceed or enter credentials"
+      - "D. The browser needs updating"
+    correctIndex: 2
+  - id: q5
+    type: single
+    prompt: "What does spoofing describe?"
+    options:
+      - "A. Overwhelming a service with traffic"
+      - "B. Falsifying an identifier such as a source address, email sender, or caller ID to appear trusted"
+      - "C. Exploiting a vulnerability with no available patch"
+      - "D. Encrypting files and demanding payment"
+    correctIndex: 1
+  - id: q6
+    type: single
+    prompt: "What is a zero-day?"
+    options:
+      - "A. An attack launched on the day a system goes live"
+      - "B. An exploit of a vulnerability for which no patch is yet available"
+      - "C. A vulnerability that has been patched but not deployed"
+      - "D. An attack that completes within 24 hours"
+    correctIndex: 1
+  - id: q7
+    type: single
+    prompt: "Which represents the greater practical risk to a typical organisation?"
+    options:
+      - "A. Zero-days, because no patch exists"
+      - "B. Known vulnerabilities left unpatched for months, which are widely exploited and require no novel research"
+      - "C. Insider threat, which is always malicious"
+      - "D. Spoofing, which cannot be detected"
+    correctIndex: 1
+  - id: q8
+    type: single
+    prompt: "Why is insider threat particularly difficult to detect?"
+    options:
+      - "A. Insiders always use administrator accounts"
+      - "B. The activity uses legitimate credentials and permitted access, so it does not resemble an intrusion"
+      - "C. Insiders operate only outside working hours"
+      - "D. Monitoring employees is technically impossible"
+    correctIndex: 1
+domains:
+  - domainId: aplus2.security
+    weight: 0.7
+  - domainId: nocti.security
+    weight: 0.3
+---
+
+Use this review to confirm you can name an attack from the symptoms visible at a helpdesk, and that you recognise unpatched known vulnerabilities as the more common cause than anything exotic.

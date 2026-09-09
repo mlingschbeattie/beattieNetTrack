@@ -1,0 +1,91 @@
+---
+title: "Social Engineering Review Check"
+slug: "pct-security-social-engineering"
+track: pc-technician
+moduleId: pct.security.threats
+order: 1
+difficulty: Beginner
+xp: 35
+passThreshold: 70
+tags: ["A+", "CompTIA", "Core 2", "phishing", "social engineering"]
+questions:
+  - id: q1
+    type: single
+    prompt: "A finance clerk receives a personalised email naming their manager, their project, and a real supplier, asking them to redirect a payment. What is this?"
+    options:
+      - "A. Generic phishing, since it arrived by email"
+      - "B. Spear phishing — targeted and researched for this specific recipient"
+      - "C. Whaling, because it concerns finance"
+      - "D. Vishing, because it impersonates a person"
+    correctIndex: 1
+  - id: q2
+    type: single
+    prompt: "What distinguishes whaling from other phishing?"
+    options:
+      - "A. It is sent to very large numbers of recipients"
+      - "B. It targets senior executives, whose authority and access make success far more valuable"
+      - "C. It always arrives by telephone"
+      - "D. It always carries a malware attachment"
+    correctIndex: 1
+  - id: q3
+    type: single
+    prompt: "A fraudulent message arrives as a text message with a shortened link. What is that called?"
+    options:
+      - "A. Vishing"
+      - "B. Whaling"
+      - "C. Smishing"
+      - "D. Pretexting"
+    correctIndex: 2
+  - id: q4
+    type: single
+    prompt: "Why do social engineering messages so often insist a matter is extremely urgent?"
+    options:
+      - "A. Urgent messages bypass spam filters more often"
+      - "B. Urgency removes the pause in which the recipient would have verified through another channel"
+      - "C. It allows the attacker to send fewer messages"
+      - "D. Urgent requests are automatically escalated to administrators"
+    correctIndex: 1
+  - id: q5
+    type: single
+    prompt: "An email appearing to come from a supplier asks to change bank details and provides a phone number to confirm. What is correct?"
+    options:
+      - "A. Call the number given, since verifying by phone confirms the request"
+      - "B. Reply asking for written confirmation"
+      - "C. Contact the supplier using details already held from before this message arrived"
+      - "D. Make the change and monitor the account"
+    correctIndex: 2
+  - id: q6
+    type: single
+    prompt: "A user's phone shows repeated MFA approval prompts overnight that they did not trigger. What does this mean?"
+    options:
+      - "A. The authenticator app is faulty and needs reinstalling"
+      - "B. An attacker already holds the password and is pushing prompts hoping for an accidental approval"
+      - "C. The account has locked and is retrying automatically"
+      - "D. The device clock has drifted"
+    correctIndex: 1
+  - id: q7
+    type: single
+    prompt: "What should that user do?"
+    options:
+      - "A. Approve one prompt to clear the queue, then change the password"
+      - "B. Deny the prompts, report it immediately, and change the password"
+      - "C. Ignore them until morning"
+      - "D. Disable MFA to stop the notifications"
+    correctIndex: 1
+  - id: q8
+    type: single
+    prompt: "Why is publicly blaming an employee who fell for a phishing email counterproductive?"
+    options:
+      - "A. It has no measurable effect on behaviour"
+      - "B. It discourages reporting, so the next person stays silent and the organisation loses the early warning that limits the incident"
+      - "C. It implies the email filter was at fault"
+      - "D. It usually causes the employee to resign"
+    correctIndex: 1
+domains:
+  - domainId: aplus2.security
+    weight: 0.8
+  - domainId: nocti.security
+    weight: 0.2
+---
+
+Use this review to confirm you can name each social engineering variant by delivery and target, and that you verify through a channel you chose rather than one the message supplied.

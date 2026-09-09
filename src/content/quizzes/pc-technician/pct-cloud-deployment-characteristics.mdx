@@ -1,0 +1,91 @@
+---
+title: "Cloud Deployment and Characteristics Review Check"
+slug: "pct-cloud-deployment-characteristics"
+track: pc-technician
+moduleId: pct.cloud.virtualization
+order: 2
+difficulty: Beginner
+xp: 35
+passThreshold: 70
+tags: ["A+", "CompTIA", "Core 1", "cloud", "VDI"]
+questions:
+  - id: q1
+    type: single
+    prompt: "A district keeps student records on dedicated infrastructure but runs its public website on a commercial provider. Which deployment model is this?"
+    options:
+      - "A. Public cloud"
+      - "B. Hybrid cloud"
+      - "C. Community cloud"
+      - "D. Private cloud"
+    correctIndex: 1
+  - id: q2
+    type: single
+    prompt: "Several school districts jointly fund one cloud platform built to meet their shared student-privacy requirements. What is that?"
+    options:
+      - "A. A public cloud, because several organisations use it"
+      - "B. A hybrid cloud, because it spans districts"
+      - "C. A community cloud, shared by organisations with common requirements"
+      - "D. A private cloud, because it is not sold commercially"
+    correctIndex: 2
+  - id: q3
+    type: single
+    prompt: "Which pair correctly separates the two ways of describing cloud?"
+    options:
+      - "A. IaaS/PaaS/SaaS are service models; public/private/hybrid/community are deployment models"
+      - "B. IaaS/PaaS/SaaS are deployment models; public/private are service models"
+      - "C. All six terms describe deployment"
+      - "D. All six terms describe service"
+    correctIndex: 0
+  - id: q4
+    type: single
+    prompt: "A college enrolment site handles ten times normal traffic for one week a year, then returns to normal. Which characteristic addresses this?"
+    options:
+      - "A. High availability"
+      - "B. Metered utilisation"
+      - "C. Shared resources"
+      - "D. Rapid elasticity"
+    correctIndex: 3
+  - id: q5
+    type: single
+    prompt: "A department leaves a large test environment running unused for three months and receives a substantial bill. Which characteristic explains this?"
+    options:
+      - "A. Metered utilisation — billing follows what is running, not what is being used"
+      - "B. High availability, which duplicates cost across regions"
+      - "C. Rapid elasticity, which automatically adds capacity"
+      - "D. Shared resources, which charge per tenant"
+    correctIndex: 0
+  - id: q6
+    type: single
+    prompt: "A user deletes a folder from their synchronised drive and it disappears from every device. What does this demonstrate?"
+    options:
+      - "A. The sync client is faulty and should be reinstalled"
+      - "B. Synchronisation replicates all changes including deletions, and is therefore not a backup"
+      - "C. The files were never uploaded"
+      - "D. Synchronisation works in one direction only"
+    correctIndex: 1
+  - id: q7
+    type: single
+    prompt: "Why is relying on a synchronised folder as a backup risky?"
+    options:
+      - "A. Sync services have lower storage limits than backup services"
+      - "B. Deletions, corruption, and ransomware propagate to every copy within seconds"
+      - "C. Synchronised files cannot be opened offline"
+      - "D. Synchronisation encrypts files so they cannot be restored"
+    correctIndex: 1
+  - id: q8
+    type: single
+    prompt: "A hospital wants clinical staff using shared workstations with no patient data stored on those machines. Which approach fits best?"
+    options:
+      - "A. File synchronisation to each workstation"
+      - "B. Issuing every member of staff an encrypted laptop"
+      - "C. VDI, where the desktop runs in the data centre and only the screen image reaches the workstation"
+      - "D. A public cloud storage account per user"
+    correctIndex: 2
+domains:
+  - domainId: aplus1.virtualization
+    weight: 0.8
+  - domainId: nocti.os
+    weight: 0.2
+---
+
+Use this review to confirm you keep service and deployment models on separate axes, and that you can explain why synchronisation is not backup.

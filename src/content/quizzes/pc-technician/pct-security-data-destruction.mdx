@@ -1,0 +1,91 @@
+---
+title: "Data Destruction and Disposal Review Check"
+slug: "pct-security-data-destruction"
+track: pc-technician
+moduleId: pct.security.hardening
+order: 4
+difficulty: Beginner
+xp: 35
+passThreshold: 70
+tags: ["A+", "CompTIA", "Core 2", "data destruction", "disposal"]
+questions:
+  - id: q1
+    type: single
+    prompt: "A school formats laptops before donating them. Why is this insufficient?"
+    options:
+      - "A. Formatting takes too long to complete on large drives"
+      - "B. A standard format rewrites file system structures while leaving the underlying data intact and recoverable"
+      - "C. Formatting only removes files created by the current user"
+      - "D. It is sufficient provided the drive is then defragmented"
+    correctIndex: 1
+  - id: q2
+    type: single
+    prompt: "What does deleting a file actually do on a traditional drive?"
+    options:
+      - "A. Overwrites the contents with zeroes"
+      - "B. Moves the data to a reserved area"
+      - "C. Removes the directory entry and marks the space reusable, leaving contents until something overwrites them"
+      - "D. Encrypts the file"
+    correctIndex: 2
+  - id: q3
+    type: single
+    prompt: "Which method destroys data while allowing the hardware to be reused?"
+    options:
+      - "A. Wiping — overwriting the entire drive"
+      - "B. Degaussing"
+      - "C. Shredding"
+      - "D. Incineration"
+    correctIndex: 0
+  - id: q4
+    type: single
+    prompt: "Why is degaussing ineffective on a solid state drive?"
+    options:
+      - "A. SSDs are shielded against magnetic fields"
+      - "B. SSDs store data in flash cells rather than magnetically, so a magnetic field does not erase them"
+      - "C. Degaussers cannot generate sufficient field strength"
+      - "D. It works but requires longer exposure"
+    correctIndex: 1
+  - id: q5
+    type: single
+    prompt: "Why is a conventional multi-pass overwrite unreliable on an SSD?"
+    options:
+      - "A. SSDs are too fast for overwrite software to track"
+      - "B. Wear levelling distributes writes across cells, so the overwrite may not reach every location holding old data"
+      - "C. SSDs reject repeated write commands"
+      - "D. Overwriting permanently damages the drive"
+    correctIndex: 1
+  - id: q6
+    type: single
+    prompt: "What is the correct software method for sanitising an SSD?"
+    options:
+      - "A. A seven-pass random overwrite"
+      - "B. A quick format followed by TRIM"
+      - "C. The manufacturer's secure erase command, which instructs the controller to clear all cells including reserved ones"
+      - "D. Degaussing followed by a full format"
+    correctIndex: 2
+  - id: q7
+    type: single
+    prompt: "A hospital disposes of drives holding patient records and requires certainty over reuse. What is appropriate?"
+    options:
+      - "A. A single-pass overwrite followed by donation"
+      - "B. Quick format and storage in a locked cabinet"
+      - "C. Physical destruction such as shredding, with a certificate of destruction retained"
+      - "D. Degaussing, then internal reuse of the drives"
+    correctIndex: 2
+  - id: q8
+    type: single
+    prompt: "What is the value of a certificate of destruction?"
+    options:
+      - "A. It transfers all legal liability to the disposal vendor"
+      - "B. It documents what was destroyed, by what method, and when — evidence that the obligation was met"
+      - "C. It is required before a drive can be degaussed"
+      - "D. It certifies the drive was working beforehand"
+    correctIndex: 1
+domains:
+  - domainId: aplus2.security
+    weight: 0.6
+  - domainId: aplus2.operational_procedures
+    weight: 0.4
+---
+
+Use this review to confirm you can match a sanitisation method to the medium and the sensitivity of the data, and that you never treat a formatted drive as an empty one.
