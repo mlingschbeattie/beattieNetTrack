@@ -41,15 +41,20 @@ Measured 2026-09-09 against the compliance definition below.
 | tech-plus | **59 / 59** | 58 | 6 |
 | pc-technician | **18 / 18** | 39 | 6 |
 | network-engineer | **51 / 51** | 61 | 4 |
-| cybersecurity-engineer | **12 / 12** | 6 | **0** |
-| cybersecurity-foundations | 5 / 6 | 6 | 1 |
+| cybersecurity-engineer | **12 / 12** | 6 (one checkpoint per module — complete) | **0** |
+| cybersecurity-foundations | **5 / 5** | 6 | 1 |
 | web-developer | 0 / 4 | 0 | 1 |
 | python-developer | 0 / 0 | 0 | 0 |
 | ai-ml | 0 / 0 | 0 | 0 |
 
 "Compliant" = authored `sections[]` **and** `<Callout>` **and** `## Key Terms`.
 
-**tech-plus is complete at 59/59** — the full FC0-U71 lesson set, Domain 6 contiguous 1–16.
+**tech-plus is complete at 59 lessons and 59 quizzes** — the full FC0-U71 set, Domain 6
+contiguous 1–16 on both sides.
+
+**cybersecurity-engineer's quiz count is not a gap.** It uses one checkpoint quiz per module,
+all six modules covered, each at order 10 so it lands after that module's lessons. Six
+quizzes for twelve lessons is the design, not a shortfall. Its real gap is **labs: zero**.
 
 ### Counting caveat — utility pages live in the lessons collection
 
@@ -59,9 +64,20 @@ A naive count reports network-engineer as 51/56 and foundations as 5/11. The ext
 - network-engineer: `cheat-sheets` · `download` · `resources` · `review-game` · `study-guides`
 - cybersecurity-foundations: `about-class` · `general-skills` · `index` · `learning-tracks` · `tour`
 
-They have no `sections`, no callout, no Key Terms **by design**. Don't "fix" them — either
-leave them or move them out of the lessons collection deliberately. The real remaining gap in
-foundations is a single lesson: **`intro-to-cybersecurity.mdx`, missing only `## Key Terms`.**
+They have no `sections`, no callout, no Key Terms **by design**, and **no `order`** — which is
+exactly why `content.ts` skips them and they never render as lessons. Don't "fix" them; either
+leave them or move them out of the lessons collection deliberately.
+
+The sixth foundations file, `intro-to-cybersecurity.mdx`, is **`draft: true` and explicitly
+superseded by `cfs-1-1-1-cia-triad`**. It does not need Key Terms. **cybersecurity-foundations
+is complete at 5/5.**
+
+⚠️ **Latent defect in that draft file.** It sits at order 1 in
+`cfs.fundamentals.security-concepts`, colliding with the real `cfs-1-1-1-cia-triad`, and its
+`sections[]` are **OSI networking sections** ("Why layers exist", "The lower layers (1-3)")
+copy-pasted from a networking lesson — they have nothing to do with its own CIA-triad body.
+`draft: true` is the only thing keeping this off the site. If anyone ever clears that flag it
+will ship broken. Either delete the file or fix the sections; don't just un-draft it.
 
 ---
 
@@ -88,26 +104,73 @@ address, a closure note). Everything conceptual uses the `choice` validator with
 ## Suggested next work, in order
 
 1. **Redeploy and verify in production.** Everything below is unverified live.
-2. **Labs and quizzes for cybersecurity-engineer.** Its 12 lessons are now fully compliant,
-   but it has **6 quizzes for 12 lessons and zero labs** — the widest remaining gap. The
-   working legacy interactive demos (sql-injection, xss-demo, cryptography, forensics,
-   binary-exploitation, reverse-engineering) are lab material waiting to be wrapped.
-3. **`intro-to-cybersecurity.mdx`** — add `## Key Terms`. Small; closes foundations.
-4. **A checkpoint quiz for tech-plus 6.1.7 AAA accounting.** Quiz order 7 in
-   `tech-plus.security` is deliberately vacant; the lesson shipped without one.
-5. **`assessment-1-x-x` quizzes on pc-technician** — 21 quizzes with opaque slugs and
-   module assignments that look scattered (`assessment-1-2-5` sits in
-   `fundamentals.computing-basics` despite being in the 1-2 hardware group). Never audited;
-   may duplicate the 12 properly-named ones.
-6. **Duplicate quiz `order` warnings** from `validate:tracks` — three, all on
-   network-engineer: `net.fundamentals.addressing` (order 1) and
-   `net.implementation.switching` (orders 1 and 2). Where two activities tie on order, a
-   tiebreak silently decides sequence. *(The `pct.hardware.components-identification`
-   warning noted on 09-08 is gone.)*
-7. **web-developer** — 4 lessons, none compliant. Phase E, not urgent.
-8. **⚠️ ar / fa / uk translations in `src/i18n/strings.ts` are Claude-drafted and
+2. **⚠️ Decide what to do with the 20 `assessment-*` stubs on pc-technician.** See the audit
+   below — this is a live student-facing quality problem and it needs Mr. Beattie's call.
+3. **Labs for cybersecurity-engineer.** Twelve compliant lessons, six checkpoint quizzes,
+   and **zero labs** — the widest genuine content gap in the repo. The working legacy
+   interactive demos (sql-injection, xss-demo, cryptography, forensics, binary-exploitation,
+   reverse-engineering) are lab material waiting to be wrapped. Prefer the `steps` lab shape.
+4. **web-developer** — 4 lessons, none compliant. Phase E, not urgent.
+5. **⚠️ ar / fa / uk translations in `src/i18n/strings.ts` are Claude-drafted and
    unreviewed.** Flagged in the file header. Mr. Beattie's students are the only fluent
    speakers available and are the intended reviewers — this is deliberate, not an oversight.
+
+### Closed on 2026-09-09
+
+- **tech-plus 6.1.7 AAA accounting** — lesson merged from a stray worktree branch, and its
+  checkpoint quiz authored. Track closed at 59/59 lessons and quizzes.
+- **All three duplicate quiz `order` warnings** on network-engineer. `validate:tracks` now
+  passes with **zero warnings**.
+- **cybersecurity-foundations** — was never incomplete; the apparent gap was a draft file
+  plus five nav pages.
+
+---
+
+## Audit: the 20 `assessment-*` quizzes on pc-technician
+
+Done 2026-09-09. The handoff had these as "never audited; may duplicate." The finding is worse
+than duplication.
+
+**Every one of the 20 is a single-question stub.** Each `assessment-1-x-x.mdx` carries no
+inline questions — it points at `public/quizzes/pc-technician/assessment-1.x.x.json` via
+`quizJsonPath`, and every one of those JSON files contains **exactly one** placeholder question
+with a one-line explanation. Example, the whole of `assessment-1.2.5`:
+
+> "What is a key IoT security concern?" → Weak default credentials.
+
+They are generated by `scripts/ingest-assessments-from-manifest.mjs` from
+`scripts/assessment-manifest.techplus.json`, and **the placeholder questions live in the
+manifest itself** — the script only renders what it is given. Each entry names a
+`sourceQuestionDocx` and `sourceAnswerDocx` (e.g. `Assessment 1.1.1 Basics of Computing.docx`).
+**There are zero .docx files anywhere in the repo.** The real question banks were never
+ingested; these are scaffolding left behind waiting for source documents.
+
+Three further facts:
+
+- **They duplicate properly-authored quizzes, with strictly worse content.** `assessment-1.1.1
+  Basics of Computing` (1 question) against `pct-computing-basics` (9). `assessment-1.2.1
+  Internal Hardware Components` (1) against `pct-components-identification` (10).
+  `assessment-1.4.5 Customer Support Workflow` (1) against `pct-customer-professionalism` (10).
+  The pattern holds across most of the set.
+- **Their metadata is Tech+, their track is pc-technician.** Every file says "Auto-generated
+  assessment quiz from Tech+ manifest" and is tagged `tech+`, while carrying `aplus1.hardware`
+  / `aplus2.os` domain weights on the `pc-technician` track.
+- **The manifest's `moduleId` is `pct.foundations` for all of them**, but the generated files
+  carry varied real module ids. Someone hand-reassigned modules after generation, which is why
+  the assignments looked scattered — `assessment-1-2-5` landing in
+  `pct.fundamentals.computing-basics` is a leftover of that pass, not a mapping decision.
+
+They sit at orders 101–120, so they trail their modules and collide with nothing. That is the
+only good news: **they are student-visible activities that award XP for one trivial question.**
+
+**Options, for Mr. Beattie to choose:**
+1. Hide them (`draft: true`) until the real `.docx` banks are ingested — reversible, removes
+   them from students now, keeps the scaffolding.
+2. Delete the 20 `.mdx` and 20 `.json` — the topics are already covered better by the `pct-*`
+   quizzes. The manifest and ingest script would stay for a future real ingest.
+3. Ingest the real questions — needs the 40 `.docx` files, which are not in the repo.
+
+Do **not** quietly leave them live on the assumption they are harmless.
 
 ---
 
@@ -153,8 +216,10 @@ names match the inlined stylesheet and produce false positives.
 npm run validate:tracks && npm run lint && npm run test:unit
 ```
 
-Baseline confirmed 2026-09-09: validate passes, **3 duplicate-order warnings only** ·
-11 tracks, 72 modules, 352 entries · lint **0 errors, 0 warnings, 7 hints** · **14/14 tests**.
+Baseline confirmed 2026-09-09: validate passes with **zero warnings** ·
+11 tracks, 72 modules, 353 entries · lint **0 errors, 0 warnings, 7 hints** · **14/14 tests**.
+
+The duplicate-order warnings are gone — treat any new one as a regression, not as noise.
 
 ---
 
