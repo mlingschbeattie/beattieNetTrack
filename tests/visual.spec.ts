@@ -78,14 +78,14 @@ test('track page', async ({ page }) => {
 });
 
 test('lesson page', async ({ page }) => {
-  await page.goto('/lessons/intro-to-cybersecurity');
+  await page.goto('/lessons/cfs-1-1-1-cia-triad');
   await page.locator('.sidebar-progress').waitFor({ state: 'visible' });
   await captureStableScreenshot(page, 'lesson.png');
 });
 
 test('lesson page (mobile)', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/lessons/intro-to-cybersecurity');
+  await page.goto('/lessons/cfs-1-1-1-cia-triad');
   await page.locator('.sidebar-progress').waitFor({ state: 'visible' });
   await captureStableScreenshot(page, 'lesson-mobile.png');
 });

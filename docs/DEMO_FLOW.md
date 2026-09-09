@@ -67,7 +67,7 @@ Show foundational security reasoning moving from concepts to action.
 
 ### Sequence
 1. Lesson:
-   - `/lessons/intro-to-cybersecurity`
+   - `/lessons/cfs-1-1-1-cia-triad`
 2. Activity:
    - `/workspace/activity/cfs-cia-triad-classifier`
 3. Lab:

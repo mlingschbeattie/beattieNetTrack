@@ -22,7 +22,7 @@ const setMockDate = async (page: Page, isoDate: string) => {
 };
 
 test('completing a lesson updates XP and track progress', async ({ page }) => {
-  await page.goto('/lessons/intro-to-cybersecurity');
+  await page.goto('/lessons/cfs-1-1-1-cia-triad');
   await page.evaluate(() => {
     window.localStorage.clear();
   });
@@ -42,7 +42,7 @@ test('completing a lesson updates XP and track progress', async ({ page }) => {
 
 test('streak increments across days via check-in', async ({ page }) => {
   await setMockDate(page, '2026-02-10T12:00:00Z');
-  await page.goto('/lessons/intro-to-cybersecurity');
+  await page.goto('/lessons/cfs-1-1-1-cia-triad');
   await page.evaluate(() => {
     window.localStorage.clear();
   });
