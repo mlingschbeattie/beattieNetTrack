@@ -1,0 +1,165 @@
+---
+title: AAA Framework — Accounting and Audit Trails
+description: The third A of AAA. How systems record what an authenticated, authorized user actually did — audit logs, session duration, resources accessed, SIEM aggregation, immutable storage, time synchronization, and the retention rules that make forensics and compliance possible.
+slug: tech-plus-6-1-7-aaa-accounting
+track: tech-plus
+moduleId: tech-plus.security
+order: 7
+objective: "FC0-U71 6.1"
+xp: 15
+source: cyber-org
+difficulty: Beginner
+estMinutes: 20
+tags: ["tech+", "FC0-U71 6.1", "AAA", "accounting", "audit log", "SIEM", "log retention", "non-repudiation"]
+sections:
+  - id: accounting-the-third-a
+    title: "Accounting: The Third A of AAA"
+    keyPoints:
+      - "Accounting is the third A in AAA — it records what an authenticated, authorized user actually did."
+      - "Authentication asks 'who are you', authorization asks 'what may you do', and accounting asks 'what did you do'."
+      - "The record accounting produces is called an audit log, or audit trail."
+      - "Accountability means an action can be traced back to one specific user — without accounting, there is no accountability."
+    check:
+      - prompt: "A nurse signs in with a badge and PIN, opens a patient chart she has rights to open, and the system writes a record naming her, the chart, and the time. Which part of AAA produced that record?"
+        options:
+          - "Authentication"
+          - "Authorization"
+          - "Accounting"
+          - "Encryption"
+        correct: 2
+      - prompt: "Which question does accounting answer?"
+        options:
+          - "What did this user actually do?"
+          - "Who is this user?"
+          - "What is this user permitted to do?"
+          - "How strong is this user's password?"
+        correct: 0
+  - id: what-gets-logged
+    title: "What Gets Logged and Where It Goes"
+    keyPoints:
+      - "A useful audit entry captures four things: the identity, the action, the resource touched, and the timestamp."
+      - "Accounting also measures consumption — session duration, data transferred, resources used — which is what makes billing and capacity planning possible."
+      - "Always log login successes and failures, privilege changes, sensitive data access, and account creation or deletion."
+      - "A SIEM (Security Information and Event Management) system aggregates logs from many devices into one console and correlates patterns no single log would reveal."
+    check:
+      - prompt: "An analyst needs failed logins from the domain controller, blocked connections from the firewall, and file access from the server visible together in one console. Which system does that?"
+        options:
+          - "A DHCP server"
+          - "A print spooler"
+          - "A patch management console"
+          - "A SIEM"
+        correct: 3
+      - prompt: "Which of the following is an accounting record rather than an authorization setting?"
+        options:
+          - "A security group that grants Finance write access to the payroll share"
+          - "A log entry showing that Maria opened payroll.xlsx at 2:14 a.m."
+          - "An NTFS permission list attached to a folder"
+          - "A policy requiring passwords to be at least 14 characters"
+        correct: 1
+  - id: protecting-the-record
+    title: "Protecting and Retaining the Record"
+    keyPoints:
+      - "Forward logs to a separate collector or write-once storage, because an attacker who takes over a host can rewrite the logs stored on it."
+      - "Immutable logging (write-once storage) means an entry cannot be altered after it is written."
+      - "NTP keeps every system's clock in agreement so events from different machines can be placed in the correct order."
+      - "A retention policy sets how long logs are kept — HIPAA requires six years, PCI DSS requires twelve months."
+    check:
+      - prompt: "Why should audit logs be forwarded off the machine that generated them?"
+        options:
+          - "Forwarding compresses the logs so they take up less disk space"
+          - "An attacker who takes over the machine can delete or edit the local logs to hide what they did"
+          - "Logs cannot be read on the same system that wrote them"
+          - "Forwarding is required before any user can log in"
+        correct: 1
+      - prompt: "Two servers recorded the same intrusion, but their timestamps are eleven minutes apart, so the analyst cannot tell which event happened first. What fixes this?"
+        options:
+          - "Increasing the log retention period to six years"
+          - "Encrypting the log files at rest"
+          - "Moving both servers onto the same VLAN"
+          - "Synchronizing both servers' clocks with NTP"
+        correct: 3
+domains:
+  - domainId: techplus.security
+    weight: 1
+---
+
+import Callout from '../../components/Callout.astro';
+
+## Somebody Opened That File at 2 A.M.
+
+A hospital finds out that a celebrity's medical chart was read by someone with no reason to read it. The account used was a real account. The person had a valid badge, a valid password, and — because they worked in IT — legitimate permission to open the file. Authentication worked. Authorization worked. Neither one stopped anything, and neither one can tell you who did it.
+
+What answers that question is the log. Somewhere on that system is a line recording the account name, the chart that was opened, and the exact minute it happened. That line is **accounting** — the third A of the AAA framework — and it is the only one of the three that can tell you what already happened.
+
+## The Third A
+
+**AAA** stands for Authentication, Authorization, and Accounting. Each A answers a different question, and the exam tests the difference between them constantly.
+
+**Authentication** answers *"Who are you?"* You prove your identity with a password, a fingerprint, or a code from your phone. **Authorization** answers *"What are you allowed to do?"* Once the system knows you are Maria from Accounts Payable, it checks its policy and decides which folders, commands, and applications Maria may touch. **Accounting** answers *"What did you actually do?"*
+
+The first two happen before the action. Accounting happens during and after it. Authentication and authorization are gates — they decide whether something is permitted. Accounting is a camera — it records what happened once the gate opened. A gate stops the wrong person from walking in. A camera tells you what the right person did after they walked in. You need both, and one is never a substitute for the other.
+
+The record accounting produces is called an **audit log** — you will also hear **audit trail**, which means the same thing. What an audit log buys you is **accountability**: the ability to trace an action back to one specific user rather than shrugging at "somebody on the network."
+
+<Callout type="exam">
+CompTIA writes AAA questions as scenarios and expects you to name which A is involved. Match the verb in the question. *Proving* identity is authentication. *Permitting or denying* an action is authorization. *Recording* an action that already happened is accounting. An "Access Denied" message is authorization. Reviewing what happened last Tuesday is accounting.
+</Callout>
+
+## What an Audit Entry Contains
+
+A log entry worth keeping captures four things: **who** (the user account or system identity), **what** (the action — read, write, delete, install, log in), **where** (the file, database, folder, or device involved), and **when** (the timestamp). Drop any one of the four and the entry stops being evidence. "A file was deleted" is trivia. "Account jmartin deleted HR/reviews-2026.xlsx on the file server at 02:14:37 on March 9" is evidence.
+
+Accounting tracks **consumption** as well as actions. **Session duration** — how long you stayed logged in. **Data consumed** — how many gigabytes moved across the link. **Resources accessed** — which servers, licenses, or virtual machines you used. Your phone carrier's data meter is accounting. So is a cloud provider's monthly invoice: AWS bills you because it counted every hour your virtual machine ran. This is why accounting matters to the finance department and not only to the security team.
+
+Certain events should be logged on every system, everywhere:
+
+- **Login successes and failures** — who tried to get in, who succeeded, and who kept failing at 3 a.m.
+- **Privilege changes** — who granted whom administrator rights, and when.
+- **Sensitive data access** — who read, copied, or exported protected records.
+- **User management** — who created, disabled, or deleted an account.
+
+Those four categories form a security baseline. An insider stealing data almost always trips at least one of them.
+
+## Making Sense of Many Logs at Once
+
+One server writes its own log. So does the firewall, the domain controller, the wireless controller, the database, and every workstation. Reading them one at a time is how attacks get missed, because the story is spread across all of them — a failed login here, a firewall denial there, a large file transfer somewhere else.
+
+A **SIEM** — Security Information and Event Management — is the system that solves this. It **aggregates** logs from every device and application into one central platform, then **correlates** events across those sources to surface patterns no single log would reveal. Fifty failed logins on one server is a user who forgot their password. Fifty failed logins spread one-per-server across fifty servers is a password-spraying attack, and only the SIEM sees it, because only the SIEM is looking at all fifty logs at once. Splunk, Microsoft Sentinel, and IBM QRadar are the names you will run into.
+
+## Keeping the Record Trustworthy
+
+A log is only useful if it is still there and still accurate when you go looking. Three practices protect it.
+
+**Forward the logs off the host.** An attacker who compromises a machine will try to erase their tracks by editing or deleting the log stored on that machine. If every entry is also written to a separate log server the moment it is created, the attacker has to compromise a second system to finish the cover-up — and the attempt itself shows up as a gap.
+
+**Make the logs immutable.** **Immutable logging** means an entry cannot be modified once it is written. This is usually done with write-once storage — sometimes called WORM, for write once, read many — where the storage system itself refuses edits and deletions until the retention period ends. Nobody edits an immutable log, including the administrator, including you.
+
+**Synchronize the clocks.** **NTP** (Network Time Protocol) keeps every device on the network agreeing on what time it is. Without it, one server's log says the intrusion started at 14:02 and another says 13:51, and you cannot put the events in order. Correlation depends entirely on timestamps, so a drifting clock quietly destroys the value of every log it touches.
+
+<Callout type="warn">
+When you suspect an incident, the damaging move is not picking the wrong tool — it is rebooting the machine or logging into it with a domain administrator account to "take a quick look." A reboot wipes the volatile evidence held in memory and can roll entries out of the log buffer before anything collects them. Logging in interactively writes your own activity into the trail you are about to examine, and it puts privileged credentials on a box the attacker may already control. Preserve first, investigate second: collect and forward the logs before you touch the system.
+</Callout>
+
+## How Long to Keep It
+
+**Log retention** is how long logs are stored before they are deleted. The number is not a preference — regulations set it. **HIPAA** requires healthcare organizations to retain audit records for **six years**. **PCI DSS**, the standard for handling payment card data, requires **twelve months**, with the most recent three months kept immediately available.
+
+Retention is where the hospital in the opening story failed. The suspected access happened 45 days ago. The logs were kept for 30. There is nothing to investigate, nothing to prove, and nothing to disprove — and because HIPAA required six years, the missing logs are themselves a violation, separate from whatever the administrator did or did not do. Storage is cheap; old logs get archived to slow, inexpensive storage rather than deleted. A retention policy balances compliance requirements, storage cost, and how far back an investigation might realistically need to reach — and the compliance requirement is the floor, not the target.
+
+## Why This Matters
+
+Accounting is the foundation under four things you will hear about constantly.
+
+**Non-repudiation.** A user cannot credibly deny an action when the log proves they took it. That is the whole idea, and it only holds when the logs are complete, time-accurate, and tamper-proof.
+
+**Forensics.** After a breach, the audit trail is how investigators reconstruct what the attacker touched, what data left the building, and when it started.
+
+**Compliance.** HIPAA, PCI DSS, SOX, and FERPA all require audit logging by name. An auditor asking to see your logs is asking about accounting.
+
+**Billing.** Every metered service — cloud compute, mobile data, software licensing — bills from accounting records.
+
+On the Tech+ exam, expect the AAA framework as a scenario that asks you to name which A applies. On the job, the first question after any security incident is the same one every time: what do the logs say?
+
+## Key Terms
+
+AAA Framework · Accounting · Audit Log · Audit Trail · Accountability · Authentication vs Authorization vs Accounting · Session Duration · Data Consumed · Resources Accessed · Login Auditing · Privilege Change Logging · SIEM (Security Information and Event Management) · Log Aggregation · Event Correlation · Log Forwarding · Immutable Logging · Write Once Read Many (WORM) · Network Time Protocol (NTP) · Time Synchronization · Log Retention · HIPAA · PCI DSS · Non-Repudiation · Forensic Investigation
