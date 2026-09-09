@@ -1,0 +1,149 @@
+---
+title: "Client-Side Virtualization — Hypervisors and Virtual Machines"
+description: "What a hypervisor actually does, the difference between type 1 and type 2, what a virtual machine really costs in host resources, and why isolation is the reason to use one."
+slug: pct-client-side-virtualization
+track: pc-technician
+moduleId: pct.cloud.virtualization
+order: 3
+objective: "CompTIA A+ 220-1101 (Core 1) 4.2"
+xp: 20
+difficulty: Beginner
+estMinutes: 25
+tags: ["A+", "Core 1", "CompTIA", "virtualization", "hypervisor", "virtual machine", "snapshot", "sandbox"]
+sections:
+  - id: hypervisors
+    title: "Type 1 and Type 2 Hypervisors"
+    keyPoints:
+      - "A hypervisor divides one physical machine's resources among several virtual machines."
+      - "Type 1 runs directly on the hardware with no host operating system beneath it — used on servers."
+      - "Type 2 runs as an application on top of an existing operating system — used on workstations."
+      - "Type 1 performs better because there is no host OS competing for resources."
+    check:
+      - prompt: "A student installs virtualization software on their Windows laptop to run Linux in a window. Which type of hypervisor is that?"
+        options:
+          - "Type 1, because it creates virtual machines"
+          - "Type 2, because it runs as an application on top of the existing operating system"
+          - "Neither — running an OS in a window is emulation, not virtualization"
+          - "Type 1, because Linux is running directly on the hardware"
+        correct: 1
+      - prompt: "Why does a type 1 hypervisor generally outperform a type 2 for server workloads?"
+        options:
+          - "It compresses virtual machine memory automatically"
+          - "It supports more guest operating systems"
+          - "It runs directly on the hardware, with no host operating system consuming resources beneath it"
+          - "It does not require virtualization support in the CPU"
+        correct: 2
+  - id: resource-requirements
+    title: "Virtual Machines Cost Real Resources"
+    keyPoints:
+      - "Every VM consumes real RAM, CPU, and disk from the host — the resources are divided, not created."
+      - "The host operating system needs its own share left over, or everything slows together."
+      - "Hardware virtualization support in the CPU must be enabled in firmware, or VMs will not start or run badly."
+      - "Snapshots capture a VM's state so it can be rolled back, but they consume disk and are not backups."
+    check:
+      - prompt: "A laptop with 8 GB of RAM runs Windows and a VM assigned 6 GB. What is the likely result?"
+        options:
+          - "The VM runs well because it has been given priority"
+          - "The host is left too little memory, so both the host and the VM swap heavily and everything becomes slow"
+          - "The hypervisor compresses the excess automatically with no impact"
+          - "The VM will refuse to start until more RAM is installed"
+        correct: 1
+      - prompt: "A user reports that virtual machines either will not start or run extremely slowly on an otherwise capable desktop. What should you check in firmware?"
+        options:
+          - "That Secure Boot is disabled"
+          - "That the boot order lists the virtual disk first"
+          - "That hardware virtualization support is enabled in BIOS or UEFI"
+          - "That the TPM has been cleared"
+        correct: 2
+  - id: isolation
+    title: "Isolation Is the Point"
+    keyPoints:
+      - "A VM is separated from the host, so what happens inside it is contained."
+      - "This makes VMs the standard environment for testing untrusted software and analysing malware."
+      - "Snapshots let you return to a known-good state in seconds after a destructive test."
+      - "Isolation is strong but not absolute — a VM handling hostile code still needs its network access restricted."
+    check:
+      - prompt: "Why is a virtual machine the appropriate place to open a suspicious file for analysis?"
+        options:
+          - "Virtual machines cannot run malicious code"
+          - "The VM is isolated from the host, so damage is contained, and a snapshot can restore it instantly afterwards"
+          - "Antivirus is more effective inside a virtual machine"
+          - "Malware is unable to detect that it is running in a VM"
+        correct: 1
+      - prompt: "A technician runs a hostile sample in a VM that shares a folder with the host and sits on the office network. What is wrong with this setup?"
+        options:
+          - "Nothing, provided a snapshot was taken first"
+          - "The shared folder is a writable path back to the host and the network access lets the sample reach other machines — the isolation has been bypassed by configuration"
+          - "The VM needs more RAM to contain the sample"
+          - "Snapshots should be taken after the test rather than before"
+        correct: 1
+domains:
+  - domainId: aplus1.virtualization
+    weight: 0.8
+  - domainId: aplus2.security
+    weight: 0.2
+---
+
+import Callout from '../../components/Callout.astro';
+
+## One Computer, Several Computers
+
+A student needs to learn Linux. They have one laptop, running Windows, which they also need for coursework. The old answer was a second partition and a reboot every time they switched. The current answer is a **virtual machine** — Linux running in a window, alongside Windows, on the same hardware, at the same time.
+
+Nothing was added to the machine. The resources it already had were **divided**, and that division is what virtualization is.
+
+## What a Hypervisor Does
+
+A **hypervisor** is the software layer that carves one physical machine's CPU, memory, storage, and network into **virtual machines**, each of which believes it has a computer to itself. Each VM runs its own **guest** operating system, unaware of the others.
+
+There are two kinds, and the distinction is simply *what is underneath the hypervisor*:
+
+**Type 1 — bare metal.** Runs **directly on the hardware**. There is no host operating system. The hypervisor *is* what boots. This is what runs in data centres, because nothing sits between it and the hardware taking a cut.
+
+**Type 2 — hosted.** Runs **as an application** on an existing operating system, the way any other program does. Start Windows, then start the virtualization software, then start a VM inside it. This is what a technician or student uses on a workstation — easy to install, easy to remove, and slower, because the host operating system is underneath consuming resources of its own.
+
+The performance gap follows directly from the diagram. Type 1 has one layer between the guest and the hardware; type 2 has two, and the lower one is also busy running a desktop.
+
+## Virtual Machines Are Not Free
+
+The most common misunderstanding is that a VM is somehow lighter than a real machine. It is not. **Every VM consumes real RAM, real CPU time, and real disk from the host.** Nothing is manufactured — it is divided.
+
+That has a practical consequence people run into immediately. On a laptop with 8 GB of RAM, assigning 6 GB to a VM leaves 2 GB for Windows and everything already open. The host starts swapping to disk, and because the host is swapping, the VM stalls too. Both become unusable at once, and the instinct — give the VM more memory, since it feels slow — makes it worse. **The host needs its own working share.**
+
+Two other requirements catch people out:
+
+**Hardware virtualization support** must be enabled in **BIOS/UEFI**. It is frequently off by default, and the symptom is VMs that refuse to start or crawl badly on hardware that should be more than adequate. It is a firmware setting, not a software one.
+
+**Disk space** grows faster than expected, especially with snapshots.
+
+<Callout type="exam">
+The distinction A+ wants is **what sits below the hypervisor**. Type 1 runs on bare metal with no host OS and is the server answer. Type 2 runs as an application on a host OS and is the workstation answer. Also expect the resource point — a VM consumes the host's actual RAM and CPU — and the firmware point, that **virtualization support must be enabled in BIOS/UEFI** before VMs will run properly.
+</Callout>
+
+## Isolation Is the Reason
+
+Beyond running two operating systems at once, the property that makes virtualization genuinely valuable is **isolation**. What happens inside a VM stays inside it. The guest cannot see the host's files or reach into its memory.
+
+That makes a VM the correct place to:
+
+- **Test software** before it goes near a production machine.
+- **Open something suspicious** during analysis.
+- **Practise destructive procedures** — repartitioning, registry surgery, a deliberately broken boot — without risking anything real.
+
+**Snapshots** make this practical. A snapshot captures the VM's entire state at a moment in time, and restoring rolls it back in seconds. Break the guest completely, restore the snapshot, and it is as if nothing happened. That is why a VM plus a snapshot is the standard lab environment for anything you would not do to a real machine.
+
+Snapshots are not backups, for the same reason as always: they live on the same host, they are tied to that VM, and they consume disk continuously while they exist.
+
+<Callout type="warn">
+The mistake with real consequences is trusting isolation while quietly dismantling it. A technician opens a hostile sample in a VM — correct — but that VM has a shared folder mapped to the host desktop for convenience and a bridged network adapter so it can reach the internet. Both are defaults people enable without thinking, and both are routes out. A shared folder is a writable path straight to the host, and ransomware will take it; a bridged adapter puts the sample on the office network alongside every other machine. Isolation is a configuration, not a guarantee. Before running anything hostile: remove shared folders, disconnect or isolate the network adapter, and take the snapshot first.
+</Callout>
+
+## Why This Matters in the Field
+
+Virtualization is how you get a safe place to work. A technician with a VM and a snapshot can try the risky fix, see what it does, and roll back — rather than trying it on a customer's machine and hoping.
+
+It is also the foundation under everything in the previous two lessons. Cloud providers are running enormous numbers of virtual machines on pooled hardware; understanding the hypervisor on your own laptop is understanding what is happening in their data centre, at a different scale.
+
+## Key Terms
+
+Virtualization · Hypervisor · Type 1 hypervisor · Bare metal · Type 2 hypervisor · Hosted hypervisor · Host · Guest · Virtual machine · Resource allocation · Overcommitment · Swapping · Hardware virtualization support · BIOS/UEFI setting · Snapshot · Rollback · Isolation · Sandbox · Shared folder · Bridged networking · Host-only networking · Virtual disk

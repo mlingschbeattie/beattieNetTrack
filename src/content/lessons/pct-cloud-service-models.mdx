@@ -1,0 +1,152 @@
+---
+title: "Cloud Service Models — Who Is Responsible for What"
+description: "IaaS, PaaS, and SaaS as a question of where responsibility transfers, and the shared responsibility model that decides whether a cloud outage or breach was yours to prevent."
+slug: pct-cloud-service-models
+track: pc-technician
+moduleId: pct.cloud.virtualization
+order: 1
+objective: "CompTIA A+ 220-1101 (Core 1) 4.1"
+xp: 20
+difficulty: Beginner
+estMinutes: 25
+tags: ["A+", "Core 1", "CompTIA", "cloud", "IaaS", "PaaS", "SaaS", "shared responsibility"]
+sections:
+  - id: the-three-models
+    title: "IaaS, PaaS, and SaaS"
+    keyPoints:
+      - "The three models differ by how much of the stack the provider operates for you."
+      - "IaaS gives you virtual hardware — you still install and maintain the operating system and everything above it."
+      - "PaaS gives you a managed platform to deploy code onto, with the OS and runtime handled for you."
+      - "SaaS gives you finished software you simply use, with nothing underneath it to manage."
+    check:
+      - prompt: "A school rents virtual servers and installs and patches Windows Server on them itself. Which model is this?"
+        options:
+          - "SaaS"
+          - "PaaS"
+          - "IaaS"
+          - "A private cloud, which is not one of the three service models"
+        correct: 2
+      - prompt: "Staff use a web-based email and document suite with no servers of their own. Which model is that, and what do they manage?"
+        options:
+          - "SaaS — they manage their accounts, data, and access, and nothing beneath the application"
+          - "IaaS — they manage the virtual machines running the suite"
+          - "PaaS — they manage the runtime the suite is deployed onto"
+          - "SaaS — they manage the operating system the suite runs on"
+        correct: 0
+  - id: shared-responsibility
+    title: "The Shared Responsibility Model"
+    keyPoints:
+      - "The provider secures the cloud itself; the customer secures what they put into it."
+      - "Moving up from IaaS to SaaS transfers more responsibility to the provider, but never all of it."
+      - "Account access, permissions, and data configuration remain the customer's responsibility in every model."
+      - "Most publicised cloud data exposures are customer misconfiguration, not provider compromise."
+    check:
+      - prompt: "An organisation's files stored with a cloud provider are exposed publicly because a storage container was set to allow anonymous access. Who was responsible?"
+        options:
+          - "The provider, since the data was stored on their infrastructure"
+          - "The customer, because access configuration of their own data is their responsibility in every service model"
+          - "Neither — this is an accepted risk of cloud storage"
+          - "The provider, unless the customer had purchased a security add-on"
+        correct: 1
+      - prompt: "Which responsibility stays with the customer even in SaaS?"
+        options:
+          - "Patching the operating system the application runs on"
+          - "Maintaining the physical data centre"
+          - "Managing user accounts, permissions, and who can see which data"
+          - "Upgrading the application to new versions"
+        correct: 2
+  - id: why-it-matters
+    title: "Choosing Between Them"
+    keyPoints:
+      - "More control means more work; less work means less control."
+      - "IaaS suits workloads needing specific OS configuration or legacy software."
+      - "SaaS suits standard business functions where running infrastructure adds no value."
+      - "The right question is which responsibilities the organisation actually wants to keep."
+    check:
+      - prompt: "A small school with one part-time technician needs email for 400 students. Which model best fits?"
+        options:
+          - "IaaS, so the school controls the mail server configuration entirely"
+          - "SaaS, so no servers, operating systems, or mail software need maintaining"
+          - "PaaS, so the school can deploy its own mail application"
+          - "An on-premises server, since cloud email cannot scale to 400 users"
+        correct: 1
+      - prompt: "Why might an organisation choose IaaS over SaaS despite the extra work?"
+        options:
+          - "IaaS is always cheaper than SaaS"
+          - "SaaS cannot be accessed over the internet"
+          - "They run legacy or specialised software that requires specific operating system configuration"
+          - "IaaS requires no security configuration"
+        correct: 2
+domains:
+  - domainId: aplus1.virtualization
+    weight: 0.8
+  - domainId: nocti.os
+    weight: 0.2
+---
+
+import Callout from '../../components/Callout.astro';
+
+## "The Cloud Provider Lost Our Data"
+
+An organisation discovers that a folder of internal documents has been readable by anyone on the internet for eight months. The first reaction in the room is that the cloud provider has had a breach.
+
+They have not. Nobody attacked anything. Somebody created a storage container, set it to allow anonymous read access so a contractor could fetch a file quickly, and never changed it back. The provider's infrastructure worked perfectly the entire time, faithfully serving the files to everyone exactly as instructed.
+
+This is the single most important idea in cloud computing, and it is not a technical one. **Moving to the cloud moves some responsibilities to the provider and leaves others with you, and the boundary depends on which service model you bought.** Knowing where that line sits is what separates using cloud services from being surprised by them.
+
+## The Three Models Are One Question
+
+IaaS, PaaS, and SaaS all answer the same question — *how much of the stack does somebody else run?*
+
+**IaaS — Infrastructure as a Service.** You rent virtual hardware: compute, storage, networking. The provider runs the data centre, the physical servers, and the virtualisation layer. **You install the operating system and everything above it**, and you patch it, secure it, and keep it running. Closest to owning servers, without owning servers.
+
+**PaaS — Platform as a Service.** You get a managed platform to deploy your application onto. The provider handles the operating system, the runtime, and the scaling. You bring code and data. You never log into a server, and you also cannot configure one.
+
+**SaaS — Software as a Service.** You get finished software. Web-based email, an online document suite, a hosted helpdesk. There is no infrastructure visible to you at all — you create accounts and use the product.
+
+A useful way to hold it: with **IaaS you get a kitchen**, with **PaaS you get a kitchen and a chef**, and with **SaaS you get a meal**.
+
+## The Shared Responsibility Model
+
+Every provider publishes a version of this, and it is the thing people skip.
+
+The provider is responsible for **security *of* the cloud** — the buildings, the hardware, the hypervisors, the network fabric. The customer is responsible for **security *in* the cloud** — the data, the accounts, the permissions, and the configuration.
+
+As you move from IaaS toward SaaS, more of the stack transfers to the provider:
+
+| | IaaS | PaaS | SaaS |
+|---|---|---|---|
+| Data and access control | **You** | **You** | **You** |
+| Application | **You** | **You** | Provider |
+| Runtime and OS | **You** | Provider | Provider |
+| Virtualisation, hardware, facility | Provider | Provider | Provider |
+
+Notice the top row. **Data and access control never transfer.** In every model, in every product, from every vendor, deciding who may see your data is your job. That is why the storage container in the opening story was the customer's failure, and it is why the overwhelming majority of publicised cloud data exposures are misconfiguration rather than provider compromise.
+
+<Callout type="exam">
+A+ tests these as scenario matching, so identify the model by **what the customer manages**. If they patch the operating system, it is **IaaS**. If they deploy an application but never touch the OS, it is **PaaS**. If they only use software and manage accounts, it is **SaaS**. And remember the constant: **the customer always owns their data and access configuration**, whatever the model.
+</Callout>
+
+## Choosing
+
+The trade is straightforward: **more control costs more work, and less work costs control.**
+
+**IaaS** earns its overhead where you genuinely need to control the operating system — legacy applications, unusual configuration requirements, software with specific dependencies.
+
+**SaaS** wins wherever the function is standard and running infrastructure adds nothing. A school does not gain anything by operating its own mail server; email is a solved problem, and every hour spent patching it is an hour not spent on something only that school can do.
+
+The honest question is not which is most modern. It is **which responsibilities the organisation actually wants to keep**, given the staff it actually has.
+
+<Callout type="warn">
+The assumption that causes real harm is that moving to the cloud moved the security with it. It sounds reasonable — the provider is enormous, has certifications, and employs more security engineers than your organisation employs people — and it produces predictable outcomes: storage left open to the internet, administrator accounts without multi-factor authentication, ex-employees with live access months after leaving. None of that is something a provider can fix for you, because in every case the configuration is doing precisely what the customer asked. Read the shared responsibility model for the specific service you are buying, and treat the customer half as work that still has to be done by someone.
+</Callout>
+
+## Why This Matters in the Field
+
+You will not be architecting cloud platforms as a technician. You will be answering questions about them constantly — whether data is safe, why an outage is or is not fixable by you, who to call, and what a service actually includes.
+
+Knowing where the responsibility line sits lets you answer accurately. When a SaaS provider is down, no local action will help and the honest answer is a status page and a timeline. When a storage container is exposed, the provider is not the one to call, because the fix is a setting in your own account.
+
+## Key Terms
+
+Cloud computing · IaaS · Infrastructure as a Service · PaaS · Platform as a Service · SaaS · Software as a Service · Service model · Shared responsibility model · Security of the cloud · Security in the cloud · Misconfiguration · Storage container · Anonymous access · Access control · Provisioning · Managed service · Legacy application · On-premises

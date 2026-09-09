@@ -1,0 +1,147 @@
+---
+title: "Cloud Deployment Models and Characteristics"
+description: "Public, private, hybrid, and community clouds, plus the properties that define cloud computing itself — elasticity, metered billing, high availability, file synchronisation, and desktop virtualisation."
+slug: pct-cloud-deployment-characteristics
+track: pc-technician
+moduleId: pct.cloud.virtualization
+order: 2
+objective: "CompTIA A+ 220-1101 (Core 1) 4.1"
+xp: 20
+difficulty: Beginner
+estMinutes: 25
+tags: ["A+", "Core 1", "CompTIA", "cloud", "public cloud", "private cloud", "hybrid", "elasticity", "VDI", "file synchronisation"]
+sections:
+  - id: deployment-models
+    title: "Where the Cloud Lives"
+    keyPoints:
+      - "Public cloud runs on a provider's shared infrastructure, used by many unrelated customers."
+      - "Private cloud is dedicated to one organisation, whether hosted internally or by a provider."
+      - "Hybrid combines both, commonly keeping sensitive data private while using public capacity for the rest."
+      - "Community cloud is shared by organisations with common requirements, such as a group of schools."
+    check:
+      - prompt: "A district keeps student records on its own dedicated infrastructure but runs its public website on a large commercial provider. Which model is this?"
+        options:
+          - "Public cloud"
+          - "Hybrid cloud"
+          - "Community cloud"
+          - "Private cloud"
+        correct: 1
+      - prompt: "Several school districts jointly fund and share one cloud platform built to meet their common student-privacy requirements. What is that?"
+        options:
+          - "A public cloud, because multiple organisations use it"
+          - "A hybrid cloud, because it spans several districts"
+          - "A community cloud, shared by organisations with common requirements"
+          - "A private cloud, because it is not commercially available"
+        correct: 2
+  - id: characteristics
+    title: "What Makes It Cloud"
+    keyPoints:
+      - "Shared resources: physical hardware is pooled and divided among many tenants."
+      - "Rapid elasticity: capacity scales up and back down on demand rather than being bought in advance."
+      - "Metered utilisation: you are billed for what you consume, which cuts both ways."
+      - "High availability: services are spread across redundant systems so a single failure is survivable."
+    check:
+      - prompt: "A college's enrolment site handles ten times its normal traffic for one week each year, then returns to normal. Which cloud characteristic addresses this?"
+        options:
+          - "High availability"
+          - "Metered utilisation"
+          - "Rapid elasticity — capacity scales up for the peak and back down afterwards"
+          - "Shared resources"
+        correct: 2
+      - prompt: "A department leaves a large test environment running unused for three months and receives a substantial bill. Which characteristic explains this?"
+        options:
+          - "Metered utilisation — billing follows consumption, including consumption nobody is using"
+          - "High availability, which duplicates costs across regions"
+          - "Rapid elasticity, which automatically increases capacity"
+          - "Shared resources, which charge per tenant"
+        correct: 0
+  - id: sync-and-vdi
+    title: "File Synchronisation and Virtual Desktops"
+    keyPoints:
+      - "File synchronisation keeps a folder consistent across devices by propagating changes through a cloud service."
+      - "Synchronisation is not backup — a deletion or corruption propagates everywhere, quickly."
+      - "VDI hosts the desktop centrally and streams the interface to a thin client or any device."
+      - "With VDI the data never leaves the data centre, which is why it suits regulated or shared-device settings."
+    check:
+      - prompt: "A user deletes an important folder from their synchronised drive and it disappears from every device. What does this demonstrate?"
+        options:
+          - "The synchronisation client is faulty and should be reinstalled"
+          - "Synchronisation replicates changes including deletions, and is therefore not a backup"
+          - "The file was never uploaded to the cloud"
+          - "Synchronisation only works in one direction"
+        correct: 1
+      - prompt: "A hospital wants clinical staff to use shared workstations without any patient data being stored on those machines. Which approach fits best?"
+        options:
+          - "File synchronisation to each workstation"
+          - "Issuing every member of staff a laptop with full disk encryption"
+          - "VDI, where the desktop runs in the data centre and only the screen image reaches the workstation"
+          - "A public cloud storage account per user"
+        correct: 2
+domains:
+  - domainId: aplus1.virtualization
+    weight: 0.8
+  - domainId: nocti.os
+    weight: 0.2
+---
+
+import Callout from '../../components/Callout.astro';
+
+## The Backup That Deleted Itself
+
+A teacher keeps every lesson resource in a synchronised cloud folder. It is on the laptop, the desktop, and the phone, and it updates instantly everywhere. They describe it, reasonably enough, as their backup.
+
+One afternoon they tidy up and delete a folder they believe is an old duplicate. It is not. Within seconds it is gone from the laptop, gone from the desktop, gone from the phone, and gone from the web interface — because the system did exactly what it exists to do. It synchronised.
+
+**Synchronisation is not backup.** They are different tools that both involve copies, and confusing them is one of the most common and costly mistakes in ordinary computing.
+
+## Where the Cloud Lives
+
+Service models describe *what* you rent. Deployment models describe *where it runs and who else is on it.*
+
+**Public cloud.** A provider's shared infrastructure, serving many unrelated customers on pooled hardware. The most cost-effective option, because the cost of the data centre is spread across everyone.
+
+**Private cloud.** Infrastructure dedicated to one organisation — in their own building or ring-fenced at a provider. More control and easier regulatory answers, at higher cost, because you are no longer sharing.
+
+**Hybrid cloud.** Both, deliberately. The common shape keeps sensitive or regulated data in the private portion while using public capacity for everything else. A district might hold student records privately and run its public website on a commercial provider.
+
+**Community cloud.** Shared infrastructure for organisations with **common requirements** — several school districts, a group of hospitals, agencies under one regulator. It splits cost like a public cloud while being purpose-built for that group's obligations.
+
+## What Makes Something Cloud
+
+Four properties define the model, and each has a practical edge:
+
+**Shared resources.** Physical hardware is pooled and divided among tenants. This is what makes it affordable, and it is also why isolation between tenants matters so much.
+
+**Rapid elasticity.** Capacity grows and shrinks on demand. A college enrolment portal takes ten times its normal traffic for one week a year; with elasticity it scales for that week and scales back, instead of the organisation buying hardware sized for the busiest hour of the year and leaving it idle for the other fifty-one weeks.
+
+**Metered utilisation.** You are billed for consumption. This is the great advantage of the model and its most common unpleasant surprise, because **billing follows what is running, not what is being used.** A test environment nobody has opened in three months bills at exactly the same rate as one in constant use.
+
+**High availability.** Services run across redundant systems and often multiple physical sites, so a single failure does not become an outage. It is a property you buy and configure rather than one that arrives automatically.
+
+<Callout type="exam">
+Keep the two axes separate, because A+ mixes them deliberately. **IaaS, PaaS, and SaaS** are *service* models — how much of the stack somebody else runs. **Public, private, hybrid, and community** are *deployment* models — where it runs and who shares it. A private cloud can offer SaaS; a public cloud can offer IaaS. The tell for **community** is organisations with shared requirements rather than simply multiple organisations.
+</Callout>
+
+## Synchronisation and Virtual Desktops
+
+**File synchronisation** keeps a folder consistent across devices by propagating every change through a cloud service. Edit on the laptop, and the phone has it moments later.
+
+What it propagates is **every** change — including deletions, including a file corrupted by a failing application, including files encrypted by ransomware. Speed is the feature and it is also the hazard. Real backup keeps **point-in-time copies you can return to**; synchronisation keeps one current state, everywhere. Many sync services do offer version history and a recovery window, which is worth knowing and worth checking the length of, but the default mental model of "my sync folder is my backup" is wrong in the way that matters.
+
+**VDI — Virtual Desktop Infrastructure** — runs the desktop itself in the data centre and streams the interface to whatever the user is sitting at. The endpoint may be a thin client with almost no local capability.
+
+The property that makes VDI worth its complexity is that **the data never leaves the data centre**. A clinician logging into a shared ward workstation sees patient records that are being rendered centrally; nothing is stored on that machine, so a stolen or shared endpoint carries no data. It also centralises patching and lets a user resume the same desktop from anywhere.
+
+<Callout type="warn">
+The belief that does the damage is "it is in the cloud, so it is backed up." It survives because it is nearly true for a long time — files really are on every device and really do survive a dead laptop, which is the failure people imagine. Then a deletion, a corruption, or ransomware arrives, and synchronisation carries it everywhere within seconds, including to the copy the user thought was safe. Before anyone relies on a sync folder as a backup, check whether the service keeps version history and for how long, and make sure something genuinely separate holds a point-in-time copy.
+</Callout>
+
+## Why This Matters in the Field
+
+You will be asked to explain a bill, recover a file, or answer whether something is safe to put in a particular service. Those questions need the deployment model and the characteristics.
+
+Elasticity explains why capacity appears instantly. Metering explains the bill for the environment nobody switched off. Shared resources explain why the public option is cheaper. And the difference between synchronisation and backup explains the phone call you very much do not want to take.
+
+## Key Terms
+
+Public cloud · Private cloud · Hybrid cloud · Community cloud · Deployment model · Multi-tenancy · Shared resources · Resource pooling · Rapid elasticity · Scaling · Metered utilisation · Consumption billing · High availability · Redundancy · File synchronisation · Version history · Backup vs synchronisation · Point-in-time copy · VDI · Virtual Desktop Infrastructure · Thin client · Endpoint
