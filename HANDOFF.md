@@ -69,16 +69,19 @@ They have no `sections`, no callout, no Key Terms **by design**, and **no `order
 exactly why `content.ts` skips them and they never render as lessons. Don't "fix" them; either
 leave them or move them out of the lessons collection deliberately.
 
-The sixth foundations file, `intro-to-cybersecurity.mdx`, is **`draft: true` and explicitly
-superseded by `cfs-1-1-1-cia-triad`**. It does not need Key Terms. **cybersecurity-foundations
-is complete at 5/5.**
+The sixth foundations file, `intro-to-cybersecurity.mdx`, was **deleted on 2026-09-09**.
+**cybersecurity-foundations is complete at 5/5.**
 
-⚠️ **Latent defect in that draft file.** It sits at order 1 in
-`cfs.fundamentals.security-concepts`, colliding with the real `cfs-1-1-1-cia-triad`, and its
-`sections[]` are **OSI networking sections** ("Why layers exist", "The lower layers (1-3)")
-copy-pasted from a networking lesson — they have nothing to do with its own CIA-triad body.
-`draft: true` is the only thing keeping this off the site. If anyone ever clears that flag it
-will ship broken. Either delete the file or fix the sections; don't just un-draft it.
+⚠️ **A lesson worth learning from.** That file was marked `draft: true` and described itself as
+superseded, and an earlier pass through this handoff recorded its problems as *latent, held
+back by the draft flag*. **That was wrong, and it was wrong because the check was done by
+reading the file rather than the rendered page.** It returned 200, appeared on the
+cybersecurity-foundations track page, and rendered its `sections[]` — which were OSI networking
+sections pasted in from a networking lesson. Students opening a CIA-triad lesson were asked in
+Learn mode which OSI layer a switch operates at.
+
+**`draft: true` does not keep a lesson off this site.** Do not assume it does. If you need
+something hidden, verify against a production build, the way this repo's own guidance says.
 
 ---
 
@@ -106,9 +109,8 @@ address, a closure note). Everything conceptual uses the `choice` validator with
 
 1. **Redeploy and verify in production.** Everything below is unverified live, and that now
    includes seven new labs and two tracks that changed shape.
-2. **Fix or delete the `intro-to-cybersecurity` draft** — see the foundations note above. It
-   is one order collision and a set of pasted-in OSI sections away from shipping broken if
-   anyone ever clears `draft: true`.
+2. **⚠️ Regenerate the Playwright visual snapshots** — see the note below. `test:ci` runs
+   `test:visual`, and several baselines are stale after the 09-09 content changes.
 3. **web-developer** — 4 lessons, none compliant. Phase E, not urgent.
 4. **⚠️ ar / fa / uk translations in `src/i18n/strings.ts` are Claude-drafted and
    unreviewed.** Flagged in the file header. Mr. Beattie's students are the only fluent
@@ -214,6 +216,33 @@ names match the inlined stylesheet and produce false positives.
 
 ---
 
+## ⚠️ Playwright visual snapshots are stale — CI will fail on them
+
+`npm run test:ci` is `validate:tracks && lint && test:unit && build && **test:visual**`, and
+`test:visual` is Playwright with committed baseline PNGs in `tests/visual.spec.ts-snapshots/`,
+in **both `-linux` and `-win32` variants**. The 09-09 content work changed pages those
+baselines capture:
+
+| Baseline | Page | Why it changed |
+|---|---|---|
+| `quizzes.png` | `/quizzes` | 20 assessment stubs removed from the listing |
+| `track.png` | `/tracks/cybersecurity-foundations` | `intro-to-cybersecurity` removed |
+| `lesson.png` / `lesson-mobile.png` | was `/lessons/intro-to-cybersecurity` | retargeted to `/lessons/cfs-1-1-1-cia-triad` |
+| `home.png` | `/` | may change if the home page shows counts |
+
+`legacy.png` and `quiz-runner.png` are unaffected.
+
+**This was not verified locally.** The Playwright browser cache on the Windows box is
+`chromium_headless_shell-1208` while Playwright 1.59.1 wants `1217`, so all seven visual tests
+fail to launch a browser and the suite cannot run until `npx playwright install`.
+
+To fix: run `npm run test:visual:update` **on the platform whose baselines you are
+regenerating**. Windows only regenerates `-win32`; the `-linux` baselines can only be
+regenerated on Linux, which is where the CI runner's belong. Regenerating one platform and
+pushing leaves the other stale, so do both or do it on the runner.
+
+---
+
 ## Gates — run after every content or schema change
 
 ```bash
@@ -221,7 +250,7 @@ npm run validate:tracks && npm run lint && npm run test:unit
 ```
 
 Baseline confirmed 2026-09-09: validate passes with **zero warnings** ·
-11 tracks, 72 modules, 340 entries · lint **0 errors, 0 warnings, 7 hints** · **14/14 tests**.
+11 tracks, 72 modules, 339 entries · lint **0 errors, 0 warnings, 7 hints** · **14/14 tests**.
 
 The duplicate-order warnings are gone — treat any new one as a regression, not as noise.
 
