@@ -35,8 +35,13 @@ const TRACK_ORDER = [
   'cyber-literacy',
 ];
 
+// Coming-soon tracks are kept out of the sidebar so it only offers places a
+// student can actually go. The exception is the track currently being viewed:
+// someone previewing one by URL should still have navigation rather than a
+// sidebar that omits where they are.
 const visibleTracks = (tracks as TrackEntry[])
   .filter((t) => !t.data.hidden)
+  .filter((t) => !t.data.comingSoon || t.slug === activeTrack)
   .sort((a, b) => {
     const ai = TRACK_ORDER.indexOf(a.slug);
     const bi = TRACK_ORDER.indexOf(b.slug);
