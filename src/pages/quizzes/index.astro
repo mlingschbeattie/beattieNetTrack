@@ -121,7 +121,9 @@ const breadcrumbs = [
       // Best-score badges. This previously mounted one React island PER CARD
       // (136 of them) that mostly rendered null. One pass over storage instead.
       try {
-        const progress = JSON.parse(localStorage.getItem('beattie_progress_v1') || '{}');
+        const username = (window as any).__BEATTIE_USER__?.username || document.querySelector('[data-current-user]')?.getAttribute('data-current-user');
+        const key = username && username !== 'guest' ? `beattie_progress_${username}_v1` : 'beattie_progress_v1';
+        const progress = JSON.parse(localStorage.getItem(key) || '{}');
         const quizzes = progress.quizzes || {};
         document.querySelectorAll('[data-qc-score]').forEach((el) => {
           const slug = el.getAttribute('data-qc-score');

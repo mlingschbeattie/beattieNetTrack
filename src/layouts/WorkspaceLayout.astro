@@ -529,7 +529,9 @@ if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson' || itemTy
     if (!mpEls.length) return;
     let raw = null;
     try {
-      raw = JSON.parse(window.localStorage.getItem('beattie_progress_v1') ?? 'null');
+      const username = (window as any).__BEATTIE_USER__?.username || document.querySelector('[data-current-user]')?.getAttribute('data-current-user');
+      const key = username && username !== 'guest' ? `beattie_progress_${username}_v1` : 'beattie_progress_v1';
+      raw = JSON.parse(window.localStorage.getItem(key) ?? 'null');
     } catch {
       raw = null;
     }

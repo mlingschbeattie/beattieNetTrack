@@ -70,8 +70,14 @@ const LS_QUIZ_COMPLETED_PREFIX = 'lms_quiz_completed_';
 const LS_LESSON_STARTED_PREFIX = 'lms_lesson_started_';
 const LS_LESSON_COMPLETED_PREFIX = 'lms_lesson_completed_';
 
+function getUserPrefix(): string {
+  if (!isBrowser()) return '';
+  const username = (window as any).__BEATTIE_USER__?.username || document.querySelector('[data-current-user]')?.getAttribute('data-current-user');
+  return (username && username !== 'guest') ? `${username}_` : '';
+}
+
 /**
- * Emit `lms.lab_started` — gated to fire at most once per calendar day per lab.
+ * Emit `lms.lab_started` — gated to fire at most once per calendar day per lab per user.
  */
 export function emitLabStarted(
   labId: string,
@@ -81,7 +87,7 @@ export function emitLabStarted(
 ): void {
   if (!isBrowser()) return;
 
-  const storageKey = `${LS_STARTED_PREFIX}${labId}`;
+  const storageKey = `${LS_STARTED_PREFIX}${getUserPrefix()}${labId}`;
   const today = new Date().toISOString().slice(0, 10); // 'YYYY-MM-DD'
   const lastDate = window.localStorage.getItem(storageKey);
   if (lastDate === today) return; // already emitted today
@@ -104,7 +110,7 @@ export function emitLabStarted(
 }
 
 /**
- * Emit `lms.lab_completed` — fires exactly once per lab (guarded by a
+ * Emit `lms.lab_completed` — fires exactly once per lab per user (guarded by a
  * permanent localStorage flag so refreshes don't re-emit).
  */
 export function emitLabCompleted(
@@ -115,7 +121,7 @@ export function emitLabCompleted(
 ): void {
   if (!isBrowser()) return;
 
-  const storageKey = `${LS_COMPLETED_PREFIX}${labId}`;
+  const storageKey = `${LS_COMPLETED_PREFIX}${getUserPrefix()}${labId}`;
   if (window.localStorage.getItem(storageKey)) return; // already emitted
 
   window.localStorage.setItem(storageKey, '1');
@@ -176,7 +182,7 @@ export function emitLessonStarted(
 ): void {
   if (!isBrowser() || !apiUrl || domains.length === 0) return;
 
-  const storageKey = `${LS_LESSON_STARTED_PREFIX}${lessonId}`;
+  const storageKey = `${LS_LESSON_STARTED_PREFIX}${getUserPrefix()}${lessonId}`;
   const today = new Date().toISOString().slice(0, 10);
   const lastDate = window.localStorage.getItem(storageKey);
   if (lastDate === today) return;
@@ -208,7 +214,7 @@ export function emitLessonCompleted(
 ): void {
   if (!isBrowser() || !apiUrl || domains.length === 0) return;
 
-  const storageKey = `${LS_LESSON_COMPLETED_PREFIX}${lessonId}`;
+  const storageKey = `${LS_LESSON_COMPLETED_PREFIX}${getUserPrefix()}${lessonId}`;
   if (window.localStorage.getItem(storageKey)) return;
 
   window.localStorage.setItem(storageKey, '1');

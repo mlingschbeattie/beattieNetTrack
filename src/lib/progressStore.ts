@@ -1,4 +1,47 @@
+export const BASE_PROGRESS_KEY = 'beattie_progress';
 export const PROGRESS_KEY = 'beattie_progress_v1';
+
+/**
+ * Resolves the authenticated student/teacher username from the global session context
+ * or DOM attribute. Falls back to 'guest' when unauthenticated.
+ */
+export function getCurrentUsername(): string {
+  if (typeof window === 'undefined') return 'guest';
+  if ((window as any).__BEATTIE_USER__?.username) {
+    return (window as any).__BEATTIE_USER__.username;
+  }
+  const el = document.querySelector('[data-current-user]');
+  if (el) {
+    const user = el.getAttribute('data-current-user');
+    if (user && user !== 'guest') return user;
+  }
+  return 'guest';
+}
+
+/**
+ * Returns the user-scoped localStorage key so multiple students or teachers
+ * sharing the same physical browser profile never overwrite or inherit each other's progress.
+ */
+export function getProgressKey(username = getCurrentUsername()): string {
+  if (!username || username === 'guest') {
+    return PROGRESS_KEY;
+  }
+  return `${BASE_PROGRESS_KEY}_${username}_v1`;
+}
+
+/**
+ * Purges legacy un-scoped test progress (which belonged to the instructor during setup)
+ * from student workstations so students always start with a clean record.
+ */
+export function clearLegacyTestData(storage: StorageLike | null = getStorage()): void {
+  if (!storage || typeof window === 'undefined') return;
+  const username = getCurrentUsername();
+  if (username && username !== 'guest' && username !== 'mbeattie') {
+    try {
+      window.localStorage.removeItem(PROGRESS_KEY);
+    } catch {}
+  }
+}
 
 export type LessonProgress = {
   completed: boolean;
@@ -153,8 +196,8 @@ const safeParse = (raw: string | null): ProgressState => {
   }
 };
 
-const writeState = (storage: StorageLike, state: ProgressState) => {
-  storage.setItem(PROGRESS_KEY, JSON.stringify(state));
+const writeState = (storage: StorageLike, state: ProgressState, key = getProgressKey()) => {
+  storage.setItem(key, JSON.stringify(state));
 };
 
 const normalizeDifficulty = (value?: string) => {
@@ -178,8 +221,20 @@ const xpForLesson = (meta: LessonMeta) => {
 
 const dateKey = (date: Date) => date.toISOString().slice(0, 10);
 
-export const getProgress = (storage: StorageLike | null = getStorage()) => {
+export const getProgress = (storage: StorageLike | null = getStorage(), key = getProgressKey()) => {
   if (!storage) return defaultState();
+  clearLegacyTestData(storage);
+  const username = getCurrentUsername();
+  if (username && username !== 'guest') {
+    const userSpecific = storage.getItem(key);
+    if (userSpecific) {
+      return safeParse(userSpecific);
+    }
+    // Clean slate for newly logged-in student
+    const initial = defaultState();
+    storage.setItem(key, JSON.stringify(initial));
+    return initial;
+  }
   return safeParse(storage.getItem(PROGRESS_KEY));
 };
 
@@ -188,8 +243,9 @@ export const setProgress = (
   storage: StorageLike | null = getStorage()
 ) => {
   if (!storage) return defaultState();
-  const next = updater(getProgress(storage));
-  writeState(storage, next);
+  const key = getProgressKey();
+  const next = updater(getProgress(storage, key));
+  writeState(storage, next, key);
   return next;
 };
 

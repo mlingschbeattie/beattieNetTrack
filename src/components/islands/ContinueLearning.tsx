@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { PROGRESS_KEY } from '../../lib/progressStore';
+import { getProgressKey, PROGRESS_KEY } from '../../lib/progressStore';
 
 type TrackMeta = {
   slug: string;
@@ -152,7 +152,7 @@ export default function ContinueLearning({ tracks = [], activityMap = {} }: Cont
       }
 
       try {
-        const raw = window.localStorage.getItem(PROGRESS_KEY);
+        const raw = window.localStorage.getItem(getProgressKey());
         setState(raw ? (JSON.parse(raw) as ProgressState) : null);
       } catch {
         setState(null);
