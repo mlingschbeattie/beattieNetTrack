@@ -44,8 +44,9 @@ export interface HubEvent {
  * Post a hub event. Fire-and-forget — always returns void, never throws.
  * Call this from browser-side code only (guards against SSR).
  */
-export function emitEvent(event: HubEvent, apiUrl: string): void {
-  if (!isBrowser() || !apiUrl) return;
+export function emitEvent(event: HubEvent, apiUrl?: string): void {
+  if (!isBrowser()) return;
+  const baseUrl = apiUrl || '';
   const body = {
     app_id: event.appId,
     event_type: event.eventType,
@@ -53,7 +54,7 @@ export function emitEvent(event: HubEvent, apiUrl: string): void {
     eventType: event.eventType,
     payload: event.payload,
   };
-  fetch(`${apiUrl}/api/events`, {
+  fetch(`${baseUrl}/api/events`, {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -150,9 +151,9 @@ export function emitQuizCompleted(
   score: number,
   maxScore: number = 100,
   domains: CISDomainTag[],
-  apiUrl: string,
+  apiUrl?: string,
 ): void {
-  if (!isBrowser() || !apiUrl || domains.length === 0) return;
+  if (!isBrowser() || domains.length === 0) return;
 
   emitEvent(
     {
@@ -178,9 +179,9 @@ export function emitLessonStarted(
   lessonId: string,
   lessonTitle: string,
   domains: CISDomainTag[],
-  apiUrl: string,
+  apiUrl?: string,
 ): void {
-  if (!isBrowser() || !apiUrl || domains.length === 0) return;
+  if (!isBrowser() || domains.length === 0) return;
 
   const storageKey = `${LS_LESSON_STARTED_PREFIX}${getUserPrefix()}${lessonId}`;
   const today = new Date().toISOString().slice(0, 10);
@@ -210,9 +211,9 @@ export function emitLessonStarted(
 export function emitLessonCompleted(
   lessonId: string,
   domains: CISDomainTag[],
-  apiUrl: string,
+  apiUrl?: string,
 ): void {
-  if (!isBrowser() || !apiUrl || domains.length === 0) return;
+  if (!isBrowser() || domains.length === 0) return;
 
   const storageKey = `${LS_LESSON_COMPLETED_PREFIX}${getUserPrefix()}${lessonId}`;
   if (window.localStorage.getItem(storageKey)) return;

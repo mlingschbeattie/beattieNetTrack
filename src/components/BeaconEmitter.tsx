@@ -8,7 +8,7 @@ interface BeaconEmitterProps {
   contentId: string;
   contentType?: string;
   contentTitle?: string;
-  apiUrl: string;
+  apiUrl?: string;
 }
 
 /**
@@ -20,10 +20,10 @@ export default function BeaconEmitter({
   contentId,
   contentType = 'lab',
   contentTitle,
-  apiUrl,
+  apiUrl = '',
 }: BeaconEmitterProps) {
   useEffect(() => {
-    if (!apiUrl || domains.length === 0) return;
+    if (domains.length === 0) return;
     const cisDomains: CISDomainTag[] = domains.map((d) => ({
       domainId: d.domainId,
       weight: d.weight ?? 1.0,

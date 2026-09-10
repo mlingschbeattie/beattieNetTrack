@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { getSectionProgress, markSectionComplete } from '../../lib/progressStore';
+import { emitLessonCompleted, type CISDomainTag } from '../../lib/events';
 
 interface LessonSection {
   id: string;
@@ -11,6 +12,8 @@ interface LessonSection {
 interface ReadingProgressRailProps {
   lessonSlug: string;
   sections: LessonSection[];
+  domains?: Array<{ domainId: string; weight?: number }>;
+  apiUrl?: string;
 }
 
 type HeadingItem = {
@@ -44,7 +47,7 @@ const dispatchReadingActiveSection = (lessonSlug: string, item: HeadingItem) => 
 
 const normalize = (value: string) => value.trim().toLowerCase();
 
-export default function ReadingProgressRail({ lessonSlug, sections }: ReadingProgressRailProps) {
+export default function ReadingProgressRail({ lessonSlug, sections, domains = [], apiUrl }: ReadingProgressRailProps) {
   const [headings, setHeadings] = useState<HeadingItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
   const [completedMap, setCompletedMap] = useState<Record<string, boolean>>({});
@@ -62,6 +65,13 @@ export default function ReadingProgressRail({ lessonSlug, sections }: ReadingPro
     setCompletedMap(progress);
     const completedCount = sections.filter((s) => progress[s.id]).length;
     dispatchProgress(lessonSlug, completedCount, sections.length);
+    if (completedCount === sections.length && sections.length > 0 && domains.length > 0) {
+      const cisDomains: CISDomainTag[] = domains.map((d) => ({
+        domainId: d.domainId,
+        weight: d.weight ?? 1.0,
+      }));
+      emitLessonCompleted(lessonSlug, cisDomains, apiUrl);
+    }
   };
 
   useEffect(() => {

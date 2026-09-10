@@ -16,7 +16,7 @@ export async function getStaticPaths() {
   return lessons.map((lesson) => ({ params: { slug: lesson.slug }, props: { lesson } }));
 }
 
-const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://api.beattietech.local';
+const apiUrl = import.meta.env.PUBLIC_API_URL || '';
 const allTracks = await getCollection('tracks');
 const allLessons = await getCollection('lessons');
 const paramSlug = Astro.params.slug;
@@ -132,7 +132,7 @@ const outlineSections = authoredSections;
       </div>
       {hasLearnMode && (
         <aside class="lesson-reading-rail">
-          <ReadingProgressRail client:only="react" lessonSlug={lesson.slug} sections={outlineSections} />
+          <ReadingProgressRail client:only="react" lessonSlug={lesson.slug} sections={outlineSections} domains={lesson.data.domains} apiUrl={apiUrl} />
         </aside>
       )}
     </div>

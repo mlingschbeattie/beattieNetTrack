@@ -199,6 +199,8 @@ questions:
     correctIndices: [0, 1, 3]
     explanation: "Listing processes, following the auth log, and searching for SUID binaries are all read-only. chmod changes permissions, and on /tmp it would remove the sticky bit and make things worse. Observe before you change anything."
 domains:
+  - domainId: "secplus.threats"
+    weight: 1
   - domainId: "cyber.foundations"
     weight: 1
 ---

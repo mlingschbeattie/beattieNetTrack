@@ -9,6 +9,7 @@ import CodeBlock from '../../../components/CodeBlock.astro';
 import LabActivity from '../../../components/workspace/LabActivity.astro';
 import QuizActivity from '../../../components/workspace/QuizActivity.astro';
 import QuizRunner from '../../../components/QuizRunner.tsx';
+import BeaconEmitter from '../../../components/BeaconEmitter.tsx';
 import type { QuizDefinition } from '../../../lib/quizEngine';
 import { getActivityModuleNavigation, inferLegacyTrackSlug, mapLessonToLegacyActivity, toLegacyLabPath } from '../../../lib/content';
 
@@ -195,6 +196,8 @@ const breadcrumbs: Array<{ label: string; href?: string }> = [
 if (currentTrack) {
   breadcrumbs.splice(2, 0, { label: currentTrack.data.title, href: `/tracks/${currentTrack.slug}` });
 }
+
+const itemDomains = quiz?.data?.domains ?? lab?.data?.domains ?? [];
 ---
 
 {redirectTarget ? (
@@ -240,13 +243,24 @@ if (currentTrack) {
   </Fragment>
 
   <Fragment slot="activity-main">
+    {itemDomains.length > 0 && (
+      <BeaconEmitter
+        client:load
+        domains={itemDomains}
+        contentId={slug}
+        contentType={type}
+        contentTitle={itemTitle}
+        apiUrl=""
+      />
+    )}
+
     {type === 'lab' && (
       <LabActivity slug={slug} title={itemTitle} labPath={activityLabPath} labUrl={activityLabUrl} />
     )}
 
     {type === 'quiz' && (
       quizDefinition
-        ? <QuizRunner client:only="react" quiz={quizDefinition} workspaceSlug={slug} />
+        ? <QuizRunner client:only="react" quiz={quizDefinition} workspaceSlug={slug} domains={itemDomains} apiUrl="" />
         : <QuizActivity title={itemTitle} description={itemDescription} isReady={false} />
     )}
 
