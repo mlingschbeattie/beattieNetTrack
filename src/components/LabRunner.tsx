@@ -1,5 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { getLabState, markLabCompleted, saveLabState } from '../lib/progressStore';
+import {
+  getLabState,
+  markLabCompleted,
+  saveLabState,
+  isContentWaived,
+  getWaivedReason,
+  fetchWaivedContent,
+} from '../lib/progressStore';
 import { startBeaconSession } from '../lib/cis/beacon';
 import { emitLabStarted, emitLabCompleted, type CISDomainTag } from '../lib/events';
 import type { DomainMapping } from '../types/lab';
@@ -90,6 +97,10 @@ export default function LabRunner({
   const [showHint, setShowHint] = useState(false);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [toastMsg, setToastMsg] = useState('');
+  const [isPracticing, setIsPracticing] = useState(false);
+
+  const isWaived = isContentWaived(labSlug);
+  const waivedReason = getWaivedReason(labSlug);
 
   const totalSteps = steps.length;
   const progressPercent = totalSteps > 0 ? Math.round(((currentStepIndex + 1) / totalSteps) * 100) : 0;
@@ -99,8 +110,18 @@ export default function LabRunner({
     const safeIndex = Math.max(0, Math.min(state.lastStepIndex ?? 0, Math.max(steps.length - 1, 0)));
     setCurrentStepIndex(safeIndex);
     setCompletedStepIds(state.completedStepIds ?? []);
-    setIsCompleted(Boolean(state.completed));
-  }, [labSlug, steps.length]);
+    setIsCompleted(Boolean(state.completed || isWaived));
+  }, [labSlug, steps.length, isWaived]);
+
+  useEffect(() => {
+    if (apiUrl) {
+      fetchWaivedContent(apiUrl).then(() => {
+        if (isContentWaived(labSlug)) {
+          setIsCompleted(true);
+        }
+      });
+    }
+  }, [labSlug, apiUrl]);
 
   // CIS time-beacon: emit active-time pings every 30 s while student is working
   useEffect(() => {
@@ -249,7 +270,48 @@ export default function LabRunner({
     window.dispatchEvent(new CustomEvent('progress-updated'));
   };
 
-  if (isCompleted) {
+  if (isCompleted && !isPracticing) {
+    if (isWaived) {
+      return (
+        <article className="card" data-testid="lab-complete">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+            <span style={{ color: '#10b981', fontSize: '18px' }}>✓</span>
+            <span
+              className="badge"
+              style={{
+                background: 'rgba(16, 185, 129, 0.15)',
+                color: '#10b981',
+                border: '1px solid rgba(16, 185, 129, 0.35)',
+                fontWeight: 600,
+                fontSize: '12px',
+                padding: '3px 10px',
+              }}
+            >
+              Exempt via Certification
+            </span>
+          </div>
+          <h3>{title} — Competency Satisfied</h3>
+          <p style={{ color: '#a7f3d0' }}>
+            <strong>Prior Learning Credit:</strong> {waivedReason || 'Official Industry Certification'}
+          </p>
+          <p className="pc-lab__muted">
+            You have already demonstrated mastery for this domain through your official certification. You are exempt from repeating this lab, but you may freely explore and practice the steps below.
+          </p>
+          <div className="lab-complete__actions" style={{ marginTop: '16px', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              className="btn btn--secondary"
+              onClick={() => setIsPracticing(true)}
+              data-testid="lab-practice"
+            >
+              Explore & Practice Steps
+            </button>
+            <a className="btn-link" href={backToTrackHref}>Back to Track →</a>
+          </div>
+        </article>
+      );
+    }
+
     return (
       <article className="card" data-testid="lab-complete">
         <h3>{title} complete</h3>
@@ -268,7 +330,35 @@ export default function LabRunner({
   }
 
   return (
-    <div className="lab-layout" data-testid="lab-runner">
+    <div>
+      {isWaived && (
+        <div
+          className="callout callout--success"
+          style={{
+            marginBottom: '16px',
+            background: 'rgba(16, 185, 129, 0.1)',
+            border: '1px solid rgba(16, 185, 129, 0.3)',
+            borderRadius: '8px',
+            padding: '12px 16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '12px',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ fontSize: '18px', color: '#10b981' }}>✓</span>
+            <div>
+              <strong style={{ color: '#10b981' }}>Exempt via Certification Credit</strong>
+              <p style={{ margin: '2px 0 0', fontSize: '13px', color: '#a7f3d0' }}>
+                {waivedReason || 'Official Certification Mastery'}. You are practicing in optional review mode.
+              </p>
+            </div>
+          </div>
+          <a className="btn-link" href={backToTrackHref} style={{ fontSize: '13px' }}>Back to Track →</a>
+        </div>
+      )}
+      <div className="lab-layout" data-testid="lab-runner">
       <aside className="lab-steps">
         <div className="lab-steps__title">Lab Steps</div>
         {steps.map((step, index) => {
@@ -419,6 +509,7 @@ export default function LabRunner({
       </div>
 
       {toastMsg && <div className="step-toast" role="status" aria-live="polite">{toastMsg}</div>}
+    </div>
     </div>
   );
 }

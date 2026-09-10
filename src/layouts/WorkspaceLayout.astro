@@ -102,6 +102,17 @@ if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson' || itemTy
     data-item-minutes={String(itemMinutes ?? 20)}
     data-panel-checklist={JSON.stringify(panelChecklist)}
   >
+    <!-- Industry Certification Exemption Banner (Progressive Calm) -->
+    <div class="workspace-waived-banner" data-workspace-waived-banner style="display: none;">
+      <div class="workspace-waived-banner__icon">✓</div>
+      <div class="workspace-waived-banner__content">
+        <div class="workspace-waived-banner__title">Satisfied via Industry Certification</div>
+        <div class="workspace-waived-banner__desc" data-workspace-waived-desc>
+          You have earned full credit for this activity through prior certification. You are exempt from repeating this requirement, but are welcome to review or practice anytime.
+        </div>
+      </div>
+    </div>
+
     {layoutMode === 'stacked' ? (
       <div class="workspace-shell">
         {itemType === 'quiz' ? (
@@ -245,6 +256,9 @@ if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson' || itemTy
     markLessonIncomplete,
     recordQuizAttempt,
     recordActivity,
+    fetchWaivedContent,
+    isContentWaived,
+    getWaivedReason,
   } from '../lib/progressStore.ts';
 
   const workspace = document.querySelector('[data-workspace]');
@@ -321,6 +335,10 @@ if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson' || itemTy
   };
 
   const syncFromStore = () => {
+    if (isContentWaived(itemSlug)) {
+      setStatus('Satisfied via Certification', 100);
+      return;
+    }
     if (itemType === 'lab') {
       const status = getLabStatus(itemSlug);
       setStatus(status.completed ? 'Completed' : 'In progress', status.completed ? 100 : 0);
@@ -329,6 +347,24 @@ if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson' || itemTy
     const status = getLessonStatus(itemSlug);
     setStatus(status.completed ? 'Completed' : 'In progress', status.completed ? 100 : 0);
   };
+
+  const checkWaivedState = () => {
+    if (isContentWaived(itemSlug)) {
+      const banner = workspace.querySelector('[data-workspace-waived-banner]');
+      const desc = workspace.querySelector('[data-workspace-waived-desc]');
+      if (banner) (banner as HTMLElement).style.display = 'flex';
+      const reason = getWaivedReason(itemSlug);
+      if (desc && reason) {
+        desc.textContent = `You have earned full credit for this activity via ${reason}. You are exempt from repeating this requirement, but are welcome to review or practice anytime.`;
+      }
+      setStatus('Satisfied via Certification', 100);
+    }
+  };
+
+  fetchWaivedContent().then(() => {
+    checkWaivedState();
+    syncFromStore();
+  });
 
   type CompletionPayload = {
     action: string;
@@ -623,3 +659,49 @@ if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson' || itemTy
 
   syncFromStore();
 </script>
+
+<style>
+  .workspace-waived-banner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3, 0.75rem);
+    padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: var(--radius-md, 6px);
+    margin-bottom: var(--space-4, 1rem);
+    color: var(--color-text, #f1f5f9);
+  }
+
+  .workspace-waived-banner__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    font-weight: 700;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+  }
+
+  .workspace-waived-banner__content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .workspace-waived-banner__title {
+    font-weight: 600;
+    font-size: var(--text-sm, 0.875rem);
+    color: #34d399;
+  }
+
+  .workspace-waived-banner__desc {
+    font-size: var(--text-xs, 0.75rem);
+    color: var(--color-text-muted, #94a3b8);
+    line-height: 1.4;
+  }
+</style>

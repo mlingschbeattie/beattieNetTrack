@@ -91,6 +91,25 @@ export type ProgressState = {
   guided: GuidedPreferences;
 };
 
+export type WaivedContentItem = {
+  contentId: string;
+  contentType: string;
+  domainId: string;
+  reason: string;
+};
+
+export type WaivedContentState = {
+  waivedContent: WaivedContentItem[];
+  waivedContentIds: string[];
+  lastFetchedAt: string;
+};
+
+export const WAIVED_CONTENT_KEY_PREFIX = 'beattie_waived';
+
+export function getWaivedContentKey(username = getCurrentUsername()): string {
+  return `${WAIVED_CONTENT_KEY_PREFIX}_${username}_v1`;
+}
+
 type LessonMeta = {
   difficulty?: string;
   estMinutes?: number;
@@ -249,9 +268,79 @@ export const setProgress = (
   return next;
 };
 
+export function getWaivedContentState(storage: StorageLike | null = getStorage()): WaivedContentState {
+  if (!storage) {
+    return { waivedContent: [], waivedContentIds: [], lastFetchedAt: '' };
+  }
+  try {
+    const raw = storage.getItem(getWaivedContentKey());
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed?.waivedContentIds)) return parsed;
+    }
+  } catch {}
+  return { waivedContent: [], waivedContentIds: [], lastFetchedAt: '' };
+}
+
+export function isContentWaived(contentId: string, storage: StorageLike | null = getStorage()): boolean {
+  if (!contentId) return false;
+  const state = getWaivedContentState(storage);
+  return state.waivedContentIds.includes(contentId);
+}
+
+export function getWaivedReason(contentId: string, storage: StorageLike | null = getStorage()): string | null {
+  if (!contentId) return null;
+  const state = getWaivedContentState(storage);
+  const found = state.waivedContent.find((w) => w.contentId === contentId);
+  return found?.reason ?? (state.waivedContentIds.includes(contentId) ? 'Certification Credit' : null);
+}
+
+export async function fetchWaivedContent(
+  apiUrl = 'https://api.beattietech.local',
+  storage: StorageLike | null = getStorage()
+): Promise<WaivedContentState> {
+  const username = getCurrentUsername();
+  if (!username || username === 'guest') {
+    return { waivedContent: [], waivedContentIds: [], lastFetchedAt: '' };
+  }
+
+  try {
+    const res = await fetch(`${apiUrl}/api/cis/me/waived-content`, {
+      credentials: 'include',
+    });
+    if (!res.ok) {
+      return getWaivedContentState(storage);
+    }
+    const data = await res.json();
+    const nextState: WaivedContentState = {
+      waivedContent: Array.isArray(data?.waivedContent) ? data.waivedContent : [],
+      waivedContentIds: Array.isArray(data?.waivedContentIds) ? data.waivedContentIds : [],
+      lastFetchedAt: new Date().toISOString(),
+    };
+    if (storage) {
+      try {
+        storage.setItem(getWaivedContentKey(username), JSON.stringify(nextState));
+      } catch {}
+    }
+    return nextState;
+  } catch (err) {
+    console.warn('[progressStore] Failed to fetch waived content:', err);
+    return getWaivedContentState(storage);
+  }
+}
+
 export const getLessonStatus = (slug: string, storage: StorageLike | null = getStorage()) => {
   const state = getProgress(storage);
-  return state.lessons[slug] ?? { completed: false, completedAt: null, xpEarned: 0 };
+  const waived = isContentWaived(slug, storage);
+  const reason = waived ? getWaivedReason(slug, storage) : null;
+  const lesson = state.lessons[slug];
+  return {
+    completed: Boolean(lesson?.completed || waived),
+    completedAt: lesson?.completedAt ?? (waived ? new Date().toISOString() : null),
+    xpEarned: lesson?.xpEarned ?? 0,
+    waived,
+    reason,
+  };
 };
 
 const recalcXpTotal = (state: ProgressState) => {
@@ -307,7 +396,15 @@ export const markLessonIncomplete = (slug: string, storage: StorageLike | null =
 export const getLabStatus = (slug: string, storage: StorageLike | null = getStorage()) => {
   const state = getProgress(storage);
   const lab = state.labs[slug] ?? defaultLabProgress();
-  return { completed: lab.completed, completedAt: lab.completedAt, xpEarned: lab.xpEarned };
+  const waived = isContentWaived(slug, storage);
+  const reason = waived ? getWaivedReason(slug, storage) : null;
+  return {
+    completed: Boolean(lab.completed || waived),
+    completedAt: lab.completedAt ?? (waived ? new Date().toISOString() : null),
+    xpEarned: lab.xpEarned,
+    waived,
+    reason,
+  };
 };
 
 export const getLabState = (slug: string, storage: StorageLike | null = getStorage()) => {
@@ -478,6 +575,10 @@ export const getTrackProgress = (
     const slug = typeof item === 'string' ? item : item.slug;
     const type = typeof item === 'string' ? undefined : item.type;
 
+    if (isContentWaived(slug, storage)) {
+      return true;
+    }
+
     if (type === 'quiz') {
       return (state.quizzes[slug]?.bestScore ?? 0) >= 70;
     }
@@ -574,12 +675,20 @@ export const recordQuizAttempt = (
 
 export const getQuizStats = (quizSlug: string, storage: StorageLike | null = getStorage()) => {
   const state = getProgress(storage);
-  return state.quizzes[quizSlug] ?? {
+  const waived = isContentWaived(quizSlug, storage);
+  const reason = waived ? getWaivedReason(quizSlug, storage) : null;
+  const existing = state.quizzes[quizSlug] ?? {
     attempts: 0,
     bestScore: 0,
     lastScore: 0,
     lastAttemptAt: null,
     lastXpAwardDate: null,
+  };
+  return {
+    ...existing,
+    bestScore: waived ? Math.max(existing.bestScore, 100) : existing.bestScore,
+    waived,
+    reason,
   };
 };
 

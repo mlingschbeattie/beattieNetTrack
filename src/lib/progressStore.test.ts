@@ -95,3 +95,34 @@ test('section unlock gating requires >= 80% completion of previous section', () 
   assert.equal(isSectionPassing(0, 1), false); // 0% -> locked
   assert.equal(isSectionPassing(1, 1), true);  // 100% -> unlocked
 });
+
+test('waived content counts as completed in getTrackProgress and getLabStatus', () => {
+  const storage = createMemoryStorage();
+  // Simulate cached waived content in localStorage
+  storage.setItem(
+    'beattie_waived_guest_v1',
+    JSON.stringify({
+      waivedContent: [
+        {
+          contentId: 'pct-safety-and-esd-lab',
+          contentType: 'lab',
+          domainId: 'aplus1.hardware_troubleshooting',
+          reason: 'Certified: Passed CompTIA A+ Core 1 (220-1101)',
+        },
+      ],
+      waivedContentIds: ['pct-safety-and-esd-lab'],
+      lastFetchedAt: new Date().toISOString(),
+    })
+  );
+
+  const items = [
+    { slug: 'pct-safety-and-esd-lab', type: 'lab' as const },
+    { slug: 'pct-hardware-triage-lab', type: 'lab' as const },
+  ];
+
+  const progress = getTrackProgress(items, storage);
+  assert.equal(progress.completed, 1);
+  assert.equal(progress.total, 2);
+  assert.equal(progress.percent, 50);
+});
+

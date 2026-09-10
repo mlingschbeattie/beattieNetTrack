@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react';
-import { getProgress } from '../../lib/progressStore';
+import {
+  getProgress,
+  isContentWaived,
+  getWaivedReason,
+  fetchWaivedContent,
+} from '../../lib/progressStore';
 import type { TrackModuleSummary, TrackActivitySummary } from '../../lib/content';
 
 interface TrackModuleListProps {
   modules: Array<Omit<TrackModuleSummary, 'prevNextByKey'> & { prevNextByKey?: TrackModuleSummary['prevNextByKey'] }>;
 }
-
 
 export function isActivityCompleted(
   activity: TrackActivitySummary,
@@ -13,6 +17,10 @@ export function isActivityCompleted(
 ): boolean {
   if (!state) return false;
   const slug = activity.slug;
+
+  if (isContentWaived(slug)) {
+    return true;
+  }
 
   if (activity.type === 'lab') {
     return Boolean(state.labs?.[slug]?.completed);
@@ -146,6 +154,9 @@ export default function TrackModuleList({ modules }: TrackModuleListProps) {
     };
 
     update();
+    fetchWaivedContent().then(() => {
+      update();
+    });
     window.addEventListener('progress-updated', update);
     return () => window.removeEventListener('progress-updated', update);
   }, [modules]);
@@ -179,23 +190,13 @@ export default function TrackModuleList({ modules }: TrackModuleListProps) {
     return { total, completed, percent, isPassing, requiredToUnlock };
   });
 
-  const isUnlockedList: boolean[] = [];
-  for (let i = 0; i < modules.length; i++) {
-    if (i === 0) {
-      isUnlockedList.push(true);
-    } else {
-      const prevStats = moduleStats[i - 1];
-      isUnlockedList.push(Boolean(prevStats && prevStats.isPassing));
-    }
-  }
-
   return (
     <>
-      {modules.map((module, index) => {
-        const isUnlocked = isUnlockedList[index];
-        const stats = moduleStats[index];
-        const prevModule = index > 0 ? modules[index - 1] : null;
-        const prevStats = index > 0 ? moduleStats[index - 1] : null;
+      {modules.map((module, sectionIndex) => {
+        const stats = moduleStats[sectionIndex];
+        const isUnlocked = sectionIndex === 0 || moduleStats[sectionIndex - 1].isPassing;
+        const prevModule = sectionIndex > 0 ? modules[sectionIndex - 1] : null;
+        const prevStats = sectionIndex > 0 ? moduleStats[sectionIndex - 1] : null;
         const conceptUnits = groupActivitiesIntoConceptUnits(module.activities);
 
         return (
@@ -238,12 +239,18 @@ export default function TrackModuleList({ modules }: TrackModuleListProps) {
             <div className="concept-units-list">
               {conceptUnits.map((unit) => {
                 if (unit.lesson || unit.quiz) {
+                  const isLessonWaived = unit.lesson ? isContentWaived(unit.lesson.slug) : false;
+                  const lessonWaivedReason = unit.lesson ? getWaivedReason(unit.lesson.slug) : null;
                   const isLessonComplete = unit.lesson
                     ? Boolean(completedMap[`${unit.lesson.type}:${unit.lesson.slug}`])
                     : false;
+
+                  const isQuizWaived = unit.quiz ? isContentWaived(unit.quiz.slug) : false;
+                  const quizWaivedReason = unit.quiz ? getWaivedReason(unit.quiz.slug) : null;
                   const isQuizComplete = unit.quiz
                     ? Boolean(completedMap[`${unit.quiz.type}:${unit.quiz.slug}`])
                     : false;
+
                   const unitMastered = isLessonComplete && isQuizComplete;
 
                   return (
@@ -257,8 +264,9 @@ export default function TrackModuleList({ modules }: TrackModuleListProps) {
                           {unitMastered ? (
                             <span
                               className="badge badge--completed"
+                              style={isLessonWaived || isQuizWaived ? { background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.35)' } : undefined}
                             >
-                              ✓ Unit Mastered
+                              ✓ Unit Mastered {isLessonWaived || isQuizWaived ? '(Credit)' : ''}
                             </span>
                           ) : isLessonComplete ? (
                             <span
@@ -290,19 +298,31 @@ export default function TrackModuleList({ modules }: TrackModuleListProps) {
                             <div className="concept-step-content">
                               <div className="concept-step-header">
                                 <h4 className="concept-step-title">{unit.lesson.title}</h4>
-                                {isLessonComplete && (
+                                {isLessonWaived ? (
                                   <span
-                                    className="badge badge--completed"
+                                    className="badge"
+                                    style={{
+                                      background: 'rgba(16, 185, 129, 0.15)',
+                                      color: '#10b981',
+                                      border: '1px solid rgba(16, 185, 129, 0.35)',
+                                      fontSize: '11px',
+                                      padding: '2px 8px',
+                                    }}
+                                    title={lessonWaivedReason || 'Satisfied via Certification'}
                                   >
+                                    ✓ Satisfied via Certification
+                                  </span>
+                                ) : isLessonComplete ? (
+                                  <span className="badge badge--completed">
                                     ✓ Completed
                                   </span>
-                                )}
+                                ) : null}
                               </div>
                             </div>
                             <div className="concept-step-action">
                               {isUnlocked ? (
                                 <a className="btn-link" href={unit.lesson.href}>
-                                  <span>Read Lesson</span>
+                                  <span>{isLessonWaived ? 'Review Lesson' : 'Read Lesson'}</span>
                                   <span className="icon-directional">→</span>
                                 </a>
                               ) : (
@@ -332,10 +352,22 @@ export default function TrackModuleList({ modules }: TrackModuleListProps) {
                             <div className="concept-step-content">
                               <div className="concept-step-header">
                                 <h4 className="concept-step-title">{unit.quiz.title}</h4>
-                                {isQuizComplete ? (
+                                {isQuizWaived ? (
                                   <span
-                                    className="badge badge--completed"
+                                    className="badge"
+                                    style={{
+                                      background: 'rgba(16, 185, 129, 0.15)',
+                                      color: '#10b981',
+                                      border: '1px solid rgba(16, 185, 129, 0.35)',
+                                      fontSize: '11px',
+                                      padding: '2px 8px',
+                                    }}
+                                    title={quizWaivedReason || 'Satisfied via Certification'}
                                   >
+                                    ✓ Satisfied via Certification
+                                  </span>
+                                ) : isQuizComplete ? (
+                                  <span className="badge badge--completed">
                                     ✓ Passed
                                   </span>
                                 ) : isLessonComplete ? (
@@ -357,7 +389,7 @@ export default function TrackModuleList({ modules }: TrackModuleListProps) {
                             <div className="concept-step-action">
                               {isUnlocked ? (
                                 <a className="btn-link" href={unit.quiz.href}>
-                                  <span>Take Checkpoint Quiz</span>
+                                  <span>{isQuizWaived ? 'Review Quiz' : 'Take Checkpoint Quiz'}</span>
                                   <span className="icon-directional">→</span>
                                 </a>
                               ) : (
@@ -380,6 +412,8 @@ export default function TrackModuleList({ modules }: TrackModuleListProps) {
 
                 // Standalone activity (e.g. lab sandbox, standalone assessment)
                 const activity = unit.standalone!;
+                const isActWaived = isContentWaived(activity.slug);
+                const actWaivedReason = getWaivedReason(activity.slug);
                 const isComplete = Boolean(completedMap[`${activity.type}:${activity.slug}`]);
 
                 return (
@@ -397,22 +431,39 @@ export default function TrackModuleList({ modules }: TrackModuleListProps) {
                               ? 'Hands-on Activity'
                               : 'Core Lesson'}
                       </span>
-                      {isComplete && (
+                      {isActWaived ? (
                         <span
-                          className="badge badge--completed"
+                          className="badge"
+                          style={{
+                            background: 'rgba(16, 185, 129, 0.15)',
+                            color: '#10b981',
+                            border: '1px solid rgba(16, 185, 129, 0.35)',
+                            fontSize: '11px',
+                            padding: '2px 8px',
+                          }}
+                          title={actWaivedReason || 'Satisfied via Certification'}
                         >
+                          ✓ Satisfied via Certification
+                        </span>
+                      ) : isComplete ? (
+                        <span className="badge badge--completed">
                           ✓ Completed
                         </span>
-                      )}
+                      ) : null}
                     </div>
 
                     <h3>{activity.title}</h3>
                     <p>{activity.description || 'Complete this learning activity to progress your certification track.'}</p>
+                    {isActWaived && actWaivedReason && (
+                      <p style={{ fontSize: '12px', color: '#10b981', marginTop: '4px' }}>
+                        Exempt: {actWaivedReason}
+                      </p>
+                    )}
 
                     <div className="card__footer">
                       {isUnlocked ? (
                         <a className="btn-link" href={activity.href}>
-                          <span>Open Activity</span>
+                          <span>{isActWaived ? 'Review Activity (Optional)' : 'Open Activity'}</span>
                           <span className="icon-directional">→</span>
                         </a>
                       ) : (
