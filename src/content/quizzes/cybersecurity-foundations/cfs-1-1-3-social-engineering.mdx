@@ -6,15 +6,17 @@ track: "cybersecurity-foundations"
 moduleId: "cfs.fundamentals.security-concepts"
 order: 3
 difficulty: "Beginner"
-estMinutes: 10
+estMinutes: 20
 passThreshold: 70
 tags: ["social engineering", "phishing", "checkpoint", "security fundamentals"]
 hints:
   - "Watch for psychological triggers like urgency, authority, and fear."
   - "Remember the difference between spear phishing (specific target) and whaling (executives)."
+  - "For select-all questions, a single missed or extra option marks the whole answer wrong."
 checklist:
   - "Analyzed social engineering lures"
   - "Identified attack vector classifications"
+  - "Separated MFA that resists phishing from MFA that does not"
   - "Applied out-of-band verification principles"
 domains:
   - domainId: "cyber.foundations"
@@ -31,6 +33,16 @@ questions:
     correctIndex: 0
     explanation: "Impersonating high-ranking executives leverages authority, while imposing a rapid deadline invokes urgency to pressure victims into bypassing protocols."
   - id: "q2"
+    type: "multi"
+    prompt: "A teacher receives: 'This is the principal. I'm stuck in a board meeting and can't talk. Buy six $100 gift cards for staff appreciation and send me the codes within the hour — keep this between us.' Select EVERY manipulation tactic present."
+    options:
+      - "Authority — it claims to come from the principal"
+      - "Urgency — a one-hour deadline"
+      - "Isolation — 'keep this between us' cuts the target off from anyone who would question it"
+      - "Exploitation of a software vulnerability"
+    correctIndices: [0, 1, 2]
+    explanation: "Gift-card fraud runs entirely on human levers: authority, urgency, and isolation from anyone who would say 'that's odd'. There is no technical exploit at all, which is exactly why a firewall or antivirus does nothing to stop it."
+  - id: "q3"
     type: "single"
     prompt: "Which attack vector specifically describes highly targeted spear phishing directed at high-level executives or board members?"
     options:
@@ -40,7 +52,47 @@ questions:
       - "Baiting"
     correctIndex: 2
     explanation: "Whaling is a specialized spear phishing attack crafted specifically to compromise senior executive accounts (C-suite)."
-  - id: "q3"
+  - id: "q4"
+    type: "single"
+    prompt: "A caller says they are from the district's IT contractor. They know your principal's name and which ticketing system the school uses, and they need your password to 'finish a migration'. Everything they said about the school is correct. What does their accurate knowledge tell you?"
+    options:
+      - "They are genuine, because an outsider could not know those details"
+      - "Nothing about who they are — those details are public or easily researched, and legitimate IT never needs your password"
+      - "You should give them a temporary password instead of your real one"
+      - "They must be an insider, so the call can be trusted"
+    correctIndex: 1
+    explanation: "Accurate detail is the attacker's tool, not proof of identity. Staff pages, social media, and job postings supply most of it. Whoever is calling, the request itself — your password — is the tell, because no legitimate IT process requires it."
+  - id: "q5"
+    type: "short"
+    prompt: "Inventing a believable scenario and role — a backstory — to talk a victim into handing over information is called what? One word."
+    acceptedAnswers: ["pretexting", "pretext", "pretexing"]
+    explanation: "Pretexting. The pretext is the story: the contractor finishing a migration, the auditor needing records, the new hire locked out. The more research behind it, the more convincing it gets."
+  - id: "q6"
+    type: "multi"
+    prompt: "Select EVERY attack below that requires the attacker to be physically present."
+    options:
+      - "Tailgating through a badge-controlled door"
+      - "Shoulder surfing a password as it is typed"
+      - "Vishing a help desk from another country"
+      - "Leaving infected USB drives in the staff car park"
+    correctIndices: [0, 1, 3]
+    explanation: "Tailgating and shoulder surfing need someone in the building, and baiting with USB drives needs someone to physically place them. Vishing is a phone call — it can come from anywhere, which is part of why it scales."
+  - id: "q7"
+    type: "single"
+    prompt: "Someone in a hi-vis vest carrying a ladder follows you through a badge-controlled door and says they are here to fix the lights. What is the correct response?"
+    options:
+      - "Hold the door — contractors are expected and it would be rude not to"
+      - "Let them in, but keep an eye on them"
+      - "Politely direct them to sign in at reception, and do not let them through on your badge"
+      - "Call the police immediately"
+    correctIndex: 2
+    explanation: "A ladder and a vest are costume, not credentials — they are the whole trick. Sending someone to reception is not an accusation; it is the process working. Watching them afterwards does nothing once they are inside, and calling the police overreacts to what may be a genuine contractor."
+  - id: "q8"
+    type: "short"
+    prompt: "Before writing a lure, an attacker researched your school's public staff page and several teachers' social media. What is this kind of research from publicly available sources called? The five-letter abbreviation is fine."
+    acceptedAnswers: ["osint", "open-source intelligence", "open source intelligence"]
+    explanation: "OSINT — open-source intelligence. Nothing was hacked; every detail was published by the school or the staff themselves. It is why the digital footprint and social engineering lessons are really the same lesson."
+  - id: "q9"
     type: "single"
     prompt: "An adversary uses an automated script to trigger dozens of MFA push alerts on a technician's mobile phone at 3:00 AM until the technician accidentally approves one. What modern attack is this?"
     options:
@@ -50,7 +102,17 @@ questions:
       - "Tailgating"
     correctIndex: 0
     explanation: "MFA fatigue exploits human exhaustion and frustration by overwhelming the user with repeated push notifications until they approve the login."
-  - id: "q4"
+  - id: "q10"
+    type: "multi"
+    prompt: "A reverse-proxy phishing kit relays everything the victim does to the real site in real time. Select EVERY form of MFA it can defeat this way."
+    options:
+      - "SMS one-time codes"
+      - "Authenticator-app time-based codes"
+      - "Push-notification approvals"
+      - "FIDO2 hardware security keys"
+    correctIndices: [0, 1, 2]
+    explanation: "Codes and push approvals are all things the victim can be tricked into passing along — the proxy forwards them to the real site and keeps the resulting session. That is why 'we have MFA' is not the same as 'we are phishing-resistant'. Only the hardware key checks which site it is actually talking to."
+  - id: "q11"
     type: "single"
     prompt: "What is the primary technical reason FIDO2 / WebAuthn hardware security keys are immune to reverse-proxy phishing kits like Evilginx?"
     options:
@@ -60,7 +122,7 @@ questions:
       - "They notify the police automatically when plugged in"
     correctIndex: 1
     explanation: "FIDO2 keys use origin-bound public key cryptography; if the browser is connected to a spoofed proxy domain, the hardware key refuses to release the token."
-  - id: "q5"
+  - id: "q12"
     type: "single"
     prompt: "An employee receives an email requesting that future direct deposit salary payments be sent to a new bank account. What is the mandatory defensive procedure?"
     options:
@@ -70,6 +132,16 @@ questions:
       - "Forward the email to all company employees to ask if anyone recognizes the bank"
     correctIndex: 2
     explanation: "Out-of-band verification ensures sensitive financial or credential changes are confirmed over an independent, trusted channel rather than trusting the inbound message."
+  - id: "q13"
+    type: "single"
+    prompt: "A teacher realises they typed their password into a phishing page twenty minutes ago. What response from the organisation limits the damage most?"
+    options:
+      - "Disciplining them, so staff take phishing seriously"
+      - "Making reporting quick and blame-free, so they report within minutes and the password is reset before it is used"
+      - "Waiting to see whether the account is actually misused"
+      - "Requiring them to finish a training module before they can report it"
+    correctIndex: 1
+    explanation: "Time-to-report is the variable that decides how bad this gets. A stolen password reset in twenty minutes is usually harmless; one reported three days later is a breach. Punishing people for reporting teaches the next person to stay quiet."
 ---
 
-Checkpoint quiz testing your ability to spot social engineering lures and execute human-layer defense procedures.
+Checkpoint quiz testing your ability to spot social engineering lures, tell phishing-resistant MFA from the rest, and execute human-layer defense procedures.

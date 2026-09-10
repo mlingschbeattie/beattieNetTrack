@@ -6,9 +6,16 @@ track: cybersecurity-foundations
 moduleId: cfs.fundamentals.security-concepts
 order: 5
 difficulty: Beginner
-estMinutes: 15
+estMinutes: 20
 passThreshold: 70
 tags: ["digital-citizenship", "privacy", "digital-footprint", "9-12.DC.FOOT", "9-12.DC.PPI.1"]
+hints:
+  - "Active is what you deliberately publish. Passive is what gets collected about you whether or not you do anything."
+  - "For select-all questions, a single missed or extra option marks the whole answer wrong."
+checklist:
+  - "Separated active from passive footprint"
+  - "Explained why deletion is not removal"
+  - "Chose steps that actually reduce a footprint"
 questions:
   - id: q1
     type: single
@@ -19,28 +26,33 @@ questions:
       - "Active is recent and passive is older than a year"
       - "Active is text and passive is images and video"
     correctIndex: 1
-    explanation: "Posts, comments, and profiles are active. IP address, browsing behaviour, device fingerprint, and location history are passive — gathered whether or not you do anything."
+    explanation: "Posts, comments, and profiles are active. IP address, browsing behaviour, device characteristics, and location history are passive — gathered whether or not you do anything."
   - id: q2
+    type: multi
+    prompt: "Select EVERY item below that belongs to your passive footprint."
+    options:
+      - "Your IP address, logged by every site you visit"
+      - "A comment you posted on a forum"
+      - "The combination of screen, fonts, and browser settings that identifies your machine"
+      - "Location history collected by an app on your phone"
+    correctIndices: [0, 2, 3]
+    explanation: "Everything here except the forum comment was collected without you deliberately publishing it. The comment is active — you chose to write it. The rest accumulates simply by using a device, which is why people underestimate it."
+  - id: q3
     type: single
     prompt: "You browse a retail site without logging in or buying anything. What have you left behind?"
     options:
       - "Nothing, since you never submitted information"
       - "Only a temporary cookie that clears when the tab closes"
-      - "A passive footprint including IP address, device fingerprint, pages viewed, and dwell time"
+      - "A passive footprint — your IP address, a profile of your device, the pages you viewed, and how long you spent on each"
       - "An active footprint, because visiting was a deliberate choice"
     correctIndex: 2
     explanation: "No account and no purchase does not mean no record. This is exactly the part of the footprint people do not know exists."
-  - id: q3
-    type: single
-    prompt: "Combining screen size, operating system, installed fonts, and graphics hardware to identify a specific machine across sites is called:"
-    options:
-      - "Device fingerprinting"
-      - "Packet capture"
-      - "Data aggregation"
-      - "Session hijacking"
-    correctIndex: 0
-    explanation: "Fingerprinting identifies the device itself, so it works without cookies and without an account."
   - id: q4
+    type: short
+    prompt: "Combining screen size, operating system, installed fonts, and graphics hardware to recognise a specific machine across websites — without cookies or an account — is called device what? One word."
+    acceptedAnswers: ["fingerprinting", "fingerprint", "device fingerprinting", "browser fingerprinting"]
+    explanation: "Device fingerprinting. It identifies the device itself, so it works without cookies and without an account — and clearing your cookies does nothing to it."
+  - id: q5
     type: single
     prompt: "You delete a post two years after publishing it. What has actually been removed?"
     options:
@@ -50,7 +62,7 @@ questions:
       - "The text but not any attached images"
     correctIndex: 1
     explanation: "Deletion controls your copy. It has no effect on copies other people or services already made, which is the practical meaning of digital permanence."
-  - id: q5
+  - id: q6
     type: single
     prompt: "Which of these is the main reason deleted content stays reachable?"
     options:
@@ -60,7 +72,7 @@ questions:
       - "Deletion requests take exactly 90 days to process"
     correctIndex: 2
     explanation: "Screenshots and reshares are the dominant mechanism, alongside web archives and search caches. None of them are yours to delete."
-  - id: q6
+  - id: q7
     type: single
     prompt: "A company assembles your school, approximate location, a team you follow, and a relative's name into one sellable profile. What is this, and why does it matter?"
     options:
@@ -70,7 +82,17 @@ questions:
       - "Encryption, because the details are combined into one record"
     correctIndex: 0
     explanation: "Nothing was hacked and every element was public. The aggregation itself is the harm, and it is what data brokers sell."
-  - id: q7
+  - id: q8
+    type: multi
+    prompt: "An old forum account you forgot about uses the same password as your school email. The forum is breached. Select EVERY consequence this creates."
+    options:
+      - "Attackers try the leaked email and password on other sites, including your school account"
+      - "Your school account can be taken over, because it shares that password"
+      - "Your forum posts are automatically deleted as part of the breach response"
+      - "Changing only the forum password fully removes the risk"
+    correctIndices: [0, 1]
+    explanation: "Leaked credential lists get tried everywhere, automatically — that is credential stuffing, and a reused password turns one breach into many. Changing the forum password alone fixes the least important account; the school password is the one that must change."
+  - id: q9
     type: single
     prompt: "Something embarrassing surfaces online. Why is deleting all of your accounts usually the wrong first move?"
     options:
@@ -80,7 +102,22 @@ questions:
       - "It alerts employers that something was removed"
     correctIndex: 1
     explanation: "The item is already copied. Wiping everything else leaves a single decontextualised screenshot as the whole record, and a surrendered username can be re-registered by someone else."
-  - id: q8
+  - id: q10
+    type: multi
+    prompt: "Select EVERY step below that genuinely reduces your footprint going forward."
+    options:
+      - "Tightening privacy settings on the accounts you keep"
+      - "Searching your own name to see what others can find"
+      - "Browsing in a private window, which stops websites seeing your IP address"
+      - "Reviewing what an app can access before granting it permissions"
+    correctIndices: [0, 1, 3]
+    explanation: "Private browsing is the trap. It stops your own device saving history and cookies — the site you visit still sees your IP address and your device exactly as before. The other three either limit what is collected or show you what already exists."
+  - id: q11
+    type: short
+    prompt: "A formal request asking a website or search engine to remove content about you is called a what request? One word."
+    acceptedAnswers: ["takedown", "take-down", "take down", "removal"]
+    explanation: "A takedown request. It is one of the few tools that works on copies you do not control — though it removes content from that site or search result, not from every screenshot already made."
+  - id: q12
     type: single
     prompt: "Why is a digital footprint described as an asymmetric risk?"
     options:
@@ -90,7 +127,7 @@ questions:
       - "Platforms delete positive content faster"
     correctIndex: 1
     explanation: "The asymmetry is real, but the conclusion is not to disappear — it is to build a positive record that competes for the same search results."
-  - id: q9
+  - id: q13
     type: single
     prompt: "For someone entering IT or cybersecurity, which footprint is genuinely an asset to a hiring manager?"
     options:
@@ -100,7 +137,7 @@ questions:
       - "Anonymous accounts demonstrating technical skill"
     correctIndex: 2
     explanation: "This field hires on evidence. A visible record of real work is worth more than a claim on a résumé, and an absent candidate has nothing to show."
-  - id: q10
+  - id: q14
     type: single
     prompt: "Why should you close accounts you no longer use?"
     options:
@@ -115,4 +152,4 @@ domains:
     weight: 1
 ---
 
-Quiz for the Digital Footprint lesson — covers active and passive footprints, device fingerprinting, digital permanence, data aggregation, and career implications.
+Quiz for the Digital Footprint lesson — covers active and passive footprints, device fingerprinting, digital permanence, data aggregation, credential reuse, and career implications.

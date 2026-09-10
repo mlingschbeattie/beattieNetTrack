@@ -6,19 +6,22 @@ track: cybersecurity-foundations
 moduleId: cfs.fundamentals.security-concepts
 order: 4
 difficulty: Beginner
-estMinutes: 15
+estMinutes: 25
 passThreshold: 70
 tags: ["linux", "cli", "permissions", "cyberpatriot"]
+hints:
+  - "Read is 4, write is 2, execute is 1. Add them per column: owner, group, others."
+  - "Typed answers ignore capitalisation, but spelling and spacing count — type the command as you would at a prompt."
+  - "For select-all questions, a single missed or extra option marks the whole answer wrong."
+checklist:
+  - "Produced commands from memory"
+  - "Converted between permission strings and octal"
+  - "Separated commands that observe from commands that change the system"
 questions:
   - id: q1
-    type: single
-    prompt: "Which command prints the directory you are currently working in?"
-    options:
-      - "ls"
-      - "pwd"
-      - "cd"
-      - "whoami"
-    correctIndex: 1
+    type: short
+    prompt: "Which command prints the directory you are currently working in? Give the command only."
+    acceptedAnswers: ["pwd"]
     explanation: "pwd stands for Print Working Directory. It answers the question of where you are in the filesystem tree."
   - id: q2
     type: single
@@ -41,16 +44,21 @@ questions:
     correctIndex: 0
     explanation: "600 gives the owner read and write, and nobody else any access. SSH refuses to use a private key that is readable by group or others."
   - id: q4
-    type: single
-    prompt: "What is the octal equivalent of rwxr-xr-x?"
-    options:
-      - "644"
-      - "700"
-      - "755"
-      - "777"
-    correctIndex: 2
+    type: short
+    prompt: "Convert the permission string rwxr-xr-x to its three-digit octal mode."
+    acceptedAnswers: ["755", "0755"]
     explanation: "Read is 4, write is 2, execute is 1. Owner rwx is 7, group r-x is 5, others r-x is 5."
   - id: q5
+    type: multi
+    prompt: "Select EVERY mode below that lets any user on the system — not just the owner or the group — read the file."
+    options:
+      - "644"
+      - "600"
+      - "755"
+      - "640"
+    correctIndices: [0, 2]
+    explanation: "The last digit is others. 644 and 755 both give others a 4 or higher, which includes read. 600 and 640 give others 0. 640 is the common trap — the group can read it, which feels open, but anyone outside the group gets nothing."
+  - id: q6
     type: single
     prompt: "Why is chmod 777 on a directory almost always wrong?"
     options:
@@ -60,7 +68,7 @@ questions:
       - "It transfers ownership to root"
     correctIndex: 1
     explanation: "World-writable means exactly that. Any process, including malware running as an unprivileged user, can add or replace files there."
-  - id: q6
+  - id: q7
     type: single
     prompt: "What does the pipe character do in: cat auth.log | grep 'Failed password' | wc -l"
     options:
@@ -70,7 +78,17 @@ questions:
       - "Compares the output of the commands for differences"
     correctIndex: 2
     explanation: "Pipes chain simple tools into a single operation. Here the log is filtered to failed logins and then counted."
-  - id: q7
+  - id: q8
+    type: multi
+    prompt: "Select EVERY command below that displays the contents of a file."
+    options:
+      - "less /etc/hosts"
+      - "ls -la /etc"
+      - "head -20 /var/log/syslog"
+      - "cd /var/log"
+    correctIndices: [0, 2]
+    explanation: "less and head both print what is inside a file — less lets you scroll, head shows the start. ls lists what is in a directory without opening anything, and cd only moves you to a different directory."
+  - id: q9
     type: single
     prompt: "What is the difference between > and >> when redirecting output?"
     options:
@@ -80,7 +98,7 @@ questions:
       - "There is no difference"
     correctIndex: 0
     explanation: "A single > truncates the file first. Using > where you meant >> silently destroys the previous contents."
-  - id: q8
+  - id: q10
     type: single
     prompt: "What does 2>/dev/null accomplish in a find command?"
     options:
@@ -90,17 +108,12 @@ questions:
       - "Runs the search with elevated privileges"
     correctIndex: 1
     explanation: "Stream 2 is stderr, and /dev/null discards whatever is written to it. This keeps meaningful results visible amid permission noise."
-  - id: q9
-    type: single
-    prompt: "You need to watch a log file update live during an active incident. Which command?"
-    options:
-      - "cat /var/log/auth.log"
-      - "head -50 /var/log/auth.log"
-      - "tail -f /var/log/auth.log"
-      - "less /var/log/auth.log"
-    correctIndex: 2
-    explanation: "The -f flag follows the file, printing new lines as they are written. It is the standard way to watch events as they happen."
-  - id: q10
+  - id: q11
+    type: short
+    prompt: "During an active incident you need to watch /var/log/auth.log update live as new lines are written. Give the command and flag you would use. Including the path is optional."
+    acceptedAnswers: ["tail -f", "tail -f /var/log/auth.log", "sudo tail -f", "sudo tail -f /var/log/auth.log", "tail --follow", "tail --follow /var/log/auth.log", "sudo tail --follow /var/log/auth.log"]
+    explanation: "tail -f. The -f flag follows the file, printing new lines as they are written. auth.log is usually only readable by root, which is why sudo tail -f is what you will type on a real system."
+  - id: q12
     type: single
     prompt: "Which command lists every running process with its owner and resource usage?"
     options:
@@ -110,7 +123,7 @@ questions:
       - "find / -type p"
     correctIndex: 0
     explanation: "ps aux is how defenders spot unexpected processes such as backdoors or cryptominers during triage."
-  - id: q11
+  - id: q13
     type: single
     prompt: "What does find / -perm -4000 locate, and why does it matter?"
     options:
@@ -120,7 +133,17 @@ questions:
       - "SUID binaries, which run with the owner's privileges and are a privilege escalation target"
     correctIndex: 3
     explanation: "A SUID binary executes with its owner's privileges rather than the caller's. Attackers hunt for vulnerable ones; defenders audit for unexpected ones."
-  - id: q12
+  - id: q14
+    type: multi
+    prompt: "You suspect a Linux server is compromised and want to investigate without changing anything. Select EVERY command that gathers information without modifying the system."
+    options:
+      - "ps aux"
+      - "find / -perm -4000 2>/dev/null"
+      - "chmod 777 /tmp"
+      - "whoami"
+    correctIndices: [0, 1, 3]
+    explanation: "ps aux, find, and whoami only read. chmod changes permissions — and on /tmp it would strip the sticky bit, letting any user delete any other user's files. During triage you observe first; every change you make is a change an investigator later has to account for."
+  - id: q15
     type: single
     prompt: "How does kill -9 differ from a plain kill?"
     options:
@@ -135,4 +158,4 @@ domains:
     weight: 1
 ---
 
-Quiz for the Linux CLI Survival Kit lesson — covers filesystem navigation, reading and setting permissions, pipes and redirection, and investigating a running system.
+Quiz for the Linux CLI Survival Kit lesson — covers filesystem navigation, reading and setting permissions, pipes and redirection, and investigating a running system. Several answers must be typed rather than chosen, because at a real prompt there are no options to pick from.

@@ -1,6 +1,6 @@
 ---
 title: "Intro to Cybersecurity Review Check"
-description: "Comprehensive review checkpoint evaluating understanding of security concepts, risk, and defenses."
+description: "Cumulative module review drawing across all five lessons — the CIA triad, threat and risk, social engineering, the Linux command line, and your digital footprint."
 slug: "cfs-intro-cybersecurity-review"
 track: "cybersecurity-foundations"
 moduleId: "cfs.fundamentals.security-concepts"
@@ -8,8 +8,20 @@ order: 99
 standalone: true
 difficulty: "Beginner"
 xp: 35
+estMinutes: 35
 passThreshold: 70
-tags: ["CIA", "risk", "security fundamentals"]
+tags: ["CIA", "risk", "social engineering", "linux", "digital footprint", "module review", "security fundamentals"]
+hints:
+  - "This review reaches back across every lesson in the module. If a question feels unfamiliar, it is testing something from an earlier lesson — revisit it."
+  - "Classify first: what failed, what is the weakness, who is the threat."
+  - "Typed answers ignore capitalisation, but spelling counts."
+  - "For select-all questions, a single missed or extra option marks the whole answer wrong."
+checklist:
+  - "Classified incidents by CIA property"
+  - "Separated threat, vulnerability, and impact"
+  - "Recognised social engineering from its tactics"
+  - "Produced Linux permissions from memory"
+  - "Connected a digital footprint to the attacks it enables"
 questions:
   - id: q1
     type: single
@@ -43,6 +55,16 @@ questions:
     explanation: "Availability means authorized users can reach the systems and data they need. Denying access to operational systems is an availability failure."
   - id: q4
     type: single
+    prompt: "A student-records export directory on a Linux server is set to mode 777. Which CIA properties does that setting most directly put at risk?"
+    options:
+      - "Availability, because 777 makes the directory slower to access"
+      - "Confidentiality and integrity — any user or process on the system can read and modify the records"
+      - "Integrity only, because 777 does not grant read access"
+      - "None, provided the server sits behind a firewall"
+    correctIndex: 1
+    explanation: "777 grants read, write, and execute to everyone, so any account on the box can read the records and change them. A firewall only filters network traffic — it does nothing about users and processes already on the server."
+  - id: q5
+    type: single
     prompt: "What best defines a vulnerability in an enterprise environment?"
     options:
       - "Any malicious adversary with an exploit tool"
@@ -51,7 +73,17 @@ questions:
       - "A technical control used to block phishing"
     correctIndex: 1
     explanation: "A vulnerability is the passive weakness or hole in the fence. Threat actors exploit vulnerabilities to cause impact."
-  - id: q5
+  - id: q6
+    type: single
+    prompt: "A student's old gaming account, unused for years, shares a password with their school account. The gaming site is breached. In risk terms, what is the reused password?"
+    options:
+      - "The threat"
+      - "The vulnerability"
+      - "The impact"
+      - "A risk transfer"
+    correctIndex: 1
+    explanation: "The attacker holding the leaked list is the threat. The reuse is the weakness they exploit. A taken-over school account would be the impact. The same three-part split from the risk lesson applies to your own accounts."
+  - id: q7
     type: single
     prompt: "Which statement accurately describes risk in cybersecurity operations?"
     options:
@@ -61,7 +93,22 @@ questions:
       - "Risk cannot be calculated or reduced"
     correctIndex: 2
     explanation: "Risk is the product of Threat, Vulnerability, and Impact. It measures how likely an exploit is and how badly it will hurt."
-  - id: q6
+  - id: q8
+    type: multi
+    prompt: "Select EVERY action below that is risk mitigation rather than transfer, acceptance, or avoidance."
+    options:
+      - "Enabling MFA on all staff accounts"
+      - "Purchasing cyber liability insurance"
+      - "Shutting down an unused public web service entirely"
+      - "Removing Domain Admin rights from a service account that only reads logs"
+    correctIndices: [0, 3]
+    explanation: "MFA and removing excess privilege both reduce likelihood or impact, so both are mitigation. Insurance is transfer. Shutting the service down is avoidance — the activity creating the risk no longer exists."
+  - id: q9
+    type: short
+    prompt: "After firewalls, MFA, and patching are all in place, the risk that still remains is called what? One word, plus the word risk if you like."
+    acceptedAnswers: ["residual", "residual risk"]
+    explanation: "Residual risk. No security architecture reaches zero, and what remains has to be consciously accepted, transferred, or mitigated further."
+  - id: q10
     type: single
     prompt: "What is the primary goal of a defense-in-depth architecture?"
     options:
@@ -71,7 +118,7 @@ questions:
       - "Replace real-time monitoring with automated prevention"
     correctIndex: 1
     explanation: "Defense in depth layers physical, network, endpoint, and administrative controls so that an attacker who bypasses one layer is still stopped by the next."
-  - id: q7
+  - id: q11
     type: single
     prompt: "A service account configured with Domain Admin privileges when it only reads an inventory log violates which fundamental security concept?"
     options:
@@ -81,7 +128,7 @@ questions:
       - "Network microsegmentation"
     correctIndex: 2
     explanation: "Least privilege requires giving accounts only the exact permissions needed to do their job and nothing more. Granting full admin rights to a log reader is an accident waiting to happen."
-  - id: q8
+  - id: q12
     type: single
     prompt: "Which action most directly reduces an organization's attack surface?"
     options:
@@ -91,29 +138,69 @@ questions:
       - "Disabling system logging to conserve disk space"
     correctIndex: 1
     explanation: "Attack surface is the total sum of entry points an attacker can target. Shutting down unused ports and services removes those doors entirely."
-  - id: q9
+  - id: q13
     type: single
-    prompt: "Why must IT teams prioritize basic hygiene (patching, MFA, closing open ports) over defending against nation-state zero-days?"
+    prompt: "Why should a school's IT team prioritise patching, MFA, and closing unused ports over defending against nation-state zero-day exploits?"
     options:
-      - "Opportunistic cybercriminals exploit known, unpatched holes in over 80% of breaches"
-      - "Nation-state threat actors never target high schools or small businesses"
-      - "Zero-day vulnerabilities cannot be mitigated with software updates"
-      - "Firewalls automatically block all advanced persistent threats"
+      - "Most real attacks are opportunistic and exploit known, unpatched weaknesses, so basic hygiene stops far more actual incidents"
+      - "Nation-state actors never target schools"
+      - "Zero-day exploits cannot be defended against in any way"
+      - "Firewalls block all advanced persistent threats automatically"
     correctIndex: 0
-    explanation: "Real-world adversaries take the path of least resistance. Solid cyber hygiene stops the overwhelming majority of automated scans and opportunistic attacks."
-  - id: q10
-    type: single
-    prompt: "After applying firewalls, multi-factor authentication, and patches, what is the leftover risk that cannot be eliminated called?"
+    explanation: "Attackers take the path of least resistance, and that path is almost always a known, unpatched weakness rather than a novel exploit. Schools are targeted, so the second option is false — and the third overstates it: defense in depth limits what a zero-day achieves even when it cannot be prevented."
+  - id: q14
+    type: multi
+    prompt: "A staff member receives: 'Hi, it's Dana from payroll. We're switching banks today — reply with your new direct deposit details before 3pm or this month's pay will be delayed.' The sender is dana@schoo1-payroll.com. Select EVERY red flag."
     options:
-      - "Eliminated risk"
-      - "Residual risk"
-      - "Unmitigated threat"
-      - "Deferred impact"
+      - "A deadline that creates urgency"
+      - "A sender domain with the digit 1 in place of a letter"
+      - "A request to send financial details by replying to the email"
+      - "The message arriving on a weekday"
+    correctIndices: [0, 1, 2]
+    explanation: "Urgency, a lookalike domain, and a request to move financial details over the same channel the request arrived on are the classic trio. A weekday arrival is normal — and attackers deliberately time these for business hours so they blend in."
+  - id: q15
+    type: short
+    prompt: "A phone call from an attacker impersonating your bank to get your account details is called what? One word."
+    acceptedAnswers: ["vishing", "voice phishing"]
+    explanation: "Vishing — voice phishing. Caller ID can be spoofed, so a call that appears to come from your bank's real number proves nothing. Hang up and call the number on the back of your card."
+  - id: q16
+    type: multi
+    prompt: "An attacker is preparing a spear-phishing email to a teacher. Select EVERY source that could hand them convincing detail without hacking anything."
+    options:
+      - "The school's public staff directory"
+      - "The teacher's public social media posts"
+      - "A photo the teacher posted of their classroom, showing the whiteboard"
+      - "The teacher's encrypted email inbox"
+    correctIndices: [0, 1, 2]
+    explanation: "Everything except the inbox is published — by the school or by the teacher. That is OSINT, and it is the bridge between the digital footprint lesson and the social engineering lesson: what you post becomes the material for the lure. The inbox would require a compromise first."
+  - id: q17
+    type: single
+    prompt: "A caller knows your principal's name, the district ticketing system, and a real open ticket number, and asks for your MFA code to 'close the ticket'. What do you do?"
+    options:
+      - "Give it — the real ticket number proves they are legitimate"
+      - "Refuse, end the call, and contact the IT help desk using the number from the district directory"
+      - "Give the code, then change your password straight afterwards"
+      - "Ask them to send the request by email instead"
     correctIndex: 1
-    explanation: "No security architecture achieves 100% safety. The remaining risk after all controls are deployed is residual risk, which leadership must accept, transfer, or mitigate further."
+    explanation: "Accurate detail can come from OSINT or from an attacker who already has a foothold, so it proves nothing. No legitimate IT process needs your MFA code. Asking for an email changes nothing — it is the same untrusted source on a different channel. Verify out of band, through a number you already trust."
+  - id: q18
+    type: short
+    prompt: "Give the three-digit numeric chmod mode that gives the owner read and write, the group read only, and everyone else no access."
+    acceptedAnswers: ["640", "0640"]
+    explanation: "640. Owner read plus write is 6, group read is 4, others nothing is 0. It is the mode the Security Baseline Lab uses for the records export."
+  - id: q19
+    type: multi
+    prompt: "You suspect a Linux server is compromised. Select EVERY command that gathers information without changing the system."
+    options:
+      - "ps aux"
+      - "tail -f /var/log/auth.log"
+      - "chmod 777 /tmp"
+      - "find / -perm -4000 2>/dev/null"
+    correctIndices: [0, 1, 3]
+    explanation: "Listing processes, following the auth log, and searching for SUID binaries are all read-only. chmod changes permissions, and on /tmp it would remove the sticky bit and make things worse. Observe before you change anything."
 domains:
   - domainId: "cyber.foundations"
     weight: 1
 ---
 
-Use this review to confirm foundational competency in CIA triad reasoning, risk framing, and first-line defensive decision making.
+Cumulative review for the Security Concepts module. It reaches back across all five lessons, so a student who crammed one lesson and moved on will find it hard — which is the point. Passing it means the ideas held, not just that they were read recently.
