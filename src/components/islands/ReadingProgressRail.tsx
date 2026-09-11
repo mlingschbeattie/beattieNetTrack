@@ -65,8 +65,8 @@ export default function ReadingProgressRail({ lessonSlug, sections, domains = []
     setCompletedMap(progress);
     const completedCount = sections.filter((s) => progress[s.id]).length;
     dispatchProgress(lessonSlug, completedCount, sections.length);
-    if (completedCount === sections.length && sections.length > 0 && domains.length > 0) {
-      const cisDomains: CISDomainTag[] = domains.map((d) => ({
+    if (completedCount === sections.length && sections.length > 0) {
+      const cisDomains: CISDomainTag[] = (domains ?? []).map((d) => ({
         domainId: d.domainId,
         weight: d.weight ?? 1.0,
       }));

@@ -153,7 +153,7 @@ export function emitQuizCompleted(
   domains: CISDomainTag[],
   apiUrl?: string,
 ): void {
-  if (!isBrowser() || domains.length === 0) return;
+  if (!isBrowser()) return;
 
   emitEvent(
     {
@@ -181,7 +181,7 @@ export function emitLessonStarted(
   domains: CISDomainTag[],
   apiUrl?: string,
 ): void {
-  if (!isBrowser() || domains.length === 0) return;
+  if (!isBrowser()) return;
 
   const storageKey = `${LS_LESSON_STARTED_PREFIX}${getUserPrefix()}${lessonId}`;
   const today = new Date().toISOString().slice(0, 10);
@@ -213,7 +213,7 @@ export function emitLessonCompleted(
   domains: CISDomainTag[],
   apiUrl?: string,
 ): void {
-  if (!isBrowser() || domains.length === 0) return;
+  if (!isBrowser()) return;
 
   const storageKey = `${LS_LESSON_COMPLETED_PREFIX}${getUserPrefix()}${lessonId}`;
   if (window.localStorage.getItem(storageKey)) return;

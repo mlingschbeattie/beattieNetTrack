@@ -104,10 +104,10 @@ if (currentTrack) {
   </Fragment>
 
   <Fragment slot="activity-main">
-    {quiz.data.domains && quiz.data.domains.length > 0 && apiUrl && (
+    {apiUrl && (
       <BeaconEmitter
         client:load
-        domains={quiz.data.domains}
+        domains={quiz.data.domains ?? []}
         contentId={quiz.slug}
         contentType="quiz"
         contentTitle={quiz.data.title}

@@ -74,10 +74,10 @@ const outlineSections = authoredSections;
     { label: lesson.data.title },
   ].filter(Boolean)}
 >
-  {lesson.data.domains && lesson.data.domains.length > 0 && apiUrl && (
+  {apiUrl && (
     <BeaconEmitter
       client:only="react"
-      domains={lesson.data.domains}
+      domains={lesson.data.domains ?? []}
       contentId={lesson.slug}
       contentType="lesson"
       contentTitle={lesson.data.title}
@@ -132,7 +132,7 @@ const outlineSections = authoredSections;
       </div>
       {hasLearnMode && (
         <aside class="lesson-reading-rail">
-          <ReadingProgressRail client:only="react" lessonSlug={lesson.slug} sections={outlineSections} domains={lesson.data.domains} apiUrl={apiUrl} />
+          <ReadingProgressRail client:only="react" lessonSlug={lesson.slug} sections={outlineSections} domains={lesson.data.domains ?? []} apiUrl={apiUrl} />
         </aside>
       )}
     </div>

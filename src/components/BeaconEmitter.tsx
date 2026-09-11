@@ -23,8 +23,8 @@ export default function BeaconEmitter({
   apiUrl = '',
 }: BeaconEmitterProps) {
   useEffect(() => {
-    if (domains.length === 0) return;
-    const cisDomains: CISDomainTag[] = domains.map((d) => ({
+    // Always report, tagged or not: the CIS content map decides which domains this counts toward.
+    const cisDomains: CISDomainTag[] = (domains ?? []).map((d) => ({
       domainId: d.domainId,
       weight: d.weight ?? 1.0,
     }));

@@ -125,8 +125,8 @@ export default function LabRunner({
 
   // CIS time-beacon: emit active-time pings every 30 s while student is working
   useEffect(() => {
-    if (!apiUrl || domains.length === 0) return;
-    const cisDomains: CISDomainTag[] = domains.map((d) => ({
+    if (!apiUrl) return;
+    const cisDomains: CISDomainTag[] = (domains ?? []).map((d) => ({
       domainId: d.domainId,
       weight: d.weight ?? 1.0,
     }));
@@ -142,8 +142,8 @@ export default function LabRunner({
 
   // CIS events: emit lab_started once per day on mount
   useEffect(() => {
-    if (!apiUrl || domains.length === 0) return;
-    const cisDomains: CISDomainTag[] = domains.map((d) => ({
+    if (!apiUrl) return;
+    const cisDomains: CISDomainTag[] = (domains ?? []).map((d) => ({
       domainId: d.domainId,
       weight: d.weight ?? 1.0,
     }));
@@ -203,8 +203,8 @@ export default function LabRunner({
       markLabCompleted(labSlug, xpReward);
       window.dispatchEvent(new CustomEvent('progress-updated'));
       // CIS event: emit lab_completed once (guarded by localStorage flag inside emitLabCompleted)
-      if (apiUrl && domains.length > 0) {
-        const cisDomains: CISDomainTag[] = domains.map((d) => ({
+      if (apiUrl) {
+        const cisDomains: CISDomainTag[] = (domains ?? []).map((d) => ({
           domainId: d.domainId,
           weight: d.weight ?? 1.0,
         }));

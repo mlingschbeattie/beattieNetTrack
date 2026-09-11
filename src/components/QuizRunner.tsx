@@ -108,7 +108,8 @@ export default function QuizRunner({ quiz, workspaceSlug, domains = [], apiUrl }
       return;
     }
 
-    if (action === 'submit' && apiUrl && domains.length > 0) {
+    // Report every submission; the CIS content map decides which domains it counts toward.
+    if (action === 'submit' && apiUrl) {
       const cisDomains: CISDomainTag[] = domains.map((d) => ({
         domainId: d.domainId,
         weight: d.weight ?? 1.0,
