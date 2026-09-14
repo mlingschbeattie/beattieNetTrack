@@ -2491,14 +2491,69 @@ html.sidebar-ready .sidebar__progress-slot .sidebar__react {
   min-height: 0;
 }
 
-
 .workspace-shell > * {
   min-width: 0;
   min-height: 0;
 }
 
+.mode-connector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 0.625rem 1rem;
+  background: var(--beattie-surface);
+  border: 1px solid var(--beattie-border-subtle);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+}
+
+.mode-connector__text {
+  color: var(--beattie-text-muted);
+  font-weight: 500;
+}
+
+.mode-connector__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--beattie-primary);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.mode-connector__link:hover {
+  color: var(--beattie-primary-hover);
+  text-decoration: underline;
+}
+
+.mode-connector__link .icon-directional {
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+
+.mode-connector__link:hover .icon-directional {
+  transform: translateX(3px);
+}
+
+[dir="rtl"] .mode-connector__link:hover .icon-directional {
+  transform: translateX(-3px);
+}
+
 .workspace-top-card {
   position: static;
+}
+
+.workspace-top-card .activity-card__header {
+  width: 100%;
+}
+
+.workspace-top-card .activity-card__actions {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .workspace-drawer {

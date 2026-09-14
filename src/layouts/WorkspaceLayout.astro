@@ -133,7 +133,7 @@ if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson' || itemTy
           </div>
         ) : null}
 
-        <ActivityCard class="workspace-top-card" terminalChrome="GUIDE.exe" fullHeight={false}>
+        <ActivityCard class="workspace-top-card" fullHeight={false}>
           <Fragment slot="actions">
             <div class="workspace-tabs workspace-tabs--drawer" role="tablist" aria-label="Workspace drawer tabs">
               <button
@@ -193,7 +193,6 @@ if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson' || itemTy
         <div class="workspace-main" data-workspace-activity>
           <ActivityCard
             class="workspace-activity-card"
-            terminalChrome={itemType === 'quiz' ? `INFOX.exe` : 'WORKSPACE.exe'}
             fullHeight={true}
           >
             <slot name="activity-main" />

@@ -2,7 +2,6 @@
 interface Props {
   title?: string;
   subtitle?: string;
-  terminalChrome?: string;
   icon?: string;
   class?: string;
   fullHeight?: boolean;
@@ -11,7 +10,6 @@ interface Props {
 const {
   title,
   subtitle,
-  terminalChrome,
   icon,
   class: className = '',
   fullHeight = false,
@@ -19,27 +17,22 @@ const {
 
 const hasActionsSlot = Astro.slots.has('actions');
 const hasBodySlot = Astro.slots.has('body');
-const hasHeaderContent = Boolean(title || subtitle || terminalChrome || icon || hasActionsSlot);
+const hasHeaderTitle = Boolean(title || subtitle || icon);
+const hasHeaderContent = Boolean(hasHeaderTitle || hasActionsSlot);
 ---
 
 <article class={`card activity-card card-shell min0 ${fullHeight ? 'fill' : ''} ${className}`.trim()} data-testid="activity-card">
   {hasHeaderContent && (
     <header class="activity-card__header card-header min0">
-      <div class="activity-card__title-wrap min0">
-        <div class="terminal-dots" aria-hidden="true">
-          <span class="terminal-dot terminal-dot--red"></span>
-          <span class="terminal-dot terminal-dot--yellow"></span>
-          <span class="terminal-dot terminal-dot--green"></span>
-        </div>
-        {terminalChrome ? (
-          <span class="terminal-title">{terminalChrome}</span>
-        ) : (
+      {hasHeaderTitle && (
+        <div class="activity-card__title-wrap min0">
+          {icon && <span class="activity-card__icon" aria-hidden="true">{icon}</span>}
           <div class="activity-card__title-stack min0">
             {title && <h3 class="activity-card__title">{title}</h3>}
             {subtitle && <p class="activity-card__subtitle">{subtitle}</p>}
           </div>
-        )}
-      </div>
+        </div>
+      )}
       {hasActionsSlot && <div class="activity-card__actions"><slot name="actions" /></div>}
     </header>
   )}

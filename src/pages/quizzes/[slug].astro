@@ -4,7 +4,6 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import WorkspaceLayout from '../../layouts/WorkspaceLayout.astro';
 import QuizRunner from '../../components/QuizRunner.tsx';
-import ActivityCard from '../../components/ActivityCard.astro';
 import BeaconEmitter from '../../components/BeaconEmitter.tsx';
 import type { QuizDefinition } from '../../lib/quizEngine';
 import { getActivityModuleNavigation } from '../../lib/content';
@@ -92,15 +91,13 @@ if (currentTrack) {
   activityNavigation={activityNavigation}
 >
   <Fragment slot="instructions">
-    <ActivityCard>
-      <h1 class="page-title">{quiz.data.title}</h1>
-      <p class="lesson-header__description">{quiz.data.description}</p>
-      <ul>
-        <li>Answer each question in order.</li>
-        <li>Use Check to see whether you are on pace to pass.</li>
-        <li>Use Submit to record score and completion.</li>
-      </ul>
-    </ActivityCard>
+    <h1 class="page-title">{quiz.data.title}</h1>
+    <p class="lesson-header__description">{quiz.data.description}</p>
+    <ul>
+      <li>Answer each question in order.</li>
+      <li>Use Check to see whether you are on pace to pass.</li>
+      <li>Use Submit to record score and completion.</li>
+    </ul>
   </Fragment>
 
   <Fragment slot="activity-main">
