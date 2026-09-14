@@ -9,6 +9,7 @@ import type { TrackModuleSummary, TrackActivitySummary } from '../../lib/content
 
 interface TrackModuleListProps {
   modules: Array<Omit<TrackModuleSummary, 'prevNextByKey'> & { prevNextByKey?: TrackModuleSummary['prevNextByKey'] }>;
+  isTeacher?: boolean;
 }
 
 export function isActivityCompleted(
@@ -137,8 +138,18 @@ export function groupActivitiesIntoConceptUnits(activities: TrackActivitySummary
   return units;
 }
 
-export default function TrackModuleList({ modules }: TrackModuleListProps) {
+export default function TrackModuleList({ modules, isTeacher: isTeacherProp }: TrackModuleListProps) {
   const [completedMap, setCompletedMap] = useState<Record<string, boolean>>({});
+  const [isTeacher, setIsTeacher] = useState<boolean>(Boolean(isTeacherProp));
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && (window as any).__BEATTIE_USER__) {
+      const u = (window as any).__BEATTIE_USER__;
+      if (u.isTeacher || u.isAdmin) {
+        setIsTeacher(true);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const update = () => {
@@ -194,7 +205,7 @@ export default function TrackModuleList({ modules }: TrackModuleListProps) {
     <>
       {modules.map((module, sectionIndex) => {
         const stats = moduleStats[sectionIndex];
-        const isUnlocked = sectionIndex === 0 || moduleStats[sectionIndex - 1].isPassing;
+        const isUnlocked = isTeacher || sectionIndex === 0 || moduleStats[sectionIndex - 1].isPassing;
         const prevModule = sectionIndex > 0 ? modules[sectionIndex - 1] : null;
         const prevStats = sectionIndex > 0 ? moduleStats[sectionIndex - 1] : null;
         const conceptUnits = groupActivitiesIntoConceptUnits(module.activities);

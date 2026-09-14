@@ -96,6 +96,26 @@ test('section unlock gating requires >= 80% completion of previous section', () 
   assert.equal(isSectionPassing(1, 1), true);  // 100% -> unlocked
 });
 
+test('teacher and admin roles bypass section progression locks while students remain gated', () => {
+  const isSectionUnlocked = (
+    isTeacherOrAdmin: boolean,
+    sectionIndex: number,
+    prevPassing: boolean
+  ) => isTeacherOrAdmin || sectionIndex === 0 || prevPassing;
+
+  // Student (isTeacherOrAdmin = false)
+  assert.equal(isSectionUnlocked(false, 0, false), true);  // Section 0 always unlocked
+  assert.equal(isSectionUnlocked(false, 1, false), false); // Section 1 locked if section 0 not passing
+  assert.equal(isSectionUnlocked(false, 1, true), true);   // Section 1 unlocked if section 0 passing
+  assert.equal(isSectionUnlocked(false, 3, false), false); // Section 3 locked if section 2 not passing
+
+  // Teacher / Admin (isTeacherOrAdmin = true)
+  assert.equal(isSectionUnlocked(true, 0, false), true);   // Section 0 unlocked
+  assert.equal(isSectionUnlocked(true, 1, false), true);   // Section 1 unlocked even with 0% student progress
+  assert.equal(isSectionUnlocked(true, 3, false), true);   // Section 3 unlocked
+  assert.equal(isSectionUnlocked(true, 10, false), true);  // All sections unlocked
+});
+
 test('waived content counts as completed in getTrackProgress and getLabStatus', () => {
   const storage = createMemoryStorage();
   // Simulate cached waived content in localStorage

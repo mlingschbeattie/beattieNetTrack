@@ -222,6 +222,10 @@ const activities = defineCollection({
     estMinutes: z.number().int().optional().default(15),
     labPath: z.string().optional(),
     labUrl: z.string().optional(),
+    checkLabel: z.string().optional().default('Check'),
+    submitLabel: z.string().optional().default('Submit'),
+    hints: z.array(z.string()).default([]),
+    checklist: z.array(z.string()).default([]),
     domains: domainMappingSchema,
   }),
 });

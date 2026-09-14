@@ -16,11 +16,23 @@ type SidebarSection = {
 type SidebarTrackProgressProps = {
   sections: SidebarSection[];
   activeLesson?: string;
+  isTeacher?: boolean;
 };
 
 type TrackProgress = ReturnType<typeof getTrackProgress>;
 
-export default function SidebarTrackProgress({ sections, activeLesson }: SidebarTrackProgressProps) {
+export default function SidebarTrackProgress({ sections, activeLesson, isTeacher: isTeacherProp }: SidebarTrackProgressProps) {
+  const [isTeacher, setIsTeacher] = useState<boolean>(Boolean(isTeacherProp));
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && (window as any).__BEATTIE_USER__) {
+      const u = (window as any).__BEATTIE_USER__;
+      if (u.isTeacher || u.isAdmin) {
+        setIsTeacher(true);
+      }
+    }
+  }, []);
+
   const [progress, setProgress] = useState<TrackProgress>({
     percent: 0,
     completed: 0,
@@ -95,7 +107,7 @@ export default function SidebarTrackProgress({ sections, activeLesson }: Sidebar
 
   const isUnlockedList: boolean[] = [];
   for (let i = 0; i < sections.length; i++) {
-    if (i === 0) {
+    if (isTeacher || i === 0) {
       isUnlockedList.push(true);
     } else {
       const prev = sectionStats[i - 1];

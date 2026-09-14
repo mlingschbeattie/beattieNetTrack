@@ -98,6 +98,16 @@ export default function LabRunner({
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [toastMsg, setToastMsg] = useState('');
   const [isPracticing, setIsPracticing] = useState(false);
+  const [isTeacher, setIsTeacher] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && (window as any).__BEATTIE_USER__) {
+      const u = (window as any).__BEATTIE_USER__;
+      if (u.isTeacher || u.isAdmin) {
+        setIsTeacher(true);
+      }
+    }
+  }, []);
 
   const isWaived = isContentWaived(labSlug);
   const waivedReason = getWaivedReason(labSlug);
@@ -364,7 +374,7 @@ export default function LabRunner({
         {steps.map((step, index) => {
           const isDone = completedStepIds.includes(step.id);
           const isActive = index === currentStepIndex;
-          const isLocked = !isDone && !isActive;
+          const isLocked = !isTeacher && !isDone && !isActive;
           return (
             <button
               key={step.id}

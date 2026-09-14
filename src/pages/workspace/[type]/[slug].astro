@@ -9,6 +9,7 @@ import CodeBlock from '../../../components/CodeBlock.astro';
 import LabActivity from '../../../components/workspace/LabActivity.astro';
 import QuizActivity from '../../../components/workspace/QuizActivity.astro';
 import QuizRunner from '../../../components/QuizRunner.tsx';
+import CiaTriadClassifier from '../../../components/islands/CiaTriadClassifier.tsx';
 import BeaconEmitter from '../../../components/BeaconEmitter.tsx';
 import type { QuizDefinition } from '../../../lib/quizEngine';
 import { getActivityModuleNavigation, inferLegacyTrackSlug, mapLessonToLegacyActivity, toLegacyLabPath } from '../../../lib/content';
@@ -160,6 +161,10 @@ if (activity) {
   itemDescription = activity.data.description ?? 'Workspace activity';
   itemDifficulty = activity.data.difficulty ?? 'Intermediate';
   itemMinutes = activity.data.estMinutes ?? 15;
+  checkLabel = activity.data.checkLabel;
+  submitLabel = activity.data.submitLabel;
+  panelHints = activity.data.hints;
+  panelChecklist = activity.data.checklist;
   currentTrack = tracks.find((entry) => entry.slug === activity.data.track);
   activityLabPath = activity.data.labPath;
   activityLabUrl = activity.data.labUrl;
@@ -265,12 +270,16 @@ const itemDomains = quiz?.data?.domains ?? lab?.data?.domains ?? [];
     )}
 
     {type === 'activity' && (
-      activityLabPath || activityLabUrl
-        ? <LabActivity slug={slug} title={itemTitle} labPath={activityLabPath} labUrl={activityLabUrl} />
-        : <ActivityCard>
-            <h3>Activity workspace</h3>
-            <p>Activity type is configured with instructions only.</p>
-          </ActivityCard>
+      slug === 'cfs-cia-triad-classifier' ? (
+        <CiaTriadClassifier client:only="react" activitySlug={slug} />
+      ) : activityLabPath || activityLabUrl ? (
+        <LabActivity slug={slug} title={itemTitle} labPath={activityLabPath} labUrl={activityLabUrl} />
+      ) : (
+        <ActivityCard>
+          <h3>Activity workspace</h3>
+          <p>Activity type is configured with instructions only.</p>
+        </ActivityCard>
+      )
     )}
   </Fragment>
 

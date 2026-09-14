@@ -1,6 +1,6 @@
 ---
 title: CIA Triad Classifier Activity
-description: Classify incidents by confidentiality, integrity, or availability before choosing controls.
+description: Triage live security incidents by identifying the primary impacted CIA pillar, threat vector, and defensive control.
 slug: cfs-cia-triad-classifier
 type: activity
 track: cybersecurity-foundations
@@ -8,30 +8,30 @@ moduleId: cfs.fundamentals.security-concepts
 order: 2
 difficulty: Beginner
 estMinutes: 10
+checklist:
+  - 'Triage Incident 1: Public Cloud Storage Bucket Exposure'
+  - 'Triage Incident 2: Unauthorized Payroll Script Modification'
+  - 'Triage Incident 3: Registration Portal Denial-of-Service Outage'
+  - 'Submit completed triage report with >= 70% accuracy'
+hints:
+  - 'Determine which property of the CIA Triad was breached FIRST, even if other effects happen later.'
+  - 'Confidentiality = unauthorized viewing. Integrity = unauthorized alteration. Availability = disruption of access.'
 ---
 
-Use this activity immediately after Intro to Cybersecurity.
+### Mission Briefing: SOC Tier-1 Triage
 
-## Scenario Set
+Welcome to the Security Operations Center (SOC). As a Tier-1 Incident Responder, your first responsibility during an active security alert is to classify which property of the **CIA Triad** failed first:
 
-Classify each incident using the primary CIA property impacted first:
+- **🔒 Confidentiality**: Unauthorized disclosure or exposure of private data.
+- **🛡️ Integrity**: Unauthorized alteration, tampering, or corruption of data or system logic.
+- **⚡ Availability**: Disruption, downtime, or denial of access to authorized users.
 
-1. Student records exposed in a public cloud bucket.
-2. Payroll values altered by unauthorized script execution.
-3. School portal unavailable during finals registration.
+### Triage Protocol
 
-## Response Prompt
+For each incident case in your workspace console:
 
-For each incident, provide:
+1. **Classify Primary Impact**: Major breaches often have downstream effects, but determine which property broke **first**.
+2. **Identify the Threat Vector**: Pinpoint the root cause or attack path that enabled the compromise.
+3. **Select Containment Action**: Apply the immediate defensive control to halt active damage before starting forensic investigation.
 
-- primary CIA category,
-- one likely threat path,
-- one immediate defensive action.
-
-## Quality Bar
-
-Strong answers are specific and avoid vague terms like "just secure it."
-
-## Demo Prompt
-
-Have learners defend why their first classification is primary even when multiple CIA properties are affected.
+Select your findings in the **WORKSPACE.exe** console on the right, verify each incident, and submit your final triage report.

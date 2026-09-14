@@ -4,6 +4,7 @@ import AppShell from '../../layouts/AppShell.astro';
 import TrackProgressSummary from '../../components/islands/TrackProgressSummary.tsx';
 import TrackModuleList from '../../components/islands/TrackModuleList.tsx';
 import { getTrackDetailData, getTracksIndexData } from '../../lib/content';
+import { getAuthUser } from '../../lib/auth';
 
 export async function getStaticPaths() {
   const tracks = await getTracksIndexData();
@@ -11,6 +12,9 @@ export async function getStaticPaths() {
     .filter((track) => track.slug !== 'legacy')
     .map((track) => ({ params: { slug: track.slug } }));
 }
+
+const user = getAuthUser(Astro.request.headers);
+const isTeacher = Boolean(user?.isTeacher || user?.isAdmin);
 
 const slug = Astro.params.slug ?? '';
 const [allTracks, allLessons, detail] = await Promise.all([
@@ -51,6 +55,7 @@ const activitySlugs = activities.map((act) => act.slug);
   activeTrack={track.slug}
   currentTrack={currentTrack}
   lessonMap={lessonMap}
+  user={user}
   breadcrumbs={[
     { label: 'Home', href: '/' },
     { label: 'Learning Tracks', href: '/tracks' },
@@ -66,5 +71,5 @@ const activitySlugs = activities.map((act) => act.slug);
     <TrackProgressSummary client:only="react" activities={activities} activitySlugs={activitySlugs} />
   </div>
 
-  <TrackModuleList client:load modules={modulesForList} />
+  <TrackModuleList client:load modules={modulesForList} isTeacher={isTeacher} />
 </AppShell>

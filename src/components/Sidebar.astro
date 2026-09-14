@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import type { AuthUser } from '../lib/auth';
 import SidebarTrackProgress from './islands/SidebarTrackProgress.tsx';
 import { getTrackDetailData } from '../lib/content';
 
@@ -12,6 +13,7 @@ interface Props {
   activeLesson?: string;
   currentTrack?: TrackEntry;
   lessonMap?: Record<string, LessonEntry>;
+  user?: AuthUser | null;
 }
 
 const {
@@ -20,7 +22,10 @@ const {
   activeLesson,
   currentTrack,
   lessonMap = {},
+  user,
 } = Astro.props as Props;
+
+const isTeacher = Boolean(user?.isTeacher || user?.isAdmin);
 
 const TRACK_ORDER = [
   'tech-plus',
@@ -41,7 +46,7 @@ const TRACK_ORDER = [
 // sidebar that omits where they are.
 const visibleTracks = (tracks as TrackEntry[])
   .filter((t) => !t.data.hidden)
-  .filter((t) => !t.data.comingSoon || t.slug === activeTrack)
+  .filter((t) => !t.data.comingSoon || t.slug === activeTrack || isTeacher)
   .sort((a, b) => {
     const ai = TRACK_ORDER.indexOf(a.slug);
     const bi = TRACK_ORDER.indexOf(b.slug);
@@ -181,6 +186,7 @@ const DEFAULT_TRACK_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" fill=
               client:only="react"
               sections={trackSections}
               activeLesson={activeLesson}
+              isTeacher={isTeacher}
             />
           </div>
         )}

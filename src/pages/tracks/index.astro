@@ -2,6 +2,10 @@
 import { getCollection } from 'astro:content';
 import AppShell from '../../layouts/AppShell.astro';
 import { getTracksIndexData, getTrackDetailData } from '../../lib/content';
+import { getAuthUser } from '../../lib/auth';
+
+const user = getAuthUser(Astro.request.headers);
+const isTeacher = Boolean(user?.isTeacher || user?.isAdmin);
 
 const [trackCards, allTracks] = await Promise.all([getTracksIndexData(), getCollection('tracks')]);
 const tracks = allTracks.filter((t) => !t.data.hidden);
@@ -33,6 +37,7 @@ const DEFAULT_ICON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none
 <AppShell
   title="Learning Tracks"
   tracks={tracks}
+  user={user}
   breadcrumbs={[
     { label: 'Home', href: '/' },
     { label: 'Learning Tracks' },
@@ -47,15 +52,14 @@ const DEFAULT_ICON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none
     {trackCards.map((track) => {
       const svgIcon = TRACK_ICONS[track.slug] || DEFAULT_ICON;
       // Enterable only when the track has activities AND is not flagged
-      // comingSoon. The flag exists for tracks that hold some content but are
-      // not ready for students, so activity count alone cannot decide this.
-      const isReady = activityCounts[track.slug] > 0 && !track.comingSoon;
+      // comingSoon (teachers/admins can preview any track with activities).
+      const isReady = activityCounts[track.slug] > 0 && (!track.comingSoon || isTeacher);
       return (
         <article class="card card--track">
           <div class="card__header-row">
             <div class="card__icon-badge" aria-hidden="true" set:html={svgIcon}></div>
             <span class={`track-badge track-badge--${isReady ? 'available' : 'coming-soon'}`}>
-              {isReady ? 'Curriculum Ready' : 'Coming Soon'}
+              {isReady ? (track.comingSoon && isTeacher ? 'Curriculum Ready (Preview)' : 'Curriculum Ready') : 'Coming Soon'}
             </span>
           </div>
           <h3>{track.title}</h3>
