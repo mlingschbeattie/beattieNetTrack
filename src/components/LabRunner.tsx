@@ -70,8 +70,24 @@ const validateAnswer = (value: string, validator: StepValidator) => {
     return normalize(value) === normalize(validator.value);
   }
   if (validator.type === 'oneOf') {
+    const normValue = normalize(value);
     const accepted = new Set(validator.values.map(normalize));
-    return accepted.has(normalize(value));
+    if (accepted.has(normValue)) return true;
+
+    // Support binary strings with varying leading zero padding or spaces (e.g. 00010100 vs 10100)
+    const cleanBinaryValue = normValue.replace(/\s+/g, '').replace(/^0b/, '');
+    if (/^[01]+$/.test(cleanBinaryValue)) {
+      const strippedInput = cleanBinaryValue.replace(/^0+(?!$)/, '');
+      for (const expected of validator.values) {
+        const cleanExpected = normalize(expected).replace(/\s+/g, '').replace(/^0b/, '');
+        if (/^[01]+$/.test(cleanExpected)) {
+          if (strippedInput === cleanExpected.replace(/^0+(?!$)/, '')) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
   try {
     const pattern = new RegExp(validator.pattern, validator.flags);

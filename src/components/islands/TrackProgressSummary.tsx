@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getTrackProgress, type TrackProgressItem } from '../../lib/progressStore';
+import { getTrackProgress, hydrateFromServer, type TrackProgressItem } from '../../lib/progressStore';
 
 type TrackProgressSummaryProps = {
   activities?: TrackProgressItem[];
@@ -40,6 +40,7 @@ export default function TrackProgressSummary({ activities, activitySlugs, lesson
     };
 
     update();
+    hydrateFromServer().then(() => update());
     window.addEventListener('progress-updated', update);
     return () => window.removeEventListener('progress-updated', update);
   }, [items]);

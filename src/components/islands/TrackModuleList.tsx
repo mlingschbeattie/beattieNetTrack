@@ -4,6 +4,7 @@ import {
   isContentWaived,
   getWaivedReason,
   fetchWaivedContent,
+  hydrateFromServer,
 } from '../../lib/progressStore';
 import type { TrackModuleSummary, TrackActivitySummary } from '../../lib/content';
 
@@ -165,6 +166,9 @@ export default function TrackModuleList({ modules, isTeacher: isTeacherProp }: T
     };
 
     update();
+    hydrateFromServer().then(() => {
+      update();
+    });
     fetchWaivedContent().then(() => {
       update();
     });

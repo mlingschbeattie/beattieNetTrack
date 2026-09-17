@@ -395,7 +395,7 @@ if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson' || itemTy
       estMinutes: typeof estMinutes === 'number' ? estMinutes : itemMinutes,
     };
 
-    if (itemType === 'lab') {
+    if (itemType === 'lab' || itemType === 'activity') {
       if ((action === 'check' || action === 'submit') && passed) {
         markLabComplete(itemSlug, meta);
       } else if (action === 'reset' || ((action === 'check' || action === 'submit') && !passed)) {

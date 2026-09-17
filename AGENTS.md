@@ -47,3 +47,10 @@
   * Protect submission and event ingestion endpoints against automated replay scripts and burst submissions via idempotency checks and rate limits.
 - Defense-in-Depth for Simulators:
   * Even offline simulators and terminal tools must fail safely and prevent arbitrary script execution (XSS, eval injection, or prototype pollution) in local storage or browser context.
+
+## Zero-Trust Credential & Secret Management Law
+- Absolute Ban on Project-Level Tokens: NEVER write `_authToken`, API keys, or private access tokens into a repository `.npmrc`, `.env`, or configuration file. Registry authentication tokens MUST reside strictly in the developer's user home directory (`~/.npmrc`). Project `.npmrc` files may only declare registry URLs (`@beattie:registry=...`).
+- Zero Hardcoded Credential Fallbacks: Never provide fallback literals for credentials in code, build scripts, or ORM configurations (e.g., `process.env.DB_URL ?? 'postgresql://...'` is strictly prohibited). If an environment variable is missing, the application must fail loudly at boot time.
+- Mandatory Gitignore Coverage: Every repository must explicitly ignore `.env`, `.env.*` (except `.env.example`), `*.key`, `*.pem`, and `.npmrc`. Never commit local environment overrides.
+- Curricular Artifact Separation: Distinguish sharply between pedagogical CTF artifacts (student flags like `FLAG{...}`, mock PCAPs, simulated breach logs, and educational dictionaries) and authentic platform infrastructure secrets (SSO keys, Authelia database hashes, production passwords, Gitea tokens). Simulated CTF materials belong exclusively in designated educational directories (`frontend/src/data`, `challenges/`, `labs/`), while genuine platform secrets are strictly protected by zero-trust environment injection.
+

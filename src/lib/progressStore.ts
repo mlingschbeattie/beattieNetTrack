@@ -296,7 +296,7 @@ export function getWaivedReason(contentId: string, storage: StorageLike | null =
 }
 
 export async function fetchWaivedContent(
-  apiUrl = 'https://api.beattietech.local',
+  apiUrl?: string,
   storage: StorageLike | null = getStorage()
 ): Promise<WaivedContentState> {
   const username = getCurrentUsername();
@@ -304,8 +304,10 @@ export async function fetchWaivedContent(
     return { waivedContent: [], waivedContentIds: [], lastFetchedAt: '' };
   }
 
+  const baseUrl = typeof window !== 'undefined' ? '' : (apiUrl || 'https://api.beattietech.local');
+
   try {
-    const res = await fetch(`${apiUrl}/api/cis/me/waived-content`, {
+    const res = await fetch(`${baseUrl}/api/cis/me/waived-content`, {
       credentials: 'include',
     });
     if (!res.ok) {
@@ -326,6 +328,206 @@ export async function fetchWaivedContent(
   } catch (err) {
     console.warn('[progressStore] Failed to fetch waived content:', err);
     return getWaivedContentState(storage);
+  }
+}
+
+export function inferTrackSlug(activitySlug: string): string {
+  if (activitySlug.startsWith('cfs-') || activitySlug.includes('linux-cli')) {
+    return 'cybersecurity-foundations';
+  }
+  if (activitySlug.startsWith('pct-') || activitySlug.startsWith('pc-')) {
+    return 'pc-technician';
+  }
+  if (activitySlug.startsWith('net-') || activitySlug.startsWith('networking-')) {
+    return 'network-engineer';
+  }
+  if (activitySlug.startsWith('tech-plus-')) {
+    return 'tech-plus';
+  }
+  return 'cybersecurity-foundations';
+}
+
+export function getApiBaseUrl(): string {
+  if (typeof window !== 'undefined') {
+    // In the browser, always use relative path '' so requests go to current origin (e.g. lms.beattietech.local/api/*).
+    // Caddy reverse-proxies /api/* directly to beattie-api:3000 with first-party credentials.
+    // This avoids cross-origin CORS preflights, third-party cookie blocking, and DNS resolution failures on student devices.
+    return '';
+  }
+  return process.env.PUBLIC_API_URL || 'http://beattie-api:3000';
+}
+
+export async function syncActivityCompleteToServer(params: {
+  trackSlug?: string;
+  activitySlug: string;
+  activityType: 'lesson' | 'quiz' | 'lab' | 'activity';
+  score?: number;
+  apiUrl?: string;
+}): Promise<void> {
+  if (typeof window === 'undefined') return;
+  const username = getCurrentUsername();
+  if (!username || username === 'guest') return;
+
+  const trackSlug = params.trackSlug || inferTrackSlug(params.activitySlug);
+  const baseUrl = typeof window !== 'undefined' ? '' : (params.apiUrl || getApiBaseUrl());
+
+  try {
+    await fetch(`${baseUrl}/api/progress/complete`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        trackSlug,
+        activitySlug: params.activitySlug,
+        activityType: params.activityType,
+        score: params.score ?? 100,
+      }),
+    });
+  } catch (err) {
+    console.warn('[progressStore] Failed to sync progress to server:', err);
+  }
+}
+
+export async function hydrateFromServer(
+  apiUrl?: string,
+  storage: StorageLike | null = getStorage()
+): Promise<ProgressState> {
+  if (typeof window === 'undefined' || !storage) return defaultState();
+  const username = getCurrentUsername();
+  if (!username || username === 'guest') return getProgress(storage);
+
+  const baseUrl = typeof window !== 'undefined' ? '' : (apiUrl || getApiBaseUrl());
+
+  try {
+    const res = await fetch(`${baseUrl}/api/progress/me`, {
+      credentials: 'include',
+    });
+    if (!res.ok) {
+      return getProgress(storage);
+    }
+    const data = await res.json();
+    if (!data || !data.tracks) return getProgress(storage);
+
+    const next = setProgress((state) => {
+      const lessons = { ...state.lessons };
+      const quizzes = { ...state.quizzes };
+      const labs = { ...state.labs };
+
+      for (const trackKey of Object.keys(data.tracks)) {
+        const trackData = data.tracks[trackKey];
+        if (!Array.isArray(trackData.activities)) continue;
+
+        for (const act of trackData.activities) {
+          const slug = act.slug;
+          const score = typeof act.score === 'number' ? act.score : 100;
+          const completedAt = act.completedAt || new Date().toISOString();
+
+          if (act.type === 'lesson') {
+            if (!lessons[slug]?.completed) {
+              lessons[slug] = {
+                completed: true,
+                completedAt,
+                xpEarned: lessons[slug]?.xpEarned || 20,
+              };
+            }
+          } else if (act.type === 'quiz') {
+            const prevQuiz = quizzes[slug] || {
+              attempts: 0,
+              bestScore: 0,
+              lastScore: 0,
+              lastAttemptAt: null,
+              lastXpAwardDate: null,
+            };
+            quizzes[slug] = {
+              attempts: Math.max(prevQuiz.attempts, 1),
+              bestScore: Math.max(prevQuiz.bestScore, score),
+              lastScore: score,
+              lastAttemptAt: completedAt,
+              lastXpAwardDate: prevQuiz.lastXpAwardDate || completedAt.slice(0, 10),
+            };
+          } else if (act.type === 'lab' || act.type === 'activity') {
+            const prevLab = labs[slug] || defaultLabProgress();
+            labs[slug] = {
+              ...prevLab,
+              completed: true,
+              completedAt,
+              xpAwarded: true,
+              xpEarned: prevLab.xpEarned || 30,
+            };
+          }
+        }
+      }
+
+      const updated = {
+        ...state,
+        lessons,
+        quizzes,
+        labs,
+      };
+      return {
+        ...updated,
+        xpTotal: recalcXpTotal(updated),
+      };
+    }, storage);
+
+    // Bidirectional reconciliation: upload any locally completed items not yet in the server database
+    const serverActivityKeys = new Set<string>();
+    for (const trackKey of Object.keys(data.tracks)) {
+      const trackData = data.tracks[trackKey];
+      if (Array.isArray(trackData.activities)) {
+        for (const act of trackData.activities) {
+          serverActivityKeys.add(`${act.type}:${act.slug}`);
+        }
+      }
+    }
+
+    const currentState = getProgress(storage);
+    const toUpload: Array<{ trackSlug: string; activitySlug: string; activityType: 'lesson' | 'quiz' | 'lab'; score?: number }> = [];
+
+    for (const [slug, entry] of Object.entries(currentState.lessons || {})) {
+      if (entry?.completed && !serverActivityKeys.has(`lesson:${slug}`)) {
+        toUpload.push({
+          trackSlug: inferTrackSlug(slug),
+          activitySlug: slug,
+          activityType: 'lesson',
+          score: 100,
+        });
+      }
+    }
+
+    for (const [slug, entry] of Object.entries(currentState.quizzes || {})) {
+      if ((entry?.bestScore ?? 0) >= 70 && !serverActivityKeys.has(`quiz:${slug}`)) {
+        toUpload.push({
+          trackSlug: inferTrackSlug(slug),
+          activitySlug: slug,
+          activityType: 'quiz',
+          score: entry.bestScore,
+        });
+      }
+    }
+
+    for (const [slug, entry] of Object.entries(currentState.labs || {})) {
+      if (entry?.completed && !serverActivityKeys.has(`lab:${slug}`)) {
+        toUpload.push({
+          trackSlug: inferTrackSlug(slug),
+          activitySlug: slug,
+          activityType: 'lab',
+          score: 100,
+        });
+      }
+    }
+
+    if (toUpload.length > 0) {
+      for (const item of toUpload) {
+        void syncActivityCompleteToServer(item);
+      }
+    }
+
+    window.dispatchEvent(new CustomEvent('progress-updated'));
+    return next;
+  } catch (err) {
+    console.warn('[progressStore] Failed to hydrate progress from server:', err);
+    return getProgress(storage);
   }
 }
 
@@ -353,8 +555,9 @@ export const markLessonComplete = (
   slug: string,
   meta: LessonMeta = {},
   storage: StorageLike | null = getStorage()
-) =>
-  setProgress((state) => {
+) => {
+  syncActivityCompleteToServer({ activitySlug: slug, activityType: 'lesson', score: 100 });
+  return setProgress((state) => {
     const existing = state.lessons[slug];
     if (existing?.completed) {
       return state;
@@ -374,6 +577,7 @@ export const markLessonComplete = (
       xpTotal: recalcXpTotal({ ...state, lessons }),
     };
   }, storage);
+};
 
 export const markLessonIncomplete = (slug: string, storage: StorageLike | null = getStorage()) =>
   setProgress((state) => {
@@ -470,8 +674,9 @@ export const markLabCompleted = (
   slug: string,
   xp: number,
   storage: StorageLike | null = getStorage()
-) =>
-  setProgress((state) => {
+) => {
+  syncActivityCompleteToServer({ activitySlug: slug, activityType: 'lab', score: 100 });
+  return setProgress((state) => {
     const existing = state.labs[slug] ?? defaultLabProgress();
     if (existing.completed && existing.xpAwarded) {
       return state;
@@ -504,6 +709,7 @@ export const markLabCompleted = (
 
     return withRecordedActivity(withXp);
   }, storage);
+};
 
 export const computeTrackLabProgress = (
   labSlugs: string[],
@@ -639,8 +845,9 @@ export const recordQuizAttempt = (
   score: number,
   today: string = dateKey(new Date()),
   storage: StorageLike | null = getStorage()
-) =>
-  setProgress((state) => {
+) => {
+  syncActivityCompleteToServer({ activitySlug: quizSlug, activityType: 'quiz', score });
+  return setProgress((state) => {
     const existing = state.quizzes[quizSlug] ?? {
       attempts: 0,
       bestScore: 0,
@@ -672,6 +879,7 @@ export const recordQuizAttempt = (
       xpTotal: state.xpTotal + quizXp,
     };
   }, storage);
+};
 
 export const getQuizStats = (quizSlug: string, storage: StorageLike | null = getStorage()) => {
   const state = getProgress(storage);

@@ -32,7 +32,14 @@ steps:
       type: oneOf
       values:
         - "10100"
-    successMessage: "Correct. 16 + 4 = 20, so 10100."
+        - "00010100"
+        - "010100"
+        - "0010100"
+        - "000010100"
+        - "0001 0100"
+        - "0b10100"
+        - "0b00010100"
+    successMessage: "Correct. 16 + 4 = 20, so 10100 (or 00010100 in 8-bit byte format)."
   - id: unit-order
     title: "Order the units"
     prompt: "Which list puts the storage units in order from smallest to largest?"

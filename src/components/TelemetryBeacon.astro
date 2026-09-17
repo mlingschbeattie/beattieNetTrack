@@ -1,0 +1,60 @@
+---
+// TelemetryBeacon.astro: Real-time per-page active/idle presence beacon for CIS ecosystem.
+---
+
+<script>
+  (function () {
+    const HEARTBEAT_INTERVAL_MS = 15000;
+    const IDLE_THRESHOLD_MS = 60000; // 60s without input = idle
+
+    let lastInteraction = Date.now();
+    let isHidden = document.hidden;
+
+    function recordInteraction() {
+      lastInteraction = Date.now();
+    }
+
+    const activityEvents: Array<keyof WindowEventMap> = ['pointerdown', 'keydown', 'scroll', 'wheel'];
+    activityEvents.forEach((evt) => {
+      window.addEventListener(evt, recordInteraction, { passive: true });
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      isHidden = document.hidden;
+      if (!isHidden) {
+        recordInteraction();
+      }
+      sendHeartbeat();
+    });
+
+    function getEngagementState(): 'active' | 'idle' {
+      if (isHidden) return 'idle';
+      const idleElapsed = Date.now() - lastInteraction;
+      return idleElapsed < IDLE_THRESHOLD_MS ? 'active' : 'idle';
+    }
+
+    function sendHeartbeat() {
+      const payload = {
+        path: window.location.pathname,
+        state: getEngagementState(),
+        title: document.title ? document.title.slice(0, 200) : undefined,
+      };
+
+      try {
+        void fetch('/api/presence/heartbeat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify(payload),
+          keepalive: true,
+        }).catch(() => {});
+      } catch {}
+    }
+
+    // Initial heartbeat after 2 seconds, then periodically
+    setTimeout(sendHeartbeat, 2000);
+    setInterval(sendHeartbeat, HEARTBEAT_INTERVAL_MS);
+  })();
+</script>

@@ -203,6 +203,7 @@ if (currentTrack) {
 }
 
 const itemDomains = quiz?.data?.domains ?? lab?.data?.domains ?? [];
+const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://api.beattietech.local';
 ---
 
 {redirectTarget ? (
@@ -255,7 +256,7 @@ const itemDomains = quiz?.data?.domains ?? lab?.data?.domains ?? [];
         contentId={slug}
         contentType={type}
         contentTitle={itemTitle}
-        apiUrl=""
+        apiUrl={apiUrl}
       />
     )}
 
@@ -265,7 +266,7 @@ const itemDomains = quiz?.data?.domains ?? lab?.data?.domains ?? [];
 
     {type === 'quiz' && (
       quizDefinition
-        ? <QuizRunner client:only="react" quiz={quizDefinition} workspaceSlug={slug} domains={itemDomains} apiUrl="" />
+        ? <QuizRunner client:only="react" quiz={quizDefinition} workspaceSlug={slug} domains={itemDomains} apiUrl={apiUrl} />
         : <QuizActivity title={itemTitle} description={itemDescription} isReady={false} />
     )}
 
