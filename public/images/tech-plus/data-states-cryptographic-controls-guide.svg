@@ -10,6 +10,7 @@
       .text-label { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 13px; fill: #94a3b8; }
       .text-val-mono { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 13px; fill: #e2e8f0; }
       .badge-text { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; text-anchor: middle; }
+      .text-bold { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; }
     </style>
   </defs>
 
@@ -56,7 +57,7 @@
         <text x="12" y="70" class="text-val-mono" font-size="11px" fill="#fca5a5">THREAT: Laptop stolen or drive cloned</text>
 
         <rect y="92" width="308" height="42" rx="5" fill="#451a03" stroke="#f59e0b" />
-        <text x="12" y="112" class="badge-text" font-size="11px" fill="#fcd34d">PRIMARY DEFENSE:</text>
+        <text x="12" y="112" class="text-bold" text-anchor="start" font-size="11px" fill="#fcd34d">PRIMARY DEFENSE:</text>
         <text x="12" y="127" class="text-label" font-size="11px" fill="#ffffff">BitLocker / Full Disk Encryption (AES)</text>
       </g>
     </g>
@@ -87,7 +88,7 @@
         <text x="12" y="70" class="text-val-mono" font-size="11px" fill="#fca5a5">THREAT: Snooping, sniffing, Wi-Fi taps</text>
 
         <rect y="92" width="308" height="42" rx="5" fill="#0c2340" stroke="#38bdf8" />
-        <text x="12" y="112" class="badge-text" font-size="11px" fill="#38bdf8">PRIMARY DEFENSE:</text>
+        <text x="12" y="112" class="text-bold" text-anchor="start" font-size="11px" fill="#38bdf8">PRIMARY DEFENSE:</text>
         <text x="12" y="127" class="text-label" font-size="11px" fill="#ffffff">HTTPS (TLS 1.3) &amp; VPN Encryption</text>
       </g>
     </g>
@@ -117,7 +118,7 @@
         <text x="12" y="70" class="text-val-mono" font-size="11px" fill="#fca5a5">THREAT: Memory dumping malware</text>
 
         <rect y="92" width="308" height="42" rx="5" fill="#064e3b" stroke="#10b981" />
-        <text x="12" y="112" class="badge-text" font-size="11px" fill="#34d399">PRIMARY DEFENSE:</text>
+        <text x="12" y="112" class="text-bold" text-anchor="start" font-size="11px" fill="#34d399">PRIMARY DEFENSE:</text>
         <text x="12" y="127" class="text-label" font-size="11px" fill="#ffffff">Secure Enclaves &amp; Memory Isolation</text>
       </g>
     </g>
@@ -158,7 +159,7 @@
 
     <!-- Bottom Beginner Rule Callout -->
     <rect x="24" y="172" width="1062" height="48" rx="6" fill="#070b14" stroke="#f59e0b" />
-    <text x="40" y="202" class="badge-text" font-size="13px" fill="#fcd34d">TECHNICIAN GOLDEN RULE:</text>
-    <text x="235" y="202" class="text-val-mono" font-size="12.5px" fill="#ffffff">Emptying the Recycle Bin or formatting does NOT delete data! Use proper sanitization.</text>
+    <text x="40" y="202" class="text-bold" text-anchor="start" font-size="13px" fill="#fcd34d">TECHNICIAN GOLDEN RULE:</text>
+    <text x="245" y="202" class="text-val-mono" font-size="12.5px" fill="#ffffff">Emptying the Recycle Bin or formatting does NOT delete data! Use proper sanitization.</text>
   </g>
 </svg>

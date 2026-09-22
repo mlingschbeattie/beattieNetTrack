@@ -10,6 +10,7 @@
       .text-label { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 13px; fill: #94a3b8; }
       .text-val-mono { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 13px; fill: #e2e8f0; }
       .badge-text { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; text-anchor: middle; }
+      .text-bold { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; }
     </style>
   </defs>
 
@@ -37,10 +38,10 @@
         <rect width="1062" height="54" rx="6" fill="#111c35" stroke="#ef4444" stroke-width="1.5" />
         <rect x="12" y="10" width="140" height="34" rx="4" fill="#dc2626" />
         <text x="82" y="32" class="badge-text" font-size="13px" fill="#ffffff">RESTRICTED</text>
-        <text x="175" y="33" class="badge-text" font-size="12px" fill="#f87171">HIGHEST SENSITIVITY:</text>
-        <text x="330" y="33" class="text-val-mono" font-size="12px" fill="#ffffff">SSNs, Passwords, Biometrics, Encryption Keys</text>
+        <text x="175" y="33" class="text-bold" text-anchor="start" font-size="12px" fill="#f87171">HIGHEST SENSITIVITY:</text>
+        <text x="335" y="33" class="text-val-mono" font-size="12px" fill="#ffffff">SSNs, Passwords, Biometrics, Encryption Keys</text>
         <rect x="910" y="12" width="140" height="30" rx="4" fill="#450a0a" stroke="#ef4444" />
-        <text x="980" y="31" class="badge-text" font-size="10.5px" fill="#fca5a5">MFA + Hardware Token</text>
+        <text x="980" y="31" class="badge-text" font-size="10.5px" fill="#fca5a5">MFA + Token Only</text>
       </g>
 
       <!-- Tier 2: CONFIDENTIAL -->
@@ -48,10 +49,10 @@
         <rect width="1062" height="54" rx="6" fill="#111c35" stroke="#f59e0b" stroke-width="1.5" />
         <rect x="12" y="10" width="140" height="34" rx="4" fill="#d97706" />
         <text x="82" y="32" class="badge-text" font-size="13px" fill="#ffffff">CONFIDENTIAL</text>
-        <text x="175" y="33" class="badge-text" font-size="12px" fill="#fcd34d">BUSINESS PRIVATE:</text>
-        <text x="325" y="33" class="text-val-mono" font-size="12px" fill="#ffffff">Salaries, Student Records, Financial Audits, Client Lists</text>
+        <text x="175" y="33" class="text-bold" text-anchor="start" font-size="12px" fill="#fcd34d">BUSINESS PRIVATE:</text>
+        <text x="330" y="33" class="text-val-mono" font-size="12px" fill="#ffffff">Salaries, Student Records, Financial Audits, Client Lists</text>
         <rect x="910" y="12" width="140" height="30" rx="4" fill="#451a03" stroke="#f59e0b" />
-        <text x="980" y="31" class="badge-text" font-size="10.5px" fill="#fde68a">Authorized Staff Only</text>
+        <text x="980" y="31" class="badge-text" font-size="10.5px" fill="#fde68a">Staff NDA Only</text>
       </g>
 
       <!-- Tier 3: INTERNAL -->
@@ -59,10 +60,10 @@
         <rect width="1062" height="54" rx="6" fill="#111c35" stroke="#38bdf8" stroke-width="1.5" />
         <rect x="12" y="10" width="140" height="34" rx="4" fill="#0284c7" />
         <text x="82" y="32" class="badge-text" font-size="13px" fill="#ffffff">INTERNAL</text>
-        <text x="175" y="33" class="badge-text" font-size="12px" fill="#38bdf8">OPERATIONAL:</text>
-        <text x="290" y="33" class="text-val-mono" font-size="12px" fill="#ffffff">Internal Wiki, Staff Directory, Meeting Notes, Memos</text>
+        <text x="175" y="33" class="text-bold" text-anchor="start" font-size="12px" fill="#38bdf8">OPERATIONAL:</text>
+        <text x="295" y="33" class="text-val-mono" font-size="12px" fill="#ffffff">Internal Wiki, Staff Directory, Meeting Notes, Memos</text>
         <rect x="910" y="12" width="140" height="30" rx="4" fill="#0c2340" stroke="#38bdf8" />
-        <text x="980" y="31" class="badge-text" font-size="10.5px" fill="#93c5fd">All Company Employees</text>
+        <text x="980" y="31" class="badge-text" font-size="10.5px" fill="#93c5fd">All Employees</text>
       </g>
 
       <!-- Tier 4: PUBLIC -->
@@ -70,10 +71,10 @@
         <rect width="1062" height="54" rx="6" fill="#111c35" stroke="#10b981" stroke-width="1.5" />
         <rect x="12" y="10" width="140" height="34" rx="4" fill="#059669" />
         <text x="82" y="32" class="badge-text" font-size="13px" fill="#ffffff">PUBLIC</text>
-        <text x="175" y="33" class="badge-text" font-size="12px" fill="#34d399">UNRESTRICTED:</text>
-        <text x="300" y="33" class="text-val-mono" font-size="12px" fill="#ffffff">Marketing Brochures, Course Catalog, Press Releases</text>
+        <text x="175" y="33" class="text-bold" text-anchor="start" font-size="12px" fill="#34d399">UNRESTRICTED:</text>
+        <text x="305" y="33" class="text-val-mono" font-size="12px" fill="#ffffff">Marketing Brochures, Course Catalog, Press Releases</text>
         <rect x="910" y="12" width="140" height="30" rx="4" fill="#064e3b" stroke="#10b981" />
-        <text x="980" y="31" class="badge-text" font-size="10.5px" fill="#a7f3d0">Open to the Public</text>
+        <text x="980" y="31" class="badge-text" font-size="10.5px" fill="#a7f3d0">Open to Public</text>
       </g>
     </g>
   </g>
@@ -93,14 +94,14 @@
       <!-- Anonymization Example -->
       <g transform="translate(14, 46)">
         <rect width="492" height="66" rx="6" fill="#070b14" stroke="#10b981" />
-        <text x="14" y="24" class="badge-text" font-size="12px" fill="#34d399">ANONYMIZATION (Permanent / Irreversible):</text>
+        <text x="14" y="24" class="text-bold" text-anchor="start" font-size="12px" fill="#34d399">ANONYMIZATION (Permanent / Irreversible):</text>
         <text x="14" y="46" class="text-val-mono" font-size="12px" fill="#cbd5e1">"Alice Smith, Age 16" ➔ <tspan fill="#34d399">"[REDACTED], Age 15-18"</tspan></text>
       </g>
 
       <!-- Pseudonymization Example -->
       <g transform="translate(14, 122)">
         <rect width="492" height="66" rx="6" fill="#070b14" stroke="#f59e0b" />
-        <text x="14" y="24" class="badge-text" font-size="12px" fill="#fcd34d">PSEUDONYMIZATION (Reversible with Secret Key):</text>
+        <text x="14" y="24" class="text-bold" text-anchor="start" font-size="12px" fill="#fcd34d">PSEUDONYMIZATION (Reversible with Secret Key):</text>
         <text x="14" y="46" class="text-val-mono" font-size="12px" fill="#cbd5e1">"Alice Smith" ➔ <tspan fill="#fcd34d">"STUDENT_ID_9482"</tspan> (Key held in vault)</text>
       </g>
     </g>
@@ -114,19 +115,19 @@
       <!-- 4 Visual Right Badges -->
       <g transform="translate(14, 46)">
         <rect x="0" y="0" width="238" height="66" rx="6" fill="#070b14" stroke="#38bdf8" />
-        <text x="16" y="26" class="badge-text" font-size="12px" fill="#38bdf8">1. RIGHT TO SEE (ACCESS)</text>
+        <text x="16" y="26" class="text-bold" text-anchor="start" font-size="12px" fill="#38bdf8">1. RIGHT TO SEE (ACCESS)</text>
         <text x="16" y="48" class="text-label" font-size="11px" fill="#cbd5e1">Request a copy of your records</text>
 
         <rect x="254" y="0" width="238" height="66" rx="6" fill="#070b14" stroke="#10b981" />
-        <text x="270" y="26" class="badge-text" font-size="12px" fill="#34d399">2. RIGHT TO FIX (RECTIFY)</text>
+        <text x="270" y="26" class="text-bold" text-anchor="start" font-size="12px" fill="#34d399">2. RIGHT TO FIX (RECTIFY)</text>
         <text x="270" y="48" class="text-label" font-size="11px" fill="#cbd5e1">Correct wrong or outdated data</text>
 
         <rect x="0" y="76" width="238" height="66" rx="6" fill="#070b14" stroke="#ef4444" />
-        <text x="16" y="102" class="badge-text" font-size="12px" fill="#f87171">3. RIGHT TO DELETE (ERASE)</text>
+        <text x="16" y="102" class="text-bold" text-anchor="start" font-size="12px" fill="#f87171">3. RIGHT TO DELETE (ERASE)</text>
         <text x="16" y="124" class="text-label" font-size="11px" fill="#cbd5e1">Demand data wipe ("Forget me")</text>
 
         <rect x="254" y="76" width="238" height="66" rx="6" fill="#070b14" stroke="#c084fc" />
-        <text x="270" y="102" class="badge-text" font-size="12px" fill="#c084fc">4. RIGHT TO EXPORT</text>
+        <text x="270" y="102" class="text-bold" text-anchor="start" font-size="12px" fill="#c084fc">4. RIGHT TO EXPORT</text>
         <text x="270" y="124" class="text-label" font-size="11px" fill="#cbd5e1">Download files in standard format</text>
       </g>
     </g>
