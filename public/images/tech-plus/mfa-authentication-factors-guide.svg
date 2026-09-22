@@ -28,7 +28,7 @@
   <g transform="translate(45, 115)">
     <rect width="1110" height="270" class="card-bg" stroke="#0284c7" />
     <text class="text-section" x="20" y="24" fill="#38bdf8">1. The Five Core Authentication Factors (CompTIA Tech+ FC0-U71 6.1)</text>
-    <text class="text-label" x="830" y="24">Categorized Identity Proofs</text>
+    <text class="text-label" text-anchor="end" x="1090" y="24">Categorized Identity Proofs</text>
 
     <!-- Factor 1: Something You Know (x=20, w=204) -->
     <g transform="translate(20, 36)">
@@ -125,7 +125,7 @@
   <g transform="translate(45, 400)">
     <rect width="1110" height="315" class="card-bg" stroke="#10b981" />
     <text class="text-section" x="20" y="24" fill="#34d399">2. MFA Engineering Laws: The Multi-Factor Trap &amp; Token Hardening</text>
-    <text class="text-label" x="800" y="24">Exam Focus &amp; Production Security</text>
+    <text class="text-label" text-anchor="end" x="1090" y="24">Exam Focus &amp; Production Security</text>
 
     <!-- Card 1: Genuine MFA vs The Two-Password Trap (x=20, width=525) -->
     <g transform="translate(20, 36)">
@@ -135,17 +135,17 @@
       <text x="245" y="25" class="text-label" fill="#fca5a5">Genuine MFA vs. Pseudo-MFA</text>
 
       <rect x="12" y="38" width="501" height="92" rx="4" fill="#070b14" stroke="#1e293b" />
-      <text x="20" y="58" class="text-val-mono" font-size="11px" font-weight="700" fill="#34d399">Genuine MFA Requirement:</text>
-      <text x="20" y="76" class="text-label" fill="#cbd5e1">Must combine TWO OR MORE <tspan font-weight="700" fill="#38bdf8">DIFFERENT</tspan> categories of factors:</text>
-      <text x="20" y="94" class="text-val-mono" font-size="11px" fill="#38bdf8">Example: Password [KNOW] + YubiKey Token [HAVE] = TRUE MFA</text>
-      <text x="20" y="112" class="text-val-mono" font-size="11px" fill="#34d399">Example: Password [KNOW] + Fingerprint [ARE] = TRUE MFA</text>
+      <text x="18" y="58" class="text-val-mono" font-size="11px" font-weight="700" fill="#34d399">Genuine MFA Requirement:</text>
+      <text x="18" y="76" class="text-label" fill="#cbd5e1">Must combine TWO OR MORE <tspan font-weight="700" fill="#38bdf8">DIFFERENT</tspan> factor categories:</text>
+      <text x="18" y="94" class="text-val-mono" font-size="11px" fill="#38bdf8">Example: Password [KNOW] + YubiKey Token [HAVE] = TRUE MFA</text>
+      <text x="18" y="112" class="text-val-mono" font-size="11px" fill="#34d399">Example: Password [KNOW] + Fingerprint [ARE] = TRUE MFA</text>
 
       <rect x="12" y="136" width="501" height="106" rx="4" fill="#1e1b4b" stroke="#ef4444" />
-      <text x="20" y="156" class="text-val-mono" font-size="11px" font-weight="700" fill="#f87171">The Two-Password Trap (NOT MFA!):</text>
-      <text x="20" y="174" class="text-label" font-size="11px" fill="#cbd5e1">Password + PIN number = <tspan font-weight="700" fill="#f87171">SINGLE-FACTOR</tspan> (Both are Something You Know!)</text>
-      <text x="20" y="192" class="text-label" font-size="11px" fill="#cbd5e1">Password + Mother's Maiden Name = <tspan font-weight="700" fill="#f87171">SINGLE-FACTOR</tspan> (Both are Knowledge!)</text>
-      <text x="20" y="210" class="text-label" font-size="11px" fill="#cbd5e1">Hardware Key + Smart Card = <tspan font-weight="700" fill="#f87171">SINGLE-FACTOR</tspan> (Both are Possession!)</text>
-      <text x="20" y="228" class="text-label" font-size="11px" fill="#fca5a5">Technician Rule: Multiple proofs from the same category is NOT multi-factor.</text>
+      <text x="18" y="156" class="text-val-mono" font-size="11px" font-weight="700" fill="#f87171">The Two-Password Trap (NOT MFA!):</text>
+      <text x="18" y="174" class="text-label" font-size="11px" fill="#cbd5e1">Password + PIN number = <tspan font-weight="700" fill="#f87171">SINGLE-FACTOR</tspan> (Both are Knowledge!)</text>
+      <text x="18" y="192" class="text-label" font-size="11px" fill="#cbd5e1">Password + Security Question = <tspan font-weight="700" fill="#f87171">SINGLE-FACTOR</tspan> (Both are Knowledge!)</text>
+      <text x="18" y="210" class="text-label" font-size="11px" fill="#cbd5e1">Hardware Key + Smart Card = <tspan font-weight="700" fill="#f87171">SINGLE-FACTOR</tspan> (Both are Possession!)</text>
+      <text x="18" y="228" class="text-label" font-size="11px" fill="#fca5a5">Rule: Multiple proofs from the same category is NOT genuine MFA.</text>
     </g>
 
     <!-- Card 2: FIDO2 vs Insecure SMS (x=565, width=525) -->
@@ -156,17 +156,17 @@
       <text x="245" y="25" class="text-label" fill="#6ee7b7">Phishing Resistance Architecture</text>
 
       <rect x="12" y="38" width="501" height="92" rx="4" fill="#070b14" stroke="#1e293b" />
-      <text x="20" y="58" class="text-val-mono" font-size="11px" font-weight="700" fill="#38bdf8">FIDO2 / WebAuthn Passkeys (Gold Standard):</text>
-      <text x="20" y="76" class="text-label" font-size="11px" fill="#cbd5e1">• Cryptographically bound to the authentic domain (e.g. beattietech.local).</text>
-      <text x="20" y="94" class="text-label" font-size="11px" fill="#cbd5e1">• 100% Phishing-Proof: A phishing proxy cannot relay the private key challenge.</text>
-      <text x="20" y="112" class="text-label" font-size="11px" fill="#34d399">• TOTP Apps (RFC 6238): Rotating 30-second HMAC hashes (Good standard).</text>
+      <text x="18" y="58" class="text-val-mono" font-size="11px" font-weight="700" fill="#38bdf8">FIDO2 / WebAuthn Passkeys (Gold Standard):</text>
+      <text x="18" y="76" class="text-label" font-size="11px" fill="#cbd5e1">• Cryptographically bound to the authentic domain (Zero Phishing).</text>
+      <text x="18" y="94" class="text-label" font-size="11px" fill="#cbd5e1">• Reverse proxies cannot steal or replay private key challenges.</text>
+      <text x="18" y="112" class="text-label" font-size="11px" fill="#34d399">• TOTP Apps (RFC 6238): Rotating 30-sec HMAC codes (Strong).</text>
 
       <rect x="12" y="136" width="501" height="106" rx="4" fill="#2d0606" stroke="#f59e0b" />
-      <text x="20" y="156" class="text-val-mono" font-size="11px" font-weight="700" fill="#fcd34d">Why NIST Recommends Retiring SMS 2FA:</text>
-      <text x="20" y="174" class="text-label" font-size="11px" fill="#cbd5e1">• SIM Swapping: Attackers trick carrier store reps into porting user phone numbers.</text>
-      <text x="20" y="192" class="text-label" font-size="11px" fill="#cbd5e1">• SS7 Protocol Flaws: Global telecom routing vulnerabilities allow SMS interception.</text>
-      <text x="20" y="210" class="text-label" font-size="11px" fill="#cbd5e1">• Real-Time Phishing Proxies: Tools (Evilginx) prompt and steal SMS codes live.</text>
-      <text x="20" y="228" class="text-label" font-size="11px" fill="#fde68a">Enterprise Mandate: Enforce App-based TOTP or FIDO2 keys over legacy SMS.</text>
+      <text x="18" y="156" class="text-val-mono" font-size="11px" font-weight="700" fill="#fcd34d">Why NIST Recommends Retiring SMS 2FA:</text>
+      <text x="18" y="174" class="text-label" font-size="11px" fill="#cbd5e1">• SIM Swapping: Attackers bribe/trick telcos to hijack mobile numbers.</text>
+      <text x="18" y="192" class="text-label" font-size="11px" fill="#cbd5e1">• SS7 Flaws: Cellular routing vulnerabilities allow SMS interception.</text>
+      <text x="18" y="210" class="text-label" font-size="11px" fill="#cbd5e1">• Phishing Proxies: Reverse proxies intercept and replay 2FA codes live.</text>
+      <text x="18" y="228" class="text-label" font-size="11px" fill="#fde68a">Enterprise Mandate: Deploy FIDO2 passkeys or TOTP apps over SMS.</text>
     </g>
   </g>
 </svg>
