@@ -1,0 +1,172 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 740" width="1200" height="740">
+  <defs>
+    <style>
+      .bg { fill: #070b14; }
+      .card-bg { fill: #0d1527; stroke: #1e293b; stroke-width: 1.5; rx: 10px; }
+      .inner-card { fill: #111c35; stroke: #25334d; stroke-width: 1; rx: 6px; }
+      .text-title { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 26px; font-weight: 700; fill: #f8fafc; }
+      .text-subtitle { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 14px; fill: #94a3b8; }
+      .text-section { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+      .text-label { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 12px; fill: #94a3b8; }
+      .text-val-mono { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 12px; fill: #e2e8f0; }
+      .badge-text { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1200" height="740" class="bg" />
+  <rect x="15" y="15" width="1170" height="710" rx="14" fill="none" stroke="#1e293b" stroke-width="1.5" />
+
+  <!-- Title Header -->
+  <g transform="translate(45, 55)">
+    <text class="text-title" x="0" y="0">Multi-Factor Authentication (MFA) &amp; Identity Factors</text>
+    <text class="text-subtitle" x="0" y="24">The 5 Core Authentication Factors, Genuine Multi-Factor Architecture, and Phishing-Resistant FIDO2 (FC0-U71 6.1)</text>
+    <rect x="0" y="38" width="1110" height="1" fill="#1e293b" />
+  </g>
+
+  <!-- Top Panel: The 5 Core Authentication Factors (x=45, y=115, width=1110, height=270) -->
+  <g transform="translate(45, 115)">
+    <rect width="1110" height="270" class="card-bg" stroke="#0284c7" />
+    <text class="text-section" x="20" y="24" fill="#38bdf8">1. The Five Core Authentication Factors (CompTIA Tech+ FC0-U71 6.1)</text>
+    <text class="text-label" x="830" y="24">Categorized Identity Proofs</text>
+
+    <!-- Factor 1: Something You Know (x=20, w=204) -->
+    <g transform="translate(20, 36)">
+      <rect width="204" height="218" class="inner-card" stroke="#f59e0b" />
+      <rect x="10" y="10" width="184" height="22" rx="4" fill="#451a03" />
+      <text x="102" y="25" class="badge-text" fill="#fcd34d">1. SOMETHING YOU KNOW</text>
+
+      <rect x="10" y="38" width="184" height="106" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="18" y="56" class="text-val-mono" font-size="11px" font-weight="700" fill="#fcd34d">Knowledge Factor:</text>
+      <text x="18" y="74" class="text-label" font-size="11px" fill="#cbd5e1">• Passwords</text>
+      <text x="18" y="92" class="text-label" font-size="11px" fill="#cbd5e1">• Passphrases</text>
+      <text x="18" y="110" class="text-label" font-size="11px" fill="#cbd5e1">• PIN numbers</text>
+      <text x="18" y="128" class="text-label" font-size="11px" fill="#94a3b8">• Security questions</text>
+
+      <text x="10" y="160" class="text-label" font-size="10px" fill="#fde68a">Weakest factor: vulnerable</text>
+      <text x="10" y="174" class="text-label" font-size="10px" fill="#fde68a">to phishing, credential</text>
+      <text x="10" y="188" class="text-label" font-size="10px" fill="#fde68a">stuffing, and keyloggers.</text>
+    </g>
+
+    <!-- Factor 2: Something You Have (x=236, w=204) -->
+    <g transform="translate(236, 36)">
+      <rect width="204" height="218" class="inner-card" stroke="#38bdf8" />
+      <rect x="10" y="10" width="184" height="22" rx="4" fill="#0c2340" />
+      <text x="102" y="25" class="badge-text" fill="#38bdf8">2. SOMETHING YOU HAVE</text>
+
+      <rect x="10" y="38" width="184" height="106" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="18" y="56" class="text-val-mono" font-size="11px" font-weight="700" fill="#38bdf8">Possession Factor:</text>
+      <text x="18" y="74" class="text-label" font-size="11px" fill="#cbd5e1">• FIDO2 Hardware Key</text>
+      <text x="18" y="92" class="text-label" font-size="11px" fill="#cbd5e1">• Authenticator App</text>
+      <text x="18" y="110" class="text-label" font-size="11px" fill="#cbd5e1">• CAC / Smart Card</text>
+      <text x="18" y="128" class="text-label" font-size="11px" fill="#94a3b8">• SMS Code (vulnerable)</text>
+
+      <text x="10" y="160" class="text-label" font-size="10px" fill="#93c5fd">Physical or cryptographic</text>
+      <text x="10" y="174" class="text-label" font-size="10px" fill="#93c5fd">token held by the user;</text>
+      <text x="10" y="188" class="text-label" font-size="10px" fill="#93c5fd">cannot be reused remotely.</text>
+    </g>
+
+    <!-- Factor 3: Something You Are (x=452, w=204) -->
+    <g transform="translate(452, 36)">
+      <rect width="204" height="218" class="inner-card" stroke="#10b981" />
+      <rect x="10" y="10" width="184" height="22" rx="4" fill="#064e3b" />
+      <text x="102" y="25" class="badge-text" fill="#34d399">3. SOMETHING YOU ARE</text>
+
+      <rect x="10" y="38" width="184" height="106" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="18" y="56" class="text-val-mono" font-size="11px" font-weight="700" fill="#34d399">Inherence (Biometrics):</text>
+      <text x="18" y="74" class="text-label" font-size="11px" fill="#cbd5e1">• Fingerprint scan</text>
+      <text x="18" y="92" class="text-label" font-size="11px" fill="#cbd5e1">• Facial geometry (FaceID)</text>
+      <text x="18" y="110" class="text-label" font-size="11px" fill="#cbd5e1">• Retina / Iris scanner</text>
+      <text x="18" y="128" class="text-label" font-size="11px" fill="#94a3b8">• Voiceprint analysis</text>
+
+      <text x="10" y="160" class="text-label" font-size="10px" fill="#a7f3d0">Biological traits unique</text>
+      <text x="10" y="174" class="text-label" font-size="10px" fill="#a7f3d0">to the physical human;</text>
+      <text x="10" y="188" class="text-label" font-size="10px" fill="#a7f3d0">cannot be forgotten.</text>
+    </g>
+
+    <!-- Factor 4: Somewhere You Are (x=668, w=204) -->
+    <g transform="translate(668, 36)">
+      <rect width="204" height="218" class="inner-card" stroke="#8b5cf6" />
+      <rect x="10" y="10" width="184" height="22" rx="4" fill="#2e1065" />
+      <text x="102" y="25" class="badge-text" fill="#c084fc">4. SOMEWHERE YOU ARE</text>
+
+      <rect x="10" y="38" width="184" height="106" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="18" y="56" class="text-val-mono" font-size="11px" font-weight="700" fill="#c084fc">Location Factor:</text>
+      <text x="18" y="74" class="text-label" font-size="11px" fill="#cbd5e1">• GPS satellite coordinates</text>
+      <text x="18" y="92" class="text-label" font-size="11px" fill="#cbd5e1">• Corporate office IP subnet</text>
+      <text x="18" y="110" class="text-label" font-size="11px" fill="#cbd5e1">• Geo-IP fencing policy</text>
+      <text x="18" y="128" class="text-label" font-size="11px" fill="#94a3b8">• Beacon BLE proximity</text>
+
+      <text x="10" y="160" class="text-label" font-size="10px" fill="#ddd6fe">Blocks logins originating</text>
+      <text x="10" y="174" class="text-label" font-size="10px" fill="#ddd6fe">from unexpected countries</text>
+      <text x="10" y="188" class="text-label" font-size="10px" fill="#ddd6fe">or untrusted networks.</text>
+    </g>
+
+    <!-- Factor 5: Something You Do (x=884, w=206) -->
+    <g transform="translate(884, 36)">
+      <rect width="206" height="218" class="inner-card" stroke="#ec4899" />
+      <rect x="10" y="10" width="186" height="22" rx="4" fill="#500724" />
+      <text x="103" y="25" class="badge-text" fill="#f472b6">5. SOMETHING YOU DO</text>
+
+      <rect x="10" y="38" width="186" height="106" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="18" y="56" class="text-val-mono" font-size="11px" font-weight="700" fill="#f472b6">Behavioral Factor:</text>
+      <text x="18" y="74" class="text-label" font-size="11px" fill="#cbd5e1">• Keystroke dynamics</text>
+      <text x="18" y="92" class="text-label" font-size="11px" fill="#cbd5e1">• Mouse acceleration curve</text>
+      <text x="18" y="110" class="text-label" font-size="11px" fill="#cbd5e1">• Touchscreen swipe angle</text>
+      <text x="18" y="128" class="text-label" font-size="11px" fill="#94a3b8">• Gait / walking cadence</text>
+
+      <text x="10" y="160" class="text-label" font-size="10px" fill="#fbcfe8">Continuous telemetry</text>
+      <text x="10" y="174" class="text-label" font-size="10px" fill="#fbcfe8">measuring unique human</text>
+      <text x="10" y="188" class="text-label" font-size="10px" fill="#fbcfe8">neuromuscular habits.</text>
+    </g>
+  </g>
+
+  <!-- Bottom Panel: Genuine MFA vs Pseudo-MFA & SMS Threat (x=45, y=400, width=1110, height=315) -->
+  <g transform="translate(45, 400)">
+    <rect width="1110" height="315" class="card-bg" stroke="#10b981" />
+    <text class="text-section" x="20" y="24" fill="#34d399">2. MFA Engineering Laws: The Multi-Factor Trap &amp; Token Hardening</text>
+    <text class="text-label" x="800" y="24">Exam Focus &amp; Production Security</text>
+
+    <!-- Card 1: Genuine MFA vs The Two-Password Trap (x=20, width=525) -->
+    <g transform="translate(20, 36)">
+      <rect width="525" height="258" class="inner-card" stroke="#ef4444" />
+      <rect x="12" y="10" width="220" height="22" rx="4" fill="#450a0a" />
+      <text x="122" y="25" class="badge-text" fill="#fca5a5">THE COMPTIA EXAM TRAP</text>
+      <text x="245" y="25" class="text-label" fill="#fca5a5">Genuine MFA vs. Pseudo-MFA</text>
+
+      <rect x="12" y="38" width="501" height="92" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="20" y="58" class="text-val-mono" font-size="11px" font-weight="700" fill="#34d399">Genuine MFA Requirement:</text>
+      <text x="20" y="76" class="text-label" fill="#cbd5e1">Must combine TWO OR MORE <tspan font-weight="700" fill="#38bdf8">DIFFERENT</tspan> categories of factors:</text>
+      <text x="20" y="94" class="text-val-mono" font-size="11px" fill="#38bdf8">Example: Password [KNOW] + YubiKey Token [HAVE] = TRUE MFA</text>
+      <text x="20" y="112" class="text-val-mono" font-size="11px" fill="#34d399">Example: Password [KNOW] + Fingerprint [ARE] = TRUE MFA</text>
+
+      <rect x="12" y="136" width="501" height="106" rx="4" fill="#1e1b4b" stroke="#ef4444" />
+      <text x="20" y="156" class="text-val-mono" font-size="11px" font-weight="700" fill="#f87171">The Two-Password Trap (NOT MFA!):</text>
+      <text x="20" y="174" class="text-label" font-size="11px" fill="#cbd5e1">Password + PIN number = <tspan font-weight="700" fill="#f87171">SINGLE-FACTOR</tspan> (Both are Something You Know!)</text>
+      <text x="20" y="192" class="text-label" font-size="11px" fill="#cbd5e1">Password + Mother's Maiden Name = <tspan font-weight="700" fill="#f87171">SINGLE-FACTOR</tspan> (Both are Knowledge!)</text>
+      <text x="20" y="210" class="text-label" font-size="11px" fill="#cbd5e1">Hardware Key + Smart Card = <tspan font-weight="700" fill="#f87171">SINGLE-FACTOR</tspan> (Both are Possession!)</text>
+      <text x="20" y="228" class="text-label" font-size="11px" fill="#fca5a5">Technician Rule: Multiple proofs from the same category is NOT multi-factor.</text>
+    </g>
+
+    <!-- Card 2: FIDO2 vs Insecure SMS (x=565, width=525) -->
+    <g transform="translate(565, 36)">
+      <rect width="525" height="258" class="inner-card" stroke="#10b981" />
+      <rect x="12" y="10" width="220" height="22" rx="4" fill="#064e3b" />
+      <text x="122" y="25" class="badge-text" fill="#34d399">TOKEN HARDENING</text>
+      <text x="245" y="25" class="text-label" fill="#6ee7b7">Phishing Resistance Architecture</text>
+
+      <rect x="12" y="38" width="501" height="92" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="20" y="58" class="text-val-mono" font-size="11px" font-weight="700" fill="#38bdf8">FIDO2 / WebAuthn Passkeys (Gold Standard):</text>
+      <text x="20" y="76" class="text-label" font-size="11px" fill="#cbd5e1">• Cryptographically bound to the authentic domain (e.g. beattietech.local).</text>
+      <text x="20" y="94" class="text-label" font-size="11px" fill="#cbd5e1">• 100% Phishing-Proof: A phishing proxy cannot relay the private key challenge.</text>
+      <text x="20" y="112" class="text-label" font-size="11px" fill="#34d399">• TOTP Apps (RFC 6238): Rotating 30-second HMAC hashes (Good standard).</text>
+
+      <rect x="12" y="136" width="501" height="106" rx="4" fill="#2d0606" stroke="#f59e0b" />
+      <text x="20" y="156" class="text-val-mono" font-size="11px" font-weight="700" fill="#fcd34d">Why NIST Recommends Retiring SMS 2FA:</text>
+      <text x="20" y="174" class="text-label" font-size="11px" fill="#cbd5e1">• SIM Swapping: Attackers trick carrier store reps into porting user phone numbers.</text>
+      <text x="20" y="192" class="text-label" font-size="11px" fill="#cbd5e1">• SS7 Protocol Flaws: Global telecom routing vulnerabilities allow SMS interception.</text>
+      <text x="20" y="210" class="text-label" font-size="11px" fill="#cbd5e1">• Real-Time Phishing Proxies: Tools (Evilginx) prompt and steal SMS codes live.</text>
+      <text x="20" y="228" class="text-label" font-size="11px" fill="#fde68a">Enterprise Mandate: Enforce App-based TOTP or FIDO2 keys over legacy SMS.</text>
+    </g>
+  </g>
+</svg>

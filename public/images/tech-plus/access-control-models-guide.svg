@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 740" width="1200" height="740">
+  <defs>
+    <style>
+      .bg { fill: #070b14; }
+      .card-bg { fill: #0d1527; stroke: #1e293b; stroke-width: 1.5; rx: 10px; }
+      .inner-card { fill: #111c35; stroke: #25334d; stroke-width: 1; rx: 6px; }
+      .text-title { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 26px; font-weight: 700; fill: #f8fafc; }
+      .text-subtitle { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 14px; fill: #94a3b8; }
+      .text-section { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+      .text-label { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 12px; fill: #94a3b8; }
+      .text-val-mono { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 12px; fill: #e2e8f0; }
+      .badge-text { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1200" height="740" class="bg" />
+  <rect x="15" y="15" width="1170" height="710" rx="14" fill="none" stroke="#1e293b" stroke-width="1.5" />
+
+  <!-- Title Header -->
+  <g transform="translate(45, 55)">
+    <text class="text-title" x="0" y="0">Access Control Architecture &amp; Authorization Models</text>
+    <text class="text-subtitle" x="0" y="24">Authentication vs. Authorization, DAC, MAC, RBAC, ABAC, and the Principle of Least Privilege</text>
+    <rect x="0" y="38" width="1110" height="1" fill="#1e293b" />
+  </g>
+
+  <!-- Top Panel: Authentication vs Authorization (x=45, y=115, width=1110, height=205) -->
+  <g transform="translate(45, 115)">
+    <rect width="1110" height="205" class="card-bg" stroke="#0284c7" />
+    <text class="text-section" x="20" y="24" fill="#38bdf8">1. AAA Foundations: Authentication (The Badge) vs. Authorization (The Keys)</text>
+    <text class="text-label" x="830" y="24">CompTIA Tech+ (FC0-U71) Objective 6.1</text>
+
+    <!-- Authentication Box -->
+    <g transform="translate(20, 38)">
+      <rect width="525" height="150" class="inner-card" stroke="#1e3a8a" />
+      <rect x="12" y="10" width="180" height="22" rx="4" fill="#0c2340" />
+      <text x="102" y="25" class="badge-text" fill="#38bdf8">AUTHENTICATION</text>
+      <text x="202" y="25" class="text-label" fill="#93c5fd">Question: "Who are you?"</text>
+
+      <rect x="12" y="38" width="501" height="98" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="22" y="58" class="text-val-mono" fill="#e2e8f0">• Verifies identity: <tspan fill="#38bdf8">alice@beattie.local</tspan> matches password + MFA</text>
+      <text x="22" y="76" class="text-val-mono" fill="#cbd5e1">• Mechanism: Passwords, FIDO2 WebAuthn keys, FaceID, TOTP tokens</text>
+      <text x="22" y="94" class="text-label" fill="#94a3b8">Authentication proves identity, but grants ZERO inherent permissions!</text>
+      <text x="22" y="118" class="text-label" fill="#67e8f9">Analogy: Showing your passport proves who you are; it does not grant entry to the cockpit.</text>
+    </g>
+
+    <!-- Authorization Box -->
+    <g transform="translate(565, 38)">
+      <rect width="525" height="150" class="inner-card" stroke="#059669" />
+      <rect x="12" y="10" width="180" height="22" rx="4" fill="#064e3b" />
+      <text x="102" y="25" class="badge-text" fill="#34d399">AUTHORIZATION</text>
+      <text x="202" y="25" class="text-label" fill="#6ee7b7">Question: "What can you touch?"</text>
+
+      <rect x="12" y="38" width="501" height="98" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="22" y="58" class="text-val-mono" fill="#e2e8f0">• Evaluates permissions: <tspan fill="#34d399">Can Alice read / finance / Q3_budget.xlsx?</tspan></text>
+      <text x="22" y="76" class="text-val-mono" fill="#cbd5e1">• Mechanism: Access Control Lists (ACLs), Security Groups, Role Claims</text>
+      <text x="22" y="94" class="text-label" fill="#94a3b8">Principle of Least Privilege: Grant ONLY minimum permissions needed for the job.</text>
+      <text x="22" y="118" class="text-label" fill="#a7f3d0">Technician Rule: Never log into an unprivileged PC with Domain Admin credentials!</text>
+    </g>
+  </g>
+
+  <!-- Bottom Panel: The Four Access Control Models (x=45, y=335, width=1110, height=375) -->
+  <g transform="translate(45, 335)">
+    <rect width="1110" height="375" class="card-bg" stroke="#6366f1" />
+    <text class="text-section" x="20" y="24" fill="#a5b4fc">2. The Four Access Control Models (DAC, MAC, RBAC, ABAC)</text>
+    <text class="text-label" x="800" y="24">Architecture &amp; Policy Enforcement</text>
+
+    <!-- Model 1: DAC (Top Left) -->
+    <g transform="translate(20, 36)">
+      <rect width="525" height="152" class="inner-card" stroke="#f59e0b" />
+      <rect x="12" y="10" width="165" height="22" rx="4" fill="#451a03" />
+      <text x="94" y="25" class="badge-text" fill="#fcd34d">1. DAC (DISCRETIONARY)</text>
+      <text x="188" y="25" class="text-label" fill="#fde68a">Resource Owner Decides</text>
+
+      <text x="14" y="52" class="text-label" fill="#cbd5e1"><tspan font-weight="700" fill="#fcd34d">Mechanism:</tspan> The creator/owner of a file has full discretion over permissions.</text>
+      <text x="14" y="68" class="text-label" fill="#cbd5e1">The owner configures Access Control Lists (ACLs) to allow or deny users.</text>
+
+      <rect x="12" y="78" width="501" height="60" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="20" y="96" class="text-val-mono" font-size="11px" fill="#e2e8f0">Windows NTFS Permissions: <tspan fill="#38bdf8">Alice</tspan> shares file with <tspan fill="#fcd34d">Everyone</tspan> (Full Control)</text>
+      <text x="20" y="112" class="text-label" font-size="11px" fill="#cbd5e1">Primary Risk: Users can inadvertently share confidential data with unauthorized peers.</text>
+      <text x="20" y="128" class="text-label" font-size="11px" fill="#94a3b8">Linux command: <tspan font-family="monospace" fill="#38bdf8">chmod 755 report.txt</tspan> | <tspan font-family="monospace" fill="#38bdf8">chown alice:staff report.txt</tspan></text>
+    </g>
+
+    <!-- Model 2: MAC (Top Right) -->
+    <g transform="translate(565, 36)">
+      <rect width="525" height="152" class="inner-card" stroke="#ef4444" />
+      <rect x="12" y="10" width="165" height="22" rx="4" fill="#450a0a" />
+      <text x="94" y="25" class="badge-text" fill="#fca5a5">2. MAC (MANDATORY)</text>
+      <text x="188" y="25" class="text-label" fill="#fca5a5">Strict OS Kernel Labels</text>
+
+      <text x="14" y="52" class="text-label" fill="#cbd5e1"><tspan font-weight="700" fill="#fca5a5">Mechanism:</tspan> Security labels (Top Secret, Secret, Unclassified) enforced strictly</text>
+      <text x="14" y="68" class="text-label" fill="#cbd5e1">by the OS kernel. Users CANNOT alter permissions, even on files they created!</text>
+
+      <rect x="12" y="78" width="501" height="60" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="20" y="96" class="text-val-mono" font-size="11px" fill="#e2e8f0">Clearance Rule: Subject Clearance &gt;= Object Classification Level</text>
+      <text x="20" y="112" class="text-label" font-size="11px" fill="#fca5a5">Used in military, aerospace, and government facilities (SELinux, NSA Multi-Level).</text>
+      <text x="20" y="128" class="text-label" font-size="11px" fill="#94a3b8">Zero Discretion: Prevents compromised user accounts from leaking classified data.</text>
+    </g>
+
+    <!-- Model 3: RBAC (Bottom Left) -->
+    <g transform="translate(20, 202)">
+      <rect width="525" height="158" class="inner-card" stroke="#38bdf8" />
+      <rect x="12" y="10" width="165" height="22" rx="4" fill="#0c2340" />
+      <text x="94" y="25" class="badge-text" fill="#38bdf8">3. RBAC (ROLE-BASED)</text>
+      <text x="188" y="25" class="text-label" fill="#93c5fd">Job Roles &amp; Group Membership</text>
+
+      <text x="14" y="52" class="text-label" fill="#cbd5e1"><tspan font-weight="700" fill="#38bdf8">Mechanism:</tspan> Permissions are assigned directly to job roles, NOT individual</text>
+      <text x="14" y="68" class="text-label" fill="#cbd5e1">users. Users are placed into security groups (e.g. HelpDesk, Billing, HR).</text>
+
+      <rect x="12" y="78" width="501" height="66" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="20" y="96" class="text-val-mono" font-size="11px" fill="#e2e8f0">Active Directory: User <tspan fill="#38bdf8">Bob</tspan> ➔ Member of <tspan fill="#34d399">"Tier 2 Technicians"</tspan></text>
+      <text x="20" y="112" class="text-label" font-size="11px" fill="#cbd5e1">When Bob changes jobs, simply remove him from the group; rights update instantly.</text>
+      <text x="20" y="128" class="text-label" font-size="11px" fill="#67e8f9">Enterprise Standard: Eliminates privilege creep and simplifies onboarding.</text>
+    </g>
+
+    <!-- Model 4: ABAC (Bottom Right) -->
+    <g transform="translate(565, 202)">
+      <rect width="525" height="158" class="inner-card" stroke="#10b981" />
+      <rect x="12" y="10" width="165" height="22" rx="4" fill="#064e3b" />
+      <text x="94" y="25" class="badge-text" fill="#34d399">4. ABAC (ATTRIBUTE-BASED)</text>
+      <text x="188" y="25" class="text-label" fill="#6ee7b7">Dynamic Contextual Zero Trust</text>
+
+      <text x="14" y="52" class="text-label" fill="#cbd5e1"><tspan font-weight="700" fill="#34d399">Mechanism:</tspan> Evaluates multiple real-time attributes: Subject (Role, Clearance),</text>
+      <text x="14" y="68" class="text-label" fill="#cbd5e1">Resource (Confidentiality), and Environment (Time, Device Health, IP Location).</text>
+
+      <rect x="12" y="78" width="501" height="66" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="20" y="96" class="text-val-mono" font-size="11px" fill="#e2e8f0">Policy: <tspan fill="#ec4899">ALLOW IF</tspan> Role="Doctor" AND Time="WorkHours" AND Device="Encrypted"</text>
+      <text x="20" y="112" class="text-label" font-size="11px" fill="#cbd5e1">If doctor logs in at 3 AM from an unmanaged laptop in another country ➔ BLOCKED!</text>
+      <text x="20" y="128" class="text-label" font-size="11px" fill="#a7f3d0">Next-Gen Security: Forms the policy engine for modern Zero Trust cloud networks.</text>
+    </g>
+  </g>
+</svg>
