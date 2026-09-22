@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 740" width="1200" height="740">
+  <defs>
+    <style>
+      .bg { fill: #070b14; }
+      .card-bg { fill: #0d1527; stroke: #1e293b; stroke-width: 1.5; rx: 10px; }
+      .inner-card { fill: #111c35; stroke: #25334d; stroke-width: 1; rx: 6px; }
+      .text-title { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 26px; font-weight: 700; fill: #f8fafc; }
+      .text-subtitle { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 14px; fill: #94a3b8; }
+      .text-section { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+      .text-label { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 12px; fill: #94a3b8; }
+      .text-val-mono { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 11px; fill: #e2e8f0; }
+      .badge-text { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1200" height="740" class="bg" />
+  <rect x="15" y="15" width="1170" height="710" rx="14" fill="none" stroke="#1e293b" stroke-width="1.5" />
+
+  <!-- Title Header -->
+  <g transform="translate(45, 55)">
+    <text class="text-title" x="0" y="0">Data Privacy Lifecycle &amp; Regulatory Compliance</text>
+    <text class="text-subtitle" x="0" y="24">Classification Tiers, Anonymization vs. Pseudonymization, and Data Subject Rights (FC0-U71 6.1)</text>
+    <rect x="0" y="38" width="1110" height="1" fill="#1e293b" />
+  </g>
+
+  <!-- Top Panel: Classification & Privacy Engineering (x=45, y=115, width=1110, height=310) -->
+  <g transform="translate(45, 115)">
+    <rect width="1110" height="310" class="card-bg" stroke="#0284c7" />
+    <text class="text-section" x="20" y="24" fill="#38bdf8">1. Enterprise Data Governance: Classification &amp; Privacy Engineering</text>
+    <text class="text-label" text-anchor="end" x="1090" y="24">CompTIA Tech+ (FC0-U71) Objective 6.1</text>
+
+    <!-- Left Box: Data Classification Tiers -->
+    <g transform="translate(20, 36)">
+      <rect width="525" height="258" class="inner-card" stroke="#f59e0b" />
+      <rect x="12" y="10" width="200" height="22" rx="4" fill="#451a03" />
+      <text x="112" y="25" class="badge-text" fill="#fcd34d">CLASSIFICATION TIERS</text>
+      <text x="222" y="25" class="text-label" fill="#fde68a">Tiered Protection</text>
+
+      <g transform="translate(12, 38)">
+        <rect width="501" height="44" rx="4" fill="#070b14" stroke="#ef4444" />
+        <rect x="8" y="10" width="80" height="24" rx="3" fill="#dc2626" />
+        <text x="48" y="26" class="badge-text" fill="#ffffff">RESTRICTED</text>
+        <text x="96" y="20" class="text-val-mono" font-size="10.5px" fill="#f87171">High Impact:</text>
+        <text x="168" y="20" class="text-label" font-size="10px" fill="#cbd5e1">SSNs, crypto keys, trade secrets, biometric records.</text>
+        <text x="96" y="34" class="text-label" font-size="9.5px" fill="#94a3b8">Strict Need-to-Know + MFA + Hardware Token mandatory.</text>
+
+        <rect y="48" width="501" height="44" rx="4" fill="#070b14" stroke="#f59e0b" />
+        <rect x="8" y="58" width="80" height="24" rx="3" fill="#d97706" />
+        <text x="48" y="74" class="badge-text" fill="#ffffff">CONFIDENTIAL</text>
+        <text x="96" y="68" class="text-val-mono" font-size="10.5px" fill="#fcd34d">Business Sensitive:</text>
+        <text x="206" y="68" class="text-label" font-size="10px" fill="#cbd5e1">Salaries, financial audits, customer database.</text>
+        <text x="96" y="82" class="text-label" font-size="9.5px" fill="#94a3b8">Restricted to internal departments; protected by NDA.</text>
+
+        <rect y="96" width="501" height="44" rx="4" fill="#070b14" stroke="#38bdf8" />
+        <rect x="8" y="106" width="80" height="24" rx="3" fill="#0284c7" />
+        <text x="48" y="122" class="badge-text" fill="#ffffff">INTERNAL</text>
+        <text x="96" y="116" class="text-val-mono" font-size="10.5px" fill="#38bdf8">Operational:</text>
+        <text x="168" y="116" class="text-label" font-size="10px" fill="#cbd5e1">Staff directories, standard operating wikis, memos.</text>
+        <text x="96" y="130" class="text-label" font-size="9.5px" fill="#94a3b8">All authorized employees; not for public release.</text>
+
+        <rect y="144" width="501" height="44" rx="4" fill="#070b14" stroke="#10b981" />
+        <rect x="8" y="154" width="80" height="24" rx="3" fill="#059669" />
+        <text x="48" y="170" class="badge-text" fill="#ffffff">PUBLIC</text>
+        <text x="96" y="164" class="text-val-mono" font-size="10.5px" fill="#34d399">Unrestricted:</text>
+        <text x="175" y="164" class="text-label" font-size="10px" fill="#cbd5e1">Marketing press releases, public product manuals.</text>
+        <text x="96" y="178" class="text-label" font-size="9.5px" fill="#94a3b8">Freely shareable; zero confidentiality requirement.</text>
+      </g>
+
+      <text x="14" y="244" class="text-label" font-size="10.5px" fill="#93c5fd">Rule: Data classification determines the required encryption and storage tier.</text>
+    </g>
+
+    <!-- Right Box: Privacy Engineering (Anonymization vs Pseudonymization) -->
+    <g transform="translate(565, 36)">
+      <rect width="525" height="258" class="inner-card" stroke="#10b981" />
+      <rect x="12" y="10" width="220" height="22" rx="4" fill="#064e3b" />
+      <text x="122" y="25" class="badge-text" fill="#34d399">PRIVACY ENGINEERING</text>
+      <text x="245" y="25" class="text-label" fill="#6ee7b7">Data Sanitization Methods</text>
+
+      <g transform="translate(12, 38)">
+        <!-- Anonymization -->
+        <rect width="501" height="88" rx="4" fill="#070b14" stroke="#1e293b" />
+        <text x="14" y="22" class="text-val-mono" font-size="11px" font-weight="700" fill="#34d399">ANONYMIZATION (Irreversible Scrubbing):</text>
+        <text x="14" y="40" class="text-label" font-size="10px" fill="#cbd5e1">• Permanently removes direct and indirect identifiers (names, IP, addresses).</text>
+        <text x="14" y="58" class="text-label" font-size="10px" fill="#cbd5e1">• Re-identification is mathematically impossible, even with auxiliary tables.</text>
+        <text x="14" y="76" class="text-val-mono" font-size="9.5px" fill="#38bdf8">Outcome: Outside GDPR scope! Safe for public machine learning &amp; research.</text>
+
+        <!-- Pseudonymization -->
+        <rect y="96" width="501" height="96" rx="4" fill="#070b14" stroke="#1e293b" />
+        <text x="14" y="118" class="text-val-mono" font-size="11px" font-weight="700" fill="#fcd34d">PSEUDONYMIZATION (Reversible Tokenization):</text>
+        <text x="14" y="136" class="text-label" font-size="10px" fill="#cbd5e1">• Replaces real identifiers with pseudonyms / tokens (Alice ➔ TOKEN_8492).</text>
+        <text x="14" y="154" class="text-label" font-size="10px" fill="#cbd5e1">• Mapping key is stored separately in a secure, encrypted HSM key vault.</text>
+        <text x="14" y="172" class="text-label" font-size="10px" fill="#cbd5e1">• Still considered PII under GDPR! Reversible with the authorization key.</text>
+        <text x="14" y="188" class="text-val-mono" font-size="9.5px" fill="#fde68a">Used in financial transaction pipelines and medical clinical trials.</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Bottom Panel: Data Subject Rights & Regulations (x=45, y=440, width=1110, height=275) -->
+  <g transform="translate(45, 440)">
+    <rect width="1110" height="275" class="card-bg" stroke="#10b981" />
+    <text class="text-section" x="20" y="24" fill="#34d399">2. Legal Frameworks: Data Subject Rights &amp; Regulatory Mandates</text>
+    <text class="text-label" text-anchor="end" x="1090" y="24">Compliance &amp; Technician Obligations</text>
+
+    <!-- Left Box: Data Subject Rights -->
+    <g transform="translate(20, 36)">
+      <rect width="525" height="222" class="inner-card" stroke="#8b5cf6" />
+      <rect x="12" y="10" width="220" height="22" rx="4" fill="#2e1065" />
+      <text x="122" y="25" class="badge-text" fill="#c084fc">DATA SUBJECT RIGHTS</text>
+      <text x="245" y="25" class="text-label" fill="#ddd6fe">GDPR &amp; US State Laws</text>
+
+      <g transform="translate(12, 38)">
+        <rect width="501" height="40" rx="4" fill="#070b14" stroke="#1e293b" />
+        <text x="14" y="18" class="text-val-mono" font-size="10.5px" font-weight="700" fill="#38bdf8">1. Right to Access (DSAR):</text>
+        <text x="14" y="32" class="text-label" font-size="10px" fill="#cbd5e1">Individuals can demand a full electronic copy of all personal data held by a firm.</text>
+
+        <rect y="46" width="501" height="40" rx="4" fill="#070b14" stroke="#1e293b" />
+        <text x="14" y="64" class="text-val-mono" font-size="10.5px" font-weight="700" fill="#34d399">2. Right to Rectification:</text>
+        <text x="14" y="78" class="text-label" font-size="10px" fill="#cbd5e1">Users have the legal right to challenge and correct outdated or inaccurate records.</text>
+
+        <rect y="92" width="501" height="40" rx="4" fill="#070b14" stroke="#1e293b" />
+        <text x="14" y="110" class="text-val-mono" font-size="10.5px" font-weight="700" fill="#f87171">3. Right to Erasure ("Right to Be Forgotten"):</text>
+        <text x="14" y="124" class="text-label" font-size="10px" fill="#cbd5e1">Users can demand permanent deletion of their records upon consent withdrawal.</text>
+
+        <rect y="138" width="501" height="40" rx="4" fill="#070b14" stroke="#1e293b" />
+        <text x="14" y="156" class="text-val-mono" font-size="10.5px" font-weight="700" fill="#fcd34d">4. Right to Portability:</text>
+        <text x="14" y="170" class="text-label" font-size="10px" fill="#cbd5e1">Firms must export user data in standard machine-readable formats (JSON/CSV).</text>
+      </g>
+    </g>
+
+    <!-- Right Box: Regulatory Frameworks -->
+    <g transform="translate(565, 36)">
+      <rect width="525" height="222" class="inner-card" stroke="#38bdf8" />
+      <rect x="12" y="10" width="220" height="22" rx="4" fill="#0c2340" />
+      <text x="122" y="25" class="badge-text" fill="#38bdf8">REGULATORY FRAMEWORKS</text>
+      <text x="245" y="25" class="text-label" fill="#93c5fd">Global Privacy Laws</text>
+
+      <g transform="translate(12, 38)">
+        <rect width="501" height="40" rx="4" fill="#070b14" stroke="#1e293b" />
+        <text x="14" y="18" class="text-val-mono" font-size="10.5px" font-weight="700" fill="#38bdf8">GDPR (General Data Protection Regulation):</text>
+        <text x="14" y="32" class="text-label" font-size="10px" fill="#cbd5e1">European standard; mandates explicit consent and 72-hour breach notification.</text>
+
+        <rect y="46" width="501" height="40" rx="4" fill="#070b14" stroke="#1e293b" />
+        <text x="14" y="64" class="text-val-mono" font-size="10.5px" font-weight="700" fill="#34d399">HIPAA (Health Insurance Portability &amp; Accountability Act):</text>
+        <text x="14" y="78" class="text-label" font-size="10px" fill="#cbd5e1">US law safeguarding patient electronic Protected Health Information (ePHI).</text>
+
+        <rect y="92" width="501" height="40" rx="4" fill="#070b14" stroke="#1e293b" />
+        <text x="14" y="110" class="text-val-mono" font-size="10.5px" font-weight="700" fill="#fcd34d">PCI-DSS (Payment Card Industry Security Standard):</text>
+        <text x="14" y="124" class="text-label" font-size="10px" fill="#cbd5e1">Mandates strong encryption, firewalls, and logging for credit card environments.</text>
+
+        <rect y="138" width="501" height="40" rx="4" fill="#070b14" stroke="#1e293b" />
+        <text x="14" y="156" class="text-val-mono" font-size="10.5px" font-weight="700" fill="#c084fc">FERPA / COPPA (Education &amp; Children):</text>
+        <text x="14" y="170" class="text-label" font-size="10px" fill="#cbd5e1">Safeguards student educational records and prohibits tracking minors under 13.</text>
+      </g>
+    </g>
+  </g>
+</svg>
