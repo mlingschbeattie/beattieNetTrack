@@ -42,19 +42,23 @@
     position: fixed;
     inset: 0;
     z-index: 9999;
-    display: flex;
+    display: none;
     flex-direction: column;
-    background: rgba(6, 10, 18, 0.94);
+    background: rgba(6, 10, 18, 0.95);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    opacity: 1;
+    opacity: 0;
     transition: opacity 0.15s ease-out;
     user-select: none;
   }
 
+  .image-zoom-overlay.is-open {
+    display: flex;
+    opacity: 1;
+  }
+
   .image-zoom-overlay[hidden] {
-    display: none;
-    opacity: 0;
+    display: none !important;
   }
 
   .image-zoom-backdrop {
@@ -160,6 +164,8 @@
     justify-content: center;
     overflow: hidden;
     cursor: grab;
+    width: 100%;
+    height: 100%;
   }
 
   .image-zoom-viewport.is-dragging {
@@ -178,12 +184,14 @@
 
   .image-zoom-img {
     display: block;
-    max-width: 90vw;
-    max-height: 80vh;
+    width: min(92vw, 1200px);
+    max-width: 92vw;
+    max-height: 82vh;
+    height: auto;
     object-fit: contain;
-    border-radius: 6px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     cursor: zoom-in;
     pointer-events: auto;
   }
@@ -258,6 +266,7 @@
 
     const openZoom = (src, alt, triggerEl) => {
       if (!overlay || !imgTarget) return;
+      if (!src) return;
       lastActiveElement = triggerEl || document.activeElement;
 
       imgTarget.src = src;
@@ -268,6 +277,8 @@
 
       resetTransform();
       overlay.hidden = false;
+      overlay.removeAttribute('hidden');
+      overlay.classList.add('is-open');
       document.body.style.overflow = 'hidden';
 
       const closeBtn = document.getElementById('iz-btn-close');
@@ -277,6 +288,8 @@
     const closeZoom = () => {
       if (!overlay) return;
       overlay.hidden = true;
+      overlay.setAttribute('hidden', '');
+      overlay.classList.remove('is-open');
       document.body.style.overflow = '';
       if (imgTarget) imgTarget.src = '';
       resetTransform();
@@ -339,6 +352,21 @@
         toggleZoomScale();
       });
 
+      // Ensure proper sizing when image finishes loading
+      imgTarget?.addEventListener('load', () => {
+        if (imgTarget.naturalWidth > 0 && imgTarget.naturalWidth < 800) {
+          imgTarget.style.maxWidth = `${Math.min(imgTarget.naturalWidth, window.innerWidth * 0.92)}px`;
+        } else {
+          imgTarget.style.maxWidth = 'min(92vw, 1200px)';
+        }
+      });
+
+      imgTarget?.addEventListener('error', () => {
+        if (captionEl) {
+          captionEl.textContent = `Unable to load image: ${imgTarget.src}`;
+        }
+      });
+
       // Mouse wheel zoom
       viewport?.addEventListener('wheel', (e) => {
         e.preventDefault();
@@ -371,7 +399,7 @@
 
       // Keyboard Esc to close
       window.addEventListener('keydown', (e) => {
-        if (overlay && !overlay.hidden) {
+        if (overlay && (!overlay.hidden || overlay.classList.contains('is-open'))) {
           if (e.key === 'Escape') {
             e.preventDefault();
             closeZoom();
@@ -392,27 +420,35 @@
     // Attach click listener to all content images across lessons, labs, and reading panes
     const attachImageZoomTriggers = () => {
       const candidates = document.querySelectorAll(
-        '[data-reading-content] img, .prose img, .lesson-body img, .workspace-pane img, figure img, [data-zoomable] img'
+        '[data-reading-content] img, .prose img, .lesson-body img, .workspace-pane img, figure img, [data-zoomable] img, .lab-render-card img, main img'
       );
 
       candidates.forEach((img) => {
+        if (img.id === 'image-zoom-img') return;
+        if (img.closest('#image-zoom-overlay')) return;
+        if (img.classList.contains('avatar') || img.classList.contains('icon')) return;
         if (img.getAttribute('data-zoom-initialized')) return;
+
         img.setAttribute('data-zoom-initialized', 'true');
         img.setAttribute('tabindex', '0');
         img.setAttribute('role', 'button');
         img.setAttribute('aria-label', `Enlarge image: ${img.alt || 'Hardware diagram'}`);
 
-        img.addEventListener('click', (e) => {
+        const handleClick = (e) => {
           e.preventDefault();
-          const fullSrc = img.getAttribute('data-full-src') || img.currentSrc || img.src;
-          openZoom(fullSrc, img.alt, img);
-        });
+          e.stopPropagation();
+          const fullSrc = img.getAttribute('data-full-src') || img.getAttribute('src') || img.currentSrc || img.src;
+          if (fullSrc) {
+            openZoom(fullSrc, img.alt, img);
+          }
+        };
+
+        img.addEventListener('click', handleClick);
 
         img.addEventListener('keydown', (e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
-            const fullSrc = img.getAttribute('data-full-src') || img.currentSrc || img.src;
-            openZoom(fullSrc, img.alt, img);
+            handleClick(e);
           }
         });
       });

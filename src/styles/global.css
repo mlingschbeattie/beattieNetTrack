@@ -4946,6 +4946,15 @@ html[dir='rtl'] .qc-group[open] > .qc-group__summary::before { transform: rotate
 /* Lesson Media & Hardware Component Photography */
 [data-reading-content] img,
 .prose img,
+.lesson-body img,
+figure img,
+.lab-render-card img,
+[data-zoomable] img {
+  cursor: zoom-in;
+}
+
+[data-reading-content] img,
+.prose img,
 .lesson-body img {
   display: block;
   max-width: 100%;
@@ -4955,13 +4964,14 @@ html[dir='rtl'] .qc-group[open] > .qc-group__summary::before { transform: rotate
   border: 1px solid var(--beattie-border);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
   background: var(--beattie-surface);
-  cursor: zoom-in;
   transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 [data-reading-content] img:hover,
 .prose img:hover,
-.lesson-body img:hover {
+.lesson-body img:hover,
+figure img:hover,
+.lab-render-card img:hover {
   border-color: var(--beattie-primary, #38bdf8);
   box-shadow: 0 6px 20px rgba(56, 189, 248, 0.2);
 }
