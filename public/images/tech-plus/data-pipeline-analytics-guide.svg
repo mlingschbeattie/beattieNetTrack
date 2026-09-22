@@ -1,0 +1,199 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 740" width="100%" height="100%">
+  <defs>
+    <style>
+      .bg { fill: #070b14; }
+      .card-bg { fill: #0d1527; stroke: #1e293b; stroke-width: 1.5; rx: 10px; }
+      .inner-card { fill: #111c35; stroke: #25334d; stroke-width: 1; rx: 6px; }
+      .text-title { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 26px; font-weight: 700; fill: #f8fafc; }
+      .text-subtitle { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 14px; fill: #94a3b8; }
+      .text-section { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+      .text-label { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 12px; fill: #94a3b8; }
+      .text-val-mono { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 12px; fill: #e2e8f0; }
+      .badge-text { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1200" height="740" class="bg" />
+  <rect x="15" y="15" width="1170" height="710" rx="14" fill="none" stroke="#1e293b" stroke-width="1.5" />
+
+  <!-- Title Header -->
+  <g transform="translate(45, 55)">
+    <text class="text-title" x="0" y="0">Data Pipeline Architecture &amp; Business Intelligence</text>
+    <text class="text-subtitle" x="0" y="24">The DIKW Hierarchy, The 3 Vs of Big Data, ETL Processing, and Executive BI Analytics</text>
+    <rect x="0" y="38" width="1110" height="1" fill="#1e293b" />
+  </g>
+
+  <!-- Top Panel: DIKW Hierarchy & The 3 Vs (x=45, y=115, width=1110, height=255) -->
+  <g transform="translate(45, 115)">
+    <rect width="1110" height="255" class="card-bg" stroke="#0284c7" />
+    <text class="text-section" x="20" y="24" fill="#38bdf8">1. Foundations: The DIKW Value Hierarchy &amp; The 3 Vs of Big Data</text>
+    <text class="text-label" x="830" y="24">CompTIA Tech+ (FC0-U71) Objective 5.1/5.2</text>
+
+    <!-- Left Box: DIKW Hierarchy & Taxonomy (x=20, width=525) -->
+    <g transform="translate(20, 36)">
+      <rect width="525" height="205" class="inner-card" stroke="#0284c7" />
+      <rect x="12" y="10" width="180" height="22" rx="4" fill="#0c2340" />
+      <text x="102" y="25" class="badge-text" fill="#38bdf8">DIKW VALUE PYRAMID</text>
+      <text x="202" y="25" class="text-label" fill="#93c5fd">From raw bytes to strategic execution</text>
+
+      <!-- 4 Stacked DIKW Rows -->
+      <g transform="translate(12, 38)">
+        <!-- Wisdom -->
+        <rect x="0" y="0" width="501" height="34" rx="4" fill="#1e1b4b" stroke="#6366f1" />
+        <text x="14" y="22" class="text-val-mono" font-size="11px" font-weight="700" fill="#a5b4fc">WISDOM:</text>
+        <text x="95" y="22" class="text-label" font-size="11px" fill="#cbd5e1">Actionable Strategy: "Auto-scale server capacity when traffic hits 80%"</text>
+
+        <!-- Knowledge -->
+        <rect x="0" y="38" width="501" height="34" rx="4" fill="#0c2340" stroke="#0284c7" />
+        <text x="14" y="60" class="text-val-mono" font-size="11px" font-weight="700" fill="#38bdf8">KNOWLEDGE:</text>
+        <text x="110" y="60" class="text-label" font-size="11px" fill="#cbd5e1">Contextual Insight: "Checkout latency spikes only during holiday rushes"</text>
+
+        <!-- Information -->
+        <rect x="0" y="76" width="501" height="34" rx="4" fill="#064e3b" stroke="#059669" />
+        <text x="14" y="98" class="text-val-mono" font-size="11px" font-weight="700" fill="#34d399">INFORMATION:</text>
+        <text x="118" y="98" class="text-label" font-size="11px" fill="#cbd5e1">Structured &amp; Aggregated: "Average query latency is 420 milliseconds"</text>
+
+        <!-- Data -->
+        <rect x="0" y="114" width="501" height="34" rx="4" fill="#1e293b" stroke="#475569" />
+        <text x="14" y="136" class="text-val-mono" font-size="11px" font-weight="700" fill="#94a3b8">DATA:</text>
+        <text x="75" y="136" class="text-label" font-size="11px" fill="#cbd5e1">Raw Unprocessed Symbols: 420, 10.0.1.5, "HTTP 504", timestamp 174000</text>
+      </g>
+
+      <text x="14" y="196" class="text-label" font-size="11px" fill="#93c5fd">Taxonomy: Structured (SQL Tables) | Semi-Structured (JSON, XML) | Unstructured (Audio, Video, Logs)</text>
+    </g>
+
+    <!-- Right Box: The 3 Vs of Big Data (x=565, width=525) -->
+    <g transform="translate(565, 36)">
+      <rect width="525" height="205" class="inner-card" stroke="#f59e0b" />
+      <rect x="12" y="10" width="180" height="22" rx="4" fill="#451a03" />
+      <text x="102" y="25" class="badge-text" fill="#fcd34d">THE 3 Vs OF BIG DATA</text>
+      <text x="202" y="25" class="text-label" fill="#fde68a">Key traits defining modern analytics</text>
+
+      <!-- 3 V Cards -->
+      <!-- Volume -->
+      <g transform="translate(12, 38)">
+        <rect width="501" height="46" rx="4" fill="#070b14" stroke="#1e293b" />
+        <rect x="8" y="12" width="75" height="22" rx="3" fill="#0284c7" />
+        <text x="45" y="27" class="badge-text" fill="#ffffff">VOLUME</text>
+        <text x="95" y="22" class="text-val-mono" font-size="11px" fill="#38bdf8">Scale: Terabytes ➔ Petabytes ➔ Exabytes</text>
+        <text x="95" y="38" class="text-label" font-size="10px" fill="#94a3b8">Millions of IoT telemetry readings, global database logs, and transaction records.</text>
+      </g>
+
+      <!-- Velocity -->
+      <g transform="translate(12, 88)">
+        <rect width="501" height="46" rx="4" fill="#070b14" stroke="#1e293b" />
+        <rect x="8" y="12" width="75" height="22" rx="3" fill="#059669" />
+        <text x="45" y="27" class="badge-text" fill="#ffffff">VELOCITY</text>
+        <text x="95" y="22" class="text-val-mono" font-size="11px" fill="#34d399">Speed: Real-Time Telemetry &amp; Event Streams</text>
+        <text x="95" y="38" class="text-label" font-size="10px" fill="#94a3b8">High-frequency financial trades, live sensor metrics, and network packet capture.</text>
+      </g>
+
+      <!-- Variety -->
+      <g transform="translate(12, 138)">
+        <rect width="501" height="46" rx="4" fill="#070b14" stroke="#1e293b" />
+        <rect x="8" y="12" width="75" height="22" rx="3" fill="#d97706" />
+        <text x="45" y="27" class="badge-text" fill="#ffffff">VARIETY</text>
+        <text x="95" y="22" class="text-val-mono" font-size="11px" fill="#fcd34d">Diversity: Structured, Semi-Structured &amp; Media</text>
+        <text x="95" y="38" class="text-label" font-size="10px" fill="#94a3b8">Combining relational SQL, JSON REST APIs, audio call logs, and security PCAPs.</text>
+      </g>
+
+      <text x="14" y="198" class="text-label" font-size="11px" fill="#fde68a">+ Veracity (Data Cleanliness) &amp; Value (Direct Business Impact on ROI)</text>
+    </g>
+  </g>
+
+  <!-- Bottom Panel: End-to-End Analytics Pipeline (x=45, y=385, width=1110, height=330) -->
+  <g transform="translate(45, 385)">
+    <rect width="1110" height="330" class="card-bg" stroke="#10b981" />
+    <text class="text-section" x="20" y="24" fill="#34d399">2. End-to-End Enterprise Data Pipeline: Ingestion, ETL/ELT, Storage, &amp; BI Analytics</text>
+    <text class="text-label" x="840" y="24">Production Data Flow</text>
+
+    <!-- Stage 1: Data Sources (x=20, width=255) -->
+    <g transform="translate(20, 36)">
+      <rect width="255" height="275" class="inner-card" stroke="#1e293b" />
+      <rect x="10" y="10" width="235" height="22" rx="4" fill="#0f172a" />
+      <text x="127" y="25" class="badge-text" fill="#94a3b8">STAGE 1: SOURCES</text>
+
+      <rect x="10" y="38" width="235" height="150" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="18" y="58" class="text-val-mono" font-size="11px" font-weight="700" fill="#38bdf8">Data Generators:</text>
+      <text x="18" y="78" class="text-label" font-size="11px" fill="#cbd5e1">• IoT Hardware &amp; Sensors</text>
+      <text x="18" y="98" class="text-label" font-size="11px" fill="#cbd5e1">• OLTP Transaction Databases</text>
+      <text x="18" y="118" class="text-label" font-size="11px" fill="#cbd5e1">• Server Syslogs &amp; Firewalls</text>
+      <text x="18" y="138" class="text-label" font-size="11px" fill="#cbd5e1">• Mobile App Web Events</text>
+      <text x="18" y="158" class="text-label" font-size="11px" fill="#cbd5e1">• Social &amp; REST API Payloads</text>
+      <text x="18" y="176" class="text-val-mono" font-size="10px" fill="#64748b">[ Raw &amp; Unfiltered Data ]</text>
+
+      <text x="10" y="206" class="text-label" font-size="10px" fill="#94a3b8">Ingested continuously via message</text>
+      <text x="10" y="220" class="text-label" font-size="10px" fill="#94a3b8">brokers (e.g. Apache Kafka, MQTT)</text>
+      <text x="10" y="234" class="text-label" font-size="10px" fill="#94a3b8">into processing queues.</text>
+    </g>
+
+    <!-- Arrow 1 to 2 -->
+    <path d="M 280 170 L 292 170" stroke="#38bdf8" stroke-width="2.5" />
+
+    <!-- Stage 2: ETL / ELT (x=295, width=255) -->
+    <g transform="translate(295, 36)">
+      <rect width="255" height="275" class="inner-card" stroke="#0284c7" />
+      <rect x="10" y="10" width="235" height="22" rx="4" fill="#0c2340" />
+      <text x="127" y="25" class="badge-text" fill="#38bdf8">STAGE 2: ETL / ELT</text>
+
+      <rect x="10" y="38" width="235" height="150" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="18" y="58" class="text-val-mono" font-size="11px" font-weight="700" fill="#38bdf8">Pipeline Processing:</text>
+      <text x="18" y="78" class="text-label" font-size="11px" fill="#cbd5e1"><tspan font-weight="700" fill="#38bdf8">E</tspan>xtract: Ingest raw streams</text>
+      <text x="18" y="98" class="text-label" font-size="11px" fill="#cbd5e1"><tspan font-weight="700" fill="#34d399">T</tspan>ransform: Cleanse, dedupe,</text>
+      <text x="26" y="114" class="text-label" font-size="11px" fill="#cbd5e1">normalize schema, scrub PII</text>
+      <text x="18" y="134" class="text-label" font-size="11px" fill="#cbd5e1"><tspan font-weight="700" fill="#fcd34d">L</tspan>oad: Insert into repository</text>
+      <text x="18" y="160" class="text-val-mono" font-size="10px" fill="#34d399">ELT: Load first, transform in</text>
+      <text x="18" y="174" class="text-val-mono" font-size="10px" fill="#34d399">cloud warehouse (Snowflake).</text>
+
+      <text x="10" y="206" class="text-label" font-size="10px" fill="#93c5fd">Technician Rule: Garbage In,</text>
+      <text x="10" y="220" class="text-label" font-size="10px" fill="#93c5fd">Garbage Out! Unvalidated data</text>
+      <text x="10" y="234" class="text-label" font-size="10px" fill="#93c5fd">corrupts analytics dashboards.</text>
+    </g>
+
+    <!-- Arrow 2 to 3 -->
+    <path d="M 555 170 L 567 170" stroke="#059669" stroke-width="2.5" />
+
+    <!-- Stage 3: Storage Layer (x=570, width=255) -->
+    <g transform="translate(570, 36)">
+      <rect width="255" height="275" class="inner-card" stroke="#059669" />
+      <rect x="10" y="10" width="235" height="22" rx="4" fill="#064e3b" />
+      <text x="127" y="25" class="badge-text" fill="#34d399">STAGE 3: REPOSITORIES</text>
+
+      <rect x="10" y="38" width="235" height="150" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="18" y="58" class="text-val-mono" font-size="11px" font-weight="700" fill="#34d399">Central Storage:</text>
+      <text x="18" y="78" class="text-label" font-size="11px" fill="#cbd5e1"><tspan font-weight="700" fill="#38bdf8">Data Lake:</tspan> Massive pool of</text>
+      <text x="26" y="94" class="text-label" font-size="11px" fill="#94a3b8">raw, unstructured files (S3, HDFS)</text>
+      <text x="18" y="116" class="text-label" font-size="11px" fill="#cbd5e1"><tspan font-weight="700" fill="#34d399">Data Warehouse:</tspan> Cleaned,</text>
+      <text x="26" y="132" class="text-label" font-size="11px" fill="#94a3b8">indexed dimensional SQL schema</text>
+      <text x="18" y="154" class="text-label" font-size="11px" fill="#cbd5e1"><tspan font-weight="700" fill="#fcd34d">Data Mart:</tspan> Department-specific</text>
+      <text x="26" y="170" class="text-label" font-size="11px" fill="#94a3b8">slice (Finance, Security SOC)</text>
+
+      <text x="10" y="206" class="text-label" font-size="10px" fill="#6ee7b7">Optimized for OLAP (Analytical</text>
+      <text x="10" y="220" class="text-label" font-size="10px" fill="#6ee7b7">complex aggregate queries) rather</text>
+      <text x="10" y="234" class="text-label" font-size="10px" fill="#6ee7b7">than OLTP (fast live row updates).</text>
+    </g>
+
+    <!-- Arrow 3 to 4 -->
+    <path d="M 830 170 L 842 170" stroke="#f59e0b" stroke-width="2.5" />
+
+    <!-- Stage 4: BI & Analytics Consumption (x=845, width=245) -->
+    <g transform="translate(845, 36)">
+      <rect width="245" height="275" class="inner-card" stroke="#f59e0b" />
+      <rect x="10" y="10" width="225" height="22" rx="4" fill="#451a03" />
+      <text x="122" y="25" class="badge-text" fill="#fcd34d">STAGE 4: BI &amp; ACTION</text>
+
+      <rect x="10" y="38" width="225" height="150" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="18" y="58" class="text-val-mono" font-size="11px" font-weight="700" fill="#fcd34d">Analytics Output:</text>
+      <text x="18" y="78" class="text-label" font-size="11px" fill="#cbd5e1">• Executive Dashboards</text>
+      <text x="18" y="98" class="text-label" font-size="11px" fill="#cbd5e1">• KPI Scorecards &amp; Trends</text>
+      <text x="18" y="118" class="text-label" font-size="11px" fill="#cbd5e1">• Predictive Machine Learning</text>
+      <text x="18" y="138" class="text-label" font-size="11px" fill="#cbd5e1">• Automated Threat Alerts</text>
+      <text x="18" y="162" class="text-val-mono" font-size="10px" fill="#fcd34d">[ Data-Driven Decision ]</text>
+
+      <text x="10" y="206" class="text-label" font-size="10px" fill="#fde68a">Translates complex queries into</text>
+      <text x="10" y="220" class="text-label" font-size="10px" fill="#fde68a">visual charts (PowerBI, Tableau)</text>
+      <text x="10" y="234" class="text-label" font-size="10px" fill="#fde68a">for non-technical leadership.</text>
+    </g>
+  </g>
+</svg>

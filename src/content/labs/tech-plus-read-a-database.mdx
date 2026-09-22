@@ -73,7 +73,7 @@ steps:
     prompt: "Inspect the database architecture diagram above.\n\nNotice the arrow connecting the Primary Key `student_id (PK)` in the `students` table to the Foreign Key `student_id (FK)` in `asset_assignments`.\n\nIn a school environment where one student may check out a laptop, a graphic tablet, and a scientific calculator over the semester, what relational cardinality exists between the `students` entity and the `asset_assignments` entity?"
     inputLabel: "Relationship type"
     hint: "One single student can have multiple assigned assets."
-    image: "/images/tech-plus/relational-database-erd-sql-guide.jpg"
+    image: "/images/tech-plus/relational-database-erd-sql-guide.svg"
     imageAlt: "Relational Database Schema Entity-Relationship Diagram showing students table with student_id (PK) connected to asset_assignments table with student_id (FK)."
     validator:
       type: choice
