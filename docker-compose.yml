@@ -3,6 +3,11 @@ services:
     build: .
     container_name: beattie-lms
     restart: unless-stopped
+    # HUB_APP_KEY (the lms entry in the hub's HUB_APP_KEYS) lets the hub fetch quiz answer keys
+    # from /internal/quiz-key. It lives in .env beside this file and is never committed.
+    env_file:
+      - path: .env
+        required: false
     environment:
       - PUBLIC_API_URL=https://api.beattietech.local
     networks:
