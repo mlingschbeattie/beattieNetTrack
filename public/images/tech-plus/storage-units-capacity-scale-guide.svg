@@ -35,56 +35,56 @@
       <!-- Table Header -->
       <rect x="0" y="0" width="1070" height="30" fill="#152038" rx="4" />
       <text x="15" y="20" class="th-mono">Prefix Unit</text>
-      <text x="150" y="20" class="th-mono">Decimal (SI Base-10)</text>
-      <text x="350" y="20" class="th-mono">Exact Decimal Bytes</text>
-      <text x="560" y="20" class="th-mono">Binary (IEC Base-2)</text>
-      <text x="760" y="20" class="th-mono">Exact Binary Bytes</text>
-      <text x="960" y="20" class="th-mono">Primary Real-World Use</text>
+      <text x="135" y="20" class="th-mono">Decimal (SI)</text>
+      <text x="290" y="20" class="th-mono">Exact Decimal Bytes</text>
+      <text x="470" y="20" class="th-mono">Binary (IEC)</text>
+      <text x="635" y="20" class="th-mono">Exact Binary Bytes</text>
+      <text x="825" y="20" class="th-mono">Primary Real-World Use</text>
 
       <!-- Row 1: Kilo -->
       <rect x="0" y="34" width="1070" height="28" fill="#0d172a" rx="3" />
       <text x="15" y="53" class="td-mono" font-weight="700" fill="#38bdf8">Kilo- (K / Ki)</text>
-      <text x="150" y="53" class="td-mono">1 KB = 10³ Bytes</text>
-      <text x="350" y="53" class="td-mono">1,000</text>
-      <text x="560" y="53" class="td-mono" fill="#34d399">1 KiB = 2¹⁰ Bytes</text>
-      <text x="760" y="53" class="td-mono" fill="#34d399">1,024</text>
-      <text x="960" y="53" class="td-mono">Text files, small configs</text>
+      <text x="135" y="53" class="td-mono">1 KB = 10³ Bytes</text>
+      <text x="290" y="53" class="td-mono">1,000</text>
+      <text x="470" y="53" class="td-mono" fill="#34d399">1 KiB = 2¹⁰ Bytes</text>
+      <text x="635" y="53" class="td-mono" fill="#34d399">1,024</text>
+      <text x="825" y="53" class="td-mono">Text files, small configs</text>
 
       <!-- Row 2: Mega -->
       <rect x="0" y="66" width="1070" height="28" fill="#111f38" rx="3" />
       <text x="15" y="85" class="td-mono" font-weight="700" fill="#38bdf8">Mega- (M / Mi)</text>
-      <text x="150" y="85" class="td-mono">1 MB = 10⁶ Bytes</text>
-      <text x="350" y="85" class="td-mono">1,000,000</text>
-      <text x="560" y="85" class="td-mono" fill="#34d399">1 MiB = 2²⁰ Bytes</text>
-      <text x="760" y="85" class="td-mono" fill="#34d399">1,048,576</text>
-      <text x="960" y="85" class="td-mono">MP3s, photos, RAM buffers</text>
+      <text x="135" y="85" class="td-mono">1 MB = 10⁶ Bytes</text>
+      <text x="290" y="85" class="td-mono">1,000,000</text>
+      <text x="470" y="85" class="td-mono" fill="#34d399">1 MiB = 2²⁰ Bytes</text>
+      <text x="635" y="85" class="td-mono" fill="#34d399">1,048,576</text>
+      <text x="825" y="85" class="td-mono">MP3s, photos, RAM buffers</text>
 
       <!-- Row 3: Giga -->
       <rect x="0" y="98" width="1070" height="28" fill="#0d172a" rx="3" />
       <text x="15" y="117" class="td-mono" font-weight="700" fill="#38bdf8">Giga- (G / Gi)</text>
-      <text x="150" y="117" class="td-mono">1 GB = 10⁹ Bytes</text>
-      <text x="350" y="117" class="td-mono">1,000,000,000</text>
-      <text x="560" y="117" class="td-mono" fill="#34d399">1 GiB = 2³⁰ Bytes</text>
-      <text x="760" y="117" class="td-mono" fill="#34d399">1,073,741,824</text>
-      <text x="960" y="117" class="td-mono">RAM capacity, video files</text>
+      <text x="135" y="117" class="td-mono">1 GB = 10⁹ Bytes</text>
+      <text x="290" y="117" class="td-mono">1,000,000,000</text>
+      <text x="470" y="117" class="td-mono" fill="#34d399">1 GiB = 2³⁰ Bytes</text>
+      <text x="635" y="117" class="td-mono" fill="#34d399">1,073,741,824</text>
+      <text x="825" y="117" class="td-mono">RAM capacity, video files</text>
 
       <!-- Row 4: Tera -->
       <rect x="0" y="130" width="1070" height="28" fill="#111f38" rx="3" />
       <text x="15" y="149" class="td-mono" font-weight="700" fill="#38bdf8">Tera- (T / Ti)</text>
-      <text x="150" y="149" class="td-mono">1 TB = 10¹² Bytes</text>
-      <text x="350" y="149" class="td-mono">1,000,000,000,000</text>
-      <text x="560" y="149" class="td-mono" fill="#34d399">1 TiB = 2⁴⁰ Bytes</text>
-      <text x="760" y="149" class="td-mono" fill="#34d399">1,099,511,627,776</text>
-      <text x="960" y="149" class="td-mono">Modern SSD / HDD drives</text>
+      <text x="135" y="149" class="td-mono">1 TB = 10¹² Bytes</text>
+      <text x="290" y="149" class="td-mono">1,000,000,000,000</text>
+      <text x="470" y="149" class="td-mono" fill="#34d399">1 TiB = 2⁴⁰ Bytes</text>
+      <text x="635" y="149" class="td-mono" fill="#34d399">1,099,511,627,776</text>
+      <text x="825" y="149" class="td-mono">Modern SSD / HDD drives</text>
 
       <!-- Row 5: Peta -->
       <rect x="0" y="162" width="1070" height="28" fill="#0d172a" rx="3" />
       <text x="15" y="181" class="td-mono" font-weight="700" fill="#38bdf8">Peta- (P / Pi)</text>
-      <text x="150" y="181" class="td-mono">1 PB = 10¹⁵ Bytes</text>
-      <text x="350" y="181" class="td-mono">1,000,000,000,000,000</text>
-      <text x="560" y="181" class="td-mono" fill="#34d399">1 PiB = 2⁵⁰ Bytes</text>
-      <text x="760" y="181" class="td-mono" fill="#34d399">1,125,899,906,842,624</text>
-      <text x="960" y="181" class="td-mono">Data center SAN / NAS arrays</text>
+      <text x="135" y="181" class="td-mono">1 PB = 10¹⁵ Bytes</text>
+      <text x="290" y="181" class="td-mono">1,000,000,000,000,000</text>
+      <text x="470" y="181" class="td-mono" fill="#34d399">1 PiB = 2⁵⁰ Bytes</text>
+      <text x="635" y="181" class="td-mono" fill="#34d399">1,125,899,906,842,624</text>
+      <text x="825" y="181" class="td-mono">Data center SAN / NAS arrays</text>
     </g>
   </g>
 
