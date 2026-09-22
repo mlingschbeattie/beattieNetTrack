@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 730" width="100%" height="100%">
   <defs>
     <style>
       .bg { fill: #070b14; }
@@ -23,8 +23,8 @@
   </defs>
 
   <!-- Canvas Background -->
-  <rect width="1200" height="700" class="bg" />
-  <rect x="15" y="15" width="1170" height="670" rx="14" fill="none" stroke="#1e293b" stroke-width="1.5" />
+  <rect width="1200" height="730" class="bg" />
+  <rect x="15" y="15" width="1170" height="700" rx="14" fill="none" stroke="#1e293b" stroke-width="1.5" />
 
   <!-- Title Header -->
   <g transform="translate(45, 55)">
@@ -42,150 +42,156 @@
     <!-- Table Container -->
     <g transform="translate(20, 42)">
       <!-- Row backgrounds -->
-      <rect x="120" y="0" width="950" height="28" fill="#152038" rx="4" />
-      <rect x="120" y="30" width="950" height="26" fill="#0d172a" rx="4" />
-      <rect x="120" y="58" width="950" height="26" fill="#111f38" rx="4" />
+      <rect x="170" y="0" width="900" height="28" fill="#152038" rx="4" />
+      <rect x="170" y="30" width="900" height="26" fill="#0d172a" rx="4" />
+      <rect x="170" y="58" width="900" height="26" fill="#111f38" rx="4" />
 
       <!-- Row Headers -->
-      <text x="10" y="20" class="text-val-mono" font-weight="700" fill="#38bdf8">Hex Character</text>
-      <text x="10" y="48" class="text-val-mono" fill="#94a3b8">Decimal (Base-10)</text>
-      <text x="10" y="76" class="text-val-mono" fill="#67e8f9">Binary (4 Bits)</text>
+      <text x="15" y="20" class="text-val-mono" font-weight="700" fill="#38bdf8">Hex Character</text>
+      <text x="15" y="48" class="text-val-mono" fill="#94a3b8">Decimal (Base-10)</text>
+      <text x="15" y="76" class="text-val-mono" fill="#67e8f9">Binary (4 Bits)</text>
 
-      <!-- Columns 0 to 15 (step width = 59px) -->
+      <!-- Columns 0 to 15 (step width = 57px, starting at x=195) -->
       <!-- 0 -->
-      <text x="145" y="20" class="th-mono">0</text><text x="145" y="48" class="td-mono">0</text><text x="145" y="76" class="td-bin">0000</text>
+      <text x="195" y="20" class="th-mono">0</text><text x="195" y="48" class="td-mono">0</text><text x="195" y="76" class="td-bin">0000</text>
       <!-- 1 -->
-      <text x="204" y="20" class="th-mono">1</text><text x="204" y="48" class="td-mono">1</text><text x="204" y="76" class="td-bin">0001</text>
+      <text x="252" y="20" class="th-mono">1</text><text x="252" y="48" class="td-mono">1</text><text x="252" y="76" class="td-bin">0001</text>
       <!-- 2 -->
-      <text x="263" y="20" class="th-mono">2</text><text x="263" y="48" class="td-mono">2</text><text x="263" y="76" class="td-bin">0010</text>
+      <text x="309" y="20" class="th-mono">2</text><text x="309" y="48" class="td-mono">2</text><text x="309" y="76" class="td-bin">0010</text>
       <!-- 3 -->
-      <text x="322" y="20" class="th-mono">3</text><text x="322" y="48" class="td-mono">3</text><text x="322" y="76" class="td-bin">0011</text>
+      <text x="366" y="20" class="th-mono">3</text><text x="366" y="48" class="td-mono">3</text><text x="366" y="76" class="td-bin">0011</text>
       <!-- 4 -->
-      <text x="381" y="20" class="th-mono">4</text><text x="381" y="48" class="td-mono">4</text><text x="381" y="76" class="td-bin">0100</text>
+      <text x="423" y="20" class="th-mono">4</text><text x="423" y="48" class="td-mono">4</text><text x="423" y="76" class="td-bin">0100</text>
       <!-- 5 -->
-      <text x="440" y="20" class="th-mono">5</text><text x="440" y="48" class="td-mono">5</text><text x="440" y="76" class="td-bin">0101</text>
+      <text x="480" y="20" class="th-mono">5</text><text x="480" y="48" class="td-mono">5</text><text x="480" y="76" class="td-bin">0101</text>
       <!-- 6 -->
-      <text x="499" y="20" class="th-mono">6</text><text x="499" y="48" class="td-mono">6</text><text x="499" y="76" class="td-bin">0110</text>
+      <text x="537" y="20" class="th-mono">6</text><text x="537" y="48" class="td-mono">6</text><text x="537" y="76" class="td-bin">0110</text>
       <!-- 7 -->
-      <text x="558" y="20" class="th-mono">7</text><text x="558" y="48" class="td-mono">7</text><text x="558" y="76" class="td-bin">0111</text>
+      <text x="594" y="20" class="th-mono">7</text><text x="594" y="48" class="td-mono">7</text><text x="594" y="76" class="td-bin">0111</text>
       <!-- 8 -->
-      <text x="617" y="20" class="th-mono">8</text><text x="617" y="48" class="td-mono">8</text><text x="617" y="76" class="td-bin">1000</text>
+      <text x="651" y="20" class="th-mono">8</text><text x="651" y="48" class="td-mono">8</text><text x="651" y="76" class="td-bin">1000</text>
       <!-- 9 -->
-      <text x="676" y="20" class="th-mono">9</text><text x="676" y="48" class="td-mono">9</text><text x="676" y="76" class="td-bin">1001</text>
+      <text x="708" y="20" class="th-mono">9</text><text x="708" y="48" class="td-mono">9</text><text x="708" y="76" class="td-bin">1001</text>
       <!-- A -->
-      <text x="735" y="20" class="th-mono" fill="#fbbf24">A</text><text x="735" y="48" class="td-mono" font-weight="700">10</text><text x="735" y="76" class="td-bin">1010</text>
+      <text x="765" y="20" class="th-mono" fill="#fbbf24">A</text><text x="765" y="48" class="td-mono" font-weight="700">10</text><text x="765" y="76" class="td-bin">1010</text>
       <!-- B -->
-      <text x="794" y="20" class="th-mono" fill="#fbbf24">B</text><text x="794" y="48" class="td-mono" font-weight="700">11</text><text x="794" y="76" class="td-bin">1011</text>
+      <text x="822" y="20" class="th-mono" fill="#fbbf24">B</text><text x="822" y="48" class="td-mono" font-weight="700">11</text><text x="822" y="76" class="td-bin">1011</text>
       <!-- C -->
-      <text x="853" y="20" class="th-mono" fill="#fbbf24">C</text><text x="853" y="48" class="td-mono" font-weight="700">12</text><text x="853" y="76" class="td-bin">1100</text>
+      <text x="879" y="20" class="th-mono" fill="#fbbf24">C</text><text x="879" y="48" class="td-mono" font-weight="700">12</text><text x="879" y="76" class="td-bin">1100</text>
       <!-- D -->
-      <text x="912" y="20" class="th-mono" fill="#fbbf24">D</text><text x="912" y="48" class="td-mono" font-weight="700">13</text><text x="912" y="76" class="td-bin">1101</text>
+      <text x="936" y="20" class="th-mono" fill="#fbbf24">D</text><text x="936" y="48" class="td-mono" font-weight="700">13</text><text x="936" y="76" class="td-bin">1101</text>
       <!-- E -->
-      <text x="971" y="20" class="th-mono" fill="#fbbf24">E</text><text x="971" y="48" class="td-mono" font-weight="700">14</text><text x="971" y="76" class="td-bin">1110</text>
+      <text x="993" y="20" class="th-mono" fill="#fbbf24">E</text><text x="993" y="48" class="td-mono" font-weight="700">14</text><text x="993" y="76" class="td-bin">1110</text>
       <!-- F -->
-      <text x="1030" y="20" class="th-mono" fill="#fbbf24">F</text><text x="1030" y="48" class="td-mono" font-weight="700">15</text><text x="1030" y="76" class="td-bin">1111</text>
+      <text x="1050" y="20" class="th-mono" fill="#fbbf24">F</text><text x="1050" y="48" class="td-mono" font-weight="700">15</text><text x="1050" y="76" class="td-bin">1111</text>
     </g>
   </g>
 
   <!-- Panel 2: The 4-Bit Nibble Partition Mechanism -->
   <g transform="translate(45, 280)">
-    <rect width="540" height="375" class="card-bg" />
+    <rect width="540" height="410" class="card-bg" />
     <text class="text-section" x="20" y="28">2. The 4-Bit Nibble Bridge (1 Byte = 2 Hex Digits)</text>
 
     <!-- 8-Bit Byte Breakdown Box -->
-    <g transform="translate(25, 50)">
+    <g transform="translate(25, 48)">
       <!-- Upper: Binary Bits Box -->
-      <rect x="0" y="0" width="490" height="60" fill="#070b14" stroke="#334155" rx="6" />
+      <rect x="0" y="0" width="490" height="54" fill="#070b14" stroke="#334155" rx="6" />
 
       <!-- Left Nibble (Upper 4 Bits) -->
-      <rect x="10" y="8" width="225" height="44" fill="#1e293b" rx="4" />
-      <text x="45" y="36" class="th-mono" font-size="18px">1</text>
-      <text x="95" y="36" class="th-mono" font-size="18px">1</text>
-      <text x="145" y="36" class="th-mono" font-size="18px">0</text>
-      <text x="195" y="36" class="th-mono" font-size="18px">1</text>
+      <rect x="10" y="6" width="225" height="42" fill="#1e293b" rx="4" />
+      <text x="45" y="33" class="th-mono" font-size="18px">1</text>
+      <text x="95" y="33" class="th-mono" font-size="18px">1</text>
+      <text x="145" y="33" class="th-mono" font-size="18px">0</text>
+      <text x="195" y="33" class="th-mono" font-size="18px">1</text>
 
       <!-- Right Nibble (Lower 4 Bits) -->
-      <rect x="255" y="8" width="225" height="44" fill="#1e293b" rx="4" />
-      <text x="290" y="36" class="th-mono" font-size="18px" fill="#34d399">0</text>
-      <text x="340" y="36" class="th-mono" font-size="18px" fill="#34d399">1</text>
-      <text x="390" y="36" class="th-mono" font-size="18px" fill="#34d399">1</text>
-      <text x="440" y="36" class="th-mono" font-size="18px" fill="#34d399">0</text>
+      <rect x="255" y="6" width="225" height="42" fill="#1e293b" rx="4" />
+      <text x="290" y="33" class="th-mono" font-size="18px" fill="#34d399">0</text>
+      <text x="340" y="33" class="th-mono" font-size="18px" fill="#34d399">1</text>
+      <text x="390" y="33" class="th-mono" font-size="18px" fill="#34d399">1</text>
+      <text x="440" y="33" class="th-mono" font-size="18px" fill="#34d399">0</text>
 
       <!-- Brackets down to Hex Digits -->
       <!-- Left Arrow / Connector -->
-      <path d="M 122 65 L 122 105" stroke="#38bdf8" stroke-width="2" />
-      <polygon points="122,112 118,104 126,104" fill="#38bdf8" />
+      <path d="M 122 58 L 122 96" stroke="#38bdf8" stroke-width="2" />
+      <polygon points="122,103 118,95 126,95" fill="#38bdf8" />
       
       <!-- Right Arrow / Connector -->
-      <path d="M 367 65 L 367 105" stroke="#34d399" stroke-width="2" />
-      <polygon points="367,112 363,104 371,104" fill="#34d399" />
+      <path d="M 367 58 L 367 96" stroke="#34d399" stroke-width="2" />
+      <polygon points="367,103 363,95 371,95" fill="#34d399" />
 
       <!-- Hex Representation Result Boxes -->
       <!-- Left Hex Result -->
-      <rect x="70" y="115" width="105" height="70" fill="#0c2340" stroke="#0284c7" rx="8" />
-      <text x="122" y="152" font-family="'JetBrains Mono', monospace" font-size="32px" font-weight="800" fill="#38bdf8" text-anchor="middle">D</text>
-      <text x="122" y="174" class="text-label" text-anchor="middle">8+4+1 = 13</text>
+      <rect x="70" y="106" width="105" height="66" fill="#0c2340" stroke="#0284c7" rx="8" />
+      <text x="122" y="142" font-family="'JetBrains Mono', monospace" font-size="30px" font-weight="800" fill="#38bdf8" text-anchor="middle">D</text>
+      <text x="122" y="162" class="text-label" text-anchor="middle">8+4+1 = 13</text>
 
       <!-- Right Hex Result -->
-      <rect x="315" y="115" width="105" height="70" fill="#063223" stroke="#059669" rx="8" />
-      <text x="367" y="152" font-family="'JetBrains Mono', monospace" font-size="32px" font-weight="800" fill="#34d399" text-anchor="middle">6</text>
-      <text x="367" y="174" class="text-label" text-anchor="middle">4+2 = 6</text>
+      <rect x="315" y="106" width="105" height="66" fill="#063223" stroke="#059669" rx="8" />
+      <text x="367" y="142" font-family="'JetBrains Mono', monospace" font-size="30px" font-weight="800" fill="#34d399" text-anchor="middle">6</text>
+      <text x="367" y="162" class="text-label" text-anchor="middle">4+2 = 6</text>
 
-      <!-- Combined Byte Result Box -->
-      <rect x="0" y="210" width="490" height="90" fill="#0d192f" stroke="#1d4ed8" rx="8" />
-      <text x="25" y="238" class="text-val-mono" font-weight="700" fill="#93c5fd">Byte Value (C-Style Notation):</text>
-      <text x="25" y="278" font-family="'JetBrains Mono', monospace" font-size="30px" font-weight="800" fill="#60a5fa">0xD6</text>
-      <text x="145" y="275" class="text-val-mono" fill="#cbd5e1">= 214 (Decimal)</text>
-      <text x="330" y="275" class="text-val-mono" fill="#67e8f9">= 11010110₂</text>
+      <!-- Combined Byte Result Box (Enlarged to comfortably contain notation AND the wrapped insight note) -->
+      <rect x="0" y="186" width="490" height="150" fill="#0d192f" stroke="#1d4ed8" rx="8" />
+      <text x="20" y="214" class="text-val-mono" font-weight="700" fill="#93c5fd">Byte Value (C-Style Notation):</text>
+      <text x="20" y="254" font-family="'JetBrains Mono', monospace" font-size="32px" font-weight="800" fill="#60a5fa">0xD6</text>
+      <text x="135" y="250" class="text-val-mono" fill="#cbd5e1">= 214 (Decimal)</text>
+      <text x="325" y="250" class="text-val-mono" fill="#67e8f9">= 11010110₂</text>
+
+      <line x1="20" y1="272" x2="470" y2="272" stroke="#1e3a8a" stroke-width="1" />
+      
+      <text x="20" y="294" class="text-val-mono" font-size="12px" fill="#93c5fd">
+        <tspan fill="#38bdf8" font-weight="700">Technician Insight:</tspan> 2 hex characters replace an 8-bit byte,
+      </text>
+      <text x="20" y="316" class="text-val-mono" font-size="12px" fill="#94a3b8">
+        dramatically reducing human transcription and memory errors.
+      </text>
     </g>
-
-    <text x="25" y="352" class="text-label" fill="#64748b">Benefit: 2 hex characters replace an 8-bit binary byte,</text>
-    <text x="25" y="368" class="text-label" fill="#64748b">dramatically reducing human transcription errors.</text>
   </g>
 
   <!-- Panel 3: Technical Applications (MAC, RGB, Memory Pointer) -->
   <g transform="translate(615, 280)">
-    <rect width="540" height="375" class="card-bg" />
+    <rect width="540" height="410" class="card-bg" />
     <text class="text-section" x="20" y="28">3. Real-World Technical Implementations</text>
 
     <!-- Item A: 48-Bit MAC Address -->
     <g transform="translate(20, 48)">
-      <rect width="500" height="92" class="inner-card" />
-      <text x="15" y="22" class="text-val-mono" font-weight="700" fill="#38bdf8">Physical Hardware Address (48-Bit MAC)</text>
-      <text x="15" y="52" font-family="'JetBrains Mono', monospace" font-size="18px" font-weight="700" fill="#f8fafc" letter-spacing="0.05em">
+      <rect width="500" height="96" class="inner-card" />
+      <text x="15" y="24" class="text-val-mono" font-weight="700" fill="#38bdf8">Physical Hardware Address (48-Bit MAC)</text>
+      <text x="15" y="56" font-family="'JetBrains Mono', monospace" font-size="18px" font-weight="700" fill="#f8fafc" letter-spacing="0.05em">
         <tspan fill="#38bdf8">B4:2E:99</tspan> : <tspan fill="#34d399">7A:5C:01</tspan>
       </text>
       <!-- Sub labels -->
-      <text x="15" y="76" class="text-label" fill="#38bdf8">↑ OUI (Vendor ID: Intel / Dell)</text>
-      <text x="260" y="76" class="text-label" fill="#34d399">↑ Device Identifier (Serial)</text>
+      <text x="15" y="80" class="text-label" fill="#38bdf8">↑ OUI (Vendor ID: Intel / Dell)</text>
+      <text x="260" y="80" class="text-label" fill="#34d399">↑ Device Identifier (Serial)</text>
     </g>
 
     <!-- Item B: 24-Bit RGB HTML Hex Color -->
-    <g transform="translate(20, 155)">
-      <rect width="500" height="92" class="inner-card" />
-      <text x="15" y="22" class="text-val-mono" font-weight="700" fill="#fbbf24">Web &amp; Display Color Representation (24-Bit RGB)</text>
+    <g transform="translate(20, 160)">
+      <rect width="500" height="96" class="inner-card" />
+      <text x="15" y="24" class="text-val-mono" font-weight="700" fill="#fbbf24">Web &amp; Display Color Representation (24-Bit RGB)</text>
       
       <!-- Color swatch badge -->
-      <rect x="15" y="36" width="34" height="34" rx="4" fill="#FF5733" stroke="#ffffff" stroke-width="1" />
+      <rect x="15" y="40" width="34" height="34" rx="4" fill="#FF5733" stroke="#ffffff" stroke-width="1" />
       
-      <text x="60" y="58" font-family="'JetBrains Mono', monospace" font-size="20px" font-weight="800" fill="#f8fafc">
+      <text x="60" y="62" font-family="'JetBrains Mono', monospace" font-size="20px" font-weight="800" fill="#f8fafc">
         # <tspan fill="#f87171">FF</tspan> <tspan fill="#4ade80">57</tspan> <tspan fill="#60a5fa">33</tspan>
       </text>
-      <text x="220" y="58" class="text-val-mono" font-size="12px" fill="#94a3b8">rgb(255, 87, 51)</text>
+      <text x="220" y="62" class="text-val-mono" font-size="12px" fill="#94a3b8">rgb(255, 87, 51)</text>
 
-      <text x="60" y="78" class="text-label">
+      <text x="60" y="82" class="text-label">
         <tspan fill="#f87171">Red: 255</tspan> | <tspan fill="#4ade80">Green: 87</tspan> | <tspan fill="#60a5fa">Blue: 51</tspan> (Each channel = 1 byte)
       </text>
     </g>
 
     <!-- Item C: Memory Address Pointer -->
-    <g transform="translate(20, 262)">
-      <rect width="500" height="92" class="inner-card" />
-      <text x="15" y="22" class="text-val-mono" font-weight="700" fill="#a78bfa">Operating System Memory Pointer (Virtual RAM)</text>
-      <text x="15" y="54" font-family="'JetBrains Mono', monospace" font-size="20px" font-weight="800" fill="#c084fc">
+    <g transform="translate(20, 272)">
+      <rect width="500" height="96" class="inner-card" />
+      <text x="15" y="24" class="text-val-mono" font-weight="700" fill="#a78bfa">Operating System Memory Pointer (Virtual RAM)</text>
+      <text x="15" y="56" font-family="'JetBrains Mono', monospace" font-size="20px" font-weight="800" fill="#c084fc">
         0x7FFE04A8C000
       </text>
-      <text x="15" y="78" class="text-label" fill="#94a3b8">
+      <text x="15" y="80" class="text-label" fill="#94a3b8">
         The <tspan fill="#38bdf8" font-family="monospace">0x</tspan> prefix explicitly signifies Base-16 hexadecimal notation to compilers and debuggers.
       </text>
     </g>

@@ -43,7 +43,8 @@
 
       <text x="10" y="22" class="text-val-mono" font-weight="700" fill="#38bdf8">Power of Two (2ⁿ)</text>
       <text x="10" y="58" class="text-val-mono" fill="#94a3b8">Decimal Value</text>
-      <text x="10" y="103" class="text-val-mono" font-weight="700" fill="#34d399">Example Byte (01000001)</text>
+      <text x="10" y="93" class="text-val-mono" font-weight="700" fill="#34d399">Example Byte</text>
+      <text x="10" y="111" class="text-val-mono" font-size="11px" fill="#64748b">(01000001)</text>
       <text x="10" y="146" class="text-val-mono" fill="#67e8f9">Active Calculation</text>
 
       <!-- Columns: 8 bits (step = 111px) -->
@@ -163,10 +164,12 @@
       <text x="340" y="126" class="text-val-mono" fill="#34d399">256 states (0 to 255)</text>
 
       <!-- Key technician rule -->
-      <rect y="150" width="500" height="54" fill="#0d1b30" stroke="#1d4ed8" rx="6" />
-      <text x="15" y="172" class="text-val-mono" fill="#60a5fa" font-weight="700">Technician Rule:</text>
-      <text x="130" y="172" class="text-val-mono" fill="#93c5fd">Lowercase 'b' = bits (network transfer speed)</text>
-      <text x="15" y="192" class="text-val-mono" fill="#93c5fd">Uppercase 'B' = bytes (storage capacity &amp; RAM size)</text>
+      <rect y="148" width="500" height="62" fill="#0d1b30" stroke="#1d4ed8" rx="6" />
+      <rect x="12" y="156" width="126" height="46" rx="4" fill="#172554" stroke="#1e40af" stroke-width="1" />
+      <text x="75" y="175" class="text-val-mono" fill="#93c5fd" font-size="11px" font-weight="700" text-anchor="middle">TECHNICIAN</text>
+      <text x="75" y="193" class="text-val-mono" fill="#60a5fa" font-size="11px" font-weight="700" text-anchor="middle">RULE</text>
+      <text x="150" y="174" class="text-val-mono" fill="#93c5fd"><tspan font-weight="700" fill="#38bdf8">b</tspan> (lowercase) = bits (network speed)</text>
+      <text x="150" y="196" class="text-val-mono" fill="#93c5fd"><tspan font-weight="700" fill="#34d399">B</tspan> (uppercase) = bytes (storage / RAM)</text>
     </g>
   </g>
 </svg>
