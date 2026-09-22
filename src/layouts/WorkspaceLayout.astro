@@ -376,17 +376,14 @@ if (itemType === 'lab' || itemType === 'quiz' || itemType === 'lesson' || itemTy
 
   const applyCompletion = ({ action, passed, difficulty, estMinutes, score }: CompletionPayload) => {
     if (itemType === 'quiz') {
-      const normalizedScore = typeof score === 'number' ? score : passed ? 100 : 0;
-      recordQuizAttempt(itemSlug, normalizedScore);
-      if (action === 'reset') {
+      // Only a submit carries a score, and the hub computed it. Check and reset record nothing.
+      if (action === 'submit' && typeof score === 'number') {
+        recordQuizAttempt(itemSlug, score);
+        setStatus(`Score ${score}%`, score);
+        window.dispatchEvent(new CustomEvent('progress-updated'));
+      } else if (action === 'reset') {
         setStatus('Quiz reset', 0);
-      } else {
-        setStatus(
-          passed ? `Score ${normalizedScore}%` : `Score ${normalizedScore}%`,
-          normalizedScore
-        );
       }
-      window.dispatchEvent(new CustomEvent('progress-updated'));
       return;
     }
 

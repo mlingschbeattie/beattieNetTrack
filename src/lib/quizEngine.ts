@@ -34,6 +34,51 @@ export type QuizDefinition = {
   questions: QuizQuestion[];
 };
 
+/** What a student's browser receives: questions and options, never answers or explanations. */
+export type PublicQuizQuestion =
+  | { id: string; type: 'single'; prompt: string; options: string[] }
+  | { id: string; type: 'multi'; prompt: string; options: string[] }
+  | { id: string; type: 'short'; prompt: string };
+
+export type PublicQuiz = {
+  slug: string;
+  title: string;
+  description?: string;
+  passThreshold: number;
+  questions: PublicQuizQuestion[];
+};
+
+export const toPublicQuiz = (quiz: QuizDefinition): PublicQuiz => ({
+  slug: quiz.slug,
+  title: quiz.title,
+  description: quiz.description,
+  passThreshold: quiz.passThreshold,
+  questions: quiz.questions.map((q) =>
+    q.type === 'short'
+      ? { id: q.id, type: q.type, prompt: q.prompt }
+      : { id: q.id, type: q.type, prompt: q.prompt, options: [...q.options] }
+  ),
+});
+
+/** The hub's grading response (POST /api/lms/quizzes/:slug/submit). */
+export type ServerQuizResult = {
+  slug: string;
+  attempt: number;
+  countsAs: 'assessed' | 'practice';
+  score: number;
+  correctCount: number;
+  total: number;
+  passed: boolean;
+  results: Array<{
+    id: string;
+    correct: boolean;
+    explanation?: string;
+    correctIndex?: number;
+    correctIndices?: number[];
+    acceptedAnswers?: string[];
+  }>;
+};
+
 export type QuizAnswer =
   | { type: 'single'; selectedIndex: number | null }
   | { type: 'multi'; selectedIndices: number[] }

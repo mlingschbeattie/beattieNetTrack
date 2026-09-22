@@ -1,7 +1,5 @@
 ---
 import { getCollection } from 'astro:content';
-import fs from 'node:fs/promises';
-import path from 'node:path';
 import WorkspaceLayout from '../../../layouts/WorkspaceLayout.astro';
 import ActivityCard from '../../../components/ActivityCard.astro';
 import Callout from '../../../components/Callout.astro';
@@ -11,7 +9,8 @@ import QuizActivity from '../../../components/workspace/QuizActivity.astro';
 import QuizRunner from '../../../components/QuizRunner.tsx';
 import CiaTriadClassifier from '../../../components/islands/CiaTriadClassifier.tsx';
 import BeaconEmitter from '../../../components/BeaconEmitter.tsx';
-import type { QuizDefinition } from '../../../lib/quizEngine';
+import { toPublicQuiz, type PublicQuiz } from '../../../lib/quizEngine';
+import { quizDefinitionFromEntry } from '../../../lib/quizKey';
 import { getActivityModuleNavigation, inferLegacyTrackSlug, mapLessonToLegacyActivity, toLegacyLabPath } from '../../../lib/content';
 
 export async function getStaticPaths() {
@@ -92,7 +91,7 @@ let currentTrack = undefined;
 let instructionsContent;
 let activityLabPath: string | undefined;
 let activityLabUrl: string | undefined;
-let quizDefinition: QuizDefinition | undefined;
+let quizDefinition: PublicQuiz | undefined;
 
 if (lab) {
   itemTitle = lab.data.title;
@@ -119,40 +118,9 @@ if (quiz) {
   panelHints = quiz.data.hints;
   panelChecklist = quiz.data.checklist;
   currentTrack = tracks.find((entry) => entry.slug === quiz.data.track);
-  let questions = quiz.data.questions;
-  if ((!questions || questions.length === 0) && quiz.data.quizJsonPath) {
-    const diskPath = path.join(process.cwd(), 'public', quiz.data.quizJsonPath.replace(/^\//, ''));
-    try {
-      const raw = await fs.readFile(diskPath, 'utf8');
-      const parsed = JSON.parse(raw) as {
-        questions?: Array<{ prompt?: string; choices?: string[]; answerIndex?: number; explanation?: string }>;
-      };
-      questions = Array.isArray(parsed.questions)
-        ? parsed.questions
-            .filter((item) => typeof item.prompt === 'string' && Array.isArray(item.choices) && typeof item.answerIndex === 'number')
-            .map((item, index) => ({
-              id: `q${index + 1}`,
-              type: 'single' as const,
-              prompt: item.prompt as string,
-              options: item.choices as string[],
-              correctIndex: item.answerIndex as number,
-              explanation: item.explanation,
-            }))
-        : [];
-    } catch {
-      questions = [];
-    }
-  }
-
-  quizDefinition = questions.length
-    ? {
-        slug: quiz.slug,
-        title: quiz.data.title,
-        description: quiz.data.description,
-        passThreshold: quiz.data.passThreshold,
-        questions,
-      }
-    : undefined;
+  // Students get the questions only; the hub grades against the full key (lib/quizKey.ts).
+  const fullQuiz = await quizDefinitionFromEntry(quiz);
+  quizDefinition = fullQuiz.questions.length ? toPublicQuiz(fullQuiz) : undefined;
   instructionsContent = await quiz.render();
 }
 

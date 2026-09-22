@@ -1,11 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
-import fs from 'node:fs/promises';
-import path from 'node:path';
 import WorkspaceLayout from '../../layouts/WorkspaceLayout.astro';
 import QuizRunner from '../../components/QuizRunner.tsx';
 import BeaconEmitter from '../../components/BeaconEmitter.tsx';
-import type { QuizDefinition } from '../../lib/quizEngine';
+import { toPublicQuiz } from '../../lib/quizEngine';
+import { quizDefinitionFromEntry } from '../../lib/quizKey';
 import { getActivityModuleNavigation } from '../../lib/content';
 
 export async function getStaticPaths() {
@@ -28,38 +27,8 @@ const currentTrack = quiz.data.track
   : undefined;
 const activityNavigation = await getActivityModuleNavigation({ type: 'quiz', slug: quiz.slug });
 
-let questions = quiz.data.questions;
-if ((!questions || questions.length === 0) && quiz.data.quizJsonPath) {
-  const diskPath = path.join(process.cwd(), 'public', quiz.data.quizJsonPath.replace(/^\//, ''));
-  try {
-    const raw = await fs.readFile(diskPath, 'utf8');
-    const parsed = JSON.parse(raw) as {
-      questions?: Array<{ prompt?: string; choices?: string[]; answerIndex?: number; explanation?: string }>;
-    };
-    questions = Array.isArray(parsed.questions)
-      ? parsed.questions
-          .filter((item) => typeof item.prompt === 'string' && Array.isArray(item.choices) && typeof item.answerIndex === 'number')
-          .map((item, index) => ({
-            id: `q${index + 1}`,
-            type: 'single' as const,
-            prompt: item.prompt as string,
-            options: item.choices as string[],
-            correctIndex: item.answerIndex as number,
-            explanation: item.explanation,
-          }))
-      : [];
-  } catch {
-    questions = [];
-  }
-}
-
-const quizDefinition: QuizDefinition = {
-  slug: quiz.slug,
-  title: quiz.data.title,
-  description: quiz.data.description,
-  passThreshold: quiz.data.passThreshold,
-  questions,
-};
+// Students get the questions only; the hub grades against the full key (lib/quizKey.ts).
+const quizDefinition = toPublicQuiz(await quizDefinitionFromEntry(quiz));
 
 const breadcrumbs: Array<{ label: string; href?: string }> = [
   { label: 'Home', href: '/' },

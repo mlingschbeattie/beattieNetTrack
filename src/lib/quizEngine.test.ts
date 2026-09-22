@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { gradeQuiz, normalizeText, type QuizDefinition } from './quizEngine';
+import { gradeQuiz, normalizeText, toPublicQuiz, type QuizDefinition } from './quizEngine';
 
 const sampleQuiz: QuizDefinition = {
   slug: 'sample',
@@ -44,4 +44,14 @@ test('gradeQuiz grades all supported question types', () => {
   assert.equal(grade.correctCount, 3);
   assert.equal(grade.score, 100);
   assert.equal(grade.passed, true);
+});
+
+test('the public quiz sent to browsers carries no answers or explanations', () => {
+  const pub = toPublicQuiz({ ...sampleQuiz, questions: sampleQuiz.questions.map((q) => ({ ...q, explanation: 'why' })) });
+  const json = JSON.stringify(pub);
+  for (const leak of ['correctIndex', 'correctIndices', 'acceptedAnswers', 'explanation', 'route print']) {
+    assert.equal(json.includes(leak), false, leak);
+  }
+  assert.equal(pub.questions.length, sampleQuiz.questions.length);
+  assert.deepEqual(pub.questions.map((q) => q.type), sampleQuiz.questions.map((q) => q.type));
 });
