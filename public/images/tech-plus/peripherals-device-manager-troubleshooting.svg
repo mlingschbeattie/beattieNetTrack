@@ -107,7 +107,10 @@
     <g transform="translate(20, 42)">
       <rect width="500" height="74" class="inner-card" stroke="#f59e0b" />
       <rect x="14" y="12" width="38" height="50" rx="4" fill="#382106" stroke="#f59e0b" />
-      <text x="33" y="42" font-size="22px" text-anchor="middle">⚠️</text>
+      <!-- Explicit Vector Yellow Warning Triangle -->
+      <polygon points="33,22 20,48 46,48" fill="#fbbf24" stroke="#d97706" stroke-width="1.5" stroke-linejoin="round" />
+      <line x1="33" y1="30" x2="33" y2="39" stroke="#000000" stroke-width="2.5" stroke-linecap="round" />
+      <circle cx="33" cy="43.5" r="1.4" fill="#000000" />
       <text x="62" y="26" class="text-val-mono" font-weight="700" fill="#fbbf24">Yellow Exclamation Mark: Driver Error / Fault</text>
       <text x="62" y="44" class="text-label" fill="#cbd5e1">Meaning: Device detected, but driver failed to start (Code 10 / 43).</text>
       <text x="62" y="58" class="text-label" fill="#94a3b8">Root Cause: Corrupt, missing, outdated, or incompatible driver.</text>
@@ -116,8 +119,10 @@
     <!-- Symptom 2: Black Down Arrow -->
     <g transform="translate(20, 126)">
       <rect width="500" height="74" class="inner-card" stroke="#64748b" />
-      <rect x="14" y="12" width="38" height="50" rx="4" fill="#0f172a" stroke="#475569" />
-      <text x="33" y="44" font-size="20px" font-weight="800" fill="#94a3b8" text-anchor="middle">⬇️</text>
+      <rect x="14" y="12" width="38" height="50" rx="4" fill="#1e293b" stroke="#475569" />
+      <!-- Explicit Vector Circle with JET BLACK Downward Arrow (Bypasses OS blue emoji font) -->
+      <circle cx="33" cy="37" r="14" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5" />
+      <path d="M 33 28 L 33 42 M 27 37 L 33 43 L 39 37" stroke="#000000" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none" />
       <text x="62" y="26" class="text-val-mono" font-weight="700" fill="#cbd5e1">Black Downward Arrow: Device Disabled</text>
       <text x="62" y="44" class="text-label" fill="#cbd5e1">Meaning: Hardware is working, but manually disabled in software.</text>
       <text x="62" y="58" class="text-label" fill="#94a3b8">Technician Fix: Right-click the device and select 'Enable Device'.</text>
@@ -125,10 +130,12 @@
 
     <!-- Symptom 3: Yellow Question Mark / Other Devices -->
     <g transform="translate(20, 210)">
-      <rect width="500" height="74" class="inner-card" stroke="#38bdf8" />
-      <rect x="14" y="12" width="38" height="50" rx="4" fill="#0c2340" stroke="#0284c7" />
-      <text x="33" y="44" font-family="'JetBrains Mono', monospace" font-size="22px" font-weight="800" fill="#38bdf8" text-anchor="middle">?</text>
-      <text x="62" y="26" class="text-val-mono" font-weight="700" fill="#38bdf8">Yellow Question Mark: Unknown Device</text>
+      <rect width="500" height="74" class="inner-card" stroke="#f59e0b" />
+      <rect x="14" y="12" width="38" height="50" rx="4" fill="#382106" stroke="#f59e0b" />
+      <!-- Explicit Vector Bright Yellow Circle with Dark Bold Question Mark -->
+      <circle cx="33" cy="37" r="14" fill="#facc15" stroke="#eab308" stroke-width="1.5" />
+      <text x="33" y="44" font-family="'Segoe UI', -apple-system, sans-serif" font-size="20px" font-weight="900" fill="#000000" text-anchor="middle">?</text>
+      <text x="62" y="26" class="text-val-mono" font-weight="700" fill="#fbbf24">Yellow Question Mark: Unknown Device</text>
       <text x="62" y="44" class="text-label" fill="#cbd5e1">Meaning: New hardware detected, but no matching driver is found.</text>
       <text x="62" y="58" class="text-label" fill="#94a3b8">Technician Fix: Download and install vendor OEM driver package.</text>
     </g>
