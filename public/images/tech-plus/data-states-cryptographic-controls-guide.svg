@@ -2,14 +2,14 @@
   <defs>
     <style>
       .bg { fill: #070b14; }
-      .card-bg { fill: #0d1527; stroke: #1e293b; stroke-width: 1.5; rx: 10px; }
-      .inner-card { fill: #111c35; stroke: #25334d; stroke-width: 1; rx: 6px; }
+      .card-bg { fill: #0d1527; stroke: #1e293b; stroke-width: 1.5; rx: 12px; }
+      .inner-card { fill: #111c35; stroke: #25334d; stroke-width: 1.5; rx: 8px; }
       .text-title { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 26px; font-weight: 700; fill: #f8fafc; }
-      .text-subtitle { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 14px; fill: #94a3b8; }
-      .text-section { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
-      .text-label { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 12px; fill: #94a3b8; }
-      .text-val-mono { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 11px; fill: #e2e8f0; }
-      .badge-text { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; text-anchor: middle; }
+      .text-subtitle { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 15px; fill: #94a3b8; }
+      .text-section { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+      .text-label { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .text-val-mono { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 13px; fill: #e2e8f0; }
+      .badge-text { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; text-anchor: middle; }
     </style>
   </defs>
 
@@ -19,133 +19,146 @@
 
   <!-- Title Header -->
   <g transform="translate(45, 55)">
-    <text class="text-title" x="0" y="0">Data States &amp; Cryptographic Controls Architecture</text>
-    <text class="text-subtitle" x="0" y="24">Data at Rest, In Transit, and In Use — Protection Controls &amp; NIST SP 800-88 Sanitization (FC0-U71 6.4)</text>
+    <text class="text-title" x="0" y="0">The Three States of Digital Data</text>
+    <text class="text-subtitle" x="0" y="24">Where Data Lives and How to Protect It (CompTIA Tech+ FC0-U71)</text>
     <rect x="0" y="38" width="1110" height="1" fill="#1e293b" />
   </g>
 
-  <!-- Top Panel: The Three Data States (x=45, y=115, width=1110, height=310) -->
+  <!-- Top Panel: The 3 Physical Data States (x=45, y=115, width=1110, height=340) -->
   <g transform="translate(45, 115)">
-    <rect width="1110" height="310" class="card-bg" stroke="#0284c7" />
-    <text class="text-section" x="20" y="24" fill="#38bdf8">1. Physical States of Digital Data &amp; Corresponding Controls</text>
-    <text class="text-label" text-anchor="end" x="1090" y="24">CompTIA Tech+ (FC0-U71) Objective 6.4</text>
+    <rect width="1110" height="340" class="card-bg" stroke="#0284c7" />
+    <text class="text-section" x="24" y="28" fill="#38bdf8">1. Where Does Data Live? (The 3 States)</text>
+    <text class="text-label" text-anchor="end" x="1086" y="28">Security Focus</text>
 
-    <!-- State 1: Data at Rest -->
-    <g transform="translate(20, 36)">
-      <rect width="345" height="258" class="inner-card" stroke="#f59e0b" />
-      <rect x="10" y="10" width="140" height="22" rx="4" fill="#451a03" />
-      <text x="80" y="25" class="badge-text" fill="#fcd34d">1. DATA AT REST</text>
-      <text x="160" y="25" class="text-label" font-size="11px" fill="#fde68a">Stored on Media</text>
+    <!-- State 1: AT REST -->
+    <g transform="translate(24, 46)">
+      <rect width="340" height="268" class="inner-card" stroke="#f59e0b" stroke-width="2" />
+      
+      <!-- Header Badge -->
+      <rect x="16" y="16" width="140" height="28" rx="5" fill="#451a03" />
+      <text x="86" y="35" class="badge-text" font-size="13px" fill="#fcd34d">1. DATA AT REST</text>
+      <text x="170" y="35" class="text-label" font-size="12px" fill="#fde68a">Storage</text>
 
-      <rect x="10" y="38" width="325" height="114" rx="4" fill="#070b14" stroke="#1e293b" />
-      <text x="16" y="56" class="text-val-mono" font-size="10.5px" font-weight="700" fill="#fcd34d">Where Data Resides:</text>
-      <text x="16" y="72" class="text-label" font-size="10.5px" fill="#cbd5e1">• NVMe SSDs, HDDs, SAN/NAS partitions</text>
-      <text x="16" y="90" class="text-label" font-size="10.5px" fill="#cbd5e1">• Backup tapes, flash drives, database tables</text>
-      <text x="16" y="112" class="text-val-mono" font-size="10px" fill="#f87171">Primary Threat: Laptop theft or drive cloning.</text>
-      <text x="16" y="130" class="text-label" font-size="10px" fill="#94a3b8">Unencrypted drives can be mounted on foreign PCs.</text>
+      <!-- Visual Symbol: Drive -->
+      <g transform="translate(95, 56)">
+        <rect x="0" y="0" width="150" height="52" rx="6" fill="#070b14" stroke="#f59e0b" stroke-width="1.5" />
+        <circle cx="24" cy="26" r="10" fill="#451a03" stroke="#f59e0b" />
+        <rect x="46" y="16" width="85" height="8" rx="2" fill="#334155" />
+        <rect x="46" y="28" width="55" height="8" rx="2" fill="#f59e0b" />
+      </g>
 
-      <rect x="10" y="158" width="325" height="90" rx="4" fill="#111c35" stroke="#f59e0b" />
-      <text x="16" y="176" class="text-val-mono" font-size="10.5px" font-weight="700" fill="#fcd34d">Cryptographic Controls:</text>
-      <text x="16" y="194" class="text-label" font-size="10px" fill="#cbd5e1">• Full Disk Encryption: BitLocker + TPM, FileVault</text>
-      <text x="16" y="210" class="text-label" font-size="10px" fill="#cbd5e1">• Self-Encrypting Drives (SEDs) with AES-256</text>
-      <text x="16" y="228" class="text-val-mono" font-size="10px" fill="#fde68a">Database Transparent Data Encryption (TDE)</text>
+      <!-- Key Info Points -->
+      <g transform="translate(16, 122)">
+        <rect width="308" height="38" rx="5" fill="#070b14" stroke="#1e293b" />
+        <text x="12" y="24" class="text-val-mono" font-size="11px" fill="#cbd5e1">WHERE: SSD, Hard Drive, Flash USB</text>
+
+        <rect y="46" width="308" height="38" rx="5" fill="#070b14" stroke="#ef4444" />
+        <text x="12" y="70" class="text-val-mono" font-size="11px" fill="#fca5a5">THREAT: Laptop stolen or drive cloned</text>
+
+        <rect y="92" width="308" height="42" rx="5" fill="#451a03" stroke="#f59e0b" />
+        <text x="12" y="112" class="badge-text" font-size="11px" fill="#fcd34d">PRIMARY DEFENSE:</text>
+        <text x="12" y="127" class="text-label" font-size="11px" fill="#ffffff">BitLocker / Full Disk Encryption (AES)</text>
+      </g>
     </g>
 
-    <!-- State 2: Data in Transit -->
-    <g transform="translate(380, 36)">
-      <rect width="345" height="258" class="inner-card" stroke="#38bdf8" />
-      <rect x="10" y="10" width="150" height="22" rx="4" fill="#0c2340" />
-      <text x="85" y="25" class="badge-text" fill="#38bdf8">2. DATA IN TRANSIT</text>
-      <text x="170" y="25" class="text-label" font-size="11px" fill="#93c5fd">Network Wire/Air</text>
+    <!-- State 2: IN TRANSIT -->
+    <g transform="translate(385, 46)">
+      <rect width="340" height="268" class="inner-card" stroke="#38bdf8" stroke-width="2" />
+      
+      <!-- Header Badge -->
+      <rect x="16" y="16" width="155" height="28" rx="5" fill="#0c2340" />
+      <text x="93" y="35" class="badge-text" font-size="13px" fill="#38bdf8">2. DATA IN TRANSIT</text>
+      <text x="185" y="35" class="text-label" font-size="12px" fill="#93c5fd">Network</text>
 
-      <rect x="10" y="38" width="325" height="114" rx="4" fill="#070b14" stroke="#1e293b" />
-      <text x="16" y="56" class="text-val-mono" font-size="10.5px" font-weight="700" fill="#38bdf8">Where Data Resides:</text>
-      <text x="16" y="72" class="text-label" font-size="10.5px" fill="#cbd5e1">• Ethernet cables, Wi-Fi radio frequencies</text>
-      <text x="16" y="90" class="text-label" font-size="10.5px" fill="#cbd5e1">• Public Internet routing hops, VPN tunnels</text>
-      <text x="16" y="112" class="text-val-mono" font-size="10px" fill="#f87171">Primary Threat: Packet sniffing &amp; MITM attacks.</text>
-      <text x="16" y="130" class="text-label" font-size="10px" fill="#94a3b8">Unencrypted HTTP/FTP traffic leaks plain passwords.</text>
+      <!-- Visual Symbol: Network Wire / Waves -->
+      <g transform="translate(95, 56)">
+        <rect x="0" y="0" width="150" height="52" rx="6" fill="#070b14" stroke="#38bdf8" stroke-width="1.5" />
+        <path d="M 20 26 Q 45 10 75 26 T 130 26" fill="none" stroke="#38bdf8" stroke-width="2.5" />
+        <circle cx="20" cy="26" r="4" fill="#38bdf8" />
+        <circle cx="130" cy="26" r="4" fill="#38bdf8" />
+      </g>
 
-      <rect x="10" y="158" width="325" height="90" rx="4" fill="#111c35" stroke="#0284c7" />
-      <text x="16" y="176" class="text-val-mono" font-size="10.5px" font-weight="700" fill="#38bdf8">Cryptographic Controls:</text>
-      <text x="16" y="194" class="text-label" font-size="10px" fill="#cbd5e1">• Transport Layer Security: TLS 1.3 (HTTPS)</text>
-      <text x="16" y="210" class="text-label" font-size="10px" fill="#cbd5e1">• Virtual Private Networks: IPsec &amp; WireGuard</text>
-      <text x="16" y="228" class="text-val-mono" font-size="10px" fill="#93c5fd">Secure Shell (SSHv2) &amp; WPA3-Enterprise</text>
+      <!-- Key Info Points -->
+      <g transform="translate(16, 122)">
+        <rect width="308" height="38" rx="5" fill="#070b14" stroke="#1e293b" />
+        <text x="12" y="24" class="text-val-mono" font-size="11px" fill="#cbd5e1">WHERE: Cables, Wi-Fi, Internet</text>
+
+        <rect y="46" width="308" height="38" rx="5" fill="#070b14" stroke="#ef4444" />
+        <text x="12" y="70" class="text-val-mono" font-size="11px" fill="#fca5a5">THREAT: Snooping, sniffing, Wi-Fi taps</text>
+
+        <rect y="92" width="308" height="42" rx="5" fill="#0c2340" stroke="#38bdf8" />
+        <text x="12" y="112" class="badge-text" font-size="11px" fill="#38bdf8">PRIMARY DEFENSE:</text>
+        <text x="12" y="127" class="text-label" font-size="11px" fill="#ffffff">HTTPS (TLS 1.3) &amp; VPN Encryption</text>
+      </g>
     </g>
 
-    <!-- State 3: Data in Use -->
-    <g transform="translate(740, 36)">
-      <rect width="350" height="258" class="inner-card" stroke="#10b981" />
-      <rect x="10" y="10" width="130" height="22" rx="4" fill="#064e3b" />
-      <text x="75" y="25" class="badge-text" fill="#34d399">3. DATA IN USE</text>
-      <text x="150" y="25" class="text-label" font-size="11px" fill="#a7f3d0">RAM &amp; CPU Silicon</text>
+    <!-- State 3: IN USE -->
+    <g transform="translate(746, 46)">
+      <rect width="340" height="268" class="inner-card" stroke="#10b981" stroke-width="2" />
+      
+      <!-- Header Badge -->
+      <rect x="16" y="16" width="135" height="28" rx="5" fill="#064e3b" />
+      <text x="83" y="35" class="badge-text" font-size="13px" fill="#34d399">3. DATA IN USE</text>
+      <text x="165" y="35" class="text-label" font-size="12px" fill="#a7f3d0">Memory / CPU</text>
 
-      <rect x="10" y="38" width="330" height="114" rx="4" fill="#070b14" stroke="#1e293b" />
-      <text x="16" y="56" class="text-val-mono" font-size="10.5px" font-weight="700" fill="#34d399">Where Data Resides:</text>
-      <text x="16" y="72" class="text-label" font-size="10.5px" fill="#cbd5e1">• System RAM (DDR4/DDR5 memory chips)</text>
-      <text x="16" y="90" class="text-label" font-size="10.5px" fill="#cbd5e1">• CPU L1/L2/L3 cache, silicon registers</text>
-      <text x="16" y="112" class="text-val-mono" font-size="10px" fill="#f87171">Primary Threat: RAM scraping &amp; memory dumps.</text>
-      <text x="16" y="130" class="text-label" font-size="10px" fill="#94a3b8">Adversaries extract plain keys from active memory.</text>
+      <!-- Visual Symbol: Chip -->
+      <g transform="translate(95, 56)">
+        <rect x="0" y="0" width="150" height="52" rx="6" fill="#070b14" stroke="#10b981" stroke-width="1.5" />
+        <rect x="40" y="10" width="70" height="32" rx="3" fill="#064e3b" stroke="#34d399" />
+        <text x="75" y="31" class="badge-text" font-size="11px" fill="#34d399">RAM / CPU</text>
+      </g>
 
-      <rect x="10" y="158" width="330" height="90" rx="4" fill="#111c35" stroke="#10b981" />
-      <text x="16" y="176" class="text-val-mono" font-size="10.5px" font-weight="700" fill="#34d399">Cryptographic Controls:</text>
-      <text x="16" y="194" class="text-label" font-size="10px" fill="#cbd5e1">• Secure Enclaves (Intel SGX, AMD SEV)</text>
-      <text x="16" y="210" class="text-label" font-size="10px" fill="#cbd5e1">• Confidential Computing: Hardware-encrypted RAM</text>
-      <text x="16" y="228" class="text-val-mono" font-size="10px" fill="#a7f3d0">Kernel DMA Protection &amp; Memory Isolation</text>
+      <!-- Key Info Points -->
+      <g transform="translate(16, 122)">
+        <rect width="308" height="38" rx="5" fill="#070b14" stroke="#1e293b" />
+        <text x="12" y="24" class="text-val-mono" font-size="11px" fill="#cbd5e1">WHERE: System RAM &amp; CPU Silicon</text>
+
+        <rect y="46" width="308" height="38" rx="5" fill="#070b14" stroke="#ef4444" />
+        <text x="12" y="70" class="text-val-mono" font-size="11px" fill="#fca5a5">THREAT: Memory dumping malware</text>
+
+        <rect y="92" width="308" height="42" rx="5" fill="#064e3b" stroke="#10b981" />
+        <text x="12" y="112" class="badge-text" font-size="11px" fill="#34d399">PRIMARY DEFENSE:</text>
+        <text x="12" y="127" class="text-label" font-size="11px" fill="#ffffff">Secure Enclaves &amp; Memory Isolation</text>
+      </g>
     </g>
   </g>
 
-  <!-- Bottom Panel: Compliance Classifications & Media Sanitization (x=45, y=440, width=1110, height=275) -->
-  <g transform="translate(45, 440)">
-    <rect width="1110" height="275" class="card-bg" stroke="#10b981" />
-    <text class="text-section" x="20" y="24" fill="#34d399">2. Compliance Classifications &amp; NIST SP 800-88 Media Sanitization</text>
-    <text class="text-label" text-anchor="end" x="1090" y="24">Production Standards</text>
+  <!-- Bottom Panel: Decommissioning Standards (NIST 800-88) (x=45, y=475, width=1110, height=240) -->
+  <g transform="translate(45, 475)">
+    <rect width="1110" height="240" class="card-bg" stroke="#10b981" />
+    <text class="text-section" x="24" y="28" fill="#34d399">2. Disposing of Old Drives: The 3 Sanitization Levels (NIST SP 800-88)</text>
+    <text class="text-label" text-anchor="end" x="1086" y="28">Hardware Retirement</text>
 
-    <!-- Left Box: Regulated Data Types -->
-    <g transform="translate(20, 36)">
-      <rect width="525" height="222" class="inner-card" stroke="#8b5cf6" />
-      <rect x="12" y="10" width="220" height="22" rx="4" fill="#2e1065" />
-      <text x="122" y="25" class="badge-text" fill="#c084fc">COMPLIANCE CLASSIFICATIONS</text>
-      <text x="245" y="25" class="text-label" fill="#ddd6fe">Regulated Data Types</text>
+    <!-- 3 Step Sanitization Blocks -->
+    <g transform="translate(24, 46)">
+      <!-- Level 1: CLEAR -->
+      <rect x="0" y="0" width="340" height="110" rx="8" fill="#111c35" stroke="#38bdf8" stroke-width="1.5" />
+      <rect x="16" y="14" width="80" height="26" rx="4" fill="#0c2340" />
+      <text x="56" y="32" class="badge-text" font-size="12px" fill="#38bdf8">1. CLEAR</text>
+      <text x="108" y="32" class="text-label" font-size="13px" fill="#93c5fd">Software Overwrite</text>
+      <text x="16" y="66" class="text-val-mono" font-size="12px" fill="#ffffff">Writes 0s across all sectors</text>
+      <text x="16" y="90" class="text-label" font-size="11px" fill="#94a3b8">Prevents simple software recovery tools</text>
 
-      <g transform="translate(12, 38)">
-        <rect width="501" height="48" rx="4" fill="#070b14" stroke="#1e293b" />
-        <text x="14" y="20" class="text-val-mono" font-size="10.5px" font-weight="700" fill="#38bdf8">PII (Personally Identifiable Information):</text>
-        <text x="14" y="36" class="text-label" font-size="10px" fill="#cbd5e1">Full name, Social Security Number (SSN), driver's license, home address, biometrics.</text>
+      <!-- Level 2: PURGE -->
+      <rect x="361" y="0" width="340" height="110" rx="8" fill="#111c35" stroke="#f59e0b" stroke-width="1.5" />
+      <rect x="377" y="14" width="80" height="26" rx="4" fill="#451a03" />
+      <text x="417" y="32" class="badge-text" font-size="12px" fill="#fcd34d">2. PURGE</text>
+      <text x="469" y="32" class="text-label" font-size="13px" fill="#fde68a">Cryptographic Erase</text>
+      <text x="377" y="66" class="text-val-mono" font-size="12px" fill="#ffffff">Destroys Master Encryption Key</text>
+      <text x="377" y="90" class="text-label" font-size="11px" fill="#94a3b8">Data remains scrambled noise forever</text>
 
-        <rect y="54" width="501" height="48" rx="4" fill="#070b14" stroke="#1e293b" />
-        <text x="14" y="74" class="text-val-mono" font-size="10.5px" font-weight="700" fill="#fcd34d">PHI (Protected Health Information - HIPAA):</text>
-        <text x="14" y="90" class="text-label" font-size="10px" fill="#cbd5e1">Medical histories, doctor notes, lab diagnoses, health insurance billing records.</text>
-
-        <rect y="108" width="501" height="48" rx="4" fill="#070b14" stroke="#1e293b" />
-        <text x="14" y="128" class="text-val-mono" font-size="10.5px" font-weight="700" fill="#f87171">PCI-DSS (Payment Card Industry Standards):</text>
-        <text x="14" y="144" class="text-label" font-size="10px" fill="#cbd5e1">Primary Account Numbers (PAN), expiration dates, CVV security codes, magnetic track.</text>
-      </g>
-
-      <text x="14" y="208" class="text-label" font-size="10.5px" fill="#c084fc">Compliance Rule: Legal fines mandate encrypting PII, PHI, and PCI at all times.</text>
+      <!-- Level 3: DESTROY -->
+      <rect x="722" y="0" width="340" height="110" rx="8" fill="#111c35" stroke="#ef4444" stroke-width="1.5" />
+      <rect x="738" y="14" width="90" height="26" rx="4" fill="#450a0a" />
+      <text x="783" y="32" class="badge-text" font-size="12px" fill="#fca5a5">3. DESTROY</text>
+      <text x="838" y="32" class="text-label" font-size="13px" fill="#fca5a5">Physical Shred</text>
+      <text x="738" y="66" class="text-val-mono" font-size="12px" fill="#ffffff">Shredded into metal scraps</text>
+      <text x="738" y="90" class="text-label" font-size="11px" fill="#94a3b8">Mandatory for highly confidential drives</text>
     </g>
 
-    <!-- Right Box: NIST SP 800-88 Media Sanitization -->
-    <g transform="translate(565, 36)">
-      <rect width="525" height="222" class="inner-card" stroke="#f59e0b" />
-      <rect x="12" y="10" width="220" height="22" rx="4" fill="#451a03" />
-      <text x="122" y="25" class="badge-text" fill="#fcd34d">NIST SP 800-88 SANITIZATION</text>
-      <text x="245" y="25" class="text-label" fill="#fde68a">Decommissioning Standards</text>
-
-      <g transform="translate(12, 38)">
-        <rect width="501" height="48" rx="4" fill="#070b14" stroke="#1e293b" />
-        <text x="14" y="20" class="text-val-mono" font-size="10.5px" font-weight="700" fill="#34d399">1. Clear (Logical Overwrite):</text>
-        <text x="14" y="36" class="text-label" font-size="10px" fill="#cbd5e1">Overwrites addressable sectors with zeros. Prevents standard software data recovery.</text>
-
-        <rect y="54" width="501" height="48" rx="4" fill="#070b14" stroke="#1e293b" />
-        <text x="14" y="74" class="text-val-mono" font-size="10.5px" font-weight="700" fill="#38bdf8">2. Purge (Cryptographic Erase / Degauss):</text>
-        <text x="14" y="90" class="text-label" font-size="10px" fill="#cbd5e1">Destroys Master Encryption Keys (Crypto Erase) or uses magnetic degausser on HDDs.</text>
-
-        <rect y="108" width="501" height="48" rx="4" fill="#070b14" stroke="#1e293b" />
-        <text x="14" y="128" class="text-val-mono" font-size="10.5px" font-weight="700" fill="#f87171">3. Destroy (Physical Obliteration):</text>
-        <text x="14" y="144" class="text-label" font-size="10px" fill="#cbd5e1">Physical shredding, disintegration, or incineration. Mandatory for top-secret media.</text>
-      </g>
-
-      <text x="14" y="208" class="text-label" font-size="10.5px" fill="#fcd34d">Technician Takeaway: Formatting or moving files to Recycle Bin is NOT sanitization!</text>
-    </g>
+    <!-- Bottom Beginner Rule Callout -->
+    <rect x="24" y="172" width="1062" height="48" rx="6" fill="#070b14" stroke="#f59e0b" />
+    <text x="40" y="202" class="badge-text" font-size="13px" fill="#fcd34d">TECHNICIAN GOLDEN RULE:</text>
+    <text x="235" y="202" class="text-val-mono" font-size="12.5px" fill="#ffffff">Emptying the Recycle Bin or formatting does NOT delete data! Use proper sanitization.</text>
   </g>
 </svg>
