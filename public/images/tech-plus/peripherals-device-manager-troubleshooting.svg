@@ -1,0 +1,184 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 740" width="100%" height="100%">
+  <defs>
+    <style>
+      .bg { fill: #070b14; }
+      .card-bg { fill: #0d1527; stroke: #1e293b; stroke-width: 1.5; rx: 10px; }
+      .inner-card { fill: #111c35; stroke: #25334d; stroke-width: 1; rx: 6px; }
+      .text-title { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 26px; font-weight: 700; fill: #f8fafc; }
+      .text-subtitle { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 14px; fill: #94a3b8; }
+      .text-section { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+      .text-label { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 12px; fill: #94a3b8; }
+      .text-val-mono { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 12px; fill: #e2e8f0; }
+      .badge-text { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1200" height="740" class="bg" />
+  <rect x="15" y="15" width="1170" height="710" rx="14" fill="none" stroke="#1e293b" stroke-width="1.5" />
+
+  <!-- Title Header -->
+  <g transform="translate(45, 55)">
+    <text class="text-title" x="0" y="0">Peripheral Architecture &amp; Device Manager Triage</text>
+    <text class="text-subtitle" x="0" y="24">The 4-Layer Peripheral Pipeline, Hardware Interrupts, Driver Mediation, and Diagnostic Landmarks</text>
+    <rect x="0" y="38" width="1110" height="1" fill="#1e293b" />
+  </g>
+
+  <!-- Panel 1: The 4-Layer Peripheral Pipeline (Width 1110, Height 200) -->
+  <g transform="translate(45, 115)">
+    <rect width="1110" height="195" class="card-bg" stroke="#0284c7" />
+    <text class="text-section" x="20" y="26" fill="#38bdf8">1. The End-to-End Peripheral Communication Pipeline</text>
+    <text class="text-label" x="840" y="26">CompTIA Tech+ (FC0-U71) Objective 2.4</text>
+
+    <!-- 4 Pipeline Stages (width 235 each, gap 45) -->
+    <!-- Stage 1: Physical Peripheral -->
+    <g transform="translate(20, 45)">
+      <rect width="235" height="130" class="inner-card" stroke="#38bdf8" />
+      <rect x="12" y="10" width="211" height="22" rx="4" fill="#0c2340" />
+      <text x="117" y="25" class="badge-text" fill="#38bdf8">1. PHYSICAL DEVICE</text>
+      <text x="12" y="52" class="text-val-mono" font-weight="700">External Hardware</text>
+      <text x="12" y="70" class="text-label" fill="#cbd5e1">• Keyboard, Mouse, Webcam</text>
+      <text x="12" y="86" class="text-label" fill="#cbd5e1">• Printer, External SSD</text>
+      <text x="12" y="104" class="text-label" fill="#94a3b8">Physical cable connection:</text>
+      <text x="12" y="120" class="text-val-mono" font-size="11px" fill="#60a5fa">USB 3.2, Thunderbolt, BT</text>
+    </g>
+
+    <!-- Arrow 1 -->
+    <g transform="translate(262, 110)">
+      <line x1="0" y1="0" x2="22" y2="0" stroke="#38bdf8" stroke-width="2" />
+      <polygon points="28,0 20,-5 20,5" fill="#38bdf8" />
+    </g>
+
+    <!-- Stage 2: Host Controller -->
+    <g transform="translate(295, 45)">
+      <rect width="235" height="130" class="inner-card" stroke="#f59e0b" />
+      <rect x="12" y="10" width="211" height="22" rx="4" fill="#382106" />
+      <text x="117" y="25" class="badge-text" fill="#fbbf24">2. PORT CONTROLLER</text>
+      <text x="12" y="52" class="text-val-mono" font-weight="700">Motherboard Bus Chip</text>
+      <text x="12" y="70" class="text-label" fill="#cbd5e1">• USB xHCI Controller</text>
+      <text x="12" y="86" class="text-label" fill="#cbd5e1">• PCIe Root / I2C Bus</text>
+      <text x="12" y="104" class="text-label" fill="#94a3b8">Fires hardware interrupts:</text>
+      <text x="12" y="120" class="text-val-mono" font-size="11px" fill="#fbbf24">Interrupt Request (IRQ)</text>
+    </g>
+
+    <!-- Arrow 2 -->
+    <g transform="translate(537, 110)">
+      <line x1="0" y1="0" x2="22" y2="0" stroke="#f59e0b" stroke-width="2" />
+      <polygon points="28,0 20,-5 20,5" fill="#f59e0b" />
+    </g>
+
+    <!-- Stage 3: Device Driver -->
+    <g transform="translate(570, 45)">
+      <rect width="235" height="130" class="inner-card" stroke="#34d399" />
+      <rect x="12" y="10" width="211" height="22" rx="4" fill="#063223" />
+      <text x="117" y="25" class="badge-text" fill="#34d399">3. DEVICE DRIVER</text>
+      <text x="12" y="52" class="text-val-mono" font-weight="700">Translation Software</text>
+      <text x="12" y="70" class="text-label" fill="#cbd5e1">• Runs in Kernel Mode (Ring 0)</text>
+      <text x="12" y="86" class="text-label" fill="#cbd5e1">• Translates bit signals to OS</text>
+      <text x="12" y="104" class="text-label" fill="#94a3b8">Driver file format:</text>
+      <text x="12" y="120" class="text-val-mono" font-size="11px" fill="#34d399">.sys / .inf / WHQL Signed</text>
+    </g>
+
+    <!-- Arrow 3 -->
+    <g transform="translate(812, 110)">
+      <line x1="0" y1="0" x2="22" y2="0" stroke="#34d399" stroke-width="2" />
+      <polygon points="28,0 20,-5 20,5" fill="#34d399" />
+    </g>
+
+    <!-- Stage 4: OS Kernel & App -->
+    <g transform="translate(845, 45)">
+      <rect width="245" height="130" class="inner-card" stroke="#c084fc" />
+      <rect x="12" y="10" width="221" height="22" rx="4" fill="#3b0764" />
+      <text x="122" y="25" class="badge-text" fill="#c084fc">4. OS &amp; APPLICATION</text>
+      <text x="12" y="52" class="text-val-mono" font-weight="700">User Interface &amp; API</text>
+      <text x="12" y="70" class="text-label" fill="#cbd5e1">• OS Human Interface (HID)</text>
+      <text x="12" y="86" class="text-label" fill="#cbd5e1">• Direct3D / WinPrint Stack</text>
+      <text x="12" y="104" class="text-label" fill="#94a3b8">User applications receive:</text>
+      <text x="12" y="120" class="text-val-mono" font-size="11px" fill="#c084fc">Clicks, frames, data streams</text>
+    </g>
+  </g>
+
+  <!-- Panel 2: Device Manager Diagnostic Landmarks (Width 540, Height 390) -->
+  <g transform="translate(45, 325)">
+    <rect width="540" height="385" class="card-bg" stroke="#f59e0b" />
+    <text class="text-section" x="20" y="26" fill="#fbbf24">2. Windows Device Manager Diagnostic Landmarks</text>
+
+    <!-- Symptom 1: Yellow Exclamation -->
+    <g transform="translate(20, 42)">
+      <rect width="500" height="74" class="inner-card" stroke="#f59e0b" />
+      <rect x="14" y="12" width="38" height="50" rx="4" fill="#382106" stroke="#f59e0b" />
+      <text x="33" y="42" font-size="22px" text-anchor="middle">⚠️</text>
+      <text x="62" y="26" class="text-val-mono" font-weight="700" fill="#fbbf24">Yellow Exclamation Mark: Driver Error / Fault</text>
+      <text x="62" y="44" class="text-label" fill="#cbd5e1">Meaning: Device detected, but driver failed to start (Code 10 / 43).</text>
+      <text x="62" y="58" class="text-label" fill="#94a3b8">Root Cause: Corrupt, missing, outdated, or incompatible driver.</text>
+    </g>
+
+    <!-- Symptom 2: Black Down Arrow -->
+    <g transform="translate(20, 126)">
+      <rect width="500" height="74" class="inner-card" stroke="#64748b" />
+      <rect x="14" y="12" width="38" height="50" rx="4" fill="#0f172a" stroke="#475569" />
+      <text x="33" y="44" font-size="20px" font-weight="800" fill="#94a3b8" text-anchor="middle">⬇️</text>
+      <text x="62" y="26" class="text-val-mono" font-weight="700" fill="#cbd5e1">Black Downward Arrow: Device Disabled</text>
+      <text x="62" y="44" class="text-label" fill="#cbd5e1">Meaning: Hardware is working, but manually disabled in software.</text>
+      <text x="62" y="58" class="text-label" fill="#94a3b8">Technician Fix: Right-click the device and select 'Enable Device'.</text>
+    </g>
+
+    <!-- Symptom 3: Yellow Question Mark / Other Devices -->
+    <g transform="translate(20, 210)">
+      <rect width="500" height="74" class="inner-card" stroke="#38bdf8" />
+      <rect x="14" y="12" width="38" height="50" rx="4" fill="#0c2340" stroke="#0284c7" />
+      <text x="33" y="44" font-family="'JetBrains Mono', monospace" font-size="22px" font-weight="800" fill="#38bdf8" text-anchor="middle">?</text>
+      <text x="62" y="26" class="text-val-mono" font-weight="700" fill="#38bdf8">Yellow Question Mark: Unknown Device</text>
+      <text x="62" y="44" class="text-label" fill="#cbd5e1">Meaning: New hardware detected, but no matching driver is found.</text>
+      <text x="62" y="58" class="text-label" fill="#94a3b8">Technician Fix: Download and install vendor OEM driver package.</text>
+    </g>
+
+    <!-- Symptom 4: Hardware ID Lookup -->
+    <g transform="translate(20, 294)">
+      <rect width="500" height="74" class="inner-card" stroke="#10b981" />
+      <rect x="14" y="12" width="38" height="50" rx="4" fill="#063223" stroke="#059669" />
+      <text x="33" y="44" font-family="'JetBrains Mono', monospace" font-size="16px" font-weight="800" fill="#34d399" text-anchor="middle">ID</text>
+      <text x="62" y="26" class="text-val-mono" font-weight="700" fill="#34d399">The Secret Weapon: Hardware ID String</text>
+      <text x="62" y="44" class="text-val-mono" font-size="11px" fill="#6ee7b7">Hardware ID: PCI\VEN_10DE&amp;DEV_2204 (Vendor &amp; Device IDs)</text>
+      <text x="62" y="58" class="text-label" fill="#94a3b8">Benefit: Enables 100% positive identification of mystery devices.</text>
+    </g>
+  </g>
+
+  <!-- Panel 3: Technician Troubleshooting Remediation Flow (Width 540, Height 390) -->
+  <g transform="translate(615, 325)">
+    <rect width="540" height="385" class="card-bg" stroke="#38bdf8" />
+    <text class="text-section" x="20" y="26" fill="#38bdf8">3. Peripheral Remediation Decision Hierarchy</text>
+
+    <!-- Step 1: Physical Check -->
+    <g transform="translate(20, 42)">
+      <rect width="500" height="74" class="inner-card" />
+      <text x="14" y="22" class="text-val-mono" font-weight="700" fill="#38bdf8">Step 1: Physical &amp; Port Verification</text>
+      <text x="14" y="40" class="text-label" fill="#cbd5e1">• Reseat cable firmly; verify link LEDs (Ethernet, mouse sensor).</text>
+      <text x="14" y="56" class="text-label" fill="#94a3b8">• Test rear motherboard I/O directly (bypasses unpowered hubs).</text>
+    </g>
+
+    <!-- Step 2: Driver Rollback vs Update -->
+    <g transform="translate(20, 126)">
+      <rect width="500" height="74" class="inner-card" />
+      <text x="14" y="22" class="text-val-mono" font-weight="700" fill="#34d399">Step 2: Driver Triage — Update vs. Roll Back</text>
+      <text x="14" y="40" class="text-label" fill="#cbd5e1">• <tspan font-weight="700" fill="#38bdf8">Update Driver:</tspan> Installs WHQL driver to fix bugs and OS conflicts.</text>
+      <text x="14" y="56" class="text-label" fill="#cbd5e1">• <tspan font-weight="700" fill="#f87171">Roll Back Driver:</tspan> Reverts to previous stable driver after crashes.</text>
+    </g>
+
+    <!-- Step 3: Uninstall & Force PnP Redetection -->
+    <g transform="translate(20, 210)">
+      <rect width="500" height="74" class="inner-card" />
+      <text x="14" y="22" class="text-val-mono" font-weight="700" fill="#fbbf24">Step 3: Uninstall &amp; Force PnP Redetection</text>
+      <text x="14" y="40" class="text-label" fill="#cbd5e1">• If device is corrupted, click 'Uninstall Device' in Device Manager.</text>
+      <text x="14" y="56" class="text-label" fill="#94a3b8">• Click 'Scan for hardware changes' to trigger automatic PnP setup.</text>
+    </g>
+
+    <!-- Step 4: Firmware & Power Isolation -->
+    <g transform="translate(20, 294)">
+      <rect width="500" height="74" class="inner-card" />
+      <text x="14" y="22" class="text-val-mono" font-weight="700" fill="#c084fc">Step 4: Firmware &amp; Power Suspension</text>
+      <text x="14" y="40" class="text-label" fill="#cbd5e1">• Disable 'Allow computer to turn off this device' in Power tab.</text>
+      <text x="14" y="56" class="text-label" fill="#94a3b8">• Flash peripheral firmware updates (printers, wireless docks).</text>
+    </g>
+  </g>
+</svg>

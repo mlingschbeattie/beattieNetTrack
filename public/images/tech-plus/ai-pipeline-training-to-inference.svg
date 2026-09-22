@@ -1,0 +1,173 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 740" width="100%" height="100%">
+  <defs>
+    <style>
+      .bg { fill: #070b14; }
+      .card-bg { fill: #0d1527; stroke: #1e293b; stroke-width: 1.5; rx: 10px; }
+      .inner-card { fill: #111c35; stroke: #25334d; stroke-width: 1; rx: 6px; }
+      .text-title { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 26px; font-weight: 700; fill: #f8fafc; }
+      .text-subtitle { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 14px; fill: #94a3b8; }
+      .text-section { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+      .text-label { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 12px; fill: #94a3b8; }
+      .text-val-mono { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 12px; fill: #e2e8f0; }
+      .badge-text { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1200" height="740" class="bg" />
+  <rect x="15" y="15" width="1170" height="710" rx="14" fill="none" stroke="#1e293b" stroke-width="1.5" />
+
+  <!-- Title Header -->
+  <g transform="translate(45, 55)">
+    <text class="text-title" x="0" y="0">The Artificial Intelligence &amp; Machine Learning Lifecycle</text>
+    <text class="text-subtitle" x="0" y="24">Phase 1: Model Training (Compute-Heavy) ➔ Phase 2: Frozen Model Checkpoint ➔ Phase 3: Runtime Inference</text>
+    <rect x="0" y="38" width="1110" height="1" fill="#1e293b" />
+  </g>
+
+  <!-- Panel 1: The 3-Stage AI Pipeline (Width 1110, Height 360) -->
+  <g transform="translate(45, 115)">
+    <rect width="1110" height="360" class="card-bg" stroke="#0284c7" />
+    <text class="text-section" x="20" y="26" fill="#38bdf8">1. The Architectural Pipeline: From Raw Data to Real-Time Predictions</text>
+    <text class="text-label" x="840" y="26">CompTIA Tech+ (FC0-U71) Objective 3.5</text>
+
+    <!-- Stage 1: Training -->
+    <g transform="translate(20, 45)">
+      <rect width="320" height="295" class="inner-card" stroke="#f59e0b" />
+      <rect x="14" y="12" width="292" height="24" rx="4" fill="#382106" />
+      <text x="160" y="28" class="badge-text" fill="#fbbf24">PHASE 1: MODEL TRAINING</text>
+      
+      <text x="14" y="58" class="text-val-mono" font-weight="700" fill="#fde68a">Offline &amp; Compute-Heavy</text>
+      <text x="14" y="76" class="text-label" fill="#cbd5e1">• Input: Terabytes of historical data</text>
+      <text x="24" y="92" class="text-label" fill="#94a3b8">(text, images, sensor logs, code).</text>
+      
+      <text x="14" y="114" class="text-label" fill="#cbd5e1">• Neural Backpropagation:</text>
+      <text x="24" y="130" class="text-label" fill="#94a3b8">Algorithms calculate error loss and</text>
+      <text x="24" y="146" class="text-label" fill="#94a3b8">iteratively tune billions of parameters.</text>
+
+      <text x="14" y="170" class="text-label" fill="#cbd5e1">• Hardware Infrastructure:</text>
+      <text x="24" y="186" class="text-label" fill="#94a3b8">Massive enterprise clusters of</text>
+      <text x="24" y="202" class="text-label" fill="#94a3b8">specialized GPUs and TPU accelerators.</text>
+
+      <rect x="14" y="222" width="292" height="58" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="22" y="240" class="text-val-mono" font-size="11px" font-weight="700" fill="#fbbf24">Resource Profile:</text>
+      <text x="22" y="256" class="text-label" fill="#94a3b8">Weeks or months of compute time,</text>
+      <text x="22" y="270" class="text-label" fill="#94a3b8">high electrical draw, enterprise budget.</text>
+    </g>
+
+    <!-- Flow Arrow 1 -->
+    <g transform="translate(346, 175)">
+      <line x1="0" y1="0" x2="42" y2="0" stroke="#38bdf8" stroke-width="3" />
+      <polygon points="48,0 38,-6 38,6" fill="#38bdf8" />
+      <text x="24" y="-12" class="text-val-mono" font-size="10px" fill="#38bdf8" text-anchor="middle">FREEZES</text>
+    </g>
+
+    <!-- Stage 2: Frozen Model Checkpoint -->
+    <g transform="translate(398, 45)">
+      <rect width="290" height="295" class="inner-card" stroke="#38bdf8" />
+      <rect x="14" y="12" width="262" height="24" rx="4" fill="#0c2340" />
+      <text x="145" y="28" class="badge-text" fill="#38bdf8">PHASE 2: FROZEN WEIGHTS</text>
+
+      <text x="14" y="58" class="text-val-mono" font-weight="700" fill="#93c5fd">Trained Model Artifact</text>
+      <text x="14" y="76" class="text-label" fill="#cbd5e1">• Static Weight Matrix:</text>
+      <text x="24" y="92" class="text-label" fill="#94a3b8">Numerical values representing</text>
+      <text x="24" y="108" class="text-label" fill="#94a3b8">learned patterns (.safetensors, .onnx).</text>
+
+      <text x="14" y="132" class="text-label" fill="#cbd5e1">• Immutability Law:</text>
+      <text x="24" y="148" class="text-label" fill="#94a3b8">The model is frozen. It does NOT</text>
+      <text x="24" y="164" class="text-label" fill="#94a3b8">continuously learn during live use.</text>
+
+      <text x="14" y="188" class="text-label" fill="#cbd5e1">• Quantization Optimization:</text>
+      <text x="24" y="204" class="text-label" fill="#94a3b8">Compresses FP32 weights to INT8</text>
+      <text x="24" y="220" class="text-label" fill="#94a3b8">so models fit on consumer devices.</text>
+
+      <rect x="14" y="235" width="262" height="45" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="22" y="252" class="text-val-mono" font-size="11px" font-weight="700" fill="#38bdf8">Portability:</text>
+      <text x="22" y="268" class="text-label" fill="#94a3b8">Deployable to cloud servers or local NPUs.</text>
+    </g>
+
+    <!-- Flow Arrow 2 -->
+    <g transform="translate(694, 175)">
+      <line x1="0" y1="0" x2="42" y2="0" stroke="#34d399" stroke-width="3" />
+      <polygon points="48,0 38,-6 38,6" fill="#34d399" />
+      <text x="24" y="-12" class="text-val-mono" font-size="10px" fill="#34d399" text-anchor="middle">DEPLOYS</text>
+    </g>
+
+    <!-- Stage 3: Inference -->
+    <g transform="translate(748, 45)">
+      <rect width="340" height="295" class="inner-card" stroke="#34d399" />
+      <rect x="14" y="12" width="312" height="24" rx="4" fill="#063223" />
+      <text x="170" y="28" class="badge-text" fill="#34d399">PHASE 3: RUNTIME INFERENCE</text>
+
+      <text x="14" y="58" class="text-val-mono" font-weight="700" fill="#6ee7b7">Real-Time User Execution</text>
+      <text x="14" y="76" class="text-label" fill="#cbd5e1">• Input: Live user prompt or sensor packet</text>
+      <text x="24" y="92" class="text-label" fill="#94a3b8">(e.g., "Translate this sentence to Arabic").</text>
+
+      <text x="14" y="114" class="text-label" fill="#cbd5e1">• Forward Pass Calculation:</text>
+      <text x="24" y="130" class="text-label" fill="#94a3b8">Multiplies input tokens across static</text>
+      <text x="24" y="146" class="text-label" fill="#94a3b8">weights in milliseconds (zero retraining).</text>
+
+      <text x="14" y="170" class="text-label" fill="#cbd5e1">• Output Generation:</text>
+      <text x="24" y="186" class="text-label" fill="#94a3b8">Generates tokens, bounding boxes,</text>
+      <text x="24" y="202" class="text-label" fill="#94a3b8">sentiment labels, or risk scores.</text>
+
+      <rect x="14" y="222" width="312" height="58" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="22" y="240" class="text-val-mono" font-size="11px" font-weight="700" fill="#34d399">Execution Profile:</text>
+      <text x="22" y="256" class="text-label" fill="#94a3b8">Milliseconds per request, low energy,</text>
+      <text x="22" y="270" class="text-label" fill="#94a3b8">executed on smartphones, PCs, or cloud APIs.</text>
+    </g>
+  </g>
+
+  <!-- Panel 2: The Three Core CompTIA AI Domains (Width 1110, Height 230) -->
+  <g transform="translate(45, 490)">
+    <!-- Domain 1: NLP -->
+    <g transform="translate(0, 0)">
+      <rect width="350" height="215" class="card-bg" stroke="#0284c7" />
+      <rect x="16" y="14" width="318" height="26" rx="4" fill="#0c2340" />
+      <text x="26" y="32" class="text-val-mono" font-weight="700" fill="#38bdf8">1. NATURAL LANGUAGE PROCESSING</text>
+
+      <text x="16" y="60" class="text-label" fill="#cbd5e1" font-weight="600">Core Capability:</text>
+      <text x="16" y="76" class="text-label" fill="#94a3b8">Parsing, comprehending, and generating</text>
+      <text x="16" y="92" class="text-label" fill="#94a3b8">human written and spoken syntax.</text>
+
+      <rect x="16" y="108" width="318" height="92" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="26" y="126" class="text-val-mono" font-size="11px" font-weight="700" fill="#38bdf8">Enterprise Applications:</text>
+      <text x="26" y="144" class="text-label" fill="#cbd5e1">• Speech-to-Text &amp; Voice Assistants</text>
+      <text x="26" y="162" class="text-label" fill="#cbd5e1">• Multi-Language Machine Translation</text>
+      <text x="26" y="180" class="text-label" fill="#cbd5e1">• Large Language Models (LLMs) &amp; Search</text>
+    </g>
+
+    <!-- Domain 2: Computer Vision -->
+    <g transform="translate(380, 0)">
+      <rect width="350" height="215" class="card-bg" stroke="#10b981" />
+      <rect x="16" y="14" width="318" height="26" rx="4" fill="#063223" />
+      <text x="26" y="32" class="text-val-mono" font-weight="700" fill="#34d399">2. COMPUTER VISION (CV)</text>
+
+      <text x="16" y="60" class="text-label" fill="#cbd5e1" font-weight="600">Core Capability:</text>
+      <text x="16" y="76" class="text-label" fill="#94a3b8">Extracting structured meaning, objects,</text>
+      <text x="16" y="92" class="text-label" fill="#94a3b8">and geometry from pixel matrices and video.</text>
+
+      <rect x="16" y="108" width="318" height="92" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="26" y="126" class="text-val-mono" font-size="11px" font-weight="700" fill="#34d399">Enterprise Applications:</text>
+      <text x="26" y="144" class="text-label" fill="#cbd5e1">• Facial Biometric Authentication</text>
+      <text x="26" y="162" class="text-label" fill="#cbd5e1">• Optical Character Recognition (OCR)</text>
+      <text x="26" y="180" class="text-label" fill="#cbd5e1">• Autonomous Driving &amp; Robotics Guidance</text>
+    </g>
+
+    <!-- Domain 3: Predictive Analytics -->
+    <g transform="translate(760, 0)">
+      <rect width="350" height="215" class="card-bg" stroke="#f59e0b" />
+      <rect x="16" y="14" width="318" height="26" rx="4" fill="#382106" />
+      <text x="26" y="32" class="text-val-mono" font-weight="700" fill="#fbbf24">3. PREDICTIVE ANALYTICS</text>
+
+      <text x="16" y="60" class="text-label" fill="#cbd5e1" font-weight="600">Core Capability:</text>
+      <text x="16" y="76" class="text-label" fill="#94a3b8">Statistical classification and forecasting</text>
+      <text x="16" y="92" class="text-label" fill="#94a3b8">over tabular data and transaction histories.</text>
+
+      <rect x="16" y="108" width="318" height="92" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="26" y="126" class="text-val-mono" font-size="11px" font-weight="700" fill="#fbbf24">Enterprise Applications:</text>
+      <text x="26" y="144" class="text-label" fill="#cbd5e1">• Banking Credit Card Fraud Detection</text>
+      <text x="26" y="162" class="text-label" fill="#cbd5e1">• SIEM Security Anomaly Triaging</text>
+      <text x="26" y="180" class="text-label" fill="#cbd5e1">• Predictive Hardware Failure Monitoring</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 740" width="100%" height="100%">
+  <defs>
+    <style>
+      .bg { fill: #070b14; }
+      .card-bg { fill: #0d1527; stroke: #1e293b; stroke-width: 1.5; rx: 10px; }
+      .inner-card { fill: #111c35; stroke: #25334d; stroke-width: 1; rx: 6px; }
+      .text-title { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 26px; font-weight: 700; fill: #f8fafc; }
+      .text-subtitle { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 14px; fill: #94a3b8; }
+      .text-section { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+      .text-label { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 12px; fill: #94a3b8; }
+      .text-val-mono { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 12px; fill: #e2e8f0; }
+      .badge-text { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1200" height="740" class="bg" />
+  <rect x="15" y="15" width="1170" height="710" rx="14" fill="none" stroke="#1e293b" stroke-width="1.5" />
+
+  <!-- Title Header -->
+  <g transform="translate(45, 55)">
+    <text class="text-title" x="0" y="0">Unified Communications &amp; VoIP Architecture</text>
+    <text class="text-subtitle" x="0" y="24">Separation of Signaling (SIP), Media Transport (RTP/SRTP), UDP vs. TCP Latency, and Security Controls</text>
+    <rect x="0" y="38" width="1110" height="1" fill="#1e293b" />
+  </g>
+
+  <!-- Panel 1: The Two Planes of VoIP Architecture (Width 1110, Height 320) -->
+  <g transform="translate(45, 115)">
+    <rect width="1110" height="320" class="card-bg" stroke="#0284c7" />
+    <text class="text-section" x="20" y="26" fill="#38bdf8">1. VoIP Communication Planes: Signaling vs. Real-Time Media</text>
+    <text class="text-label" x="780" y="26">CompTIA Tech+ (FC0-U71) Objective 3.3</text>
+
+    <!-- Caller Endpoint A -->
+    <g transform="translate(30, 50)">
+      <rect width="210" height="145" class="inner-card" stroke="#38bdf8" />
+      <rect x="14" y="12" width="182" height="24" rx="4" fill="#0c2340" />
+      <text x="105" y="28" class="badge-text" fill="#38bdf8">CALLER ENDPOINT A</text>
+      <text x="14" y="56" class="text-val-mono" font-weight="700">Softphone / Teams App</text>
+      <text x="14" y="74" class="text-label">Laptop IP: 192.168.1.50</text>
+      <text x="14" y="94" class="text-label" fill="#cbd5e1">1. Generates SIP INVITE</text>
+      <text x="14" y="112" class="text-label" fill="#cbd5e1">2. Digitizes analog audio</text>
+      <text x="14" y="130" class="text-label" fill="#64748b">Encodes with Opus/G.711 codec</text>
+    </g>
+
+    <!-- Central Cloud PBX / SIP Server -->
+    <g transform="translate(435, 45)">
+      <rect width="240" height="75" class="inner-card" stroke="#f59e0b" />
+      <rect x="14" y="10" width="212" height="22" rx="4" fill="#382106" />
+      <text x="120" y="25" class="badge-text" fill="#fbbf24">SIP REGISTRAR / CLOUD PBX</text>
+      <text x="14" y="48" class="text-label" fill="#cbd5e1">Session Initiation Protocol (SIP)</text>
+      <text x="14" y="64" class="text-val-mono" font-size="11px" fill="#fbbf24">Port 5060 (UDP/TCP) | 5061 (TLS)</text>
+    </g>
+
+    <!-- Recipient Endpoint B -->
+    <g transform="translate(870, 50)">
+      <rect width="210" height="145" class="inner-card" stroke="#34d399" />
+      <rect x="14" y="12" width="182" height="24" rx="4" fill="#063223" />
+      <text x="105" y="28" class="badge-text" fill="#34d399">RECIPIENT ENDPOINT B</text>
+      <text x="14" y="56" class="text-val-mono" font-weight="700">Desk IP Phone / Mobile</text>
+      <text x="14" y="74" class="text-label">Remote IP: 10.0.4.120</text>
+      <text x="14" y="94" class="text-label" fill="#cbd5e1">1. Rings on SIP INVITE</text>
+      <text x="14" y="112" class="text-label" fill="#cbd5e1">2. Streams media back</text>
+      <text x="14" y="130" class="text-label" fill="#64748b">Decodes audio via DAC chip</text>
+    </g>
+
+    <!-- Signaling Arrows (Top, via PBX) -->
+    <path d="M 240 85 L 435 85" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4" />
+    <path d="M 675 85 L 870 85" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4" />
+    <text x="337" y="78" class="text-val-mono" font-size="10px" fill="#fbbf24" text-anchor="middle">SIP INVITE</text>
+    <text x="772" y="78" class="text-val-mono" font-size="10px" fill="#fbbf24" text-anchor="middle">RINGING / 200 OK</text>
+
+    <!-- Media Channel (Bottom, Direct Peer-to-Peer) -->
+    <rect x="260" y="145" width="590" height="42" rx="6" fill="#042f1d" stroke="#10b981" stroke-width="1.5" />
+    <text x="275" y="166" class="text-val-mono" font-weight="700" fill="#34d399">DIRECT MEDIA PLANE (RTP / SRTP):</text>
+    <text x="510" y="166" class="text-label" fill="#cbd5e1">Peer-to-Peer Audio/Video Streaming (UDP Ports 16384–32767)</text>
+    <text x="275" y="180" class="text-label" fill="#6ee7b7">Encrypted via SRTP (AES-128 / AES-256). Media flows directly between devices without passing through PBX.</text>
+
+    <!-- Essential CompTIA Principle Banner -->
+    <rect x="20" y="206" width="1070" height="98" rx="6" fill="#081426" stroke="#1d4ed8" />
+    <text x="35" y="226" class="text-val-mono" font-size="12px" font-weight="700" fill="#38bdf8">
+      CORE EXAM PRINCIPLE: WHY REAL-TIME MEDIA MUST USE UDP INSTEAD OF TCP
+    </text>
+    <text x="35" y="246" class="text-label" fill="#cbd5e1">
+      • <tspan font-weight="700" fill="#f87171">TCP Retransmission Failure:</tspan> TCP forces retransmission of lost packets. In a live call, re-sending a dropped syllable 200ms
+    </text>
+    <text x="48" y="260" class="text-label" fill="#cbd5e1">
+      later creates jarring audio lag, speech overlap, and artificial conversation delays.
+    </text>
+    <text x="35" y="278" class="text-label" fill="#cbd5e1">
+      • <tspan font-weight="700" fill="#34d399">UDP Low-Latency Advantage:</tspan> UDP is connectionless with zero retransmission overhead. A lost packet is simply skipped,
+    </text>
+    <text x="48" y="292" class="text-label" fill="#cbd5e1">
+      creating an imperceptible micro-click that human hearing naturally forgives, preserving live conversational pacing.
+    </text>
+  </g>
+
+  <!-- Panel 2: Bottom Left - Protocol Breakdown (Width 540, Height 270) -->
+  <g transform="translate(45, 450)">
+    <rect width="540" height="260" class="card-bg" stroke="#1e293b" />
+    <text class="text-section" x="20" y="26" fill="#38bdf8">2. VoIP Transport Protocol Trade-Offs</text>
+
+    <!-- Card A: Signaling Protocol (SIP) -->
+    <g transform="translate(20, 42)">
+      <rect width="500" height="95" class="inner-card" />
+      <text x="14" y="22" class="text-val-mono" font-weight="700" fill="#fbbf24">Call Setup Plane: SIP (Session Initiation Protocol)</text>
+      <text x="14" y="40" class="text-label" fill="#cbd5e1">Port: UDP/TCP 5060 (Unencrypted) | Port 5061 (TLS Encrypted)</text>
+      <text x="14" y="58" class="text-label" fill="#94a3b8">• Functions: Locates remote endpoints, rings phone, handles hold &amp; transfer.</text>
+      <text x="14" y="74" class="text-label" fill="#94a3b8">• Payload: Negotiates IP addresses and media codecs using SDP text messages.</text>
+      <text x="14" y="90" class="text-label" fill="#64748b">• Note: SIP never carries human speech—it only sets up and terminates calls.</text>
+    </g>
+
+    <!-- Card B: Media Protocol (RTP/SRTP) -->
+    <g transform="translate(20, 148)">
+      <rect width="500" height="98" class="inner-card" />
+      <text x="14" y="22" class="text-val-mono" font-weight="700" fill="#34d399">Audio/Video Plane: RTP &amp; SRTP</text>
+      <text x="14" y="40" class="text-label" fill="#cbd5e1">Transport: UDP (Dynamic high-range ports 16384–32767)</text>
+      <text x="14" y="58" class="text-label" fill="#94a3b8">• RTP (Real-time Transport Protocol): Carries digitized audio sample packets.</text>
+      <text x="14" y="74" class="text-label" fill="#94a3b8">• SRTP (Secure RTP): Adds AES encryption and SHA-1 HMAC authentication.</text>
+      <text x="14" y="90" class="text-label" fill="#64748b">• Defends against VoIP packet sniffing and unauthorized audio eavesdropping.</text>
+    </g>
+  </g>
+
+  <!-- Panel 3: Bottom Right - Enterprise Security Controls (Width 540, Height 270) -->
+  <g transform="translate(615, 450)">
+    <rect width="540" height="260" class="card-bg" stroke="#1e293b" />
+    <text class="text-section" x="20" y="26" fill="#f87171">3. Collaboration Security &amp; Data Governance</text>
+
+    <!-- Security Control 1: E2EE -->
+    <g transform="translate(20, 42)">
+      <rect width="500" height="62" class="inner-card" stroke="#b91c1c" />
+      <text x="14" y="22" class="text-val-mono" font-weight="700" fill="#fca5a5">End-to-End Encryption (E2EE)</text>
+      <text x="14" y="40" class="text-label" fill="#cbd5e1">Cryptographic session keys exist exclusively on participant devices.</text>
+      <text x="14" y="54" class="text-label" fill="#94a3b8">Cloud service providers cannot intercept, decrypt, or record call streams.</text>
+    </g>
+
+    <!-- Security Control 2: Data Loss Prevention -->
+    <g transform="translate(20, 112)">
+      <rect width="500" height="62" class="inner-card" stroke="#d97706" />
+      <text x="14" y="22" class="text-val-mono" font-weight="700" fill="#fde68a">Cloud Chat Data Loss Prevention (DLP)</text>
+      <text x="14" y="40" class="text-label" fill="#cbd5e1">Scans persistent team channels in real time for sensitive information.</text>
+      <text x="14" y="54" class="text-label" fill="#94a3b8">Automatically blocks or redacts credit cards (PCI-DSS), SSNs, and passwords.</text>
+    </g>
+
+    <!-- Security Control 3: Meeting Access Control -->
+    <g transform="translate(20, 182)">
+      <rect width="500" height="64" class="inner-card" stroke="#059669" />
+      <text x="14" y="22" class="text-val-mono" font-weight="700" fill="#a7f3d0">Meeting Access Governance &amp; Lobbies</text>
+      <text x="14" y="40" class="text-label" fill="#cbd5e1">Enforces meeting waiting rooms, domain authentication, and host approval.</text>
+      <text x="14" y="56" class="text-label" fill="#94a3b8">Prevents unauthorized disruption, screen-share hijacking, and eavesdropping.</text>
+    </g>
+  </g>
+</svg>
