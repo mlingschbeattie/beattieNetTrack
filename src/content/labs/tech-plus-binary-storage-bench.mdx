@@ -41,10 +41,10 @@ steps:
     successMessage: "Correct. 16 + 4 = 20, which is 10100 (or 00010100 in 8-bit byte format)."
   - id: powershell-telemetry
     title: "Analyze raw disk telemetry"
-    prompt: "The customer purchased a 1 TB NVMe solid-state drive and installed it as Disk 0. You query the drive via PowerShell to inspect the physical hardware specifications.\n\nInspect the terminal output above. Drive manufacturers sell storage using decimal SI units, where 1 Terabyte (TB) equals 10^12 bytes (1,000,000,000,000 bytes). How many trillions of bytes did the manufacturer manufacture and advertise for this 1 TB drive? Enter digits only."
-    inputLabel: "Trillions of bytes"
+    prompt: "The customer installed a new NVMe solid-state drive as Disk 0. You run PowerShell to query the physical drive hardware.\n\nInspect the terminal output: the drive reports a raw size of 1,000,204,886,016 bytes (approximately 1 trillion bytes, or 10^12).\n\nDrive manufacturers use decimal metric units where 1,000,000,000,000 bytes = 1 Terabyte (TB). Based on this raw byte count, how many Terabytes (TB) is this drive marketed as? Enter the number."
+    inputLabel: "Marketed drive capacity (TB)"
     placeholder: "ex: 1"
-    hint: "One terabyte in the decimal metric system is exactly 10^12 bytes, which equals 1 trillion bytes."
+    hint: "Manufacturers use base-10 decimal units: 1,000,000,000,000 bytes equals 1 TB. Enter: 1"
     terminalPrompt: "PS C:\\Users\\student>"
     terminalOutput: |
       PS C:\Users\student> Get-Disk -Number 0 | Select-Object Number, FriendlyName, OperationalStatus, Size
@@ -56,9 +56,11 @@ steps:
       type: oneOf
       values:
         - "1"
+        - "1 TB"
+        - "1TB"
         - "1.0"
         - "1 trillion"
-    successMessage: "Correct. Manufacturers define 1 TB as exactly 1,000,000,000,000 bytes (10^12). The drive has 1,000,204,886,016 physical bytes."
+    successMessage: "Correct. In retail marketing, manufacturers define 1 TB as 1,000,000,000,000 bytes (1 trillion). In the next step, we'll see why Windows calculates this differently."
   - id: inspect-disk-management
     title: "Inspect Windows Disk Management"
     prompt: "Look at the authentic Windows 11 desktop render above.\n\nNotice that Disk Management displays Disk 0 as '931.51 GB', and the SSD Drive Properties window shows 'Capacity: 1,000,204,886,016 bytes (931 GB)'.\n\nWindows does NOT calculate storage using decimal thousands (1,000). Operating systems calculate storage in binary gibibytes (GiB), where each step scales by 1,024 (2^10):\n- 1 KiB = 1,024 Bytes\n- 1 MiB = 1,048,576 Bytes\n- 1 GiB = 1,073,741,824 Bytes (1,024^3)\n\nDivide the raw capacity (1,000,204,886,016 bytes) by 1,073,741,824 bytes. Rounded to the nearest whole integer, how many gigabytes does Windows report?"
