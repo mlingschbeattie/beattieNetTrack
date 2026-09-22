@@ -1,0 +1,172 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" width="100%" height="100%">
+  <defs>
+    <style>
+      .bg { fill: #070b14; }
+      .card-bg { fill: #0d1527; stroke: #1e293b; stroke-width: 1.5; rx: 10px; }
+      .inner-card { fill: #111c35; stroke: #25334d; stroke-width: 1; rx: 6px; }
+      .text-title { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 26px; font-weight: 700; fill: #f8fafc; }
+      .text-subtitle { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 14px; fill: #94a3b8; }
+      .text-section { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 13px; font-weight: 700; fill: #38bdf8; letter-spacing: 0.08em; text-transform: uppercase; }
+      .text-label { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 12px; fill: #94a3b8; }
+      .text-val-mono { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 13px; fill: #e2e8f0; }
+      .th-mono { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; fill: #38bdf8; text-anchor: middle; }
+      .td-mono { font-family: 'JetBrains Mono', monospace; font-size: 14px; fill: #cbd5e1; text-anchor: middle; }
+      .bit-on { fill: #34d399; font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 800; text-anchor: middle; }
+      .bit-off { fill: #64748b; font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1200" height="680" class="bg" />
+  <rect x="15" y="15" width="1170" height="650" rx="14" fill="none" stroke="#1e293b" stroke-width="1.5" />
+
+  <!-- Title Header -->
+  <g transform="translate(45, 55)">
+    <text class="text-title" x="0" y="0">Binary (Base-2) 8-Bit Architecture</text>
+    <text class="text-subtitle" x="0" y="24">Positional Powers-of-Two, Transistor States, and Character Encoding Standards</text>
+    <rect x="0" y="38" width="1110" height="1" fill="#1e293b" />
+  </g>
+
+  <!-- Panel 1: Positional Power-of-2 Table -->
+  <g transform="translate(45, 115)">
+    <rect width="1110" height="235" class="card-bg" />
+    <text class="text-section" x="20" y="26">1. Positional Powers of Two (The 8-Bit Byte)</text>
+    <text class="text-label" x="870" y="26">MSB (Most Significant) → LSB (Least Significant)</text>
+
+    <!-- Table Container -->
+    <g transform="translate(20, 42)">
+      <!-- Row headers -->
+      <rect x="180" y="0" width="890" height="34" fill="#152038" rx="4" />
+      <rect x="180" y="38" width="890" height="30" fill="#0d172a" rx="4" />
+      <rect x="180" y="72" width="890" height="50" fill="#111f38" rx="6" />
+      <rect x="180" y="126" width="890" height="30" fill="#0d172a" rx="4" />
+
+      <text x="10" y="22" class="text-val-mono" font-weight="700" fill="#38bdf8">Power of Two (2ⁿ)</text>
+      <text x="10" y="58" class="text-val-mono" fill="#94a3b8">Decimal Value</text>
+      <text x="10" y="103" class="text-val-mono" font-weight="700" fill="#34d399">Example Byte (01000001)</text>
+      <text x="10" y="146" class="text-val-mono" fill="#67e8f9">Active Calculation</text>
+
+      <!-- Columns: 8 bits (step = 111px) -->
+      <!-- Bit 7 (128) -->
+      <g transform="translate(235, 0)">
+        <text y="22" class="th-mono">2⁷ (MSB)</text><text y="58" class="td-mono">128</text>
+        <rect x="-45" y="72" width="90" height="50" fill="#0b1324" rx="4" stroke="#1e293b" />
+        <text y="105" class="bit-off">0</text><text y="146" class="td-mono" fill="#475569">0</text>
+      </g>
+      <!-- Bit 6 (64) -->
+      <g transform="translate(346, 0)">
+        <text y="22" class="th-mono">2⁶</text><text y="58" class="td-mono" font-weight="700" fill="#34d399">64</text>
+        <rect x="-45" y="72" width="90" height="50" fill="#063223" rx="4" stroke="#059669" />
+        <text y="105" class="bit-on">1</text><text y="146" class="td-mono" font-weight="700" fill="#34d399">+64</text>
+      </g>
+      <!-- Bit 5 (32) -->
+      <g transform="translate(457, 0)">
+        <text y="22" class="th-mono">2⁵</text><text y="58" class="td-mono">32</text>
+        <rect x="-45" y="72" width="90" height="50" fill="#0b1324" rx="4" stroke="#1e293b" />
+        <text y="105" class="bit-off">0</text><text y="146" class="td-mono" fill="#475569">0</text>
+      </g>
+      <!-- Bit 4 (16) -->
+      <g transform="translate(568, 0)">
+        <text y="22" class="th-mono">2⁴</text><text y="58" class="td-mono">16</text>
+        <rect x="-45" y="72" width="90" height="50" fill="#0b1324" rx="4" stroke="#1e293b" />
+        <text y="105" class="bit-off">0</text><text y="146" class="td-mono" fill="#475569">0</text>
+      </g>
+      <!-- Bit 3 (8) -->
+      <g transform="translate(679, 0)">
+        <text y="22" class="th-mono">2³</text><text y="58" class="td-mono">8</text>
+        <rect x="-45" y="72" width="90" height="50" fill="#0b1324" rx="4" stroke="#1e293b" />
+        <text y="105" class="bit-off">0</text><text y="146" class="td-mono" fill="#475569">0</text>
+      </g>
+      <!-- Bit 2 (4) -->
+      <g transform="translate(790, 0)">
+        <text y="22" class="th-mono">2²</text><text y="58" class="td-mono">4</text>
+        <rect x="-45" y="72" width="90" height="50" fill="#0b1324" rx="4" stroke="#1e293b" />
+        <text y="105" class="bit-off">0</text><text y="146" class="td-mono" fill="#475569">0</text>
+      </g>
+      <!-- Bit 1 (2) -->
+      <g transform="translate(901, 0)">
+        <text y="22" class="th-mono">2¹</text><text y="58" class="td-mono">2</text>
+        <rect x="-45" y="72" width="90" height="50" fill="#0b1324" rx="4" stroke="#1e293b" />
+        <text y="105" class="bit-off">0</text><text y="146" class="td-mono" fill="#475569">0</text>
+      </g>
+      <!-- Bit 0 (1) -->
+      <g transform="translate(1012, 0)">
+        <text y="22" class="th-mono">2⁰ (LSB)</text><text y="58" class="td-mono" font-weight="700" fill="#34d399">1</text>
+        <rect x="-45" y="72" width="90" height="50" fill="#063223" rx="4" stroke="#059669" />
+        <text y="105" class="bit-on">1</text><text y="146" class="td-mono" font-weight="700" fill="#34d399">+1</text>
+      </g>
+    </g>
+
+    <!-- Calculation Footer -->
+    <rect x="20" y="196" width="1070" height="26" fill="#070e1c" rx="4" />
+    <text x="35" y="214" class="text-val-mono" fill="#e2e8f0">
+      Sum: <tspan fill="#34d399" font-weight="700">64 + 1 = 65 (Decimal)</tspan> ➔ Represents ASCII character <tspan fill="#38bdf8" font-weight="700">'A'</tspan> (Hexadecimal: <tspan fill="#fbbf24" font-weight="700">0x41</tspan>)
+    </text>
+  </g>
+
+  <!-- Panel 2: Silicon Transistor Voltage States -->
+  <g transform="translate(45, 370)">
+    <rect width="540" height="270" class="card-bg" />
+    <text class="text-section" x="20" y="28">2. Physical Silicon Transistor Logic</text>
+
+    <!-- State 1: High Voltage (ON) -->
+    <g transform="translate(20, 48)">
+      <rect width="240" height="150" class="inner-card" />
+      <rect x="15" y="15" width="40" height="24" rx="4" fill="#063223" stroke="#059669" />
+      <text x="35" y="32" class="th-mono" fill="#34d399" font-size="14px">1</text>
+      <text x="65" y="32" class="text-val-mono" font-weight="700" fill="#34d399">State: ON</text>
+
+      <text x="15" y="65" class="text-label" fill="#cbd5e1">Electrical State:</text>
+      <text x="15" y="83" class="text-val-mono" fill="#38bdf8">High Voltage (Vcc)</text>
+      <text x="15" y="105" class="text-label">Typical +1.2V to +3.3V</text>
+      <text x="15" y="125" class="text-label">Conductive channel active</text>
+    </g>
+
+    <!-- State 0: Ground / Zero Voltage (OFF) -->
+    <g transform="translate(280, 48)">
+      <rect width="240" height="150" class="inner-card" />
+      <rect x="15" y="15" width="40" height="24" rx="4" fill="#1e293b" stroke="#475569" />
+      <text x="35" y="32" class="th-mono" fill="#94a3b8" font-size="14px">0</text>
+      <text x="65" y="32" class="text-val-mono" font-weight="700" fill="#94a3b8">State: OFF</text>
+
+      <text x="15" y="65" class="text-label" fill="#cbd5e1">Electrical State:</text>
+      <text x="15" y="83" class="text-val-mono" fill="#94a3b8">Ground (0V)</text>
+      <text x="15" y="105" class="text-label">Zero voltage threshold</text>
+      <text x="15" y="125" class="text-label">Non-conductive channel</text>
+    </g>
+
+    <text x="20" y="240" class="text-label" fill="#64748b">Two-state switching eliminates analog drift and electromagnetic interference errors.</text>
+  </g>
+
+  <!-- Panel 3: Unit Scale Hierarchy -->
+  <g transform="translate(615, 370)">
+    <rect width="540" height="270" class="card-bg" />
+    <text class="text-section" x="20" y="28">3. Binary Capacity Hierarchy (Bits, Nibbles, Bytes)</text>
+
+    <g transform="translate(20, 48)">
+      <!-- 1 Bit -->
+      <rect width="500" height="42" class="inner-card" />
+      <text x="15" y="26" class="text-val-mono" font-weight="700" fill="#38bdf8">1 Bit (b):</text>
+      <text x="110" y="26" class="text-val-mono">Single binary digit</text>
+      <text x="340" y="26" class="text-val-mono" fill="#34d399">2 possible states (0 or 1)</text>
+
+      <!-- 1 Nibble -->
+      <rect y="50" width="500" height="42" class="inner-card" />
+      <text x="15" y="76" class="text-val-mono" font-weight="700" fill="#fbbf24">1 Nibble:</text>
+      <text x="110" y="76" class="text-val-mono">4 binary bits</text>
+      <text x="340" y="76" class="text-val-mono" fill="#fbbf24">16 states (0x0 to 0xF)</text>
+
+      <!-- 1 Byte -->
+      <rect y="100" width="500" height="42" class="inner-card" />
+      <text x="15" y="126" class="text-val-mono" font-weight="700" fill="#34d399">1 Byte (B):</text>
+      <text x="110" y="126" class="text-val-mono">8 bits (2 nibbles)</text>
+      <text x="340" y="126" class="text-val-mono" fill="#34d399">256 states (0 to 255)</text>
+
+      <!-- Key technician rule -->
+      <rect y="152" width="500" height="48" fill="#0d1b30" stroke="#1d4ed8" rx="6" />
+      <text x="15" y="181" class="text-val-mono" fill="#93c5fd">
+        <tspan font-weight="700" fill="#60a5fa">Technician Rule:</tspan> Lowercase 'b' = bits (network transfer speed); Uppercase 'B' = bytes (storage size).
+      </text>
+    </g>
+  </g>
+</svg>
