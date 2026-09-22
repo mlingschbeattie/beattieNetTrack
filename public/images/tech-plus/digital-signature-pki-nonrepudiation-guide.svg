@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 740" width="1200" height="740">
+  <defs>
+    <style>
+      .bg { fill: #070b14; }
+      .card-bg { fill: #0d1527; stroke: #1e293b; stroke-width: 1.5; rx: 10px; }
+      .inner-card { fill: #111c35; stroke: #25334d; stroke-width: 1; rx: 6px; }
+      .text-title { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 26px; font-weight: 700; fill: #f8fafc; }
+      .text-subtitle { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 14px; fill: #94a3b8; }
+      .text-section { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+      .text-label { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 12px; fill: #94a3b8; }
+      .text-val-mono { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 11px; fill: #e2e8f0; }
+      .badge-text { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1200" height="740" class="bg" />
+  <rect x="15" y="15" width="1170" height="710" rx="14" fill="none" stroke="#1e293b" stroke-width="1.5" />
+
+  <!-- Title Header -->
+  <g transform="translate(45, 55)">
+    <text class="text-title" x="0" y="0">Digital Signatures, PKI &amp; Non-Repudiation Architecture</text>
+    <text class="text-subtitle" x="0" y="24">Cryptographic Proof of Origin, Integrity Verification, and Public Key Infrastructure (FC0-U71 6.1)</text>
+    <rect x="0" y="38" width="1110" height="1" fill="#1e293b" />
+  </g>
+
+  <!-- Top Panel: Signing & Verification Workflows (x=45, y=115, width=1110, height=315) -->
+  <g transform="translate(45, 115)">
+    <rect width="1110" height="315" class="card-bg" stroke="#0284c7" />
+    <text class="text-section" x="20" y="24" fill="#38bdf8">1. The Digital Signature Workflow: Creation (Sender) vs. Verification (Recipient)</text>
+    <text class="text-label" text-anchor="end" x="1090" y="24">CompTIA Tech+ (FC0-U71) Objective 6.1</text>
+
+    <!-- Left Box: Signing Workflow (Sender) -->
+    <g transform="translate(20, 36)">
+      <rect width="525" height="262" class="inner-card" stroke="#38bdf8" />
+      <rect x="12" y="10" width="180" height="22" rx="4" fill="#0c2340" />
+      <text x="102" y="25" class="badge-text" fill="#38bdf8">SENDER CREATES SIGNATURE</text>
+      <text x="202" y="25" class="text-label" fill="#93c5fd">Alice Signs Contract</text>
+
+      <!-- Step 1 & 2 Diagram -->
+      <rect x="12" y="38" width="501" height="88" rx="4" fill="#070b14" stroke="#1e293b" />
+      <rect x="20" y="48" width="110" height="42" rx="3" fill="#111c35" stroke="#3b82f6" />
+      <text x="75" y="66" class="badge-text" fill="#93c5fd">DOCUMENT</text>
+      <text x="75" y="80" class="text-val-mono" font-size="9px" text-anchor="middle" fill="#cbd5e1">"Contract.pdf"</text>
+
+      <path d="M 135 69 L 160 69" stroke="#38bdf8" stroke-width="2" />
+      <polygon points="160,65 168,69 160,73" fill="#38bdf8" />
+
+      <rect x="173" y="48" width="125" height="42" rx="3" fill="#111c35" stroke="#10b981" />
+      <text x="235" y="66" class="badge-text" fill="#34d399">SHA-256 HASH</text>
+      <text x="235" y="80" class="text-val-mono" font-size="9px" text-anchor="middle" fill="#a7f3d0">32-Byte Digest</text>
+
+      <path d="M 303 69 L 328 69" stroke="#38bdf8" stroke-width="2" />
+      <polygon points="328,65 336,69 328,73" fill="#38bdf8" />
+
+      <rect x="341" y="48" width="160" height="68" rx="3" fill="#450a0a" stroke="#ef4444" />
+      <text x="421" y="66" class="badge-text" fill="#fca5a5">ENCRYPT WITH</text>
+      <text x="421" y="80" class="badge-text" fill="#fca5a5">ALICE'S PRIVATE KEY</text>
+      <text x="421" y="102" class="text-val-mono" font-size="9px" text-anchor="middle" fill="#fecaca">= DIGITAL SIGNATURE</text>
+
+      <text x="20" y="112" class="text-label" font-size="10px" fill="#94a3b8">Message is hashed first for performance (signing a 32-byte hash is instant).</text>
+
+      <!-- Steps Explanation -->
+      <rect x="12" y="134" width="501" height="114" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="18" y="154" class="text-val-mono" font-size="10.5px" font-weight="700" fill="#38bdf8">Signing Protocol Steps:</text>
+      <text x="18" y="172" class="text-label" font-size="10.5px" fill="#cbd5e1">1. Hash Document: Alice runs SHA-256 to generate unique digest.</text>
+      <text x="18" y="190" class="text-label" font-size="10.5px" fill="#cbd5e1">2. Encrypt Digest: Alice encrypts digest with her <tspan fill="#f87171" font-weight="700">PRIVATE KEY</tspan>.</text>
+      <text x="18" y="208" class="text-label" font-size="10.5px" fill="#cbd5e1">3. Transmit: Alice sends Document + Digital Signature to Bob.</text>
+      <text x="18" y="228" class="text-val-mono" font-size="10px" fill="#34d399">The signature can ONLY be created by the owner of that private key.</text>
+    </g>
+
+    <!-- Right Box: Verification Workflow (Recipient) -->
+    <g transform="translate(565, 36)">
+      <rect width="525" height="262" class="inner-card" stroke="#10b981" />
+      <rect x="12" y="10" width="180" height="22" rx="4" fill="#064e3b" />
+      <text x="102" y="25" class="badge-text" fill="#34d399">RECIPIENT VERIFICATION</text>
+      <text x="202" y="25" class="text-label" fill="#6ee7b7">Bob Validates Origin</text>
+
+      <!-- Verification Steps -->
+      <rect x="12" y="38" width="501" height="88" rx="4" fill="#070b14" stroke="#1e293b" />
+      <rect x="20" y="48" width="155" height="68" rx="3" fill="#111c35" stroke="#3b82f6" />
+      <text x="97" y="66" class="badge-text" fill="#93c5fd">RECEIVED SIG</text>
+      <text x="97" y="82" class="text-val-mono" font-size="9px" text-anchor="middle" fill="#cbd5e1">Decrypt with</text>
+      <text x="97" y="96" class="badge-text" fill="#38bdf8">Alice's Public Key</text>
+      <text x="97" y="110" class="text-val-mono" font-size="9px" text-anchor="middle" fill="#34d399">➔ Digest A</text>
+
+      <rect x="190" y="48" width="155" height="68" rx="3" fill="#111c35" stroke="#10b981" />
+      <text x="267" y="66" class="badge-text" fill="#34d399">RECEIVED DOC</text>
+      <text x="267" y="82" class="text-val-mono" font-size="9px" text-anchor="middle" fill="#cbd5e1">Re-compute</text>
+      <text x="267" y="96" class="badge-text" fill="#34d399">Fresh SHA-256</text>
+      <text x="267" y="110" class="text-val-mono" font-size="9px" text-anchor="middle" fill="#34d399">➔ Digest B</text>
+
+      <!-- Comparison Box -->
+      <rect x="360" y="48" width="140" height="68" rx="3" fill="#064e3b" stroke="#34d399" />
+      <text x="430" y="68" class="badge-text" fill="#34d399">COMPARE</text>
+      <text x="430" y="86" class="badge-text" fill="#ffffff">A == B ?</text>
+      <text x="430" y="104" class="text-val-mono" font-size="10px" font-weight="700" text-anchor="middle" fill="#a7f3d0">100% VALID!</text>
+
+      <!-- Steps Explanation -->
+      <rect x="12" y="134" width="501" height="114" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="18" y="154" class="text-val-mono" font-size="10.5px" font-weight="700" fill="#34d399">Verification Evaluation:</text>
+      <text x="18" y="172" class="text-label" font-size="10.5px" fill="#cbd5e1">1. Decrypt Sig: Bob uses Alice's <tspan fill="#38bdf8" font-weight="700">PUBLIC KEY</tspan> to reveal Digest A.</text>
+      <text x="18" y="190" class="text-label" font-size="10.5px" fill="#cbd5e1">2. Hash Document: Bob independently hashes the document for Digest B.</text>
+      <text x="18" y="208" class="text-label" font-size="10.5px" fill="#cbd5e1">3. Match Result: If A == B, origin and integrity are guaranteed.</text>
+      <text x="18" y="228" class="text-val-mono" font-size="10px" fill="#f87171">If A != B: The document was tampered with OR Alice did not sign it.</text>
+    </g>
+  </g>
+
+  <!-- Bottom Panel: 3 Pillars & PKI Trust (x=45, y=445, width=1110, height=270) -->
+  <g transform="translate(45, 445)">
+    <rect width="1110" height="270" class="card-bg" stroke="#10b981" />
+    <text class="text-section" x="20" y="24" fill="#34d399">2. Security Guarantees &amp; Public Key Infrastructure (PKI)</text>
+    <text class="text-label" text-anchor="end" x="1090" y="24">Production Identity Hardening</text>
+
+    <!-- Left Box: The Three Guarantees of Digital Signatures -->
+    <g transform="translate(20, 36)">
+      <rect width="525" height="218" class="inner-card" stroke="#8b5cf6" />
+      <rect x="12" y="10" width="220" height="22" rx="4" fill="#2e1065" />
+      <text x="122" y="25" class="badge-text" fill="#c084fc">THE THREE PILLARS</text>
+      <text x="245" y="25" class="text-label" fill="#ddd6fe">Core Guarantees</text>
+
+      <rect x="12" y="38" width="501" height="166" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="18" y="58" class="text-val-mono" font-size="11px" font-weight="700" fill="#38bdf8">1. Authentic Origin (Authentication):</text>
+      <text x="18" y="74" class="text-label" font-size="10.5px" fill="#cbd5e1">Only Alice's private key could have produced a signature readable by her public key.</text>
+
+      <text x="18" y="98" class="text-val-mono" font-size="11px" font-weight="700" fill="#34d399">2. Data Integrity (Zero Tampering):</text>
+      <text x="18" y="114" class="text-label" font-size="10.5px" fill="#cbd5e1">If an attacker modifies even a single comma in transit, the hash verification fails.</text>
+
+      <text x="18" y="138" class="text-val-mono" font-size="11px" font-weight="700" fill="#fcd34d">3. Non-Repudiation (Legal Denial Impossible):</text>
+      <text x="18" y="154" class="text-label" font-size="10.5px" fill="#cbd5e1">Alice cannot claim "I didn't send this", because the private key is held solely by her.</text>
+
+      <text x="18" y="180" class="text-label" font-size="10px" fill="#fca5a5">Note: Digital signatures provide integrity and origin, NOT confidentiality!</text>
+    </g>
+
+    <!-- Right Box: PKI & Certificate Authorities -->
+    <g transform="translate(565, 36)">
+      <rect width="525" height="218" class="inner-card" stroke="#f59e0b" />
+      <rect x="12" y="10" width="220" height="22" rx="4" fill="#451a03" />
+      <text x="122" y="25" class="badge-text" fill="#fcd34d">PKI TRUST CHAIN</text>
+      <text x="245" y="25" class="text-label" fill="#fde68a">Root &amp; Intermediate CAs</text>
+
+      <rect x="12" y="38" width="501" height="166" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="18" y="58" class="text-val-mono" font-size="11px" font-weight="700" fill="#fcd34d">How PKI Validates Public Keys:</text>
+      <text x="18" y="74" class="text-label" font-size="10.5px" fill="#cbd5e1">Problem: How does Bob know Alice's public key actually belongs to Alice?</text>
+
+      <text x="18" y="98" class="text-val-mono" font-size="11px" font-weight="700" fill="#38bdf8">Certificate Authority (CA) Solution:</text>
+      <text x="18" y="114" class="text-label" font-size="10.5px" fill="#cbd5e1">• A trusted CA signs Alice's public key into an X.509 Digital Certificate.</text>
+      <text x="18" y="132" class="text-label" font-size="10.5px" fill="#cbd5e1">• OS &amp; browser Root Stores pre-trust root CAs (DigiCert, Let's Encrypt).</text>
+      <text x="18" y="150" class="text-label" font-size="10.5px" fill="#cbd5e1">• Revocation: CRL and OCSP verify keys haven't been breached.</text>
+
+      <text x="18" y="180" class="text-label" font-size="10px" fill="#67e8f9">Technician Rule: Certificate untrusted warnings indicate MITM attacks or expired certs!</text>
+    </g>
+  </g>
+</svg>
