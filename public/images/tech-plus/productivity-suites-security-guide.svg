@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 740" width="100%" height="100%">
+  <defs>
+    <style>
+      .bg { fill: #070b14; }
+      .card-bg { fill: #0d1527; stroke: #1e293b; stroke-width: 1.5; rx: 10px; }
+      .inner-card { fill: #111c35; stroke: #25334d; stroke-width: 1; rx: 6px; }
+      .text-title { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 26px; font-weight: 700; fill: #f8fafc; }
+      .text-subtitle { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 14px; fill: #94a3b8; }
+      .text-section { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+      .text-label { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 12px; fill: #94a3b8; }
+      .text-val-mono { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 12px; fill: #e2e8f0; }
+      .badge-text { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; }
+    </style>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1200" height="740" class="bg" />
+  <rect x="15" y="15" width="1170" height="710" rx="14" fill="none" stroke="#1e293b" stroke-width="1.5" />
+
+  <!-- Title Header -->
+  <g transform="translate(45, 55)">
+    <text class="text-title" x="0" y="0">Enterprise Productivity Suites &amp; Security Architecture</text>
+    <text class="text-subtitle" x="0" y="24">Application Capabilities, Threat Vectors, Macro Sandboxing, and Document Sanitization Standards</text>
+    <rect x="0" y="38" width="1110" height="1" fill="#1e293b" />
+  </g>
+
+  <!-- Panel 1: Left Column - Core Application Pillars (width 540) -->
+  <g transform="translate(45, 115)">
+    <rect width="540" height="590" class="card-bg" stroke="#0284c7" />
+    <text class="text-section" x="20" y="26" fill="#38bdf8">1. Core Productivity Suite Application Pillars</text>
+    <text class="text-label" x="20" y="44">Essential office tools managed and secured by enterprise IT technicians</text>
+
+    <!-- Pillar 1: Word Processing -->
+    <g transform="translate(20, 58)">
+      <rect width="500" height="114" class="inner-card" />
+      <rect x="14" y="12" width="28" height="28" rx="4" fill="#172554" stroke="#2563eb" />
+      <text x="28" y="31" font-family="'JetBrains Mono', monospace" font-size="14px" font-weight="800" fill="#60a5fa" text-anchor="middle">W</text>
+      <text x="52" y="25" class="text-val-mono" font-weight="700" fill="#93c5fd">Word Processing (Word, Docs, Writer)</text>
+      <text x="52" y="40" class="text-label" fill="#64748b">File Formats: .docx, .pdf, .rtf, .txt</text>
+      <text x="14" y="66" class="text-label" fill="#cbd5e1">Key Function: Document composition, legal formatting, typographic styles.</text>
+      <text x="14" y="84" class="text-label" fill="#94a3b8">Collaboration Features: Revision tracking, inline comments, footnote indexing.</text>
+      <text x="14" y="102" class="text-label" fill="#94a3b8">IT Admin Role: Enforcing standardized corporate templates and PDF export policies.</text>
+    </g>
+
+    <!-- Pillar 2: Spreadsheets -->
+    <g transform="translate(20, 186)">
+      <rect width="500" height="114" class="inner-card" />
+      <rect x="14" y="12" width="28" height="28" rx="4" fill="#063223" stroke="#059669" />
+      <text x="28" y="31" font-family="'JetBrains Mono', monospace" font-size="14px" font-weight="800" fill="#34d399" text-anchor="middle">X</text>
+      <text x="52" y="25" class="text-val-mono" font-weight="700" fill="#6ee7b7">Spreadsheet &amp; Data Analytics (Excel, Sheets)</text>
+      <text x="52" y="40" class="text-label" fill="#64748b">File Formats: .xlsx, .csv, .tsv, .xlsm (Macro-Enabled)</text>
+      <text x="14" y="66" class="text-label" fill="#cbd5e1">Key Function: Grid calculation, mathematical formulas (=SUM, =VLOOKUP, =XLOOKUP).</text>
+      <text x="14" y="84" class="text-label" fill="#94a3b8">Analytical Engines: Pivot tables, charting, multi-table relationship modeling.</text>
+      <text x="14" y="102" class="text-label" fill="#94a3b8">Technician Focus: Differentiating plain text CSV exports from formula-rich workbooks.</text>
+    </g>
+
+    <!-- Pillar 3: Presentations -->
+    <g transform="translate(20, 314)">
+      <rect width="500" height="114" class="inner-card" />
+      <rect x="14" y="12" width="28" height="28" rx="4" fill="#431407" stroke="#ea580c" />
+      <text x="28" y="31" font-family="'JetBrains Mono', monospace" font-size="14px" font-weight="800" fill="#fb923c" text-anchor="middle">P</text>
+      <text x="52" y="25" class="text-val-mono" font-weight="700" fill="#fed7aa">Presentation Software (PowerPoint, Slides)</text>
+      <text x="52" y="40" class="text-label" fill="#64748b">File Formats: .pptx, .ppsx (Direct Slide Show)</text>
+      <text x="14" y="66" class="text-label" fill="#cbd5e1">Key Function: Slide master decks, multimedia playback, executive communication.</text>
+      <text x="14" y="84" class="text-label" fill="#94a3b8">Display Modes: Dual-monitor Presenter View (notes on laptop, slides on projector).</text>
+      <text x="14" y="102" class="text-label" fill="#94a3b8">Technician Focus: Embedded media compression to prevent 500 MB email attachment fails.</text>
+    </g>
+
+    <!-- Pillar 4: Cloud Sync & Collaboration -->
+    <g transform="translate(20, 442)">
+      <rect width="500" height="124" class="inner-card" />
+      <rect x="14" y="12" width="28" height="28" rx="4" fill="#3b0764" stroke="#9333ea" />
+      <text x="28" y="31" font-family="'JetBrains Mono', monospace" font-size="14px" font-weight="800" fill="#c084fc" text-anchor="middle">C</text>
+      <text x="52" y="25" class="text-val-mono" font-weight="700" fill="#e9d5ff">Cloud Synchronization (OneDrive, Drive, SharePoint)</text>
+      <text x="52" y="40" class="text-label" fill="#64748b">Protocols: HTTPS / WebDAV / REST Sync APIs</text>
+      <text x="14" y="66" class="text-label" fill="#cbd5e1">Concurrent Editing: Multiple team members typing in the same file simultaneously.</text>
+      <text x="14" y="84" class="text-label" fill="#94a3b8">Lock Arbitration: Paragraph and cell-level locks prevent conflicting write overwrites.</text>
+      <text x="14" y="102" class="text-label" fill="#94a3b8">Version History: Immediate point-in-time restore defends against accidental deletion.</text>
+    </g>
+  </g>
+
+  <!-- Panel 2: Right Column - Cybersecurity & Threat Defense (width 540) -->
+  <g transform="translate(615, 115)">
+    <rect width="540" height="590" class="card-bg" stroke="#dc2626" />
+    <text class="text-section" x="20" y="26" fill="#f87171">2. Cybersecurity Controls &amp; Document Hardening</text>
+    <text class="text-label" x="20" y="44">CompTIA exam-tested defensive countermeasures for productivity files</text>
+
+    <!-- Threat 1: VBA Macro Attack & MoTW Defense -->
+    <g transform="translate(20, 58)">
+      <rect width="500" height="165" class="inner-card" stroke="#b91c1c" />
+      <rect x="14" y="12" width="200" height="24" rx="4" fill="#3f1313" />
+      <text x="22" y="28" class="badge-text" fill="#f87171">⚠️ MALICIOUS VBA MACROS</text>
+
+      <text x="14" y="54" class="text-val-mono" font-weight="700" fill="#fca5a5">The Attack Vector:</text>
+      <text x="14" y="72" class="text-label" fill="#cbd5e1">Adversaries embed malicious VBA code in invoices (.docm, .xlsm).</text>
+      <text x="14" y="88" class="text-label" fill="#cbd5e1">Enabling macro content silently downloads and executes ransomware.</text>
+
+      <rect x="14" y="102" width="472" height="52" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="24" y="120" class="text-val-mono" font-size="11px" font-weight="700" fill="#38bdf8">The Enterprise Countermeasure (Mark of the Web):</text>
+      <text x="24" y="136" class="text-label" fill="#cbd5e1">Downloads receive an NTFS <tspan fill="#fbbf24" font-family="'JetBrains Mono', monospace">Zone.Identifier=3</tspan> stream.</text>
+      <text x="24" y="149" class="text-label" fill="#cbd5e1">Office automatically blocks all macros on MoTW-tagged documents.</text>
+    </g>
+
+    <!-- Threat 2: Document Inspector (Metadata Leaks) -->
+    <g transform="translate(20, 237)">
+      <rect width="500" height="165" class="inner-card" stroke="#d97706" />
+      <rect x="14" y="12" width="230" height="24" rx="4" fill="#382106" />
+      <text x="22" y="28" class="badge-text" fill="#fbbf24">🔍 DOCUMENT INSPECTOR (METADATA)</text>
+
+      <text x="14" y="54" class="text-val-mono" font-weight="700" fill="#fde68a">The Privacy &amp; Reconnaissance Risk:</text>
+      <text x="14" y="72" class="text-label" fill="#cbd5e1">Documents hide sensitive data: author identities, local network paths,</text>
+      <text x="14" y="88" class="text-label" fill="#cbd5e1">deleted draft text, and confidential internal reviewer comments.</text>
+
+      <rect x="14" y="102" width="472" height="52" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="24" y="119" class="text-val-mono" font-size="11px" font-weight="700" fill="#34d399">The Sanitization Defense:</text>
+      <text x="24" y="135" class="text-label" fill="#cbd5e1">Run <tspan fill="#60a5fa" font-weight="700">Document Inspector</tspan> before distribution to scrub hidden</text>
+      <text x="24" y="148" class="text-label" fill="#cbd5e1">author names, revision history, and confidential draft comments.</text>
+    </g>
+
+    <!-- Threat 3: Cryptography & Digital Signatures -->
+    <g transform="translate(20, 416)">
+      <rect width="500" height="150" class="inner-card" stroke="#059669" />
+      <rect x="14" y="12" width="230" height="24" rx="4" fill="#063223" />
+      <text x="22" y="28" class="badge-text" fill="#34d399">🔐 CRYPTOGRAPHY &amp; PERMISSIONS</text>
+
+      <text x="14" y="54" class="text-val-mono" font-weight="700" fill="#a7f3d0">Data Protection in Flight &amp; at Rest:</text>
+      <text x="14" y="72" class="text-label" fill="#cbd5e1">• Transport Encryption: TLS 1.3 cryptographic tunnel for cloud syncing.</text>
+      <text x="14" y="88" class="text-label" fill="#cbd5e1">• Rest Encryption: AES-256 bit-level encryption across cloud datacenters.</text>
+
+      <rect x="14" y="100" width="472" height="40" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="24" y="116" class="text-val-mono" font-size="11px" font-weight="700" fill="#38bdf8">Digital Signatures (Non-Repudiation):</text>
+      <text x="24" y="131" class="text-label" fill="#cbd5e1">PKI certificate hashes verify the document was not altered in transit.</text>
+    </g>
+  </g>
+</svg>

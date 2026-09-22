@@ -1,0 +1,169 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 740" width="100%" height="100%">
+  <defs>
+    <style>
+      .bg { fill: #070b14; }
+      .card-bg { fill: #0d1527; stroke: #1e293b; stroke-width: 1.5; rx: 10px; }
+      .inner-card { fill: #111c35; stroke: #25334d; stroke-width: 1; rx: 6px; }
+      .text-title { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 26px; font-weight: 700; fill: #f8fafc; }
+      .text-subtitle { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 14px; fill: #94a3b8; }
+      .text-section { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 13px; font-weight: 700; fill: #38bdf8; letter-spacing: 0.08em; text-transform: uppercase; }
+      .text-label { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 12px; fill: #94a3b8; }
+      .text-val-mono { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 12px; fill: #e2e8f0; }
+      .th-cell { font-family: 'Segoe UI', sans-serif; font-size: 14px; font-weight: 700; text-anchor: middle; }
+      .td-cell { font-family: 'JetBrains Mono', monospace; font-size: 12px; fill: #cbd5e1; text-anchor: middle; }
+      .td-warn { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; fill: #f87171; text-anchor: middle; }
+      .td-good { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; fill: #34d399; text-anchor: middle; }
+      .th-head { font-family: 'Segoe UI', sans-serif; font-size: 13px; font-weight: 700; fill: #94a3b8; text-anchor: start; }
+    </style>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1200" height="740" class="bg" />
+  <rect x="15" y="15" width="1170" height="710" rx="14" fill="none" stroke="#1e293b" stroke-width="1.5" />
+
+  <!-- Title Header -->
+  <g transform="translate(45, 55)">
+    <text class="text-title" x="0" y="0">Modern File Systems Architecture &amp; Comparison</text>
+    <text class="text-subtitle" x="0" y="24">Technical Limits, Journaling, Security Controls, and Cross-Platform Storage Standards</text>
+    <rect x="0" y="38" width="1110" height="1" fill="#1e293b" />
+  </g>
+
+  <!-- Panel 1: Master Comparison Matrix -->
+  <g transform="translate(45, 115)">
+    <rect width="1110" height="340" class="card-bg" />
+    <text class="text-section" x="20" y="26">1. Cross-Platform File System Comparison Matrix</text>
+    <text class="text-label" x="840" y="26">CompTIA Tech+ (FC0-U71) Objective 3.1</text>
+
+    <!-- Table Container -->
+    <g transform="translate(20, 42)">
+      <!-- Column Header Row Background -->
+      <rect x="0" y="0" width="1070" height="36" fill="#152038" rx="6" />
+
+      <!-- Column Headers -->
+      <text x="15" y="23" class="th-head">FILE SYSTEM FEATURE</text>
+      <!-- FAT32 -->
+      <text x="260" y="23" class="th-cell" fill="#fbbf24">FAT32</text>
+      <!-- exFAT -->
+      <text x="440" y="23" class="th-cell" fill="#38bdf8">exFAT</text>
+      <!-- NTFS -->
+      <text x="620" y="23" class="th-cell" fill="#60a5fa">NTFS</text>
+      <!-- ext4 -->
+      <text x="800" y="23" class="th-cell" fill="#34d399">ext4</text>
+      <!-- APFS -->
+      <text x="980" y="23" class="th-cell" fill="#c084fc">APFS</text>
+
+      <!-- Row 1: Primary Platform -->
+      <rect x="0" y="42" width="1070" height="36" fill="#0d172a" rx="4" />
+      <text x="15" y="65" class="text-val-mono" fill="#94a3b8">Native OS Platform</text>
+      <text x="260" y="65" class="td-cell">Universal / Legacy</text>
+      <text x="440" y="65" class="td-cell">Cross-Platform</text>
+      <text x="620" y="65" class="td-cell" fill="#93c5fd">Windows (Default)</text>
+      <text x="800" y="65" class="td-cell" fill="#6ee7b7">Linux (Default)</text>
+      <text x="980" y="65" class="td-cell" fill="#e9d5ff">Apple macOS / iOS</text>
+
+      <!-- Row 2: Max Single File Size -->
+      <rect x="0" y="82" width="1070" height="42" fill="#111f38" rx="4" />
+      <text x="15" y="102" class="text-val-mono" font-weight="700" fill="#f8fafc">Max Single File Size</text>
+      <text x="15" y="116" class="text-label" fill="#64748b">(Architectural Limit)</text>
+      <rect x="180" y="86" width="160" height="34" rx="4" fill="#3f1313" stroke="#b91c1c" stroke-width="1" />
+      <text x="260" y="108" class="td-warn">4 GB (Hard Trap)</text>
+      <text x="440" y="108" class="td-good">16 EB (Unlimited)</text>
+      <text x="620" y="108" class="td-good">16 TB - 8 PB</text>
+      <text x="800" y="108" class="td-good">16 TB</text>
+      <text x="980" y="108" class="td-good">8 EB</text>
+
+      <!-- Row 3: Max Volume Capacity -->
+      <rect x="0" y="128" width="1070" height="36" fill="#0d172a" rx="4" />
+      <text x="15" y="151" class="text-val-mono" fill="#94a3b8">Max Volume Capacity</text>
+      <text x="260" y="151" class="td-cell">32 GB (Win) / 2 TB</text>
+      <text x="440" y="151" class="td-cell">128 PB</text>
+      <text x="620" y="151" class="td-cell">8 PB</text>
+      <text x="800" y="151" class="td-cell">1 EB</text>
+      <text x="980" y="151" class="td-cell">8 EB</text>
+
+      <!-- Row 4: Journaling (Crash Recovery) -->
+      <rect x="0" y="168" width="1070" height="36" fill="#111f38" rx="4" />
+      <text x="15" y="191" class="text-val-mono" fill="#94a3b8">Journaling Support</text>
+      <text x="260" y="191" class="td-warn">❌ None</text>
+      <text x="440" y="191" class="td-warn">❌ None</text>
+      <text x="620" y="191" class="td-good">✅ Yes (USN Log)</text>
+      <text x="800" y="191" class="td-good">✅ Yes (JBD2)</text>
+      <text x="980" y="191" class="td-good">✅ Copy-on-Write</text>
+
+      <!-- Row 5: File Security & Permissions -->
+      <rect x="0" y="208" width="1070" height="36" fill="#0d172a" rx="4" />
+      <text x="15" y="231" class="text-val-mono" fill="#94a3b8">Security Permissions</text>
+      <text x="260" y="231" class="td-warn">❌ No ACLs</text>
+      <text x="440" y="231" class="td-warn">❌ No ACLs</text>
+      <text x="620" y="231" class="td-good">✅ NTFS ACLs</text>
+      <text x="800" y="231" class="td-good">✅ POSIX (chmod)</text>
+      <text x="980" y="231" class="td-good">✅ POSIX + ACLs</text>
+
+      <!-- Row 6: Optimal Deployment Role -->
+      <rect x="0" y="248" width="1070" height="36" fill="#111f38" rx="4" />
+      <text x="15" y="271" class="text-val-mono" font-weight="700" fill="#38bdf8">Ideal Use Case</text>
+      <text x="260" y="271" class="td-cell">Older TVs, Cameras</text>
+      <text x="440" y="271" class="td-cell">USB Flash Drives</text>
+      <text x="620" y="271" class="td-cell">Windows Boot / SSD</text>
+      <text x="800" y="271" class="td-cell">Linux Servers</text>
+      <text x="980" y="271" class="td-cell">Macs / iPhones / iPad</text>
+    </g>
+  </g>
+
+  <!-- Panel 2: Three Core CompTIA Architectural Insights -->
+  <g transform="translate(45, 475)">
+    <!-- Card A: The FAT32 4GB Trap -->
+    <g transform="translate(0, 0)">
+      <rect width="350" height="230" class="card-bg" stroke="#b91c1c" />
+      <rect x="16" y="16" width="318" height="28" rx="4" fill="#3f1313" />
+      <text x="26" y="35" class="text-val-mono" font-weight="700" fill="#f87171">⚠️ THE FAT32 4 GB TRAP</text>
+      
+      <text x="16" y="66" class="text-label" fill="#e2e8f0" font-weight="600">Symptom:</text>
+      <text x="16" y="84" class="text-label" fill="#94a3b8">Copying a 6.5 GB ISO image or virtual disk</text>
+      <text x="16" y="100" class="text-label" fill="#94a3b8">to an empty 64 GB USB drive triggers</text>
+      <text x="16" y="116" class="text-val-mono" fill="#f87171" font-size="11px">'File Too Large for Destination'.</text>
+      
+      <rect x="16" y="132" width="318" height="82" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="26" y="152" class="text-val-mono" font-size="11px" font-weight="700" fill="#38bdf8">Architectural Root Cause:</text>
+      <text x="26" y="170" class="text-label" fill="#cbd5e1">32-bit internal file pointer field caps</text>
+      <text x="26" y="186" class="text-label" fill="#cbd5e1">any single file at 2³² - 1 bytes</text>
+      <text x="26" y="202" class="text-val-mono" font-size="11px" fill="#fbbf24">(4,294,967,295 bytes ≈ 4.0 GB).</text>
+    </g>
+
+    <!-- Card B: Journaling vs Data Corruption -->
+    <g transform="translate(380, 0)">
+      <rect width="350" height="230" class="card-bg" stroke="#1d4ed8" />
+      <rect x="16" y="16" width="318" height="28" rx="4" fill="#172554" />
+      <text x="26" y="35" class="text-val-mono" font-weight="700" fill="#60a5fa">🛡️ JOURNALING RESILIENCY</text>
+
+      <text x="16" y="66" class="text-label" fill="#e2e8f0" font-weight="600">The Power Loss Problem:</text>
+      <text x="16" y="84" class="text-label" fill="#94a3b8">Sudden power cuts during disk writes</text>
+      <text x="16" y="100" class="text-label" fill="#94a3b8">corrupt FAT32 master tables, requiring</text>
+      <text x="16" y="116" class="text-label" fill="#94a3b8">time-consuming CHKDSK scans.</text>
+
+      <rect x="16" y="132" width="318" height="82" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="26" y="152" class="text-val-mono" font-size="11px" font-weight="700" fill="#34d399">The NTFS / ext4 Fix:</text>
+      <text x="26" y="170" class="text-label" fill="#cbd5e1">Writes intentions to an active circular log</text>
+      <text x="26" y="186" class="text-label" fill="#cbd5e1">before touching disk blocks. On boot, it</text>
+      <text x="26" y="202" class="text-label" fill="#cbd5e1">instantly replays or rolls back unfinished I/O.</text>
+    </g>
+
+    <!-- Card C: Thumb Drive Strategy (exFAT) -->
+    <g transform="translate(760, 0)">
+      <rect width="350" height="230" class="card-bg" stroke="#059669" />
+      <rect x="16" y="16" width="318" height="28" rx="4" fill="#063223" />
+      <text x="26" y="35" class="text-val-mono" font-weight="700" fill="#34d399">💾 REMOVABLE FLASH STRATEGY</text>
+
+      <text x="16" y="66" class="text-label" fill="#e2e8f0" font-weight="600">Why Not NTFS on USB Drives?</text>
+      <text x="16" y="84" class="text-label" fill="#94a3b8">macOS can only READ NTFS out of the box,</text>
+      <text x="16" y="100" class="text-label" fill="#94a3b8">and continuous journaling creates heavy</text>
+      <text x="16" y="116" class="text-label" fill="#94a3b8">write wear on flash memory cells.</text>
+
+      <rect x="16" y="132" width="318" height="82" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="26" y="152" class="text-val-mono" font-size="11px" font-weight="700" fill="#38bdf8">The exFAT Solution:</text>
+      <text x="26" y="170" class="text-label" fill="#cbd5e1">Lightweight, low flash wear, native</text>
+      <text x="26" y="186" class="text-label" fill="#cbd5e1">read/write on Windows AND macOS,</text>
+      <text x="26" y="202" class="text-label" fill="#cbd5e1">with completely removed 4 GB file limits.</text>
+    </g>
+  </g>
+</svg>

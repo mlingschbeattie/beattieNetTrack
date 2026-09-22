@@ -1,0 +1,174 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 740" width="100%" height="100%">
+  <defs>
+    <style>
+      .bg { fill: #070b14; }
+      .card-bg { fill: #0d1527; stroke: #1e293b; stroke-width: 1.5; rx: 10px; }
+      .inner-card { fill: #111c35; stroke: #25334d; stroke-width: 1; rx: 6px; }
+      .text-title { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 26px; font-weight: 700; fill: #f8fafc; }
+      .text-subtitle { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 14px; fill: #94a3b8; }
+      .text-section { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+      .text-label { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 12px; fill: #94a3b8; }
+      .text-val-mono { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 12px; fill: #e2e8f0; }
+      .badge-text { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1200" height="740" class="bg" />
+  <rect x="15" y="15" width="1170" height="710" rx="14" fill="none" stroke="#1e293b" stroke-width="1.5" />
+
+  <!-- Title Header -->
+  <g transform="translate(45, 55)">
+    <text class="text-title" x="0" y="0">Operating System Architecture &amp; Privilege Hierarchy</text>
+    <text class="text-subtitle" x="0" y="24">Separation of User Space (Ring 3), System Call Gateway, Kernel Space (Ring 0), and Physical Hardware</text>
+    <rect x="0" y="38" width="1110" height="1" fill="#1e293b" />
+  </g>
+
+  <!-- Layer 1: User Mode (Ring 3) -->
+  <g transform="translate(45, 115)">
+    <rect width="1110" height="130" class="card-bg" stroke="#0284c7" />
+    
+    <!-- Header Banner -->
+    <rect x="15" y="12" width="220" height="24" rx="4" fill="#0c2340" stroke="#0284c7" stroke-width="1" />
+    <text x="125" y="28" class="badge-text" fill="#38bdf8">USER MODE (RING 3)</text>
+    <text x="250" y="28" class="text-label" fill="#94a3b8">Unprivileged Sandboxed Space — Application failures isolate safely without halting the operating system</text>
+
+    <!-- Two Sub-blocks -->
+    <!-- Block 1: User Applications -->
+    <g transform="translate(15, 45)">
+      <rect width="530" height="72" class="inner-card" />
+      <text x="16" y="24" class="text-val-mono" font-weight="700" fill="#38bdf8">User Applications (Productivity, Web, Media)</text>
+      <text x="16" y="44" class="text-label" fill="#cbd5e1">Web Browsers (Chrome, Edge), Office Suites (Word, Excel), Games, Media Players.</text>
+      <text x="16" y="60" class="text-label" fill="#64748b">Protected memory space: Cannot read memory blocks assigned to other programs or OS.</text>
+    </g>
+
+    <!-- Block 2: User Shells & Interfaces -->
+    <g transform="translate(565, 45)">
+      <rect width="530" height="72" class="inner-card" />
+      <text x="16" y="24" class="text-val-mono" font-weight="700" fill="#38bdf8">User Shells &amp; Graphical Interfaces</text>
+      <text x="16" y="44" class="text-label" fill="#cbd5e1">Desktop GUI (Windows Explorer, macOS Aqua) &amp; Command Line (PowerShell, Bash).</text>
+      <text x="16" y="60" class="text-label" fill="#64748b">Translates user keystrokes, clicks, and script commands into formal system requests.</text>
+    </g>
+  </g>
+
+  <!-- Layer 2: The System Call Gateway (Syscall Barrier) -->
+  <g transform="translate(45, 260)">
+    <rect width="1110" height="54" rx="8" fill="#152038" stroke="#38bdf8" stroke-width="1.5" />
+    <text x="25" y="32" class="text-val-mono" font-weight="700" fill="#38bdf8">🔒 SYSTEM CALL (SYSCALL) API GATEWAY</text>
+    <text x="320" y="32" class="text-label" fill="#e2e8f0">
+      Strict Hardware Gate: User code cannot touch hardware registers. All I/O must request kernel mediation via 
+      <tspan fill="#34d399" font-family="'JetBrains Mono', monospace">read()</tspan>, 
+      <tspan fill="#34d399" font-family="'JetBrains Mono', monospace">write()</tspan>, 
+      <tspan fill="#34d399" font-family="'JetBrains Mono', monospace">open()</tspan>, 
+      <tspan fill="#34d399" font-family="'JetBrains Mono', monospace">fork()</tspan>.
+    </text>
+  </g>
+
+  <!-- Layer 3: Kernel Mode (Ring 0) -->
+  <g transform="translate(45, 330)">
+    <rect width="1110" height="210" class="card-bg" stroke="#d97706" />
+    
+    <!-- Header Banner -->
+    <rect x="15" y="12" width="220" height="24" rx="4" fill="#382106" stroke="#d97706" stroke-width="1" />
+    <text x="125" y="28" class="badge-text" fill="#fbbf24">KERNEL MODE (RING 0)</text>
+    <text x="250" y="28" class="text-label" fill="#94a3b8">Privileged Supervisor Space — Direct, unrestricted execution of CPU instructions and memory registers</text>
+
+    <!-- 4 Modular Subsystem Boxes (width 260 each, gap 15) -->
+    <!-- Module 1: CPU Scheduler -->
+    <g transform="translate(15, 45)">
+      <rect width="260" height="110" class="inner-card" />
+      <text x="14" y="24" class="text-val-mono" font-weight="700" fill="#fbbf24">1. Process Scheduler</text>
+      <text x="14" y="46" class="text-label" fill="#cbd5e1">Allocates CPU core cycles.</text>
+      <text x="14" y="64" class="text-label" fill="#94a3b8">Manages multitasking,</text>
+      <text x="14" y="82" class="text-label" fill="#94a3b8">thread priorities, and</text>
+      <text x="14" y="100" class="text-label" fill="#94a3b8">hardware interrupt handling.</text>
+    </g>
+
+    <!-- Module 2: Memory Manager -->
+    <g transform="translate(290, 45)">
+      <rect width="260" height="110" class="inner-card" />
+      <text x="14" y="24" class="text-val-mono" font-weight="700" fill="#fbbf24">2. Virtual Memory (VMM)</text>
+      <text x="14" y="46" class="text-label" fill="#cbd5e1">Maps virtual pages to RAM.</text>
+      <text x="14" y="64" class="text-label" fill="#94a3b8">Enforces page boundaries,</text>
+      <text x="14" y="82" class="text-label" fill="#94a3b8">prevents buffer overflows,</text>
+      <text x="14" y="100" class="text-label" fill="#94a3b8">and manages swap/pagefile.</text>
+    </g>
+
+    <!-- Module 3: File System & Storage -->
+    <g transform="translate(565, 45)">
+      <rect width="260" height="110" class="inner-card" />
+      <text x="14" y="24" class="text-val-mono" font-weight="700" fill="#fbbf24">3. File System &amp; I/O</text>
+      <text x="14" y="46" class="text-label" fill="#cbd5e1">Indexes data blocks.</text>
+      <text x="14" y="64" class="text-label" fill="#94a3b8">Executes NTFS/ext4/APFS</text>
+      <text x="14" y="82" class="text-label" fill="#94a3b8">read/write requests,</text>
+      <text x="14" y="100" class="text-label" fill="#94a3b8">journaling, and disk cache.</text>
+    </g>
+
+    <!-- Module 4: Device Drivers -->
+    <g transform="translate(840, 45)">
+      <rect width="255" height="110" class="inner-card" />
+      <text x="14" y="24" class="text-val-mono" font-weight="700" fill="#fbbf24">4. Device Drivers</text>
+      <text x="14" y="46" class="text-label" fill="#cbd5e1">Translates OS commands</text>
+      <text x="14" y="64" class="text-label" fill="#94a3b8">into silicon signals for</text>
+      <text x="14" y="82" class="text-label" fill="#94a3b8">GPUs, NVMe controllers,</text>
+      <text x="14" y="100" class="text-label" fill="#94a3b8">NICs, and audio cards.</text>
+    </g>
+
+    <!-- Warning Strip: BSOD / Kernel Panic -->
+    <rect x="15" y="166" width="1080" height="32" rx="4" fill="#3f1313" stroke="#b91c1c" stroke-width="1" />
+    <text x="25" y="186" class="text-val-mono" font-size="11px" font-weight="700" fill="#f87171">
+      ⚠️ CRITICAL CONSEQUENCE: A bug or unhandled crash inside Kernel Mode halts the entire CPU immediately → Windows Blue Screen of Death (BSOD) / Linux Kernel Panic.
+    </text>
+  </g>
+
+  <!-- Layer 4: Hardware Abstraction Layer (HAL) & Silicon -->
+  <g transform="translate(45, 555)">
+    <rect width="1110" height="150" class="card-bg" stroke="#10b981" />
+    
+    <!-- HAL Strip -->
+    <rect x="15" y="12" width="1080" height="34" rx="4" fill="#063223" stroke="#059669" stroke-width="1" />
+    <text x="25" y="34" class="text-val-mono" font-weight="700" fill="#34d399">HARDWARE ABSTRACTION LAYER (HAL):</text>
+    <text x="315" y="34" class="text-label" fill="#cbd5e1">
+      Isolates the kernel from motherboard chipset quirks, allowing the exact same OS build to run across Intel, AMD, and ARM64 platforms.
+    </text>
+
+    <!-- Physical Hardware Chips & Buses (5 cards, width 205 each, gap 13) -->
+    <g transform="translate(15, 56)">
+      <!-- HW 1: CPU -->
+      <g transform="translate(0, 0)">
+        <rect width="205" height="80" class="inner-card" />
+        <text x="12" y="24" class="text-val-mono" font-weight="700" fill="#6ee7b7">CPU Silicon</text>
+        <text x="12" y="44" class="text-label">x86_64 / ARM64</text>
+        <text x="12" y="62" class="text-label" fill="#64748b">Cores, L1/L2/L3 Cache</text>
+      </g>
+      <!-- HW 2: RAM -->
+      <g transform="translate(218, 0)">
+        <rect width="205" height="80" class="inner-card" />
+        <text x="12" y="24" class="text-val-mono" font-weight="700" fill="#6ee7b7">Physical RAM</text>
+        <text x="12" y="44" class="text-label">DDR4 / DDR5 DIMMs</text>
+        <text x="12" y="62" class="text-label" fill="#64748b">Volatile memory cells</text>
+      </g>
+      <!-- HW 3: Storage -->
+      <g transform="translate(436, 0)">
+        <rect width="205" height="80" class="inner-card" />
+        <text x="12" y="24" class="text-val-mono" font-weight="700" fill="#6ee7b7">Non-Volatile Storage</text>
+        <text x="12" y="44" class="text-label">PCIe NVMe / SATA SSD</text>
+        <text x="12" y="62" class="text-label" fill="#64748b">Persistent NAND flash</text>
+      </g>
+      <!-- HW 4: Network -->
+      <g transform="translate(654, 0)">
+        <rect width="205" height="80" class="inner-card" />
+        <text x="12" y="24" class="text-val-mono" font-weight="700" fill="#6ee7b7">Network Adapters</text>
+        <text x="12" y="44" class="text-label">Gigabit NIC / Wi-Fi 6E</text>
+        <text x="12" y="62" class="text-label" fill="#64748b">PHY / MAC packet buffers</text>
+      </g>
+      <!-- HW 5: Motherboard Buses -->
+      <g transform="translate(872, 0)">
+        <rect width="208" height="80" class="inner-card" />
+        <text x="12" y="24" class="text-val-mono" font-weight="700" fill="#6ee7b7">Chipset &amp; System Buses</text>
+        <text x="12" y="44" class="text-label">PCIe, USB 3.2, SATA</text>
+        <text x="12" y="62" class="text-label" fill="#64748b">High-speed DMA lanes</text>
+      </g>
+    </g>
+  </g>
+</svg>
