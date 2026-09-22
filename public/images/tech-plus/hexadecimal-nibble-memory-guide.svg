@@ -139,7 +139,8 @@
       <text x="330" y="275" class="text-val-mono" fill="#67e8f9">= 11010110₂</text>
     </g>
 
-    <text x="25" y="360" class="text-label" fill="#64748b">Benefit: 2 characters replaces an 8-character binary string, dramatically reducing human error.</text>
+    <text x="25" y="352" class="text-label" fill="#64748b">Benefit: 2 hex characters replace an 8-bit binary byte,</text>
+    <text x="25" y="368" class="text-label" fill="#64748b">dramatically reducing human transcription errors.</text>
   </g>
 
   <!-- Panel 3: Technical Applications (MAC, RGB, Memory Pointer) -->

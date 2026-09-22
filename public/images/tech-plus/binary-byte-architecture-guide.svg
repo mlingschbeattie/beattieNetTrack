@@ -163,10 +163,10 @@
       <text x="340" y="126" class="text-val-mono" fill="#34d399">256 states (0 to 255)</text>
 
       <!-- Key technician rule -->
-      <rect y="152" width="500" height="48" fill="#0d1b30" stroke="#1d4ed8" rx="6" />
-      <text x="15" y="181" class="text-val-mono" fill="#93c5fd">
-        <tspan font-weight="700" fill="#60a5fa">Technician Rule:</tspan> Lowercase 'b' = bits (network transfer speed); Uppercase 'B' = bytes (storage size).
-      </text>
+      <rect y="150" width="500" height="54" fill="#0d1b30" stroke="#1d4ed8" rx="6" />
+      <text x="15" y="172" class="text-val-mono" fill="#60a5fa" font-weight="700">Technician Rule:</text>
+      <text x="130" y="172" class="text-val-mono" fill="#93c5fd">Lowercase 'b' = bits (network transfer speed)</text>
+      <text x="15" y="192" class="text-val-mono" fill="#93c5fd">Uppercase 'B' = bytes (storage capacity &amp; RAM size)</text>
     </g>
   </g>
 </svg>
