@@ -39,26 +39,26 @@
 
       <!-- Step 1 & 2 Diagram -->
       <rect x="12" y="38" width="501" height="88" rx="4" fill="#070b14" stroke="#1e293b" />
-      <rect x="20" y="48" width="110" height="42" rx="3" fill="#111c35" stroke="#3b82f6" />
-      <text x="75" y="66" class="badge-text" fill="#93c5fd">DOCUMENT</text>
-      <text x="75" y="80" class="text-val-mono" font-size="9px" text-anchor="middle" fill="#cbd5e1">"Contract.pdf"</text>
+      <rect x="20" y="48" width="140" height="68" rx="3" fill="#111c35" stroke="#3b82f6" />
+      <text x="90" y="66" class="badge-text" fill="#93c5fd">DOCUMENT</text>
+      <text x="90" y="82" class="text-val-mono" font-size="9.5px" text-anchor="middle" fill="#cbd5e1">"Contract.pdf"</text>
+      <text x="90" y="98" class="text-label" font-size="9px" text-anchor="middle" fill="#64748b">Original Payload</text>
 
-      <path d="M 135 69 L 160 69" stroke="#38bdf8" stroke-width="2" />
-      <polygon points="160,65 168,69 160,73" fill="#38bdf8" />
+      <path d="M 164 82 L 186 82" stroke="#38bdf8" stroke-width="2" />
+      <polygon points="186,78 192,82 186,86" fill="#38bdf8" />
 
-      <rect x="173" y="48" width="125" height="42" rx="3" fill="#111c35" stroke="#10b981" />
-      <text x="235" y="66" class="badge-text" fill="#34d399">SHA-256 HASH</text>
-      <text x="235" y="80" class="text-val-mono" font-size="9px" text-anchor="middle" fill="#a7f3d0">32-Byte Digest</text>
+      <rect x="194" y="48" width="140" height="68" rx="3" fill="#111c35" stroke="#10b981" />
+      <text x="264" y="66" class="badge-text" fill="#34d399">SHA-256 HASH</text>
+      <text x="264" y="82" class="text-val-mono" font-size="9.5px" text-anchor="middle" fill="#a7f3d0">32-Byte Digest</text>
+      <text x="264" y="98" class="text-label" font-size="9px" text-anchor="middle" fill="#64748b">One-Way Fingerprint</text>
 
-      <path d="M 303 69 L 328 69" stroke="#38bdf8" stroke-width="2" />
-      <polygon points="328,65 336,69 328,73" fill="#38bdf8" />
+      <path d="M 338 82 L 360 82" stroke="#38bdf8" stroke-width="2" />
+      <polygon points="360,78 366,82 360,86" fill="#38bdf8" />
 
-      <rect x="341" y="48" width="160" height="68" rx="3" fill="#450a0a" stroke="#ef4444" />
-      <text x="421" y="66" class="badge-text" fill="#fca5a5">ENCRYPT WITH</text>
-      <text x="421" y="80" class="badge-text" fill="#fca5a5">ALICE'S PRIVATE KEY</text>
-      <text x="421" y="102" class="text-val-mono" font-size="9px" text-anchor="middle" fill="#fecaca">= DIGITAL SIGNATURE</text>
-
-      <text x="20" y="112" class="text-label" font-size="10px" fill="#94a3b8">Message is hashed first for performance (signing a 32-byte hash is instant).</text>
+      <rect x="368" y="48" width="136" height="68" rx="3" fill="#450a0a" stroke="#ef4444" />
+      <text x="436" y="66" class="badge-text" fill="#fca5a5">ENCRYPT DIGEST</text>
+      <text x="436" y="82" class="text-val-mono" font-size="9.5px" text-anchor="middle" fill="#fecaca">Alice's Private Key</text>
+      <text x="436" y="98" class="badge-text" font-size="8.5px" fill="#f87171">= DIGITAL SIGNATURE</text>
 
       <!-- Steps Explanation -->
       <rect x="12" y="134" width="501" height="114" rx="4" fill="#070b14" stroke="#1e293b" />
