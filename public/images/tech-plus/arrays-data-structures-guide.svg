@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 740" width="100%" height="100%">
+  <defs>
+    <style>
+      .bg { fill: #070b14; }
+      .card-bg { fill: #0d1527; stroke: #1e293b; stroke-width: 1.5; rx: 10px; }
+      .inner-card { fill: #111c35; stroke: #25334d; stroke-width: 1; rx: 6px; }
+      .text-title { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 26px; font-weight: 700; fill: #f8fafc; }
+      .text-subtitle { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 14px; fill: #94a3b8; }
+      .text-section { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+      .text-label { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 12px; fill: #94a3b8; }
+      .text-val-mono { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 12px; fill: #e2e8f0; }
+      .badge-text { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1200" height="740" class="bg" />
+  <rect x="15" y="15" width="1170" height="710" rx="14" fill="none" stroke="#1e293b" stroke-width="1.5" />
+
+  <!-- Title Header -->
+  <g transform="translate(45, 55)">
+    <text class="text-title" x="0" y="0">Array Data Structures &amp; Memory Layout</text>
+    <text class="text-subtitle" x="0" y="24">Contiguous Physical RAM Allocation, Zero-Based Index Calculation, and Boundary Safety</text>
+    <rect x="0" y="38" width="1110" height="1" fill="#1e293b" />
+  </g>
+
+  <!-- Panel 1: Physical Contiguous Layout & Index Math (Width 1110, Height 330) -->
+  <g transform="translate(45, 115)">
+    <rect width="1110" height="325" class="card-bg" stroke="#0284c7" />
+    <text class="text-section" x="20" y="26" fill="#38bdf8">1. Physical Contiguous RAM Layout: Array of 5 Integers (int scores[5])</text>
+    <text class="text-label" x="840" y="26">CompTIA Tech+ (FC0-U71) Objective 4.3</text>
+
+    <!-- 5 Contiguous Memory Cells (width 190 each, gap 15) -->
+    <g transform="translate(45, 45)">
+      <!-- Cell 0 -->
+      <g transform="translate(0, 0)">
+        <rect width="190" height="135" class="inner-card" stroke="#38bdf8" />
+        <rect x="10" y="10" width="170" height="24" rx="4" fill="#0c2340" />
+        <text x="95" y="26" class="badge-text" fill="#38bdf8">INDEX [0] (HEAD)</text>
+        <text x="95" y="70" font-family="'JetBrains Mono', monospace" font-size="28px" font-weight="800" fill="#f8fafc" text-anchor="middle">85</text>
+        <rect x="10" y="85" width="170" height="38" rx="4" fill="#070b14" />
+        <text x="95" y="100" class="text-val-mono" font-size="11px" fill="#38bdf8" text-anchor="middle">0x1000 (Base)</text>
+        <text x="95" y="114" class="text-label" fill="#64748b" text-anchor="middle">Offset: 0 × 4 = +0B</text>
+      </g>
+
+      <!-- Cell 1 -->
+      <g transform="translate(205, 0)">
+        <rect width="190" height="135" class="inner-card" stroke="#38bdf8" />
+        <rect x="10" y="10" width="170" height="24" rx="4" fill="#0c2340" />
+        <text x="95" y="26" class="badge-text" fill="#38bdf8">INDEX [1]</text>
+        <text x="95" y="70" font-family="'JetBrains Mono', monospace" font-size="28px" font-weight="800" fill="#f8fafc" text-anchor="middle">92</text>
+        <rect x="10" y="85" width="170" height="38" rx="4" fill="#070b14" />
+        <text x="95" y="100" class="text-val-mono" font-size="11px" fill="#cbd5e1" text-anchor="middle">0x1004</text>
+        <text x="95" y="114" class="text-label" fill="#64748b" text-anchor="middle">Offset: 1 × 4 = +4B</text>
+      </g>
+
+      <!-- Cell 2 -->
+      <g transform="translate(410, 0)">
+        <rect width="190" height="135" class="inner-card" stroke="#38bdf8" />
+        <rect x="10" y="10" width="170" height="24" rx="4" fill="#0c2340" />
+        <text x="95" y="26" class="badge-text" fill="#38bdf8">INDEX [2]</text>
+        <text x="95" y="70" font-family="'JetBrains Mono', monospace" font-size="28px" font-weight="800" fill="#f8fafc" text-anchor="middle">78</text>
+        <rect x="10" y="85" width="170" height="38" rx="4" fill="#070b14" />
+        <text x="95" y="100" class="text-val-mono" font-size="11px" fill="#cbd5e1" text-anchor="middle">0x1008</text>
+        <text x="95" y="114" class="text-label" fill="#64748b" text-anchor="middle">Offset: 2 × 4 = +8B</text>
+      </g>
+
+      <!-- Cell 3 -->
+      <g transform="translate(615, 0)">
+        <rect width="190" height="135" class="inner-card" stroke="#34d399" />
+        <rect x="10" y="10" width="170" height="24" rx="4" fill="#063223" />
+        <text x="95" y="26" class="badge-text" fill="#34d399">INDEX [3] (TARGET)</text>
+        <text x="95" y="70" font-family="'JetBrains Mono', monospace" font-size="28px" font-weight="800" fill="#34d399" text-anchor="middle">95</text>
+        <rect x="10" y="85" width="170" height="38" rx="4" fill="#070b14" />
+        <text x="95" y="100" class="text-val-mono" font-size="11px" fill="#34d399" text-anchor="middle">0x100C</text>
+        <text x="95" y="114" class="text-label" fill="#64748b" text-anchor="middle">Offset: 3 × 4 = +12B</text>
+      </g>
+
+      <!-- Cell 4 -->
+      <g transform="translate(820, 0)">
+        <rect width="190" height="135" class="inner-card" stroke="#38bdf8" />
+        <rect x="10" y="10" width="170" height="24" rx="4" fill="#0c2340" />
+        <text x="95" y="26" class="badge-text" fill="#38bdf8">INDEX [4] (TAIL)</text>
+        <text x="95" y="70" font-family="'JetBrains Mono', monospace" font-size="28px" font-weight="800" fill="#f8fafc" text-anchor="middle">88</text>
+        <rect x="10" y="85" width="170" height="38" rx="4" fill="#070b14" />
+        <text x="95" y="100" class="text-val-mono" font-size="11px" fill="#cbd5e1" text-anchor="middle">0x1010</text>
+        <text x="95" y="114" class="text-label" fill="#64748b" text-anchor="middle">Offset: 4 × 4 = +16B</text>
+      </g>
+    </g>
+
+    <!-- Formula Banner (Width 1070) -->
+    <g transform="translate(20, 195)">
+      <rect width="1070" height="112" rx="6" fill="#081426" stroke="#1d4ed8" />
+      <text x="25" y="26" class="text-val-mono" font-size="12px" font-weight="700" fill="#38bdf8">
+        THE ZERO-BASED INDEX MATHEMATICAL FORMULA
+      </text>
+      
+      <rect x="25" y="38" width="600" height="30" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="35" y="58" font-family="'JetBrains Mono', monospace" font-size="12px" font-weight="700" fill="#34d399">
+        Target RAM Address = Base Address + (Index × Element Size in Bytes)
+      </text>
+
+      <text x="25" y="86" class="text-label" fill="#cbd5e1">
+        • <tspan font-weight="700" fill="#fbbf24">Why Start at Zero?</tspan> Index 0 represents zero offset from the array's starting memory address (<tspan font-family="'JetBrains Mono', monospace">0x1000 + 0 = 0x1000</tspan>).
+      </text>
+      <text x="25" y="102" class="text-label" fill="#cbd5e1">
+        • <tspan font-weight="700" fill="#60a5fa">O(1) Constant Time Speed:</tspan> Because RAM is contiguous, accessing index 0 or index 999,999 requires the exact same single CPU calculation.
+      </text>
+    </g>
+  </g>
+
+  <!-- Panel 2: Array vs Dynamic List (Bottom Left, Width 540, Height 265) -->
+  <g transform="translate(45, 455)">
+    <rect width="540" height="255" class="card-bg" stroke="#10b981" />
+    <text class="text-section" x="20" y="26" fill="#34d399">2. Fixed Arrays vs. Dynamic Lists</text>
+
+    <!-- Category 1: Fixed Array -->
+    <g transform="translate(20, 42)">
+      <rect width="500" height="92" class="inner-card" />
+      <text x="14" y="22" class="text-val-mono" font-weight="700" fill="#34d399">Fixed-Length Array (Static Allocation)</text>
+      <text x="14" y="40" class="text-label" fill="#cbd5e1">• Capacity is locked at creation time: <tspan font-family="'JetBrains Mono', monospace" fill="#6ee7b7">int scores[5];</tspan></text>
+      <text x="14" y="56" class="text-label" fill="#94a3b8">• Cannot grow or shrink; maximum element capacity cannot be changed.</text>
+      <text x="14" y="72" class="text-label" fill="#94a3b8">• Memory Advantage: Zero memory overhead; minimal hardware footprint.</text>
+    </g>
+
+    <!-- Category 2: Dynamic List -->
+    <g transform="translate(20, 144)">
+      <rect width="500" height="92" class="inner-card" />
+      <text x="14" y="22" class="text-val-mono" font-weight="700" fill="#38bdf8">Dynamic List (ArrayList, Vector, Python list)</text>
+      <text x="14" y="40" class="text-label" fill="#cbd5e1">• Resizes automatically as new elements are appended at runtime.</text>
+      <text x="14" y="56" class="text-label" fill="#94a3b8">• Resize Mechanism: Allocates a new 2× larger heap block and copies data.</text>
+      <text x="14" y="72" class="text-label" fill="#94a3b8">• Developer Trade-Off: High programming flexibility, but carries memory copy cost.</text>
+    </g>
+  </g>
+
+  <!-- Panel 3: Boundary Safety & Traps (Bottom Right, Width 540, Height 265) -->
+  <g transform="translate(615, 455)">
+    <rect width="540" height="255" class="card-bg" stroke="#dc2626" />
+    <text class="text-section" x="20" y="26" fill="#f87171">3. Boundary Safety: The Off-By-One Trap</text>
+
+    <!-- Trap 1: Off-By-One Error -->
+    <g transform="translate(20, 42)">
+      <rect width="500" height="92" class="inner-card" stroke="#b91c1c" />
+      <text x="14" y="22" class="text-val-mono" font-weight="700" fill="#f87171">The Off-By-One Index Trap</text>
+      <text x="14" y="40" class="text-label" fill="#cbd5e1">• For an array of size <tspan font-family="'JetBrains Mono', monospace" fill="#fbbf24">N = 5</tspan>, valid indices are <tspan font-family="'JetBrains Mono', monospace" fill="#67e8f9">0, 1, 2, 3, 4</tspan>.</text>
+      <text x="14" y="56" class="text-label" fill="#cbd5e1">• Common Rookie Bug: Attempting to access <tspan font-family="'JetBrains Mono', monospace" fill="#f87171">scores[5]</tspan> or <tspan font-family="'JetBrains Mono', monospace" fill="#f87171">scores[N]</tspan>.</text>
+      <text x="14" y="72" class="text-label" fill="#fca5a5">• Index 5 is outside the array boundary! It points to unallocated RAM.</text>
+    </g>
+
+    <!-- Trap 2: Runtime Crash vs Buffer Overflow -->
+    <g transform="translate(20, 144)">
+      <rect width="500" height="92" class="inner-card" stroke="#d97706" />
+      <text x="14" y="22" class="text-val-mono" font-weight="700" fill="#fbbf24">Managed Language vs. Native C Failure</text>
+      <text x="14" y="40" class="text-label" fill="#cbd5e1">• Managed (Java/Python/C#): Throws <tspan font-family="'JetBrains Mono', monospace" fill="#fbbf24">IndexOutOfBoundsException</tspan>.</text>
+      <text x="14" y="56" class="text-label" fill="#cbd5e1">• Unmanaged (C/C++): Reads or writes adjacent memory silently,</text>
+      <text x="14" y="72" class="text-label" fill="#fca5a5">causing fatal Buffer Overflow security vulnerabilities.</text>
+    </g>
+  </g>
+</svg>

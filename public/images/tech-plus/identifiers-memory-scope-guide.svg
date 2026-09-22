@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 740" width="100%" height="100%">
+  <defs>
+    <style>
+      .bg { fill: #070b14; }
+      .card-bg { fill: #0d1527; stroke: #1e293b; stroke-width: 1.5; rx: 10px; }
+      .inner-card { fill: #111c35; stroke: #25334d; stroke-width: 1; rx: 6px; }
+      .text-title { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 26px; font-weight: 700; fill: #f8fafc; }
+      .text-subtitle { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 14px; fill: #94a3b8; }
+      .text-section { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+      .text-label { font-family: 'Segoe UI', -apple-system, sans-serif; font-size: 12px; fill: #94a3b8; }
+      .text-val-mono { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 12px; fill: #e2e8f0; }
+      .badge-text { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1200" height="740" class="bg" />
+  <rect x="15" y="15" width="1170" height="710" rx="14" fill="none" stroke="#1e293b" stroke-width="1.5" />
+
+  <!-- Title Header -->
+  <g transform="translate(45, 55)">
+    <text class="text-title" x="0" y="0">Program Memory Allocation &amp; Variable Scope</text>
+    <text class="text-subtitle" x="0" y="24">The Stack vs. Heap Architecture, Scope Boundaries (Global, Local, Block), and Type Systems</text>
+    <rect x="0" y="38" width="1110" height="1" fill="#1e293b" />
+  </g>
+
+  <!-- Panel 1: Stack vs Heap (Width 1110, Height 330) -->
+  <g transform="translate(45, 115)">
+    <rect width="1110" height="325" class="card-bg" stroke="#0284c7" />
+    <text class="text-section" x="20" y="26" fill="#38bdf8">1. Process Memory Architecture: The Stack vs. The Heap</text>
+    <text class="text-label" x="840" y="26">CompTIA Tech+ (FC0-U71) Objective 4.3</text>
+
+    <!-- Left Box: The Call Stack -->
+    <g transform="translate(20, 42)">
+      <rect width="525" height="265" class="inner-card" stroke="#38bdf8" />
+      <rect x="14" y="12" width="220" height="24" rx="4" fill="#0c2340" />
+      <text x="124" y="28" class="badge-text" fill="#38bdf8">THE CALL STACK (LIFO)</text>
+      <text x="245" y="28" class="text-label" fill="#67e8f9">Fast, automatic, thread-local</text>
+
+      <text x="14" y="58" class="text-val-mono" font-weight="700" fill="#93c5fd">What Lives on the Stack:</text>
+      <text x="14" y="76" class="text-label" fill="#cbd5e1">• Local primitive variables: integers, floats, booleans, chars.</text>
+      <text x="14" y="94" class="text-label" fill="#cbd5e1">• Memory pointers / references pointing to objects on the heap.</text>
+      <text x="14" y="112" class="text-label" fill="#cbd5e1">• Function execution return address pointers.</text>
+
+      <rect x="14" y="130" width="497" height="66" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="24" y="148" class="text-val-mono" font-size="11px" font-weight="700" fill="#38bdf8">Lifecycle &amp; Performance:</text>
+      <text x="24" y="166" class="text-label" fill="#cbd5e1">Allocated automatically when a function is invoked. The exact instant</text>
+      <text x="24" y="182" class="text-label" fill="#cbd5e1">the function returns, its frame is popped and memory instantly freed.</text>
+
+      <!-- Risk Trap -->
+      <rect x="14" y="206" width="497" height="44" rx="4" fill="#3f1313" stroke="#b91c1c" />
+      <text x="24" y="224" class="text-val-mono" font-size="11px" font-weight="700" fill="#f87171">⚠️ Boundary Risk: Stack Overflow</text>
+      <text x="24" y="240" class="text-label" fill="#fca5a5">Infinite recursion exhausts thread stack space (typically 1MB–8MB limit).</text>
+    </g>
+
+    <!-- Right Box: The Dynamic Heap -->
+    <g transform="translate(565, 42)">
+      <rect width="525" height="265" class="inner-card" stroke="#f59e0b" />
+      <rect x="14" y="12" width="220" height="24" rx="4" fill="#382106" />
+      <text x="124" y="28" class="badge-text" fill="#fbbf24">THE DYNAMIC HEAP</text>
+      <text x="245" y="28" class="text-label" fill="#fde68a">Large, dynamic, shared memory</text>
+
+      <text x="14" y="58" class="text-val-mono" font-weight="700" fill="#fde68a">What Lives on the Heap:</text>
+      <text x="14" y="76" class="text-label" fill="#cbd5e1">• Complex objects, class instances, dynamic arrays, and lists.</text>
+      <text x="14" y="94" class="text-label" fill="#cbd5e1">• Large text strings, database buffers, image byte arrays.</text>
+      <text x="14" y="112" class="text-label" fill="#cbd5e1">• Data whose memory size cannot be predicted at compile time.</text>
+
+      <rect x="14" y="130" width="497" height="66" rx="4" fill="#070b14" stroke="#1e293b" />
+      <text x="24" y="148" class="text-val-mono" font-size="11px" font-weight="700" fill="#fbbf24">Lifecycle &amp; Management:</text>
+      <text x="24" y="166" class="text-label" fill="#cbd5e1">Allocated dynamically via <tspan font-family="'JetBrains Mono', monospace" fill="#fbbf24">new</tspan> or <tspan font-family="'JetBrains Mono', monospace" fill="#fbbf24">malloc()</tspan>. Persists in RAM until</text>
+      <text x="24" y="182" class="text-label" fill="#cbd5e1">explicitly freed or reclaimed by Garbage Collection (GC).</text>
+
+      <!-- Risk Trap -->
+      <rect x="14" y="206" width="497" height="44" rx="4" fill="#3f1313" stroke="#b91c1c" />
+      <text x="24" y="224" class="text-val-mono" font-size="11px" font-weight="700" fill="#f87171">⚠️ Boundary Risk: Memory Leak</text>
+      <text x="24" y="240" class="text-label" fill="#fca5a5">Discarded objects never deallocated slowly consume physical RAM.</text>
+    </g>
+  </g>
+
+  <!-- Panel 2: Scope Hierarchy (Bottom Left, Width 540, Height 265) -->
+  <g transform="translate(45, 455)">
+    <rect width="540" height="255" class="card-bg" stroke="#10b981" />
+    <text class="text-section" x="20" y="26" fill="#34d399">2. Variable Scope Hierarchy &amp; Lifetime</text>
+
+    <!-- Scope 1: Global -->
+    <g transform="translate(20, 42)">
+      <rect width="500" height="60" class="inner-card" />
+      <text x="14" y="22" class="text-val-mono" font-weight="700" fill="#34d399">Global Scope (Program-Wide)</text>
+      <text x="14" y="38" class="text-label" fill="#cbd5e1">Declared outside all functions. Accessible anywhere in code.</text>
+      <text x="14" y="52" class="text-label" fill="#94a3b8">Caution: Any routine can mutate it; high risk of naming collisions.</text>
+    </g>
+
+    <!-- Scope 2: Local / Function -->
+    <g transform="translate(20, 110)">
+      <rect width="500" height="60" class="inner-card" />
+      <text x="14" y="22" class="text-val-mono" font-weight="700" fill="#38bdf8">Function / Local Scope</text>
+      <text x="14" y="38" class="text-label" fill="#cbd5e1">Declared inside a function. Accessible ONLY while that function runs.</text>
+      <text x="14" y="52" class="text-label" fill="#94a3b8">Isolates data safely: Outside code cannot see or corrupt local values.</text>
+    </g>
+
+    <!-- Scope 3: Block Scope -->
+    <g transform="translate(20, 178)">
+      <rect width="500" height="62" class="inner-card" />
+      <text x="14" y="22" class="text-val-mono" font-weight="700" fill="#fbbf24">Block Scope (if / loop / { ... })</text>
+      <text x="14" y="38" class="text-label" fill="#cbd5e1">Created inside curly brackets. Ceases to exist the instant loop exits.</text>
+      <text x="14" y="52" class="text-label" fill="#94a3b8">Modern best practice: Prevents iterator variables leaking into outer code.</text>
+    </g>
+  </g>
+
+  <!-- Panel 3: Typing Discipline (Bottom Right, Width 540, Height 265) -->
+  <g transform="translate(615, 455)">
+    <rect width="540" height="255" class="card-bg" stroke="#818cf8" />
+    <text class="text-section" x="20" y="26" fill="#a5b4fc">3. Data Types &amp; Type Systems</text>
+
+    <!-- Category 1: Primitives -->
+    <g transform="translate(20, 42)">
+      <rect width="500" height="60" class="inner-card" />
+      <text x="14" y="22" class="text-val-mono" font-weight="700" fill="#a5b4fc">Primitive Data Types (Fixed Bit Sizes)</text>
+      <text x="14" y="38" class="text-label" fill="#cbd5e1">• Integer (4 bytes: 42) | Float (8 bytes: 3.14159)</text>
+      <text x="14" y="52" class="text-label" fill="#cbd5e1">• Boolean (1 byte: true/false) | Char (1-2 bytes: 'A')</text>
+    </g>
+
+    <!-- Category 2: Static Typing -->
+    <g transform="translate(20, 110)">
+      <rect width="500" height="60" class="inner-card" />
+      <text x="14" y="22" class="text-val-mono" font-weight="700" fill="#38bdf8">Statically Typed (Java, C++, C#, Rust)</text>
+      <text x="14" y="38" class="text-label" fill="#cbd5e1">Variable type is locked at declaration: <tspan font-family="'JetBrains Mono', monospace" fill="#67e8f9">int score = 100;</tspan></text>
+      <text x="14" y="52" class="text-label" fill="#94a3b8">Compiler catches type mismatches before code ever runs.</text>
+    </g>
+
+    <!-- Category 3: Dynamic Typing -->
+    <g transform="translate(20, 178)">
+      <rect width="500" height="62" class="inner-card" />
+      <text x="14" y="22" class="text-val-mono" font-weight="700" fill="#f472b6">Dynamically Typed (Python, JavaScript)</text>
+      <text x="14" y="38" class="text-label" fill="#cbd5e1">Variable type is evaluated at runtime based on assigned value.</text>
+      <text x="14" y="52" class="text-label" fill="#94a3b8">Fast prototyping, but requires defensive checks against runtime errors.</text>
+    </g>
+  </g>
+</svg>
