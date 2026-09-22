@@ -136,7 +136,8 @@
       <text x="15" y="125" class="text-label">Non-conductive channel</text>
     </g>
 
-    <text x="20" y="240" class="text-label" fill="#64748b">Two-state switching eliminates analog drift and electromagnetic interference errors.</text>
+    <text x="20" y="234" class="text-label" fill="#64748b">Two-state switching eliminates analog signal drift</text>
+    <text x="20" y="250" class="text-label" fill="#64748b">and electromagnetic interference errors.</text>
   </g>
 
   <!-- Panel 3: Unit Scale Hierarchy -->
@@ -148,28 +149,28 @@
       <!-- 1 Bit -->
       <rect width="500" height="42" class="inner-card" />
       <text x="15" y="26" class="text-val-mono" font-weight="700" fill="#38bdf8">1 Bit (b):</text>
-      <text x="110" y="26" class="text-val-mono">Single binary digit</text>
-      <text x="340" y="26" class="text-val-mono" fill="#34d399">2 possible states (0 or 1)</text>
+      <text x="115" y="26" class="text-val-mono">Single binary digit</text>
+      <text x="485" y="26" class="text-val-mono" fill="#34d399" text-anchor="end">2 states (0 or 1)</text>
 
       <!-- 1 Nibble -->
       <rect y="50" width="500" height="42" class="inner-card" />
       <text x="15" y="76" class="text-val-mono" font-weight="700" fill="#fbbf24">1 Nibble:</text>
-      <text x="110" y="76" class="text-val-mono">4 binary bits</text>
-      <text x="340" y="76" class="text-val-mono" fill="#fbbf24">16 states (0x0 to 0xF)</text>
+      <text x="115" y="76" class="text-val-mono">4 binary bits</text>
+      <text x="485" y="76" class="text-val-mono" fill="#fbbf24" text-anchor="end">16 states (0x0 to 0xF)</text>
 
       <!-- 1 Byte -->
       <rect y="100" width="500" height="42" class="inner-card" />
       <text x="15" y="126" class="text-val-mono" font-weight="700" fill="#34d399">1 Byte (B):</text>
-      <text x="110" y="126" class="text-val-mono">8 bits (2 nibbles)</text>
-      <text x="340" y="126" class="text-val-mono" fill="#34d399">256 states (0 to 255)</text>
+      <text x="115" y="126" class="text-val-mono">8 bits (2 nibbles)</text>
+      <text x="485" y="126" class="text-val-mono" fill="#34d399" text-anchor="end">256 states (0 to 255)</text>
 
       <!-- Key technician rule -->
       <rect y="148" width="500" height="62" fill="#0d1b30" stroke="#1d4ed8" rx="6" />
       <rect x="12" y="156" width="126" height="46" rx="4" fill="#172554" stroke="#1e40af" stroke-width="1" />
       <text x="75" y="175" class="text-val-mono" fill="#93c5fd" font-size="11px" font-weight="700" text-anchor="middle">TECHNICIAN</text>
       <text x="75" y="193" class="text-val-mono" fill="#60a5fa" font-size="11px" font-weight="700" text-anchor="middle">RULE</text>
-      <text x="150" y="174" class="text-val-mono" fill="#93c5fd"><tspan font-weight="700" fill="#38bdf8">b</tspan> (lowercase) = bits (network speed)</text>
-      <text x="150" y="196" class="text-val-mono" fill="#93c5fd"><tspan font-weight="700" fill="#34d399">B</tspan> (uppercase) = bytes (storage / RAM)</text>
+      <text x="148" y="174" class="text-val-mono" fill="#93c5fd"><tspan font-weight="700" fill="#38bdf8">b</tspan> = bits (network speed, e.g. Gbps)</text>
+      <text x="148" y="196" class="text-val-mono" fill="#93c5fd"><tspan font-weight="700" fill="#34d399">B</tspan> = bytes (storage &amp; RAM, e.g. GB)</text>
     </g>
   </g>
 </svg>
