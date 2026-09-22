@@ -54,9 +54,9 @@
   <!-- Layer 2: The System Call Gateway (Syscall Barrier) -->
   <g transform="translate(45, 260)">
     <rect width="1110" height="54" rx="8" fill="#152038" stroke="#38bdf8" stroke-width="1.5" />
-    <text x="25" y="32" class="text-val-mono" font-weight="700" fill="#38bdf8">🔒 SYSTEM CALL (SYSCALL) API GATEWAY</text>
-    <text x="320" y="32" class="text-label" fill="#e2e8f0">
-      Strict Hardware Gate: User code cannot touch hardware registers. All I/O must request kernel mediation via 
+    <text x="25" y="33" class="text-val-mono" font-weight="700" fill="#38bdf8">🔒 SYSTEM CALL (SYSCALL) GATEWAY</text>
+    <text x="305" y="33" class="text-label" fill="#e2e8f0">
+      Hardware Gate: User apps cannot access silicon directly; all I/O is requested via 
       <tspan fill="#34d399" font-family="'JetBrains Mono', monospace">read()</tspan>, 
       <tspan fill="#34d399" font-family="'JetBrains Mono', monospace">write()</tspan>, 
       <tspan fill="#34d399" font-family="'JetBrains Mono', monospace">open()</tspan>, 
@@ -66,7 +66,7 @@
 
   <!-- Layer 3: Kernel Mode (Ring 0) -->
   <g transform="translate(45, 330)">
-    <rect width="1110" height="210" class="card-bg" stroke="#d97706" />
+    <rect width="1110" height="214" class="card-bg" stroke="#d97706" />
     
     <!-- Header Banner -->
     <rect x="15" y="12" width="220" height="24" rx="4" fill="#382106" stroke="#d97706" stroke-width="1" />
@@ -114,10 +114,13 @@
       <text x="14" y="100" class="text-label" fill="#94a3b8">NICs, and audio cards.</text>
     </g>
 
-    <!-- Warning Strip: BSOD / Kernel Panic -->
-    <rect x="15" y="166" width="1080" height="32" rx="4" fill="#3f1313" stroke="#b91c1c" stroke-width="1" />
-    <text x="25" y="186" class="text-val-mono" font-size="11px" font-weight="700" fill="#f87171">
-      ⚠️ CRITICAL CONSEQUENCE: A bug or unhandled crash inside Kernel Mode halts the entire CPU immediately → Windows Blue Screen of Death (BSOD) / Linux Kernel Panic.
+    <!-- Warning Strip: BSOD / Kernel Panic (Multi-line cleanly enclosed) -->
+    <rect x="15" y="164" width="1080" height="40" rx="4" fill="#3f1313" stroke="#b91c1c" stroke-width="1" />
+    <text x="25" y="180" class="text-val-mono" font-size="11px" font-weight="700" fill="#f87171">
+      ⚠️ CRITICAL CONSEQUENCE: A driver crash or unhandled hardware fault inside Kernel Mode halts the CPU immediately.
+    </text>
+    <text x="25" y="195" class="text-label" fill="#fca5a5">
+      System Result: Windows Blue Screen of Death (BSOD) or Linux Kernel Panic to prevent catastrophic physical data corruption.
     </text>
   </g>
 
@@ -128,8 +131,8 @@
     <!-- HAL Strip -->
     <rect x="15" y="12" width="1080" height="34" rx="4" fill="#063223" stroke="#059669" stroke-width="1" />
     <text x="25" y="34" class="text-val-mono" font-weight="700" fill="#34d399">HARDWARE ABSTRACTION LAYER (HAL):</text>
-    <text x="315" y="34" class="text-label" fill="#cbd5e1">
-      Isolates the kernel from motherboard chipset quirks, allowing the exact same OS build to run across Intel, AMD, and ARM64 platforms.
+    <text x="305" y="34" class="text-label" fill="#cbd5e1">
+      Hides chipset differences so the same OS build runs seamlessly across Intel, AMD, and ARM64 CPUs.
     </text>
 
     <!-- Physical Hardware Chips & Buses (5 cards, width 205 each, gap 13) -->
