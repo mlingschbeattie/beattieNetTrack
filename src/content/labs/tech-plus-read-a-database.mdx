@@ -1,79 +1,158 @@
 ---
-title: "Read a Database Like a Technician"
-description: "Identify keys, choose the right query, and recognise when a spreadsheet should have been a database."
+title: "Query and Audit Relational Databases"
+description: "Audit school asset and student databases: query SQLite telemetry, identify primary and foreign keys, write SQL filter statements, and eliminate flat-file data integrity anomalies."
 slug: tech-plus-read-a-database
 track: tech-plus
 moduleId: tech-plus.databases
 order: 93
 difficulty: Beginner
-estMinutes: 12
+estimatedMinutes: 20
 xp: 50
 activity: steps
-tags: ["Tech+", "FC0-U71", "lab"]
+tags: ["Tech+", "FC0-U71", "database", "sql", "erd", "sqlite", "relational", "lab"]
 steps:
-  - id: primary-key
-    title: "Find the primary key"
-    prompt: "A student table holds student ID, first name, surname, and form group. Which column is the primary key?"
-    inputLabel: "Primary key"
+  - id: identify-primary-key
+    title: "Identify table primary key"
+    prompt: "The school student information system stores records in a table named `students`. Each row contains `student_id`, `first_name`, `last_name`, and `homeroom`.\n\nWhich column serves as the Primary Key (PK) to uniquely identify each student row without collision? Enter the exact column name."
+    inputLabel: "Primary key column"
+    placeholder: "ex: student_id"
+    hint: "A primary key must be unique and immutable. Names can duplicate, but student_id is unique."
+    validator:
+      type: oneOf
+      values:
+        - "student_id"
+        - "student id"
+        - "studentId"
+    successMessage: "Correct. `student_id` is unique to each individual and serves as the Primary Key."
+  - id: identify-foreign-key
+    title: "Relate tables via foreign key"
+    prompt: "A second table named `asset_assignments` tracks which laptop was issued to which student. It contains `assignment_id`, `student_id`, `asset_tag`, and `device_model`.\n\nWhich column in `asset_assignments` acts as the Foreign Key (FK) referencing the primary key of the `students` table?"
+    inputLabel: "Foreign key column"
+    placeholder: "ex: student_id"
+    hint: "The foreign key in the child table references the primary key in the parent table."
+    validator:
+      type: oneOf
+      values:
+        - "student_id"
+        - "student id"
+        - "studentId"
+    successMessage: "Correct. `student_id` in `asset_assignments` links the hardware record to the corresponding student."
+  - id: sql-terminal-query-execution
+    title: "Execute SQL filter query"
+    prompt: "You access the SQLite database CLI to pull an attendance roster for homeroom 11B.\n\nInspect the live terminal query above. The statement `SELECT student_id, first_name, last_name, homeroom FROM students WHERE homeroom = '11B';` executed cleanly.\n\nHow many total student records were returned matching the query condition? Enter digits only."
+    inputLabel: "Number of matching rows"
+    placeholder: "ex: 4"
+    hint: "Count the rows returned below the table column headers."
+    terminalPrompt: "sqlite>"
+    terminalOutput: |
+      sqlite> SELECT student_id, first_name, last_name, homeroom FROM students WHERE homeroom = '11B';
+      student_id  first_name  last_name   homeroom
+      ----------  ----------  ----------  --------
+      1042        Marcus      Vance       11B
+      1089        Sophia      Chen        11B
+      1114        Tariq       Al-Mansoor  11B
+      1156        Olena       Kovalenko   11B
+    validator:
+      type: exact
+      value: "4"
+    successMessage: "Correct. Exactly 4 student records were returned without altering or locking the table data."
+  - id: sql-keyword-filtering
+    title: "Formulate conditional SQL filter"
+    prompt: "You need to retrieve all equipment from `asset_assignments` where the `device_model` is 'Chromebook 11'.\n\nWhich mandatory SQL clause keyword is used to filter query results by a specific condition (e.g. `SELECT * FROM asset_assignments ______ device_model = 'Chromebook 11';`)? Enter the SQL keyword."
+    inputLabel: "SQL filter keyword"
+    placeholder: "ex: WHERE"
+    hint: "The SQL filter keyword is WHERE."
+    validator:
+      type: oneOf
+      values:
+        - "WHERE"
+        - "where"
+    successMessage: "Correct. The `WHERE` clause filters rows meeting specified logical conditions."
+  - id: erd-visual-inspection
+    title: "Inspect Entity-Relationship Diagram (ERD)"
+    prompt: "Inspect the database architecture diagram above.\n\nNotice the arrow connecting the Primary Key `student_id (PK)` in the `students` table to the Foreign Key `student_id (FK)` in `asset_assignments`.\n\nIn a school environment where one student may check out a laptop, a graphic tablet, and a scientific calculator over the semester, what relational cardinality exists between the `students` entity and the `asset_assignments` entity?"
+    inputLabel: "Relationship type"
+    hint: "One single student can have multiple assigned assets."
+    image: "/images/tech-plus/relational-database-erd-sql-guide.jpg"
+    imageAlt: "Relational Database Schema Entity-Relationship Diagram showing students table with student_id (PK) connected to asset_assignments table with student_id (FK)."
     validator:
       type: choice
       options:
-        - "Student ID, because it is unique to one student and never repeats"
-        - "Surname, because it identifies the family"
-        - "Form group, because it organises students"
-        - "First name, because it is what people use"
+        - "One-to-Many (1:N)"
+        - "One-to-One (1:1)"
+        - "Many-to-Many (M:N) without junction table"
+        - "Unconstrained circular reference"
       correctIndex: 0
-      rationale: "A primary key must be unique and stable. Names repeat, form groups are shared by design, and both can change. A student ID is issued once, belongs to one person, and does not change when they move form."
-    successMessage: "Correct. Unique and stable is what makes a key."
-  - id: query-choice
-    title: "Choose the query"
-    prompt: "You need every student in form 11B. Which database operation is that?"
-    inputLabel: "Operation"
+      rationale: "One student can be linked to multiple issued assets, but each individual asset assignment record points to exactly one student. This is a classic One-to-Many (1:N) relationship."
+    successMessage: "Correct. One student can possess many issued assets (One-to-Many)."
+  - id: crud-update-command
+    title: "Identify SQL modification command"
+    prompt: "Student 1042 moves from homeroom '11B' to homeroom '11A'. In database CRUD terminology (Create, Read, Update, Delete), which SQL command updates existing values in a table row?"
+    inputLabel: "SQL command"
+    placeholder: "ex: UPDATE"
+    hint: "C = INSERT, R = SELECT, U = UPDATE, D = DELETE."
+    validator:
+      type: oneOf
+      values:
+        - "UPDATE"
+        - "update"
+    successMessage: "Correct. The `UPDATE` command alters existing data values (e.g. `UPDATE students SET homeroom = '11A' WHERE student_id = 1042;`)."
+  - id: flat-file-redundancy-anomaly
+    title: "Diagnose flat-file spreadsheet anomalies"
+    prompt: "Before the database was built, the athletic department tracked student rosters on a shared Excel spreadsheet by retyping student names on every row. When a student changed their phone number, the staff updated it on the football tab but forgot the track-and-field tab.\n\nWhat database problem does this illustrate?"
+    inputLabel: "Data anomaly"
+    hint: "Storing the same fact in multiple disparate locations destroys data consistency."
     validator:
       type: choice
       options:
-        - "A query that filters records where form group equals 11B"
-        - "A query that sorts all students alphabetically"
-        - "Deleting the students not in 11B"
-        - "Creating a new table for 11B and retyping the names"
+        - "A data integrity failure caused by duplicate data redundancy"
+        - "A physical storage sector read-write error"
+        - "A denial-of-service network bottleneck"
+        - "A SQL syntax compilation exception"
       correctIndex: 0
-      rationale: "Filtering returns the subset matching a condition and leaves the data untouched. Sorting reorders without narrowing, deleting destroys data, and retyping into a new table creates a second copy that immediately starts drifting out of date."
-    successMessage: "Correct. Filtering answers the question without altering the data."
-  - id: flat-file-problem
-    title: "Name the flat-file problem"
-    prompt: "The clubs spreadsheet repeats each student name on every club row. One student changes surname and is updated in some rows but not others. What is this called?"
-    inputLabel: "The problem"
+      rationale: "Flat files force redundant duplication of facts. When updates occur, disparate copies get out of sync, destroying data integrity. Relational databases normalize data so a student's contact details exist in exactly one row."
+    successMessage: "Correct. Redundancy leads to data integrity anomalies. Relational normalization solves this."
+  - id: inventory-aggregate-count
+    title: "Calculate total inventory via SQL aggregate"
+    prompt: "You run an aggregate query to check warehouse stock: `SELECT COUNT(*) FROM asset_assignments WHERE device_model = 'Chromebook 11';`.\n\nThe database returns a count of 85 assigned laptops. In the physical depot, you count 15 unassigned spare laptops on the shelf. What is the total combined inventory count of Chromebook 11 devices owned by the school? Enter digits only."
+    inputLabel: "Total inventory count"
+    placeholder: "ex: 100"
+    hint: "Add assigned units (85) to shelf spares (15)."
     validator:
-      type: choice
-      options:
-        - "A data integrity problem caused by duplicated data"
-        - "A permissions problem"
-        - "A backup problem"
-        - "A network latency problem"
-      correctIndex: 0
-      rationale: "When the same fact is stored in many places, updates have to reach all of them or the copies disagree. A relational design stores each student once and links to them, so a surname change happens in exactly one row."
-    successMessage: "Correct. Duplication is what breaks integrity."
-  - id: backup-need
-    title: "Protect the data"
-    prompt: "The clubs data now lives in a proper database on one server. What is the most important thing to add?"
-    inputLabel: "Next step"
+      type: exact
+      value: "100"
+    successMessage: "Correct. 85 deployed + 15 depot reserve = 100 total Chromebook assets."
+  - id: database-audit-closure-note
+    title: "Draft database integrity finding note"
+    prompt: "Draft a 1–2 sentence formal database audit finding for the IT director. Confirm that primary and foreign key constraints enforce relational integrity across tables, and state that the schema eliminates duplicate data records. Include both the word 'relational' (or 'integrity') and the word 'duplicate'."
+    inputLabel: "Audit finding note"
+    placeholder: "ex: Primary and foreign key constraints enforce relational integrity between student records and hardware assets, preventing duplicate data entries."
+    hint: "Mention relational integrity and confirm the elimination of duplicate records."
     validator:
-      type: choice
-      options:
-        - "A tested backup, with a restore that has actually been tried"
-        - "A faster network switch"
-        - "A second monitor for the office"
-        - "More RAM in the workstations"
-      correctIndex: 0
-      rationale: "A single copy on one server is one failure away from gone. A backup nobody has restored from is an assumption rather than a protection — the restore is the part that has to be proven."
-    successMessage: "Correct. An untested backup is only a hope."
+      type: regex
+      pattern: '^(?=.*\b(?:relational|integrity)\b)(?=.*\bduplicate\b).{25,}$'
+      flags: "i"
+    successMessage: "Outstanding. You demonstrated vocational database competence: key identification, SQL query execution, ERD interpretation, and data integrity governance."
 domains:
   - domainId: techplus.databases
     weight: 1
 ---
 
-A school keeps its clubs register in a spreadsheet. It has started going wrong in the specific ways spreadsheets go wrong when they should have been a database.
+import Callout from '../../components/Callout.astro';
 
-## Goal
+## Relational Databases: From Chaos to Structure
 
-Read a table structure, identify what makes a record unique, choose an appropriate query, and name the problem a flat file creates.
+Spreadsheets are great for simple lists and personal budgets. But when an organization grows, relying on spreadsheets leads to chaos:
+1. **Redundancy:** Retyping customer names across multiple sheets wastes time and leads to spelling mismatches.
+2. **Integrity Failures:** Updating an address in one tab while forgetting another creates conflicting data.
+3. **Concurrency:** Multiple users editing a single file leads to lockouts and corrupted saves.
+
+A **Relational Database Management System (RDBMS)** structures data into normalized tables connected by **Primary Keys** and **Foreign Keys**, queried cleanly using **Structured Query Language (SQL)**.
+
+<Callout type="exam">
+CompTIA Tech+ FC0-U71 tests the fundamental building blocks of databases: Primary Keys (unique row identifiers), Foreign Keys (links to parent tables), basic SQL queries (`SELECT`, `WHERE`), CRUD operations (`INSERT`, `SELECT`, `UPDATE`, `DELETE`), and the difference between structured relational databases vs unstructured big data.
+</Callout>
+
+<Callout type="warn">
+Never run an `UPDATE` or `DELETE` SQL statement without a `WHERE` clause! In SQL, running `DELETE FROM students;` without a `WHERE student_id = 1042;` condition will permanently wipe every single student row in the entire table in a fraction of a second.
+</Callout>

@@ -76,19 +76,43 @@ sections:
           - "The program crashes"
           - "`userA` is deleted"
         correct: 0
+  - id: access-modifiers-and-getters-setters
+    title: "Access Modifiers and Data Validation Getters/Setters"
+    keyPoints:
+      - "Access Modifiers control visibility: Public (accessible anywhere), Private (accessible only within the class), and Protected (accessible in subclasses)"
+      - "Getters and Setters provide controlled, validated doorways to read and update private attributes"
+      - "Direct property modification bypasses business rules and introduces state corruption bugs"
+    check:
+      - prompt: "Which access modifier ensures that an object's attribute (such as `account_balance`) cannot be read or modified directly by code outside the class?"
+        options:
+          - "Private"
+          - "Public"
+          - "Static"
+          - "Global"
+        correct: 0
+      - prompt: "Why do software architects implement Setter methods (e.g. `set_temperature(temp)`) rather than allowing direct assignment to private attributes?"
+        options:
+          - "Setter methods enforce validation rules, verifying that input falls within safe, legal boundaries before updating state"
+          - "Setter methods make code run faster"
+          - "Setter methods delete old variables to save hard drive space"
+          - "Setter methods automatically encrypt the entire operating system"
+        correct: 0
 domains:
   - domainId: techplus.software
     weight: 1
 ---
+
 import Callout from '../../components/Callout.astro';
 
 ## Modeling the Real World in Code
 
-In procedural programming, code is a simple list of top-to-bottom instructions. That works fine for a 20-line backup script, but when you are building an enterprise system with 500,000 lines of code—like an airline reservation platform or a massive multiplayer game—procedural code turns into an unmaintainable tangle of "spaghetti code."
+In procedural programming, code is a structured list of top-to-bottom instructions. That works fine for a 20-line backup script, but when building an enterprise system with 500,000 lines of code—like an airline reservation platform or a massive cloud application—procedural code turns into an unmaintainable tangle of interdependent logic.
 
 **Object-Oriented Programming (OOP)** is the dominant architectural paradigm used across enterprise software (Java, Python, C#, C++, Swift).
 
 Instead of treating code as separate piles of data variables and functions, OOP bundles **Data (Attributes)** and the **Functions that operate on that data (Methods)** together into self-contained units called **Objects**.
+
+![Object-Oriented Programming Architecture and Four Pillars Guide](/images/tech-plus/oop-architecture-four-pillars-guide.jpg)
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -112,11 +136,25 @@ Instead of treating code as separate piles of data variables and functions, OOP 
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
----
-
 <Callout type="exam">
-Tech+ tests the vocabulary rather than the syntax. An object bundles data (properties) with actions (methods). A class is the template; an object is one thing built from it. Recognising those four words in a description is the whole question.
+**CompTIA Tech+ Core Objective (FC0-U71 4.3):**
+- **Class vs. Object:** A Class is the code template or blueprint; an Object is the concrete instance allocated in memory.
+- **Attributes vs. Methods:** Attributes represent data state (`port_count`, `is_online`). Methods represent actions and operations (`reboot()`, `get_traffic_stats()`).
+- **The Four Pillars:**
+  1. **Encapsulation:** Protecting internal state behind private access modifiers.
+  2. **Inheritance:** Child subclasses inheriting and extending parent superclass logic.
+  3. **Polymorphism:** Multiple classes responding to the same method call with specialized behavior.
+  4. **Abstraction:** Exposing simple public controls while hiding internal mechanics.
 </Callout>
+
+<Callout type="warn">
+**Object-Oriented Operational Warnings:**
+- **Exposing Raw Public State:** Making all class attributes public destroys encapsulation. Any external script can assign negative numbers to bank balances or invalid strings to IP address attributes, bypassing validation.
+- **Circular Object References:** When Object A holds a reference to Object B, and Object B holds a reference back to Object A, automatic garbage collection engines may fail to free memory, causing persistent memory leaks.
+- **Deep Inheritance Trees:** Over-relying on inheritance hierarchies 5 or 6 levels deep creates fragile, brittle code. Prefer composition (has-a) over inheritance (is-a) when feasible.
+</Callout>
+
+---
 
 ## 1. Classes vs. Objects: The Blueprint Analogy
 
@@ -169,35 +207,86 @@ CompTIA tests your conceptual mastery of the four foundational pillars of OOP:
 ```
 
 ### Pillar 1: Encapsulation (Data Protection)
-Think of a bank account object. You should not be able to directly write `account.balance = 1000000000` from outside the class! Instead, the `balance` attribute is private (encapsulated), and you must call `account.deposit(50.00)`, which validates the funds before modifying the balance.
+Think of a bank account object. External code should not be able to directly set `account.balance = 1000000000`. The `balance` attribute is private (encapsulated), requiring external callers to execute `account.deposit(50.00)`, which validates the funds before modifying the internal state.
 
 ### Pillar 2: Inheritance (Code Reusability)
 You create a master parent class called `Device` with attributes `ip_address`, `mac_address`, and `hostname`.
-- You can create child classes: `Printer(Device)`, `Router(Device)`, and `Workstation(Device)`.
-- All three automatically inherit the networking attributes without writing those lines of code three times!
+- Child classes `Printer(Device)`, `Router(Device)`, and `Workstation(Device)` automatically inherit the networking attributes without writing those lines three times.
 
 ### Pillar 3: Polymorphism ("Many Forms")
 Both a `PDFDocument` class and an `ExcelSpreadsheet` class can have a `.print()` method. When you call `.print()`, the PDF object executes vector rendering while the Excel object executes table grid rendering. The caller doesn't need to know the internal difference.
 
 ### Pillar 4: Abstraction (Simplicity)
-When you drive a car, you press the gas pedal. You do not manually adjust the fuel injection timing, oxygen sensors, and transmission gears. The car engine **abstracts** that extreme complexity behind a simple pedal.
+When driving a car, you press the gas pedal. You do not manually adjust the fuel injection timing, oxygen sensors, and transmission gears. The car engine **abstracts** that extreme complexity behind a single responsive pedal.
+
+---
+
+## 3. Constructors and Object Instantiation
+
+The **Constructor** is a special method automatically called when a new instance is created:
+- In Python, it is written as `def __init__(self):`.
+- In Java and C#, it shares the exact name of the class (e.g., `public Student()`).
+- The constructor ensures that an object cannot exist in an uninitialized or broken state.
+
+---
+
+## 4. Access Modifiers and Data Validation Getters/Setters
+
+To enforce Encapsulation, object-oriented languages provide **Access Modifiers**:
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        ACCESS MODIFIERS SUMMARY                        │
+├────────────────────┬───────────────────────────────────────────────────┤
+│ Modifier           │ Scope and Visibility                              │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Public**         │ Accessible by any code anywhere in the project.   │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Private**        │ Accessible ONLY inside the declaring class itself.│
+├────────────────────┼───────────────────────────────────────────────────┤
+│ **Protected**      │ Accessible within the declaring class and its     │
+│                    │ inherited child subclasses.                       │
+└────────────────────┴───────────────────────────────────────────────────┘
+```
+
+### Why Use Getters and Setters?
+By marking attributes private and providing public **Getter** and **Setter** methods, you retain complete control over validation:
+
+```python
+class BankAccount:
+    def __init__(self, owner, initial_balance):
+        self.owner = owner
+        self._balance = initial_balance  # Private attribute
+
+    # Getter: Controlled read access
+    def get_balance(self):
+        return self._balance
+
+    # Setter: Validation gatekeeper
+    def set_balance(self, amount):
+        if amount < 0:
+            raise ValueError("Error: Account balance cannot be negative!")
+        self._balance = amount
+```
+
+If code attempts to assign a negative balance, the setter rejects it immediately, protecting corporate data integrity.
 
 ---
 
 ## Why This Matters in the Field
 
-When you write modern automation scripts in PowerShell or Python, everything you touch is an **Object**:
+When writing automation scripts in PowerShell or Python, everything you interact with is an **Object**:
 - An Active Directory user returned by `Get-ADUser` is an object with `.EmailAddress`, `.Department`, and `.Enabled` attributes.
 - A network socket is an object with `.Connect()` and `.Close()` methods.
 
-Understanding OOP allows you to manipulate enterprise software APIs and automation objects with ease.
+Understanding OOP allows you to manipulate enterprise software APIs and automation objects with confidence and precision.
 
 ---
 
 <Callout type="tip">
-You already use objects without naming them. A student record with a name, an ID and a year group is data; the ability to enrol or withdraw that student is a method. Objects simply keep the two together instead of scattered apart.
+You already use objects without naming them. A student record with a name, an ID, and a graduation year is data; the ability to enroll or withdraw that student is a method. Objects organize data and behavior together into clean, logical structures.
 </Callout>
 
 ## Key Terms
 
-Object-Oriented Programming (OOP) · Class · Blueprint · Object · Instance · Instantiation · Attribute (Property / State) · Method (Action / Behavior) · Dot Notation (`.`) · Constructor (`__init__`) · The 4 Pillars of OOP · Encapsulation · Private vs Public Interface · Inheritance · Parent Class (Superclass) · Child Class (Subclass) · Polymorphism · Abstraction
+Object-Oriented Programming (OOP) · Class · Blueprint · Object · Instance · Instantiation · Attribute (Property / State) · Method (Action / Behavior) · Dot Notation (`.`) · Constructor (`__init__`) · The 4 Pillars of OOP · Encapsulation · Access Modifiers · Public · Private · Protected · Getters and Setters · Inheritance · Parent Class (Superclass) · Child Class (Subclass) · Polymorphism · Abstraction

@@ -103,17 +103,29 @@ domains:
 
 import Callout from '../../components/Callout.astro';
 
+<figure class="my-6 rounded-lg overflow-hidden border border-slate-800 bg-slate-950/50 shadow-xl">
+  <img 
+    src="/images/tech-plus/hexadecimal-nibble-memory-guide.jpg" 
+    alt="Hexadecimal Base-16 Representation and 4-Bit Nibble Architecture" 
+    class="w-full h-auto object-cover"
+    loading="lazy"
+  />
+  <figcaption class="p-3 text-center text-xs text-slate-400 border-t border-slate-800 bg-slate-900/60">
+    Figure 1.2: Base-16 character mapping (0–9, A–F), 4-bit nibble boundary pairing, MAC address OUI partitioning, HTML RGB color codes, and memory pointers.
+  </figcaption>
+</figure>
+
 ## Why Hexadecimal Exists (The 4-Bit Nibble Bridge)
 
-Imagine you are a network engineer on a support call, and you have to read a network card's hardware address over the radio:
+Imagine communicating a network adapter's physical hardware address verbally over an enterprise support radio channel:
 
-> *"Yeah, my MAC address is zero-one-zero-zero-zero-zero-zero-one-zero-zero-one-zero-one-one-zero-one..."*
+> *"The target adapter hardware address is zero-one-zero-zero-zero-zero-zero-one-zero-zero-one-zero-one-one-zero-one-one-zero..."*
 
-You would make a mistake before finishing the third byte. Binary is perfect for silicon transistors, but it is terrible for human eyes. 
+Human operators inevitably introduce transcription errors before completing the third byte. While raw binary sequences represent the native state of physical silicon transistors, long strings of ones and zeros present significant cognitive fatigue and readability challenges for human engineers.
 
-To solve this, computer engineers created **Hexadecimal (Base-16)**—often called **Hex**. 
+To resolve this limitation, computer scientists developed **Hexadecimal (Base-16)**—frequently abbreviated as **Hex**.
 
-Hexadecimal is not a replacement for binary; it is human shorthand for binary. Because 2^4 = 16, **every single hex character represents exactly 4 binary bits (one nibble)**. Two hex characters represent exactly one 8-bit byte.
+Hexadecimal is not an alternative computation engine for microprocessors; it serves as a high-density human shorthand for binary memory structures. Because $2^4 = 16$, **every single hexadecimal character represents exactly 4 binary bits (one nibble)**. Consequently, exactly two hexadecimal characters represent one full 8-bit byte ($2^8 = 256$ values, ranging from `0x00` to `0xFF`).
 
 | Decimal | Binary (4-Bit Nibble) | Hexadecimal |
 |:---:|:---:|:---:|
@@ -134,85 +146,90 @@ Hexadecimal is not a replacement for binary; it is human shorthand for binary. B
 | 14 | `1110` | **E** |
 | 15 | `1111` | **F** |
 
-Notice that once we reach decimal 10, we can't use two digits ("10") because each column in base-16 must be a single symbol. So we use the alphabet: **A = 10, B = 11, C = 12, D = 13, E = 14, F = 15**.
+Because each positional column in base-16 requires a single unique glyph, the alphabet provides the necessary symbols once numerical counting passes 9: **A = 10, B = 11, C = 12, D = 13, E = 14, and F = 15**.
+
+<Callout type="warn">
+**Common Student Misconception (Hexadecimal `0x10` is NOT Decimal 10):** A recurring error among novice technicians is assuming that `0x10` equals decimal 10. In base-16 positional notation, the column immediately to the left of the units position represents the **16s column** ($16^1$). Therefore, `0x10` evaluates mathematically to $(1 \times 16) + (0 \times 1) =$ **16 in decimal**! Always verify whether a numerical value carries the `0x` prefix before performing capacity or addressing calculations.
+</Callout>
 
 ---
 
 ## Instant Conversion: Binary to Hexadecimal
 
-Converting between binary and decimal takes arithmetic. Converting between binary and hex takes **zero math**—it is pure visual pattern matching.
+Converting between binary and decimal requires multi-step exponential math. Converting between binary and hexadecimal requires **zero arithmetic**—it functions as direct visual nibble alignment.
 
-### The Rule for Binary → Hex
-1. Start at the rightmost bit and split your binary string into groups of **4 bits** (nibbles).
-2. Look up or calculate the value of each 4-bit chunk (values 0 to 15).
-3. Replace each chunk with its single hex character.
+### The Algorithm for Binary $\to$ Hexadecimal
+1. Starting from the rightmost bit (LSB), segment the binary sequence into contiguous blocks of **4 bits** (nibbles).
+2. Calculate or lookup the numerical value of each 4-bit block (evaluating from 0 to 15).
+3. Substitute each nibble with its designated single hexadecimal character.
 
-#### Example: Convert `11011011` to Hex
-1. Split into two 4-bit nibbles: `1101` and `1011`
-2. Calculate left nibble: 8 + 4 + 0 + 1 = 13 → **D**
-3. Calculate right nibble: 8 + 0 + 2 + 1 = 11 → **B**
-4. Combined: **0xDB**
+#### Practical Example 1: Convert Binary `11011011` to Hexadecimal
+1. Partition into two distinct nibbles: High Nibble `1101` and Low Nibble `1011`
+2. Evaluate High Nibble: $8 + 4 + 0 + 1 = 13 \to$ **D**
+3. Evaluate Low Nibble: $8 + 0 + 2 + 1 = 11 \to$ **B**
+4. Combined Hexadecimal Result: **0xDB**
 
-#### Example: Convert Hex `0x7E` to Binary
-1. Left character `7` → 4 + 2 + 1 → `0111`
-2. Right character `E` (14) → 8 + 4 + 2 + 0 → `1110`
-3. Combined: `01111110`
+#### Practical Example 2: Convert Hexadecimal `0x7E` to Binary
+1. Deconstruct character `7` $\to 4 + 2 + 1 \to$ `0111`
+2. Deconstruct character `E` (Decimal 14) $\to 8 + 4 + 2 + 0 \to$ `1110`
+3. Concatenated Binary Byte: `01111110`
 
 <Callout type="tip">
-**Prefixes Matter:** When you see `0x` in front of a number (like `0x25`), the `0x` is not part of the math—it is a universal programming flag telling you: *"Warning! The following characters are base-16 hexadecimal, not decimal."* `0x25` is (2 × 16) + 5 = 37 in decimal!
+**Prefix Conventions:** In source code, assembly debuggers, and system logs, developers prefix hexadecimal literals with `0x` (e.g., `0x25` or `0x7FFE`) to explicitly inform the compiler and reader that base-16 applies. In web markup and graphic design stylesheets, hex color values are preceded by a hash symbol `#` (e.g., `#FF5733`).
 </Callout>
 
 ---
 
 ## Hexadecimal in the Field: Where You Will See It
 
-You will encounter hexadecimal almost every day on the job:
+Hexadecimal notation is ubiquitous across modern enterprise information technology and cybersecurity operations:
 
-### 1. MAC Addresses (Layer 2 Hardware IDs)
-Every network interface card (NIC), Wi-Fi chip, and Bluetooth radio has a physical Media Access Control (MAC) address burned into its firmware. It is 48 bits long, written as 12 hexadecimal characters divided into 6 pairs:
+### 1. Layer 2 Ethernet MAC Addresses
+Every physical network interface card (NIC), wireless Wi-Fi controller, and Bluetooth radio possesses a 48-bit physical Media Access Control (MAC) address burned into hardware firmware:
 
 **00:1A:2B:3C:4D:5E**
 
-- **The First 6 Hex Characters (`00:1A:2B`):** The **OUI (Organizationally Unique Identifier)** assigned by IEEE to the manufacturer (e.g., Cisco, Intel, Apple). If you look up the first three bytes in an OUI database, you instantly know who built the network card.
-- **The Last 6 Hex Characters (`3C:4D:5E`):** The unique serial number assigned by the manufacturer to that specific physical chip.
+- **The Leading 6 Hex Characters (`00:1A:2B`):** The **Organizationally Unique Identifier (OUI)** registered with the IEEE. Triage analysts consult public IEEE OUI databases using these first three octets to immediately identify the hardware manufacturer (e.g., Cisco, Intel, Raspberry Pi, Apple).
+- **The Trailing 6 Hex Characters (`3C:4D:5E`):** The unique physical serial number assigned by the manufacturer to that specific silicon controller.
 
 ```
-┌───────────────────────────────┬───────────────────────────────┐
-│     OUI (Manufacturer ID)     │   Device Serial / NIC ID      │
-│          00 : 1A : 2B         │          3C : 4D : 5E         │
-└───────────────────────────────┴───────────────────────────────┘
-  <───────── 24 Bits ─────────>   <───────── 24 Bits ─────────>
+┌───────────────────────────────────────┬───────────────────────────────────────┐
+│     OUI (Manufacturer Identifier)     │   Device Serial / Hardware NIC ID     │
+│             00 : 1A : 2B              │             3C : 4D : 5E              │
+└───────────────────────────────────────┴───────────────────────────────────────┘
+  <────────────── 24 Bits ─────────────>  <────────────── 24 Bits ─────────────>
 ```
 
-### 2. IPv6 Addresses (128-Bit Next-Gen Internet Protocol)
-IPv4 addresses (32-bit) ran out of addresses because they only supported 4.3 billion devices. IPv6 uses **128 bits** written as 8 groups of 4 hexadecimal digits (called *hextets*), separated by colons:
+### 2. IPv6 Next-Generation Internet Protocol Addressing
+Because legacy 32-bit IPv4 addresses exhausted their global address pool (supporting roughly 4.3 billion unique devices), IPv6 expands addressing space to **128 bits**. Writing 128 binary digits would be unmanageable; therefore, IPv6 structures addresses as 32 hexadecimal characters divided into eight 4-digit groups (termed *hextets*), separated by colons:
 
 `2001:0db8:85a3:0000:0000:8a2e:0370:7334`
 
-### 3. Web Colors (HTML/CSS RGB)
-Digital screens create colors by mixing Red, Green, and Blue light. In HTML/CSS, a color code begins with `#` followed by three 2-digit hex bytes (`#RRGGBB`):
-- `#FF0000` = Full Red (`255`), No Green (`0`), No Blue (`0`) → **Bright Red**
-- `#00FF00` = No Red, Full Green (`255`), No Blue → **Bright Green**
-- `#FFFFFF` = Full Red, Full Green, Full Blue → **Pure White**
-- `#000000` = No Red, No Green, No Blue → **Pure Black**
+### 3. HTML/CSS RGB Color Codes
+Digital displays generate full-spectrum color palettes by blending Red, Green, and Blue sub-pixel light emitters. In CSS and web rendering, 24-bit TrueColor palettes format color declarations as `#RRGGBB`, where each 2-digit hex pair represents an 8-bit intensity channel ranging from 0 (`00`) to 255 (`FF`):
+- `#FF0000` = Maximum Red (`255`), Zero Green (`0`), Zero Blue (`0`) $\to$ **Vibrant Red**
+- `#00FF00` = Zero Red, Maximum Green (`255`), Zero Blue $\to$ **Vibrant Green**
+- `#0000FF` = Zero Red, Zero Green, Maximum Blue (`255`) $\to$ **Vibrant Blue**
+- `#FFFFFF` = Maximum intensity across all three color channels $\to$ **Pure White**
+- `#000000` = Complete absence of light emission $\to$ **Pure Black**
 
-### 4. Memory Addresses & BSOD Crash Dumps
-When Windows experiences a critical kernel crash (Blue Screen of Death), it displays a stop code in hex (e.g., `0x0000007E` or `0x000000D1`). These hex values identify the specific memory address in RAM where a driver or kernel thread tried to execute an illegal instruction.
+### 4. Memory Pointers, Crash Dumps, and Reverse Engineering
+When an operating system encounters an unrecoverable kernel fault (such as a Windows Blue Screen of Death or a Linux Kernel Panic), the screen displays hexadecimal memory addresses (e.g., `0x0000007E`, `0xDEADBEEF`, `0xC0000005`). Security researchers and systems engineers analyze these hexadecimal pointers in debuggers like Ghidra and WinDbg to locate buffer overflow points, stack traces, and corrupted memory sectors.
 
 <Callout type="exam">
-CompTIA tests your recognition of address types. If you see colons separating 6 hex pairs (`00:11:22:33:44:55`), it is a **MAC address**. If you see colons separating 8 hex groups, it is an **IPv6 address**. If you see dots separating 4 decimal numbers (`192.168.1.1`), it is an **IPv4 address**.
+**CompTIA Tech+ Identification Objective (FC0-U71 1.2):** Technicians must rapidly identify address types based on delimiters and radix: Colons separating 6 pairs of hexadecimal digits indicate a **Layer 2 MAC Address**. Colons separating 8 hexadecimal hextets indicate a **128-bit IPv6 Address**. Periods separating 4 decimal integers (0–255) indicate a **32-bit IPv4 Address**.
 </Callout>
 
 ---
 
-## Why This Matters in the Field
+## Why This Matters in Vocational Cybersecurity
 
-When you are configuring switch port security, inspecting packet captures in Wireshark, debugging CSS stylesheets, or diagnosing corrupt RAM blocks with memtest, raw data is always rendered in hex.
+During packet inspection with Wireshark or tcpdump, cybersecurity analysts do not read raw binary bits; network protocol telemetry is rendered in dual-column hex and ASCII byte streams. 
 
-Understanding that `FF` is 255 (a full byte of 1s), that `00` is 0 (a full byte of 0s), and that each character is a 4-bit nibble allows you to read network payloads and memory states without needing a calculator.
+Understanding that `FF` denotes 255 (a full byte of consecutive binary 1s), that `00` denotes 0, and that each hexadecimal glyph represents a 4-bit nibble allows analysts to immediately isolate packet header boundaries, inspect TCP port flags, identify shellcode payloads, and evaluate file magic bytes (such as `4D 5A` for Windows PE executables) without requiring automated decoders.
 
 ---
 
 ## Key Terms
 
-Hexadecimal (Base-16) · Nibble · Byte · Digits 0–9 · Letters A–F · OUI (Organizationally Unique Identifier) · MAC Address · IPv6 Address · Hextet · RGB Color Code · Hex Prefix (`0x`, `#`) · Memory Address · BSOD Stop Code
+Hexadecimal (Base-16) · Nibble · Byte · Digits 0–9 · Letters A–F · OUI (Organizationally Unique Identifier) · MAC Address · IPv6 Address · Hextet · RGB Color Code · Hex Prefix (`0x`, `#`) · Memory Address · BSOD Stop Code · Buffer Overflow · Packet Analysis · File Magic Bytes

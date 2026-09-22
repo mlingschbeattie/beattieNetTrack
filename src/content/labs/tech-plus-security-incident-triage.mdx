@@ -1,90 +1,164 @@
 ---
-title: "Triage a School Security Incident"
-description: "Work a realistic incident from first report to closure, choosing the right action at each stage."
+title: "Triage a Security Breach & Audit Incident"
+description: "Respond to a live security incident: analyze Windows Event Viewer 4625 brute-force telemetry, audit compromised PowerShell ACL permissions, execute containment, and harden defenses."
 slug: tech-plus-security-incident-triage
 track: tech-plus
 moduleId: tech-plus.security
 order: 94
 difficulty: Beginner
-estMinutes: 15
+estimatedMinutes: 25
 xp: 50
 activity: steps
-tags: ["Tech+", "FC0-U71", "lab"]
+tags: ["Tech+", "FC0-U71", "security", "incident-response", "event-viewer", "cia", "powershell", "acl", "lab"]
 steps:
-  - id: classify
-    title: "Classify what failed"
-    prompt: "Coursework files are readable by everyone. The files are unaltered and still available to their owners. Which part of the CIA triad has failed?"
-    inputLabel: "CIA category"
+  - id: cia-classification
+    title: "Classify the primary security failure"
+    prompt: "A teacher reports that student medical accommodation files in `C:\\Shares\\Confidential` have been made accessible to all accounts on the local network. The files are unaltered and still available to authorized staff.\n\nWhich pillar of the CIA triad has been compromised? Enter one word."
+    inputLabel: "Compromised CIA pillar"
+    placeholder: "ex: confidentiality"
+    hint: "Unauthorized disclosure of sensitive records is a failure of confidentiality."
     validator:
-      type: choice
-      options:
-        - "Confidentiality — the data was disclosed to people who should not see it"
-        - "Integrity — the data was changed without authorisation"
-        - "Availability — the data could not be reached"
-        - "All three failed equally"
-      correctIndex: 0
-      rationale: "Nothing was altered, so integrity holds. The owners can still open their files, so availability holds. The single failure is disclosure, and naming it that way points straight at access controls as the fix."
-    successMessage: "Correct. Disclosure without alteration is a confidentiality failure."
-  - id: contain
-    title: "Contain it"
-    prompt: "What should you do first?"
+      type: oneOf
+      values:
+        - "confidentiality"
+        - "Confidentiality"
+    successMessage: "Correct. The files were disclosed to unauthorized users without alteration or downtime, making this a confidentiality breach."
+  - id: event-viewer-audit-inspection
+    title: "Inspect Windows Event Viewer telemetry"
+    prompt: "You examine the Windows Security event log on the file server to determine whether attackers attempted credential attacks prior to the permission change.\n\nLook at the authentic Windows 11 Event Viewer render above. In the Security log, which specific 4-digit Windows Event ID indicates an 'Audit Failure' where an account failed to log on? Enter the number."
+    inputLabel: "Windows Event ID"
+    placeholder: "ex: 4625"
+    hint: "Look at the Event ID column and the highlighted row in the render. Event 4625 is logon failure."
+    image: "/images/os/windows-event-viewer-event-4625-audit-failure.jpg"
+    imageAlt: "Windows 11 Event Viewer Security log displaying repeated Event ID 4625 Audit Failure log entries targeting the local Administrator account."
+    validator:
+      type: oneOf
+      values:
+        - "4625"
+        - "Event 4625"
+    successMessage: "Correct. Event ID 4625 records failed logon attempts in Windows. A rapid spike indicates a password brute-force or dictionary attack."
+  - id: powershell-acl-telemetry
+    title: "Analyze live folder Access Control Lists"
+    prompt: "You run an elevated PowerShell triage command to inspect the NTFS Access Control List (ACL) on the exposed folder.\n\nInspect the live terminal output above. Which built-in security principal was granted unauthorized 'FullControl' access across all files and subfolders? Enter the exact group name."
+    inputLabel: "Unauthorized security principal"
+    placeholder: "ex: Everyone"
+    hint: "Notice the line: 'Everyone Allow FullControl'."
+    terminalPrompt: "PS C:\\IncidentResponse>"
+    terminalOutput: |
+      PS C:\IncidentResponse> Get-Acl "C:\Shares\Confidential" | Format-List AccessToString
+
+      Path           : Microsoft.PowerShell.Core\FileSystem::C:\Shares\Confidential
+      AccessToString : Everyone Allow  FullControl
+                       NT AUTHORITY\SYSTEM Allow  FullControl
+                       BUILTIN\Administrators Allow  FullControl
+    validator:
+      type: oneOf
+      values:
+        - "Everyone"
+        - "everyone"
+    successMessage: "Correct. Granting 'Everyone Allow FullControl' exposes the directory to any authenticated user or guest across the network."
+  - id: immediate-containment-action
+    title: "Execute immediate containment"
+    prompt: "You have confirmed the active exposure of confidential student records. What is your mandatory first action as an Incident Responder?"
     inputLabel: "First action"
+    hint: "Containment always precedes deep investigation, notification, or server re-imaging."
     validator:
       type: choice
       options:
-        - "Remove the over-broad permission so only the right people can reach the folder"
-        - "Write the incident report for the head of department"
-        - "Rebuild the file server with a hardened configuration"
-        - "Email every student to tell them what happened"
+        - "Immediately strip the over-broad 'Everyone' permission to sever unauthorized access"
+        - "Draft a formal breach notification email to all school families"
+        - "Reformat the file server and rebuild from factory defaults"
+        - "Unplug all network cables from the school core switch"
       correctIndex: 0
-      rationale: "Containment comes first because it stops the exposure continuing. Reporting and notification matter and may be legally required, but neither closes the hole. Rebuilding the server is the correct long-term fix and the slowest possible containment."
-    successMessage: "Correct. Stop the exposure, then investigate."
-  - id: auth-control
-    title: "Choose the control"
-    prompt: "Staff accounts were being shared to save time, which is how the permission was set wrongly. Which control addresses that directly?"
-    inputLabel: "Control"
+      rationale: "Stop the bleeding first. Removing the unauthorized permission takes five seconds and terminates the active exposure immediately. Mass notification or server wiping before containment simply leaves the data exposed longer."
+    successMessage: "Correct. Immediate containment terminates live exposure before investigation begins."
+  - id: linux-permissions-hardening
+    title: "Harden Linux file permissions"
+    prompt: "A mirrored backup copy of the folder is hosted on an internal Ubuntu Linux server at `/srv/confidential`. You must set POSIX octal permissions so the owner can read and write, the administrative group can read only, and all other users have zero access.\n\nEnter the full `chmod` command to set these exact permissions on `/srv/confidential`."
+    inputLabel: "Linux chmod command"
+    placeholder: "ex: chmod 640 /srv/confidential"
+    hint: "Owner: Read (4) + Write (2) = 6. Group: Read (4) = 4. Others: None (0) = 0. Use chmod 640."
+    validator:
+      type: oneOf
+      values:
+        - "chmod 640 /srv/confidential"
+        - "chmod 0640 /srv/confidential"
+        - "chmod 640 /srv/confidential/"
+    successMessage: "Correct. `chmod 640 /srv/confidential` assigns read/write to owner, read-only to group, and zero access to others."
+  - id: multi-factor-authentication
+    title: "Deploy multi-factor defense"
+    prompt: "The investigation reveals that the attacker gained initial access by guessing a technician's weak password over Remote Desktop (RDP). Which authentication control most effectively prevents stolen or guessed passwords from compromising an account?"
+    inputLabel: "Security control"
+    hint: "Requiring two distinct authentication factors ensures that a known password alone cannot grant access."
     validator:
       type: choice
       options:
-        - "Individual accounts with multi-factor authentication, so actions trace to a person"
-        - "A longer minimum password length"
-        - "A faster internet connection"
-        - "Disabling the wireless network"
+        - "Multi-Factor Authentication (MFA), requiring a secondary authenticator app or hardware token"
+        - "Changing the password expiration policy to 15 days"
+        - "Hiding the IP address of the server using a hosts file"
+        - "Restricting user screen resolution"
       correctIndex: 0
-      rationale: "Shared accounts destroy accountability — nobody can say who made the change. Individual accounts restore the accounting part of AAA, and MFA means a leaked password alone is not enough. Password length does nothing about sharing."
-    successMessage: "Correct. Shared accounts remove accountability; individual ones restore it."
-  - id: awareness
-    title: "Prevent the repeat"
-    prompt: "Which measure most reduces the chance of the same mistake happening again?"
-    inputLabel: "Preventive measure"
+      rationale: "MFA requires something you know (password) plus something you have (authenticator app/security key). Even if an attacker cracks the password via brute-force, they cannot authenticate without the second factor."
+    successMessage: "Correct. Multi-Factor Authentication (MFA) neutralizes password-only credential compromises."
+  - id: account-lockout-threshold
+    title: "Configure account lockout policy"
+    prompt: "To prevent automated dictionary and brute-force attacks against Windows local accounts, you configure the system to lock out any account after 5 consecutive failed logon attempts.\n\nWhich command-line instruction sets the account lockout threshold to 5 in Windows?"
+    inputLabel: "Windows net accounts command"
+    placeholder: "ex: net accounts /lockoutthreshold:5"
+    hint: "Use `net accounts /lockoutthreshold:5`."
     validator:
-      type: choice
-      options:
-        - "Training staff on permissions, plus a periodic review of folder access"
-        - "Hiding the folder name so it is harder to find"
-        - "Asking staff to be more careful in future"
-        - "Turning off file sharing across the school"
-      correctIndex: 0
-      rationale: "The cause was a person not understanding what a permission did, so training addresses it, and a periodic review catches the next one before a student does. Renaming the folder is obscurity, not a control. Turning off sharing entirely stops the work the school needs to do."
-    successMessage: "Correct. Address the cause and add a check that catches recurrences."
-  - id: closure
-    title: "Close the incident"
-    prompt: "Write a one-line closure note. It must say that you contained the exposure and that access is now restricted. Use the words \"contained\" and \"restricted\"."
-    inputLabel: "Closure note"
-    placeholder: "Contained ... access now restricted ..."
-    hint: "The next person to read this should be able to tell what you proved, not just what you clicked."
+      type: oneOf
+      values:
+        - "net accounts /lockoutthreshold:5"
+        - "net accounts /lockoutthreshold: 5"
+        - "net accounts /lockoutthreshold:5;"
+    successMessage: "Correct. `net accounts /lockoutthreshold:5` halts automated credential-guessing scripts after 5 failures."
+  - id: data-at-rest-encryption
+    title: "Implement volume-level encryption"
+    prompt: "To protect the confidential share against physical drive theft or offline bypass, you enable native full-volume encryption on the Windows server's secondary storage drive.\n\nWhich built-in Windows enterprise security feature provides AES-256 full volume encryption for data at rest? Enter one word."
+    inputLabel: "Windows encryption feature"
+    placeholder: "ex: BitLocker"
+    hint: "The native Windows drive encryption technology is BitLocker."
+    validator:
+      type: oneOf
+      values:
+        - "BitLocker"
+        - "bitlocker"
+        - "Bitlocker"
+    successMessage: "Correct. BitLocker encrypts the physical drive partition using AES-256, protecting data at rest even if the drive is physically removed."
+  - id: incident-closure-report
+    title: "Draft incident response closure report"
+    prompt: "Draft the official Incident Response ticket closure note for leadership. You must confirm that the unauthorized permissions were revoked (or contained), and state that access to the share was restricted (or secured) with MFA and auditing. Include both the word 'contained' (or 'revoked') and the word 'restricted' (or 'secured')."
+    inputLabel: "Incident closure finding"
+    placeholder: "ex: The unauthorized share permissions were revoked immediately, and confidential data access was restricted to authorized personnel with multi-factor authentication."
+    hint: "State that the exposure was contained/revoked and that access was restricted/secured."
     validator:
       type: regex
-      pattern: '^(?=.*\bcontain)(?=.*\brestrict).{25,}$'
+      pattern: '^(?=.*\b(?:contained|revoked)\b)(?=.*\b(?:restricted|secured)\b).{25,}$'
       flags: "i"
-    successMessage: "Good closure. You recorded both the action and the resulting state."
+    successMessage: "Outstanding. You executed a complete, authentic vocational incident response lifecycle: classification, event log analysis, ACL telemetry, containment, permission hardening, and auditable reporting."
 domains:
   - domainId: techplus.security
     weight: 1
 ---
 
-A student reports that a shared folder of coursework is visible to the whole school. Work it from first report to closure.
+import Callout from '../../components/Callout.astro';
 
-## Goal
+## The Anatomy of an Incident: Contain First, Investigate Second
 
-Classify what failed, contain it before investigating, choose controls that address the cause, and document the outcome.
+In cybersecurity, perfection does not exist. Systems will get misconfigured, credentials will leak, and automated scripts will knock on open ports.
+
+What separates a professional technician from an amateur is **Incident Triage Discipline**:
+1. **Classification:** Identify which pillar of the CIA Triad has failed (Confidentiality, Integrity, or Availability).
+2. **Containment:** Stop the bleeding immediately. Revoking an over-broad permission or isolating a compromised host must occur before drafting reports or attempting root-cause post-mortems.
+3. **Telemetry Analysis:** Interrogate system logs (Windows Event Viewer Event 4625, syslog, audit trails) to discover how access was obtained.
+4. **Remediation & Hardening:** Apply permanent controls (MFA, account lockout thresholds, BitLocker encryption, POSIX permission hardening).
+5. **Documentation:** Write a clear, defensible closure note that satisfies auditors and executives.
+
+<Callout type="exam">
+CompTIA Tech+ FC0-U71 tests the fundamental incident response sequence: Containment must occur before eradication or recovery. Furthermore, understand the role of AAA: Authentication (MFA), Authorization (Access Control Lists / Least Privilege), and Accounting (Audit Event Logs).
+</Callout>
+
+<Callout type="warn">
+Never attempt to 'clean up' or delete security event logs during an incident investigation! Deleting event logs destroys the forensic evidence required to determine whether data was exfiltrated. Always preserve logs and export them to a secure write-once syslog repository.
+</Callout>

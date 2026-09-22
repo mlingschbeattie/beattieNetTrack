@@ -4,81 +4,110 @@ slug: "tech-plus-1-3-2-transfer-rates"
 track: tech-plus
 moduleId: tech-plus.it-concepts
 order: 6
-
 difficulty: Beginner
 passThreshold: 70
 tags: ["Tech+", "FC0-U71", "CompTIA"]
 questions:
   - id: q1
     type: single
-    prompt: "An internet plan advertises 100 Mbps. How many megabytes per second (MBps) does this represent?"
+    prompt: "An internet service provider advertises a downstream connection speed of 100 Mbps. What is the equivalent maximum download speed expressed in megabytes per second (MBps)?"
     options:
       - "A. 100 MBps"
       - "B. 800 MBps"
       - "C. 12.5 MBps"
       - "D. 50 MBps"
     correctIndex: 2
+    explanation: "Because there are 8 bits in one byte, divide the bit rate by 8 to calculate the byte rate: 100 Mbps / 8 = 12.5 MBps."
   - id: q2
     type: single
-    prompt: "What is the maximum data transfer speed of USB 3.0?"
+    prompt: "What is the maximum theoretical data transfer speed supported by the USB 3.0 (USB 3.2 Gen 1 / SuperSpeed) standard?"
     options:
       - "A. 480 Mbps"
       - "B. 10 Gbps"
       - "C. 5 Gbps"
       - "D. 1 Gbps"
     correctIndex: 2
+    explanation: "USB 3.0 operates at a maximum signaling rate of 5 Gbps (SuperSpeed), which is more than ten times faster than legacy USB 2.0 (480 Mbps)."
   - id: q3
     type: single
-    prompt: "True or false: Mbps and MBps represent the same transfer rate."
+    prompt: "A technician is explaining network telemetry to a junior apprentice. What is the fundamental difference between Mbps and MBps?"
     options:
-      - "A. True"
-      - "B. False"
+      - "A. Mbps measures wireless data while MBps measures wired ethernet data"
+      - "B. Mbps measures megabits per second while MBps measures megabytes per second (a factor of 8 difference)"
+      - "C. MBps is an obsolete legacy standard replaced by Mbps"
+      - "D. Mbps represents encrypted packets while MBps represents unencrypted packets"
     correctIndex: 1
+    explanation: "Lowercase 'b' indicates bits (megabits per second), the standard unit for telecommunications and networking. Uppercase 'B' indicates bytes (megabytes per second), the standard unit for file systems and disk throughput."
   - id: q4
     type: single
-    prompt: "A user is downloading a 1 GB file at a consistent 10 MBps. Approximately how long will the download take?"
+    prompt: "A user is downloading an operating system ISO file of approximately 1,000 MB (1 GB) over a connection delivering a steady 10 MBps. How long will the transfer take?"
     options:
       - "A. 10 seconds"
       - "B. 100 seconds"
-      - "C. 1 minute"
-      - "D. 10 minutes"
+      - "C. 10 minutes"
+      - "D. 1,000 seconds"
     correctIndex: 1
+    explanation: "Divide the total file size by the transfer rate: 1,000 MB / 10 MBps = 100 seconds (approximately 1 minute and 40 seconds)."
   - id: q5
-    type: single
-    prompt: "What is the difference between bandwidth and throughput?"
+    type: multi
+    prompt: "Which of the following metrics are used to measure the communication performance of a network data connection? (Choose two.)"
     options:
-      - "A. They are identical terms"
-      - "B. Bandwidth is the maximum capacity; throughput is the actual data transfer rate achieved"
-      - "C. Throughput is always higher than bandwidth"
-      - "D. Bandwidth applies only to wireless networks"
-    correctIndex: 1
+      - "A. Throughput (actual volume of data successfully transmitted per second)"
+      - "B. Latency (time delay required for data packets to traverse the link)"
+      - "C. Aspect Ratio (horizontal to vertical display pixel proportion)"
+      - "D. Thermal Design Power (maximum heat dissipation of a processor)"
+    correctIndices: [0, 1]
+    explanation: "Throughput measures the actual payload transfer speed delivered across a link, while latency measures the round-trip propagation delay. Aspect ratio and TDP are monitor and CPU specifications."
   - id: q6
     type: single
-    prompt: "Which term refers to the delay between a request being sent and the response being received?"
+    prompt: "Which networking metric describes the time delay between sending a packet request and receiving a response from a remote host?"
     options:
       - "A. Bandwidth"
       - "B. Throughput"
       - "C. Latency"
-      - "D. Jitter"
+      - "D. Baseband"
     correctIndex: 2
+    explanation: "Latency (often measured in milliseconds via ping ICMP echo requests) is the time delay experienced as data packets travel from source to destination and back."
   - id: q7
-    type: single
-    prompt: "A technician notices a user is getting slower download speeds than their plan advertises. Which factor is NOT a typical cause?"
+    type: multi
+    prompt: "A remote teleworker observes that their actual file download speeds are significantly lower than the maximum bandwidth advertised by their ISP. Which of the following factors commonly cause this reduction? (Choose two.)"
     options:
-      - "A. Network congestion"
-      - "B. Wi-Fi interference"
-      - "C. The color of the router"
-      - "D. Distance from the router"
-    correctIndex: 2
+      - "A. Radio frequency (RF) interference and distance from the wireless router"
+      - "B. Network congestion and throttling across intermediate ISP transit routes"
+      - "C. The color of the external cat 6 ethernet patch cable jacket"
+      - "D. Using a monitor with a high refresh rate (144 Hz)"
+    correctIndices: [0, 1]
+    explanation: "Wi-Fi attenuation/interference and ISP upstream congestion directly constrain real-world throughput. Cable jacket color and monitor refresh rate have zero impact on network transit speed."
   - id: q8
     type: single
-    prompt: "USB 2.0 has a maximum transfer rate of 480 Mbps. USB 3.0 has a maximum of 5 Gbps. Approximately how many times faster is USB 3.0?"
+    prompt: "Comparing legacy USB 2.0 (480 Mbps) to standard USB 3.0 (5 Gbps / 5,000 Mbps), approximately how many times faster is the USB 3.0 interface?"
     options:
-      - "A. 2x"
-      - "B. 5x"
-      - "C. 10x"
-      - "D. 100x"
+      - "A. 2 times faster"
+      - "B. 5 times faster"
+      - "C. 10 times faster"
+      - "D. 50 times faster"
     correctIndex: 2
+    explanation: "5,000 Mbps divided by 480 Mbps is approximately 10.4, meaning USB 3.0 provides roughly ten times the bandwidth of USB 2.0."
+  - id: q9
+    type: multi
+    prompt: "A workstation requires external storage capable of extremely fast transfers. Which of the following peripheral interfaces support transfer speeds of 10 Gbps or higher? (Choose two.)"
+    options:
+      - "A. Thunderbolt 4 (up to 40 Gbps)"
+      - "B. USB 3.2 Gen 2 (up to 10 Gbps)"
+      - "C. USB 2.0 High Speed (up to 480 Mbps)"
+      - "D. Standard Bluetooth 5.0 (up to 2 Mbps)"
+    correctIndices: [0, 1]
+    explanation: "Thunderbolt 4 provides up to 40 Gbps, and USB 3.2 Gen 2 delivers up to 10 Gbps. USB 2.0 is capped at 480 Mbps and Bluetooth operates at low-power megabit speeds."
+  - id: q10
+    type: single
+    prompt: "During a VoIP conference call, audio becomes choppy because data packets arrive at inconsistent, fluctuating time intervals. Which metric describes this packet delay variation?"
+    options:
+      - "A. Jitter"
+      - "B. Attenuation"
+      - "C. Bandwidth"
+      - "D. Duplex"
+    correctIndex: 0
+    explanation: "Jitter is the variation in packet arrival delay. High jitter causes audio artifacts, packet loss, and buffer underruns in real-time communications like VoIP and videoconferencing."
 domains:
   - domainId: techplus.concepts
     weight: 1

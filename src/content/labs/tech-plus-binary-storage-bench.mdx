@@ -1,33 +1,32 @@
 ---
 title: "Binary and Storage Bench Test"
-description: "Convert between binary and decimal, size a drive correctly, and work out why a 1 TB disk shows as 931 GB."
+description: "Work a real storage triage ticket: convert binary values, analyze live PowerShell disk telemetry, inspect Windows Disk Management, and prove why a 1 TB drive reports 931 GB."
 slug: tech-plus-binary-storage-bench
 track: tech-plus
 moduleId: tech-plus.it-concepts
 order: 90
 difficulty: Beginner
-estMinutes: 15
+estimatedMinutes: 20
 xp: 50
 activity: steps
-tags: ["Tech+", "FC0-U71", "lab"]
+tags: ["Tech+", "FC0-U71", "binary", "storage", "powershell", "disk-management", "lab"]
 steps:
   - id: bin-to-dec
-    title: "Binary to decimal"
-    prompt: "Convert the binary number 1011 to decimal. Enter digits only."
+    title: "Binary to decimal conversion"
+    prompt: "A customer brings in a system reporting a 4-bit memory register value of 1011. Convert this binary number to decimal. Enter digits only."
     inputLabel: "Decimal value"
     placeholder: "ex: 12"
-    hint: "Place values from the right are 1, 2, 4, 8. Add the ones with a 1 above them."
+    hint: "Place values from right to left are 1, 2, 4, 8. Add the values where a 1 appears (8 + 2 + 1)."
     validator:
-      type: oneOf
-      values:
-        - "11"
-    successMessage: "Correct. 8 + 2 + 1 = 11."
+      type: exact
+      value: "11"
+    successMessage: "Correct. 8 + 0 + 2 + 1 = 11."
   - id: dec-to-bin
-    title: "Decimal to binary"
-    prompt: "Convert the decimal number 20 to binary. Enter the digits with no spaces."
+    title: "Decimal to 8-bit binary conversion"
+    prompt: "An industrial sensor controller transmits an analog telemetry reading of 20. Convert the decimal number 20 to binary. Enter the digits with no spaces."
     inputLabel: "Binary value"
-    placeholder: "ex: 1100"
-    hint: "Which place values add up to 20? Work down from 16."
+    placeholder: "ex: 00010100"
+    hint: "Work downward from powers of 2: 16 (yes, remainder 4), 8 (no), 4 (yes, remainder 0), 2 (no), 1 (no)."
     validator:
       type: oneOf
       values:
@@ -39,56 +38,140 @@ steps:
         - "0001 0100"
         - "0b10100"
         - "0b00010100"
-    successMessage: "Correct. 16 + 4 = 20, so 10100 (or 00010100 in 8-bit byte format)."
+    successMessage: "Correct. 16 + 4 = 20, which is 10100 (or 00010100 in 8-bit byte format)."
+  - id: powershell-telemetry
+    title: "Analyze raw disk telemetry"
+    prompt: "The customer purchased a 1 TB NVMe solid-state drive and installed it as Disk 0. You query the drive via PowerShell to inspect the physical hardware specifications.\n\nInspect the terminal output above. Drive manufacturers sell storage using decimal SI units, where 1 Terabyte (TB) equals 10^12 bytes (1,000,000,000,000 bytes). How many trillions of bytes did the manufacturer manufacture and advertise for this 1 TB drive? Enter digits only."
+    inputLabel: "Trillions of bytes"
+    placeholder: "ex: 1"
+    hint: "One terabyte in the decimal metric system is exactly 10^12 bytes, which equals 1 trillion bytes."
+    terminalPrompt: "PS C:\\Users\\student>"
+    terminalOutput: |
+      PS C:\Users\student> Get-Disk -Number 0 | Select-Object Number, FriendlyName, OperationalStatus, Size
+
+      Number FriendlyName                 OperationalStatus           Size
+      ------ ------------                 -----------------           ----
+           0 NVMe Samsung 980 PRO 1TB     OK                 1000204886016
+    validator:
+      type: oneOf
+      values:
+        - "1"
+        - "1.0"
+        - "1 trillion"
+    successMessage: "Correct. Manufacturers define 1 TB as exactly 1,000,000,000,000 bytes (10^12). The drive has 1,000,204,886,016 physical bytes."
+  - id: inspect-disk-management
+    title: "Inspect Windows Disk Management"
+    prompt: "Look at the authentic Windows 11 desktop render above.\n\nNotice that Disk Management displays Disk 0 as '931.51 GB', and the SSD Drive Properties window shows 'Capacity: 1,000,204,886,016 bytes (931 GB)'.\n\nWindows does NOT calculate storage using decimal thousands (1,000). Operating systems calculate storage in binary gibibytes (GiB), where each step scales by 1,024 (2^10):\n- 1 KiB = 1,024 Bytes\n- 1 MiB = 1,048,576 Bytes\n- 1 GiB = 1,073,741,824 Bytes (1,024^3)\n\nDivide the raw capacity (1,000,204,886,016 bytes) by 1,073,741,824 bytes. Rounded to the nearest whole integer, how many gigabytes does Windows report?"
+    inputLabel: "Calculated GB reported by Windows"
+    placeholder: "ex: 931"
+    hint: "Calculate: 1,000,204,886,016 / 1,073,741,824 = 931.51. Round to 931."
+    image: "/images/os/windows-disk-management-storage-bench.jpg"
+    imageAlt: "Windows 11 workstation desktop showing Disk Management console with Disk 0 931.51 GB and SSD Properties showing 1,000,204,886,016 bytes (931 GB)."
+    validator:
+      type: oneOf
+      values:
+        - "931"
+        - "931 GB"
+        - "931 GiB"
+        - "931.5"
+        - "931.51"
+    successMessage: "Correct. 1,000,204,886,016 / 1,073,741,824 = 931.51 GiB. Windows calculates in binary but labels the column as 'GB', creating the appearance of missing space."
   - id: unit-order
-    title: "Order the units"
-    prompt: "Which list puts the storage units in order from smallest to largest?"
-    inputLabel: "Unit order"
+    title: "Storage unit hierarchy"
+    prompt: "Which list correctly sequences storage capacity units from smallest to largest?"
+    inputLabel: "Unit hierarchy"
+    hint: "Think kilo (thousand), mega (million), giga (billion), tera (trillion), peta (quadrillion)."
     validator:
       type: choice
       options:
-        - "Kilobyte, megabyte, gigabyte, terabyte"
-        - "Kilobyte, gigabyte, megabyte, terabyte"
-        - "Megabyte, kilobyte, gigabyte, terabyte"
-        - "Terabyte, gigabyte, megabyte, kilobyte"
+        - "Kilobyte (KB), Megabyte (MB), Gigabyte (GB), Terabyte (TB), Petabyte (PB)"
+        - "Kilobyte (KB), Gigabyte (GB), Megabyte (MB), Terabyte (TB), Petabyte (PB)"
+        - "Megabyte (MB), Kilobyte (KB), Gigabyte (GB), Terabyte (TB), Petabyte (PB)"
+        - "Terabyte (TB), Gigabyte (GB), Megabyte (MB), Kilobyte (KB), Petabyte (PB)"
       correctIndex: 0
-      rationale: "Each step up is roughly a thousand times the one before. The order runs kilo, mega, giga, tera — the same prefixes you meet again in transfer rates, where they measure bits per second rather than bytes."
-    successMessage: "Correct. Kilo, mega, giga, tera."
-  - id: drive-gap
-    title: "Explain the missing capacity"
-    prompt: "A customer buys a 1 TB drive and Windows reports 931 GB. They think they were short-changed. What actually happened?"
-    inputLabel: "Explanation"
+      rationale: "Each unit scales up by roughly 1,000x (decimal) or 1,024x (binary). The correct progression is kilo -> mega -> giga -> tera -> peta."
+    successMessage: "Correct. Kilo, Mega, Giga, Tera, Peta."
+  - id: drive-gap-root-cause
+    title: "Diagnose customer complaint"
+    prompt: "The customer insists their drive was damaged in shipping or is missing 69 GB of flash storage. What is the actual technical root cause?"
+    inputLabel: "Root cause diagnosis"
+    hint: "Identify the counting base mismatch between drive marketing and operating system indexing."
     validator:
       type: choice
       options:
-        - "The manufacturer counts 1 TB as a trillion bytes, while Windows divides by 1024 at each step"
-        - "The missing space is taken by the operating system"
-        - "The drive is faulty and should be returned"
-        - "Windows reserves the difference for virtual memory"
+        - "Drive manufacturers advertise capacity in Base-10 (decimal 10^3), while Windows calculates file systems in Base-2 (binary 2^10)"
+        - "The missing space was permanently consumed by Windows system hidden recovery partitions"
+        - "The NAND flash controller has suffered severe bad-block retirement"
+        - "Windows reserves 70 GB of every drive for the virtual memory paging file"
       correctIndex: 0
-      rationale: "Drive makers use decimal units where 1 TB is 1,000,000,000,000 bytes. Windows reports in binary units, dividing by 1024 three times, which yields about 931. No space is missing — the two sides are counting in different bases. Some space is used for formatting, but that is not what explains a gap this size."
-    successMessage: "Correct. Two different counting systems, not a fault."
-  - id: sizing
-    title: "Size the storage"
-    prompt: "A class needs to store 400 photos at roughly 5 MB each. Which drive is the smallest that comfortably fits?"
-    inputLabel: "Drive size"
+      rationale: "Manufacturers use decimal units where 1 TB is 1,000,000,000,000 bytes. Windows computes in binary units, dividing by 1,024 three times, which yields 931.5 GiB. No physical space is missing — it is a unit definition mismatch."
+    successMessage: "Correct. Decimal Base-10 vs Binary Base-2 unit definitions."
+  - id: sizing-calculation
+    title: "Calculate storage capacity needs"
+    prompt: "A graphic design team needs to store 400 RAW camera photographs averaging 5 MB each. What is the total size of these photos in Megabytes (MB)? Enter digits only."
+    inputLabel: "Total storage in MB"
+    placeholder: "ex: 2000"
+    hint: "Multiply 400 photos by 5 MB per photo."
     validator:
-      type: choice
-      options:
-        - "4 GB"
-        - "1 GB"
-        - "500 MB"
-        - "256 MB"
-      correctIndex: 0
-      rationale: "400 multiplied by 5 MB is 2,000 MB, which is about 2 GB. A 1 GB drive is too small and 4 GB leaves working room. Estimating capacity before buying is the everyday version of this skill."
-    successMessage: "Correct. Around 2 GB is needed, so 4 GB is the sensible choice."
+      type: oneOf
+      values:
+        - "2000"
+        - "2000 MB"
+        - "2,000"
+        - "2,000 MB"
+        - "2 GB"
+    successMessage: "Correct. 400 * 5 MB = 2,000 MB (approximately 2 GB)."
+  - id: ntfs-cluster-allocation
+    title: "File system allocation and slack space"
+    prompt: "Windows formats NTFS partitions with a default cluster (allocation unit) size of 4 Kilobytes (4,096 bytes). Storage is allocated in whole cluster blocks.\n\nA technician saves a script containing exactly 100 bytes of ASCII text. What is the physical 'Size on disk' allocated by Windows for this file? Enter the byte count."
+    inputLabel: "Allocated bytes on disk"
+    placeholder: "ex: 4096"
+    hint: "Even if a file only uses 100 bytes, the operating system must allocate an entire minimum allocation cluster (4 KB = 4,096 bytes). The unused 3,996 bytes is slack space."
+    validator:
+      type: oneOf
+      values:
+        - "4096"
+        - "4096 bytes"
+        - "4,096"
+        - "4,096 bytes"
+        - "4 KB"
+        - "4KB"
+    successMessage: "Correct. NTFS allocates storage in whole 4,096-byte clusters. The remaining 3,996 bytes is internal slack space."
+  - id: closure-note
+    title: "Draft professional ticket closure note"
+    prompt: "Write a professional 1–2 sentence resolution note for the customer's support ticket. Explain that their SSD is healthy and that the 931 GB reading is normal due to the difference between manufacturer decimal ratings and Windows binary calculations. You must include both the word 'healthy' (or 'normal') and the word 'binary'."
+    inputLabel: "Resolution closure note"
+    placeholder: "ex: Verified the Samsung 980 SSD is completely healthy; the 931 GB display is normal due to Windows binary byte calculation."
+    hint: "State that the hardware is healthy/normal and explain the binary calculation so the customer understands their drive is not defective."
+    validator:
+      type: regex
+      pattern: '^(?=.*\b(?:healthy|normal)\b)(?=.*\bbinary\b).{25,}$'
+      flags: "i"
+    successMessage: "Excellent. Your closure note proves the hardware is healthy, provides the technical rationale, and gives the client peace of mind."
 domains:
   - domainId: techplus.concepts
     weight: 1
 ---
 
-You will be asked for exact numbers here, and exact numbers are the point — this is the one place on the Tech+ exam where you either can do the arithmetic or you cannot. Take the conversions slowly. Nobody does these quickly at first.
+import Callout from '../../components/Callout.astro';
 
-## Goal
+## Triage: The 931 GB Mystery
 
-Convert in both directions, apply the storage-unit prefixes correctly, and explain the advertised-versus-actual capacity gap that every technician gets asked about.
+Every computer technician has had this conversation:
+
+A customer buys a 1 Terabyte SSD, plugs it into Windows 11, and immediately calls the help desk angry because Windows Disk Management reports **931 GB**. They believe they were short-changed 69 gigabytes of storage or sold a counterfeit drive.
+
+In this lab, you work this ticket from end to end:
+1. Converting raw binary and decimal values.
+2. Querying live hardware telemetry via PowerShell.
+3. Reading an authentic Windows 11 Disk Management console render.
+4. Performing the mathematical conversion between Base-10 (decimal) and Base-2 (binary).
+5. Documenting the resolution in a customer-facing closure note.
+
+<Callout type="exam">
+CompTIA Tech+ FC0-U71 heavily tests the distinction between **storage capacity** (measured in bytes: KB, MB, GB, TB, PB) and **network transfer speed** (measured in bits per second: Kbps, Mbps, Gbps). Always check whether the letter **B** is uppercase (Bytes) or lowercase (bits). 1 Byte = 8 bits.
+</Callout>
+
+<Callout type="warn">
+Never tell a customer their drive is defective or attempt to reformat a drive to "reclaim" the 69 GB gap. Reformatting will never change this number — the gap is an arithmetic conversion artifact caused by Windows using binary powers of 1024 while displaying decimal "GB" labels.
+</Callout>

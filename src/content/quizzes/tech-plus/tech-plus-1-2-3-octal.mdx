@@ -18,6 +18,7 @@ questions:
       - "C. 0-8"
       - "D. 1-8"
     correctIndex: 1
+    explanation: "Octal is a base-8 numbering system that uses only 8 valid symbols: 0, 1, 2, 3, 4, 5, 6, and 7. The digits 8 and 9 do not exist in octal."
   - id: q2
     type: single
     prompt: "To convert binary to octal, how many binary bits are grouped together for each octal digit?"
@@ -27,6 +28,7 @@ questions:
       - "C. 3"
       - "D. 8"
     correctIndex: 2
+    explanation: "Each octal digit corresponds to exactly 3 binary bits because 2^3 = 8. For example, binary 111 equals octal 7."
   - id: q3
     type: single
     prompt: "A Linux administrator runs the command chmod 755 on a file. Which numbering system is being used to set permissions?"
@@ -36,15 +38,17 @@ questions:
       - "C. Hexadecimal"
       - "D. Octal"
     correctIndex: 3
+    explanation: "In Linux/UNIX file systems, permissions are represented in octal notation where 4=Read, 2=Write, and 1=Execute. 'chmod 755' represents rwxr-xr-x using octal digits."
   - id: q4
-    type: single
-    prompt: "What is the decimal value of the octal number 10?"
+    type: multi
+    prompt: "In Linux file security permissions, which of the following basic access rights are included when assigning the octal permission value 7 (rwx)? (Choose two.)"
     options:
-      - "A. 10"
-      - "B. 16"
-      - "C. 8"
-      - "D. 2"
-    correctIndex: 2
+      - "A. Read access (value 4)"
+      - "B. Execute access (value 1)"
+      - "C. Network broadcast routing (value 8)"
+      - "D. Kernel hypervisor reboot (value 16)"
+    correctIndices: [0, 1]
+    explanation: "In POSIX file systems, octal 7 equals Read (4) + Write (2) + Execute (1). Thus, both Read and Execute privileges are granted."
   - id: q5
     type: single
     prompt: "What is the octal representation of the decimal number 8?"
@@ -54,6 +58,7 @@ questions:
       - "C. 100"
       - "D. 7"
     correctIndex: 1
+    explanation: "Decimal 8 equals 1 group of 8 and 0 units, which is written as octal 10."
   - id: q6
     type: single
     prompt: "True or false: The digit 9 is a valid digit in the octal numbering system."
@@ -61,6 +66,7 @@ questions:
       - "A. True"
       - "B. False"
     correctIndex: 1
+    explanation: "False: Octal only contains digits 0 through 7. The digit 9 is invalid in base-8."
   - id: q7
     type: single
     prompt: "Which number system uses base 8 and was historically used in older computing systems?"
@@ -70,15 +76,37 @@ questions:
       - "C. Decimal"
       - "D. Octal"
     correctIndex: 3
+    explanation: "Octal is base 8. Historically, early 12-bit, 24-bit, and 36-bit mainframe architectures used octal before modern 8-bit byte standards popularized hexadecimal."
   - id: q8
-    type: single
-    prompt: "A technician needs to convert the binary number 111 111 to octal. What is the correct result?"
+    type: multi
+    prompt: "Which of the following 3-bit binary sequences represent valid single octal digits? (Choose two.)"
     options:
-      - "A. 63"
-      - "B. 77"
-      - "C. 17"
-      - "D. 33"
-    correctIndex: 1
+      - "A. 111 (converts to octal 7)"
+      - "B. 101 (converts to octal 5)"
+      - "C. 1001 (contains 4 bits)"
+      - "D. 1111 (contains 4 bits)"
+    correctIndices: [0, 1]
+    explanation: "Each octal digit corresponds to exactly three binary bits (from 000 = 0 to 111 = 7). Four-bit patterns are nibbles used in hexadecimal."
+  - id: q9
+    type: multi
+    prompt: "Which of the following numbers are invalid in the octal (base-8) numbering system? (Choose two.)"
+    options:
+      - "A. 482"
+      - "B. 371"
+      - "C. 790"
+      - "D. 526"
+    correctIndices: [0, 2]
+    explanation: "Octal digits must be within the range 0 through 7. '482' contains the digit 8, and '790' contains the digit 9, making both invalid octal numbers."
+  - id: q10
+    type: single
+    prompt: "In Linux file permissions, what does the octal value 7 represent for a specific user role?"
+    options:
+      - "A. Full permissions: Read (4) + Write (2) + Execute (1)"
+      - "B. Read-only permissions (4)"
+      - "C. Execute-only permissions (1)"
+      - "D. Write and Execute permissions (3)"
+    correctIndex: 0
+    explanation: "In Linux POSIX permissions, Read=4, Write=2, and Execute=1. The octal digit 7 is the sum of 4 + 2 + 1, conferring full Read, Write, and Execute permissions."
 domains:
   - domainId: techplus.concepts
     weight: 1

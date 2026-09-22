@@ -1,79 +1,174 @@
 ---
-title: "Choose the Software and the Licence"
-description: "Pick appropriate applications and licensing models for four realistic school requests."
+title: "Software Asset Management & Licensing Audit"
+description: "Audit school district software assets: analyze live PowerShell licensing queries, evaluate open-source vs proprietary models, calculate seat licensing budgets, and resolve compliance breaches."
 slug: tech-plus-software-and-licensing
 track: tech-plus
 moduleId: tech-plus.applications
 order: 92
 difficulty: Beginner
-estMinutes: 12
+estimatedMinutes: 20
 xp: 50
 activity: steps
-tags: ["Tech+", "FC0-U71", "lab"]
+tags: ["Tech+", "FC0-U71", "software", "licensing", "compliance", "powershell", "saas", "lab"]
 steps:
-  - id: app-type
-    title: "Match the application type"
-    prompt: "A teacher wants to build a class budget with formulas that update automatically. Which application type is it?"
-    inputLabel: "Application type"
+  - id: app-type-classification
+    title: "Match application architecture to requirements"
+    prompt: "A mathematics department teacher needs software to track student grades and budget projections with complex mathematical formulas that recalculate instantly whenever values are modified.\n\nWhich software application category is purpose-built for grid-based numerical analysis and automatic formula recalculation? Enter one word."
+    inputLabel: "Application category"
+    placeholder: "ex: spreadsheet"
+    hint: "Think Microsoft Excel or Google Sheets. The category is spreadsheet."
     validator:
-      type: choice
-      options:
-        - "Spreadsheet software"
-        - "Word processing software"
-        - "Presentation software"
-        - "Database management software"
-      correctIndex: 0
-      rationale: "Automatic recalculation from formulas is the defining feature of a spreadsheet. A database stores and queries structured records but is not built for ad-hoc arithmetic across a grid."
-    successMessage: "Correct. Formulas that recalculate mean a spreadsheet."
-  - id: os-choice
-    title: "Choose the operating system"
-    prompt: "A department needs cheap machines for web-based work with minimal administration. Which fits best?"
+      type: oneOf
+      values:
+        - "spreadsheet"
+        - "spreadsheet software"
+        - "spreadsheets"
+    successMessage: "Correct. Automatic recalculation across cells and rows is the defining capability of spreadsheet software."
+  - id: os-platform-matching
+    title: "Select low-maintenance web operating system"
+    prompt: "The school district is deploying 200 lightweight student laptops exclusively for web-based research, Google Classroom, and online testing. The administration requires zero local software maintenance and centralized cloud management.\n\nWhich operating system platform is designed specifically for web-first thin-client hardware with minimal local administrative overhead?"
     inputLabel: "Operating system"
+    placeholder: "ex: ChromeOS"
+    hint: "Built on the Linux kernel by Google to run web applications and browser extensions."
     validator:
-      type: choice
-      options:
-        - "ChromeOS on low-cost hardware"
-        - "A server operating system"
-        - "A specialised embedded OS"
-        - "A trial version of a desktop OS reinstalled each term"
-      correctIndex: 0
-      rationale: "Web-based work with low administrative overhead is the case ChromeOS is designed for. A server OS is built to serve clients, not to be one, and repeatedly reinstalling trial software is both fragile and a licence breach."
-    successMessage: "Correct. Match the OS to how the machine is actually used."
-  - id: licence-model
-    title: "Identify the licence"
-    prompt: "Software is free to use, and its source code can be viewed and modified by anyone. Which model is this?"
-    inputLabel: "Licence model"
+      type: oneOf
+      values:
+        - "ChromeOS"
+        - "Chrome OS"
+        - "Chrome-OS"
+        - "Chromium OS"
+    successMessage: "Correct. ChromeOS provides an immutable, cloud-managed environment ideal for low-overhead student computing."
+  - id: powershell-licensing-telemetry
+    title: "Query enterprise software licensing status"
+    prompt: "You run an elevated PowerShell Software Asset Management (SAM) query across a newly acquired computer lab.\n\nInspect the live terminal telemetry above. Operating systems and office suites show 'LicenseStatus = 1' (licensed via the district Volume KMS server). However, notice 'CreativeDesignSuite v4' reports 'LicenseStatus = 5' with a description of 'TRIAL / NOT_ACTIVATED (Grace period expired)'.\n\nWhat compliance status does this application currently hold? Enter one word."
+    inputLabel: "Compliance status"
+    placeholder: "ex: expired"
+    hint: "The grace period has ended and the product key has not activated. It is operating as an expired or unlicensed trial."
+    terminalPrompt: "PS C:\\Admin\\Audit>"
+    terminalOutput: |
+      PS C:\Admin\Audit> Get-CimInstance -ClassName SoftwareLicensingProduct | Where-Object PartialProductKey | Select-Object Name, LicenseStatus, Description
+
+      Name                           LicenseStatus Description
+      ----                           ------------- -----------
+      Windows(R), Professional ed...             1 Windows(R) Operating System, VOLUME_KMSCLIENT channel
+      Office 16, Office16ProPlus...              1 Office 16, VOLUME_KMSCLIENT channel
+      CreativeDesignSuite v4                     5 TRIAL / NOT_ACTIVATED (Grace period expired)
     validator:
-      type: choice
-      options:
+      type: oneOf
+      values:
+        - "expired"
+        - "unlicensed"
+        - "trial"
+        - "non-compliant"
+        - "not activated"
+    successMessage: "Correct. The software is expired and unlicensed. Continued organizational use constitutes a software copyright violation."
+  - id: licensing-model-inspection
+    title: "Inspect software licensing models"
+    prompt: "The vocational programming team requires a backend relational database system where instructors and students can inspect the underlying source code, modify it to add custom telemetry hooks, and freely redistribute their builds across lab clusters without paying per-seat royalties.\n\nInspect the technical licensing guide above. Which licensing framework explicitly guarantees the right to inspect, modify, and redistribute source code?"
+    inputLabel: "Licensing model"
+    placeholder: "ex: Open source"
+    hint: "Look at Card 1 on the far left. FOSS / GPL models guarantee open source code."
+    image: "/images/tech-plus/software-licensing-models-guide.jpg"
+    imageAlt: "Technical comparison of software licensing models: Open Source (FOSS/GPL), Proprietary/Commercial, Subscription/SaaS, and Enterprise Volume/Site License."
+    validator:
+      type: oneOf
+      values:
         - "Open source"
-        - "Proprietary"
-        - "Subscription"
-        - "Trial"
-      correctIndex: 0
-      rationale: "Open source grants the right to inspect and modify the source. Proprietary software keeps its source closed regardless of price. Free to download does not by itself make something open source — the source access is the distinguishing feature."
-    successMessage: "Correct. Source availability is what defines it."
-  - id: licence-breach
-    title: "Spot the compliance problem"
-    prompt: "A single-user licence for design software is installed on twelve classroom machines. What is the issue?"
-    inputLabel: "The problem"
+        - "Open Source"
+        - "open-source"
+        - "open source"
+        - "FOSS"
+        - "GPL"
+    successMessage: "Correct. Open Source (FOSS/GPL) grants legal rights to inspect, alter, and redistribute the underlying source code."
+  - id: single-user-breach-diagnosis
+    title: "Diagnose licensing compliance breach"
+    prompt: "An instructor purchases one single-user retail license of video production software with personal department funds and installs it across all 15 computers in classroom 204. Why does this trigger an immediate audit compliance violation?"
+    inputLabel: "Licensing violation"
+    hint: "Identify the legal difference between an individual standalone license and a multi-seat volume license."
     validator:
       type: choice
       options:
-        - "The licence permits one installation, so eleven machines are unlicensed"
-        - "The software will run slowly across twelve machines"
-        - "There is no issue if the machines are in one room"
-        - "The licence only applies to personal, not educational, use"
+        - "A single-user license legally permits installation on only one machine (or by one named user); fourteen installations are unlicensed"
+        - "The software is designed to only operate when plugged into residential Wi-Fi networks"
+        - "Educational institutions are legally prohibited from running commercial software"
+        - "The single license key will cause a physical short circuit in the classroom network switch"
       correctIndex: 0
-      rationale: "A single-user licence covers one installation or one named user. Installing it twelve times breaches the agreement regardless of location or intent, and audits do happen. A volume or education licence is the correct route."
-    successMessage: "Correct. Licence terms are counted per installation or per user."
+      rationale: "Software licenses are legal contracts. A single-user EULA covers exactly one computer or one designated user. Deploying it across 15 machines means 14 of those installations are unauthorized copyright infringements, leaving the school liable for penalties."
+    successMessage: "Correct. A single-user license authorizes only one device. Additional machines require a volume or site license."
+  - id: open-source-vs-freeware
+    title: "Distinguish open source from freeware"
+    prompt: "A technician downloads a free network benchmarking utility from a vendor's website. The executable (.exe) is free to use forever, but the vendor refuses to share the source code and forbids reverse-engineering. How is this software classified?"
+    inputLabel: "Software classification"
+    hint: "Free of cost does not equal open source if the underlying code remains locked."
+    validator:
+      type: choice
+      options:
+        - "Freeware (Proprietary and closed-source, but offered at zero financial cost)"
+        - "Open-source software (FOSS)"
+        - "Shareware trial software"
+        - "Public Domain hardware firmware"
+      correctIndex: 0
+      rationale: "Freeware is proprietary software provided free of charge, but the developer retains full copyright and keeps the source code hidden. Open Source requires that the human-readable source code be freely accessible and modifiable."
+    successMessage: "Correct. Freeware is zero-cost proprietary software. Open source requires accessible, modifiable code."
+  - id: volume-licensing-budget-math
+    title: "Calculate volume educational licensing costs"
+    prompt: "The school needs to license a graphic design suite for 30 students in the media lab.\n\n- Retail Perpetual Single-User License: $600 one-time fee per machine ($18,000 total)\n- Educational Volume Subscription: $15 per student per month ($180 per year per student)\n\nWhat is the total annual cost (in dollars) for all 30 students under the educational volume subscription plan? Enter digits only."
+    inputLabel: "Total annual volume cost ($)"
+    placeholder: "ex: 5400"
+    hint: "Multiply: 30 students * $180 per student per year = $5,400."
+    validator:
+      type: oneOf
+      values:
+        - "5400"
+        - "$5400"
+        - "5,400"
+        - "$5,400"
+    successMessage: "Correct. 30 * $180/yr = $5,400 per year. Educational volume licensing saves $12,600 in upfront capital outlay."
+  - id: concurrent-floating-license-savings
+    title: "Calculate concurrent floating license efficiency"
+    prompt: "An engineering CAD lab has 40 workstations, but class sizes never exceed 15 students at any given hour.\n\nThe software vendor offers two licensing options:\n- Node-Locked License: $150 per workstation ($150 * 40 machines = $6,000)\n- Concurrent Floating License Pool: $200 per active user (15 active seats * $200 = $3,000)\n\nHow much money does the school district save by implementing the concurrent floating license model? Enter digits only."
+    inputLabel: "Total savings ($)"
+    placeholder: "ex: 3000"
+    hint: "Subtract the concurrent cost ($3,000) from the node-locked cost ($6,000)."
+    validator:
+      type: oneOf
+      values:
+        - "3000"
+        - "$3000"
+        - "3,000"
+        - "$3,000"
+    successMessage: "Correct. $6,000 - $3,000 = $3,000 in savings. Floating concurrent licenses allocate seats dynamically across machines based on active users."
+  - id: compliance-audit-closure-note
+    title: "Draft compliance audit finding resolution"
+    prompt: "Draft a 1–2 sentence formal remediation note for the district compliance auditor. You must confirm that the expired trial software was decommissioned (or uninstalled) and that the lab was transitioned to an authorized volume (or compliant) educational license agreement. Include both the word 'decommissioned' (or 'uninstalled') and the word 'volume' (or 'compliant')."
+    inputLabel: "Audit resolution finding"
+    placeholder: "ex: All expired trial installations were uninstalled immediately, and the computer lab was transitioned to a compliant volume educational license."
+    hint: "State that the unlicensed/trial software was decommissioned or uninstalled, and confirm the adoption of a compliant volume license."
+    validator:
+      type: regex
+      pattern: '^(?=.*\b(?:decommissioned|uninstalled)\b)(?=.*\b(?:volume|compliant)\b).{25,}$'
+      flags: "i"
+    successMessage: "Outstanding. You demonstrated master-level software asset management: telemetry auditing, model classification, financial optimization, and legal compliance documentation."
 domains:
   - domainId: techplus.applications
     weight: 1
 ---
 
-Four requests land in your inbox in one morning. Each needs software, and each needs the right licence — getting the licence wrong is how schools end up with a compliance problem.
+import Callout from '../../components/Callout.astro';
 
-## Goal
+## Software Asset Management: Legality, Architecture, and Cost
 
-Match the application type and licensing model to the requirement, and recognise when a licence forbids what is being asked.
+Software is intellectual property. When an organization buys software, it almost never buys the program itself — it purchases a **License (End User License Agreement / EULA)** granting permission to execute the software under strict conditions.
+
+In enterprise IT, Software Asset Management (SAM) is a high-stakes responsibility:
+1. **Compliance:** Deploying more copies than you have licensed exposes your organization to severe civil fines and legal audits.
+2. **Cost Optimization:** Choosing between perpetual licenses, SaaS subscriptions, and concurrent floating pools can save tens of thousands of dollars.
+3. **Open Source Governance:** Ensuring that development projects adhere to GPL, MIT, and Apache open-source obligations.
+
+<Callout type="exam">
+CompTIA Tech+ FC0-U71 tests the characteristics of software licensing models: Proprietary (closed-source commercial), Open Source (freely inspectable/modifiable code), Freeware (zero-cost closed source), Subscription/SaaS (cloud-hosted recurring fee), and Concurrent Licensing (pooled active seats).
+</Callout>
+
+<Callout type="warn">
+Never assume that software running in an educational or non-profit building is exempt from copyright enforcement. Software vendors conduct rigorous licensing audits on school districts. An unauthorized "crack" or single-user key cloned across a classroom will fail automated audit scans and result in immediate license forfeiture and back-licensing penalties.
+</Callout>

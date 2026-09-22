@@ -76,6 +76,27 @@ sections:
           - "Global variables only work in Linux"
           - "Global variables cannot store numbers"
         correct: 0
+  - id: data-types-and-type-coercion
+    title: "Data Types and Type Coercion Traps"
+    keyPoints:
+      - "Fundamental Data Types: Integer (whole numbers), Float (decimals), String (text characters), and Boolean (true/false)"
+      - "Static Typing vs Dynamic Typing: Static languages (Java, C++) check types at compile time; dynamic languages (Python, JavaScript) resolve types at runtime"
+      - "Type Coercion occurs when an interpreter automatically converts one data type into another, leading to unexpected calculation errors"
+    check:
+      - prompt: "In JavaScript or Python, what unexpected result occurs if a program evaluates '5' + 2 without explicitly converting the string to an integer?"
+        options:
+          - "String concatenation resulting in '52' instead of numerical addition of 7"
+          - "A physical CPU hardware interrupt"
+          - "The numerical value 10"
+          - "An automatic reboot"
+        correct: 0
+      - prompt: "Which data type is explicitly designed to hold a binary condition representing either True or False?"
+        options:
+          - "Boolean"
+          - "Floating point"
+          - "Character array"
+          - "Unsigned integer"
+        correct: 0
 domains:
   - domainId: techplus.software
     weight: 1
@@ -92,6 +113,8 @@ If programmers had to remember hex memory addresses every time they wanted to re
 An **Identifier** is a human-readable name assigned to a specific memory location, function, constant, or data structure. The programming language maintains a master lookup symbol table that maps that human name directly to the underlying physical RAM address.
 
 Understanding how to name variables, protect constants, and manage variable scope prevents silent bugs and makes code readable by other engineers.
+
+![Program Memory Mapping and Variable Scope Comparison Guide](/images/tech-plus/identifiers-memory-scope-guide.jpg)
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -110,6 +133,21 @@ Understanding how to name variables, protect constants, and manage variable scop
 │ **kebab-case**     │ `user-first-name`  │ CSS, HTML, URLs (NOT in code)│
 └────────────────────┴────────────────────┴──────────────────────────────┘
 ```
+
+<Callout type="exam">
+**CompTIA Tech+ Core Objective (FC0-U71 4.3):**
+- **Variables vs. Constants:** Variables are mutable storage locations whose values change at runtime. Constants (`UPPER_SNAKE_CASE`) are immutable values defined once that cannot be reassigned.
+- **Identifier Rules:** Identifiers cannot begin with numeric digits (e.g., `1st_place` is illegal), cannot contain spaces or hyphens, and cannot match language keywords (`class`, `if`, `while`).
+- **Case Sensitivity:** Identifiers are strictly case-sensitive in C++, Java, JavaScript, and Python (`studentId` differs from `studentid`).
+- **Scope Lifetime:** Local variables declared inside functions are created on the call stack and destroyed upon function exit. Global variables persist across the entire application runtime.
+</Callout>
+
+<Callout type="warn">
+**Programming Operational Pitfalls:**
+- **Implicit Type Coercion:** Beware of combining different data types. In loosely typed environments, adding an integer to a string (such as `"10" + 5`) performs string concatenation, resulting in `"105"` rather than numerical `15`. Always use explicit casting (`parseInt()` or `int()`).
+- **Global Variable Contamination:** Global variables can be mutated by any function anywhere in the project, creating difficult-to-trace state corruption bugs. Limit variables to minimal local scope.
+- **Variable Shadowing:** Declaring a local variable with the exact same name as a global variable masks the outer variable, causing confusing bugs where changes to the variable do not reflect globally.
+</Callout>
 
 ---
 
@@ -152,10 +190,6 @@ You must distinguish between **Hard Syntax Rules** (which cause program crashes 
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
-<Callout type="exam">
-**Case Sensitivity Rule:** In almost all modern programming languages (Python, Java, C, C++, JavaScript), **identifiers are strictly case-sensitive**. `totalScore`, `TotalScore`, and `TOTALSCORE` are treated by the computer as three completely distinct, unrelated memory variables!
-</Callout>
-
 ---
 
 ## 3. Variable Scope: Global vs. Local
@@ -191,12 +225,53 @@ Why not make every variable global? If a program has 100 global variables across
 
 ---
 
+## 4. Fundamental Data Types and Type Coercion
+
+When an identifier reserves space in RAM, the computer must know what kind of data it holds so it allocates the correct number of bytes:
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                     FUNDAMENTAL DATA TYPES                             │
+├──────────────┬─────────────────────────┬───────────────────────────────┤
+│ Data Type    │ Description             │ Real-World Example            │
+├──────────────┼─────────────────────────┼───────────────────────────────┤
+│ **Integer**  │ Whole numbers (no dec)  │ `port = 8080`, `count = 42`   │
+├──────────────┼─────────────────────────┼───────────────────────────────┤
+│ **Float**    │ Decimal numbers         │ `pi = 3.14159`, `rate = 0.08` │
+├──────────────┼─────────────────────────┼───────────────────────────────┤
+│ **String**   │ Text characters in quotes│ `hostname = "srv-dc01"`       │
+├──────────────┼─────────────────────────┼───────────────────────────────┤
+│ **Boolean**  │ Binary logical flag     │ `isAuthenticated = True`      │
+└──────────────┴─────────────────────────┴───────────────────────────────┘
+```
+
+### Static Typing vs. Dynamic Typing
+- **Statically Typed (Java, C++, Rust):** You must declare the variable's type when authoring code: `int maxUsers = 50;`. The compiler enforces that you never store text in that integer variable.
+- **Dynamically Typed (Python, JavaScript):** The runtime interpreter determines the type based on the assigned value: `max_users = 50`. You can later reassign `max_users = "fifty"` without a compile error, which can cause unexpected runtime bugs.
+
+### Explicit Type Casting vs. Implicit Coercion
+When converting between types, always use **explicit casting** rather than relying on the language to guess:
+```python
+# User inputs from web forms or terminals are ALWAYS strings:
+user_input = "25"
+
+# ❌ WRONG: Attempting math on strings causes errors or concatenation
+# total = user_input + 5
+
+# ✔ CORRECT: Explicitly cast string to integer
+age = int(user_input)
+next_year_age = age + 1
+print(f"Next year you will be {next_year_age}")
+```
+
+---
+
 ## Why This Matters in the Field
 
-When writing automation scripts to audit thousands of Active Directory user accounts or backup enterprise databases, proper identifier naming and scoping separates fragile scripts from resilient production tools.
+When writing automation scripts to audit thousands of Active Directory user accounts or backup enterprise databases, proper identifier naming, type discipline, and scoping separates fragile scripts from resilient production tools.
 
 ---
 
 ## Key Terms
 
-Identifier · Variable · Mutable · Constant · Immutable · UPPER_SNAKE_CASE · Syntax Rule · Reserved Keywords · Case Sensitivity · camelCase · snake_case · PascalCase · kebab-case · Scope · Global Scope · Local Scope · Variable Lifespan · NameError · Principle of Least Privilege
+Identifier · Variable · Mutable · Constant · Immutable · UPPER_SNAKE_CASE · Syntax Rule · Reserved Keywords · Case Sensitivity · camelCase · snake_case · PascalCase · kebab-case · Scope · Global Scope · Local Scope · Variable Lifespan · NameError · Principle of Least Privilege · Data Types · Integer · Float · String · Boolean · Type Casting · Type Coercion · Static Typing · Dynamic Typing

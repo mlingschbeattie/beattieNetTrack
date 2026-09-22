@@ -48,6 +48,10 @@ type LabStep = {
   inputLabel?: string;
   placeholder?: string;
   hint?: string;
+  terminalOutput?: string;
+  terminalPrompt?: string;
+  image?: string;
+  imageAlt?: string;
   validator:
     | { type: 'exact'; value: string }
     | { type: 'oneOf'; values: string[] }

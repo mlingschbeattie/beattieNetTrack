@@ -103,122 +103,139 @@ domains:
 
 import Callout from '../../components/Callout.astro';
 
+<figure class="my-6 rounded-lg overflow-hidden border border-slate-800 bg-slate-950/50 shadow-xl">
+  <img 
+    src="/images/tech-plus/binary-byte-architecture-guide.jpg" 
+    alt="8-Bit Binary Data Representation and Positional Powers of Two Architecture" 
+    class="w-full h-auto object-cover"
+    loading="lazy"
+  />
+  <figcaption class="p-3 text-center text-xs text-slate-400 border-t border-slate-800 bg-slate-900/60">
+    Figure 1.1: Positional power-of-two values (128 down to 1), MSB/LSB boundaries, nibble partitions, and ASCII character encoding.
+  </figcaption>
+</figure>
+
 ## Why Computers Think in Base-2
 
-Humans count in **decimal (base-10)** because we were born with ten fingers. We use the digits 0 through 9, and when we run out of single digits, we roll over into a new column: 10, 100, 1000.
+Humans count in **decimal (base-10)** because human anatomy evolved with ten fingers. In daily life, we use the digits 0 through 9. When single-column digits are exhausted, counting rolls over into a new positional column: 10, 100, 1000.
 
-Computers do not have fingers. Inside a modern processor are billions of microscopic transistors made of silicon. A transistor is not a tiny calculator; it is an electronic switch. It can only be in one of two reliable physical states:
+Digital computing hardware does not possess biological fingers. Inside a modern central processing unit reside billions of microscopic silicon transistors. A semiconductor transistor functions as an ultra-fast electronic switch. Because it operates through physical electrical conduction, a transistor reliably maintains one of two discrete electrical states:
 
-- **Switch Closed / Voltage Present:** Represented as **1**
-- **Switch Open / No Voltage (Ground):** Represented as **0**
+- **Conductive Channel / High Voltage (Vcc):** Represented mathematically as **1**
+- **Non-Conductive Channel / Ground (0V):** Represented mathematically as **0**
 
-Trying to make transistors detect ten distinct voltage levels (0V, 0.5V, 1.0V... 4.5V) would make circuits fragile, slow, and prone to corruption from tiny electrical fluctuations. But distinguishing between *electricity flowing* versus *electricity blocked* is virtually bulletproof. This two-state system is called **binary (base-2)**.
+Attempting to design microprocessors that differentiate ten distinct voltage thresholds (such as 0.3V, 0.6V, 0.9V up to 3.0V) would introduce severe engineering vulnerabilities. Minor thermal shifts, electrical resistance fluctuations, and electromagnetic interference would frequently corrupt the data. Distinguishing between *electricity flowing* versus *electricity blocked* provides absolute noise margin resilience. This foundational two-state mechanism is termed **binary (base-2)**.
 
 ```
-┌──────────────────────────────────────────────────────────┐
-│                   THE DIGITAL HIERARCHY                  │
-├────────────┬─────────────┬───────────────────────────────┤
-│ Unit       │ Size        │ What it Represents            │
-├────────────┼─────────────┼───────────────────────────────┤
-│ **Bit**    │ 1 binary bit│ Single switch (0 or 1)        │
-│ **Nibble** │ 4 bits      │ One hexadecimal digit (0–F)   │
-│ **Byte**   │ 8 bits      │ One ASCII character (0–255)   │
-└────────────┴─────────────┴───────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────┐
+│                   THE ARCHITECTURAL DIGITAL HIERARCHY                  │
+├────────────┬─────────────┬─────────────────────────────────────────────┤
+│ Unit       │ Size        │ Hardware Representation & Functional Role   │
+├────────────┼─────────────┼─────────────────────────────────────────────┤
+│ **Bit**    │ 1 binary bit│ Single semiconductor transistor (0 or 1)    │
+│ **Nibble** │ 4 bits      │ One hexadecimal digit (0–F) or BCD unit     │
+│ **Byte**   │ 8 bits      │ One addressable ASCII character (0–255)     │
+│ **Word**   │ 16/32/64 bit│ CPU native register width and bus bandwidth │
+└────────────┴─────────────┴─────────────────────────────────────────────┘
 ```
 
-A single **bit** (binary digit) can only tell you true/false or yes/no. But when you chain 8 bits together into a **byte**, you get 2^8 = 256 possible combinations (from `00000000` to `11111111`). That is enough combinations to represent every letter of the alphabet, every punctuation mark, every number from 0 to 255, or the red intensity of a single pixel on your monitor.
+A solitary **bit** (binary digit) can only express a binary boolean state: True/False, High/Low, or On/Off. However, grouping 8 consecutive bits into a **byte** provides $2^8 = 256$ distinct mathematical combinations (ranging from `00000000` up to `11111111`). This range is sufficient to represent every alphanumeric character, punctuation symbol, hardware interrupt flag, or RGB color intensity channel across computer monitors.
+
+<Callout type="warn">
+**Common Student Misconception (256 Combinations vs. 255 Maximum Value):** Students frequently assume that because an 8-bit byte contains 256 combinations, the highest integer a byte can hold is 256. In computer science, counting starts at zero (`00000000` = decimal 0). Therefore, the 256th possible combination is `11111111`, which evaluates to decimal **255**. Mistaking 256 for the maximum integer value causes off-by-one errors in IPv4 subnetting calculations and programming array allocations!
+</Callout>
 
 ---
 
 ## Binary Place Values and the Power-of-2 Table
 
-In decimal, every column moving right to left increases by a power of 10 (10^0 = 1, 10^1 = 10, 10^2 = 100, 10^3 = 1000).
+In decimal, every column moving from right to left increases by a power of 10 ($10^0 = 1, 10^1 = 10, 10^2 = 100, 10^3 = 1000$).
 
-In binary, every column moving right to left **doubles** as a power of 2 (2^0 = 1, 2^1 = 2, 2^2 = 4, 2^3 = 8). For an 8-bit byte, memorize this power-of-2 row cold:
+In binary, every column moving from right to left **doubles** as an exponential power of 2 ($2^0 = 1, 2^1 = 2, 2^2 = 4, 2^3 = 8, 2^4 = 16, 2^5 = 32, 2^6 = 64, 2^7 = 128$). When analyzing any 8-bit byte, technicians memorize this positional values table:
 
 | 2^7 | 2^6 | 2^5 | 2^4 | 2^3 | 2^2 | 2^1 | 2^0 |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | **128** | **64** | **32** | **16** | **8** | **4** | **2** | **1** |
 
-The rightmost bit (2^0 = 1) is called the **Least Significant Bit (LSB)**. The leftmost bit (2^7 = 128) is called the **Most Significant Bit (MSB)**.
+The rightmost bit ($2^0 = 1$) is designated the **Least Significant Bit (LSB)** because it carries the smallest mathematical magnitude. The leftmost bit ($2^7 = 128$) is designated the **Most Significant Bit (MSB)** because it contributes the largest positional weight to the overall byte value.
 
-### Binary to Decimal: The Addition Rule
+### Binary to Decimal: The Positional Addition Method
 
-To convert any binary byte to decimal, write the byte under your power-of-2 chart and add up the values of every column that contains a **1**.
+To convert any binary byte into its decimal equivalent, align each binary bit beneath the power-of-2 reference row and calculate the mathematical sum of every column where a `1` is present.
 
-#### Example 1: Convert `11000000`
+#### Practical Example 1: Decode Subnet Mask Byte `11000000`
 ```
-128   64   32   16    8    4    2    1
- 1     1    0    0    0    0    0    0
---------------------------------------
-128 + 64 = 192
+Positional:  128    64    32    16     8     4     2     1
+Binary:        1     1     0     0     0     0     0     0
+--------------------------------------------------------
+Calculation: 128 +  64                                   = 192
 ```
-*(Fun fact: `192.168.1.1` in your home router begins with this exact byte!)*
+*(Notice that standard enterprise IPv4 router default gateway configurations like `192.168.1.1` utilize this exact leading octet).*
 
-#### Example 2: Convert `10101011`
+#### Practical Example 2: Decode Binary Packet Flag `10101011`
 ```
-128   64   32   16    8    4    2    1
- 1     0    1    0    1    0    1    1
---------------------------------------
-128 + 32 + 8 + 2 + 1 = 171
+Positional:  128    64    32    16     8     4     2     1
+Binary:        1     0     1     0     1     0     1     1
+--------------------------------------------------------
+Calculation: 128       +  32       +   8       +   2 +   1 = 171
 ```
 
 <Callout type="tip">
-**Quick Odd/Even Check:** Look at the LSB (the `1` column). If the last bit is `1`, the decimal number is guaranteed to be **odd** (128+64+32+16+8+4+2 are all even; only +1 makes it odd). If the last bit is `0`, the number is **even**.
+**Technician Odd/Even Inspection Rule:** Examine the Least Significant Bit (LSB / 1s position) at the far right. Because every power of two ($128, 64, 32, 16, 8, 4, 2$) is an even number, their sum is always even. The only column capable of altering numerical parity is the 1s bit. If the LSB is `1`, the decimal integer is guaranteed to be **odd**. If the LSB is `0`, the number is guaranteed to be **even**.
 </Callout>
 
 ---
 
 ## Decimal to Binary (The Technician's Subtraction Method)
 
-In school you might have learned the division-by-2 method. In the server room or on a certification exam, technicians use the **Subtraction Method** because it is faster and can be calculated in your head.
+While academic coursework often demonstrates repetitive division by 2 with remainders, enterprise network technicians utilize the **Positional Subtraction Method**. This method is substantially faster and allows technicians to perform subnet calculations mentally during live network outages.
 
-**The Rule:** Ask: *"Is my number greater than or equal to the column value?"*
-- If **YES**: Write down a `1`, subtract the column value, and take the remainder to the next column.
-- If **NO**: Write down a `0` and move to the next column.
+**The Algorithm:** Compare the decimal value against each power-of-two column descending from left to right:
+- If the remaining value is **greater than or equal to** the column weight: write a `1`, subtract the column weight, and carry the remaining balance forward.
+- If the remaining value is **less than** the column weight: write a `0` and evaluate the next column to the right.
 
-#### Step-by-Step: Convert Decimal `109` to Binary
+#### Step-by-Step Conversion: Convert Decimal `109` to Binary
 
-1. Is 109 >= 128? **No** → **0** (Remainder: 109)
-2. Is 109 >= 64? **Yes** → **1** (109 - 64 = 45)
-3. Is 45 >= 32? **Yes** → **1** (45 - 32 = 13)
-4. Is 13 >= 16? **No** → **0** (Remainder: 13)
-5. Is 13 >= 8? **Yes** → **1** (13 - 8 = 5)
-6. Is 5 >= 4? **Yes** → **1** (5 - 4 = 1)
-7. Is 1 >= 2? **No** → **0** (Remainder: 1)
-8. Is 1 >= 1? **Yes** → **1** (1 - 1 = 0)
+1. Evaluate against 128: 109 is less than 128 $\to$ write **0** (Remaining balance: 109)
+2. Evaluate against 64: 109 is $\ge$ 64 $\to$ write **1** ($109 - 64 = 45$)
+3. Evaluate against 32: 45 is $\ge$ 32 $\to$ write **1** ($45 - 32 = 13$)
+4. Evaluate against 16: 13 is less than 16 $\to$ write **0** (Remaining balance: 13)
+5. Evaluate against 8: 13 is $\ge$ 8 $\to$ write **1** ($13 - 8 = 5$)
+6. Evaluate against 4: 5 is $\ge$ 4 $\to$ write **1** ($5 - 4 = 1$)
+7. Evaluate against 2: 1 is less than 2 $\to$ write **0** (Remaining balance: 1)
+8. Evaluate against 1: 1 is $\ge$ 1 $\to$ write **1** ($1 - 1 = 0$)
 
-**Result:** `01101101`
+**Final 8-Bit Binary Representation:** `01101101`
 
-Double check: 64 + 32 + 8 + 4 + 1 = 109. Perfect.
+Verification: $64 + 32 + 8 + 4 + 1 = 109$. The calculation validates with zero remaining error.
 
 ---
 
-## Encoding Text and Media into Binary
+## Encoding Text, Images, and Executables into Binary
 
-A CPU has no inherent concept of the letter "A", the color blue, or a song. Everything is assigned a numeric code:
+Microprocessors lack native comprehension of human language, visual photography, or audio sound waves. Every digital artifact stored on a drive or transmitted across a wire is assigned a standardized binary code:
 
-- **ASCII (American Standard Code for Information Interchange):** Standardized table created in 1963. It assigns every keyboard key a number from 0 to 127:
-  - Capital `'A'` = Decimal 65 → Binary `01000001`
-  - Capital `'B'` = Decimal 66 → Binary `01000010`
-  - Space bar = Decimal 32 → Binary `00100000`
-- **Unicode / UTF-8:** Standard ASCII only supported 128 characters—enough for English, but useless for Japanese, Arabic, Greek, or emoji. Unicode expands character encoding up to 4 bytes (32 bits), supporting over 149,000 characters and symbols.
-- **Images (RGB Pixels):** A color monitor displays pixels made of Red, Green, and Blue sub-pixels. In 24-bit TrueColor, each color channel gets 1 byte (values 0–255). Pure red is `255, 0, 0` (`11111111 00000000 00000000`).
+- **ASCII (American Standard Code for Information Interchange):** Standardized encoding system established to map alphanumeric keystrokes to 7-bit/8-bit integers:
+  - Capital `'A'` = Decimal 65 $\to$ Binary `01000001`
+  - Capital `'B'` = Decimal 66 $\to$ Binary `01000010`
+  - Space bar character = Decimal 32 $\to$ Binary `00100000`
+- **Unicode / UTF-8:** Standard ASCII provided only 128 unique character assignments—adequate for basic English, but incapable of supporting global languages such as Arabic, Persian, Ukrainian, or Japanese, alongside modern mathematical symbols. Unicode UTF-8 utilizes variable-length encoding (1 to 4 bytes per character) to represent over 149,000 distinct characters.
+- **Digital Graphics (RGB Pixels):** Color monitors display images composed of Red, Green, and Blue phosphor sub-pixels. In 24-bit TrueColor displays, each primary color channel is allocated one 8-bit byte (0–255). A pure red pixel is encoded as `255, 0, 0` (`11111111 00000000 00000000`).
 
 <Callout type="exam">
-For CompTIA Tech+, you are not expected to memorize the full ASCII chart, but you **must** understand that characters are encoded as numeric binary values (e.g. ASCII/Unicode) and that 1 Byte = 8 Bits = values 0 to 255.
+**CompTIA Tech+ Examination Objective (FC0-U71 1.2):** Candidates must demonstrate fluent understanding of fundamental numbering systems (Binary, Hexadecimal, Decimal, and Octal), the physical role of transistors in establishing binary logic, positional place-value calculation, and the difference between bits and bytes across operating system architectures.
 </Callout>
 
 ---
 
-## Why This Matters in the Field
+## Why This Matters in Vocational Cybersecurity
 
-When you configure IPv4 subnets, diagnose bit errors on serial cables, set file permission bitmasks in Linux (`chmod 777`), or troubleshoot Wi-Fi signal-to-noise ratios, you are interacting directly with binary boundaries.
+In production enterprise networks, cybersecurity analysts analyze raw hexadecimal and binary packet dumps using Wireshark, calculate CIDR subnet masks (`/24` = `255.255.255.0` = 24 consecutive binary 1s), and configure POSIX file permission bitmasks in Linux environments (`chmod 755`).
 
-A technician who doesn't understand binary is forced to memorize strings without understanding what they mean. A technician who knows binary sees `255.255.255.0` and immediately understands that the first 24 bits are locked to network routing, leaving 8 bits for host addressing. Master the powers of 2 now, and networking will make sense for the rest of your career.
+Understanding binary enables technicians to interpret network traffic headers, buffer overflow exploits, and memory addresses directly rather than treating systems as opaque black boxes. Mastering binary place values establishes the technical foundation for all advanced networking and hardware engineering.
 
 ---
 
 ## Key Terms
 
-Binary (Base-2) · Decimal (Base-10) · Transistor · Bit · Nibble · Byte · Place Value · Power of 2 · Least Significant Bit (LSB) · Most Significant Bit (MSB) · Subtraction Method · ASCII · Unicode · UTF-8 · Character Encoding
+Binary (Base-2) · Decimal (Base-10) · Transistor · Bit · Nibble · Byte · Place Value · Power of 2 · Least Significant Bit (LSB) · Most Significant Bit (MSB) · Subtraction Method · ASCII · Unicode · UTF-8 · Character Encoding · Positional Notation · CIDR Prefix

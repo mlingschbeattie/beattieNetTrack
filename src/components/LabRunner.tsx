@@ -43,6 +43,10 @@ type LabStep = {
   inputLabel?: string;
   placeholder?: string;
   hint?: string;
+  terminalOutput?: string;
+  terminalPrompt?: string;
+  image?: string;
+  imageAlt?: string;
   validator: StepValidator;
   successMessage?: string;
 };
@@ -433,8 +437,43 @@ export default function LabRunner({
 
         <div className="lab-instruction">
           <h3 className="lab-instruction__title">{currentStep.title}</h3>
-          <div className="lab-instruction__body">{currentStep.prompt}</div>
+          <div className="lab-instruction__body" style={{ whiteSpace: 'pre-line' }}>{currentStep.prompt}</div>
         </div>
+
+        {currentStep.image && (
+          <div className="lab-render-card" style={{ marginBottom: '16px', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border-blue)', background: '#0a0f1d' }}>
+            <img
+              src={currentStep.image}
+              alt={currentStep.imageAlt || currentStep.title}
+              style={{ width: '100%', maxHeight: '440px', objectFit: 'contain', display: 'block' }}
+              loading="lazy"
+            />
+            {currentStep.imageAlt && (
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', padding: '8px 14px', background: 'rgba(10, 15, 34, 0.85)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                🔍 {currentStep.imageAlt}
+              </div>
+            )}
+          </div>
+        )}
+
+        {currentStep.terminalOutput && (
+          <div className="lab-terminal-card" style={{ marginBottom: '16px', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(56, 189, 248, 0.3)', background: '#070b14', boxShadow: '0 4px 20px rgba(0, 0, 0, 0.45)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 14px', background: 'rgba(15, 23, 42, 0.95)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#ef4444', display: 'inline-block' }} />
+                <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#f59e0b', display: 'inline-block' }} />
+                <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
+                <span style={{ marginLeft: '8px', fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                  {currentStep.terminalPrompt ? currentStep.terminalPrompt.trim() : 'student@beattie-lab:~$'}
+                </span>
+              </div>
+              <span style={{ fontSize: '10px', color: 'var(--accent-blue)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 600 }}>Active Terminal Telemetry</span>
+            </div>
+            <pre style={{ margin: 0, padding: '14px 16px', fontFamily: 'var(--font-mono)', fontSize: '13px', lineHeight: '1.6', color: '#e2e8f0', whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowX: 'auto' }}>
+              {currentStep.terminalOutput}
+            </pre>
+          </div>
+        )}
 
         {currentStep.validator.type === 'choice' ? (
           <fieldset className="lab-field lab-choices" data-testid="lab-choices">

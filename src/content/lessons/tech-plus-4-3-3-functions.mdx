@@ -75,6 +75,27 @@ sections:
           - "The function loops forever"
           - "The computer goes to sleep"
         correct: 0
+  - id: call-stack-and-recursion
+    title: "The Call Stack, Stack Frames, and Recursion"
+    keyPoints:
+      - "The Call Stack is the LIFO (Last-In, First-Out) data structure that tracks active function calls in RAM"
+      - "A Stack Frame allocates memory for local variables and parameters during function execution and is popped upon return"
+      - "A StackOverflowError occurs when infinite recursion or unbounded function calls exhaust all stack memory"
+    check:
+      - prompt: "What memory data structure manages active function execution frames, pushing frames on call and popping them on return?"
+        options:
+          - "The Call Stack"
+          - "The Heap"
+          - "The Hard Drive Partition"
+          - "The GPU Texture Buffer"
+        correct: 0
+      - prompt: "What fatal runtime crash occurs when a function repeatedly calls itself without reaching a base exit condition?"
+        options:
+          - "StackOverflowError"
+          - "Off-by-One Error"
+          - "Network Timeout"
+          - "File Lock Conflict"
+        correct: 0
 domains:
   - domainId: techplus.software
     weight: 1
@@ -91,6 +112,8 @@ In programming, writing the same block of logic over and over in 50 different pl
 A **Function** (also called a **Method** when attached to an object) is a named, self-contained block of code that accepts inputs, executes a specific task, and returns a calculated result.
 
 Functions are the fundamental building blocks of all professional software architecture.
+
+![Function Definition, Invocation, and Call Stack Architecture Guide](/images/tech-plus/functions-call-stack-guide.jpg)
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -109,6 +132,20 @@ Functions are the fundamental building blocks of all professional software archi
 │                                                                        │
 └────────────────────────────────────────────────────────────────────────┘
 ```
+
+<Callout type="exam">
+**CompTIA Tech+ Core Objective (FC0-U71 4.3):**
+- **Parameters vs. Arguments:** Parameters are the placeholder variable names in the function definition header (`subtotal`, `tax_rate`). Arguments are the actual concrete values passed during the function invocation (`100.00`, `0.08`).
+- **Return Values:** The `return` keyword sends a value back to the calling code and immediately exits the function. Code following `return` inside the same block is unreachable.
+- **Void Functions:** Functions that perform actions (printing, disk writes) without returning a calculated value.
+</Callout>
+
+<Callout type="warn">
+**Function Operational Traps:**
+- **Missing Return Value:** Forgetting the `return` statement causes the function to implicitly return `None` (Python) or `undefined` (JavaScript), resulting in downstream calculation errors or `TypeError` crashes.
+- **Stack Overflow via Infinite Recursion:** A function that calls itself without a proper terminating base case will push endless stack frames onto the Call Stack until system RAM is exhausted, crashing the program with a fatal `StackOverflowError`.
+- **Side Effects on Global State:** Modifying global variables inside functions makes testing and debugging unpredictable. Functions should ideally be pure: take arguments, compute output, and return the result.
+</Callout>
 
 ---
 
@@ -180,9 +217,33 @@ def log_security_event(event_message):
     # No return statement needed!
 ```
 
-<Callout type="exam">
-**The Return Termination Rule:** The instant a program hits a `return` statement inside a function, the function **immediately terminates and exits**. Any lines of code written below the `return` statement in that function block will never be executed.
-</Callout>
+---
+
+## 4. The Call Stack and Stack Frames
+
+When a computer runs code, it tracks function execution inside a specialized region of system memory called the **Call Stack**:
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   CALL STACK EXECUTION LIFECYCLE                       │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│   Step 1: Main program invokes `calculate_tax(100, 0.08)`              │
+│   └── System pushes a new Stack Frame onto the Call Stack.             │
+│                                                                        │
+│   Step 2: Stack Frame allocates memory for local variables:            │
+│   └── `subtotal = 100`, `tax_rate = 0.08`, `tax_amount = 8.0`          │
+│                                                                        │
+│   Step 3: `return tax_amount` executes                                 │
+│   └── Return value (8.0) is delivered to caller.                       │
+│   └── Stack Frame is popped and immediately destroyed from RAM!        │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+### Recursion and Stack Overflow
+A function can call other functions—and it can even call itself. Calling oneself is known as **Recursion**. 
+Every recursive call pushes a new stack frame onto the Call Stack. Every recursive function must contain a **Base Case** (a condition that stops recursion and begins returning). If the base case is omitted or broken, the program loops infinitely until stack memory is completely exhausted, resulting in a fatal **StackOverflowError**.
 
 ---
 
@@ -198,4 +259,4 @@ If the email server goes down, you only have to troubleshoot the `send_summary_e
 
 ## Key Terms
 
-Function · Method · DRY Principle (Don't Repeat Yourself) · Modular Code · Function Definition · Function Call / Invocation · Parameter · Argument · Return Value · `return` Keyword · Void Function · Side Effect · Local Variable Lifespan · Code Reusability
+Function · Method · DRY Principle (Don't Repeat Yourself) · Modular Code · Function Definition · Function Call / Invocation · Parameter · Argument · Return Value · `return` Keyword · Void Function · Side Effect · Local Variable Lifespan · Code Reusability · Call Stack · Stack Frame · Recursion · Base Case · StackOverflowError

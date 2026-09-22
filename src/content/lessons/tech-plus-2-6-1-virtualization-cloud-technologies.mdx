@@ -76,6 +76,27 @@ sections:
           - "Single Tenancy"
           - "Perpetual Licensing"
         correct: 0
+  - id: shared-responsibility-and-security
+    title: "The Cloud Shared Responsibility Model and VM Security"
+    keyPoints:
+      - "The Shared Responsibility Model clearly delineates security OF the cloud (provider) vs security IN the cloud (customer)"
+      - "Virtual Machine Escape is an exploit where code breaks out of guest VM memory to access the host hypervisor"
+      - "Resource Contention occurs when VMs over-commit physical CPU cores or RAM on a shared physical server"
+    check:
+      - prompt: "Under the AWS/Azure Shared Responsibility Model for an IaaS virtual machine, who is responsible for applying operating system security patches?"
+        options:
+          - "The customer (you)"
+          - "The cloud provider automatically"
+          - "The local ISP"
+          - "The hardware manufacturer"
+        correct: 0
+      - prompt: "What dangerous security vulnerability involves an attacker breaking out of an isolated guest virtual machine to run unauthorized code directly on the host hypervisor?"
+        options:
+          - "VM Escape"
+          - "ARP Spoofing"
+          - "Cross-Site Scripting"
+          - "DDoS Attack"
+        correct: 0
 domains:
   - domainId: techplus.infrastructure
     weight: 1
@@ -90,6 +111,8 @@ In the early 2000s, enterprise datacenters were filled with thousands of physica
 The problem? Most servers were running at only **5% to 15% CPU utilization**. Companies were wasting millions of dollars on electrical power, air conditioning cooling, and server rack space for computers that sat mostly idle.
 
 **Virtualization** changed everything: it introduced a software layer that allows a single, powerful physical computer to run dozens of independent **Virtual Machines (VMs)** simultaneously.
+
+![Virtualization Hypervisors and Cloud Service Models Guide](/images/tech-plus/virtualization-cloud-technologies.jpg)
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -112,6 +135,21 @@ The problem? Most servers were running at only **5% to 15% CPU utilization**. Co
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
+<Callout type="exam">
+**CompTIA Tech+ Core Objective (FC0-U71 2.6):**
+- **Type 1 vs. Type 2 Hypervisors:** Type 1 (Bare-Metal) installs directly onto raw server hardware without a host OS (VMware ESXi, Microsoft Hyper-V, Proxmox VE). Type 2 (Hosted) runs as a regular desktop application on top of an OS (VirtualBox, VMware Workstation).
+- **Service Models:** In **IaaS**, you configure and patch the operating system and virtual disks. In **PaaS**, you deploy application code while the cloud provider manages the OS and runtime. In **SaaS**, you access complete software via a web browser (Microsoft 365, Google Workspace).
+- **Deployment Models:** Public (multi-tenant shared cloud), Private (dedicated single organization), Hybrid (connecting on-premises datacenters to public cloud providers).
+</Callout>
+
+<Callout type="warn">
+**Virtualization and Cloud Operational Warnings:**
+- **Shared Responsibility in IaaS:** Cloud vendors do not patch your guest operating systems. When you launch a virtual machine in AWS EC2 or Azure, you are 100% responsible for applying Windows/Linux security patches, configuring firewalls, and managing antivirus.
+- **Snapshot Disk Bloat:** VM snapshots are designed for temporary recovery during maintenance, not permanent backups. Leaving snapshots open for weeks degrades disk I/O performance and can completely consume physical storage datastores.
+- **VM Escape Vulnerabilities:** Never run untrusted code in a shared multi-tenant environment without hardening. Hypervisor vulnerabilities can enable "VM Escape," allowing a guest virtual machine to compromise the physical host.
+- **Unsecured Cloud Storage Buckets:** Defaulting public read permissions on cloud storage buckets (such as Amazon S3 or Azure Blob) is one of the most common causes of massive enterprise data breaches.
+</Callout>
+
 ---
 
 ## 1. The Hypervisor: Type 1 Bare-Metal vs. Type 2 Hosted
@@ -125,7 +163,7 @@ A **Hypervisor** (also known as a *Virtual Machine Monitor / VMM*) is the softwa
 
 ### Type 2 Hypervisor (Hosted)
 - **Architecture:** Installs as an application on top of an existing host desktop operating system (like Windows 11 or macOS).
-- **Performance:** Slower, because every CPU and disk request must pass through the host OS before reaching hardware.
+- **Performance:** Lower throughput, because every CPU instruction and disk request must pass through the host OS before reaching hardware.
 - **Lab & Desktop Tools:** **Oracle VirtualBox, VMware Workstation, Parallels Desktop**.
 
 ```
@@ -148,9 +186,9 @@ A **Hypervisor** (also known as a *Virtual Machine Monitor / VMM*) is the softwa
 
 ---
 
-## 2. Cloud Service Models: The Pizza as a Service Analogy
+## 2. Cloud Service Models: IaaS, PaaS, and SaaS
 
-The **Cloud** is simply computing resources (servers, storage, databases, networking) hosted in remote datacenters and delivered over the internet on-demand.
+The **Cloud** represents computing resources (servers, storage, databases, networking) hosted in remote datacenters and delivered over the internet on-demand.
 
 The services are categorized by how much responsibility you manage versus how much the cloud vendor manages:
 
@@ -174,17 +212,27 @@ The services are categorized by how much responsibility you manage versus how mu
 └────────────────────┴────────────────────┴──────────────────────────────┘
 ```
 
-<Callout type="exam">
-**The Cloud Responsibility Rule:** In **IaaS**, you are the systems administrator responsible for patching the Windows/Linux OS. In **PaaS**, you are a developer uploading code. In **SaaS**, you are an end user logging in through a browser.
-</Callout>
-
 ---
 
 ## 3. Cloud Deployment Models: Where Does Data Live?
 
 - **Public Cloud:** Shared multi-tenant infrastructure owned by cloud giants (**Amazon AWS, Microsoft Azure, Google Cloud Platform / GCP**).
 - **Private Cloud:** Dedicated cloud infrastructure owned and operated exclusively for one single organization. High cost, but maximum data control.
-- **Hybrid Cloud:** The enterprise standard—combines private on-premises servers with public cloud scalability (e.g., patient health data stays on local hospital servers, but public appointment scheduling runs in Azure).
+- **Hybrid Cloud:** The enterprise standard—combines private on-premises servers with public cloud scalability (e.g., sensitive patient health data stays on local hospital servers, but public appointment scheduling runs in Azure).
+
+---
+
+## 4. The Shared Responsibility Model and VM Security
+
+Moving infrastructure to the cloud does not eliminate security obligations. Cloud security is governed by the **Shared Responsibility Model**:
+
+### Security OF the Cloud vs. Security IN the Cloud
+- **Security OF the Cloud (Provider Duty):** The cloud provider secures physical facilities, biometric datacenter access, server racks, power generators, hypervisors, and core networking gear.
+- **Security IN the Cloud (Customer Duty):** The customer is solely responsible for user authentication, access control rules, guest OS security patching, database encryption keys, and application firewall settings.
+
+### Virtualization Threats: VM Escape and Sprawl
+- **Virtual Machine Escape:** The most severe hypervisor attack. An adversary executes exploit code inside a guest VM that breaks past memory boundaries, granting the attacker control over the host hypervisor and all other neighbor VMs on that physical server.
+- **VM Sprawl:** When technicians rapidly spin up test virtual machines and abandon them without decommissioning. These zombie VMs consume storage, remain unpatched, and provide stealthy pivot points for network intruders.
 
 ---
 
@@ -192,10 +240,10 @@ The services are categorized by how much responsibility you manage versus how mu
 
 Modern IT is almost entirely virtualized and cloud-connected. You will manage virtual servers through Web consoles, spin up test environments in VirtualBox in seconds, and provision SaaS accounts in Microsoft 365 Admin Centers.
 
-Understanding hypervisor architecture and cloud service tiers allows you to build scalable, fault-tolerant corporate infrastructure.
+Understanding hypervisor architecture, the shared responsibility model, and cloud service tiers allows you to build scalable, fault-tolerant, and secure enterprise infrastructure.
 
 ---
 
 ## Key Terms
 
-Virtualization · Virtual Machine (VM) · Hypervisor · Virtual Machine Monitor (VMM) · Type 1 Bare-Metal Hypervisor · Type 2 Hosted Hypervisor · VMware ESXi · Proxmox · VirtualBox · Cloud Computing · Infrastructure as a Service (IaaS) · Platform as a Service (PaaS) · Software as a Service (SaaS) · Public Cloud · Private Cloud · Hybrid Cloud · Rapid Elasticity · Measured Service
+Virtualization · Virtual Machine (VM) · Hypervisor · Virtual Machine Monitor (VMM) · Type 1 Bare-Metal Hypervisor · Type 2 Hosted Hypervisor · VMware ESXi · Proxmox · VirtualBox · Cloud Computing · Infrastructure as a Service (IaaS) · Platform as a Service (PaaS) · Software as a Service (SaaS) · Public Cloud · Private Cloud · Hybrid Cloud · Rapid Elasticity · Measured Service · Shared Responsibility Model · VM Escape · VM Sprawl

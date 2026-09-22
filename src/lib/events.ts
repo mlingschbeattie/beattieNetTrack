@@ -46,7 +46,7 @@ export interface HubEvent {
  */
 export function emitEvent(event: HubEvent, apiUrl?: string): void {
   if (!isBrowser()) return;
-  const baseUrl = (typeof window !== 'undefined' && window.location.hostname.endsWith('beattietech.local')) ? '' : (apiUrl || '');
+  const baseUrl = (typeof window !== 'undefined' && window.location?.hostname?.endsWith('beattietech.local')) ? '' : (apiUrl || '');
   const body = {
     app_id: event.appId,
     event_type: event.eventType,

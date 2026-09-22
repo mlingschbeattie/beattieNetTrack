@@ -76,6 +76,27 @@ sections:
           - "Wi-Fi Protected Setup"
           - "RAID 0 Striping"
         correct: 0
+  - id: acls-and-privilege-creep
+    title: "Access Control Lists (ACLs), Implicit Deny, and Privilege Creep"
+    keyPoints:
+      - "Access Control Lists (ACLs) contain Access Control Entries (ACEs) specifying granular Read, Write, and Execute rights"
+      - "Implicit Deny ensures that any access not explicitly granted in an ACL is automatically blocked by default"
+      - "Privilege Creep occurs when employees accumulate permissions over time as they switch roles without old rights being revoked"
+    check:
+      - prompt: "What foundational security principle states that if an access control rule does not explicitly permit an action, the action is automatically blocked?"
+        options:
+          - "Implicit Deny"
+          - "Explicit Allow"
+          - "Default Permit"
+          - "Open Policy"
+        correct: 0
+      - prompt: "An employee transferred from Billing to Human Resources three years ago, but an IT audit reveals their account still retains full write access to billing databases. What security risk does this illustrate?"
+        options:
+          - "Privilege Creep (Permission Accumulation)"
+          - "Zero-Day Exploit"
+          - "Denial of Service"
+          - "Buffer Overflow"
+        correct: 0
 domains:
   - domainId: techplus.security
     weight: 1
@@ -95,6 +116,8 @@ This is **Authorization**: the second "A" in the **AAA Framework**.
 
 Understanding access control models like **RBAC**, **DAC**, and **MAC**, and enforcing the **Principle of Least Privilege** is what prevents rogue insiders and compromised accounts from destroying corporate infrastructure.
 
+![Access Control Models — RBAC, DAC, MAC, and ABAC Technical Architecture](/images/tech-plus/access-control-models-guide.jpg)
+
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │                        AUTHENTICATION VS. AUTHORIZATION                │
@@ -108,6 +131,20 @@ Understanding access control models like **RBAC**, **DAC**, and **MAC**, and enf
 │                                  │   but CANNOT delete databases."*    │
 └──────────────────────────────────┴─────────────────────────────────────┘
 ```
+
+<Callout type="exam">
+**CompTIA Tech+ Core Objective (FC0-U71 6.1):**
+- **Authentication vs. Authorization:** Memorize this distinction. Authentication verifies *identity* ("Who are you?"), whereas Authorization evaluates *permissions* ("What resources are you permitted to read, modify, or execute?").
+- **Access Control Models:** Recognize **RBAC** (permissions assigned to job roles/groups), **DAC** (resource owner controls permissions via ACLs), **MAC** (OS kernel enforces non-negotiable security labels), and **ABAC** (dynamic policy evaluation based on user, device, network, and environmental attributes).
+- **Dual Account Standard:** Enterprise administrators must maintain two accounts: an unprivileged daily user account for email/web browsing, and a separate privileged administrator account used exclusively for server changes.
+</Callout>
+
+<Callout type="warn">
+**Authorization Pitfalls in Production Systems:**
+- **Privilege Creep:** When staff transition between roles, IT teams frequently grant new permissions while failing to revoke old ones. Over several years, veteran staff accumulate massive, unmonitored privileges that turn their accounts into high-risk targets. Conduct scheduled quarterly access audits.
+- **Insecure Direct Object References (IDOR):** Developers often rely on client-side UI visibility rather than enforcing server-side authorization. If an unprivileged user can view another student's grade report by manipulating `/api/grades?id=101` to `/api/grades?id=102`, authorization has failed completely. Always enforce cryptographically signed session authorization on every backend endpoint.
+- **Explicit Deny Precedence:** In Windows NTFS permissions, an **Explicit Deny** rule always overrides any **Allow** rule inherited from parent groups.
+</Callout>
 
 ---
 
@@ -139,7 +176,7 @@ Computer operating systems and enterprise applications use different architectur
 In a company with 5,000 employees, you cannot manually assign 200 file permissions to individual user names.
 - You create an Active Directory group called `Finance_Dept`.
 - You assign read/write permissions for the accounting software to `Finance_Dept`.
-- When an employee is hired into accounting, you simply add them to that group—they instantly inherit all necessary permissions!
+- When an employee is hired into accounting, an administrator assigns them to that group—they inherit all necessary permissions automatically.
 
 ---
 
@@ -165,10 +202,6 @@ The **Principle of Least Privilege (PoLP)** dictates that users, processes, and 
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
-<Callout type="exam">
-**The Dual Account Standard:** System administrators should never check daily email or browse the web while logged in as `Domain Admin` or `root`. Administrators should have two accounts: a standard `user` account for daily tasks, and a separate `admin_user` account used only when executing elevated configuration changes.
-</Callout>
-
 ---
 
 ## 3. Separation of Duties
@@ -182,14 +215,37 @@ If one person had permissions to perform all three actions, they could easily st
 
 ---
 
+## 4. Access Control Lists (ACLs) and Privilege Creep
+
+At the filesystem layer, operating systems enforce permissions using **Access Control Lists (ACLs)**:
+
+### Discretionary ACLs (DACLs) in Practice
+Every file and folder on an NTFS volume has an associated DACL containing individual **Access Control Entries (ACEs)**:
+- **User Alice:** Allow Read, Write, Modify
+- **Group Marketing:** Allow Read, List Folder Contents
+- **User Bob:** Deny Full Control
+
+### The Law of Implicit Deny
+Security systems operate on the foundational rule of **Implicit Deny** (also known as *Default Deny*): **if an access request is not explicitly granted in the access policy, it is denied automatically.** You do not need to create rules blocking every unauthorized person on Earth; the absence of an allow rule guarantees rejection.
+
+### Remediating Privilege Creep
+Over time, employees transfer departments, volunteer for special projects, and accept temporary promotions. Without rigorous identity governance:
+1. When Alice transfers from Accounting to Customer Support, she receives Customer Support permissions.
+2. The help desk forgets to revoke her Accounting database access.
+3. Two years later, Alice has accumulated permissions to nearly every system in the company.
+
+This dangerous accumulation of permissions is known as **Privilege Creep** (or *Permission Bloat*). Cybersecurity teams mitigate privilege creep by conducting scheduled quarterly **Access Certification Audits**, forcing managers to re-verify whether every subordinate still requires every active permission.
+
+---
+
 ## Why This Matters in the Field
 
 When you manage user onboarding tickets or configure folder permissions on a network share, setting proper authorization protects your organization.
 
-Implementing RBAC and enforcing least privilege ensures that an employee opening a malicious email attachment does not bring down the entire company.
+Implementing RBAC, auditing for privilege creep, and strictly enforcing least privilege ensures that an employee opening a malicious email attachment does not bring down the entire company.
 
 ---
 
 ## Key Terms
 
-AAA Framework · Authorization · Authentication vs Authorization · Access Control Lists (ACL) · Role-Based Access Control (RBAC) · Discretionary Access Control (DAC) · Mandatory Access Control (MAC) · Security Clearance Labels · Attribute-Based Access Control (ABAC) · Principle of Least Privilege (PoLP) · Separation of Duties · Privilege Escalation · Blast Radius · Dual Account Policy
+AAA Framework · Authorization · Authentication vs Authorization · Access Control Lists (ACL) · Access Control Entry (ACE) · Role-Based Access Control (RBAC) · Discretionary Access Control (DAC) · Mandatory Access Control (MAC) · Security Clearance Labels · Attribute-Based Access Control (ABAC) · Principle of Least Privilege (PoLP) · Separation of Duties · Privilege Escalation · Privilege Creep · Implicit Deny · Blast Radius · Dual Account Policy

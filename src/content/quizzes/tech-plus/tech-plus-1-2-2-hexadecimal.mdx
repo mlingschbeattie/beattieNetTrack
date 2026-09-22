@@ -18,6 +18,7 @@ questions:
       - "C. 0-9 and A-F"
       - "D. 0-9 and a-z"
     correctIndex: 2
+    explanation: "Hexadecimal is a base-16 numbering system that uses 16 symbols: the digits 0 through 9 followed by the letters A through F (where A=10, B=11, C=12, D=13, E=14, and F=15)."
   - id: q2
     type: single
     prompt: "What is the decimal value of the hexadecimal number FF?"
@@ -27,6 +28,7 @@ questions:
       - "C. 255"
       - "D. 256"
     correctIndex: 2
+    explanation: "In hexadecimal FF, the first F represents 15 * 16^1 = 240, and the second F represents 15 * 16^0 = 15. 240 + 15 = 255 (the maximum value of an 8-bit byte)."
   - id: q3
     type: single
     prompt: "A technician sees a MAC address displayed as A4:B2:C3:D1:E5:F0. What numbering system is being used?"
@@ -36,15 +38,17 @@ questions:
       - "C. Decimal"
       - "D. Hexadecimal"
     correctIndex: 3
+    explanation: "Layer 2 MAC addresses are 48-bit physical identifiers written as six pairs of hexadecimal digits separated by colons or hyphens."
   - id: q4
-    type: single
-    prompt: "To convert binary to hexadecimal, how many binary bits are grouped together for each hex digit?"
+    type: multi
+    prompt: "Which of the following statements correctly describe the relationship between hexadecimal digits and binary bits? (Choose two.)"
     options:
-      - "A. 3"
-      - "B. 8"
-      - "C. 2"
-      - "D. 4"
-    correctIndex: 3
+      - "A. A single hexadecimal digit corresponds to exactly 4 binary bits (one nibble)"
+      - "B. Two hexadecimal digits represent exactly one 8-bit byte (up to 0xFF)"
+      - "C. Three hexadecimal digits represent exactly 64 bits of processor cache"
+      - "D. A single hexadecimal digit can represent values from 0 up to 32"
+    correctIndices: [0, 1]
+    explanation: "Because 2^4 = 16, each hex digit directly maps to 4 binary bits. Two hex digits represent 8 bits (one complete byte), ranging from 0x00 (0) to 0xFF (255)."
   - id: q5
     type: single
     prompt: "What prefix is commonly used to indicate a hexadecimal number in programming?"
@@ -54,6 +58,7 @@ questions:
       - "C. 0x"
       - "D. 0h"
     correctIndex: 2
+    explanation: "In programming languages like C, Java, Python, and JavaScript, hexadecimal literals are prefixed with '0x' (e.g., 0xFF, 0x1A4)."
   - id: q6
     type: single
     prompt: "What is the hexadecimal representation of the decimal number 16?"
@@ -63,6 +68,7 @@ questions:
       - "C. 1A"
       - "D. G0"
     correctIndex: 1
+    explanation: "In base-16, decimal 16 equals 1 * 16^1 + 0 * 16^0, which is written as hex 10 (or 0x10)."
   - id: q7
     type: single
     prompt: "True or false: Hexadecimal is commonly used to represent memory addresses and color codes in web design."
@@ -70,15 +76,37 @@ questions:
       - "A. True"
       - "B. False"
     correctIndex: 0
+    explanation: "Hexadecimal is universally used in computer systems to represent physical RAM addresses, IPv6 addresses, MAC addresses, and web color codes (#RRGGBB)."
   - id: q8
-    type: single
-    prompt: "What is the decimal value of the hexadecimal digit B?"
+    type: multi
+    prompt: "Which of the following hexadecimal characters represent decimal values greater than or equal to 12? (Choose two.)"
     options:
-      - "A. 10"
-      - "B. 12"
-      - "C. 11"
-      - "D. 13"
-    correctIndex: 2
+      - "A. C (Decimal 12)"
+      - "B. F (Decimal 15)"
+      - "C. A (Decimal 10)"
+      - "D. B (Decimal 11)"
+    correctIndices: [0, 1]
+    explanation: "In hexadecimal notation: A=10, B=11, C=12, D=13, E=14, and F=15. Both C (12) and F (15) are greater than or equal to 12, whereas A is 10 and B is 11."
+  - id: q9
+    type: multi
+    prompt: "Which of the following technical elements commonly use hexadecimal notation in IT systems? (Choose two.)"
+    options:
+      - "A. Layer 2 Ethernet MAC addresses"
+      - "B. Standard IPv4 subnet masks"
+      - "C. HTML / CSS web color codes (#FF5733)"
+      - "D. CPU clock frequency ratings"
+    correctIndices: [0, 2]
+    explanation: "MAC addresses (e.g., 00:1A:2B:3C:4D:5E) and CSS web colors (#RRGGBB) are standard hexadecimal representations. IPv4 subnet masks use dotted-decimal (255.255.255.0) and CPU clocks use Gigahertz (GHz)."
+  - id: q10
+    type: single
+    prompt: "What is the binary representation of the hexadecimal digit C?"
+    options:
+      - "A. 1100"
+      - "B. 1010"
+      - "C. 1110"
+      - "D. 1011"
+    correctIndex: 0
+    explanation: "Hexadecimal C equals decimal 12. In 4-bit binary (8s, 4s, 2s, 1s), 12 is 8 + 4 = 1100."
 domains:
   - domainId: techplus.concepts
     weight: 1

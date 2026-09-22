@@ -10,74 +10,104 @@ tags: ["Tech+", "FC0-U71", "CompTIA"]
 questions:
   - id: q1
     type: single
-    prompt: "What does IoT stand for?"
+    prompt: "What does the industry abbreviation IoT stand for in network computing?"
     options:
       - "A. Internal Operations Technology"
       - "B. Internet of Things"
-      - "C. Integrated Output Terminal"
-      - "D. Interconnected Open Technology"
+      - "C. Integrated Optical Transceiver"
+      - "D. Interconnected Open Topology"
     correctIndex: 1
+    explanation: "IoT stands for 'Internet of Things,' describing physical devices, sensors, appliances, and industrial components embedded with electronics, software, and network connectivity to exchange telemetry over the internet."
   - id: q2
     type: single
-    prompt: "Which of the following is an example of an IoT device?"
+    prompt: "Which of the following consumer devices is an example of an Internet of Things (IoT) endpoint?"
     options:
-      - "A. A desktop computer running Windows"
-      - "B. A smart thermostat that adjusts temperature remotely"
-      - "C. A USB flash drive"
-      - "D. An external monitor"
+      - "A. A standard non-networked mechanical clock"
+      - "B. A Wi-Fi connected smart thermostat that adjusts HVAC settings based on occupancy telemetry"
+      - "C. A traditional USB optical mouse"
+      - "D. An external mechanical hard drive without networking capabilities"
     correctIndex: 1
+    explanation: "Smart thermostats contain onboard microcontrollers, temperature sensors, and Wi-Fi network interfaces that communicate with cloud services and smartphone applications, classifying them as IoT devices."
   - id: q3
     type: single
-    prompt: "A security researcher discovers that a popular smart camera uses a default password that cannot be changed. Which IoT risk does this represent?"
+    prompt: "A security analyst discovers that thousands of smart security cameras on the internet utilize hardcoded, unchangeable vendor administrative passwords. What famous category of cyber attack exploits this vulnerability to launch massive DDoS floods?"
     options:
-      - "A. Bandwidth limitation"
-      - "B. Firmware bloat"
-      - "C. A security vulnerability due to hardcoded default credentials"
-      - "D. Incompatibility with Wi-Fi standards"
-    correctIndex: 2
+      - "A. IoT Botnet exploitation (such as the Mirai botnet)"
+      - "B. SQL injection of local databases"
+      - "C. Cross-site scripting on client web forms"
+      - "D. Physical tailgating into server rooms"
+    correctIndex: 0
+    explanation: "IoT botnets (such as Mirai) scan the internet for connected smart devices utilizing factory-default credentials, compromising them in bulk to launch coordinated Distributed Denial of Service (DDoS) attacks."
   - id: q4
     type: single
-    prompt: "True or false: IoT devices require an IP address to communicate over a network."
+    prompt: "How do sensors differ functionally from actuators within an Internet of Things deployment?"
     options:
-      - "A. True"
-      - "B. False"
-    correctIndex: 0
-  - id: q5
-    type: single
-    prompt: "What is the role of sensors in IoT deployments?"
-    options:
-      - "A. To store data permanently"
-      - "B. To collect data from the physical environment"
-      - "C. To provide user interface screens"
-      - "D. To replace routers on the network"
+      - "A. Sensors take physical actions, while actuators generate network electricity"
+      - "B. Sensors collect telemetry from the physical environment (input), while actuators trigger physical movements or state changes (output)"
+      - "C. Sensors require fiber optic cabling, while actuators only communicate over Bluetooth"
+      - "D. Sensors and actuators are identical synonyms"
     correctIndex: 1
+    explanation: "Sensors detect environmental inputs (such as temperature, moisture, motion, or light), whereas actuators translate digital electrical commands into physical physical actions (opening a smart door lock, opening a valve, or turning on an LED)."
+  - id: q5
+    type: multi
+    prompt: "A network administrator is tasked with securing smart TVs, wireless lighting bridges, and VoIP security cameras on a corporate network. Which of the following network engineering practices best mitigate IoT vulnerabilities? (Choose two.)"
+    options:
+      - "A. Isolating all IoT endpoints onto a dedicated Virtual Local Area Network (VLAN) segmented away from production servers"
+      - "B. Changing factory default administrative passwords to unique, high-entropy credentials immediately upon deployment"
+      - "C. Granting all IoT devices unrestricted local administrative access to core database servers"
+      - "D. Disabling all firmware security updates"
+    correctIndices: [0, 1]
+    explanation: "Segmenting IoT devices onto an isolated VLAN prevents a compromised smart device from pivoting into sensitive corporate database networks. Changing factory default credentials blocks automated botnet scanning."
   - id: q6
     type: single
-    prompt: "Why is firmware update management especially important for IoT devices?"
+    prompt: "Why does firmware patch management present unique operational challenges across enterprise IoT and industrial deployments?"
     options:
-      - "A. IoT devices do not support firmware"
-      - "B. Unpatched firmware can leave devices vulnerable to security exploits"
-      - "C. Firmware updates increase power consumption"
-      - "D. IoT devices automatically update without any risk"
+      - "A. IoT devices lack digital firmware entirely"
+      - "B. Many low-cost IoT devices have constrained update capabilities and may never receive security patches from manufacturers"
+      - "C. Firmware updates decrease network bandwidth permanently"
+      - "D. IoT hardware requires manual vacuum tube replacement"
     correctIndex: 1
+    explanation: "Many consumer and industrial IoT vendors cease releasing firmware patches shortly after product release, leaving unpatchable hardware vulnerable to remote exploits throughout its multi-year physical lifespan."
   - id: q7
     type: single
-    prompt: "Which term describes the use of IoT in manufacturing, logistics, and utilities to monitor and control systems?"
+    prompt: "Which term describes the specialized application of connected sensors, SCADA telemetry, and automated robotics across manufacturing plants, electrical power grids, and logistics warehouses?"
     options:
-      - "A. Consumer IoT"
-      - "B. Smart home"
-      - "C. Industrial IoT (IIoT)"
-      - "D. Edge computing"
-    correctIndex: 2
-  - id: q8
-    type: single
-    prompt: "A user sets up a home automation system with smart lights, locks, and a doorbell camera. What type of technology is being used?"
-    options:
-      - "A. Virtualization"
-      - "B. IoT (Internet of Things)"
-      - "C. Industrial control systems"
-      - "D. Distributed computing"
+      - "A. Consumer Wearable IoT"
+      - "B. Industrial Internet of Things (IIoT)"
+      - "C. Personal Area Networking"
+      - "D. Virtual Desktop Infrastructure"
     correctIndex: 1
+    explanation: "Industrial IoT (IIoT) integrates internet-connected sensors, instruments, and industrial control systems (ICS/SCADA) across manufacturing, utility generation, and critical infrastructure."
+  - id: q8
+    type: multi
+    prompt: "Which of the following wireless communication protocols are commonly utilized by smart home and building automation IoT devices due to their low power consumption and mesh networking topology? (Choose two.)"
+    options:
+      - "A. Zigbee"
+      - "B. Z-Wave"
+      - "C. DOCSIS 3.1"
+      - "D. Fibre Channel over Ethernet (FCoE)"
+    correctIndices: [0, 1]
+    explanation: "Zigbee and Z-Wave are low-power wireless mesh protocols specifically designed for IoT home automation sensors, smart locks, and lighting controls. DOCSIS is cable internet and FCoE is enterprise storage."
+  - id: q9
+    type: single
+    prompt: "A smart agricultural farm deploys soil sensors that analyze moisture levels locally at the edge of the field before transmitting summary data to the central cloud. What architectural model does this represent?"
+    options:
+      - "A. Edge Computing"
+      - "B. Mainframe Time-Sharing"
+      - "C. Peer-to-Peer File Sharing"
+      - "D. Cold Storage Archiving"
+    correctIndex: 0
+    explanation: "Edge computing processes and filters raw sensor data locally near the physical source of generation, minimizing latency and drastically reducing upstream internet bandwidth consumption."
+  - id: q10
+    type: multi
+    prompt: "Which of the following privacy concerns are directly associated with the proliferation of consumer IoT devices inside residential and office spaces? (Choose two.)"
+    options:
+      - "A. Constant audio recording and voice command harvesting by smart speakers"
+      - "B. Video surveillance streams and timestamped occupancy logs being accessible via unencrypted cloud APIs"
+      - "C. Automatic erasure of all local personal computer hard drives"
+      - "D. Spontaneous physical combustion of ethernet networking patch cables"
+    correctIndices: [0, 1]
+    explanation: "Smart home microphones, smart cameras, and connected doorbells continuously ingest private audio, video, and behavioral presence data that can be leaked or subpoenaed if vendor cloud APIs are improperly secured."
 domains:
   - domainId: techplus.infrastructure
     weight: 1

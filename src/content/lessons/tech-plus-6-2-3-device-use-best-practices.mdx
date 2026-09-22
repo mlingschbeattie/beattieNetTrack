@@ -9,8 +9,8 @@ objective: "FC0-U71 6.2"
 xp: 15
 source: cyber-org
 difficulty: Beginner
-estMinutes: 15
-tags: ["tech+", "FC0-U71 6.2", "device use", "AUP", "BYOD", "physical security", "screen lock", "clean desk", "USB safety"]
+estMinutes: 25
+tags: ["tech+", "FC0-U71 6.2", "device use", "AUP", "BYOD", "physical security", "screen lock", "clean desk", "USB safety", "privacy filters"]
 sections:
   - id: acceptable-use-and-screen-locking
     title: "Acceptable Use Policies (AUP) and Screen Locking Habits"
@@ -75,6 +75,27 @@ sections:
           - "A CPU heatsink"
           - "A RAID 0 array"
         correct: 0
+  - id: privacy-filters-and-shoulder-surfing-countermeasures
+    title: "Shoulder Surfing Defense and Screen Privacy Filters"
+    keyPoints:
+      - "Shoulder Surfing: Adversaries observing monitors or keypads in public locations (airports, trains, cafes) to steal credentials"
+      - "Polarized Screen Privacy Filters narrow monitor viewing angles to 30 degrees, preventing peripheral visual eavesdropping"
+      - "Positioning Workstation Displays away from public windows and hallways prevents passive surveillance"
+    check:
+      - prompt: "A mobile executive frequently works on confidential corporate acquisitions while flying on commercial airlines. What physical hardware accessory prevents adjacent passengers from reading their laptop display?"
+        options:
+          - "A Polarized Screen Privacy Filter"
+          - "A high-refresh-rate HDMI cable"
+          - "An external GPU enclosure"
+          - "A mechanical keyboard"
+        correct: 0
+      - prompt: "When setting up desks in an open-concept corporate office, where should workstation monitors displaying protected customer PII be oriented?"
+        options:
+          - "Facing away from public lobby windows, waiting areas, and heavy pedestrian traffic hallways"
+          - "Facing directly toward the reception waiting room"
+          - "Reflected in a large decorative wall mirror"
+          - "Tilted upward toward ceiling skylights"
+        correct: 0
 domains:
   - domainId: techplus.security
     weight: 1
@@ -82,93 +103,116 @@ domains:
 
 import Callout from '../../components/Callout.astro';
 
-## Security is a Daily Muscle Memory
+<figure class="my-6 rounded-lg overflow-hidden border border-slate-800 bg-slate-950/50 shadow-xl">
+  <img 
+    src="/images/tech-plus/device-use-best-practices-guide.jpg" 
+    alt="Device Use Best Practices and Physical Security Hygiene Infographic" 
+    class="w-full h-auto object-cover"
+    loading="lazy"
+  />
+  <figcaption class="p-3 text-center text-xs text-slate-400 border-t border-slate-800 bg-slate-900/60">
+    Figure 6.11: Four operational hygiene disciplines: Instant Screen Locking (Win+L), Clean Desk enforcement, Removable Media control, and Polarized Privacy Filter defenses.
+  </figcaption>
+</figure>
 
-You can install biometric retina scanners on the front doors and spend millions on cybersecurity firewalls.
+## Security is a Daily Operational Discipline
 
-Yet, every single day, massive data breaches occur because:
-- An accountant stepped away to get a cup of coffee and left their computer unlocked (**Windows + L** ignored).
-- A manager wrote their administrative password on a yellow sticky note stuck to the bottom of their monitor.
-- An employee found a random USB flash drive in the elevator and plugged it in to see who it belonged to.
+Organizations can implement biometric iris scanners on facility doors and deploy enterprise firewalls across every network gateway.
 
-**Physical and Operational Security Hygiene** is not about software code—it is about daily, disciplined human habits that prevent the most common security mistakes in the workplace.
+Yet across the IT industry, severe data breaches frequently occur not through cryptographic breakthroughs, but through fundamental lapses in daily physical hygiene:
+- An accounts manager steps away to grab a cup of coffee and leaves their workstation logged in and unlocked (**Windows Key + L** neglected).
+- A supervisor writes their master database password on an adhesive paper note stuck to the monitor bezel.
+- An employee spots an unfamiliar flash drive on a cafeteria table and inserts it into a workstation to see who owns it.
+
+**Physical and Operational Security Hygiene** is not governed by automated firewall rules—it relies on disciplined, reflexive operational habits that prevent insider tampering, opportunistic visual snooping, and accidental data exposure.
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        THE DAILY SECURITY HYGIENE TRIAD                │
-├────────────────────┬───────────────────────────────────────────────────┤
-│ **1. Screen Lock** │ Instantly lock your screen (`Win + L`) every time │
-│                    │ you stand up from your chair. No exceptions.      │
-├────────────────────┼───────────────────────────────────────────────────┤
-│ **2. Clean Desk**  │ Lock printed PII and medical charts in drawers.   │
-│                    │ Never leave passwords on sticky notes!            │
-├────────────────────┼───────────────────────────────────────────────────┤
-│ **3. USB Caution** │ Never plug an unknown USB drive into any machine. │
-│                    │ Encrypt all approved external storage drives.     │
-└────────────────────┴───────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                        THE PHYSICAL SECURITY HYGIENE QUADRANT                          │
+├────────────────────┬───────────────────────────────────────────────────────────────────┤
+│ **1. Screen Lock** │ Instantly lock your screen (`Win + L`) every single time you exit │
+│                    │ your desk, complemented by a strict 60-second idle auto-timeout.  │
+├────────────────────┼───────────────────────────────────────────────────────────────────┤
+│ **2. Clean Desk**  │ Lock confidential documents in filing cabinets at close of business│
+│                    │ and cross-cut shred sensitive printouts. Zero password notes!     │
+├────────────────────┼───────────────────────────────────────────────────────────────────┤
+│ **3. Media Rules** │ Block unauthorized USB flash drives to prevent malware execution   │
+│                    │ and govern personal mobile devices via MDM containerization.      │
+├────────────────────┼───────────────────────────────────────────────────────────────────┤
+│ **4. Visual Shield**│ Deploy polarized screen privacy filters to defeat shoulder surfing│
+│                    │ on trains, flights, cafes, and open-plan enterprise floorplans.   │
+└────────────────────┴───────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 1. The Acceptable Use Policy (AUP)
+## 1. Acceptable Use Policies (AUP) and Screen Locking Habits
 
-When you join a school, hospital, or corporation, the first document IT hands you is the **Acceptable Use Policy (AUP)**:
-- **Corporate Property Notice:** All computers, monitors, networks, and emails belong to the organization. Users have no expectation of personal privacy on corporate equipment.
-- **Prohibited Actions:** No installing pirated software, no attempting to bypass network web filters (e.g. using unauthorized VPNs), and no storing illegal or copyright-infringing media.
-- **Incident Reporting:** Mandatory obligation to immediately notify IT if a laptop is lost, stolen, or exhibits signs of malware infection.
+Every employee joining an enterprise must read and sign an **Acceptable Use Policy (AUP)** before receiving network credentials or equipment. The AUP establishes the legal and professional boundaries of corporate technology:
 
----
+- **Ownership of Assets:** All company laptops, mobile devices, emails, and data belong exclusively to the employer. Workers have no reasonable expectation of privacy when using corporate infrastructure.
+- **Prohibited Actions:** Explicitly forbids installing unauthorized third-party software, downloading copyrighted torrents, connecting personal wireless access points, or using corporate assets to conduct external commercial ventures.
+- **Monitoring Consent:** Acknowledges that the organization actively monitors, logs, and inspects network traffic, web browsing history, and file transfers for security compliance.
 
-## 2. Screen Locking: The 1-Second Habit
+### The Screen Lock Reflex (Windows + L / Command + Control + Q)
+The most critical physical habit for any IT professional is locking their workstation display before their feet leave their workspace. 
 
-Leaving an unattended workstation logged in is the equivalent of leaving your front door wide open with the keys in the lock.
+An unattended, unlocked computer completely circumvents multi-factor authentication, firewalls, and audit trails. Any passing individual—such as a rogue visitor, disgruntled contractor, or custodian—can sit at the terminal, send unauthorized emails under your verified identity, access proprietary databases, or export customer records. Because the session is active under your account, forensic logs will attribute all malicious actions directly to you.
 
-Any passerby—a disgruntled coworker, a rogue cleaning contractor, or an unauthorized visitor—can sit at your desk and:
-- Read your confidential emails.
-- Delete database tables under your username.
-- Send offensive or fraudulent messages from your corporate Slack account.
-
-```
-┌────────────────────────────────────────────────────────┐
-│            THE INSTANT SCREEN LOCK SHORTCUTS           │
-│                                                        │
-│   🪟 Windows PCs:   **Windows Key + L**                │
-│   🍎 Apple Mac:     **Control + Command + Q**          │
-│   🐧 Linux (GNOME): **Super Key + L**                  │
-└────────────────────────────────────────────────────────┘
-```
-
-<Callout type="exam">
-**The Screen Timeout Standard:** In addition to manual locking, enterprise Group Policies enforce an **Automated Inactivity Screen Lock** set to **5 to 10 minutes**. If a user forgets to lock their machine, the screen automatically blacks out and requires their password/MFA to resume.
+<Callout type="warn">
+**Common Student Misconception (A 15-Minute Screensaver Timeout is NOT a Substitute for Manual Locking):** Many users assume they do not need to lock their computer manually because Group Policy will eventually activate a password-protected screensaver after 10 or 15 minutes. In cybersecurity, fifteen minutes is an eternity! An opportunistic intruder requires fewer than fifteen seconds to connect a weaponized keystroke injection tool (such as a Rubber Ducky USB device) to an unlocked workstation, download sensitive files, and transmit an outbound reverse shell. Always lock the screen manually: **Win + L** on Windows, **Cmd + Ctrl + Q** on macOS.
 </Callout>
 
 ---
 
-## 3. Clean Desk and Clean Screen Policies
+## 2. Clean Desk and Clean Screen Policies
 
-- **Clean Desk Policy:** At the end of the workday, all paper documents containing **Personally Identifiable Information (PII)**, employee salaries, student records, or customer credit card details must be locked inside a filing cabinet or shredded.
-- **The Sticky Note Hazard:** Writing a password on a sticky note glued to a monitor completely destroys password complexity policies. An attacker walking through the office with a smartphone camera can steal 10 administrative passwords in 30 seconds.
-- **Clean Whiteboard Rule:** When a team finishes a brainstorming session in a conference room involving sensitive software architecture or customer data, the whiteboard must be erased before leaving the room.
+Physical documents and visual displays frequently reveal highly classified operational data to unauthorized observers:
+
+### Clean Desk Policy Enforcement
+A **Clean Desk Policy** mandates that employees must never leave sensitive physical materials exposed when stepping away from their desks or at the end of the business day:
+- **Locked Filing Cabinets:** Confidential patient medical records, financial spreadsheets, and personnel evaluations must be stored inside locked cabinets.
+- **Zero Adhesive Notes:** Writing administrative passwords, Wi-Fi keys, or door codes on sticky notes adhered to keyboards or monitor frames completely destroys authentication controls.
+- **Secure Destruction:** Sensitive paper records must never be discarded in standard recycling or trash cans where dumpster divers can retrieve them; they must be fed into cross-cut shredders or placed into locked document destruction consoles.
+
+### Clean Screen and Clean Whiteboard Protocols
+- **Conference Room Whiteboards:** Team brainstorming sessions often sketch out internal IP subnet schemes, API endpoints, or database structures. Policies require erasing all whiteboards immediately when meetings conclude.
+- **Clean Screen Protocol:** Sensitive documents or customer accounts must be minimized or closed whenever visitors or external contractors enter private office areas.
+
+<Callout type="exam">
+**CompTIA Tech+ Examination Objective (FC0-U71 6.2):** Expect scenario questions evaluating physical security hygiene: Identify the function of an **Acceptable Use Policy (AUP)**, the necessity of enforcing a **Clean Desk Policy**, the keyboard shortcut for instant screen locking (**Win + L**), and physical countermeasures against **Shoulder Surfing**.
+</Callout>
 
 ---
 
-## 4. BYOD (Bring Your Own Device) and USB Safety
+## 3. Removable Media Hazards and BYOD Security Governance
 
-When companies allow employees to use personal iPhones or Android devices for work (**BYOD**), it creates a boundary challenge:
-- IT deploys **MDM (Mobile Device Management)** software that creates a secure, encrypted **Corporate Container** on the phone.
-- Corporate emails and customer contacts live inside the encrypted container, isolated from personal games, TikTok, and personal photos.
-- If the employee resigns, IT executes an **Enterprise Selective Wipe**—deleting only the corporate container while leaving the employee's personal family photos untouched.
+Unregulated physical media represents a severe threat to enterprise perimeter defenses:
+
+- **USB Flash Drive Risks:** Removable drives are vector carriers for autonomous malware, autorun payloads, and data exfiltration. An insider attempting corporate espionage can copy thousands of confidential design files to a pocket flash drive in seconds.
+- **Active Directory Group Policy USB Restrictions:** To mitigate these threats, enterprise system administrators deploy Group Policy Objects (GPOs) that configure USB storage controller drivers to read-only or disable them completely across client endpoints.
+- **Bring Your Own Device (BYOD) Containerization:** When staff use personal smartphones for corporate email, organizations employ Mobile Device Management (MDM) platforms. MDM creates an encrypted sandbox partition (container) that separates enterprise applications and data from personal photographs and games, enabling selective remote wipes without destroying personal user files.
 
 ---
 
-## Why This Matters in the Field
+## 4. Shoulder Surfing Defense and Screen Privacy Filters
 
-Physical and operational hygiene separates amateur computer users from professional IT technicians.
+In modern mobile working environments—including commercial airliners, coffee shops, hotel lobbies, and commuter trains—threat actors perform **Shoulder Surfing**: visually eavesdropping on screens to record passwords, customer records, or trade secrets.
 
-Developing the instinctive habit of locking your workstation, shredding sensitive printouts, and enforcing the Acceptable Use Policy protects both your organization and your professional reputation.
+Organizations deploy two primary defenses:
+1. **Polarized Screen Privacy Filters:** Optical plastic overlays attached directly to laptop screens. The polarized micro-louvers restrict the horizontal viewing angle to approximately 30 degrees directly in front of the display. Anyone viewing from an adjacent airline seat or standing behind the user sees only a completely blacked-out screen.
+2. **Workstation Display Orientation:** In enterprise facility design, desks should be positioned so that displays face away from exterior windows, glass conference walls, and heavily trafficked reception corridors.
+
+---
+
+## Why This Matters in Vocational Cybersecurity
+
+Technical security controls are only as strong as the physical operational environment in which they reside. An adversary does not need to crack your 20-character passphrase if they can read it off a sticky note or photograph your screen from across an airport lounge.
+
+Mastering physical device best practices instills the operational vigilance, professional discipline, and procedural awareness necessary to protect enterprise assets against real-world physical and human attack vectors.
 
 ---
 
 ## Key Terms
 
-Acceptable Use Policy (AUP) · Screen Locking · `Windows + L` · Auto-Lock Inactivity Timeout · Clean Desk Policy · Clean Whiteboard Policy · Password Sticky Notes · Cross-Cut Shredder · Removable Media Hazards · USB Port Disabling · Group Policy · Bring Your Own Device (BYOD) · Mobile Device Management (MDM) · Containerization · Enterprise Selective Wipe
+Acceptable Use Policy (AUP) · Screen Lock Shortcut (Win+L) · Idle Timeout · Clean Desk Policy · Clean Whiteboard Protocol · Password Sticky Notes · Cross-Cut Shredding · Shoulder Surfing · Polarized Screen Privacy Filter · Removable Media Hazards · USB Port Blocking · BYOD (Bring Your Own Device) · MDM Containerization · Selective Remote Wipe · Physical Information Security

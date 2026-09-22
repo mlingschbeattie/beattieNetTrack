@@ -17,6 +17,7 @@ questions:
       - "C. Programs stored on optical media"
       - "D. The operating system kernel"
     correctIndex: 1
+    explanation: "Hardware refers to the tangible physical components (motherboard, CPU, RAM, chassis, storage drives) of a computing system, whereas software refers to the intangible code instructions executed by the hardware."
   - id: q2
     type: single
     prompt: "In the IPO model of computing, what does the letter P stand for?"
@@ -26,6 +27,7 @@ questions:
       - "C. Processing"
       - "D. Power"
     correctIndex: 2
+    explanation: "The IPO (Input-Processing-Output) model represents the fundamental workflow of computing: Input takes data in, Processing transforms it via the CPU/RAM, and Output displays or delivers the results."
   - id: q3
     type: single
     prompt: "A technician is explaining why computers represent all data as 1s and 0s. Which explanation is correct?"
@@ -35,15 +37,17 @@ questions:
       - "C. Binary is easier for humans to read"
       - "D. Decimal numbers cannot be stored magnetically"
     correctIndex: 1
+    explanation: "Modern digital computers represent information using binary (1s and 0s) because semiconductor transistors function as microscopic electronic switches that can only exist in two stable electrical states: on (voltage present / 1) or off (ground / 0)."
   - id: q4
-    type: single
-    prompt: "Which component is responsible for executing program instructions in a computer?"
+    type: multi
+    prompt: "Which of the following components are responsible for executing program instructions and holding active volatile execution state in a computer system? (Choose two.)"
     options:
-      - "A. RAM"
-      - "B. Hard drive"
-      - "C. GPU"
-      - "D. CPU"
-    correctIndex: 3
+      - "A. Central Processing Unit (CPU)"
+      - "B. Random Access Memory (RAM)"
+      - "C. SATA Solid-State Drive (SSD)"
+      - "D. Uninterruptible Power Supply (UPS)"
+    correctIndices: [0, 1]
+    explanation: "The CPU fetches, decodes, and executes computational instructions, while RAM provides the ultra-fast volatile workspace that holds active software code and working data for immediate processor access."
   - id: q5
     type: single
     prompt: "Analog signals differ from digital signals in that analog signals are:"
@@ -53,6 +57,7 @@ questions:
       - "C. Faster to process"
       - "D. Used exclusively in modern computers"
     correctIndex: 0
+    explanation: "Analog signals are continuous waves that represent an infinite spectrum of values (such as natural human sound waves), while digital signals represent discrete, binary numerical values (0 or 1)."
   - id: q6
     type: single
     prompt: "What is the primary purpose of an operating system?"
@@ -62,15 +67,17 @@ questions:
       - "C. To connect the computer to the internet"
       - "D. To generate electricity for the system"
     correctIndex: 1
+    explanation: "An Operating System (OS) serves as the intermediary platform that manages physical hardware resources (CPU scheduling, memory allocation, storage access) and provides standardized APIs and services for user applications."
   - id: q7
-    type: single
-    prompt: "In a client-server model, which device requests services or resources?"
+    type: multi
+    prompt: "In client-server network architectures, which of the following are primary functions performed by enterprise servers? (Choose two.)"
     options:
-      - "A. Router"
-      - "B. Server"
-      - "C. Client"
-      - "D. Hub"
-    correctIndex: 2
+      - "A. Centralizing shared database, file storage, and authentication services"
+      - "B. Listening for and servicing concurrent incoming requests from network endpoints"
+      - "C. Serving as the primary tactile desktop input device for end users"
+      - "D. Eliminating the requirement for networking cables and transceivers"
+    correctIndices: [0, 1]
+    explanation: "Enterprise servers host centralized data and services (such as Active Directory, web portals, and databases) and continuously listen on standard network ports to respond to client queries."
   - id: q8
     type: single
     prompt: "A user notices that removing the battery from a laptop causes all unsaved work to be lost. Which storage type does this describe?"
@@ -80,6 +87,27 @@ questions:
       - "C. HDD"
       - "D. RAM"
     correctIndex: 3
+    explanation: "RAM (Random Access Memory) is volatile temporary memory that requires continuous electrical power to retain its state. When power is severed or the battery is removed, all unwritten data stored in RAM immediately disappears."
+  - id: q9
+    type: multi
+    prompt: "Which of the following are examples of standard computer output hardware devices? (Choose two.)"
+    options:
+      - "A. Flat-panel monitor display"
+      - "B. Network laser printer"
+      - "C. USB optical barcode scanner"
+      - "D. Wireless touchpad mouse"
+    correctIndices: [0, 1]
+    explanation: "Monitors and printers deliver processed data outward to users (visual and physical output). Barcode scanners and mice are input devices designed to feed data into the computer."
+  - id: q10
+    type: single
+    prompt: "Which unit of measurement is most commonly used to rate the clock frequency speed of modern computer processors?"
+    options:
+      - "A. Gigahertz (GHz)"
+      - "B. Megabytes per second (MB/s)"
+      - "C. Gigawatts (GW)"
+      - "D. Dots per inch (DPI)"
+    correctIndex: 0
+    explanation: "CPU clock frequency is measured in Hertz, with modern processors operating in the Gigahertz (GHz) range, representing billions of clock instruction cycles per second."
 domains:
   - domainId: techplus.concepts
     weight: 1

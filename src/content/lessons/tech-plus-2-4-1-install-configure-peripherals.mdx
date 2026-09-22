@@ -105,11 +105,13 @@ import Callout from '../../components/Callout.astro';
 
 ## Connecting the Outside World
 
-A powerful desktop tower without peripherals is just a metal box warming a room. Peripherals—monitors, keyboards, mice, printers, webcams, drawing tablets, barcode scanners—are how humans interact with the machine.
+A powerful desktop tower without peripherals remains an inert enclosure warming a room. Peripherals—monitors, keyboards, mice, printers, webcams, drawing tablets, barcode scanners—are how humans interact with the machine.
 
-When a peripheral doesn't work, the user's entire workday halts.
+When a peripheral fails to communicate, the user's workflow halts immediately.
 
 As an IT technician, you will spend a significant portion of your career configuring, updating, and troubleshooting external devices.
+
+![Peripheral Connectors and Device Manager Triage Guide](/images/tech-plus/peripherals-device-manager-troubleshooting.jpg)
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -126,6 +128,20 @@ As an IT technician, you will spend a significant portion of your career configu
 │                                                                        │
 └────────────────────────────────────────────────────────────────────────┘
 ```
+
+<Callout type="exam">
+**CompTIA Tech+ Core Objective (FC0-U71 2.4):**
+- **Device Manager Indicators:** Memorize that a **Yellow Exclamation Mark (!)** signifies a missing, corrupt, or mismatched device driver. A **Down Arrow** signifies a manually disabled device. An **Unknown Device** means the OS could not match the Hardware ID (Vendor ID/Device ID) in its driver database.
+- **WHQL Signing:** Microsoft Windows Hardware Quality Labs (WHQL) digital signatures verify that a driver passed rigorous kernel stability testing.
+- **Display Configurations:** Remember the shortcut **Win + P** to switch between **Duplicate** (mirrored display for presentations) and **Extend** (independent multi-monitor desktop workspace).
+</Callout>
+
+<Callout type="warn">
+**Technician Operational Warnings:**
+- **Unsigned Kernel Drivers:** Forcing installation of unsigned or unverified third-party drivers bypasses Windows Driver Signature Enforcement and frequently triggers kernel panics (BSOD).
+- **USB Storage Data Corruption:** Never yank a USB flash drive while write caching is enabled. Always use **Safely Remove Hardware** in the notification area to flush write buffers from system memory to flash storage.
+- **Dynamic DHCP on Network Printers:** Never configure an enterprise shared printer with standard dynamic DHCP. If the lease expires and changes the IP address, all mapped workstations will lose communication. Always configure a static IP or a permanent DHCP MAC reservation.
+</Callout>
 
 ---
 

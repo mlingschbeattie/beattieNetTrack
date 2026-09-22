@@ -10,7 +10,7 @@ xp: 15
 source: cyber-org
 difficulty: Beginner
 estMinutes: 20
-tags: ["tech+", "FC0-U71 6.1", "CIA triad", "integrity", "hashing", "SHA-256", "MD5", "digital signatures", "tampering", "checksums"]
+tags: ["tech+", "FC0-U71 6.1", "CIA triad", "integrity", "hashing", "SHA-256", "MD5", "digital signatures", "tampering", "checksums", "FIM"]
 sections:
   - id: what-is-integrity
     title: "What is Integrity? The 'I' in the CIA Triad"
@@ -75,6 +75,27 @@ sections:
           - "Upgrading the RAM"
           - "Changing the mouse cursor"
         correct: 0
+  - id: file-integrity-monitoring-and-tamper-evidence
+    title: "File Integrity Monitoring (FIM) and Tamper-Evident Storage"
+    keyPoints:
+      - "File Integrity Monitoring (FIM) continuously calculates and compares baseline hashes of critical operating system binaries to detect unauthorized modifications"
+      - "Write Once, Read Many (WORM) storage prevents attackers and ransomware from modifying or deleting historical audit log archives"
+      - "Cryptographic hash chains ensure that inserting, altering, or removing a log record immediately breaks the mathematical chain validation"
+    check:
+      - prompt: "What security system continuously monitors critical operating system DLLs and configuration files against known cryptographic baseline hashes to flag unauthorized tampering?"
+        options:
+          - "File Integrity Monitoring (FIM)"
+          - "Dynamic Host Configuration Protocol"
+          - "Address Resolution Protocol"
+          - "Power-On Self-Test"
+        correct: 0
+      - prompt: "Why do regulatory compliance standards mandate that enterprise log servers store audit trails on Write Once, Read Many (WORM) storage media?"
+        options:
+          - "To prevent malicious actors or disgruntled administrators from erasing or modifying forensic evidence"
+          - "To reduce the physical weight of server racks"
+          - "To speed up internet download bandwidth"
+          - "To overclock the CPU registers"
+        correct: 0
 domains:
   - domainId: techplus.security
     weight: 1
@@ -82,15 +103,27 @@ domains:
 
 import Callout from '../../components/Callout.astro';
 
+<figure class="my-6 border border-border/40 rounded-xl overflow-hidden shadow-lg bg-card">
+  <img 
+    src="/images/tech-plus/data-integrity-hashing-guide.jpg" 
+    alt="Cryptographic Hashing Avalanche Effect, File Integrity Monitoring (FIM), and Digital Signature Verification" 
+    class="w-full h-auto object-cover"
+    loading="lazy"
+  />
+  <figcaption class="p-4 text-xs text-muted-foreground border-t border-border/40 bg-muted/20">
+    <strong>Figure 6.1.2:</strong> Mathematical mechanisms enforcing data integrity: The Avalanche Effect in SHA-256 hashing demonstrating radical digest divergence upon single-bit alterations, paired with automated File Integrity Monitoring (FIM) and cryptographic digital signature workflows.
+  </figcaption>
+</figure>
+
 ## Trusting What the Screen Says
 
-Imagine logging into your bank account. You see your balance is $5,000. 
+Imagine signing into your online banking portal. You see an account balance of \$5,000.
 
-Now imagine that an attacker has infiltrated the bank's database server. They don't steal the money—they just change a few lines of code so that every time you transfer $50 to pay your electric bill, the bank transfers $500 instead.
+Now consider what happens if an unauthorized intruder compromises the financial database. The adversary does not exfiltrate your account numbers—instead, they subtly alter database triggers so that whenever you initiate a \$50 utility payment, the processing engine debits \$500 instead.
 
-The data is 100% confidential (nobody leaked your balance) and 100% available (the website is online). But the system is completely broken because you **cannot trust the accuracy of the data**.
+In this scenario, confidentiality remains intact (no unauthorized third party read your balance), and availability is unaffected (the banking web application responds promptly). Yet the entire computational infrastructure is compromised because **you cannot trust the accuracy or validity of the data**.
 
-**Integrity** is the "I" in the **CIA Triad**. It is the absolute guarantee that data has not been altered, deleted, injected, or corrupted—whether by a malicious hacker, a rogue employee, a software bug, or a physical hard drive error.
+**Integrity** is the essential "I" within the **CIA Triad**. It is the absolute guarantee that digital data remains unaltered, complete, and uncorrupted throughout its lifecycle—protecting against malicious software injections, rogue insiders, network bit rot, and unintended administrative errors.
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -98,10 +131,10 @@ The data is 100% confidential (nobody leaked your balance) and 100% available (t
 ├────────────────────────────────────────────────────────────────────────┤
 │                                                                        │
 │   ORIGINAL FILE:                                                       │
-│   "Transfer $100 to Alice" ──[ SHA-256 HASH ]──> `7f83b1657ff1fc53...` │
+│   "Transfer $100 to Alice" ──[ SHA-256 HASH ]──> 7f83b1657ff1fc53...   │
 │                                                                        │
 │   TAMPERED FILE (Single Character Change):                             │
-│   "Transfer $900 to Alice" ──[ SHA-256 HASH ]──> `4d1b82a39f60bc91...` │
+│   "Transfer $900 to Alice" ──[ SHA-256 HASH ]──> 4d1b82a39f60bc91...   │
 │                                                                        │
 │   ✔ The hash output changes completely (The Avalanche Effect)!         │
 │                                                                        │
@@ -112,35 +145,35 @@ The data is 100% confidential (nobody leaked your balance) and 100% available (t
 
 ## 1. Threats to Data Integrity
 
-Integrity failures happen through both deliberate cyberattacks and routine physical system faults:
+Integrity violations stem from deliberate cyberattacks as well as routine hardware malfunctions:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │                         INTEGRITY THREAT MATRIX                        │
 ├────────────────────┬───────────────────────────────────────────────────┤
-│ **SQL Injection**  │ Attacker injects malicious database commands via  │
-│                    │ a web form to modify or wipe financial records.   │
+│ SQL Injection      │ Adversary injects SQL commands into input fields  │
+│ (SQLi)             │ to modify ledger balances or truncate records.    │
 ├────────────────────┼───────────────────────────────────────────────────┤
-│ **Man-in-the-Middle**│ Attacker intercepts a downloaded `.exe` file on │
-│                    │ an unencrypted Wi-Fi and replaces it with malware.│
+│ Man-in-the-Middle  │ Attacker intercepts a software download on an     │
+│ (MitM)             │ unencrypted network and appends a Trojan dropper. │
 ├────────────────────┼───────────────────────────────────────────────────┤
-│ **Ransomware**     │ Encrypts system files, destroying their original  │
-│                    │ readable state until an extortion fee is paid.    │
+│ Ransomware         │ Cryptographically alters file contents into       │
+│                    │ unreadable blocks, destroying file structure.     │
 ├────────────────────┼───────────────────────────────────────────────────┤
-│ **Bit Rot / Noise**│ Electromagnetic interference or failing SSD cells │
-│                    │ flip binary 0s to 1s, corrupting stored data.     │
+│ Bit Rot & Noise    │ Cosmic radiation or degrading flash memory cells  │
+│                    │ spontaneously invert bits (0 -> 1), corrupting OS.│
 └────────────────────┴───────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 2. Cryptographic Hashing: The Ultimate Tamper Evident Seal
+## 2. Cryptographic Hashing: The Mathematical Seal
 
-A **Cryptographic Hash Function** is a one-way mathematical algorithm that takes any file (a 1-sentence text file or a 50 GB video game) and computes a fixed-length string of hex characters called a **Hash Value (or Message Digest)**:
+A **Cryptographic Hash Function** is a one-way mathematical algorithm that ingests arbitrary binary payloads (from a 10-byte plaintext string to a 100-gigabyte disk image) and produces a fixed-length hexadecimal digest:
 
-1. **One-Way (Irreversible):** You can easily calculate a hash from a file, but it is mathematically impossible to reconstruct the original file from the hash.
-2. **Deterministic:** The exact same file will ALWAYS produce the exact same hash value on every computer on Earth.
-3. **The Avalanche Effect:** If you change a single letter or a single binary bit in a 10 GB file, the resulting hash value changes completely and unpredictably!
+1. **One-Way Function (Pre-image Resistance):** It is trivial to calculate a hash from a given input, but computationally impossible to reverse-engineer the original source payload from the resulting hash digest.
+2. **Deterministic Output:** Supplying identical binary input on any computing platform globally will consistently generate the exact same hash output.
+3. **The Avalanche Effect:** Altering a single bit in an enterprise disk image causes more than 50% of the bits in the resulting hash digest to change unpredictably.
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -148,39 +181,63 @@ A **Cryptographic Hash Function** is a one-way mathematical algorithm that takes
 ├──────────────┬───────────────┬─────────────────────────────────────────┤
 │ Algorithm    │ Digest Length │ Cryptographic Security Status           │
 ├──────────────┼───────────────┼─────────────────────────────────────────┤
-│ **MD5**      │ 128 Bits      │ ❌ **BROKEN** (Collision vulnerabilities)│
-│ **SHA-1**    │ 160 Bits      │ ❌ **DEPRECATED** (Do not use for certs) │
-│ **SHA-256**  │ 256 Bits      │ 🏆 **CURRENT INDUSTRY GOLD STANDARD**   │
-│ **SHA-3**    │ 256–512 Bits  │ 🏆 Modern sponge-construction standard  │
+│ MD5          │ 128 Bits      │ BROKEN (Vulnerable to collision attacks)│
+│ SHA-1        │ 160 Bits      │ DEPRECATED (Banned for digital certs)   │
+│ SHA-256      │ 256 Bits      │ CURRENT INDUSTRY GOLD STANDARD          │
+│ SHA-3        │ 256–512 Bits  │ Modern sponge-construction standard     │
 └──────────────┴───────────────┴─────────────────────────────────────────┘
 ```
 
 <Callout type="exam">
-**The Hash Comparison Rule:** When you download an ISO installer for an operating system (e.g. `ubuntu-24.04.iso`), the website publishes its known SHA-256 hash. After downloading, you run `Get-FileHash ubuntu-24.04.iso` in PowerShell. If the hashes match 100%, you know with mathematical certainty that the file was not corrupted during download and was not modified by an attacker!
+**CompTIA Exam Focus — Hash Comparison Verification:** When an operating system vendor releases an ISO installation file (e.g., `server-2025.iso`), the vendor publishes the official SHA-256 checksum on their verified portal. After downloading, an administrator runs `Get-FileHash -Algorithm SHA256 .\server-2025.iso` in PowerShell. If the calculated digest matches the published string character-for-character, the administrator verifies that the image was neither damaged during transmission nor tampered with by a malicious intermediary.
+</Callout>
+
+<Callout type="warn">
+**The MD5 Collision Hazard:** Legacy hashing functions such as MD5 and SHA-1 suffer from **collision vulnerabilities**. In a collision attack, an adversary crafts two entirely distinct files (one benign, one malicious) that compute to the identical MD5 digest. Never rely on MD5 or SHA-1 for security integrity verification or digital signatures.
 </Callout>
 
 ---
 
-## 3. Digital Signatures: Integrity + Non-Repudiation
+## 3. Digital Signatures: Combining Integrity with Authentication
 
-A hash proves that a file was not altered, but it doesn't prove *who created it*.
+While a cryptographic hash proves whether a file has changed, it cannot prove *who produced it*. An attacker could modify a script and simply generate a new hash.
 
-A **Digital Signature** combines cryptographic hashing with **Asymmetric Public-Key Cryptography**:
-1. The author calculates a hash of the software update.
-2. The author encrypts that hash using their **Private Key**.
-3. Your computer downloads the software, decrypts the signature using the author's public key, and recalculates the hash.
-4. If the hashes match, your computer verifies two things simultaneously:
-   - **Integrity:** The software was not modified in transit.
-   - **Authentication:** The software came genuinely from the verified vendor.
+A **Digital Signature** integrates hashing with **Asymmetric Public-Key Cryptography** to deliver non-repudiation and origin verification:
+1. The software vendor generates a cryptographic hash of their compiled binary.
+2. The vendor encrypts the hash using their securely guarded **Private Key**.
+3. When client endpoints download the package, the operating system decrypts the digital signature using the vendor's verified **Public Key** embedded in the trusted root certificate store.
+4. The endpoint independently computes a hash of the downloaded binary. If the two values match, the system confirms two foundational facts:
+   - **Integrity Verified:** The binary has not been modified since the developer signed it.
+   - **Origin Authenticated:** Only the possessor of the vendor's private key could have authored the signature.
+
+---
+
+## 4. File Integrity Monitoring (FIM) and Tamper-Evident Storage
+
+In production server deployments, organizations implement automated continuous monitoring to protect critical system states:
+
+### File Integrity Monitoring (FIM)
+Tools such as Tripwire, Wazuh, and OSSEC baseline the cryptographic hashes of core operating system files (`/etc/passwd`, `C:\Windows\System32\drivers\etc\hosts`, registry hives):
+- Background agents scan system files at scheduled intervals or upon write events.
+- If a malware persistence mechanism or rogue administrator alters a system DLL, FIM immediately flags the hash divergence, alerts the Security Operations Center (SOC), and triggers automated rollback procedures.
+
+### Tamper-Evident Logging and WORM Media
+When adversaries compromise a server, their primary operational priority is clearing event logs (`wevtutil cl System` or `rm /var/log/auth.log`) to hinder digital forensics.
+- **WORM Storage:** Write Once, Read Many physical media and cloud object locks prevent records from being modified or overwritten for a mandated retention window.
+- **Hash-Chained Audit Logs:** Each new log entry incorporates the hash of the preceding entry. Modifying an entry midway through the file breaks the cryptographic chain across all subsequent records, providing irrefutable mathematical evidence of log tampering.
 
 ---
 
 ## Why This Matters in the Field
 
-When troubleshooting corrupt database files, validating downloaded system firmware updates, or defending server audit logs against malicious tampering, verifying cryptographic hashes and digital signatures is the technician's primary tool for guaranteeing data trust.
+Systems engineers and incident responders rely on integrity mechanisms across several critical workflows:
+1. **Malware Attribution:** Comparing suspect executable hashes against the VirusTotal database to identify known ransomware variants.
+2. **Chain of Custody:** Generating SHA-256 disk image hashes immediately upon seizing evidence at a crime scene to prove in court that digital artifacts remained unaltered during analysis.
+3. **Supply Chain Defense:** Validating cryptographically signed software bills of materials (SBOMs) to ensure open-source software dependencies have not been hijacked.
 
 ---
 
 ## Key Terms
 
-CIA Triad · Integrity · Tampering · Bit Rot · Cryptographic Hash Function · Message Digest · Deterministic · One-Way Function · Avalanche Effect · MD5 (Broken) · SHA-1 (Deprecated) · SHA-256 (Gold Standard) · SHA-3 · Collision Attack · Checksum (CRC32) · Digital Signature · Asymmetric Cryptography · Audit Logging · Immutable Logs
+CIA Triad · Integrity · Tampering · Bit Rot · Cryptographic Hash Function · Message Digest · Deterministic · Avalanche Effect · MD5 Collision Vulnerability · SHA-1 (Deprecated) · SHA-256 · SHA-3 · Digital Signature · Non-Repudiation · Public Key Infrastructure (PKI) · File Integrity Monitoring (FIM) · Write Once, Read Many (WORM) · Audit Log Immutability · Hash Chaining · Software Bill of Materials (SBOM)
+

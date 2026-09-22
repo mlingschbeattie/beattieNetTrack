@@ -4,81 +4,110 @@ slug: "tech-plus-1-4-1-troubleshooting-methodology"
 track: tech-plus
 moduleId: tech-plus.it-concepts
 order: 8
-
 difficulty: Beginner
 passThreshold: 70
 tags: ["Tech+", "FC0-U71", "CompTIA"]
 questions:
   - id: q1
     type: single
-    prompt: "According to CompTIA troubleshooting methodology, what is the FIRST step when a user reports a problem?"
+    prompt: "According to standard CompTIA troubleshooting methodology, what is the FIRST action a technician should take when a user reports a workstation failure?"
     options:
-      - "A. Implement a solution"
-      - "B. Identify the problem"
-      - "C. Document findings"
-      - "D. Establish a theory of probable cause"
+      - "A. Immediately replace the internal hard drive"
+      - "B. Identify the problem by gathering information and questioning the user"
+      - "C. Establish a comprehensive plan of action"
+      - "D. Document findings and close the support ticket"
     correctIndex: 1
+    explanation: "Step 1 is 'Identify the problem.' Before making any changes, the technician must gather details from the user, observe the symptoms, duplicate the error, and inquire about recent environmental or system changes."
   - id: q2
     type: single
-    prompt: "A technician is asked to fix a laptop that will not start. After gathering information, she forms a hypothesis about what might be wrong. Which troubleshooting step is she performing?"
+    prompt: "A technician arrives at a workstation that will not turn on. Before opening the chassis or testing the motherboard, the technician checks if the surge protector is turned on and plugged into the wall. Which CompTIA troubleshooting principle does this demonstrate?"
     options:
-      - "A. Document findings"
-      - "B. Implement the solution"
-      - "C. Establish a theory of probable cause"
-      - "D. Verify full system functionality"
+      - "A. Documenting findings"
+      - "B. Escalating to vendor engineering"
+      - "C. Questioning the obvious"
+      - "D. Rebuilding the operating system kernel"
     correctIndex: 2
+    explanation: "When establishing a theory of probable cause (Step 2), technicians should always 'question the obvious' first, ruling out simple oversights like unplugged cables, tripped switches, or dead wall outlets."
   - id: q3
-    type: single
-    prompt: "Why is documentation the final step in the CompTIA troubleshooting methodology?"
+    type: multi
+    prompt: "During Step 1 (Identify the problem), which of the following activities should a technician perform to understand the root issue? (Choose two.)"
     options:
-      - "A. To bill the customer for labor"
-      - "B. To create a record that can help resolve similar issues in the future"
-      - "C. Documentation is optional and rarely done"
-      - "D. It resets the system to its original state"
-    correctIndex: 1
+      - "A. Inquire if any recent software updates, hardware changes, or power events occurred"
+      - "B. Attempt to duplicate the problem or observe the error messages directly"
+      - "C. Replace the motherboard BIOS chip without testing"
+      - "D. Send an invoice to the client for completed remediation"
+    correctIndices: [0, 1]
+    explanation: "Identifying the problem requires gathering context (inquiring about recent changes) and verifying the issue firsthand (duplicating the error symptoms). Making hardware replacements occurs later in the methodology."
   - id: q4
     type: single
-    prompt: "How many steps are in the CompTIA troubleshooting methodology?"
+    prompt: "A technician tests their initial theory of probable cause by swapping a video cable, but the display remains black. According to the CompTIA methodology, what should the technician do next?"
     options:
-      - "A. 5"
-      - "B. 6"
-      - "C. 7"
-      - "D. 10"
-    correctIndex: 2
-  - id: q5
-    type: single
-    prompt: "After implementing a solution, what should a technician do next?"
-    options:
-      - "A. Close the ticket immediately"
-      - "B. Verify full system functionality and ensure the user is satisfied"
-      - "C. Reinstall the operating system"
-      - "D. Identify the problem again from scratch"
+      - "A. Verify full system functionality and educate the user"
+      - "B. Formulate a new theory of probable cause or escalate the problem"
+      - "C. Close the ticket as unresolved"
+      - "D. Immediately purchase a brand-new computer monitor"
     correctIndex: 1
+    explanation: "When testing a theory disproves your hypothesis, the methodology dictates returning to Step 2 to establish a new theory of probable cause, or escalating to senior personnel if the cause remains unknown."
+  - id: q5
+    type: multi
+    prompt: "When establishing a plan of action to resolve an issue (Step 4), which of the following precautions should a technician take before implementing changes? (Choose two.)"
+    options:
+      - "A. Consider potential adverse side effects on dependent systems and users"
+      - "B. Perform backups of critical system files and user data"
+      - "C. Disable all endpoint antivirus protection permanently"
+      - "D. Disconnect the computer from electrical power permanently"
+    correctIndices: [0, 1]
+    explanation: "A robust plan of action identifies potential side effects to prevent unexpected downtime and ensures critical data is backed up before applying major patches or configuration changes."
   - id: q6
     type: single
-    prompt: "True or false: Testing a theory of probable cause means the technician is certain the theory is correct before proceeding."
+    prompt: "A technician finishes repairing a printer feed roller. Before returning the printer to the user, what must the technician do according to Step 5 of the methodology?"
     options:
-      - "A. True"
-      - "B. False"
+      - "A. Immediately leave the site without speaking to the user"
+      - "B. Verify full system functionality by printing a multi-page test document"
+      - "C. Discard the repair documentation to save storage space"
+      - "D. Re-open the printer chassis and replace the toner cartridge"
     correctIndex: 1
+    explanation: "Step 5 requires verifying full system functionality to confirm the issue is completely resolved under real operating conditions, followed by implementing preventive measures."
   - id: q7
     type: single
-    prompt: "Which step involves planning the steps needed to resolve the issue before making changes?"
+    prompt: "Why is documenting findings, actions, and outcomes considered a vital final step in professional IT operations?"
     options:
-      - "A. Identify the problem"
-      - "B. Test the theory"
-      - "C. Establish an action plan"
-      - "D. Educate the user"
-    correctIndex: 2
-  - id: q8
-    type: single
-    prompt: "A technician resolves a network issue and before closing the ticket, explains to the user how to avoid the same problem in the future. Which step does this represent?"
-    options:
-      - "A. Verify full system functionality"
-      - "B. Educate the user and document findings"
-      - "C. Test the theory"
-      - "D. Establish an action plan"
+      - "A. It allows the technician to avoid taking future support tickets"
+      - "B. It builds an organizational knowledge base that accelerates resolving similar issues in the future"
+      - "C. It resets the operating system to factory default settings"
+      - "D. It is purely legal paperwork with no technical utility"
     correctIndex: 1
+    explanation: "Documentation populates the organization's ticketing knowledge base, allowing other technicians to quickly resolve recurring issues, track hardware failure trends, and maintain a clear audit trail."
+  - id: q8
+    type: multi
+    prompt: "Which of the following actions represent implementing preventive measures as part of verifying system functionality? (Choose two.)"
+    options:
+      - "A. Configuring automated operating system security patch updates to run during maintenance windows"
+      - "B. Educating the user on proper cable management and safe file handling habits"
+      - "C. Deleting the system event logs to hide the previous error"
+      - "D. Instructing the user to ignore future amber warning LEDs"
+    correctIndices: [0, 1]
+    explanation: "Preventive measures aim to prevent the recurring failure. Enabling automated patching and educating users on best practices prevent the underlying vulnerabilities from resurfacing."
+  - id: q9
+    type: single
+    prompt: "Which Windows administrative utility is especially valuable during Step 1 (Identify the problem) for reviewing recorded system crashes, application faults, and hardware driver warnings?"
+    options:
+      - "A. Windows Event Viewer"
+      - "B. Disk Defragmenter"
+      - "C. Character Map"
+      - "D. Paint 3D"
+    correctIndex: 0
+    explanation: "Windows Event Viewer records timestamped logs for System, Application, and Security events, making it indispensable for diagnosing system crashes and hardware errors."
+  - id: q10
+    type: single
+    prompt: "A technician realizes an issue involves complex proprietary software beyond their level of training. What action does the CompTIA troubleshooting framework recommend?"
+    options:
+      - "A. Randomly edit registry values until the software launches"
+      - "B. Escalate the issue to a tier-2 specialist or vendor support"
+      - "C. Close the ticket and tell the customer the software is discontinued"
+      - "D. Wipe the client's hard drive without permission"
+    correctIndex: 1
+    explanation: "If a technician cannot determine the cause or lacks the permissions/training to safely resolve the issue, the methodology specifies escalating to higher-tier technicians or specialized vendor support."
 domains:
   - domainId: techplus.concepts
     weight: 1

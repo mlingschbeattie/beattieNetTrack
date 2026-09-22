@@ -4,81 +4,110 @@ slug: "tech-plus-1-3-1-storage-units"
 track: tech-plus
 moduleId: tech-plus.it-concepts
 order: 5
-
 difficulty: Beginner
 passThreshold: 70
 tags: ["Tech+", "FC0-U71", "CompTIA"]
 questions:
   - id: q1
     type: single
-    prompt: "How many bytes are in one kilobyte (KB) as measured by an operating system?"
+    prompt: "How many bytes are in one kibibyte (KiB) or binary kilobyte as measured by an operating system?"
     options:
-      - "A. 1000"
-      - "B. 1024"
-      - "C. 512"
-      - "D. 2048"
+      - "A. 1,000 bytes"
+      - "B. 1,024 bytes"
+      - "C. 512 bytes"
+      - "D. 2,048 bytes"
     correctIndex: 1
+    explanation: "Operating systems calculate capacity using powers of two (base-2 binary). Therefore, one binary kilobyte (KiB) equals 2^10 = 1,024 bytes, unlike the decimal SI standard which defines 1 KB as 1,000 bytes."
   - id: q2
     type: single
-    prompt: "A user purchases a 500 GB hard drive but the operating system shows only 465 GB. What is the most likely cause?"
+    prompt: "A technician installs a brand-new 500 GB SSD, but Windows Disk Management displays only approximately 465 GB of usable capacity. What causes this discrepancy?"
     options:
-      - "A. The drive is defective"
-      - "B. The OS uses base-2 (binary) calculations while manufacturers use base-10 (decimal)"
-      - "C. Some space is used by the power supply"
-      - "D. The file system header uses 35 GB"
+      - "A. The storage drive has bad sectors from the manufacturer"
+      - "B. Drive manufacturers advertise capacity in decimal (base-10) while the OS calculates in binary (base-2)"
+      - "C. The computer power supply consumes 35 GB of drive capacity"
+      - "D. The motherboard BIOS reserves 7% of all drives for firmware cache"
     correctIndex: 1
+    explanation: "Storage manufacturers measure drive capacity in decimal SI units (500 GB = 500,000,000,000 bytes). When the OS divides by 1,024^3 to compute binary Gibibytes (GiB), 500,000,000,000 / 1,073,741,824 yields approximately 465.66 GiB."
   - id: q3
     type: single
-    prompt: "What is the smallest unit of digital data?"
+    prompt: "What is the fundamental, smallest indivisible unit of digital data in computer systems?"
     options:
       - "A. Byte"
       - "B. Nibble"
       - "C. Bit"
-      - "D. Kilobyte"
+      - "D. Sector"
     correctIndex: 2
+    explanation: "A bit (short for binary digit) is the fundamental atomic unit of digital computing, holding a value of either 0 or 1."
   - id: q4
-    type: single
-    prompt: "Which storage unit is larger than a gigabyte but smaller than a petabyte?"
+    type: multi
+    prompt: "Which of the following data storage capacity units represent amounts of storage larger than one Terabyte (TB)? (Choose two.)"
     options:
-      - "A. Megabyte"
-      - "B. Terabyte"
-      - "C. Kilobyte"
-      - "D. Exabyte"
-    correctIndex: 1
+      - "A. Petabyte (PB)"
+      - "B. Exabyte (EB)"
+      - "C. Megabyte (MB)"
+      - "D. Gigabyte (GB)"
+    correctIndices: [0, 1]
+    explanation: "In hierarchical data scale: Megabyte (10^6) < Gigabyte (10^9) < Terabyte (10^12) < Petabyte (10^15) < Exabyte (10^18). Both Petabytes and Exabytes are substantially larger than a Terabyte."
   - id: q5
     type: single
-    prompt: "True or false: RAM and hard drive storage are the same type of memory."
+    prompt: "A user accidentally unplugs their workstation power cable before saving an open document. Why was the document content lost?"
     options:
-      - "A. True"
-      - "B. False"
-    correctIndex: 1
+      - "A. System RAM is volatile memory that requires continuous power to maintain state"
+      - "B. Hard drives require battery backup to hold magnetic orientation"
+      - "C. Optical disc drives purge sectors upon power interruption"
+      - "D. The CPU caches all open files permanently in ROM"
+    correctIndex: 0
+    explanation: "RAM (Random Access Memory) is volatile storage, meaning it immediately discharges and loses all uncommitted data the instant electrical power is cut. Non-volatile storage (SSDs, HDDs) retains data without power."
   - id: q6
     type: single
-    prompt: "A typical MP3 song is about 5 MB. Approximately how many songs can fit on a 1 GB storage device?"
+    prompt: "A technician needs to back up 200 raw image files, each exactly 5 MB in size. How much total storage space is required?"
     options:
-      - "A. 50"
-      - "B. 5000"
-      - "C. 200"
-      - "D. 500"
-    correctIndex: 2
+      - "A. 100 MB"
+      - "B. 1,000 MB (approximately 1 GB)"
+      - "C. 10 GB"
+      - "D. 500 MB"
+    correctIndex: 1
+    explanation: "Multiplying 200 files by 5 MB equals 1,000 MB. In standard digital storage terms, 1,000 MB equals 1 GB (or 1,024 MB in binary convention)."
   - id: q7
-    type: single
-    prompt: "How many megabytes (MB) are in one gigabyte (GB)?"
+    type: multi
+    prompt: "Which of the following statements accurately describe the technical differences between bits and bytes? (Choose two.)"
     options:
-      - "A. 100"
-      - "B. 1000"
-      - "C. 1024"
-      - "D. 512"
-    correctIndex: 2
+      - "A. Eight bits combine to form exactly one byte"
+      - "B. File storage sizes are commonly written in bytes (B), while network transfer speeds are written in bits (b)"
+      - "C. One bit can store an ASCII alphabetical character without encoding"
+      - "D. Operating systems address RAM in 4-bit word groupings called octets"
+    correctIndices: [0, 1]
+    explanation: "A byte consists of 8 bits. Storage capacities use uppercase 'B' (e.g., 500 GB), while network bandwidth ratings use lowercase 'b' (e.g., 100 Mbps)."
   - id: q8
     type: single
-    prompt: "A technician is asked to describe the difference between storage and memory. Which statement is correct?"
+    prompt: "In standard binary operating system calculations, how many megabytes (MB) equal one gigabyte (GB)?"
     options:
-      - "A. Storage is temporary; memory is permanent"
-      - "B. Memory (RAM) is temporary; storage (HDD/SSD) retains data without power"
-      - "C. Both storage and memory lose data when powered off"
-      - "D. Memory is measured in terabytes while storage is measured in gigabytes"
-    correctIndex: 1
+      - "A. 100 MB"
+      - "B. 512 MB"
+      - "C. 1,024 MB"
+      - "D. 2,048 MB"
+    correctIndex: 2
+    explanation: "Because digital computers operate in base-2, each step up the capacity ladder multiplies by 2^10 = 1,024. Therefore, 1 GB = 1,024 MB."
+  - id: q9
+    type: multi
+    prompt: "A system administrator needs to ensure server data persists across scheduled power maintenance. Which of the following storage technologies retain data non-volatilely without electrical power? (Choose two.)"
+    options:
+      - "A. NVMe PCIe M.2 Solid-State Drive (SSD)"
+      - "B. Enterprise SAS Mechanical Hard Disk Drive (HDD)"
+      - "C. DDR5 Synchronous Dynamic Random-Access Memory (DRAM)"
+      - "D. CPU Level 1 (L1) Execution Cache"
+    correctIndices: [0, 1]
+    explanation: "SSDs (NAND flash) and HDDs (magnetic platters) are non-volatile storage media designed for persistent retention. DDR5 DRAM and CPU caches are volatile and require constant electrical refresh."
+  - id: q10
+    type: single
+    prompt: "Which binary prefix standard established by the IEC explicitly denotes 2^30 (1,073,741,824) bytes to eliminate ambiguity with decimal gigabytes?"
+    options:
+      - "A. Gibibyte (GiB)"
+      - "B. Megabyte (MB)"
+      - "C. Terabit (Tb)"
+      - "D. Kilobyte (KB)"
+    correctIndex: 0
+    explanation: "The International Electrotechnical Commission (IEC) introduced binary prefixes (KiB, MiB, GiB, TiB) where GiB represents exactly 2^30 bytes, distinguishing it from the decimal gigabyte (GB = 10^9 bytes)."
 domains:
   - domainId: techplus.concepts
     weight: 1

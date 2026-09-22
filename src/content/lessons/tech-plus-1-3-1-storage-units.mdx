@@ -103,106 +103,130 @@ domains:
 
 import Callout from '../../components/Callout.astro';
 
+<figure class="my-6 rounded-lg overflow-hidden border border-slate-800 bg-slate-950/50 shadow-xl">
+  <img 
+    src="/images/tech-plus/storage-units-capacity-scale-guide.jpg" 
+    alt="Hierarchy of Digital Storage Architecture and 1TB Drive Discrepancy" 
+    class="w-full h-auto object-cover"
+    loading="lazy"
+  />
+  <figcaption class="p-3 text-center text-xs text-slate-400 border-t border-slate-800 bg-slate-900/60">
+    Figure 1.3: Decimal SI prefixes versus Binary IEC prefixes, the mathematical origin of the 931 GiB drive capacity discrepancy, and lowercase 'b' vs uppercase 'B' conventions.
+  </figcaption>
+</figure>
+
 ## The Scale of Digital Storage
 
-Every file on a computer—from a one-line Python script to a 100-gigabyte game install—is a collection of bytes stored on physical media.
+Every digital artifact stored within an enterprise computer system—from a single-line shell script to an uncompressed multi-terabyte virtual machine disk image—fundamentally exists as a collection of binary bytes recorded onto physical non-volatile media.
 
-As a technician, you need an instinctive feel for storage scale. If a user tells you their Word document is "50 Gigabytes," you know immediately that they are mistaken or attaching uncompressed raw video files. If an executive asks for a thumb drive to backup the company's 40-Terabyte file server, you can steer them toward a NAS or cloud backup before they waste money.
+As a cybersecurity technician and systems administrator, developing an intuitive grasp of storage scale is vital for incident triage, hardware budgeting, and systems design. If an end-user submits a help desk ticket stating that their daily text document backup is consuming "50 Gigabytes," you recognize immediately that they have either configured their backup agent incorrectly or bundled raw video captures into the directory. Conversely, if an executive proposes backing up an enterprise 40-Terabyte database array onto consumer USB flash thumb drives, you can intervene with appropriate network-attached storage (NAS) or offsite cloud vault architectures before critical data is placed at risk.
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        THE STORAGE CAPACITY LADDER                     │
-├───────────────┬───────┬──────────────────────┬─────────────────────────┤
-│ Unit          │ Abbr. │ Decimal Size (Bytes) │ Real-World Example      │
-├───────────────┼───────┼──────────────────────┼─────────────────────────┤
-│ **Bit**       │ b     │ Single 1 or 0        │ Single transistor state │
-│ **Byte**      │ B     │ 8 bits               │ Single ASCII character  │
-│ **Kilobyte**  │ KB    │ 1,000 Bytes          │ 1-page text document    │
-│ **Megabyte**  │ MB    │ 1,000,000 Bytes      │ 4-minute MP3 song (4MB) │
-│ **Gigabyte**  │ GB    │ 1,000,000,000 Bytes  │ 1080p HD movie (4–8 GB) │
-│ **Terabyte**  │ TB    │ 1,000,000,000,000 B  │ PC storage drive (1 TB) │
-│ **Petabyte**  │ PB    │ 10^{15} Bytes      │ Datacenter / Cloud Tier │
-│ **Exabyte**   │ EB    │ 10^{18} Bytes      │ Global internet traffic │
-└───────────────┴───────┴──────────────────────┴─────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                          THE ENTERPRISE STORAGE CAPACITY LADDER                        │
+├───────────────┬───────┬───────────────────────────────┬────────────────────────────────┤
+│ Unit          │ Abbr. │ Decimal Size (Bytes)          │ Real-World IT Infrastructure   │
+├───────────────┼───────┼───────────────────────────────┼────────────────────────────────┤
+│ **Bit**       │ b     │ Single 1 or 0                 │ Transistor or capacitor state  │
+│ **Byte**      │ B     │ 8 bits                        │ Single ASCII character code    │
+│ **Kilobyte**  │ KB    │ 10^3 = 1,000 Bytes            │ Small text configuration file  │
+│ **Megabyte**  │ MB    │ 10^6 = 1,000,000 Bytes        │ High-resolution JPEG photo     │
+│ **Gigabyte**  │ GB    │ 10^9 = 1,000,000,000 Bytes    │ OS install or 1080p video file │
+│ **Terabyte**  │ TB    │ 10^{12} = 1,000,000,000,000 B │ Workstation SSD / NAS array    │
+│ **Petabyte**  │ PB    │ 10^{15} Bytes                 │ Datacenter / SIEM log archive  │
+│ **Exabyte**   │ EB    │ 10^{18} Bytes                 │ Global cloud platform capacity │
+└───────────────┴───────┴───────────────────────────────┴────────────────────────────────┘
 ```
 
 ---
 
 ## Decimal (SI) vs. Binary (IEC) Prefixes
 
-Almost every technician has had a client bring back an external hard drive and complain:
+A universal scenario encountered by desktop technicians and IT support specialists involves fielding customer inquiries regarding drive capacities:
 
-> *"I bought a 1 Terabyte SSD at Best Buy, but when I plugged it into Windows, it only says 931 GB! The store ripped me off!"*
+> *"I purchased a brand new 1 Terabyte Solid-State Drive, but when I formatted it in Windows Disk Management, it displayed only 931 GB! Where did my missing 69 gigabytes go?"*
 
-The store didn't rip them off. The drive isn't missing 69 gigabytes. The discrepancy is caused by two different industries using two different mathematical definitions for the prefix **"kilo"**, **"mega"**, and **"giga"**.
+The hardware vendor did not deliver a defective drive, nor did Windows arbitrarily consume 69 gigabytes for hidden recovery partitions. This discrepancy stems directly from a historical clash between two divergent mathematical measurement conventions: **Decimal (SI)** versus **Binary (IEC)**.
 
-### The Storage Vendor Math (Decimal / SI — Base-10)
-Hard drive and flash memory manufacturers sell hardware using standard International System of Units (SI) metric prefixes:
-- 1 Kilobyte (KB) = 10^3 = 1,000 bytes
-- 1 Megabyte (MB) = 10^6 = 1,000,000 bytes
-- 1 Gigabyte (GB) = 10^9 = 1,000,000,000 bytes
-- 1 Terabyte (TB) = 10^{12} = 1,000,000,000,000 bytes
+### The Storage Hardware Manufacturer Standard (Decimal / SI — Base-10)
+Drive manufacturers (such as Western Digital, Seagate, Crucial, and Samsung) manufacture, package, and market storage media in strict adherence to the International System of Units (SI) metric standard. Under SI rules, prefixes scale by exponential powers of 10:
+- 1 Kilobyte (KB) = $10^3 = 1,000$ bytes
+- 1 Megabyte (MB) = $10^6 = 1,000,000$ bytes
+- 1 Gigabyte (GB) = $10^9 = 1,000,000,000$ bytes
+- 1 Terabyte (TB) = $10^{12} = 1,000,000,000,000$ bytes
 
-When Western Digital or Samsung manufactures a "1 TB" drive, they construct physical silicon that holds exactly **1,000,000,000,000 bytes**.
+When a drive manufacturer fabricates a "1 TB" retail SSD, they install physical NAND flash silicon capable of storing exactly **1,000,000,000,000 bytes**.
 
-### The Operating System Math (Binary / IEC — Base-2)
-Because computer memory addresses are binary, operating systems (like Windows) calculate capacity in powers of 2 (2^{10} = 1024):
-- 1 Kibibyte (KiB) = 2^{10} = 1,024 bytes
-- 1 Mebibyte (MiB) = 2^{20} = 1,048,576 bytes
-- 1 Gibibyte (GiB) = 2^{30} = 1,073,741,824 bytes
-- 1 Tebibyte (TiB) = 2^{40} = 1,099,511,627,776 bytes
+### The Operating System Standard (Binary / IEC — Base-2)
+Because computer microprocessors, memory registers, and storage sectors operate via binary logic, operating systems (such as Windows) address memory in exponential powers of 2 ($2^{10} = 1,024$):
+- 1 Kibibyte (KiB) = $2^{10} = 1,024$ bytes
+- 1 Mebibyte (MiB) = $2^{20} = 1,048,576$ bytes
+- 1 Gibibyte (GiB) = $2^{30} = 1,073,741,824$ bytes
+- 1 Tebibyte (TiB) = $2^{40} = 1,099,511,627,776$ bytes
 
-### The Conversion:
-When Windows scans that 1,000,000,000,000-byte drive, it divides by 1,073,741,824 (the number of bytes in a true binary gigabyte/GiB):
+To eliminate ambiguity, the International Electrotechnical Commission (IEC) formally introduced the binary prefix notation (**KiB, MiB, GiB, TiB, PiB**).
 
-(1,000,000,000,000 bytes / 1,073,741,824 bytes/GiB) ≈ 931.32 GiB
+### Reconciling the Calculation
+When the Windows operating system scans the 1,000,000,000,000-byte storage drive, it evaluates capacity by dividing the raw byte count by $1,024^3$ ($1,073,741,824$ bytes per binary Gibibyte):
 
-Windows labels it "931 GB" on screen, which confuses users. Every single byte is physically there—it's just a difference in mathematical measurement.
+**1,000,000,000,000 bytes ÷ 1,073,741,824 bytes per GiB ≈ 931.32 GiB**
 
-<Callout type="exam">
-CompTIA tests your understanding of this distinction. **SI prefixes** (KB, MB, GB, TB) scale by powers of 10 (10^3, 10^6, 10^9). **IEC binary prefixes** (KiB, MiB, GiB, TiB) scale by powers of 2 (2^{10}, 2^{20}, 2^{30}).
+Because legacy Windows user interfaces label this calculation as "931 GB" instead of using the precise IEC label "931 GiB," users mistakenly infer that storage has vanished. Every byte is physically present on the flash controller; the difference is purely a question of metric units.
+
+<Callout type="warn">
+**Common Student Misconception (Drive Partition Loss vs Formatting Overhead):** Students often mistakenly assume that filesystem formatting overhead (such as NTFS Master File Table reservation or EXT4 inode tables) accounts for the 69 GB difference on a 1 TB drive. While filesystem metadata does consume a minor fraction of space (typically under 1% to 2%), the dominant reason for the shift from 1,000 GB down to 931 GB is the base-10 to base-2 mathematical conversion ($1,000,000,000,000 \div 1024^3$).
 </Callout>
 
 ---
 
-## Real-World File Sizes and Estimation
+## Real-World File Sizes and Capacity Planning
 
-When designing backup strategies or purchasing storage for clients, you need to estimate capacity quickly:
+Accurate capacity forecasting requires technicians to understand standard digital asset payload footprints across enterprise systems:
 
-- **Plain Text Document (.txt):** 2 to 10 KB
-- **Email with PDF Attachment:** 1 to 5 MB
-- **High-Resolution Smartphone Photo (.jpg / .heic):** 3 to 8 MB
-- **Compressed Music Track (MP3 @ 320kbps):** 8 to 12 MB
-- **1 Hour of HD Video (1080p @ 30fps):** 3 to 5 GB
-- **1 Hour of 4K Video (UHD @ 60fps):** 20 to 45 GB
-- **Windows 11 OS Installation:** 25 to 35 GB
-- **Modern AAA Game Install (Call of Duty, Cyberpunk):** 80 to 150 GB
+- **ASCII Configuration Files (.conf, .json, .txt):** 2 KB to 25 KB
+- **Compiled Executables and System Drivers (.dll, .sys):** 500 KB to 15 MB
+- **Standard PDF Document with Embedded Graphics:** 2 MB to 10 MB
+- **High-Resolution Smartphone Photography (JPEG / HEIC):** 4 MB to 12 MB
+- **Uncompressed High-Definition Audio (FLAC / WAV):** 30 MB to 60 MB
+- **1 Hour of Compressed HD Video Stream (1080p @ 30fps):** 3 GB to 6 GB
+- **1 Hour of Uncompressed 4K Video Production Footage:** 25 GB to 50 GB
+- **Modern Desktop Operating System (Windows 11 / Enterprise Linux):** 25 GB to 35 GB
+- **Enterprise Security Information & Event Management (SIEM) Ingestion:** 50 GB to 500 GB daily
+- **Hospital Healthcare PACS Archive (Patient MRIs and CT Scans):** Measured in Petabytes (PB)
+
+<Callout type="exam">
+**CompTIA Tech+ Examination Focus (FC0-U71 1.3):** Understand the hierarchical progression of capacity units from bit to petabyte, recognize the mathematical distinction between decimal SI units ($10^n$) and binary IEC units ($2^n$), and identify appropriate capacity ranges for workstation storage versus enterprise datacenters.
+</Callout>
 
 ---
 
 ## Bits vs. Bytes: Lowercase 'b' vs. Uppercase 'B'
 
-This is the single most common marketing trap in consumer technology.
+One of the most frequent consumer points of confusion in technology relates to the case-sensitive distinction between bits and bytes:
 
-- **Lowercase `b` = Bits:** Used exclusively for **network transfer rates** and data in transit (e.g., 100 Mbps, 1 Gbps).
-- **Uppercase `B` = Bytes:** Used exclusively for **static storage capacity** and file sizes (e.g., 500 MB, 2 TB).
+- **Lowercase `b` = Bits:** Used universally to measure **data transfer speeds and network throughput** (e.g., 100 Mbps, 1 Gbps, 10 Gbps).
+- **Uppercase `B` = Bytes:** Used universally to measure **static storage volume and file sizes** (e.g., 512 MB, 1 TB, 16 GB).
 
-Because there are **8 bits in 1 byte**, you must **divide network speeds by 8** to determine the actual file download rate:
+Because exactly **8 bits constitute 1 byte**, calculating real-world download durations requires dividing the advertised network bandwidth by 8:
 
-(800 Megabits per second (Mbps) / 8 bits per byte) = 100 Megabytes per second (MB/s)
+**Actual Download Rate (MB/s) = Advertised Bandwidth (Mbps) ÷ 8**
 
-If a user with a "100 Mbps" internet connection tries to download an 800 MB video file, it does not take 8 seconds—it takes 800  MB \div 12.5 MB/s = 64 seconds.
+For example, on an enterprise gigabit connection delivering 800 Mbps downstream:
+
+**800 Mbps ÷ 8 bits per byte = 100 MB/s**
+
+Downloading an 800 MB software patch over this link does not take 1 second; it takes 8 seconds (800 MB ÷ 100 MB/s = 8 seconds), assuming optimal throughput and zero transit latency.
 
 ---
 
-## Why This Matters in the Field
+## Why This Matters in Vocational Cybersecurity
 
-When you size local storage for a security camera NVR (Network Video Recorder), plan cloud backup retention budgets, or specify drive capacities for an enterprise virtualization cluster, storage math translates directly into real hardware costs.
+In digital forensics, storage calculations dictate evidence acquisition time and hardware allocation. A forensic investigator creating a bit-stream physical image of an encrypted 2 TB NVMe drive must ensure their write-blocked target storage array has sufficient unallocated GiB capacity to house both the raw forensic image (`.E01` or `.dd`) and cryptographic SHA-256 verification hash logs.
 
-Understanding the difference between raw decimal bytes, binary operating system allocations, and transfer throughput prevents catastrophic storage shortages before systems go live.
+Furthermore, in Security Operations Centers (SOC), calculating log retention periods requires precise capacity modeling: calculating daily event volume (events per second $\times$ average byte payload) ensures that audit log repositories comply with federal compliance retention mandates (such as HIPAA or PCI-DSS) without overflowing available SAN volumes.
 
 ---
 
 ## Key Terms
 
-Bit (b) · Byte (B) · Kilobyte (KB) · Megabyte (MB) · Gigabyte (GB) · Terabyte (TB) · Petabyte (PB) · Exabyte (EB) · SI Decimal Prefixes · IEC Binary Prefixes · Kibibyte (KiB) · Gibibyte (GiB) · 931 GB Discrepancy · Bits vs. Bytes · Megabits per Second (Mbps) · Megabytes per Second (MB/s) · Divide by 8 Rule
+Bit (b) · Byte (B) · Kilobyte (KB) · Megabyte (MB) · Gigabyte (GB) · Terabyte (TB) · Petabyte (PB) · Exabyte (EB) · SI Decimal Prefixes · IEC Binary Prefixes · Kibibyte (KiB) · Gibibyte (GiB) · 931 GiB Capacity Discrepancy · Bits vs. Bytes · Megabits per Second (Mbps) · Megabytes per Second (MB/s) · Divide by 8 Rule · Forensic Imaging · Capacity Planning

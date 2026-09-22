@@ -98,6 +98,10 @@ const labs = defineCollection({
           inputLabel: z.string().optional(),
           placeholder: z.string().optional(),
           hint: z.string().optional(),
+          terminalOutput: z.string().optional(),
+          terminalPrompt: z.string().optional(),
+          image: z.string().optional(),
+          imageAlt: z.string().optional(),
           validator: z.discriminatedUnion('type', [
             // Free-text types. Use these when the exact string IS the skill —
             // typing a command, a path, a syntax form.

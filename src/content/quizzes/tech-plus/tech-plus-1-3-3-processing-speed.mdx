@@ -4,81 +4,110 @@ slug: "tech-plus-1-3-3-processing-speed"
 track: tech-plus
 moduleId: tech-plus.it-concepts
 order: 7
-
 difficulty: Beginner
 passThreshold: 70
 tags: ["Tech+", "FC0-U71", "CompTIA"]
 questions:
   - id: q1
     type: single
-    prompt: "A CPU is rated at 3.6 GHz. What does this measurement represent?"
+    prompt: "A desktop processor is advertised with a base clock frequency of 3.6 GHz. What does this specification literally measure?"
     options:
-      - "A. 3.6 gigabytes of data processed per second"
-      - "B. 3.6 billion clock cycles per second"
-      - "C. 3.6 million instructions stored in cache"
-      - "D. 3.6 watts of power consumed"
+      - "A. 3.6 gigabytes of data processed each second"
+      - "B. 3.6 billion internal clock cycles per second"
+      - "C. 3.6 million instructions stored in L1 cache"
+      - "D. 3.6 watts of electrical energy consumed under load"
     correctIndex: 1
+    explanation: "One Hertz (Hz) is one cycle per second. A 3.6 Gigahertz (GHz) processor completes 3.6 billion clock cycles each second, synchronizing the execution of instructions."
   - id: q2
     type: single
-    prompt: "What is the primary advantage of a quad-core CPU over a single-core CPU at the same clock speed?"
+    prompt: "What is the primary architectural advantage of a multi-core CPU (such as a quad-core processor) compared to a single-core CPU running at the same clock frequency?"
     options:
-      - "A. It uses less power"
-      - "B. It can handle multiple tasks simultaneously across multiple cores"
-      - "C. It runs cooler under all conditions"
-      - "D. It has a larger hard drive"
+      - "A. It uses completely passive cooling without fans"
+      - "B. It can process multiple independent instruction threads concurrently across separate physical cores"
+      - "C. It doubles the speed of internet downloads"
+      - "D. It eliminates the need for system RAM"
     correctIndex: 1
+    explanation: "Multi-core processors contain multiple distinct execution units (cores) on a single die, allowing the operating system to dispatch different software processes and threads in parallel."
   - id: q3
     type: single
-    prompt: "What is the purpose of CPU cache memory (L1/L2/L3)?"
+    prompt: "What is the primary operational purpose of on-die CPU cache memory (L1, L2, and L3)?"
     options:
-      - "A. To provide long-term file storage"
-      - "B. To store frequently accessed data close to the processor for faster access"
-      - "C. To connect the CPU to the internet"
-      - "D. To hold data when the computer is powered off"
+      - "A. To store files permanently when the PC is turned off"
+      - "B. To hold frequently accessed instructions and data directly on the chip to reduce memory latency"
+      - "C. To connect the CPU directly to peripheral USB ports"
+      - "D. To regulate electrical current entering the power supply"
     correctIndex: 1
+    explanation: "CPU cache is ultra-fast Static RAM (SRAM) built directly into the processor die. It stores repeatedly needed data and code so the CPU does not stall waiting on slower system RAM."
   - id: q4
     type: single
-    prompt: "True or false: Thermal throttling occurs when a CPU reduces its clock speed to prevent overheating."
+    prompt: "During intensive video rendering, a technician observes the CPU clock speed dropping from 4.2 GHz down to 1.8 GHz while the CPU temperature hits 100°C. What protective hardware mechanism is taking place?"
     options:
-      - "A. True"
-      - "B. False"
+      - "A. Thermal throttling"
+      - "B. Overclocking"
+      - "C. Hyper-threading"
+      - "D. Direct Memory Access"
     correctIndex: 0
+    explanation: "Thermal throttling is an automated fail-safe where the CPU lowers its clock speed and operating voltage to shed heat and prevent catastrophic silicon damage when thermal thresholds are exceeded."
   - id: q5
-    type: single
-    prompt: "Which unit is used to measure processor clock speed?"
+    type: multi
+    prompt: "Which of the following units are recognized metrics used to quantify computer processing capability and clock rates? (Choose two.)"
     options:
-      - "A. Megabytes per second"
-      - "B. Watts"
-      - "C. Hertz (Hz)"
-      - "D. Volts"
-    correctIndex: 2
+      - "A. Gigahertz (GHz, measuring clock frequency cycles per second)"
+      - "B. FLOPS (Floating-Point Operations Per Second, measuring mathematical compute power)"
+      - "C. DPI (Dots Per Inch, measuring print resolution)"
+      - "D. Lumens (measuring projector brightness output)"
+    correctIndices: [0, 1]
+    explanation: "GHz measures CPU clock frequency, while FLOPS measures mathematical computation capability (widely used in GPUs, AI, and supercomputing). DPI and lumens relate to displays and printing."
   - id: q6
     type: single
-    prompt: "A user compares two computers. Computer A has a 2.0 GHz quad-core CPU and Computer B has a 3.5 GHz single-core CPU. Which statement is most accurate?"
+    prompt: "A technician compares two workstation computers: System A has a 4.0 GHz quad-core CPU, while System B has a 2.5 GHz 16-core CPU. Which statement accurately describes their real-world performance?"
     options:
-      - "A. Computer A will always be faster for all tasks"
-      - "B. Computer B will always be faster for all tasks"
-      - "C. Performance depends on the type of workload — multitasking favors more cores"
-      - "D. Clock speed and core count have no effect on performance"
+      - "A. System A will outperform System B in all possible workloads"
+      - "B. System B will outperform System A in all possible workloads"
+      - "C. System A will excel in single-threaded tasks, while System B will excel in heavily parallelized workloads like virtualization and video rendering"
+      - "D. Core count and clock speed have no bearing on software performance"
     correctIndex: 2
+    explanation: "Single-threaded programs (many legacy games and office tools) favor higher per-core clock speed (System A), whereas multi-threaded applications (virtual machines, 3D rendering, compiling) benefit from higher core counts (System B)."
   - id: q7
-    type: single
-    prompt: "What is a benchmark in the context of CPU performance?"
+    type: multi
+    prompt: "Which of the following factors directly influence the heat generated by a processor and determine its cooling requirements? (Choose two.)"
     options:
-      - "A. A physical mark on the CPU indicating its speed"
-      - "B. A standardized test used to measure and compare performance"
-      - "C. The temperature limit before throttling"
-      - "D. The number of cache levels"
-    correctIndex: 1
+      - "A. Thermal Design Power (TDP) rating in Watts"
+      - "B. Operating clock frequency and supply voltage applied to the CPU"
+      - "C. The storage capacity of the local NVMe boot drive"
+      - "D. The physical length of the external monitor HDMI cable"
+    correctIndices: [0, 1]
+    explanation: "TDP represents the maximum heat dissipation a cooling system must handle under workload. Elevated clock frequencies and core voltages exponentially increase thermal energy output."
   - id: q8
     type: single
-    prompt: "FLOPS is a performance metric often used for scientific computing. What does FLOPS stand for?"
+    prompt: "What is the purpose of running standardized software benchmarks (such as Cinebench or PCMark) on a computer system?"
     options:
-      - "A. Fast Logical Operations Per Second"
-      - "B. Floating-point Operations Per Second"
-      - "C. File Load Operations Per Second"
-      - "D. Frequency Level Of Processing Speed"
+      - "A. To format unallocated disk partitions"
+      - "B. To quantitatively measure and compare hardware performance against standardized workload baselines"
+      - "C. To scan system files for malware signatures"
+      - "D. To install device drivers for connected printers"
     correctIndex: 1
+    explanation: "Benchmarking applications execute controlled, standardized computational workloads to objectively score and compare CPU, GPU, and system performance."
+  - id: q9
+    type: multi
+    prompt: "In multi-level processor cache architecture, which of the following cache tiers are characterized by being smallest in size and closest to the core execution pipeline with the lowest latency? (Choose two.)"
+    options:
+      - "A. Level 1 (L1) Cache"
+      - "B. Level 2 (L2) Cache"
+      - "C. Level 3 (L3) Shared Cache"
+      - "D. Virtual Memory Paging File on an SSD"
+    correctIndices: [0, 1]
+    explanation: "L1 and L2 caches are dedicated to individual CPU cores and have the lowest access latencies (nanoseconds). L3 cache is larger and shared, while SSD virtual memory is thousands of times slower."
+  - id: q10
+    type: single
+    prompt: "Two different generations of processors run at the exact same 3.0 GHz clock speed, yet the newer processor executes tasks 25% faster. What metric explains this performance difference?"
+    options:
+      - "A. Higher Instructions Per Cycle (IPC)"
+      - "B. Lower power supply wattage"
+      - "C. Slower memory bus timing"
+      - "D. Smaller chassis form factor"
+    correctIndex: 0
+    explanation: "IPC (Instructions Per Cycle) measures how much architectural work a CPU can accomplish within a single clock cycle. Improved microarchitectures yield higher IPC, making them faster even at the same clock frequency."
 domains:
   - domainId: techplus.concepts
     weight: 1

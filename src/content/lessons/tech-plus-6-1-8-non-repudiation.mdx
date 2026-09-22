@@ -9,8 +9,8 @@ objective: "FC0-U71 6.1"
 xp: 15
 source: cyber-org
 difficulty: Beginner
-estMinutes: 15
-tags: ["tech+", "FC0-U71 6.1", "non-repudiation", "digital signatures", "audit logs", "PKI", "private key", "NTP", "accounting"]
+estMinutes: 25
+tags: ["tech+", "FC0-U71 6.1", "non-repudiation", "digital signatures", "audit logs", "PKI", "private key", "NTP", "accounting", "HSM"]
 sections:
   - id: what-is-non-repudiation
     title: "What is Non-Repudiation? 'You Can't Deny You Did It'"
@@ -75,6 +75,27 @@ sections:
           - "To an unencrypted USB flash drive"
           - "To the monitor's display memory"
         correct: 0
+  - id: forensic-accountability-and-chain-of-custody
+    title: "Forensic Accountability and Legal Chain of Custody"
+    keyPoints:
+      - "Legal non-repudiation requires immutable audit records, cryptographic timestamps, and strict chain of custody protocols"
+      - "Hardware Security Modules (HSMs) and smart cards isolate private signing keys inside tamper-resistant hardware"
+      - "Digital signatures provide integrity, authenticity, and non-repudiation, but do NOT encrypt or conceal the message body by themselves"
+    check:
+      - prompt: "Why are cryptographic private signing keys commonly isolated inside Hardware Security Modules (HSMs) or smart cards?"
+        options:
+          - "To prevent malware or unauthorized administrators from extracting the private key from system RAM to forge signatures"
+          - "To reduce network cable latency"
+          - "To increase monitor refresh rates"
+          - "To format unallocated hard drive sectors"
+        correct: 0
+      - prompt: "What additional cryptographic mechanism must be paired with a digital signature if the sender requires message confidentiality?"
+        options:
+          - "Asymmetric or symmetric payload encryption (e.g., AES or RSA envelope encryption)"
+          - "A faster CPU clock rate"
+          - "A higher monitor resolution"
+          - "A dynamic IP address lease"
+        correct: 0
 domains:
   - domainId: techplus.security
     weight: 1
@@ -82,88 +103,121 @@ domains:
 
 import Callout from '../../components/Callout.astro';
 
+<figure class="my-6 rounded-lg overflow-hidden border border-slate-800 bg-slate-950/50 shadow-xl">
+  <img 
+    src="/images/tech-plus/digital-signature-pki-nonrepudiation-guide.jpg" 
+    alt="Non-Repudiation, Digital Signatures, and PKI Architecture" 
+    class="w-full h-auto object-cover"
+    loading="lazy"
+  />
+  <figcaption class="p-3 text-center text-xs text-slate-400 border-t border-slate-800 bg-slate-900/60">
+    Figure 6.8: Asymmetric digital signing workflow (Sender Private Key $\to$ Recipient Public Key Verification) and centralized SIEM audit logging with NTP synchronization.
+  </figcaption>
+</figure>
+
 ## The "I Didn't Do It!" Defense
 
-Imagine an employee in the finance department logs into a wire transfer portal at 3:00 PM and transfers $250,000 to an offshore bank account.
+Consider a critical corporate scenario: An employee in an enterprise accounts payable department logs into a banking portal at 3:15 PM and initiates a $500,000 international wire transfer to an unverified overseas supplier.
 
-When detectives question the employee the next morning, the employee says: *"I never sent that money! Someone else must have used my computer while I was in the restroom, or a hacker forged that request!"*
+When corporate compliance officers and forensic investigators interview the employee the following morning, the employee asserts: *"I never authorized that transaction! Someone must have accessed my unlocked computer while I was away from my desk, or an external hacker spoofed my credentials."*
 
-In cybersecurity and contract law, how do you mathematically prove that a specific person performed a specific digital transaction, eliminating any credible denial?
+In contract law, digital commerce, and cybersecurity incident response, how do systems mathematically prove that a specific individual executed a specific electronic transaction, eliminating any credible legal denial?
 
-The answer is **Non-Repudiation**: the technical and cryptographic guarantee that a person cannot deny having taken an action.
+The answer is **Non-Repudiation**: the technical, cryptographic, and operational guarantee that an author or system entity cannot successfully dispute the authorship of a document, the validity of a contract, or the transmission of a message.
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        HOW NON-REPUDIATION WORKS                       │
-├────────────────────────────────────────────────────────────────────────┤
-│                                                                        │
-│   1. SENDER: Alice creates contract: "Approve $50,000 Purchase"        │
-│      ├── Computes SHA-256 Hash: `e3b0c442...`                          │
-│      └── Encrypts Hash with **Alice's Strictly Private Key**           │
-│                                                                        │
-│          ▼                                                             │
-│   2. TRANSMISSION: Document + Digital Signature sent to Bob            │
-│                                                                        │
-│          ▼                                                             │
-│   3. RECIPIENT: Bob verifies signature with **Alice's Public Key**     │
-│      ├── Decrypts hash successfully!                                   │
-│      └── ✔ **Proof of Origin:** Because ONLY Alice has her private key,│
-│          Alice cannot claim: *"I never signed that document!"*         │
-│                                                                        │
-└────────────────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                              HOW NON-REPUDIATION OPERATES                              │
+├────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                        │
+│   1. AUTHOR / SENDER: Alice prepares document: "Approve $500,000 Vendor Payment"       │
+│      ├── Calculates Cryptographic Hash (SHA-256): `a7f5c2...`                          │
+│      └── Encrypts Hash with **Alice's Strictly Protected Private Key**                 │
+│          └── The Encrypted Hash is the **Digital Signature**                           │
+│                                                                                        │
+│          ▼ [Transmitted across unencrypted network]                                    │
+│                                                                                        │
+│   2. RECIPIENT / AUDITOR: Bob receives Document + Digital Signature                    │
+│      ├── Independently calculates SHA-256 hash of the received text document           │
+│      ├── Decrypts the Digital Signature using **Alice's Verified Public Key**          │
+│      └── Compares both hash values:                                                    │
+│          ✔ HASHES MATCH:                                                               │
+│            1. Data Integrity Confirmed: The document was not altered in transit.       │
+│            2. Non-Repudiation Enforced: Because ONLY Alice possesses her Private Key, │
+│               Alice cannot claim: "I never signed or sent that wire transfer!"         │
+│                                                                                        │
+└────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
 ## 1. Digital Signatures: The Cryptographic Seal
 
-The primary technical pillar of non-repudiation is the **Digital Signature**, powered by **Public Key Infrastructure (PKI)**:
+The primary technical foundation of non-repudiation in modern computing is the **Digital Signature**, implemented through **Public Key Infrastructure (PKI)** and asymmetric cryptography.
 
-- Every user has a mathematical key pair:
-  - **Public Key:** Freely published to the world on certificate servers.
-  - **Private Key:** Stored strictly on the user's password-protected smart card or hardware security module (HSM).
-- When a document is digitally signed, the author signs it using their **Private Key**.
-- Anyone can verify the signature using the author's **Public Key**.
-- Because no other human or machine has access to that private key, the signature serves as **irrefutable mathematical proof of authorship**.
+In symmetric encryption, both parties share the identical secret password or key. If a shared key signs or encrypts a file, either party could have created it, destroying any claim of non-repudiation. Asymmetric cryptography resolves this vulnerability through mathematically linked key pairs:
+
+- **Public Key:** Freely published to the entire world, distributed via directory services, and embedded within public X.509 digital certificates.
+- **Private Key:** Maintained under strict secrecy on the owner's hardware token, smart card, or encrypted operating system credential store.
+
+### The Mechanics of Signing vs. Verifying
+When an author signs a document, software calculates a cryptographic digest (such as a SHA-256 hash) of the document contents. The software then encrypts that hash using the author's **Private Key**. This encrypted output represents the digital signature.
+
+When any third party verifies the document, their software decrypts the signature using the author's **Public Key**. Because mathematical decryption can only succeed if the signature was generated by the corresponding private key, successful decryption provides indisputable proof of origin.
+
+<Callout type="warn">
+**Common Student Misconception (Digital Signatures Do NOT Encrypt the Message):** Many students assume that because a digital signature involves cryptography, the message itself is kept secret. In reality, a digital signature only encrypts the *checksum hash*, not the underlying document! The document text remains completely readable by anyone who opens it. If confidentiality is required alongside non-repudiation, the sender must digitally sign the document *and* subsequently encrypt the entire package using the recipient's public key (envelope encryption).
+</Callout>
 
 <Callout type="exam">
-**The Difference Between Electronic vs. Digital Signatures:** An *Electronic Signature* can be a typed name or a low-resolution drawing of your signature on an iPad (easy to forge). A **Digital Signature** is a cryptographic hash encrypted with a private key verified by a Certificate Authority (mathematically unforgeable).
+**CompTIA Tech+ Examination Objective (FC0-U71 6.1):** Distinguish sharply between an *Electronic Signature* and a *Digital Signature*. An electronic signature can be a scanned image of cursive handwriting, a typed name in an email, or a checkbox agreeing to terms (easily repudiated or forged). A **Digital Signature** uses PKI asymmetric cryptography and hash algorithms certified by a trusted Certificate Authority (CA) to enforce mathematical non-repudiation.
 </Callout>
 
 ---
 
-## 2. Centralized Audit Trails and Accounting
+## 2. Centralized Audit Trails and Accounting (AAA)
 
-Non-repudiation also applies to daily IT operations and server security:
+Non-repudiation extends beyond formal digital contracts into daily infrastructure administration, host operating systems, and network telemetry:
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        CENTRALIZED AUDIT LOGGING                       │
-├────────────────────────────────────────────────────────────────────────┤
-│                                                                        │
-│   [ Local Server 1 ] ──(Syslog)──┐                                     │
-│   [ Local Switch 2 ] ──(Syslog)──┼──> [ CENTRALIZED SIEM LOG SERVER ]  │
-│   [ Domain Firewall] ──(Syslog)──┘    ├── Write-Once Storage           │
-│                                       └── Synchronized by **NTP**      │
-│                                                                        │
-│   ✔ Rogue admin cannot delete local logs to hide unauthorized changes! │
-│                                                                        │
-└────────────────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                     CENTRALIZED AUDIT LOGGING & TIME SYNCHRONIZATION                   │
+├────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                        │
+│   [ Core Router ]     ──(Syslog UDP/TCP 514)──┐                                        │
+│   [ Domain Controller]──(Syslog Encrypted)────┼──> [ CENTRALIZED SIEM LOG SERVER ]     │
+│   [ Linux Web Host ]  ──(Syslog Forwarder)────┘    ├── Append-Only Write-Once Storage  │
+│                                                    └── Synchronized by **NTP (UDP 123)│
+│                                                                                        │
+│   ✔ Rogue local administrator cannot delete local log files to hide their tracks!       │
+│                                                                                        │
+└────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-1. **Centralized Log Streaming (SIEM):** When a user logs in, changes a firewall rule, or opens a confidential file, the event is immediately streamed over the network to a central **Security Information and Event Management (SIEM)** server. Even if a hacker gains local administrator rights, they cannot alter logs already safely stored in the SIEM!
-2. **Network Time Protocol (NTP) Synchronization:** System clocks across all domain controllers, switches, and firewalls must be synchronized to within milliseconds. If clocks drift, lawyers and forensic investigators cannot correlate logs to prove when an attack occurred.
+1. **Centralized Log Streaming (SIEM):** Operating systems and firewalls record granular security events: user logon timestamps, privilege elevation commands (`sudo`), file modifications, and account creation events. To enforce non-repudiation, hosts must immediately forward telemetry to a centralized **Security Information and Event Management (SIEM)** server. If an attacker breaches a host and deletes local event logs, the immutable remote SIEM retains the exact record of who authenticated and what commands were executed.
+2. **Network Time Protocol (NTP) Synchronization:** System clocks across all enterprise endpoints must synchronize with authoritative Stratum-1 time servers using NTP (UDP port 123). If internal clocks drift by even seconds, investigators cannot reliably reconstruct the sequence of events across firewalls and database servers, undermining the legal admissibility of the audit trail.
 
 ---
 
-## Why This Matters in the Field
+## 3. Hardware Security Modules (HSMs) and Key Protection
 
-In legal disputes, regulatory compliance audits, and criminal forensic investigations, digital signatures and NTP-synchronized audit logs are the evidence that stands up in a court of law.
+A digital signature is only as trustworthy as the protection applied to the author's private key. If an employee stores their private key as an unencrypted `.pem` file on their desktop hard drive, malware or an insider could copy the key and forge signatures in their name, reintroducing the defense: *"My key was stolen; I didn't sign that document."*
 
-Understanding non-repudiation ensures that your systems maintain indisputable accountability.
+To achieve legally defensible non-repudiation, organizations employ dedicated physical hardware:
+
+- **Hardware Security Modules (HSMs):** Hardened, tamper-resistant enterprise hardware appliances that generate, store, and process cryptographic keys. The private key never leaves the physical HSM silicon; signing calculations occur inside the secure enclave.
+- **Smart Cards and FIDO2 Security Keys:** Physical USB or NFC hardware tokens (such as YubiKeys or Common Access Cards) that require user presence and biometric PIN entry before generating a digital signature.
+
+---
+
+## Why This Matters in Vocational Cybersecurity
+
+In digital forensics and regulatory compliance (such as Sarbanes-Oxley, HIPAA, or federal judicial proceedings), non-repudiation provides the foundational integrity required for evidence to be deemed admissible.
+
+Without verifiable digital signatures and NTP-synchronized audit logs, an organization cannot hold rogue administrators accountable, prove compliance during financial audits, or successfully prosecute cybercriminals in a court of law. Mastering non-repudiation ensures that enterprise systems enforce complete operational transparency and undeniable accountability.
 
 ---
 
 ## Key Terms
 
-Non-Repudiation · Public Key Infrastructure (PKI) · Asymmetric Cryptography · Private Key · Public Key · Digital Signature · Electronic Signature vs Digital Signature · Certificate Authority (CA) · Digital Certificate (X.509) · Accounting · Audit Trail · SIEM (Security Information and Event Management) · Network Time Protocol (NTP) · Forensic Evidence · Chain of Custody
+Non-Repudiation · Public Key Infrastructure (PKI) · Asymmetric Cryptography · Private Key · Public Key · Digital Signature · Electronic Signature vs Digital Signature · Certificate Authority (CA) · Digital Certificate (X.509) · Accounting · Audit Trail · SIEM (Security Information and Event Management) · Network Time Protocol (NTP) · Hardware Security Module (HSM) · Smart Card · Chain of Custody · Forensic Admissibility

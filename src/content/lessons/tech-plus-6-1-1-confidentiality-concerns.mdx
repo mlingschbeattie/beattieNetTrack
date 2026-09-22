@@ -10,7 +10,7 @@ xp: 15
 source: cyber-org
 difficulty: Beginner
 estMinutes: 20
-tags: ["tech+", "FC0-U71 6.1", "CIA triad", "confidentiality", "security", "encryption", "MitM", "snooping", "access control"]
+tags: ["tech+", "FC0-U71 6.1", "CIA triad", "confidentiality", "security", "encryption", "MitM", "snooping", "access control", "cryptography"]
 sections:
   - id: what-is-confidentiality
     title: "What is Confidentiality? The 'C' in the CIA Triad"
@@ -59,7 +59,7 @@ sections:
     keyPoints:
       - "Principle of Least Privilege: Users are granted only the bare minimum permissions required to perform their daily job duties"
       - "Need-to-Know: Access to specific sensitive documents requires a legitimate business justification, even for high-ranking managers"
-      - "Data Classification Tiers: Public $\\rightarrow$ Internal $\\rightarrow$ Confidential $\\rightarrow$ Restricted / Top Secret"
+      - "Data Classification Tiers: Public -> Internal -> Confidential -> Restricted / Top Secret"
     check:
       - prompt: "An entry-level marketing intern is given full administrator read/write access to the company's confidential payroll database. What security principle was violated?"
         options:
@@ -75,6 +75,27 @@ sections:
           - "Marketing Material"
           - "Unclassified"
         correct: 0
+  - id: cryptography-at-rest-in-transit-and-use
+    title: "Cryptographic Architecture: Encryption at Rest, in Transit, and in Use"
+    keyPoints:
+      - "Symmetric encryption (AES-256) uses a single shared secret key for high-speed bulk data encryption"
+      - "Asymmetric encryption (RSA, ECC) uses mathematically linked public/private key pairs for key exchange and digital identity verification"
+      - "Encryption in transit protects packets across networks (TLS 1.3, IPsec), while full-disk encryption protects non-volatile media at rest (BitLocker, FileVault)"
+    check:
+      - prompt: "Why is symmetric encryption such as AES-256 used to encrypt entire hard drives and multi-gigabyte files instead of asymmetric algorithms like RSA?"
+        options:
+          - "Symmetric encryption is computationally faster and optimized for processing large volumes of raw binary data"
+          - "Asymmetric encryption only works on Linux machines"
+          - "Symmetric keys cannot be stolen"
+          - "AES-256 requires no mathematical computation"
+        correct: 0
+      - prompt: "What enterprise security control protects data at rest if an executive's laptop is physically stolen from a company vehicle?"
+        options:
+          - "Full Disk Encryption (e.g. BitLocker or FileVault)"
+          - "Increasing the monitor brightness"
+          - "Installing a higher wattage power supply"
+          - "Running a disk defragmentation scan"
+        correct: 0
 domains:
   - domainId: techplus.security
     weight: 1
@@ -82,13 +103,25 @@ domains:
 
 import Callout from '../../components/Callout.astro';
 
+<figure class="my-6 border border-border/40 rounded-xl overflow-hidden shadow-lg bg-card">
+  <img 
+    src="/images/tech-plus/cryptography-symmetric-vs-asymmetric.jpg" 
+    alt="Cryptography Architecture: Symmetric Bulk Encryption versus Asymmetric Key Exchange and Signatures" 
+    class="w-full h-auto object-cover"
+    loading="lazy"
+  />
+  <figcaption class="p-4 text-xs text-muted-foreground border-t border-border/40 bg-muted/20">
+    <strong>Figure 6.1.1:</strong> Cryptographic defense mechanisms safeguarding confidentiality: Symmetric encryption (AES-256) utilizing a shared secret key for bulk storage and transport, contrasted with Asymmetric encryption (RSA/ECC) utilizing public-private key pairs for secure key distribution and identity verification.
+  </figcaption>
+</figure>
+
 ## Keeping Secrets in a Connected World
 
-Every computer system handles sensitive information: medical diagnoses, student grade transcripts, corporate intellectual property, credit card numbers, and employee passwords.
+Every digital system processes sensitive information: healthcare diagnostic logs, student grade transcripts, corporate intellectual property, credit card numbers, and employee credentials.
 
-If that data is exposed to unauthorized individuals, the consequences are devastating: identity theft, massive corporate fines, destroyed reputations, and national security breaches.
+When confidential records are exposed to unauthorized individuals, the repercussions are catastrophic: identity theft, regulatory sanctions, financial losses, and compromised infrastructure.
 
-**Confidentiality** is the foundational "C" in cybersecurity's **CIA Triad** (Confidentiality, Integrity, Availability). It is the assurance that information is shielded from unauthorized observation at all times—whether resting on an NVMe SSD, traveling across a fiber optic cable, or displayed on an office monitor.
+**Confidentiality** is the foundational "C" in cybersecurity's **CIA Triad** (Confidentiality, Integrity, Availability). It represents the absolute assurance that data remains shielded from unauthorized observation across all states—whether resting on an NVMe solid-state drive, traversing an optical fiber trunk, or displayed on an office workstation.
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -108,30 +141,37 @@ If that data is exposed to unauthorized individuals, the consequences are devast
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
+<Callout type="exam">
+**CompTIA Exam Objective — The CIA Triad:** CompTIA tests your ability to distinguish between the three pillars:
+1. **Confidentiality:** Preventing unauthorized disclosure of data (achieved through encryption, access controls, and authentication).
+2. **Integrity:** Ensuring data has not been modified or corrupted by unauthorized parties (achieved through hashing and digital signatures).
+3. **Availability:** Guaranteeing authorized users have timely, reliable access to resources (achieved through backups, redundancy, and fault tolerance).
+</Callout>
+
 ---
 
 ## 1. Threats Against Confidentiality
 
-Attackers use both high-tech network exploits and low-tech physical social engineering to bypass confidentiality:
+Attackers leverage both sophisticated network surveillance and low-tech physical reconnaissance to bypass confidentiality boundaries:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │                      CONFIDENTIALITY THREAT TAXONOMY                   │
 ├────────────────────┬───────────────────────────────────────────────────┤
-│ **Network Sniffing**│ Capturing unencrypted network packets (HTTP, FTP, │
-│                    │ Telnet) using packet analyzers (Wireshark).       │
+│ Network Sniffing   │ Capturing cleartext network packets (HTTP, FTP)   │
+│                    │ across switches or unencrypted Wi-Fi via Wireshark│
 ├────────────────────┼───────────────────────────────────────────────────┤
-│ **Man-in-the-Middle**│ Attacker silently sits between a laptop and router│
-│ **(MitM)**         │ intercepting and reading session tokens.          │
+│ Man-in-the-Middle  │ Attacker silently positions their host between a  │
+│ (MitM)             │ client and default gateway to intercept sessions. │
 ├────────────────────┼───────────────────────────────────────────────────┤
-│ **Shoulder Surfing**│ Physically watching an employee type their password│
-│                    │ or reading sensitive records over their shoulder. │
+│ Shoulder Surfing   │ Physically observing a user entering passphrases  │
+│                    │ or viewing sensitive screens in public areas.     │
 ├────────────────────┼───────────────────────────────────────────────────┤
-│ **Dumpster Diving**│ Searching company trash bins for discarded paper  │
-│                    │ invoices, customer forms, or discarded SSDs.      │
+│ Dumpster Diving    │ Rummaging through disposal bins for discarded hard│
+│                    │ drives, paper manifests, or printed credentials.  │
 ├────────────────────┼───────────────────────────────────────────────────┤
-│ **Credential Leaks**│ Breaching a weak database and dumping unhashed    │
-│                    │ passwords to public hacker forums.                │
+│ Credential Dumping │ Extracting plaintext secrets or password hashes   │
+│                    │ from compromised local memory or database dumps.  │
 └────────────────────┴───────────────────────────────────────────────────┘
 ```
 
@@ -139,40 +179,60 @@ Attackers use both high-tech network exploits and low-tech physical social engin
 
 ## 2. Technical Controls: Locking Down Data
 
-To defend confidentiality, IT teams implement layered defense-in-depth:
+To defend confidentiality, systems administrators implement layered defense-in-depth:
 
-1. **Encryption at Rest:** Scrambling data on physical drives using **Full Disk Encryption (BitLocker, FileVault)**. If a laptop is stolen from an employee's car, the thief cannot read the files without the cryptographic decryption key.
-2. **Encryption in Transit:** Scrambling data traveling over networks using **HTTPS (TLS 1.3), SSH, and IPsec VPNs**. Packet sniffers only see unreadable ciphertext garbage.
-3. **Multi-Factor Authentication (MFA):** Requiring a password PLUS a physical hardware token or biometric scan, ensuring a stolen password alone is useless to an attacker.
+1. **Encryption at Rest:** Converts data stored on non-volatile media into unreadable ciphertext using algorithms like AES-256. If an endpoint is stolen, files remain indecipherable without the cryptographic recovery key. Examples include **Microsoft BitLocker** (Windows), **FileVault** (macOS), and **LUKS** (Linux).
+2. **Encryption in Transit:** Scrambles network packets traveling across internal LANs and the internet using **Transport Layer Security (TLS 1.3)**, **Secure Shell (SSH)**, and **IPsec VPN tunnels**. Network sniffers capture only pseudo-random ciphertext.
+3. **Multi-Factor Authentication (MFA):** Requires users to validate identity using multiple distinct categories (e.g., password plus a physical FIDO2 hardware token), neutralizing compromised passwords.
 
 <Callout type="warn">
-**The Plaintext Transmission Trap:** Never transmit passwords, medical data, or financial records over legacy plaintext protocols like **HTTP (Port 80), Telnet (Port 23), or FTP (Port 21)**. Anyone on the local Wi-Fi can capture your plaintext password in 2 seconds!
+**The Plaintext Transmission Trap:** Never transmit administrative credentials, payment card data, or medical records across unencrypted legacy protocols such as **HTTP (TCP port 80), Telnet (TCP port 23), or FTP (TCP port 21)**. Any station on the local network running a basic packet sniffer can reconstruct full authentication sessions in cleartext.
 </Callout>
 
 ---
 
-## 3. Administrative Policies: Least Privilege and Need-to-Know
+## 3. Administrative Policies: Least Privilege and Data Classification
 
-Technical encryption tools are only half the battle. Administrative policies ensure internal employees don't snoop on data they shouldn't see:
+Technical cryptography alone cannot protect an organization if permissions are administered recklessly:
 
-- **Principle of Least Privilege:** Every user and application is granted the **bare minimum permissions necessary** to perform their job duties. A warehouse packer needs access to shipping labels, not executive salary records.
-- **Need-to-Know:** Even if an employee holds a high-level security clearance, they are denied access to a sensitive project unless their current assignment specifically requires it.
-- **Data Classification:** Labeling corporate documents so employees know how to handle them:
-  - **Public:** Marketing brochures, public website text.
-  - **Internal:** Company phone directories, cafeteria menus.
-  - **Confidential:** Quarterly financial drafts, client contact lists.
-  - **Restricted / Top Secret:** Encryption keys, proprietary source code, classified military intelligence.
+- **Principle of Least Privilege (PoLP):** Every user account, service process, and background daemon is restricted to the **bare minimum set of permissions necessary** to execute assigned responsibilities. A shipping clerk requires read access to inventory manifests, never modify access to executive compensation ledgers.
+- **Need-to-Know:** Even when a staff member possesses administrative credentials or high security clearance, they are denied access to sensitive project directories unless active work assignments require direct interaction.
+- **Data Classification:** Categorizes assets so personnel handle documents in alignment with regulatory mandates:
+  - **Public:** Marketing press releases, product manuals, external job postings.
+  - **Internal:** Company phone directories, standard operating procedures, intranet notices.
+  - **Confidential:** Customer purchase histories, vendor contract drafts, employee evaluations.
+  - **Restricted / Top Secret:** Cryptographic private keys, unreleased intellectual property, zero-day threat response playbooks.
+
+---
+
+## 4. Cryptographic Architecture: Symmetric vs. Asymmetric Algorithms
+
+Modern cryptographic systems combine two fundamental algorithmic families to protect confidentiality:
+
+### Symmetric Encryption (Bulk Data Engine)
+Symmetric cryptography utilizes **one identical secret key** for both encryption and decryption:
+- **Algorithms:** **AES (Advanced Encryption Standard)** with 128-bit or 256-bit key lengths, ChaCha20.
+- **Characteristics:** Extremely fast and hardware-accelerated by modern CPU instruction sets (such as Intel AES-NI). It is the universal standard for encrypting gigabytes of data on hard drives and bulk network streams.
+- **The Key Distribution Challenge:** Both parties must securely exchange the secret key beforehand without an adversary intercepting it.
+
+### Asymmetric Encryption (Key Exchange & Identity Engine)
+Asymmetric cryptography utilizes a mathematically bound **Key Pair**: a **Public Key** that can be published openly, and a **Private Key** guarded securely by the owner:
+- **Algorithms:** **RSA**, **Elliptic Curve Cryptography (ECC)**.
+- **Operation:** Data encrypted with the recipient's public key can only be decrypted by the recipient's private key.
+- **Hybrid Cryptography:** Modern protocols (such as HTTPS/TLS 1.3) use asymmetric cryptography to authenticate the server and securely negotiate a temporary session key, then switch to high-speed symmetric AES-256 for all subsequent data transport.
 
 ---
 
 ## Why This Matters in the Field
 
-When you deploy a new file share or configure permissions on a cloud folder, a single misconfigured checkbox can expose an entire company's confidential customer database to the public internet.
-
-Practicing the Principle of Least Privilege and enforcing encryption ensures that sensitive data stays in authorized hands.
+Cybersecurity technicians defend data confidentiality across the enterprise lifecycle:
+1. **Endpoint Provisioning:** Verifying that Trusted Platform Modules (TPM 2.0) are enabled in UEFI firmware before enrolling laptops into automated BitLocker full-disk encryption policies.
+2. **Wi-Fi Hardening:** Decommissioning legacy WEP and WPA protocols in favor of **WPA3-Enterprise**, which enforces individualized session encryption keys preventing neighboring Wi-Fi clients from snooping on each other's traffic.
+3. **Decommissioning Storage:** Executing cryptographic erasure or physical shredding on decommissioned solid-state drives to prevent data scavenging via dumpster diving.
 
 ---
 
 ## Key Terms
 
-CIA Triad · Confidentiality · Encryption at Rest · Encryption in Transit · BitLocker · FileVault · TLS / HTTPS · Eavesdropping · Packet Sniffing · Man-in-the-Middle (MitM) · Shoulder Surfing · Privacy Filter · Dumpster Diving · Principle of Least Privilege · Need-to-Know · Data Classification (Public, Internal, Confidential, Restricted) · Access Control Lists (ACL)
+CIA Triad · Confidentiality · Encryption at Rest · Encryption in Transit · BitLocker · FileVault · LUKS · Transport Layer Security (TLS 1.3) · Packet Sniffing · Wireshark · Man-in-the-Middle (MitM) · Shoulder Surfing · Privacy Filter · Dumpster Diving · Principle of Least Privilege · Need-to-Know · Data Classification · Symmetric Encryption · AES-256 · Asymmetric Encryption · RSA · Elliptic Curve Cryptography (ECC) · Public Key · Private Key · Hybrid Cryptography
+

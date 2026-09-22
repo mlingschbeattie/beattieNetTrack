@@ -104,24 +104,40 @@ domains:
 
 import Callout from '../../components/Callout.astro';
 
+<figure class="my-6 border border-border/40 rounded-xl overflow-hidden shadow-lg bg-card">
+  <img 
+    src="/images/tech-plus/data-pipeline-analytics-guide.jpg" 
+    alt="Data Intelligence: From Telemetry to Wisdom and Architecture Taxonomy" 
+    class="w-full h-auto object-cover"
+    loading="lazy"
+  />
+  <figcaption class="p-4 text-xs text-muted-foreground border-t border-border/40 bg-muted/20">
+    <strong>Figure 5.1.1:</strong> The DIKW value hierarchy (Raw Data, Structured Information, Contextual Knowledge, Actionable Wisdom) coupled with modern data architecture taxonomy: Structured SQL tables, Semi-Structured JSON/XML, and Unstructured binary streams entering enterprise ETL analytics pipelines.
+  </figcaption>
+</figure>
+
 ## The Currency of the Modern World
 
 Oil fueled the industrial economy of the 20th century. **Data fuels the digital economy of the 21st century.**
 
-Every interaction you have with technology—swiping a credit card at a gas station, sending a message on Discord, taking a photo on your smartphone, or submitting an assignment in school—generates a digital trail of data.
+Every interaction you have with technology—swiping a smartcard badge at a secure turnstile, sending an alert through a messaging channel, capturing a digital photograph on a smartphone, or querying an enterprise database—generates a persistent digital footprint.
 
-Organizations that collect, organize, secure, and analyze data make faster decisions, build better products, and detect cybersecurity threats before disaster strikes. Organizations that mismanage data face catastrophic database breaches, regulatory fines, and operational failure.
+Organizations that systematically collect, normalize, secure, and analyze data make faster decisions, build resilient digital products, and detect cybersecurity intrusions before damage occurs. Organizations that mismanage data face catastrophic database breaches, crippling regulatory fines, and permanent reputational harm.
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │                   THE DATA TO KNOWLEDGE PYRAMID                        │
 ├────────────────────────────────────────────────────────────────────────┤
 │                                                                        │
-│   [ KNOWLEDGE ]   Applied understanding:                               │
-│                   "Server CPU temp is 98°C and rising $\rightarrow$    │
-│                    Thermal paste has failed; dispatch tech to fix."    │
+│   [ WISDOM ]      Strategic Governance & Policy Execution:             │
+│                   "Automate host isolation when abnormal SSH spikes    │
+│                    coincide with off-hours credential rotation."       │
 │         ▲                                                              │
-│   [ INFORMATION ] Processed context:                                   │
+│   [ KNOWLEDGE ]   Correlated Insights & Threat Patterns:               │
+│                   "Server CPU temp is 98°C and rising rapidly while    │
+│                    cooling fan RPM reads zero -> Fan hardware failed." │
+│         ▲                                                              │
+│   [ INFORMATION ] Processed context & Schema Organization:             │
 │                   "CPU Temperature Sensor 1 = 98°C at 11:00 AM."       │
 │         ▲                                                              │
 │   [ RAW DATA ]    Unprocessed objective facts:                         │
@@ -130,100 +146,114 @@ Organizations that collect, organize, secure, and analyze data make faster decis
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
+<Callout type="exam">
+**CompTIA Exam Objective — The DIKW Pyramid and Data Formats:** CompTIA assesses your ability to categorize data along two distinct axes:
+1. **The DIKW Hierarchy:** Unprocessed facts constitute **Data**. When organized with context and schema, it becomes **Information**. When correlated to uncover patterns and root causes, it represents **Knowledge**. When applied to execute business strategy or automate security policy, it reaches **Wisdom**.
+2. **Data Structure Taxonomy:** Relational databases with rows and columns are **Structured**. JSON, XML, and YAML containing key-value pairs or tags are **Semi-Structured**. Media files, raw PCAP network captures, and unstructured text documents represent **Unstructured** data.
+</Callout>
+
 ---
 
 ## 1. Structured vs. Semi-Structured vs. Unstructured Data
 
-Not all data looks like a neat Microsoft Excel spreadsheet:
+In an enterprise environment, incoming telemetry does not arrive in a uniform Microsoft Excel spreadsheet:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │                        DATA FORMAT TAXONOMY                            │
 ├────────────────────┬───────────────────────────────────────────────────┤
-│ **Structured**     │ Rigid rows and columns. Relational SQL databases, │
-│ (~15% of data)     │ CSV files, bank transaction ledgers.              │
+│ Structured         │ Rigid rows and columns. Relational SQL databases, │
+│ (~15% of data)     │ CSV files, bank transaction ledgers. Fixed schema.│
 ├────────────────────┼───────────────────────────────────────────────────┤
-│ **Semi-Structured**│ Tagged key-value pairs without rigid tables.      │
-│ (~5% of data)      │ JSON, XML, YAML, email server MIME headers.       │
+│ Semi-Structured    │ Tagged key-value pairs without rigid tables.      │
+│ (~5% of data)      │ JSON payloads, XML, YAML, email server MIME headers│
 ├────────────────────┼───────────────────────────────────────────────────┤
-│ **Unstructured**   │ Freeform formats with no predefined data schema.  │
-│ (~80% of data)     │ 4K videos, MP3 audio, Word docs, photos, PDFs.    │
+│ Unstructured       │ Freeform formats with no predefined data schema.  │
+│ (~80% of data)     │ 4K videos, MP3 audio, Word docs, photos, raw PCAPs│
 └────────────────────┴───────────────────────────────────────────────────┘
 ```
 
-- **Structured Data:** The gold standard for financial ledgers, inventory databases, and student grading systems. It is queried instantly using **SQL**.
-- **Unstructured Data:** The overwhelming majority of data generated across the internet. It cannot be stored in standard database tables and requires machine learning, computer vision, and NLP algorithms to analyze.
+- **Structured Data:** Represents the bedrock of transactional enterprise software, including customer relationship management (CRM) systems, inventory catalogs, and banking ledgers. It is maintained within Relational Database Management Systems (RDBMS) such as PostgreSQL or Microsoft SQL Server and queried with Structured Query Language (SQL).
+- **Semi-Structured Data:** Essential for cloud microservices and web APIs. JSON (JavaScript Object Notation) and XML format data hierarchically, allowing variable fields without altering a fixed table schema. For instance, an IoT sensor might transmit `{"sensor_id": "SN-402", "temp_c": 21.4, "alert": false}`.
+- **Unstructured Data:** Accounts for the vast majority of all information created globally. Audio surveillance recordings, CCTV video streams, handwritten notes scanned into PDFs, and unstructured chat transcripts cannot fit into fixed table rows. Organizations ingest unstructured assets into **Data Lakes** and process them using specialized machine learning and optical character recognition (OCR) models.
 
 ---
 
 ## 2. Metadata: Data About Data
 
-When you take a digital photo with your smartphone, the image pixels represent the **Data**. But hidden inside the `.jpg` file header is the **Metadata (EXIF Data)**:
+When an investigator analyzes a digital artifact, the payload itself is only half the story. The auxiliary properties describing that payload are known as **Metadata**:
 
 ```
 ┌────────────────────────────────────────────────────────┐
 │              EXIF METADATA EMBEDDED IN A PHOTO         │
 │                                                        │
-│   📸 Image Content (Data): A picture of a laptop       │
+│   📸 Image Content (Data): A picture of a server rack  │
 │                                                        │
 │   🏷️ Embedded Metadata:                                │
 │   ├── Date & Time:    2026-08-24 11:05:12 EST          │
 │   ├── Camera Device:  Apple iPhone 15 Pro              │
-│   ├── GPS Location:   40.5421° N, 80.0245° W (Pittsburgh)│
+│   ├── GPS Location:   40.5421° N, 80.0245° W           │
 │   └── Camera Settings: ISO 100, f/1.78, 1/120s         │
 └────────────────────────────────────────────────────────┘
 ```
 
 <Callout type="warn">
-**The Privacy Threat of Metadata:** Even if a user encrypts the body text of an email, the **Metadata** (sender address, recipient address, IP address, exact time, and message size) is visible to network sniffers. In cybersecurity, metadata analysis reveals organizational hierarchies and personal routines.
+**The Privacy Threat of Metadata:** Even when the payload of a communication is protected by strong end-to-end encryption, **Metadata** (transmission timestamps, sender and receiver IP addresses, packet lengths, and routing hops) remains observable across network boundaries. Threat actors and digital forensics teams analyze communication metadata to reconstruct organizational structures, locate physical facilities, and trace incident origins.
 </Callout>
 
 ---
 
 ## 3. Data Quality and the GIGO Principle
 
-The most advanced artificial intelligence model or financial forecasting system is completely useless if the underlying data is flawed.
+The most sophisticated artificial intelligence model or financial forecasting system produces dangerous conclusions if the underlying data feed is corrupted.
 
-This fundamental rule is known as **GIGO: Garbage In, Garbage Out**:
-- **Accuracy:** Is the data factually correct?
-- **Completeness:** Are required fields missing (e.g. customer phone number left blank)?
-- **Consistency:** Does the customer's address in the shipping database match their address in the billing database?
-- **Timeliness:** Is the data current, or is it a stale 5-year-old phone number?
+This foundational axiom is known as **GIGO: Garbage In, Garbage Out**:
+- **Accuracy:** Does the recorded metric reflect objective physical reality?
+- **Completeness:** Are mandatory data attributes missing (such as omitting country dialing codes in an emergency notification database)?
+- **Consistency:** Does a client's mailing address in the shipping database match their billing address in the enterprise accounting ledger?
+- **Timeliness:** Is the information current, or is the security team triaging alerts based on stale, days-old DNS cache entries?
+- **Validity:** Does the input data conform to expected formats, such as validating that an IPv4 address does not exceed four octets?
 
 ---
 
 ## 4. Data Privacy, Compliance, and Protected Information
 
-In enterprise IT, handling data comes with strict legal responsibilities:
+In enterprise IT and cybersecurity, handling information requires strict compliance with federal statutes and global privacy frameworks:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │                      DATA COMPLIANCE CLASSIFICATIONS                   │
 ├────────────────────┬───────────────────────────────────────────────────┤
-│ **PII**            │ Personally Identifiable Information: Name, SSN,   │
-│                    │ Driver's License, Biometrics, Home Address.       │
+│ PII                │ Personally Identifiable Information: Full Name,   │
+│                    │ SSN, Driver's License, Biometrics, Home Address.  │
 ├────────────────────┼───────────────────────────────────────────────────┤
-│ **PHI**            │ Protected Health Information: Medical histories,  │
-│                    │ prescriptions, diagnoses (Regulated by HIPAA).    │
+│ PHI                │ Protected Health Information: Medical histories,  │
+│                    │ prescriptions, lab results (Regulated by HIPAA).  │
 ├────────────────────┼───────────────────────────────────────────────────┤
-│ **FERPA**          │ Family Educational Rights and Privacy Act:        │
-│                    │ Protects student grades, records, and transcripts.│
+│ FERPA              │ Family Educational Rights and Privacy Act:        │
+│                    │ Protects student grades, attendance, and records. │
 ├────────────────────┼───────────────────────────────────────────────────┤
-│ **GDPR**           │ General Data Protection Regulation: Strict EU law │
-│                    │ giving users the "Right to be Forgotten".         │
+│ GDPR               │ General Data Protection Regulation: EU framework  │
+│                    │ granting explicit consent and Right to Erasure.   │
 └────────────────────┴───────────────────────────────────────────────────┘
 ```
+
+### Technical Enforcement of Compliance
+1. **Data at Rest Encryption:** Storage volumes containing PII or PHI must be protected with hardware-accelerated AES-256 encryption.
+2. **Access Auditing:** Operating systems and database servers must write tamper-resistant access logs recording whenever an administrator queries confidential student or patient records.
+3. **Data Masking and Tokenization:** Production databases replace genuine credit card numbers and Social Security Numbers with randomized non-sensitive tokens before developers use datasets in testing environments.
 
 ---
 
 ## Why This Matters in the Field
 
-As an IT technician, you will manage file permissions, configure database backup jobs, and sanitize retired hard drives.
-
-Recognizing the distinction between PII, PHI, and educational records under **FERPA** ensures you protect your organization against multi-million dollar data breach lawsuits and regulatory penalties.
+Systems administrators and cybersecurity analysts constantly interact with data lifecycles:
+1. **Forensic Evidence Collection:** Preserving file metadata (MAC timestamps: Modified, Accessed, Created) during malware triage to establish an unbroken timeline of an intruder's movements.
+2. **Secure Media Sanitization:** Applying NIST SP 800-88 sanitization guidelines (cryptographic erase, multipass overwrite, or physical degaussing) before decommissioning retired server drives containing confidential student records.
+3. **Data Loss Prevention (DLP):** Tuning automated filters that intercept outbound emails containing unencrypted Social Security Numbers or protected health information before regulatory non-compliance fines occur.
 
 ---
 
 ## Key Terms
 
-Data · Information · Knowledge · Structured Data · Unstructured Data · Semi-Structured Data · JSON · XML · Metadata · EXIF Data · Data Quality · GIGO (Garbage In, Garbage Out) · PII (Personally Identifiable Information) · PHI (Protected Health Information) · HIPAA · FERPA · GDPR
+Data · Information · Knowledge · Wisdom · DIKW Pyramid · Structured Data · Unstructured Data · Semi-Structured Data · JSON · XML · Metadata · EXIF Tags · Data Quality · GIGO (Garbage In, Garbage Out) · PII (Personally Identifiable Information) · PHI (Protected Health Information) · HIPAA · FERPA · GDPR · Right to Erasure · Tokenization · Data at Rest Encryption

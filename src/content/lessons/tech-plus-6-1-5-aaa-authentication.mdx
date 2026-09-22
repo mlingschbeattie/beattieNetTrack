@@ -10,12 +10,12 @@ xp: 15
 source: cyber-org
 difficulty: Beginner
 estMinutes: 20
-tags: ["tech+", "FC0-U71 6.1", "AAA", "authentication", "MFA", "passwords", "TOTP", "biometrics", "SSO"]
+tags: ["tech+", "FC0-U71 6.1", "AAA", "authentication", "MFA", "passwords", "TOTP", "biometrics", "SSO", "Zero Trust"]
 sections:
   - id: what-is-aaa-authentication
     title: "The AAA Security Model: Who Are You? (Authentication)"
     keyPoints:
-      - "The AAA Model: Authentication (Verifying Identity) $\\rightarrow$ Authorization (Checking Permissions) $\\rightarrow$ Accounting (Logging Actions)"
+      - "The AAA Model: Authentication (Verifying Identity) -> Authorization (Checking Permissions) -> Accounting (Logging Actions)"
       - "Authentication is the initial gateway process proving that a user or device is genuinely who they claim to be"
       - "Single-Factor Authentication (passwords alone) is highly vulnerable to phishing, credential stuffing, and brute-force cracking"
     check:
@@ -76,6 +76,27 @@ sections:
           - "Subnet Masking"
           - "DNS Forwarding"
         correct: 0
+  - id: advanced-factors-and-zero-trust
+    title: "Advanced Factors and Zero Trust Continuous Adaptive Authentication"
+    keyPoints:
+      - "Factor 4: Somewhere You Are (Location) — Enforcing GPS geofencing or designated corporate IP subnets"
+      - "Factor 5: Something You Do (Behavioral) — Keystroke dynamics, mouse movement cadence, and signature mechanics"
+      - "Zero Trust Continuous Evaluation evaluates risk signals (device compliance, impossible travel velocity) in real time to challenge or block sessions"
+    check:
+      - prompt: "An employee logs into their corporate account in Pittsburgh, and 12 minutes later an authentication attempt for the same account originates from London. What anomaly detection rule intercepts this session?"
+        options:
+          - "Impossible Travel Velocity (Somewhere You Are)"
+          - "Disk Partitioning"
+          - "Clock Multiplier"
+          - "Bus Width Expansion"
+        correct: 0
+      - prompt: "Which authentication factor category is evaluated by software that analyzes the unique speed, rhythm, and dwell time of how a user types on a physical keyboard?"
+        options:
+          - "Something You Do (Behavioral Biometrics)"
+          - "Something You Know"
+          - "Something You Have"
+          - "Somewhere You Are"
+        correct: 0
 domains:
   - domainId: techplus.security
     weight: 1
@@ -83,16 +104,28 @@ domains:
 
 import Callout from '../../components/Callout.astro';
 
+<figure class="my-6 border border-border/40 rounded-xl overflow-hidden shadow-lg bg-card">
+  <img 
+    src="/images/tech-plus/mfa-authentication-factors-guide.jpg" 
+    alt="Multi-Factor Authentication (MFA) and Identification Architecture: 5 Core Authentication Factors" 
+    class="w-full h-auto object-cover"
+    loading="lazy"
+  />
+  <figcaption class="p-4 text-xs text-muted-foreground border-t border-border/40 bg-muted/20">
+    <strong>Figure 6.1.5:</strong> Enterprise Multi-Factor Authentication (MFA) framework displaying the five core factor categories: Knowledge (Know), Possession (Have), Inherence (Are), Location (Somewhere), and Behavior (Do), integrated into a Zero Trust verification engine.
+  </figcaption>
+</figure>
+
 ## Proving Who You Are
 
-When you walk into a secure government facility, the security guard does three things:
-1. They ask for your photo ID to verify you are really John Doe (**Authentication**).
-2. They check their visitor log to see if John Doe is allowed into the 4th-floor server room (**Authorization**).
-3. They record the exact timestamp you entered the building in the audit ledger (**Accounting**).
+When an individual enters a secure aerospace facility, physical access control enforces three distinct phases:
+1. The guard inspects a government-issued photo badge to confirm true identity (**Authentication**).
+2. The guard cross-references the clearance roster to ensure the visitor possesses clearance for the research laboratory (**Authorization**).
+3. The guard timestamps entry logs recording exact arrival and departure times (**Accounting**).
 
-This is the **AAA Security Framework**: the universal gold standard for access management across corporate networks, firewalls, cloud platforms, and operating systems.
+This represents the **AAA Security Model**: the universal architectural standard for access management across corporate networks, firewalls, operating systems, and cloud identity platforms.
 
-The first and most critical gate in this framework is **Authentication**: proving your identity beyond a reasonable doubt before a computer grants you entry.
+The foundational gatekeeper in this model is **Authentication**: proving identity mathematically and cryptographically before granting access to computational resources.
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -113,26 +146,39 @@ The first and most critical gate in this framework is **Authentication**: provin
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
+<Callout type="exam">
+**CompTIA Exam Objective — The AAA Triad Definitions:** Certification exams rigorously evaluate your ability to identify which AAA component is in effect:
+- **Authentication:** Verifies identity (Passphrase, Smartcard PIN, FIDO2 token, Fingerprint scan).
+- **Authorization:** Dictates permitted access rights (File system permissions, Read/Write/Execute ACLs, Group memberships).
+- **Accounting:** Generates forensic audit logs (Tracking resource utilization, session logon/logoff timestamps, failed access attempts).
+</Callout>
+
 ---
 
-## 1. The Three Core Factors of Authentication
+## 1. The Core Factors of Authentication
 
-Security engineers classify all authentication mechanisms into three distinct factor types:
+Security engineers categorize all identity verification mechanisms into five distinct factor types:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│                     THE THREE AUTHENTICATION FACTORS                   │
+│                     THE FIVE AUTHENTICATION FACTORS                    │
 ├────────────────────┬────────────────────┬──────────────────────────────┤
-│ Factor Category    │ Core Definition    │ Real-World Examples          │
+│ Factor Category    │ Formal Definition  │ Enterprise Implementation    │
 ├────────────────────┼────────────────────┼──────────────────────────────┤
-│ **1. Something**   │ Secret knowledge   │ Passwords, PIN numbers,      │
-│ **You KNOW**       │ stored in memory   │ security question answers    │
+│ 1. Something       │ Secret knowledge   │ Passphrases, complex PINs,   │
+│    You KNOW        │ retained in memory │ cryptographic challenge keys │
 ├────────────────────┼────────────────────┼──────────────────────────────┤
-│ **2. Something**   │ Physical possession│ Hardware tokens (YubiKey),   │
-│ **You HAVE**       │ of a unique device │ Smart cards, TOTP apps       │
+│ 2. Something       │ Physical possession│ Hardware security keys (FIDO)│
+│    You HAVE        │ of a unique device │ Smartcards, TOTP apps        │
 ├────────────────────┼────────────────────┼──────────────────────────────┤
-│ **3. Something**   │ Inherent biological│ Fingerprint scans, FaceID,   │
-│ **You ARE**        │ characteristics    │ Retina / Iris vascular scans │
+│ 3. Something       │ Inherent biological│ Fingerprint scans, Face ID,  │
+│    You ARE         │ characteristics    │ Retina vascular patterns     │
+├────────────────────┼────────────────────┼──────────────────────────────┤
+│ 4. Somewhere       │ Physical or logical│ GPS geofencing coordinates,  │
+│    You ARE         │ network location   │ approved corporate IP subnet │
+├────────────────────┼────────────────────┼──────────────────────────────┤
+│ 5. Something       │ Unique behavioral  │ Keystroke typing dynamics,   │
+│    You DO          │ dynamics           │ signature stroke velocity    │
 └────────────────────┴────────────────────┴──────────────────────────────┘
 ```
 
@@ -140,50 +186,72 @@ Security engineers classify all authentication mechanisms into three distinct fa
 
 ## 2. Multi-Factor Authentication (MFA): The Golden Rule
 
-Single-factor authentication (using a password alone) is dead. Hackers steal billions of credentials every year using automated phishing campaigns, credential stuffing, and malware keyloggers.
+Single-factor authentication (relying solely on a memorized passphrase) is thoroughly inadequate against modern threat actors. Automated credential stuffing, phishing kits, and password database breaches render single-factor defenses ineffective.
 
-**Multi-Factor Authentication (MFA)** requires a user to provide credentials from **at least two DIFFERENT factor categories**:
-- ✔ **Password (Know) + Authenticator App Code (Have) = TRUE MFA!**
-- ✔ **PIN (Know) + Fingerprint Scan (Are) = TRUE MFA!**
-- ❌ **Password (Know) + Security Question (Know) = NOT MFA!** (Using two items from the same factor category is still single-factor security!)
+**Multi-Factor Authentication (MFA)** mandates that an entity supply credentials from **at least two DIFFERENT factor categories**:
+- ✔ **Password (Know) + Authenticator App TOTP (Have) = VALID MFA!**
+- ✔ **PIN (Know) + Fingerprint Sensor (Are) = VALID MFA!**
+- ❌ **Password (Know) + Security Question (Know) = INVALID (Single-Factor Only)!** Supplying two items from the same factor category represents two instances of a single factor.
 
 ```
 ┌────────────────────────────────────────────────────────┐
 │             THE MULTI-FACTOR AUTHENTICATION RULE       │
 │                                                        │
-│   ✔ Password (Know) + YubiKey (Have)  ──> MFA PASSED!  │
-│   ✔ PIN (Know) + Face ID (Are)        ──> MFA PASSED!  │
+│   ✔ Password (Know) + YubiKey (Have)  ──> MFA VALID    │
+│   ✔ PIN (Know) + Face ID (Are)        ──> MFA VALID    │
 │                                                        │
-│   ❌ Password (Know) + PIN (Know)      ──> NOT MFA!    │
-│   (Two knowledge factors is just 2 passwords!)         │
+│   ❌ Password (Know) + PIN (Know)      ──> NOT MFA      │
+│   (Two knowledge factors remain single-factor defense) │
 └────────────────────────────────────────────────────────┘
 ```
 
 <Callout type="warn">
-**The SMS Text Verification Hazard:** Many consumer websites still send 6-digit codes via SMS text messages. However, cybercriminals frequently execute **SIM Swapping Attacks**—tricking mobile phone carrier support into porting the victim's phone number to a hacker's SIM card. **Always recommend app-based TOTP (Google Authenticator) or physical FIDO2 hardware keys over SMS text verification.**
+**The SMS Verification Vulnerability:** Sending 6-digit verification codes over cellular Short Message Service (SMS) is deprecated by NIST. Threat actors execute **SIM Swapping Attacks** by social engineering cellular carrier representatives to transfer a victim's phone number to an attacker-controlled SIM card. Furthermore, SS7 cellular protocol flaws allow remote adversaries to intercept SMS codes in transit. Enterprise environments enforce app-based TOTP or hardware FIDO2 keys.
 </Callout>
 
 ---
 
-## 3. Single Sign-On (SSO): Convenience vs. Risk
+## 3. Modern Authentication Architecture: TOTP and Enterprise SSO
 
-In large enterprises, employees use 40 different cloud tools: Microsoft 365, Salesforce, Slack, Jira, and Workday.
+### Time-Based One-Time Passwords (TOTP)
+Standardized under RFC 6238, TOTP powers modern authenticator applications (Google Authenticator, Microsoft Authenticator):
+1. During enrollment, the server and the mobile app share an initial cryptographic secret key via a QR code.
+2. Every 30 seconds, both the server and client feed the shared secret along with the current Unix epoch time window into an HMAC-SHA1 algorithm.
+3. Both endpoints independently calculate the identical 6-digit code. Because the code changes dynamically every 30 seconds, intercepted codes expire almost immediately.
 
-**Single Sign-On (SSO)** uses centralized Identity Providers (IdPs) like **Microsoft Entra ID (Azure AD)** or **Okta**:
-- The user logs in once in the morning with a strong password and MFA token.
-- Secure cryptographic tokens (SAML 2.0 / OpenID Connect) authenticate the user across all 40 cloud apps automatically.
-- **The Security Trade-off:** SSO eliminates password fatigue and weak duplicate passwords, but it creates a high-value single target. If an attacker breaches the user's central SSO account, they gain access to every corporate tool simultaneously!
+### Single Sign-On (SSO) and Federation
+In an enterprise where employees interact with dozens of cloud services, **Single Sign-On (SSO)** centralizes identity:
+- Users authenticate once against an **Identity Provider (IdP)** such as Microsoft Entra ID or Okta using strong MFA.
+- The IdP issues digitally signed cryptographic assertions formatted in SAML 2.0 or JSON Web Tokens (JWT via OpenID Connect).
+- Relying services trust the IdP signature, granting seamless access without prompting for secondary passwords.
+
+---
+
+## 4. Advanced Factors and Zero Trust Continuous Adaptive Authentication
+
+Modern perimeterless corporate networks replace static login checkpoints with continuous contextual verification:
+
+### Contextual Factors: Location and Behavior
+- **Somewhere You Are (Location):** Conditional access policies restrict administrative portal logins to designated corporate IP ranges or geofenced geographic boundaries.
+- **Something You Do (Behavioral):** AI-driven endpoint agents monitor the rhythm, pressure, and inter-key latency of a user's typing cadence. If typing dynamics diverge significantly from established baselines, the system requests secondary verification.
+
+### Zero Trust & Impossible Travel
+Under the **Zero Trust** doctrine ("Never trust, always verify"), sessions undergo continuous risk assessment:
+- **Impossible Travel Detection:** If a user account successfully signs in from Pittsburgh, Pennsylvania, and 15 minutes later initiates a sign-in attempt from Frankfurt, Germany, algorithms calculate that physical transit between the two locations was mathematically impossible.
+- The identity engine immediately revokes active session tokens, blocks the remote connection, and alerts the security operations team.
 
 ---
 
 ## Why This Matters in the Field
 
-As an IT technician, you will reset user passwords, enroll new employees in MFA authenticator apps, and configure Single Sign-On integrations.
-
-Understanding the AAA model and enforcing strong multi-factor authentication prevents over 99% of automated account takeover attacks.
+Technicians execute identity and access operations across several enterprise scenarios:
+1. **FIDO2 Hardware Key Deployment:** Provisioning tamper-resistant physical USB/NFC security keys to executive personnel to eliminate phishing risks.
+2. **Conditional Access Policy Tuning:** Restricting remote access so that personal unmanaged smartphones cannot download corporate email attachments without biometric device encryption.
+3. **Remediating MFA Fatigue Attacks:** Disabling simple "push notifications" in favor of **Number Matching** (requiring the user to type a 2-digit number displayed on the login screen into their authenticator app) to defeat MFA fatigue bombardment.
 
 ---
 
 ## Key Terms
 
-AAA Framework · Authentication · Authorization · Accounting · Something You Know (Knowledge) · Something You Have (Possession) · Something You Are (Inherence / Biometrics) · Multi-Factor Authentication (MFA) · Passphrase · TOTP (Time-Based One-Time Password) · Hardware Token (YubiKey / FIDO2) · Smart Card · SIM Swapping · Single Sign-On (SSO) · Identity Provider (IdP)
+AAA Model · Authentication · Authorization · Accounting · Five Factors of Authentication · Something You Know · Something You Have · Something You Are · Somewhere You Are · Something You Do · Multi-Factor Authentication (MFA) · TOTP (RFC 6238) · Hardware Security Key (FIDO2/WebAuthn) · SIM Swapping · Single Sign-On (SSO) · Identity Provider (IdP) · SAML 2.0 · OpenID Connect · Zero Trust Architecture · Impossible Travel Detection · MFA Fatigue · Number Matching
+

@@ -1,93 +1,180 @@
 ---
 title: "Spec a Workstation for the Job"
-description: "Match hardware to three very different workloads and justify each choice against budget and requirements."
+description: "Engineer an authentic vocational 3D CAD and video editing workstation: calculate dual-channel DDR5 memory, allocate CPU PCIe lanes, triage PSU wattage telemetry, inspect DisplayPort MST connectivity, and submit the procurement brief."
 slug: tech-plus-spec-a-workstation
 track: tech-plus
 moduleId: tech-plus.infrastructure
 order: 91
 difficulty: Beginner
-estMinutes: 15
+estimatedMinutes: 25
 xp: 50
 activity: steps
-tags: ["Tech+", "FC0-U71", "lab"]
+tags: ["Tech+", "FC0-U71", "hardware", "workstation", "power", "pcie", "displayport", "lab"]
 steps:
-  - id: video-editor
-    title: "The video editing station"
-    prompt: "A media teacher edits 4K video. Which upgrade will make the most difference to their day?"
-    inputLabel: "Priority upgrade"
+  - id: ram-bandwidth
+    title: "Memory architecture and channel capacity"
+    prompt: "The CAD and rendering workstation requires a fast, low-latency memory subsystem. You install two matching 32 GB DDR5-5600 UDIMM modules into motherboard slots A2 and B2.\n\nOperating in multi-channel mode doubles memory bus width from 64-bit to 128-bit. What is the total installed memory capacity (in Gigabytes) available to the operating system? Enter digits only."
+    inputLabel: "Total RAM in GB"
+    placeholder: "ex: 64"
+    hint: "Two 32 GB modules installed in dual-channel configuration provide 32 + 32 = 64 GB total capacity."
+    validator:
+      type: oneOf
+      values:
+        - "64"
+        - "64 GB"
+        - "64GB"
+    successMessage: "Correct. 2 x 32 GB = 64 GB total DDR5 RAM operating in full 128-bit dual-channel mode."
+  - id: pcie-lane-budget
+    title: "Motherboard PCIe lane allocation"
+    prompt: "High-end CPUs provide dedicated PCI Express lanes directly from the processor package to eliminate chipset bus latency.\n\nThe workstation processor supplies 24 PCIe 5.0/4.0 lanes. You install:\n- One discrete graphics card requiring a full x16 slot (16 lanes)\n- One primary M.2 NVMe SSD for the OS and applications requiring 4 lanes (x4)\n- One secondary high-speed M.2 NVMe scratch drive requiring 4 lanes (x4)\n\nHow many total PCIe lanes are directly consumed by these three devices? Enter the integer value."
+    inputLabel: "Total PCIe lanes consumed"
+    placeholder: "ex: 24"
+    hint: "Sum the lane allocations: 16 (GPU) + 4 (NVMe 1) + 4 (NVMe 2)."
+    validator:
+      type: exact
+      value: "24"
+    successMessage: "Correct. 16 + 4 + 4 = 24 PCIe lanes. All direct CPU lanes are fully utilized without starving the GPU."
+  - id: power-telemetry-triage
+    title: "Power supply headroom telemetry"
+    prompt: "You run a hardware power simulation utility to stress all workstation components under full 3D rendering and ray-tracing load.\n\nInspect the live bench telemetry above. CompTIA and engineering standards mandate at least a 20% safety margin (multiply peak wattage by 1.2) so the power supply operates within its peak efficiency curve (50%–80%) and prevents sudden over-current protection (OCP) shutdowns during turbo transients.\n\nMultiply the total peak draw (636 Watts) by 1.2. Which standard modular ATX PSU wattage rating should you specify: 650W, 750W, 850W, or 1000W?"
+    inputLabel: "Specified PSU wattage"
+    placeholder: "ex: 850W"
+    hint: "636 W * 1.2 = 763.2 W minimum requirement. A 750W unit is below the 763.2W safety threshold."
+    terminalPrompt: "PS C:\\Bench\\Tools>"
+    terminalOutput: |
+      PS C:\Bench\Tools> .\Measure-SystemWattage.ps1 -Profile "CAD_Render_Peak"
+      ============================================================
+      HARDWARE COMPONENT POWER DRAW TELEMETRY (PEAK LOAD)
+      ============================================================
+      CPU (Intel Core i7-14700K Peak Turbo)  : 253 Watts
+      GPU (NVIDIA RTX 4070 Ti Super 16GB)    : 285 Watts
+      Motherboard & Chipset (Z790)           :  45 Watts
+      RAM (2x 32GB DDR5-5600)                :  15 Watts
+      Storage (2x 2TB M.2 PCIe Gen4 NVMe)    :  18 Watts
+      Cooling & Chassis Fans (6x 120mm PWM)  :  20 Watts
+      ------------------------------------------------------------
+      TOTAL ESTIMATED PEAK SYSTEM CONSUMPTION : 636 Watts
+      ============================================================
+    validator:
+      type: oneOf
+      values:
+        - "850W"
+        - "850"
+        - "850 Watts"
+        - "850 watt"
+        - "850w"
+    successMessage: "Correct. 636 * 1.2 = 763.2W. Selecting an 850W Gold or Platinum modular PSU guarantees safe continuous operation."
+  - id: display-connector-inspection
+    title: "Video interface protocol inspection"
+    prompt: "The media lab requires dual 4K (3840x2160) monitors operating at 144 Hz with HDR for video editing. The technician wants to connect both monitors from a single workstation GPU output port using Multi-Stream Transport (MST) daisy-chaining.\n\nInspect the studio hardware photograph above. Which digital interface natively supports MST daisy-chaining and features a physical push-button locking latch to prevent cables from pulling loose? Enter the interface name."
+    inputLabel: "Display interface"
+    placeholder: "ex: DisplayPort"
+    hint: "Look at the far left connector with the gold pins and spring-loaded locking latch mechanism."
+    image: "/images/hardware/display-interfaces-studio-guide.jpg"
+    imageAlt: "Studio photograph of display connectors: DisplayPort with locking latch mechanism, gold-plated HDMI 2.1, DVI-D dual-link, and blue analog VGA DE-15 on an ESD workbench."
+    validator:
+      type: oneOf
+      values:
+        - "DisplayPort"
+        - "Display Port"
+        - "DP"
+    successMessage: "Correct. DisplayPort uniquely supports MST daisy-chaining and locking latches. HDMI does not support MST."
+  - id: panel-technology-grading
+    title: "Select optimal panel technology"
+    prompt: "The video editing department requires monitors with the most accurate color reproduction (100% sRGB/DCI-P3) and wide 178-degree viewing angles so multiple editors can review footage together without color shifting. Which display panel technology should you procure?"
+    inputLabel: "Display panel"
+    hint: "Evaluate TN vs IPS vs VA panel viewing angles and color distortion."
     validator:
       type: choice
       options:
-        - "More RAM and a fast NVMe SSD"
-        - "A larger monitor"
-        - "A mechanical keyboard"
-        - "A faster network card"
+        - "In-Plane Switching (IPS)"
+        - "Twisted Nematic (TN)"
+        - "Vertical Alignment (VA)"
+        - "Monochrome Passive Matrix"
       correctIndex: 0
-      rationale: "Video editing holds large amounts of footage in memory and reads it constantly from disk. RAM and fast storage are the bottleneck. A bigger monitor helps comfort but not render time, and the network only matters when moving files."
-    successMessage: "Correct. Memory and storage speed drive editing performance."
-  - id: kiosk
-    title: "The reception kiosk"
-    prompt: "A reception kiosk displays a single web page all day. What is the appropriate machine?"
-    inputLabel: "Kiosk spec"
+      rationale: "IPS delivers superior color fidelity and wide 178-degree viewing angles with no color wash. TN has fast response times but horrible color shifting. VA has deep blacks but slower pixel transitions."
+    successMessage: "Correct. In-Plane Switching (IPS) is the industry standard for creative color-critical work."
+  - id: storage-tiering-config
+    title: "Configure storage architecture"
+    prompt: "The school also needs to archive 100 Terabytes of student coursework from the past five years. This data is rarely opened, but must be retained for compliance on a budget. Which storage technology should you specify for this cold archive tier?"
+    inputLabel: "Storage architecture"
+    hint: "Compare cost per gigabyte of high-capacity mechanical hard drives vs solid state media."
     validator:
       type: choice
       options:
-        - "A low-power thin client or small form factor PC"
-        - "A high-end gaming desktop"
-        - "A rack-mounted server"
-        - "A laptop with a discrete GPU"
+        - "High-capacity mechanical Hard Disk Drives (HDDs) in a RAID array, optimized for lowest cost per gigabyte"
+        - "High-speed PCIe Gen5 NVMe SSDs for instant sub-millisecond query access"
+        - "A drawer full of USB 3.0 flash thumb drives"
+        - "Optical Blu-ray write-once discs"
       correctIndex: 0
-      rationale: "The workload is one browser window. A thin client costs less to buy, uses less power running continuously, and has fewer parts to fail. Over-specifying a kiosk wastes budget that another room needs."
-    successMessage: "Correct. Match the machine to the workload, not to the catalogue."
-  - id: storage-choice
-    title: "Choose the storage"
-    prompt: "The school needs to archive years of old coursework that is rarely opened but must be kept. Which storage suits it best?"
-    inputLabel: "Storage type"
+      rationale: "Cold archive data is written once and rarely read. Speed is secondary to capacity and budget. Mechanical HDDs remain significantly less expensive per terabyte than SSDs. Flash drives are easily lost and prone to data retention leakage over years."
+    successMessage: "Correct. High-capacity HDDs provide the most cost-effective solution for deep archival storage."
+  - id: cooling-tdp-selection
+    title: "Thermal management specification"
+    prompt: "The selected processor has a base Thermal Design Power (TDP) of 125 Watts, but spikes to 253 Watts during intense blender renders. If the cooler cannot dissipate this heat, the CPU will thermally throttle down clock speeds to prevent silicon degradation.\n\nWhich cooling solution should you specify to sustain a 250W+ continuous heat load inside the workstation chassis?"
+    inputLabel: "Cooler specification"
+    placeholder: "ex: 240mm AIO liquid cooler"
+    hint: "A stock low-profile air cooler will throttle immediately. Specify a high-performance 240mm/360mm All-In-One (AIO) liquid cooler or dual-tower air cooler."
     validator:
-      type: choice
-      options:
-        - "High-capacity hard disk drives, chosen for cost per gigabyte"
-        - "NVMe solid-state drives for maximum speed"
-        - "USB flash drives kept in a drawer"
-        - "Optical discs stored in the server room"
-      correctIndex: 0
-      rationale: "Archived data is written once and read rarely, so speed is nearly irrelevant and capacity per pound is everything. HDDs remain far cheaper per gigabyte than SSDs. Flash drives are too easily lost and not designed for long-term retention."
-    successMessage: "Correct. Cold storage optimises for cost, not speed."
-  - id: connectivity
-    title: "Connect the room"
-    prompt: "A computer room of thirty machines needs reliable connections for exam use. What should they use?"
-    inputLabel: "Connection method"
+      type: oneOf
+      values:
+        - "240mm AIO"
+        - "360mm AIO"
+        - "AIO liquid cooler"
+        - "liquid cooler"
+        - "dual-tower air cooler"
+        - "all-in-one liquid cooler"
+        - "AIO"
+        - "240mm liquid cooler"
+        - "360mm liquid cooler"
+    successMessage: "Correct. Sustaining 250W+ continuous dissipation requires a 240mm/360mm AIO liquid cooler or premium dual-tower heatsink."
+  - id: ups-runtime-calculation
+    title: "Calculate UPS backup battery capacity"
+    prompt: "To protect rendering jobs from power outages, each workstation is backed by an Uninterruptible Power Supply (UPS). The workstation draws 636 Watts and dual 4K monitors draw 120 Watts combined (total load: 756 Watts).\n\nYou evaluate a 1500VA / 900-Watt line-interactive UPS unit. How many watts of reserve power headroom remain on the UPS before reaching its 900W maximum limit? Enter digits only."
+    inputLabel: "UPS reserve headroom (Watts)"
+    placeholder: "ex: 144"
+    hint: "Subtract the total combined draw (636 W + 120 W = 756 W) from the UPS rating (900 W)."
     validator:
-      type: choice
-      options:
-        - "Wired Ethernet to each machine"
-        - "Wi-Fi on the 2.4 GHz band"
-        - "Wi-Fi on the 5 GHz band"
-        - "Bluetooth tethering to staff phones"
-      correctIndex: 0
-      rationale: "Thirty machines sharing wireless airtime during an exam is exactly when wireless disappoints. Wired Ethernet gives each machine dedicated bandwidth and removes interference as a variable. Wireless is for mobility, not for a fixed room that must not fail."
-    successMessage: "Correct. Fixed machines that must be reliable get cable."
-  - id: cloud-call
-    title: "Cloud or on-premises"
-    prompt: "The school wants staff to reach shared files from home without running its own server. Which model fits?"
-    inputLabel: "Deployment model"
+      type: oneOf
+      values:
+        - "144"
+        - "144W"
+        - "144 Watts"
+        - "144 watts"
+    successMessage: "Correct. 900W - 756W = 144 Watts of reserve headroom. The UPS will not overload during outages."
+  - id: client-procurement-brief
+    title: "Draft engineering specification brief"
+    prompt: "Draft a 1–2 sentence formal hardware specification statement for the vocational director. You must confirm that the 850W power supply provides the required wattage margin (or headroom), and state that DisplayPort was selected to support high-bandwidth multi-monitor displays. Include both the word 'headroom' (or 'margin') and the word 'DisplayPort'."
+    inputLabel: "Hardware engineering proposal"
+    placeholder: "ex: The workstation specification includes an 850W modular PSU to provide 20% power headroom, paired with DisplayPort outputs to drive dual 4K monitors."
+    hint: "Mention the power headroom/margin and name DisplayPort for display connectivity."
     validator:
-      type: choice
-      options:
-        - "A cloud storage service, since access from anywhere is the requirement"
-        - "A server in the wiring closet with no remote access"
-        - "External drives issued to each member of staff"
-        - "Email attachments sent to personal accounts"
-      correctIndex: 0
-      rationale: "The stated requirement is access from outside the building without running hardware. That is what cloud services provide. Issuing drives creates version chaos, and emailing files to personal accounts is the data-protection incident from the security domain."
-    successMessage: "Correct. The requirement named the answer."
+      type: regex
+      pattern: '^(?=.*\b(?:headroom|margin)\b)(?=.*\bDisplayPort\b).{25,}$'
+      flags: "i"
+    successMessage: "Superb. You engineered an authentic, balanced workstation matching real-world electrical, thermal, bus, and display parameters."
 domains:
   - domainId: techplus.infrastructure
     weight: 1
 ---
 
-Three staff members need machines. They do completely different work, and the right answer for one is a waste of money for another. Spec each one.
+import Callout from '../../components/Callout.astro';
 
-## Goal
+## Hardware Engineering: Matching Silicon to Workloads
 
-Choose components based on what the workload actually demands, rather than buying the most expensive option available.
+In enterprise IT, anyone can take a credit card and buy the most expensive PC on a gaming website. That is not engineering — that is reckless spending.
+
+A true systems technician analyzes the exact workload demands:
+1. **Memory:** Sizing capacity and verifying multi-channel memory bus width.
+2. **Expansion:** Mapping processor PCI Express lane budgets so high-speed storage and GPUs do not bottleneck each other.
+3. **Power:** Calculating component electrical wattage and applying a 20% safety margin.
+4. **Display:** Matching panel technologies (IPS vs TN vs OLED) and interface standards (DisplayPort MST vs HDMI).
+5. **Thermals:** Matching CPU TDP envelopes to active cooling solutions.
+
+<Callout type="exam">
+CompTIA Tech+ FC0-U71 tests the physical and operational parameters of workstation components: RAM multi-channel doubling, PCIe lane allocation (x1, x4, x8, x16), modular PSU power distribution, and DisplayPort MST daisy-chaining.
+</Callout>
+
+<Callout type="warn">
+Never size a power supply to match only the exact running wattage of your components. Power supplies operate with maximum electrical efficiency and longevity between 50% and 80% load. Furthermore, modern high-end GPUs experience microsecond "transient power spikes" that can pull 100W+ over their rated TDP. A PSU without at least 20% headroom will trigger emergency Over-Current Protection (OCP) shutoffs mid-render.
+</Callout>

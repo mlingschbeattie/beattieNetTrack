@@ -10,74 +10,104 @@ tags: ["Tech+", "FC0-U71", "CompTIA"]
 questions:
   - id: q1
     type: single
-    prompt: "Which type of computer is designed to provide services and resources to other computers on a network?"
+    prompt: "Which category of computer is specifically designed to provide centralized resources, host databases, and manage services for client endpoints across a local or wide area network?"
     options:
-      - "A. Workstation"
-      - "B. Thin client"
-      - "C. Server"
-      - "D. Tablet"
+      - "A. Desktop Workstation"
+      - "B. Thin Client"
+      - "C. Enterprise Server"
+      - "D. Embedded Controller"
     correctIndex: 2
+    explanation: "Enterprise servers are engineered for continuous high-availability operation, hosting centralized resources (file shares, directory authentication, databases) and responding to network queries from client devices."
   - id: q2
     type: single
-    prompt: "A thin client differs from a traditional desktop in that a thin client:"
+    prompt: "How does a thin client workstation differ operationally from a traditional thick client desktop PC?"
     options:
-      - "A. Has more processing power than a desktop"
-      - "B. Relies on a remote server for most processing and storage"
-      - "C. Cannot connect to the internet"
-      - "D. Uses only solid-state storage"
+      - "A. A thin client contains more physical CPU cores than an enterprise server"
+      - "B. A thin client relies on a remote centralized server or Virtual Desktop Infrastructure (VDI) to execute software and store data"
+      - "C. A thin client cannot connect to local area networks"
+      - "D. A thin client uses mechanical hard drives exclusively"
     correctIndex: 1
+    explanation: "Thin clients feature minimal local processing and storage hardware; they primarily render user display sessions while application logic and data processing occur on centralized backend VDI servers."
   - id: q3
     type: single
-    prompt: "A school district wants students to bring their personal devices to use on the school network. What policy does this describe?"
+    prompt: "An enterprise deploys a policy permitting employees to access corporate email and portals using their personal smartphones and tablets. What policy framework governs this arrangement?"
     options:
-      - "A. MDM"
-      - "B. BYOD"
-      - "C. VPN"
-      - "D. RBAC"
+      - "A. Acceptable Use Policy (AUP)"
+      - "B. Bring Your Own Device (BYOD)"
+      - "C. Service Level Agreement (SLA)"
+      - "D. Non-Disclosure Agreement (NDA)"
     correctIndex: 1
+    explanation: "BYOD (Bring Your Own Device) policies outline the security conditions, Mobile Device Management (MDM) enrollment requirements, and usage rules under which personally owned devices may interface with corporate assets."
   - id: q4
     type: single
-    prompt: "Which of the following is an example of an embedded system?"
+    prompt: "Which of the following devices is an example of a specialized embedded computing system?"
     options:
-      - "A. A gaming desktop computer"
-      - "B. A laptop used for work"
-      - "C. The controller inside a microwave oven"
-      - "D. A tablet running a mobile OS"
+      - "A. A multi-monitor CAD engineering workstation"
+      - "B. A high-performance gaming laptop"
+      - "C. An anti-lock braking system (ABS) controller inside a modern automobile"
+      - "D. A rack-mounted database server running Linux"
     correctIndex: 2
+    explanation: "Embedded systems are dedicated microcontrollers engineered into larger physical machines (automobiles, medical devices, microwave ovens) programmed to execute fixed, real-time control functions."
   - id: q5
-    type: single
-    prompt: "True or false: Laptops generally offer more performance than desktop workstations at the same price point."
+    type: multi
+    prompt: "A hospital network is selecting computing hardware for surgical suites and patient monitors. Which of the following characteristics accurately define embedded and IoT medical systems? (Choose two.)"
     options:
-      - "A. True"
-      - "B. False"
-    correctIndex: 1
+      - "A. They frequently run specialized real-time operating systems (RTOS) or customized firmware"
+      - "B. They perform dedicated, single-purpose monitoring and control tasks rather than general-purpose computing"
+      - "C. They allow end-users to install arbitrary third-party gaming software"
+      - "D. They require daily manual operating system reinstallation"
+    correctIndices: [0, 1]
+    explanation: "Medical and industrial embedded devices run purpose-built firmware or RTOS to perform continuous, mission-critical operations with strict predictability and minimal extraneous attack surface."
   - id: q6
     type: single
-    prompt: "What is the primary tradeoff when choosing a smartphone over a laptop for computing tasks?"
+    prompt: "What is the primary technical tradeoff when selecting a high-end mobile laptop instead of a desktop tower workstation at an identical price point?"
     options:
-      - "A. Smartphones are more expensive"
-      - "B. Smartphones are more portable but offer less processing power and screen real estate"
-      - "C. Smartphones cannot connect to Wi-Fi"
-      - "D. Smartphones have larger storage capacity"
-    correctIndex: 1
+      - "A. Laptops cannot connect to external monitors"
+      - "B. Laptops offer superior thermal headroom and infinite modular component upgrades"
+      - "C. Laptops provide physical portability at the expense of constrained thermal dissipation and limited component upgradability"
+      - "D. Laptops are prohibited on enterprise networks"
+    correctIndex: 2
+    explanation: "Compact laptop chassis impose tight thermal dissipation limits, resulting in lower sustained clock frequencies and proprietary, non-upgradable soldered components compared to spacious desktop towers."
   - id: q7
     type: single
-    prompt: "A technician is setting up a workstation for a graphic designer who runs rendering software. Which form factor is most appropriate?"
+    prompt: "A visual effects animation studio needs workstations capable of continuous multi-hour 3D video rendering and simulation. Which computing form factor is most appropriate?"
     options:
-      - "A. Tablet"
-      - "B. Smartphone"
-      - "C. Thin client"
-      - "D. High-performance desktop workstation"
+      - "A. Thin client terminal"
+      - "B. Wearable smartwatch"
+      - "C. Mobile smartphone"
+      - "D. High-performance desktop workstation with dedicated GPU and liquid cooling"
     correctIndex: 3
+    explanation: "Demanding 3D rendering workloads require robust thermal management, high-wattage power supplies, and multi-core desktop processors with discrete high-performance GPUs."
   - id: q8
-    type: single
-    prompt: "Which computing device is designed to be worn on the body and typically tracks health or fitness data?"
+    type: multi
+    prompt: "Which of the following computing devices are classified as mobile endpoints equipped with integrated battery power and wireless network radios? (Choose two.)"
     options:
-      - "A. Embedded system"
-      - "B. Wearable device"
-      - "C. Thin client"
-      - "D. Server"
-    correctIndex: 1
+      - "A. Smartphone"
+      - "B. Tablet"
+      - "C. Mainframe computer"
+      - "D. Rack-mounted 4U storage array"
+    correctIndices: [0, 1]
+    explanation: "Smartphones and tablets are mobile computing devices featuring integrated rechargeable lithium batteries, touch screens, and built-in cellular/Wi-Fi radios for portable operation."
+  - id: q9
+    type: single
+    prompt: "Which device category includes smartwatches and augmented reality (AR) glasses that collect biometric telemetry directly while attached to the human body?"
+    options:
+      - "A. Wearable technology"
+      - "B. Storage Area Network (SAN)"
+      - "C. Blade server"
+      - "D. Network switch"
+    correctIndex: 0
+    explanation: "Wearable devices incorporate miniature low-power microcontrollers, biometric sensors (heart rate, temperature, accelerometer), and wireless radios designed for continuous on-body wear."
+  - id: q10
+    type: multi
+    prompt: "A retail department store deploys point-of-sale (POS) registers across thirty checkout lanes. Which of the following technical features are standard for enterprise POS computing devices? (Choose two.)"
+    options:
+      - "A. Integrated peripheral interfaces for barcode scanners, receipt printers, and payment chip terminals"
+      - "B. Hardened, locked-down operating systems designed to prevent unauthorized web browsing"
+      - "C. High-refresh-rate 240 Hz curved displays for competitive gaming"
+      - "D. Disconnection from all local networks to prevent barcode price lookups"
+    correctIndices: [0, 1]
+    explanation: "POS terminals connect specialized retail peripherals (barcode scanners, payment card readers) and operate in kiosk mode under locked-down configurations to protect payment card data and ensure reliability."
 domains:
   - domainId: techplus.infrastructure
     weight: 1

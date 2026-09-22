@@ -111,18 +111,22 @@ Displays are the primary visual output device in computing.
 
 As a technician, you must know how video signals travel over copper and fiber, how LCD and OLED panels manipulate light, and how to calibrate resolutions and refresh rates for optimal clarity.
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        VIDEO INTERFACE EVOLUTION                       │
-├──────────────┬────────────┬──────────────┬──────────────┬──────────────┤
-│ Interface    │ Signal Type│ Audio Support│ Max Standard │ Key Feature  │
-├──────────────┼────────────┼──────────────┼──────────────┼──────────────┤
-│ **VGA**      │ Analog     │ No Audio     │ 1080p (Soft) │ Legacy DE-15 │
-│ **DVI-D**    │ Digital    │ No Audio     │ 2560x1600    │ Dual-Link DVI│
-│ **HDMI 2.1** │ Digital    │ 32-Ch Audio  │ 4K @ 120Hz+  │ TV / Console │
-│ **DP 2.0**   │ Digital    │ Audio + Data │ 8K @ 60Hz+   │ MST DaisyChn │
-└──────────────┴────────────┴──────────────┴──────────────┴──────────────┘
-```
+<figure>
+  <img 
+    src="/images/hardware/display-interfaces-studio-guide.jpg" 
+    alt="Studio macro photograph of display connectors: DisplayPort with locking latch, gold-plated HDMI 2.1, white DVI-D dual-link, and blue analog VGA DE-15 on an ESD workbench." 
+    loading="lazy"
+  />
+  <figcaption>Figure 2.5: Physical Video Interfaces — From left to right: modern DisplayPort (with locking latch mechanism and MST support), HDMI 2.1 (consumer digital audio/video), legacy DVI-D dual-link, and analog VGA (DE-15).</figcaption>
+</figure>
+
+<Callout type="exam">
+CompTIA tests the physical and signaling differences between display standards. VGA is strictly analog and carries zero audio. DisplayPort uniquely supports Multi-Stream Transport (MST) daisy-chaining multiple independent monitors from a single GPU port. HDMI is the consumer standard supporting ARC/eARC audio return channels and consumer electronics control (CEC).
+</Callout>
+
+<Callout type="warn">
+When a user complains that text on a new 4K monitor looks fuzzy and blurry, never waste time replacing the cable or assuming the panel is defective. In over 90% of tickets, Windows defaulted to a non-native 1080p resolution. Forcing a non-native resolution forces the display scaler to interpolate fractional pixels, creating blur. Always verify native panel resolution in Windows Display Settings first.
+</Callout>
 
 ---
 

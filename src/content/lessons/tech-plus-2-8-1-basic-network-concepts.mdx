@@ -75,6 +75,27 @@ sections:
           - "SSH"
           - "SNMP"
         correct: 0
+  - id: network-triage-ladder-and-apipa
+    title: "The 5-Step Ping Ladder and APIPA Autoconfiguration"
+    keyPoints:
+      - "APIPA (Automatic Private IP Addressing) assigns a 169.254.x.x address when a DHCP server fails to respond"
+      - "The 5-step diagnostic ladder isolates hardware, local gateway, public internet, and DNS failures in seconds"
+      - "An IP address conflict occurs when two devices on the same subnet are assigned identical IP addresses"
+    check:
+      - prompt: "A workstation displays an IP address of 169.254.88.12 after booting up and cannot access the internet or internal file servers. What does this IP address indicate?"
+        options:
+          - "The client was assigned an APIPA link-local address because the DHCP server did not respond"
+          - "The network cable is operating at 10 Gbps speed"
+          - "The computer is directly connected to Google DNS"
+          - "The computer's hard drive is completely full"
+        correct: 0
+      - prompt: "A technician can ping 8.8.8.8 successfully with 0% packet loss, but pinging 'google.com' fails with 'Ping request could not find host'. What is the cause?"
+        options:
+          - "DNS name resolution failure"
+          - "The physical Ethernet cable is unplugged"
+          - "The default gateway router is powered off"
+          - "The network interface card (NIC) is burned out"
+        correct: 0
 domains:
   - domainId: techplus.infrastructure
     weight: 1
@@ -86,9 +107,11 @@ import Callout from '../../components/Callout.astro';
 
 A standalone computer can calculate spreadsheets, play video games, and store local files. But the moment you connect that computer to a **Network**, its utility multiplies a million times over: it can query cloud AI models, collaborate in real time with teammates across the planet, stream media, and access centralized enterprise databases.
 
-A network is simply two or more computing devices linked together via copper cables, fiber optics, or radio waves to share data and resources.
+A network connects two or more computing devices linked together via copper cables, fiber optics, or radio waves to share data and resources.
 
 Understanding network hardware, IP addressing schemes, DHCP automatic configuration, and DNS name resolution is the cornerstone of all IT technical support.
+
+![Enterprise Network Topology and 5-Step Ping Diagnostic Ladder](/images/tech-plus/network-concepts-triage-guide.jpg)
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -109,6 +132,21 @@ Understanding network hardware, IP addressing schemes, DHCP automatic configurat
 │                                                                        │
 └────────────────────────────────────────────────────────────────────────┘
 ```
+
+<Callout type="exam">
+**CompTIA Tech+ Core Objective (FC0-U71 2.8):**
+- **Switch vs. Router:** Switches operate at **Layer 2** and forward Ethernet frames within the local LAN using physical **MAC addresses**. Routers operate at **Layer 3** and forward packets between different subnets and the WAN using logical **IP addresses**.
+- **IPv4 Address Structure:** IPv4 uses 32 bits divided into four 8-bit octets separated by dots (e.g., `192.168.1.100`). The Subnet Mask determines where the Network ID ends and the Host ID begins.
+- **Default Gateway:** The local router interface IP that forwards traffic destined for outside networks and the internet.
+- **DHCP vs. DNS:** DHCP automatically leases IP configuration settings (DORA process). DNS resolves human-friendly domain names (`example.com`) to numerical IP addresses.
+</Callout>
+
+<Callout type="warn">
+**Network Operational Warnings:**
+- **APIPA 169.254.x.x Trap:** If a Windows client displays an IP address starting with `169.254`, do not troubleshoot the website or DNS! The client failed to communicate with the DHCP server and assigned itself a link-local Automatic Private IP Address. Check cable connection, VLAN settings, and DHCP scope exhaustion.
+- **IP Address Conflicts:** Assigning a static IP that already belongs to another device causes ARP table thrashing. Both devices will suffer intermittent disconnects until one is changed.
+- **Rogue DHCP Servers:** An unauthorized router plugged into an office wall jack can hand out fake default gateways and DNS servers, conducting a Man-in-the-Middle (MitM) attack.
+</Callout>
 
 ---
 
@@ -135,7 +173,7 @@ Every device on an IP network requires four basic configuration settings to comm
 │   2. Subnet Mask:     255.255.255.0  (/24)             │
 │   3. Default Gateway: 192.168.1.1    (The Router)      │
 │   4. DNS Server:      1.1.1.1 / 8.8.8.8                │
-└────────────────────────────────────────────────────────┘
+│└────────────────────────────────────────────────────────┘
 ```
 
 1. **IP Address (Host Identifier):** A 32-bit numerical label written as four decimal octets (e.g., `192.168.1.105`). It serves as your computer's unique mailing address on the network.
@@ -201,4 +239,4 @@ Instead of randomly rebooting computers or guessing, the 5-step diagnostic ladde
 
 ## Key Terms
 
-Local Area Network (LAN) · Wide Area Network (WAN) · Layer 2 Switch · MAC Address · Layer 3 Router · Wireless Access Point (AP) · Modem · IPv4 Address · Octet · Subnet Mask · Default Gateway · DHCP (Dynamic Host Configuration Protocol) · DORA Sequence · IP Lease · DNS (Domain Name System) · Loopback Address (`127.0.0.1`) · `ipconfig` · `ping` · Network Diagnostic Ladder
+Local Area Network (LAN) · Wide Area Network (WAN) · Layer 2 Switch · MAC Address · Layer 3 Router · Wireless Access Point (AP) · Modem · IPv4 Address · Octet · Subnet Mask · Default Gateway · DHCP (Dynamic Host Configuration Protocol) · DORA Sequence · IP Lease · APIPA (169.254.x.x) · DNS (Domain Name System) · Loopback Address (`127.0.0.1`) · `ipconfig` · `ping` · Network Diagnostic Ladder

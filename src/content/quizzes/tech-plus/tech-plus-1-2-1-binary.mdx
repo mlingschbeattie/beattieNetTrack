@@ -18,6 +18,7 @@ questions:
       - "C. 16"
       - "D. 2"
     correctIndex: 3
+    explanation: "Binary is a base-2 numbering system that uses exactly two numerical digits: 0 and 1."
   - id: q2
     type: single
     prompt: "What is the decimal value of the binary number 1000 0000?"
@@ -27,6 +28,7 @@ questions:
       - "C. 256"
       - "D. 32"
     correctIndex: 1
+    explanation: "In an 8-bit binary byte, the leftmost bit (position 7, counting from 0) represents 2^7 = 128. Therefore, 1000 0000 in binary equals decimal 128."
   - id: q3
     type: single
     prompt: "A technician needs to convert the decimal number 10 to binary. What is the correct binary result?"
@@ -36,15 +38,17 @@ questions:
       - "C. 0110"
       - "D. 1001"
     correctIndex: 0
+    explanation: "Decimal 10 equals 8 + 2. In 4-bit binary positions (8s, 4s, 2s, 1s), setting the 8-bit and the 2-bit to 1 produces binary 1010."
   - id: q4
-    type: single
-    prompt: "How many bits are in one byte?"
+    type: multi
+    prompt: "Which of the following statements accurately characterize binary bits and bytes in digital computing? (Choose two.)"
     options:
-      - "A. 4"
-      - "B. 16"
-      - "C. 2"
-      - "D. 8"
-    correctIndex: 3
+      - "A. A byte consists of exactly 8 contiguous bits"
+      - "B. A single bit represents the fundamental atomic unit of digital data (0 or 1)"
+      - "C. A standard byte contains 16 bits on modern 64-bit systems"
+      - "D. A single bit can simultaneously represent five distinct integer values"
+    correctIndices: [0, 1]
+    explanation: "A bit (binary digit) is the smallest indivisible unit of data in computing, representing 0 or 1. Eight bits grouped together form a byte, which is the basic unit of addressable memory."
   - id: q5
     type: single
     prompt: "What is the term for a group of 4 bits?"
@@ -54,6 +58,7 @@ questions:
       - "C. Nibble"
       - "D. Octet"
     correctIndex: 2
+    explanation: "A half-byte (4 bits) is called a nibble. An 8-bit grouping is a byte (or octet)."
   - id: q6
     type: single
     prompt: "In the binary number 1011, which bit position is the Most Significant Bit (MSB)?"
@@ -63,6 +68,7 @@ questions:
       - "C. The second bit from the right (value 2)"
       - "D. The middle bit (value 4)"
     correctIndex: 1
+    explanation: "The Most Significant Bit (MSB) is the leftmost bit in any binary number, carrying the highest positional power-of-two weight (in a 4-bit nibble, the 8s place)."
   - id: q7
     type: single
     prompt: "True or false: Computers use binary because transistors have exactly two stable states — on and off."
@@ -70,15 +76,37 @@ questions:
       - "A. True"
       - "B. False"
     correctIndex: 0
+    explanation: "Semiconductor transistors inside computer processors act as microscopic electrical switches that can only be either conductive (on / 1) or non-conductive (off / 0)."
   - id: q8
-    type: single
-    prompt: "What is the decimal value of the binary number 0000 1111?"
+    type: multi
+    prompt: "Which of the following binary values evaluate to a decimal value greater than 10? (Choose two.)"
     options:
-      - "A. 8"
-      - "B. 15"
-      - "C. 7"
-      - "D. 16"
-    correctIndex: 1
+      - "A. 0000 1111 (Decimal 15)"
+      - "B. 0000 1100 (Decimal 12)"
+      - "C. 0000 0110 (Decimal 6)"
+      - "D. 0000 1001 (Decimal 9)"
+    correctIndices: [0, 1]
+    explanation: "0000 1111 equals 8+4+2+1=15, and 0000 1100 equals 8+4=12. Both values exceed 10, whereas 0000 0110 is 6 and 0000 1001 is 9."
+  - id: q9
+    type: multi
+    prompt: "Which of the following binary bit combinations equal an odd decimal number? (Choose two.)"
+    options:
+      - "A. 0000 0101 (Decimal 5)"
+      - "B. 0000 1010 (Decimal 10)"
+      - "C. 0000 0111 (Decimal 7)"
+      - "D. 0000 1100 (Decimal 12)"
+    correctIndices: [0, 2]
+    explanation: "Any binary number whose Least Significant Bit (LSB / 1s place at the far right) is 1 represents an odd number. 0000 0101 (5) and 0000 0111 (7) both have an LSB of 1."
+  - id: q10
+    type: single
+    prompt: "What is the maximum decimal value that can be represented by an unsigned 8-bit byte (1111 1111)?"
+    options:
+      - "A. 255"
+      - "B. 256"
+      - "C. 128"
+      - "D. 512"
+    correctIndex: 0
+    explanation: "An unsigned 8-bit byte can represent 256 distinct combinations (0 through 255). 1111 1111 in binary equals 128 + 64 + 32 + 16 + 8 + 4 + 2 + 1 = 255."
 domains:
   - domainId: techplus.concepts
     weight: 1

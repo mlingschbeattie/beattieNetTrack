@@ -75,6 +75,27 @@ sections:
           - "A CPU Overheating Error"
           - "A Subnet Mask Conflict"
         correct: 0
+  - id: multidimensional-arrays-and-memory
+    title: "Multidimensional Arrays and Memory Safety"
+    keyPoints:
+      - "Multidimensional Arrays (Matrices) represent grids of rows and columns indexed as array[row][column]"
+      - "Fixed Arrays vs Dynamic Lists: Fixed arrays occupy fixed contiguous memory; dynamic lists reallocate when capacity exceeds limits"
+      - "Memory Safety: In lower-level languages like C, missing array bounds checks enable Buffer Overflow attacks"
+    check:
+      - prompt: "In a 2D matrix representing a seating grid `seats[row][col]`, how would you access the student in the second row, third column?"
+        options:
+          - "seats[1][2]"
+          - "seats[2][3]"
+          - "seats[2, 3]"
+          - "seats[1][1]"
+        correct: 0
+      - prompt: "What critical software security vulnerability occurs when a program writes user-supplied input beyond the allocated memory boundaries of an array?"
+        options:
+          - "Buffer Overflow"
+          - "SQL Injection"
+          - "Cross-Site Scripting"
+          - "DNS Poisoning"
+        correct: 0
 domains:
   - domainId: techplus.software
     weight: 1
@@ -98,6 +119,8 @@ If you wanted to ping all 50 servers to check if they are online, you would have
 
 An **Array** (called a **List** in Python) solves this by storing hundreds or thousands of related values inside a single, ordered variable container that can be looped through automatically in three lines of code.
 
+![Array and List Data Structures Architecture Guide](/images/tech-plus/arrays-data-structures-guide.jpg)
+
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │                        ARRAY MEMORY STRUCTURE                          │
@@ -114,6 +137,17 @@ An **Array** (called a **List** in Python) solves this by storing hundreds or th
 │                                                                        │
 └────────────────────────────────────────────────────────────────────────┘
 ```
+
+<Callout type="exam">
+**CompTIA Tech+ Core Objective (FC0-U71 4.3):**
+- **Zero-Based Indexing:** Array indices always begin at 0. The first element is `array[0]`, the second is `array[1]`, and the last element is always at index `array[length - 1]`.
+- **Length vs. Index:** If an array contains 10 items, `array.length` is 10, but attempting to access `array[10]` results in an `IndexOutOfBoundsException` or `IndexError`.
+- **Iteration:** Understand how `for` and `foreach` loops traverse collections sequentially to inspect, transform, or filter items.
+</Callout>
+
+<Callout type="warn">
+**The Off-by-One Error:** The single most common logic bug written by junior programmers is trying to read `array[length]`. Because indexing starts at 0, an array of 5 elements has valid indices 0, 1, 2, 3, and 4. Index `[5]` does not exist!
+</Callout>
 
 ---
 
@@ -143,10 +177,6 @@ The index represents the **Offset Distance** from the start:
 │   ✔ The last valid index is ALWAYS: (Length - 1)!      │
 └────────────────────────────────────────────────────────┘
 ```
-
-<Callout type="warn">
-**The Off-by-One Error:** The single most common logic bug written by junior programmers is trying to read `array[length]`. Because indexing starts at 0, an array of 5 elements has valid indices 0, 1, 2, 3, and 4. Index `[5]` does not exist!
-</Callout>
 
 ---
 
@@ -190,6 +220,35 @@ Instead of writing 50 lines of code, the loop executes once for each element in 
 
 ---
 
+## 4. Multidimensional Arrays and Memory Safety
+
+In real-world applications, data often requires multiple dimensions, such as a grid, spreadsheet, or coordinate plane:
+
+### 2D Arrays (Matrices)
+A two-dimensional array is an array whose elements are themselves arrays. To locate an element, you provide two indices: `array[row][column]`:
+
+```python
+# A 3x3 classroom seating chart:
+classroom = [
+    ["Alice", "Bob", "Charlie"],     # Row 0
+    ["David", "Eve", "Frank"],       # Row 1
+    ["Grace", "Heidi", "Ivan"]       # Row 2
+]
+
+# Access Eve (Row 1, Column 1):
+print(classroom[1][1])  # Output: Eve
+
+# Access Frank (Row 1, Column 2):
+print(classroom[1][2])  # Output: Frank
+```
+
+### Memory Safety and Buffer Overflows
+In modern managed languages (Python, Java, JavaScript, C#), the runtime performs automatic **bounds checking**. If your code attempts to write to an index outside the array, the runtime immediately throws an exception and halts the process.
+
+In low-level languages like C and C++, the compiler trusts the programmer completely and does not check array boundaries at runtime. If an attacker inputs 200 characters into an array allocated for 50 characters, the extra 150 bytes overwrite adjacent memory. This is a **Buffer Overflow**, one of the oldest and most dangerous security vulnerabilities in computer science, enabling adversaries to hijack CPU instruction pointers and execute arbitrary shellcode.
+
+---
+
 ## Why This Matters in the Field
 
 In IT operations, almost all structured data arrives as lists:
@@ -197,10 +256,10 @@ In IT operations, almost all structured data arrives as lists:
 - A list of open firewall ports from a vulnerability scan.
 - A list of temperature readings from datacenter server sensors.
 
-Knowing how to store, index, and iterate through arrays is the foundation of writing effective IT automation scripts.
+Knowing how to store, index, iterate, and protect arrays is the foundation of writing effective IT automation scripts.
 
 ---
 
 ## Key Terms
 
-Array · List · Element · Zero-Based Indexing · Base Memory Address · Offset · Index · Array Length (`len()`) · Out-of-Bounds Error · Off-by-One Bug · Append · Push · Pop · Iteration · Traversal · `for` Loop
+Array · List · Element · Zero-Based Indexing · Base Memory Address · Offset · Index · Array Length (`len()`) · Out-of-Bounds Error · Off-by-One Bug · Append · Push · Pop · Iteration · Traversal · `for` Loop · Multidimensional Array · Matrix · Bounds Checking · Buffer Overflow
