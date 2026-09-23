@@ -87,6 +87,22 @@ const isAvailable = (track: { slug: string; data: { comingSoon?: boolean } }) =>
     </div>
   </section>
 
+  <!-- Placement Exam Callout for 2nd & 3rd Years -->
+  <section class="placement-callout">
+    <div class="placement-callout__badge">2nd & 3rd Year Assessment</div>
+    <div class="placement-callout__body">
+      <div>
+        <h2 class="placement-callout__title">CompTIA A+ & Network+ Placement Assessment</h2>
+        <p class="placement-callout__desc">
+          Take the 50-question diagnostic exam to map your baseline mastery across 10 core domains, automatically recording your diagnostic baseline in CIS and recommending your optimal certification track.
+        </p>
+      </div>
+      <a href="/entrance-exam" class="btn btn--primary placement-callout__btn">
+        Start Placement Exam →
+      </a>
+    </div>
+  </section>
+
   <!-- Section A: Continue Learning -->
   <section class="track-section">
     <div class="section-head">
@@ -165,3 +181,57 @@ const isAvailable = (track: { slug: string; data: { comingSoon?: boolean } }) =>
     </div>
   </section>
 </AppShell>
+
+<style>
+  .placement-callout {
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-8);
+    background: var(--color-surface, #1e293b);
+    border: 1px solid var(--color-border, #334155);
+    border-left: 4px solid var(--color-accent, #38bdf8);
+    border-radius: var(--radius-lg, 8px);
+    padding: var(--space-6);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .placement-callout__badge {
+    display: inline-block;
+    font-size: var(--text-xs, 0.75rem);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-accent, #38bdf8);
+    background: rgba(56, 189, 248, 0.1);
+    padding: 2px 8px;
+    border-radius: var(--radius-sm, 4px);
+    margin-bottom: var(--space-2);
+  }
+
+  .placement-callout__body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-6);
+    flex-wrap: wrap;
+  }
+
+  .placement-callout__title {
+    font-size: var(--text-lg, 1.125rem);
+    font-weight: 700;
+    margin: 0 0 var(--space-1);
+    color: var(--color-text, #f8fafc);
+  }
+
+  .placement-callout__desc {
+    margin: 0;
+    font-size: var(--text-sm, 0.875rem);
+    color: var(--color-text-muted, #94a3b8);
+    max-width: 680px;
+    line-height: var(--leading-relaxed, 1.5);
+  }
+
+  .placement-callout__btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+</style>

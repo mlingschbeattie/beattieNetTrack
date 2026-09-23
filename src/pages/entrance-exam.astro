@@ -2,8 +2,10 @@
 import AppShell from '../layouts/AppShell.astro';
 import { getCollection } from 'astro:content';
 import EntranceExamIsland from '../components/EntranceExam';
+import { getAuthUser } from '../lib/auth';
 
 const tracks = await getCollection('tracks');
+const user = getAuthUser(Astro.request.headers);
 const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://api.beattietech.local';
 
 ---
@@ -12,18 +14,20 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://api.beattietech.local'
   title="Placement Exam — Beattie Tech"
   tracks={tracks}
   breadcrumbs={[{ label: 'Placement Exam' }]}
+  user={user}
 >
   <div class="entrance-exam-page">
     <header class="entrance-exam-page__header">
-      <h1>CIS Placement Exam</h1>
+      <h1>A+ / Net+ Placement Exam</h1>
       <p class="entrance-exam-page__subtitle">
-        This 40-question assessment determines your starting point in the CIS curriculum.
+        This 50-question assessment mixes CompTIA A+ and Network+ questions to determine
+        your starting point in the <code>pc-technician</code> and <code>network-engineer</code> tracks.
         Take your time — there is no time limit. You may only submit once.
       </p>
       <div class="entrance-exam-page__meta">
-        <span class="pill">40 Questions</span>
+        <span class="pill">50 Questions</span>
         <span class="pill">One attempt</span>
-        <span class="pill">~15 minutes</span>
+        <span class="pill">~20 minutes</span>
       </div>
     </header>
 

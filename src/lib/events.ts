@@ -71,7 +71,7 @@ const LS_QUIZ_COMPLETED_PREFIX = 'lms_quiz_completed_';
 const LS_LESSON_STARTED_PREFIX = 'lms_lesson_started_';
 const LS_LESSON_COMPLETED_PREFIX = 'lms_lesson_completed_';
 
-function getUserPrefix(): string {
+export function getUserPrefix(): string {
   if (!isBrowser()) return '';
   const username = (window as any).__BEATTIE_USER__?.username || document.querySelector('[data-current-user]')?.getAttribute('data-current-user');
   return (username && username !== 'guest') ? `${username}_` : '';

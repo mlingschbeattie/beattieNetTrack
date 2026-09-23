@@ -24,6 +24,7 @@ export type StringEntry = Record<LangCode, string>;
 export const strings = {
   // --- Global navigation ---
   'nav.home': { en: 'Home', ar: 'الرئيسية', fa: 'خانه', uk: 'Головна' },
+  'nav.placementExam': { en: 'Placement Exam', ar: 'امتحان تحديد المستوى', fa: 'آزمون تعیین سطح', uk: 'Вступний іспит' },
   'nav.tracks': { en: 'Learning Tracks', ar: 'المسارات التعليمية', fa: 'مسیرهای یادگیری', uk: 'Навчальні курси' },
   'nav.studyHub': { en: 'Study Hub', ar: 'مركز الدراسة', fa: 'مرکز مطالعه', uk: 'Навчальний центр' },
   'nav.activeTrack': { en: 'Active Track', ar: 'المسار النشط', fa: 'مسیر فعال', uk: 'Активний курс' },
@@ -33,6 +34,7 @@ export const strings = {
   'sidebar.lessons': { en: 'Lessons', ar: 'الدروس', fa: 'درس‌ها', uk: 'Уроки' },
   'sidebar.navigation': { en: 'Navigation', ar: 'التنقل', fa: 'ناوبری', uk: 'Навігація' },
   'sidebar.dashboard': { en: 'Dashboard', ar: 'لوحة التحكم', fa: 'داشبورد', uk: 'Панель' },
+  'sidebar.placementExam': { en: 'Placement Exam', ar: 'امتحان تحديد المستوى', fa: 'آزمون تعیین سطح', uk: 'Вступний іспит' },
   'sidebar.done': { en: 'done', ar: 'مكتمل', fa: 'انجام‌شده', uk: 'виконано' },
 
   // --- Activity type labels ---
