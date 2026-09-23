@@ -463,6 +463,7 @@ function scoreExam(answers: Record<string, number>): PlacementResult {
 }
 
 const STORAGE_KEY = 'lms_entrance_exam_result';
+const ANSWERS_STORAGE_KEY = 'lms_entrance_exam_answers';
 
 function loadStoredResult(): PlacementResult | null {
   if (typeof window === 'undefined') return null;
@@ -480,6 +481,25 @@ function storeResult(result: PlacementResult): void {
     window.localStorage.setItem(`${getUserPrefix()}${STORAGE_KEY}`, JSON.stringify(result));
   } catch {
     // localStorage unavailable — result still displays for this session
+  }
+}
+
+function loadStoredAnswers(): Record<string, number> {
+  if (typeof window === 'undefined') return {};
+  try {
+    const raw = window.localStorage.getItem(`${getUserPrefix()}${ANSWERS_STORAGE_KEY}`);
+    return raw ? (JSON.parse(raw) as Record<string, number>) : {};
+  } catch {
+    return {};
+  }
+}
+
+function storeAnswers(answers: Record<string, number>): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem(`${getUserPrefix()}${ANSWERS_STORAGE_KEY}`, JSON.stringify(answers));
+  } catch {
+    // localStorage unavailable
   }
 }
 
@@ -522,9 +542,13 @@ export default function EntranceExam({ apiUrl }: Props) {
 
   useEffect(() => {
     const stored = loadStoredResult();
+    const storedAns = loadStoredAnswers();
     if (stored) {
       setResult(stored);
       setRestored(true);
+    }
+    if (Object.keys(storedAns).length > 0) {
+      setAnswers(storedAns);
     }
   }, []);
 
@@ -533,7 +557,11 @@ export default function EntranceExam({ apiUrl }: Props) {
 
   const handleSelect = (questionId: string, optionIndex: number) => {
     if (result) return;
-    setAnswers((prev) => ({ ...prev, [questionId]: optionIndex }));
+    setAnswers((prev) => {
+      const next = { ...prev, [questionId]: optionIndex };
+      storeAnswers(next);
+      return next;
+    });
   };
 
   const handleRetake = () => {
@@ -542,7 +570,8 @@ export default function EntranceExam({ apiUrl }: Props) {
     }
     setResult(null);
     setRestored(false);
-    setAnswers({});
+    // Keep answers prefilled from storage so student doesn't lose selections
+    setAnswers(loadStoredAnswers());
     setSubmitError(null);
   };
 
@@ -659,7 +688,7 @@ export default function EntranceExam({ apiUrl }: Props) {
             className="btn btn--secondary"
             onClick={handleRetake}
           >
-            Retake Placement Exam ↺
+            Review & Resubmit Exam ↺
           </button>
         </div>
       </div>
