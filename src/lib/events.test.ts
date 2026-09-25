@@ -19,7 +19,7 @@ describe('CIS Events Bus', () => {
   });
 
   it('safely handles non-browser and empty apiUrl gracefully without throwing', () => {
-    const domains: CISDomainTag[] = [{ domainId: 'netplus.networking_concepts', weight: 1.0 }];
+    const domains: CISDomainTag[] = [{ domainId: 'netplus.networking', weight: 1.0 }];
     assert.doesNotThrow(() => {
       emitQuizCompleted('quiz-1', 95, 100, domains, '');
       emitLessonStarted('lesson-1', 'OSI Model', domains, '');

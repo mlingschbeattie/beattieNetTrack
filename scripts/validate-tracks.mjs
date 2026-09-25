@@ -90,6 +90,19 @@ export const validateTrackModuleMappings = () => {
   ];
 
   const errors = [];
+  // Domain tags feed the CIS content map. An id CIS does not know earns students nothing, silently
+  // (2026-09-25: 181 items had tags like netplus.networking_concepts). Keep in sync with hub.cis_domains.
+  const CIS_DOMAINS = new Set([
+    'techplus.concepts', 'techplus.infrastructure', 'techplus.applications', 'techplus.software_dev', 'techplus.databases', 'techplus.security',
+    'aplus1.mobile', 'aplus1.networking', 'aplus1.hardware', 'aplus1.virtualization', 'aplus1.hardware_troubleshooting',
+    'aplus2.os', 'aplus2.security', 'aplus2.software_troubleshooting', 'aplus2.ops',
+    'netplus.networking', 'netplus.infrastructure', 'netplus.ops', 'netplus.security', 'netplus.troubleshooting',
+    'secplus.concepts', 'secplus.threats', 'secplus.architecture', 'secplus.ops', 'secplus.governance',
+    'nocti.safety', 'nocti.hardware', 'nocti.troubleshooting', 'nocti.os', 'nocti.networking', 'nocti.media',
+    'nocti.devices', 'nocti.management', 'nocti.tools', 'nocti.security',
+  ]);
+  // Tags with no CIS track yet: allowed, and never mapped
+  const NON_CIS_TAGS = new Set(['web.frontend', 'web.security']);
   const warnings = [];
   const checkedEntries = [];
   const moduleOrders = new Map();
@@ -98,6 +111,12 @@ export const validateTrackModuleMappings = () => {
     const files = listMdxFiles(collection.path).sort((a, b) => a.localeCompare(b));
     for (const filePath of files) {
       const fm = readFrontmatter(filePath);
+      const rawFrontmatter = (fs.readFileSync(filePath, 'utf8').match(/^---\r?\n([\s\S]*?)\r?\n---/) || [])[1] || '';
+      for (const m of rawFrontmatter.matchAll(/domainId:\s*['"]?([a-z0-9_]+\.[a-z0-9_]+)/g)) {
+        if (!CIS_DOMAINS.has(m[1]) && !NON_CIS_TAGS.has(m[1])) {
+          errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} domainId '${m[1]}' is not a CIS domain.`);
+        }
+      }
       if (!fm) {
         errors.push(`[${collection.name}] ${path.relative(repoRoot, filePath)} missing frontmatter block.`);
         continue;

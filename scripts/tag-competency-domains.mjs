@@ -44,43 +44,43 @@ function getDomainsForModule(moduleId, track) {
   if (mod.startsWith('tech-plus.it-concepts')) return [{ domainId: 'techplus.concepts', weight: 1.0 }];
   if (mod.startsWith('tech-plus.infrastructure')) return [{ domainId: 'techplus.infrastructure', weight: 1.0 }];
   if (mod.startsWith('tech-plus.applications')) return [{ domainId: 'techplus.applications', weight: 1.0 }];
-  if (mod.startsWith('tech-plus.software-dev')) return [{ domainId: 'techplus.software', weight: 1.0 }];
+  if (mod.startsWith('tech-plus.software-dev')) return [{ domainId: 'techplus.software_dev', weight: 1.0 }];
   if (mod.startsWith('tech-plus.databases')) return [{ domainId: 'techplus.databases', weight: 1.0 }];
   if (mod.startsWith('tech-plus.security')) return [{ domainId: 'techplus.security', weight: 1.0 }];
   if (track === 'tech-plus') return [{ domainId: 'techplus.concepts', weight: 1.0 }];
 
   // Network Engineer
-  if (mod.startsWith('net.fundamentals')) return [{ domainId: 'netplus.networking_concepts', weight: 0.8 }, { domainId: 'nocti.networking', weight: 0.2 }];
+  if (mod.startsWith('net.fundamentals')) return [{ domainId: 'netplus.networking', weight: 0.8 }, { domainId: 'nocti.networking', weight: 0.2 }];
   if (mod.startsWith('net.implementation')) return [{ domainId: 'netplus.infrastructure', weight: 0.8 }, { domainId: 'nocti.networking', weight: 0.2 }];
-  if (mod.startsWith('net.operations')) return [{ domainId: 'netplus.operations', weight: 0.8 }, { domainId: 'nocti.networking', weight: 0.2 }];
+  if (mod.startsWith('net.operations')) return [{ domainId: 'netplus.ops', weight: 0.8 }, { domainId: 'nocti.networking', weight: 0.2 }];
   if (mod.startsWith('net.security')) return [{ domainId: 'netplus.security', weight: 0.8 }, { domainId: 'nocti.networking', weight: 0.2 }];
   if (mod.startsWith('net.troubleshooting')) return [{ domainId: 'netplus.troubleshooting', weight: 0.8 }, { domainId: 'nocti.networking', weight: 0.2 }];
-  if (mod === 'network-legacy' || track === 'network-engineer') return [{ domainId: 'netplus.networking_concepts', weight: 0.8 }, { domainId: 'nocti.networking', weight: 0.2 }];
+  if (mod === 'network-legacy' || track === 'network-engineer') return [{ domainId: 'netplus.networking', weight: 0.8 }, { domainId: 'nocti.networking', weight: 0.2 }];
 
   // PC Technician / A+
   if (mod.startsWith('pct.hardware') || mod === 'hardware-fundamentals' || mod === 'pc-tech-labs') return [{ domainId: 'aplus1.hardware', weight: 0.8 }, { domainId: 'nocti.hardware', weight: 0.2 }];
-  if (mod.startsWith('pct.troubleshooting')) return [{ domainId: 'aplus1.troubleshooting', weight: 0.8 }, { domainId: 'nocti.hardware', weight: 0.2 }];
+  if (mod.startsWith('pct.troubleshooting')) return [{ domainId: 'aplus1.hardware_troubleshooting', weight: 0.8 }, { domainId: 'nocti.hardware', weight: 0.2 }];
   if (mod.startsWith('pct.os')) return [{ domainId: 'aplus2.os', weight: 0.8 }, { domainId: 'nocti.os', weight: 0.2 }];
   if (mod.startsWith('pct.fundamentals')) return [{ domainId: 'aplus1.hardware', weight: 0.5 }, { domainId: 'aplus2.os', weight: 0.5 }];
-  if (mod.startsWith('pct.customer')) return [{ domainId: 'aplus2.operational_procedures', weight: 1.0 }];
+  if (mod.startsWith('pct.customer')) return [{ domainId: 'aplus2.ops', weight: 1.0 }];
   if (mod === 'pc-tech-legacy' || track === 'pc-technician') return [{ domainId: 'aplus1.hardware', weight: 0.8 }, { domainId: 'nocti.hardware', weight: 0.2 }];
 
   // Cybersecurity
-  if (mod.startsWith('cfs.fundamentals') || track === 'cybersecurity-foundations') return [{ domainId: 'cyber.foundations', weight: 1.0 }];
-  if (mod.startsWith('sec.crypto')) return [{ domainId: 'secplus.architecture', weight: 0.8 }, { domainId: 'cyber.foundations', weight: 0.2 }];
-  if (mod.startsWith('sec.endpoint')) return [{ domainId: 'secplus.operations', weight: 0.8 }, { domainId: 'nocti.security', weight: 0.2 }];
-  if (mod.startsWith('sec.fundamentals')) return [{ domainId: 'cyber.foundations', weight: 0.6 }, { domainId: 'secplus.threats', weight: 0.4 }];
-  if (mod.startsWith('sec.identity')) return [{ domainId: 'secplus.architecture', weight: 0.8 }, { domainId: 'cyber.foundations', weight: 0.2 }];
-  if (mod.startsWith('sec.incident')) return [{ domainId: 'secplus.operations', weight: 0.8 }, { domainId: 'cyber.foundations', weight: 0.2 }];
+  if (mod.startsWith('cfs.fundamentals') || track === 'cybersecurity-foundations') return [{ domainId: 'secplus.concepts', weight: 1.0 }];
+  if (mod.startsWith('sec.crypto')) return [{ domainId: 'secplus.architecture', weight: 0.8 }, { domainId: 'secplus.concepts', weight: 0.2 }];
+  if (mod.startsWith('sec.endpoint')) return [{ domainId: 'secplus.ops', weight: 0.8 }, { domainId: 'nocti.security', weight: 0.2 }];
+  if (mod.startsWith('sec.fundamentals')) return [{ domainId: 'secplus.concepts', weight: 0.6 }, { domainId: 'secplus.threats', weight: 0.4 }];
+  if (mod.startsWith('sec.identity')) return [{ domainId: 'secplus.architecture', weight: 0.8 }, { domainId: 'secplus.concepts', weight: 0.2 }];
+  if (mod.startsWith('sec.incident')) return [{ domainId: 'secplus.ops', weight: 0.8 }, { domainId: 'secplus.concepts', weight: 0.2 }];
   if (mod.startsWith('sec.network')) return [{ domainId: 'secplus.threats', weight: 0.8 }, { domainId: 'nocti.networking', weight: 0.2 }];
-  if (mod.startsWith('sec.security-awareness')) return [{ domainId: 'secplus.threats', weight: 0.8 }, { domainId: 'cyber.foundations', weight: 0.2 }];
-  if (mod === 'cybersecurity-legacy' || track === 'cybersecurity-engineer') return [{ domainId: 'cyber.foundations', weight: 1.0 }];
+  if (mod.startsWith('sec.security-awareness')) return [{ domainId: 'secplus.threats', weight: 0.8 }, { domainId: 'secplus.concepts', weight: 0.2 }];
+  if (mod === 'cybersecurity-legacy' || track === 'cybersecurity-engineer') return [{ domainId: 'secplus.concepts', weight: 1.0 }];
 
   // Web Dev
   if (mod.startsWith('web.fundamentals.javascript')) return [{ domainId: 'aplus2.os', weight: 0.5 }, { domainId: 'web.frontend', weight: 0.5 }];
   if (mod.startsWith('web.fundamentals')) return [{ domainId: 'web.frontend', weight: 1.0 }];
   if (mod.startsWith('web.backend')) return [{ domainId: 'web.backend', weight: 1.0 }];
-  if (mod.startsWith('web.security')) return [{ domainId: 'cyber.foundations', weight: 0.5 }, { domainId: 'web.security', weight: 0.5 }];
+  if (mod.startsWith('web.security')) return [{ domainId: 'secplus.concepts', weight: 0.5 }, { domainId: 'web.security', weight: 0.5 }];
   if (track === 'web-developer') return [{ domainId: 'web.frontend', weight: 1.0 }];
 
   // Python

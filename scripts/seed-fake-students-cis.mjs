@@ -25,7 +25,7 @@ const FAKE_STUDENTS = {
         type: 'lesson',
         title: 'The OSI 7-Layer Reference Model',
         id: 'net-osi-model',
-        domains: [{ domainId: 'netplus.networking_concepts', weight: 0.8 }, { domainId: 'nocti.networking', weight: 0.2 }],
+        domains: [{ domainId: 'netplus.networking', weight: 0.8 }, { domainId: 'nocti.networking', weight: 0.2 }],
         minutesActive: 15,
       },
       {
@@ -33,7 +33,7 @@ const FAKE_STUDENTS = {
         type: 'quiz',
         title: 'OSI Model Deep-Dive Assessment',
         id: 'net-1-1-1-osi-model',
-        domains: [{ domainId: 'netplus.networking_concepts', weight: 0.8 }, { domainId: 'nocti.networking', weight: 0.2 }],
+        domains: [{ domainId: 'netplus.networking', weight: 0.8 }, { domainId: 'nocti.networking', weight: 0.2 }],
         score: 92,
       },
       {
